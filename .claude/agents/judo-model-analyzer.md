@@ -358,12 +358,29 @@ ls /tmp/judo-projects/<name>/application/*-esm.model  # FORBIDDEN
 
 ## Analysis Process
 
-### Phase 1: Read Existing Best Practices
+### Phase 1: Query Existing Catalogs (Selective Read)
 
-1. Glob for `$CLAUDE_PROJECT_DIR/best-practices/model/*.md` files (NOT INDEX.md)
-2. Read ALL existing best-practice files
-3. Build a mental index: `{pattern_id: {title, score, usage_count, projects}}`
-4. This is CRITICAL — you must know what already exists before scanning
+Instead of reading ALL catalog files, use the **query-catalog.py** script to list what exists, then selectively read only the relevant items after surveying the model.
+
+1. **List all model best-practices AND blueprints** (names + scores only):
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py list --domain model
+```
+This returns a compact table: `Type | Score | Uses | Domain | Category | ID | Title`
+
+Also list all model blueprints:
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py list --type blueprint
+```
+
+2. **Build a mental index** from the listings: note all IDs, titles, scores, and usage counts
+3. After Phase 2 (analyzing the model), **selectively read only matching items**:
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <id-1> <id-2> <id-3> ...
+```
+Pass multiple IDs in one call to get full content of only the items relevant to this project.
+
+4. This is CRITICAL — do NOT read all ~60 model best-practice files plus ~85 blueprint files. Only read the ones that match patterns you've found in this project's model.
 
 ### Phase 2: Analyze Model Source Directly
 
@@ -375,12 +392,20 @@ The project path is given in your prompt (e.g., `/tmp/judo-projects/trivia/`).
 4. **Read .jsl/.esm source if needed**: Only when CLI can't answer a specific question
 5. **Identify patterns**: Generalization hierarchies, common patterns (audit fields, soft delete), naming conventions, cardinality patterns, type system usage, operation patterns
 
-### Phase 3: Update Best Practices
+### Phase 3: Update Best Practices AND Model Blueprints
 
-For each pattern found:
+Now **selectively fetch** the items that look like they match what you found:
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <matching-id-1> <matching-id-2> ...
+```
+Read only the matching items, then update them directly.
+
+#### Updating Best Practices
+
+For each best-practice pattern found:
 
 **If existing best practice matches:**
-1. Read the current best-practice file
+1. You already fetched its full content via `query-catalog.py get`
 2. Add the project name to the `projects` list (if not already there)
 3. Increment `usage_count` by 1
 4. Update `last_updated` to today's date
@@ -398,6 +423,23 @@ For each pattern found:
 1. Create the new pattern best practice
 2. Add cross-references in `alternatives` list of both patterns
 3. Increment `alternative_count` on both patterns
+
+#### Updating Model Blueprints
+
+You also have visibility into model blueprints. For each structural fragment (entity clusters, attribute sets, enum patterns) that matches an existing blueprint:
+
+**If existing blueprint matches:**
+1. You already fetched its full content via `query-catalog.py get`
+2. Add the project name to the `projects` list (if not already there)
+3. Increment `usage_count` by 1
+4. Update `last_updated` to today's date
+5. Add a concrete example under `## Examples` from this project
+6. Write the updated blueprint to `$CLAUDE_PROJECT_DIR/model-blueprints/<blueprint-id>.md`
+
+**If new structural fragment (not a best practice — a reusable entity/enum/transfer shape):**
+1. Create a new file: `$CLAUDE_PROJECT_DIR/model-blueprints/<fragment-id>.md`
+2. Follow the blueprint file format (see model-blueprint-analyzer agent for format)
+3. Include detection query and creation mutations
 
 ## Best Practice File Format
 
@@ -452,7 +494,7 @@ When done, output a brief summary:
 ## Constraints
 
 - **Read-only for project files**: Never modify files in the project path
-- **Write only to best-practices/model/**: All output goes to `$CLAUDE_PROJECT_DIR/best-practices/model/`
+- **Write to best-practices/model/ and model-blueprints/**: Best-practice output goes to `$CLAUDE_PROJECT_DIR/best-practices/model/`, blueprint updates go to `$CLAUDE_PROJECT_DIR/model-blueprints/`
 - **CLI-first**: Always use judo-cli to query model data; never parse `.model` files directly
 - **Stay in domain**: Only analyze model-layer concerns. Do not analyze backend Java code or frontend React code
 - **Idempotent reruns**: Read best practices first and only update timestamps/counts

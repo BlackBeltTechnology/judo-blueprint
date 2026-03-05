@@ -100,12 +100,24 @@ java -jar $CLAUDE_PROJECT_DIR/.claude/judo-cli.jar -m <model-path> graphql '{
 
 ## Analysis Process
 
-### Phase 1: Read Existing Best Practices
+### Phase 1: Query Existing Catalog (Selective Read)
 
-1. Glob for `$CLAUDE_PROJECT_DIR/best-practices/frontend/*.md` files (NOT INDEX.md)
-2. Read ALL existing best-practice files
-3. Build a mental index: `{pattern_id: {title, score, usage_count, projects}}`
-4. This is CRITICAL — you must know what already exists before scanning
+Instead of reading ALL catalog files, use the **query-catalog.py** script to list what exists, then selectively read only the relevant items after scanning the source.
+
+1. **List all frontend best-practices** (names + scores only):
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py list --domain frontend
+```
+This returns a compact table: `Type | Score | Uses | Domain | Category | ID | Title`
+
+2. **Build a mental index** from the listing: note all IDs, titles, scores, and usage counts
+3. After Phase 2 (analyzing frontend source), **selectively read only matching items**:
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <id-1> <id-2> <id-3> ...
+```
+Pass multiple IDs in one call to get full content of only the items relevant to this project.
+
+4. This is CRITICAL — do NOT read all ~120 frontend best-practice files. Only read the ones that match patterns you've found in this project's frontend source.
 
 ### Phase 2: Analyze Frontend Source Directly
 
@@ -126,10 +138,16 @@ The project path is given in your prompt (e.g., `/tmp/judo-projects/trivia/`).
 
 ### Phase 3: Update Best Practices
 
+Now **selectively fetch** the best practices that look like they match what you found:
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <matching-id-1> <matching-id-2> ...
+```
+Read only the matching items, then update them directly.
+
 For each pattern found:
 
 **If existing best practice matches:**
-1. Read the current best-practice file
+1. You already fetched its full content via `query-catalog.py get`
 2. Add the project name to the `projects` list (if not already there)
 3. Increment `usage_count` by 1
 4. Update `last_updated` to today's date

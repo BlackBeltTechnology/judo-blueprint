@@ -126,12 +126,24 @@ ls /tmp/judo-projects/<name>/application/*-esm.model  # FORBIDDEN
 
 ## Analysis Process
 
-### Phase 1: Read Existing Model Blueprints
+### Phase 1: Query Existing Catalog (Selective Read)
 
-1. Glob for `$CLAUDE_PROJECT_DIR/model-blueprints/*.md` files (NOT PROGRESS.md)
-2. Read ALL existing blueprint files
-3. Build a mental index: `{blueprint_id: {title, usage_count, projects, attribute_names, relation_names}}`
-4. This is CRITICAL — you must know what already exists before scanning
+Instead of reading ALL catalog files, use the **query-catalog.py** script to list what exists, then selectively read only the relevant items.
+
+1. **List all blueprints** (names + scores only):
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py list --type blueprint
+```
+This returns a compact table: `Type | Score | Uses | Domain | Category | ID | Title`
+
+2. **Build a mental index** from the listing: note the IDs, titles, and usage counts
+3. After Phase 2 (surveying the model), **selectively read only matching blueprints**:
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <blueprint-id-1> <blueprint-id-2> ...
+```
+Pass multiple IDs in one call to get full content of only the relevant blueprints.
+
+4. This is CRITICAL — do NOT read all ~85 blueprint files. Only read the ones that match patterns you've found in this project's model.
 
 ### Phase 2: Survey the Model
 
@@ -156,8 +168,13 @@ Follow these steps **in order**, using the verified queries above:
 
 ### Phase 3: Identify Recurring Structural Fragments
 
+Now **selectively fetch** the blueprints that look like they match what you found:
+```bash
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <matching-id-1> <matching-id-2> ...
+```
+
 Compare the entity/enum/transfer shapes you found against:
-1. **Existing blueprints** — does this project contain a fragment already cataloged?
+1. **Existing blueprints** (only the ones you fetched) — does this project contain a fragment already cataloged?
 2. **Common patterns within this project** — are there entity groups that form a reusable unit?
 
 Look for these kinds of structural fragments:
