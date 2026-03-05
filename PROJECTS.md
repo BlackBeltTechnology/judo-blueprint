@@ -1,7 +1,7 @@
 # JUDO Project Priority Timeline
 
 > Newest projects first (highest priority). Based on first commit date of each repo.
-> To add a new project: append one row here. `/collect-blueprints` will pick it up automatically.
+> To add a new project: append one row here. `/collect-best-practices` will pick it up automatically.
 
 | #   | Project                      | Git URL | First Commit | Last Commit | Commits |
 | --- | ---------------------------- | ------- | ------------ | ----------- | ------- |
