@@ -1,6 +1,6 @@
 ---
-name: "collect-blueprints"
-description: "Clone projects on-demand, analyze source directly, and collect reusable patterns into blueprint catalogs"
+name: "collect-best-practices"
+description: "Clone projects on-demand, analyze source directly, and collect reusable patterns into best-practice catalogs"
 argument-hint: "[model|backend|frontend|all]"
 user-invocable: true
 allowed-tools:
@@ -18,7 +18,7 @@ allowed-tools:
   - TaskGet
 ---
 
-Orchestrate the collection and scoring of reusable patterns from JUDO project source code into the `blueprint/` catalog. Projects are **cloned fresh from Git on-demand** to `/tmp/judo-projects/`, analyzed by 3 domain-specific agents, then cleaned up. No local `projects/` or `research/` directories needed.
+Orchestrate the collection and scoring of reusable patterns from JUDO project source code into the `best-practices/` catalog. Projects are **cloned fresh from Git on-demand** to `/tmp/judo-projects/`, analyzed by 3 domain-specific agents, then cleaned up. No local `projects/` or `research/` directories needed.
 
 ## Command-Specific Task Initialization
 
@@ -26,7 +26,7 @@ Create the following tasks before starting work:
 
 1. **Task: Parse registry and check versions**
    - `subject`: "Parse registry and check versions"
-   - `description`: "Read PROJECTS.md for project list with git URLs, run version check against blueprint/PROGRESS.md"
+   - `description`: "Read PROJECTS.md for project list with git URLs, run version check against best-practices/PROGRESS.md"
    - `activeForm`: "Checking project versions"
 
 2. **Task: Process projects**
@@ -34,14 +34,14 @@ Create the following tasks before starting work:
    - `description`: "For each selected project: clone to /tmp, dispatch analyzer agents, update PROGRESS.md, cleanup"
    - `activeForm`: "Processing projects"
 
-3. **Task: Score all blueprints**
-   - `subject`: "Score all blueprints"
-   - `description`: "Run the scoring script to calculate weighted scores for all collected blueprints"
-   - `activeForm`: "Scoring blueprints"
+3. **Task: Score all best practices**
+   - `subject`: "Score all best practices"
+   - `description`: "Run the scoring script to calculate weighted scores for all collected best practices"
+   - `activeForm`: "Scoring best practices"
 
 4. **Task: Generate summary report**
    - `subject`: "Generate summary report"
-   - `description`: "Display final summary of collected blueprints: total counts by domain, top patterns, and alternatives"
+   - `description`: "Display final summary of collected best practices: total counts by domain, top patterns, and alternatives"
    - `activeForm`: "Generating summary report"
 
 ---
@@ -50,23 +50,23 @@ Create the following tasks before starting work:
 
 **Syntax:**
 ```
-/collect-blueprints [domain]
+/collect-best-practices [domain]
 ```
 
 **Arguments:**
 | Argument | Description |
 |----------|-------------|
-| `model` | Collect only model-layer blueprints |
-| `backend` | Collect only backend-layer blueprints |
-| `frontend` | Collect only frontend-layer blueprints |
+| `model` | Collect only model-layer best practices |
+| `backend` | Collect only backend-layer best practices |
+| `frontend` | Collect only frontend-layer best practices |
 | `all` (default) | Collect all three domains |
 
 **Examples:**
 ```
-/collect-blueprints              # Collect all domains
-/collect-blueprints model        # Only model patterns
-/collect-blueprints backend      # Only backend patterns
-/collect-blueprints frontend     # Only frontend patterns
+/collect-best-practices              # Collect all domains
+/collect-best-practices model        # Only model patterns
+/collect-best-practices backend      # Only backend patterns
+/collect-best-practices frontend     # Only frontend patterns
 ```
 
 ---
@@ -80,7 +80,7 @@ When this command is invoked, follow these steps:
 Create the output directories if they don't exist:
 
 ```bash
-mkdir -p blueprint/model blueprint/backend blueprint/frontend
+mkdir -p best-practices/model best-practices/backend best-practices/frontend
 ```
 
 Parse the argument to determine which domains to process:
@@ -100,12 +100,12 @@ This is the **only source of truth** for which projects to process. No hardcoded
 
 #### Load Progress Tracker
 
-Read `blueprint/PROGRESS.md` if it exists. This file tracks which projects have been processed, their last-analyzed SHA, and allows version comparison.
+Read `best-practices/PROGRESS.md` if it exists. This file tracks which projects have been processed, their last-analyzed SHA, and allows version comparison.
 
-**Format of `blueprint/PROGRESS.md`:**
+**Format of `best-practices/PROGRESS.md`:**
 
 ```markdown
-# Blueprint Collection Progress
+# Best Practice Collection Progress
 
 > Last run: 2026-03-04 | Status: complete
 
@@ -165,17 +165,17 @@ Launch up to 3 agents simultaneously (one per selected domain) using the Task to
 **Model agent** (if domain includes model):
 - `subagent_type`: `judo-model-analyzer`
 - `description`: "Model analysis: <PROJECT>"
-- `prompt`: "Analyze project **<PROJECT>** (index N of TOTAL). Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path>`. Read existing blueprints from blueprint/model/ first, then analyze the model source directly. Cross-reference patterns with .generator-ignore files. Update or create blueprints in blueprint/model/. Keep examples concise (3-5 lines). Report what you found."
+- `prompt`: "Analyze project **<PROJECT>** (index N of TOTAL). Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path>`. Read existing best practices from best-practices/model/ first, then analyze the model source directly. Cross-reference patterns with .generator-ignore files. Update or create best practices in best-practices/model/. Keep examples concise (3-5 lines). Report what you found."
 
 **Backend agent** (if domain includes backend):
 - `subagent_type`: `judo-backend-analyzer`
 - `description`: "Backend analysis: <PROJECT>"
-- `prompt`: "Analyze project **<PROJECT>** (index N of TOTAL). Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path>`. Read existing blueprints from blueprint/backend/ first, then scan custom/ folders for Java implementations, .generator-ignore files, and interceptors. Cross-reference with model via CLI. Update or create blueprints in blueprint/backend/. Keep examples concise (3-5 lines). Report what you found."
+- `prompt`: "Analyze project **<PROJECT>** (index N of TOTAL). Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path>`. Read existing best practices from best-practices/backend/ first, then scan custom/ folders for Java implementations, .generator-ignore files, and interceptors. Cross-reference with model via CLI. Update or create best practices in best-practices/backend/. Keep examples concise (3-5 lines). Report what you found."
 
 **Frontend agent** (if domain includes frontend):
 - `subagent_type`: `judo-frontend-analyzer`
 - `description`: "Frontend analysis: <PROJECT>"
-- `prompt`: "Analyze project **<PROJECT>** (index N of TOTAL). Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path>`. Read existing blueprints from blueprint/frontend/ first, then scan custom/ folders, .generator-ignore files, theme/, layout/, public/ directories. Cross-reference with UI model via CLI. Update or create blueprints in blueprint/frontend/. Keep examples concise (3-5 lines). Report what you found."
+- `prompt`: "Analyze project **<PROJECT>** (index N of TOTAL). Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path>`. Read existing best practices from best-practices/frontend/ first, then scan custom/ folders, .generator-ignore files, theme/, layout/, public/ directories. Cross-reference with UI model via CLI. Update or create best practices in best-practices/frontend/. Keep examples concise (3-5 lines). Report what you found."
 
 #### 3d. Wait and Update Progress
 
@@ -184,7 +184,7 @@ Launch up to 3 agents simultaneously (one per selected domain) using the Task to
    ```bash
    git -C /tmp/judo-projects/<name>/ rev-parse --short=7 HEAD
    ```
-3. **Update `blueprint/PROGRESS.md`**: Mark each domain column as `done` for this project. Mark domains that had no relevant source as `skipped`. Store the HEAD SHA in `Last SHA` column. Set Status to `done`.
+3. **Update `best-practices/PROGRESS.md`**: Mark each domain column as `done` for this project. Mark domains that had no relevant source as `skipped`. Store the HEAD SHA in `Last SHA` column. Set Status to `done`.
 4. Log progress: "Project N/M (<PROJECT>) complete. Patterns: model=X, backend=Y, frontend=Z"
 
 #### 3e. Cleanup
@@ -201,29 +201,29 @@ rm -rf /tmp/judo-projects/<name>/
 
 After all projects are processed, generate INDEX.md files for each domain.
 
-For each active domain, read all blueprint files and create an index:
+For each active domain, read all best-practice files and create an index:
 
 ```bash
-# Count blueprints per domain
-ls blueprint/model/*.md 2>/dev/null | grep -v INDEX | wc -l
-ls blueprint/backend/*.md 2>/dev/null | grep -v INDEX | wc -l
-ls blueprint/frontend/*.md 2>/dev/null | grep -v INDEX | wc -l
+# Count best practices per domain
+ls best-practices/model/*.md 2>/dev/null | grep -v INDEX | wc -l
+ls best-practices/backend/*.md 2>/dev/null | grep -v INDEX | wc -l
+ls best-practices/frontend/*.md 2>/dev/null | grep -v INDEX | wc -l
 ```
 
-Generate each INDEX.md by reading all blueprint files in that domain and creating a sorted table.
+Generate each INDEX.md by reading all best-practice files in that domain and creating a sorted table.
 
-### Step 5: Score all blueprints
+### Step 5: Score all best practices
 
 Run the scoring script to calculate weighted scores:
 
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/score-blueprints.py --update
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/score-best-practices.py --update
 ```
 
 Then display the top patterns:
 
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/score-blueprints.py --top 30
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/score-best-practices.py --top 30
 ```
 
 ### Step 6: Generate summary report
@@ -231,14 +231,14 @@ python3 $CLAUDE_PROJECT_DIR/.claude/scripts/score-blueprints.py --top 30
 Run the summary view:
 
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/score-blueprints.py --summary
+python3 $CLAUDE_PROJECT_DIR/.claude/scripts/score-best-practices.py --summary
 ```
 
 Present the results to the user including:
 - Total patterns collected per domain
 - Top 10 highest-scored patterns overall
 - Any alternative solution groups found
-- Suggestion to run `/collect-blueprints` again after adding new projects to PROJECTS.md
+- Suggestion to run `/collect-best-practices` again after adding new projects to PROJECTS.md
 
 ---
 
@@ -255,7 +255,7 @@ Instead of keeping 26 repos permanently in `projects/`:
 ### Why No Intermediate Research Step?
 
 The old workflow was: researchers write to `research/` → collectors read `research/`.
-The new flow is: analyzers read source directly → write to `blueprint/`.
+The new flow is: analyzers read source directly → write to `best-practices/`.
 - **Fewer agents** — 3 instead of 6
 - **No stale research** — always analyzing current source
 - **Less disk usage** — no 313 research files to maintain
@@ -263,9 +263,9 @@ The new flow is: analyzers read source directly → write to `blueprint/`.
 ### Why One Project at a Time?
 
 Each analyzer agent needs to:
-1. Read ALL existing blueprints (growing as we process more projects)
+1. Read ALL existing best practices (growing as we process more projects)
 2. Analyze the project source with CLI queries
-3. Write updated blueprints
+3. Write updated best practices
 
 Processing all projects in one agent causes **context overflow**. Sequential processing keeps each agent invocation manageable.
 
@@ -287,9 +287,9 @@ The agents search for **BEST PRACTICES** in JUDO development:
 
 ### Extensibility
 
-- **Add a project**: Append one row to `PROJECTS.md` → `/collect-blueprints` detects as "NEW" (no SHA in PROGRESS.md)
+- **Add a project**: Append one row to `PROJECTS.md` → `/collect-best-practices` detects as "NEW" (no SHA in PROGRESS.md)
 - **Re-analyze a project**: Delete its row from `PROGRESS.md` or change its SHA → shows as "CHANGED"
-- **Start fresh**: Delete `blueprint/PROGRESS.md` → all projects treated as NEW
+- **Start fresh**: Delete `best-practices/PROGRESS.md` → all projects treated as NEW
 - **No hardcoded lists** in any agent or command
 
 ### Scoring Formula
@@ -307,10 +307,10 @@ alternative_penalty = alternative_count * 2
 
 ## Notes
 
-- **Progress is tracked in `blueprint/PROGRESS.md`** — interrupted runs can resume
+- **Progress is tracked in `best-practices/PROGRESS.md`** — interrupted runs can resume
 - Each project's 3 agents run in parallel; projects are processed sequentially
-- Running this command again is idempotent: existing blueprints get updated counts/timestamps, not duplicated
-- The scoring script at `.claude/scripts/score-blueprints.py` can also be run standalone
+- Running this command again is idempotent: existing best practices get updated counts/timestamps, not duplicated
+- The scoring script at `.claude/scripts/score-best-practices.py` can also be run standalone
 - The version check script at `.claude/scripts/check-project-versions.sh` can also be run standalone
 - Agents use `maxTurns: 50` to prevent runaway context usage per project
 - Cloned repos go to `/tmp/judo-projects/` and are cleaned up after each project
