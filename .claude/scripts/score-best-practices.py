@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
-Blueprint Scoring Script
+Best Practice Scoring Script
 
-Reads all blueprint files from blueprint/{model,backend,frontend}/*.md,
+Reads all best-practice files from best-practices/{model,backend,frontend}/*.md,
 parses their YAML frontmatter, and calculates weighted scores based on:
 - usage_count: how many projects use this pattern (weight: 10 per use)
 - recency_bonus: newer projects give higher weight
 - alternative_penalty: patterns with many alternatives score lower (-2 per alt)
 
 Usage:
-  python3 score-blueprints.py                    # Score all domains
-  python3 score-blueprints.py --domain model     # Score only model domain
-  python3 score-blueprints.py --update           # Update scores in blueprint files
-  python3 score-blueprints.py --top 20           # Show top 20 patterns
-  python3 score-blueprints.py --category entity  # Filter by category
+  python3 score-best-practices.py                    # Score all domains
+  python3 score-best-practices.py --domain model     # Score only model domain
+  python3 score-best-practices.py --update           # Update scores in best-practice files
+  python3 score-best-practices.py --top 20           # Show top 20 patterns
+  python3 score-best-practices.py --category entity  # Filter by category
 """
 
 import argparse
@@ -112,7 +112,7 @@ def parse_frontmatter(filepath):
 
 
 def calculate_score(meta):
-    """Calculate weighted score for a blueprint."""
+    """Calculate weighted score for a best practice."""
     usage_count = meta.get("usage_count", 0)
     alternative_count = meta.get("alternative_count", 0)
     projects = meta.get("projects", [])
@@ -171,15 +171,15 @@ def update_frontmatter(filepath, meta, body, new_score):
         f.write("\n".join(lines) + body)
 
 
-def scan_blueprints(base_dir, domains=None):
-    """Scan blueprint directories and return all pattern metadata."""
+def scan_best_practices(base_dir, domains=None):
+    """Scan best-practice directories and return all pattern metadata."""
     if domains is None:
         domains = DOMAINS
 
-    blueprints = []
+    best_practices = []
 
     for domain in domains:
-        domain_dir = os.path.join(base_dir, "blueprint", domain)
+        domain_dir = os.path.join(base_dir, "best-practices", domain)
         if not os.path.isdir(domain_dir):
             continue
 
@@ -197,33 +197,33 @@ def scan_blueprints(base_dir, domains=None):
             meta["_filepath"] = filepath
             meta["_filename"] = filename
             meta["_body"] = body
-            blueprints.append(meta)
+            best_practices.append(meta)
 
-    return blueprints
+    return best_practices
 
 
-def print_table(blueprints, top_n=None, category_filter=None):
-    """Print a formatted table of blueprints sorted by score."""
+def print_table(best_practices, top_n=None, category_filter=None):
+    """Print a formatted table of best practices sorted by score."""
     # Filter by category if specified
     if category_filter:
-        blueprints = [b for b in blueprints if b.get("category") == category_filter]
+        best_practices = [b for b in best_practices if b.get("category") == category_filter]
 
     # Sort by score descending
-    blueprints.sort(key=lambda b: b.get("score", 0), reverse=True)
+    best_practices.sort(key=lambda b: b.get("score", 0), reverse=True)
 
     # Limit results
     if top_n:
-        blueprints = blueprints[:top_n]
+        best_practices = best_practices[:top_n]
 
-    if not blueprints:
-        print("No blueprints found.")
+    if not best_practices:
+        print("No best practices found.")
         return
 
     # Print header
     print(f"\n{'Rank':<5} {'Score':<7} {'Uses':<5} {'Alts':<5} {'Domain':<10} {'Category':<14} {'Title':<50} {'Projects'}")
     print("-" * 140)
 
-    for i, bp in enumerate(blueprints, 1):
+    for i, bp in enumerate(best_practices, 1):
         projects = ", ".join(bp.get("projects", [])[:5])
         if len(bp.get("projects", [])) > 5:
             projects += f" (+{len(bp['projects']) - 5})"
@@ -239,16 +239,16 @@ def print_table(blueprints, top_n=None, category_filter=None):
             f"{projects}"
         )
 
-    print(f"\nTotal: {len(blueprints)} patterns")
+    print(f"\nTotal: {len(best_practices)} patterns")
 
 
-def print_summary(blueprints):
+def print_summary(best_practices):
     """Print domain and category summary statistics."""
     domain_counts = {}
     category_counts = {}
     total_score = 0
 
-    for bp in blueprints:
+    for bp in best_practices:
         domain = bp.get("domain", "unknown")
         category = bp.get("category", "unknown")
         score = bp.get("score", 0)
@@ -258,8 +258,8 @@ def print_summary(blueprints):
         category_counts[key] = category_counts.get(key, 0) + 1
         total_score += score
 
-    print(f"\n=== Blueprint Summary ===")
-    print(f"Total patterns: {len(blueprints)}")
+    print(f"\n=== Best Practice Summary ===")
+    print(f"Total patterns: {len(best_practices)}")
     print(f"Total score: {total_score}")
     print(f"\nBy Domain:")
     for domain in sorted(domain_counts):
@@ -271,14 +271,14 @@ def print_summary(blueprints):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Score JUDO blueprint patterns")
+    parser = argparse.ArgumentParser(description="Score JUDO best-practice patterns")
     parser.add_argument(
         "--domain", choices=DOMAINS,
         help="Filter by domain (model, backend, frontend)"
     )
     parser.add_argument(
         "--update", action="store_true",
-        help="Recalculate and write scores back to blueprint files"
+        help="Recalculate and write scores back to best-practice files"
     )
     parser.add_argument(
         "--top", type=int, default=None,
@@ -294,38 +294,38 @@ def main():
     )
     parser.add_argument(
         "--base-dir", default=os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd()),
-        help="Base directory of the judo-blueprint project"
+        help="Base directory of the project"
     )
 
     args = parser.parse_args()
 
     domains = [args.domain] if args.domain else None
-    blueprints = scan_blueprints(args.base_dir, domains)
+    best_practices = scan_best_practices(args.base_dir, domains)
 
-    if not blueprints:
-        print("No blueprint files found. Run the blueprint collector agents first.")
+    if not best_practices:
+        print("No best-practice files found. Run the best-practice collector agents first.")
         sys.exit(0)
 
     # Recalculate scores
-    for bp in blueprints:
+    for bp in best_practices:
         bp["score"] = calculate_score(bp)
 
     # Update files if requested
     if args.update:
         updated = 0
-        for bp in blueprints:
+        for bp in best_practices:
             filepath = bp["_filepath"]
             body = bp["_body"]
             new_score = bp["score"]
             update_frontmatter(filepath, bp, body, new_score)
             updated += 1
-        print(f"Updated scores in {updated} blueprint files.")
+        print(f"Updated scores in {updated} best-practice files.")
 
     # Print results
     if args.summary:
-        print_summary(blueprints)
+        print_summary(best_practices)
     else:
-        print_table(blueprints, top_n=args.top, category_filter=args.category)
+        print_table(best_practices, top_n=args.top, category_filter=args.category)
 
 
 if __name__ == "__main__":
