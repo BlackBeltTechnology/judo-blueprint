@@ -30,4 +30,3 @@
 | 23  | **skillmatrix-model**        | git@github.com:BlackBeltTechnology/skillmatrix-model.git | 2021-01-06 | 2021-09-07 | 81 |
 | 24  | **skillmatrix-frontend**     | git@github.com:BlackBeltTechnology/skillmatrix-frontend.git | 2021-01-06 | 2021-09-08 | 23 |
 | 25  | **kozut-eugyfel-model-test** | git@github.com:BlackBeltTechnology/kozut-eugyfel-model-test.git | 2020-10-14 | 2020-12-09 | 21 |
-| 26  | **kuzut-test-eugyfel-model** | git@github.com:BlackBeltTechnology/kuzut-test-eugyfel-model.git | 2020-10-13 | 2020-10-13 | 5 |

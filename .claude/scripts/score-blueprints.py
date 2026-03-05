@@ -37,7 +37,6 @@ PROJECT_ORDER = {
     "viterra_demo": 9,
     "kozut-eugyfel-client": 10,
     "bhs-global-operation": 11,
-    "kuzut-test-eugyfel-model": 12,
     "mjsz": 13,
     "judo-demo-miniworkflow": 14,
     "ubives": 15,

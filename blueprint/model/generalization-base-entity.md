@@ -4,14 +4,13 @@ title: "Generalization Base Entity for Shared Infrastructure"
 domain: "model"
 category: "entity"
 score: 144.9
-usage_count: 9
+usage_count: 8
 alternative_count: 1
 first_seen: "2026-03-04"
 last_updated: "2026-03-04"
 projects:
   - rackinspect
   - mlszksz-platform
-  - kuzut-test-eugyfel-model
   - ams-model
   - indamedia-adtrack
   - InterfaceRegister
@@ -40,9 +39,6 @@ A base entity provides shared attributes and relations (timestamps, document man
 
 ### MLSZKSZPlatform
 `Post` abstract base entity (attributes: `title`, `description`, `status: PostStatus`, `createdAt: Timestamp`) is extended by 4 concrete entities: `News` (no additional attributes), `Offer` (`validFrom`, `validUntil` date range), `Request` (`deadline` date), `Announcement` (`isSensitive`, `isStrategic` boolean flags, `documents` relation). All subtypes share the common `publish`/`delete` operations and PostStatus lifecycle. The abstract base enables polymorphic feed queries via FeedEntry.post [0..1] -> Post.
-
-### KuzutTestEugyfelModel
-`Bejelentes` (abstract) defines 6 shared attributes (`idopont`, `targy`, `szoveg`, `allapot`, `helyszin`, `bejelentoNeve`) and 1 composition (`kepek -> Kep [0..*]`). Extended by `JarokeloBejelentes` (concrete) which adds `jarokeloAzonosito` (business identifier) and `url`, plus a `szinkronizal` static operation. Access point grants polymorphic access to abstract `Bejelentes` for update/delete.
 
 ### AMS-Model
 `Request` (abstract) defines 12 shared attributes (`applicationName`, `userName`, `userEmail`, `responsibleName`, `roles`, `status`, `loginName`, `effectiveDate`, `isPending`, `creationTime`, `decisionTime`, `type`) and 2 relations (`application [1..1]`, `user [1..1]`), plus 3 operations (`approve`, `reject`, `reset`). Extended by `ConfirmationRequest` (adds `approver [1..1]` relation and derived `campaignStatus`) and `AccessRequest` (adds `issuer [1..1]` relation). The abstract base holds all common request workflow infrastructure.

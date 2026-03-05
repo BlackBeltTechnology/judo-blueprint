@@ -4,7 +4,7 @@ title: "Composition Ownership for Lifecycle-Bound Children"
 domain: "model"
 category: "relation"
 score: 328.1
-usage_count: 22
+usage_count: 21
 alternative_count: 0
 first_seen: "2026-03-04"
 last_updated: "2026-03-04"
@@ -19,7 +19,6 @@ projects:
   - mlszksz-platform
   - viterra_demo
   - kozut-eugyfel-client
-  - kuzut-test-eugyfel-model
   - mjsz
   - judo-demo-miniworkflow
   - ams-model
@@ -74,9 +73,6 @@ Single composition: `Report.stocks -> Stock [0..*]` (stocks are lifecycle-bound 
 
 ### KozutEugyfelClient
 `Bejelentes.kepek -> Kep` (images are lifecycle-bound to the complaint report via composition). Events (`esemenyek`) and participants (`resztvevok`) use two-way association since they may be referenced independently. Notifications (`Ertesites`) are composed within events, navigating back via `self!container(Esemeny)`.
-
-### KuzutTestEugyfelModel
-Single composition: `Bejelentes.kepek -> Kep [0..*]` with `relationKind="COMPOSITION"` and `reverseCascadeDelete="false"`. Images are owned by the notification report. All access grants use `targetDefinedCRUD="false"`, giving the access point full control over CRUD. This minimal model with exactly 1 composition and 0 associations.
 
 ### MJSZ
 4 compositions for lifecycle-bound children: `Player.licenses -> License`, `Player.transfers -> Transfer`, `Tournament.matches -> Match`, `Club.teams -> Team`. All other relations use two-way ASSOCIATION (Player<->Club, Player<->Team, Season<->Tournament, Match<->Team). Container navigation used: `Team.name = self!container(Club).name`, `Match.season = self!container(Tournament).season.year`.

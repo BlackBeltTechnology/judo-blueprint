@@ -15,7 +15,6 @@
 | 9 | viterra_demo | done | done | skipped | - | done |
 | 10 | kozut-eugyfel-client | done | skipped | done | - | done |
 | 11 | bhs-global-operation | done | done | skipped | - | done |
-| 12 | kuzut-test-eugyfel-model | done | skipped | skipped | - | done |
 | 13 | mjsz | done | done | skipped | - | done |
 | 14 | judo-demo-miniworkflow | done | done | skipped | - | done |
 | 15 | ubives | skipped | done | skipped | - | done |

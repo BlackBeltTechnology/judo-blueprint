@@ -4,7 +4,7 @@ title: "Collection Relations Always Use 0 Lower Bound"
 domain: "model"
 category: "relation"
 score: 345.4
-usage_count: 23
+usage_count: 22
 alternative_count: 0
 first_seen: "2026-03-04"
 last_updated: "2026-03-04"
@@ -19,7 +19,6 @@ projects:
   - mlszksz-platform
   - viterra_demo
   - kozut-eugyfel-client
-  - kuzut-test-eugyfel-model
   - mjsz
   - judo-demo-miniworkflow
   - ams-model
@@ -75,9 +74,6 @@ All collection relations use `0..*`: `Period.reports [0..*]`, `Client.reports [0
 
 ### KozutEugyfelClient
 All collection relations use `0..*`: `Bejelentes.kepek` (images, composition), `Bejelentes.resztvevok` (participants, two-way), `Bejelentes.esemenyek` (events, two-way). The research explicitly confirms these collections follow the standard 0 lower bound pattern.
-
-### KuzutTestEugyfelModel
-Single collection relation `Bejelentes.kepek -> Kep` confirmed with `lower="0" upper="-1"` in the XMI source. All access grants also use `lower="0" upper="-1"`. This minimal model with just one collection relation still follows the universal zero lower bound convention.
 
 ### MJSZ
 All 11 collection relations use `0..*`: `Player.licenses`, `Player.teams`, `Player.transfers`, `Season.tournaments`, `Tournament.teams`, `Tournament.matches`, `Club.players`, `Club.teams`, `Team.players`, `Team.homeMatches`, `Team.visitorMatches`. No `1..*` cardinality despite teams logically needing players.

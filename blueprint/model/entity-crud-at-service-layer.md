@@ -4,7 +4,7 @@ title: "CRUD Permissions Controlled at Service Layer"
 domain: "model"
 category: "access"
 score: 290.0
-usage_count: 19
+usage_count: 18
 alternative_count: 0
 first_seen: "2026-03-04"
 last_updated: "2026-03-04"
@@ -16,7 +16,6 @@ projects:
   - alba
   - skillmatrix-model
   - viterra_demo
-  - kuzut-test-eugyfel-model
   - mjsz
   - judo-demo-miniworkflow
   - ams-model
@@ -62,9 +61,6 @@ Model source confirms 140 occurrences of `createable="false"` across all entity 
 
 ### Viterra Demo
 All 7 entities have `createable=false, updateable=false, deleteable=false`. Admin access grants C+U (no delete) on all 5 access points (periods, silos, clients, commodities, reports). Partner access is read-only at the access level, but `PartnerOpenReportTransfer.stocks` overrides to `updateable=true` and `ReportTransfer.stocks` overrides to full CRUD at the relation level. No entity has delete permission -- soft delete via active flags is used instead.
-
-### KuzutTestEugyfelModel
-All 3 entities (`Bejelentes`, `JarokeloBejelentes`, `Kep`) have `createable="false" updateable="false" deleteable="false"` at entity level. The `demo_user` access point overrides: `Bejelentes` gets U+D (no create since abstract), `JarokeloBejelentes` gets full C+U+D, `Kep` gets full C+U+D. All accesses use `targetDefinedCRUD="false"`, giving the access point full control.
 
 ### MJSZ
 All 10 entities have CRUD flags at entity level (Player has full CRUD, License is read-only). The `Munkatars` actor grants full CRUD on all 6 access points (season, tournament, player, club, match, transfer) with `accessType="ALL"` and `targetDefinedCRUD="false"`. All access collections use `[0..*]` cardinality with unlimited upper bound.
