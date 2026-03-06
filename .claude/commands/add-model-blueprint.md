@@ -39,7 +39,12 @@ Create the following tasks before starting work:
    - `description`: "Launch the model blueprint analyzer agent with focused instructions to find, query, and document the described structural fragment with detection queries and creation mutations."
    - `activeForm`: "Collecting model blueprint"
 
-4. **Task: Cleanup and report**
+4. **Task: Validate blueprint mutations**
+   - `subject`: "Validate blueprint mutations"
+   - `description`: "Run test-blueprint-mutations.py --blueprint <id> to validate the new blueprint's mutations against Sandbox."
+   - `activeForm`: "Validating mutations"
+
+5. **Task: Cleanup and report**
    - `subject`: "Cleanup and report"
    - `description`: "Remove cloned repo, display summary of blueprint collected including mutations generated."
    - `activeForm`: "Cleaning up"
@@ -185,16 +190,27 @@ The mutations should use `{{PLACEHOLDER}}` template variables for namespace and 
 
 Wait for the agent to complete using TaskOutput with `block: true`.
 
-### Step 4: Cleanup and Report
+### Step 4: Validate Blueprint Mutations
 
-#### 4a. Cleanup
+After the agent finishes, validate the newly created/updated blueprint's mutations against the Sandbox model:
+
+```bash
+$CLAUDE_PROJECT_DIR/tests/test-blueprint-mutations.sh --blueprint <new-blueprint-id>
+```
+
+- If the test **passes**: proceed to cleanup
+- If the test **fails**: report the errors to the user with the specific mutation failures. Suggest fixes based on common issues (unquoted enum values, missing binding fields, wrong creation order). Do NOT auto-fix — the agent or user should fix the blueprint mutations.
+
+### Step 5: Cleanup and Report
+
+#### 5a. Cleanup
 
 Remove the cloned project:
 ```bash
 rm -rf /tmp/judo-projects/{repo}/
 ```
 
-#### 4b. Report
+#### 5b. Report
 
 Display a summary to the user:
 - Fragment description

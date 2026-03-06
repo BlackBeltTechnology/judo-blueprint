@@ -1,13 +1,13 @@
 ---
-id: environment-enum
+id: "environment-enum"
 title: "Environment Enum (DEV/TEST/PROD Deployment Stages)"
+score: 36.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - InterfaceRegister
 ---
-
 ## Description
 
 An enumeration representing deployment environment stages, typically with three members: DEV (development), TEST (testing/staging), and PROD (production). This is a standard software lifecycle classification used to categorize application instances, server deployments, or configuration sets by their target environment. The enum enables filtering and grouping resources by environment in enterprise architecture and operations management contexts.

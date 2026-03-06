@@ -114,33 +114,55 @@ Key signals the agents look for:
 
 ### Scoring
 
-Each pattern gets a weighted score:
+Both best practices and model blueprints use the same scoring system, normalized to **0–100**. The final score is a weighted combination of three independent components:
 
 ```
-score = (usage_count × 10) + recency_bonus − alternative_penalty
+score = 60% × project_weight + 20% × usage + 20% × recency
 ```
 
-- **Recency bonus** — newer projects contribute more weight
-- **Alternative penalty** — patterns with many alternatives score lower (−2 per alternative)
+Each component is independently normalized to 0–100 before combining:
+
+| Component | Weight | What it measures | Normalized how |
+|-----------|--------|------------------|----------------|
+| **Project weight** | **60%** | Average `Weight` from `PROJECTS.md` across the pattern's projects | `-10` → 0, `0` → 50, `+10` → 100 |
+| **Usage** | 20% | How many projects use this pattern (minus alternative penalty for best-practices) | Min-max across all items |
+| **Recency** | 20% | Average age rank of the pattern's projects (newer = higher) | Min-max across all items |
+
+Project weight is the **dominant factor** — it determines the score range, while usage and recency fine-tune within that range.
 
 Run scoring standalone:
 
 ```bash
+# Best practices
 python3 .claude/scripts/score-best-practices.py --top 30     # Top 30 patterns
 python3 .claude/scripts/score-best-practices.py --summary     # Full summary
-python3 .claude/scripts/score-best-practices.py --update       # Recalculate all scores
+python3 .claude/scripts/score-best-practices.py --update      # Recalculate & write scores to files
+
+# Model blueprints
+python3 .claude/scripts/score-model-blueprints.py --top 20   # Top 20 blueprints
+python3 .claude/scripts/score-model-blueprints.py --summary   # Full summary
+python3 .claude/scripts/score-model-blueprints.py --update    # Recalculate & write scores to files
 ```
 
-### Blueprint Ranking
+### Project Weights
 
-Model blueprints track `usage_count` (how many projects contain the fragment) instead of weighted scores. Rank them by reusability:
+The `Weight [-10;+10]` column in `PROJECTS.md` lets you flag projects as important or unimportant. Weights control **60% of the final score**, so they always have more impact than how many projects use a pattern or how recent those projects are.
 
-```bash
-python3 .claude/scripts/rank-model-blueprints.py              # All blueprints ranked by usage
-python3 .claude/scripts/rank-model-blueprints.py --top 10     # Top 10 most reusable
-python3 .claude/scripts/rank-model-blueprints.py --min-uses 3 # Only fragments in 3+ projects
-python3 .claude/scripts/rank-model-blueprints.py --summary    # Distribution statistics
+| Weight | Score contribution (60% component) | Typical effect |
+|--------|-------------------------------------|----------------|
+| `-10` | 0 / 100 | Patterns from this project score near bottom |
+| `-5` | 25 / 100 | Significant penalty |
+| `0` | 50 / 100 | Neutral (default) — usage and recency decide the rest |
+| `+5` | 75 / 100 | Significant boost |
+| `+10` | 100 / 100 | Patterns from this project score near top |
+
+When a pattern appears in multiple projects, the **average weight** across its projects is used. To set a weight, edit the last column of the project's row in `PROJECTS.md`:
+
+```markdown
+| 1   | **mlszksz-platform** | git@... | 2026-01-07 | 2026-02-24 | 104 | 5 |
 ```
+
+Then re-run the scoring scripts with `--update` to apply.
 
 ## Commands & Scripts Reference
 
@@ -157,11 +179,40 @@ python3 .claude/scripts/rank-model-blueprints.py --summary    # Distribution sta
 
 | Script | Description |
 |--------|-------------|
-| `score-best-practices.py` | Rank best practices by weighted score (usage + recency − alternatives) |
+| `query-catalog.py` | **Unified catalog query** — list all items (names + scores) or get full content by ID |
+| `score-best-practices.py` | Score best practices (0–100, usage + recency − alternatives × weight) |
+| `score-model-blueprints.py` | Score model blueprints (0–100, usage + recency × weight) |
 | `rank-model-blueprints.py` | Rank model blueprints by usage count across projects |
 | `check-project-versions.sh` | Compare remote HEAD SHAs against last-analyzed versions in PROGRESS.md |
 
 All scripts live in `.claude/scripts/` and accept `--help` for full usage.
+
+### Querying the Catalog
+
+The `query-catalog.py` script provides a lightweight way to browse and selectively read catalog entries. Agents use this to avoid loading all 298 files — they list names first, then fetch only what's relevant.
+
+```bash
+# List everything (compact: id + title + score)
+python3 .claude/scripts/query-catalog.py list
+
+# Filter by type
+python3 .claude/scripts/query-catalog.py list --type blueprint       # Only model blueprints
+python3 .claude/scripts/query-catalog.py list --type best-practice   # Only best practices
+
+# Filter by domain
+python3 .claude/scripts/query-catalog.py list --domain model         # Model best-practices
+python3 .claude/scripts/query-catalog.py list --domain backend       # Backend best-practices
+python3 .claude/scripts/query-catalog.py list --domain frontend      # Frontend best-practices
+
+# Filter by category
+python3 .claude/scripts/query-catalog.py list --category entity
+
+# Get full content of specific items (by ID)
+python3 .claude/scripts/query-catalog.py get audit-log-entity
+python3 .claude/scripts/query-catalog.py get collection-lower-bound-zero enum-state-machine
+```
+
+Agents follow a **list-then-get** workflow: run `list` to see all names and scores, survey the project, then `get` only the IDs that match patterns found in the project. This keeps context usage minimal while still allowing agents to update existing entries directly.
 
 ## Design Decisions
 

@@ -3,11 +3,11 @@ id: "transient-relation-parameter"
 title: "Transient Relation for Operation Parameters"
 domain: "model"
 category: "relation"
-score: 45.8
+score: 41.9
 usage_count: 4
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - itracker

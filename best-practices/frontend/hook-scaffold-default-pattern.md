@@ -3,11 +3,11 @@ id: "hook-scaffold-default-pattern"
 title: "Hook Scaffold .ts.default Convention"
 domain: "frontend"
 category: "hook"
-score: 70.4
+score: 52.4
 usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

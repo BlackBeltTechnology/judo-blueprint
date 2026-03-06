@@ -3,11 +3,11 @@ id: "complete-frontend-replacement"
 title: "Complete Frontend Replacement with Custom SPA"
 domain: "frontend"
 category: "page"
-score: 20.3
+score: 37.8
 usage_count: 2
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - actiongroup-test-react

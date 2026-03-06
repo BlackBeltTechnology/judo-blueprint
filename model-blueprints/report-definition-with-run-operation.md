@@ -1,13 +1,13 @@
 ---
-id: report-definition-with-run-operation
+id: "report-definition-with-run-operation"
 title: "Report Definition Entity with Run Operation and Result Export"
+score: 30.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - skillmatrix-model
 ---
-
 ## Description
 
 A report definition entity that captures report parameters (selected entities, filters) and produces report results via a `run` instance operation. The pattern consists of:
@@ -35,7 +35,7 @@ Look for entities named Definition or Report with a `run` operation and COMPOSIT
 
 ## Creation Mutations
 
-### Report Definition entity
+### Report package and entities
 
 ```graphql
 mutation { create(input: { package: {
@@ -51,6 +51,15 @@ mutation { create(input: { entityType: {
 ```
 
 ```graphql
+mutation { create(input: { entityType: {
+  container: "{{ROOT_NAMESPACE}}::report", name: "Result",
+  createable: false, updateable: false, deleteable: false
+} }) { success fqn } }
+```
+
+### Report Definition members
+
+```graphql
 mutation { create(input: { dataMember: {
   container: "{{ROOT_NAMESPACE}}::report::Definition", name: "name"
 } }) { success fqn } }
@@ -60,25 +69,18 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{ROOT_NAMESPACE}}::report::Definition", name: "results",
   target: "{{ROOT_NAMESPACE}}::report::Result", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{ROOT_NAMESPACE}}::report::Definition", name: "run",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{ROOT_NAMESPACE}}::report::Definition.run"
 } }) { success fqn } }
 ```
 
-### Report Result entity
-
-```graphql
-mutation { create(input: { entityType: {
-  container: "{{ROOT_NAMESPACE}}::report", name: "Result",
-  createable: false, updateable: false, deleteable: false
-} }) { success fqn } }
-```
+### Report Result members
 
 ```graphql
 mutation { create(input: { dataMember: {
@@ -95,7 +97,8 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{ROOT_NAMESPACE}}::report::Result", name: "createExcel",
-  operationType: INSTANCE, customImplementation: true
+  operationType: "INSTANCE", customImplementation: true,
+  binding: "{{ROOT_NAMESPACE}}::report::Result.createExcel"
 } }) { success fqn } }
 ```
 

@@ -3,21 +3,18 @@ id: "actor-context-variable-lookup"
 title: "Actor Context Variable Lookup Pattern"
 domain: "model"
 category: "access"
-score: 150.8
-usage_count: 10
+score: 44.0
+usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - itracker
-  - skillmatrix-frontend
   - alba
   - viterra_demo
-  - kozut-eugyfel-client
   - judo-demo-miniworkflow
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
 ---
 ## Description

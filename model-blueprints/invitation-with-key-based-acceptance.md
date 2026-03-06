@@ -1,13 +1,13 @@
 ---
-id: invitation-with-key-based-acceptance
+id: "invitation-with-key-based-acceptance"
 title: "Invitation Entity with Key-Based Acceptance Flow"
+score: 44.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - ubives
 ---
-
 ## Description
 
 An Invitation entity that implements an invitation workflow using cryptographic keys (public/private key pair) rather than simple verification tokens. The invitation carries:
@@ -125,14 +125,14 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::InvitationEntity", name: "acceptInvitation",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::InvitationEntity.acceptInvitation"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::InvitationEntity", name: "cancelInvitation",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::InvitationEntity.cancelInvitation"
 } }) { success fqn } }
 ```
 

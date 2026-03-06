@@ -3,11 +3,11 @@ id: "interceptor-global-logging"
 title: "Global Operation Logging Interceptor"
 domain: "backend"
 category: "interceptor"
-score: 150.8
+score: 58.0
 usage_count: 10
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

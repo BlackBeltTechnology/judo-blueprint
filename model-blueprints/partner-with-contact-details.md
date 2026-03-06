@@ -1,13 +1,13 @@
 ---
-id: partner-with-contact-details
+id: "partner-with-contact-details"
 title: "Partner/Customer Entity with Contact Details Cluster"
+score: 73.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - rackinspect
 ---
-
 ## Description
 
 A Partner (or Customer) entity representing an external business entity with comprehensive contact information. The partner composes multiple sub-entities for multi-valued contact data: addresses (0..*), bankAccounts (0..*), emailAddresses (0..*), phoneNumbers (0..*). Special "primary" associations point to the preferred instance of each contact type (primaryBankAccount, primaryContactEmail, primaryPhoneNumber, headquarters, billingAddress, postalAddress). The partner also carries business attributes: name, vatId, vatIdEu, active flag, logo, notes, SAP codes, and associations to payment method, payment deadline, currency, and language. A validate operation performs business rule checks. Ratings (0..*) are composed for vendor evaluation.
@@ -66,7 +66,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "addresses",
   target: "{{NAMESPACE}}::Address", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -74,7 +74,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "bankAccounts",
   target: "{{NAMESPACE}}::BankAccount", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -82,7 +82,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "emailAddresses",
   target: "{{NAMESPACE}}::EmailAddress", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -90,7 +90,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "phoneNumbers",
   target: "{{NAMESPACE}}::PhoneNumber", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -98,7 +98,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "headquarters",
   target: "{{NAMESPACE}}::Address", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -106,7 +106,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "billingAddress",
   target: "{{NAMESPACE}}::Address", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -114,7 +114,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "primaryBankAccount",
   target: "{{NAMESPACE}}::BankAccount", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -122,7 +122,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "primaryContactEmail",
   target: "{{NAMESPACE}}::EmailAddress", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -130,21 +130,21 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "primaryPhoneNumber",
   target: "{{NAMESPACE}}::PhoneNumber", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Partner", name: "toggleActive",
-  customImplementation: true, operationType: INSTANCE
+  customImplementation: true, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Partner"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Partner", name: "validate",
-  customImplementation: true, operationType: INSTANCE
+  customImplementation: true, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Partner"
 } }) { success fqn } }
 ```
 

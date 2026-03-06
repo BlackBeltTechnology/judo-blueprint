@@ -3,11 +3,11 @@ id: "dao-fluent-query-filter"
 title: "Fluent DAO Query with Type-Safe Filters"
 domain: "backend"
 category: "data-access"
-score: 152.7
+score: 62.1
 usage_count: 10
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

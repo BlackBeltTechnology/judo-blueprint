@@ -3,11 +3,11 @@ id: "handlebars-generator-template-override"
 title: "Handlebars Generator Template Override for Cross-Cutting Frontend Logic"
 domain: "frontend"
 category: "build"
-score: 18.8
+score: 43.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - workflow-poc
 ---

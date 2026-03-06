@@ -3,11 +3,11 @@ id: "generated-service-layer-reuse"
 title: "Reusing Generated TypeScript Service Layer in Custom UI"
 domain: "frontend"
 category: "mapping"
-score: 22.3
+score: 38.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - actiongroup-test-react

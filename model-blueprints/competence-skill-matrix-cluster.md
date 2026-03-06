@@ -1,13 +1,13 @@
 ---
-id: competence-skill-matrix-cluster
+id: "competence-skill-matrix-cluster"
 title: "Competence/Skill Matrix Entity Cluster with Levels and Approval"
+score: 30.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - skillmatrix-model
 ---
-
 ## Description
 
 An entity cluster for managing employee competences and skill assessments. The core pattern consists of:
@@ -103,7 +103,7 @@ mutation { create(input: { entityType: {
 mutation { create(input: { twoWayRelationMember: {
   container: "{{NAMESPACE}}::Skill", name: "competence",
   target: "{{NAMESPACE}}::Competence", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -111,7 +111,7 @@ mutation { create(input: { twoWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Skill", name: "approvedLevel",
   target: "{{NAMESPACE}}::SkillLevel", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -119,7 +119,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Skill", name: "requestedLevel",
   target: "{{NAMESPACE}}::SkillLevel", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -127,14 +127,14 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { twoWayRelationMember: {
   container: "{{NAMESPACE}}::Skill", name: "user",
   target: "{{NAMESPACE}}::User", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Skill", name: "approve",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "INSTANCE"
 } }) { success fqn } }
 ```
 
@@ -163,7 +163,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::SkillTarget", name: "skillLevel",
   target: "{{NAMESPACE}}::SkillLevel", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -171,7 +171,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { twoWayRelationMember: {
   container: "{{NAMESPACE}}::SkillTarget", name: "competence",
   target: "{{NAMESPACE}}::Competence", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

@@ -3,11 +3,11 @@ id: "derived-state-from-history"
 title: "Derived State from History Trail"
 domain: "model"
 category: "entity"
-score: 13.4
+score: 16.2
 usage_count: 1
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - judo-demo-miniworkflow
 alternatives:

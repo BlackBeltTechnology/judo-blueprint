@@ -3,11 +3,11 @@ id: "facade-service-pattern"
 title: "Facade Service Pattern for Domain Operations"
 domain: "backend"
 category: "service"
-score: 47.3
+score: 64.6
 usage_count: 3
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - mlszksz-platform
   - park-here

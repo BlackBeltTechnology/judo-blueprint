@@ -3,11 +3,11 @@ id: "infinity-create-mode"
 title: "Infinity Create Mode with Template Copying"
 domain: "frontend"
 category: "form"
-score: 10.8
+score: 73.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
 ---

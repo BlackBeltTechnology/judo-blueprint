@@ -3,11 +3,11 @@ id: "toggle-operation-pattern"
 title: "Toggle Operation for Boolean Flag Mutation"
 domain: "model"
 category: "operation"
-score: 23.8
+score: 72.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - mlszksz-platform

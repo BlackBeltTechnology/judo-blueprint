@@ -3,26 +3,22 @@ id: "actor-based-transfer-projection"
 title: "Actor-Based Transfer Object Projection"
 domain: "model"
 category: "transfer"
-score: 204.2
-usage_count: 14
+score: 42.8
+usage_count: 10
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - itracker
-  - skillmatrix-frontend
   - alba
   - skillmatrix-model
   - viterra_demo
-  - kozut-eugyfel-client
   - mjsz
   - judo-demo-miniworkflow
   - ams-model
   - sanctuary-backend
-  - kozut-eugyfel-model-test
   - reserve-app
-  - ams-frontend
 alternatives:
   - service-based-transfer-organization
 ---

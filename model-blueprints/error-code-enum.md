@@ -1,6 +1,7 @@
 ---
-id: error-code-enum
+id: "error-code-enum"
 title: "Error Code Enumeration with Business Error Transfer Object"
+score: 55.5
 usage_count: 5
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -11,7 +12,6 @@ projects:
   - workflow-poc
   - trivia
 ---
-
 ## Description
 
 An ErrorCode enumeration that catalogs all domain-specific error conditions the system can produce. Members follow the pattern `ENTITY_NOT_FOUND`, `PERMISSION_DENIED`, `CONNECTION_FAILED`, `PLATFORM_NOT_SUPPORTED`, etc. -- each representing a specific failure scenario. A companion BusinessError or DeclarationError unmapped transfer object carries an `errorCode` (or `code`) attribute (typed to the enum) and a `message` string for human-readable details. Custom operations raise these structured errors instead of generic exceptions, allowing the frontend to provide targeted error messages and the backend to maintain a centralized error vocabulary.

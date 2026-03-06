@@ -1,6 +1,7 @@
 ---
-id: user-with-boolean-role-flags
+id: "user-with-boolean-role-flags"
 title: "User Entity with Boolean Role Flags (Instead of Role Enum/Entity)"
+score: 34.7
 usage_count: 2
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -8,7 +9,6 @@ projects:
   - InterfaceRegister
   - skillmatrix-model
 ---
-
 ## Description
 
 A User entity that represents application users with individual boolean attributes for each role/permission level, rather than using a Role enum, a Role entity association, or a single role attribute. Each boolean flag indicates whether the user has access to a specific functional area: isAdmin, isEnterpriseArchitect, isDeveloper, isOperator, etc. All boolean flags are required, ensuring an explicit yes/no decision for each role at user creation time.

@@ -3,11 +3,11 @@ id: "custom-operation-osgi-component"
 title: "Custom Operation OSGi Component Registration"
 domain: "backend"
 category: "di"
-score: 210.8
+score: 59.8
 usage_count: 14
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

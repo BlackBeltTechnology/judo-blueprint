@@ -1,7 +1,8 @@
 ---
-id: initializer-entity-with-init-operation
+id: "initializer-entity-with-init-operation"
 title: "Initializer Entity with Static Init Operation"
-usage_count: 14
+score: 61.2
+usage_count: 13
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
@@ -18,9 +19,7 @@ projects:
   - mjsz
   - doors-model
   - ams-model
-  - kozut-eugyfel-model-test
 ---
-
 ## Description
 
 A minimal Initializer entity with a marker attribute and a single static operation `init` with custom implementation. This entity serves as the entry point for data seeding: the init operation is called on application startup (or first deployment) to populate reference data such as cities, postal codes, capabilities, initial admin users, and the singleton Configuration instance. The entity is typically non-CRUD. Some variants use a `createdAt` timestamp as the marker, others use an `initialized` boolean flag, an `executedInitialization` integer counter for multi-step migrations, and some have no attributes at all (bare Initializer with only the init operation). Some variants split initialization into multiple named static operations (e.g., initAdminUser, initDefaultIdm) rather than a single init. In workflow-oriented projects, the initializer may be named "Application" instead of "Initializer" but follows the same pattern. In small demo projects, the init operation may live directly on a domain entity (e.g., User.initUsers, User.init) rather than a separate Initializer entity. Some variants add additional utility operations (generate, approveAll) alongside the init operation for batch data management. The init operation body can be defined in model script (model-defined behavior) or delegated to custom Java implementation. Some variants split reference data seeding into multiple domain-specific init operations (e.g., initUsers, initVendors, initBrands, initBusinessDataTypes) each marked as an initializer with stateful behavior. Advanced variants use a counter-based migration pattern where the `executedInitialization` integer tracks which migration steps have been completed, enabling incremental data migrations across deployments.
@@ -71,7 +70,7 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Initializer", name: "init",
-  customImplementation: true, operationType: STATIC
+  customImplementation: true, operationType: "STATIC", binding: "{{NAMESPACE}}::Initializer"
 } }) { success fqn } }
 ```
 
@@ -196,17 +195,3 @@ mutation { create(input: { operation: {
 - The `approveAll` INSTANCE operation iterates over all pending approvals and calls approve() on each, enabling bulk approval
 - This is the most detailed inline init example: rather than creating simple seed data, it creates a complete access management scenario with users, applications, campaigns, and confirmation requests across multiple IT systems
 - Unlike most other init operations, this variant includes extensive Hungarian-language role descriptions (e.g., "USZI - Analog, ISDN2 IN LTO", "Mindentlatok csoportja") reflecting a real enterprise access management use case
-
-### kozut-eugyfel-model-test
-- **Entity**: `e_ugyfelszolgalat::Inicializalo` (non-CRUD: createable=false, updateable=false, deleteable=false)
-  - Attributes: none -- bare entity with no attributes
-  - Operations: init (STATIC, customImplementation=false, initializer=true, stateful=true)
-- Named "Inicializalo" (Hungarian for "Initializer") rather than the English "Initializer" or "Application"
-- The init operation has a comprehensive model-defined script body that seeds the complete customer service test dataset:
-  - 2 UgyfelszolgalatiMunkatars (customer service worker) entries with county/org unit assignments
-  - 2 SzervezetiEgysegVezeto (organizational unit leader) entries
-  - 2 SzervezetiEgysegMunkatars (organizational unit worker) entries
-  - 2 BejelentesTipus (report type) entries (JAROKELO and ALTALANOS) with assigned responsible workers
-  - Triggers JarokeloBejelentes.szinkronizal() for external system synchronization
-- Seeds users across two counties (PEST, VESZPREM) and two organizational units (UFO, FFO), creating a multi-region, multi-unit test scenario
-- This variant creates actor-typed entities (users with actorType references) as seed data, establishing the organizational hierarchy for testing the ticket management workflow

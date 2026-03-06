@@ -1,13 +1,13 @@
 ---
-id: entity-change-history-snapshot
+id: "entity-change-history-snapshot"
 title: "Entity Change History Snapshot"
+score: 57.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - indamedia-adtrack
 ---
-
 ## Description
 
 A companion History entity that stores snapshots of a parent entity's key attributes each time significant changes occur. The history entity duplicates the parent's important fields (name, budget amounts, date ranges, etc.) and adds a `changed` timestamp recording when the snapshot was taken. The parent entity holds a 0..* association to its history records, creating a chronological audit trail of how the entity's attributes evolved over time. This is different from the simple History (whoDid/whatDid/whenDid) pattern in that it captures full attribute snapshots rather than textual descriptions of actions.
@@ -26,6 +26,12 @@ This pattern is useful for entities where configuration changes need to be track
 ```
 
 ## Creation Mutations
+
+```graphql
+mutation { create(input: { entityType: {
+  container: "{{NAMESPACE}}", name: "{{PARENT_ENTITY}}"
+} }) { success fqn } }
+```
 
 ```graphql
 mutation { create(input: { entityType: {
@@ -50,7 +56,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}History", name: "{{PARENT_RELATION}}",
   target: "{{NAMESPACE}}::{{PARENT_ENTITY}}", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -58,7 +64,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}", name: "history",
   target: "{{NAMESPACE}}::{{PARENT_ENTITY}}History", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

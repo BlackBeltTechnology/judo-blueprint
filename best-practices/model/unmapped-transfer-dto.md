@@ -3,26 +3,23 @@ id: "unmapped-transfer-dto"
 title: "Unmapped Transfer Object (DTO) Pattern"
 domain: "model"
 category: "transfer"
-score: 217.3
-usage_count: 15
+score: 55.4
+usage_count: 12
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
   - itracker
-  - skillmatrix-frontend
   - actiongroup-test-react
   - alba
   - skillmatrix-model
-  - kozut-eugyfel-client
   - judo-demo-miniworkflow
   - park-here
   - indamedia-adtrack
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
 ---
 ## Description

@@ -24,7 +24,6 @@
 | 19 | indamedia-adtrack | done | done | skipped | - | done |
 | 20 | InterfaceRegister | done | done | skipped | - | done |
 | 21 | judo-partner | done | done | skipped | - | done |
-| 22 | kozut-eugyfel-model-test | done | skipped | done | - | done |
 | 23 | workflow-poc | done | done | done | - | done |
 | 24 | reserve-app | done | done | done | - | done |
 | 25 | doors-model | skipped | done | done | - | done |

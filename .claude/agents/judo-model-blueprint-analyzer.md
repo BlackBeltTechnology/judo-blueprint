@@ -187,6 +187,12 @@ Look for these kinds of structural fragments:
 
 ### Phase 4: Write/Update Model Blueprint Files
 
+**IMPORTANT:** Before writing mutations, review the conventions in `model-blueprints/CONVENTIONS.md`. Key rules:
+- Enum-like values (`relationKind`, `operationType`, `memberType`) must be **quoted strings** (e.g., `"ASSOCIATION"` not `ASSOCIATION`)
+- `operation` mutations require a `binding` field
+- Entities must be created before their children (dependency order)
+- Only use supported create input types: `entityType`, `dataMember`, `oneWayRelationMember`, `twoWayRelationMember`, `enumerationType`, `enumerationMember`, `transferObjectType`, `generalization`, `mapping`, `operation`, `parameter`, `package`
+
 For each fragment identified:
 
 **If existing blueprint matches:**
@@ -203,6 +209,43 @@ For each fragment identified:
 3. Add the source project to `projects` list
 4. Fill in description, detection query, creation mutations, and first example
 5. Write the new blueprint
+
+### Phase 5: Validate Mutations
+
+After writing or updating a blueprint file, **validate its mutations** against the Sandbox model before considering it done.
+
+1. **Copy the Sandbox model** to a temp location:
+   ```bash
+   cp $CLAUDE_PROJECT_DIR/tests/fixtures/Sandbox.model /tmp/bp-validate-temp.model
+   ```
+
+2. **For each mutation in the blueprint**, substitute placeholders and run via CLI:
+   ```bash
+   java -jar $CLAUDE_PROJECT_DIR/.claude/judo-cli.jar -m /tmp/bp-validate-temp.model -q graphql '<substituted-mutation>'
+   ```
+
+3. **Check for `"success" : true`** in the output. If a mutation fails:
+   - **Common fix: quote enum values** — change `relationKind: ASSOCIATION` to `relationKind: "ASSOCIATION"`
+   - **Common fix: add missing fields** — `operation` needs `binding`
+   - **Common fix: reorder mutations** — ensure containers exist before members
+   - Fix the mutation in the blueprint file and retry
+
+4. **After all mutations pass**, clean up:
+   ```bash
+   java -jar $CLAUDE_PROJECT_DIR/.claude/judo-cli.jar -m /tmp/bp-validate-temp.model -q discard --force
+   rm -f /tmp/bp-validate-temp.model /tmp/.bp-validate-temp.model.dirty
+   ```
+
+5. **Only consider the blueprint complete** after all its mutations pass validation.
+
+## Mutation Conventions
+
+See `model-blueprints/CONVENTIONS.md` for the full list of mutation rules. Key points:
+- Enum-like fields must be **quoted strings**: `relationKind: "ASSOCIATION"`, `operationType: "INSTANCE"`, `memberType: "stored"`
+- `operation` mutations require a `binding` field
+- Follow dependency order: packages → enums → entities → members → relations → TOs → mappings → generalizations → operations
+- Placeholders use `{{UPPER_SNAKE_CASE}}` format
+- Only use supported create input types: `entityType`, `dataMember`, `oneWayRelationMember`, `twoWayRelationMember`, `enumerationType`, `enumerationMember`, `transferObjectType`, `generalization`, `mapping`, `operation`, `parameter`, `package`
 
 ## Blueprint File Format
 

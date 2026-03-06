@@ -1,13 +1,13 @@
 ---
-id: task-entity-with-assignment
+id: "task-entity-with-assignment"
 title: "Task Entity with Assignee, Type, and State Enums"
+score: 42.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - alba
 ---
-
 ## Description
 
 A Task entity that models assignable work items within an approval or review workflow. Each task has a type (TaskType enum categorizing the kind of work, e.g., APPROVAL), a state (TaskState enum tracking progress: TODO/APPROVED/REJECTED), a createdAt timestamp, and an isActive boolean flag (default: false). The task links to a createdBy user (1..1 ASSOC), an assignee user (1..1 ASSOC) responsible for completing the task, and a targetProduct or target entity (0..1 ASSOC) that the task relates to. Denormalized display fields (createdByName, assigneeName, productTitle) provide quick rendering without joins. A derived isAssigneeCurrentUser flag enables UI personalization.
@@ -131,7 +131,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Task", name: "createdBy",
   target: "{{NAMESPACE}}::User", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -139,7 +139,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Task", name: "assignee",
   target: "{{NAMESPACE}}::User", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -147,28 +147,28 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Task", name: "targetProduct",
   target: "{{NAMESPACE}}::Product", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Task", name: "closeTask",
-  customImplementation: true, operationType: INSTANCE
+  customImplementation: true, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Task.closeTask"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Task", name: "activate",
-  customImplementation: false, operationType: INSTANCE
+  customImplementation: false, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Task.activate"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Task", name: "deactivate",
-  customImplementation: false, operationType: INSTANCE
+  customImplementation: false, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Task.deactivate"
 } }) { success fqn } }
 ```
 

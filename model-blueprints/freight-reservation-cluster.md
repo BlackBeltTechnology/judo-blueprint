@@ -1,13 +1,13 @@
 ---
-id: freight-reservation-cluster
+id: "freight-reservation-cluster"
 title: "Freight Reservation Entity Cluster (Logistics Domain)"
+score: 45.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - reserve-app
 ---
-
 ## Description
 
 A domain-specific entity cluster for managing freight/logistics reservations at a warehouse or facility. The central FreightReservation entity connects a rich web of reference data entities to model a delivery event:
@@ -131,7 +131,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "gate",
   target: "{{NAMESPACE}}::Gate", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -139,7 +139,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "spot",
   target: "{{NAMESPACE}}::Spot", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -147,7 +147,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "project",
   target: "{{NAMESPACE}}::Project", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -155,7 +155,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "partner",
   target: "{{NAMESPACE}}::Partner", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -163,7 +163,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "recipient",
   target: "{{NAMESPACE}}::Company", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -171,7 +171,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "vehicleType",
   target: "{{NAMESPACE}}::VehicleType", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -179,7 +179,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "loadingType",
   target: "{{NAMESPACE}}::LoadingType", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -187,7 +187,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "loadingTime",
   target: "{{NAMESPACE}}::LoadingTime", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -195,7 +195,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "attachments",
   target: "{{NAMESPACE}}::Attachment", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -203,7 +203,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::FreightReservation", name: "items",
   target: "{{NAMESPACE}}::Item", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -230,7 +230,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Item", name: "productCategory",
   target: "{{NAMESPACE}}::ProductCategory", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -238,7 +238,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Item", name: "unit",
   target: "{{NAMESPACE}}::Unit", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -246,7 +246,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Item", name: "storageType",
   target: "{{NAMESPACE}}::StorageType", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

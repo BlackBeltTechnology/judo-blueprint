@@ -1,13 +1,13 @@
 ---
-id: multiple-choice-question-entity
+id: "multiple-choice-question-entity"
 title: "Multiple-Choice Question Entity with Choice Enum"
+score: 39.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - trivia
 ---
-
 ## Description
 
 A Question entity representing a multiple-choice question with fixed answer options. The entity carries the question text, individual choice text attributes (choiceA, choiceB, choiceC, choiceD), and a `solution` attribute identifying the correct answer. The answer options are defined by a Choice enum with members A, B, C, D, and NONE (for unanswered). The question has a sequence-based identifier (auto-generated via getVariable("SEQUENCE")) and a moderation status attribute (typed to a status enum with REVIEW/APPROVED/REJECTED members) with operations to transition between states (approve, reject, review).
@@ -164,7 +164,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Question", name: "category",
   target: "{{NAMESPACE}}::Category", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -173,21 +173,21 @@ mutation { create(input: { oneWayRelationMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Question", name: "approve",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Question.approve"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Question", name: "reject",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Question.reject"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Question", name: "review",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Question.review"
 } }) { success fqn } }
 ```
 

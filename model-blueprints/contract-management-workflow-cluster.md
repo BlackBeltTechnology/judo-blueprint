@@ -1,13 +1,13 @@
 ---
-id: contract-management-workflow-cluster
+id: "contract-management-workflow-cluster"
 title: "Contract Management with Workflow Approval Stages"
+score: 32.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - doors-model
 ---
-
 ## Description
 
 A comprehensive contract management entity cluster centered around a Contract entity with a multi-stage approval workflow engine. The core entities are:
@@ -239,7 +239,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Workflow", name: "stages",
   target: "{{NAMESPACE}}::WorkflowStage", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -249,7 +249,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Contract", name: "stages",
   target: "{{NAMESPACE}}::ContractStage", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -257,7 +257,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Contract", name: "workflow",
   target: "{{NAMESPACE}}::Workflow", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -266,35 +266,35 @@ mutation { create(input: { oneWayRelationMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Contract", name: "startApproval",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Contract"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Contract", name: "approve",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Contract"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Contract", name: "reject",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Contract"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Contract", name: "sign",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Contract"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Contract", name: "close",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Contract"
 } }) { success fqn } }
 ```
 

@@ -3,11 +3,11 @@ id: "enum-state-machine"
 title: "Enum-Based State Machine Pattern"
 domain: "model"
 category: "enum"
-score: 237.2
-usage_count: 15
+score: 58.1
+usage_count: 12
 alternative_count: 2
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
@@ -15,15 +15,12 @@ projects:
   - alba
   - mlszksz-platform
   - viterra_demo
-  - kozut-eugyfel-client
   - judo-demo-miniworkflow
   - ams-model
   - park-here
   - indamedia-adtrack
   - judo-partner
-  - kozut-eugyfel-model-test
   - reserve-app
-  - ams-frontend
 alternatives:
   - derived-state-from-history
   - entity-based-state-machine

@@ -1,7 +1,8 @@
 ---
-id: standard-type-and-measure-library
+id: "standard-type-and-measure-library"
 title: "Standard Type and Measure Library (Shared Type System)"
-usage_count: 9
+score: 43.8
+usage_count: 8
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
@@ -12,10 +13,8 @@ projects:
   - sanctuary-backend
   - doors-model
   - ams-model
-  - kozut-eugyfel-client
   - skillmatrix-model
 ---
-
 ## Description
 
 A standardized type system and comprehensive SI measurement unit library embedded in a JUDO model. The structure consists of:
@@ -164,7 +163,7 @@ mutation { create(input: { measure: {
 
 ```graphql
 mutation { create(input: { unit: {
-  container: "{{MEASURE_FQN}}", name: "{{UNIT_NAME}}", symbol: "{{SYMBOL}}"
+  container: "{{ROOT_NAMESPACE}}::measures::{{MEASURE_NAME}}", name: "{{UNIT_NAME}}", symbol: "{{SYMBOL}}"
 } }) { success fqn } }
 ```
 

@@ -1,13 +1,13 @@
 ---
-id: scoreboard-personal-best-pattern
+id: "scoreboard-personal-best-pattern"
 title: "Scoreboard with Personal Best Ranking Pattern"
+score: 39.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - trivia
 ---
-
 ## Description
 
 A Scoreboard transfer object that aggregates ranked results (personal bests) for a competitive activity. The pattern consists of:
@@ -98,6 +98,12 @@ mutation { create(input: { dataMember: {
 ```
 
 ### personalBest flag on Test entity
+
+```graphql
+mutation { create(input: { entityType: {
+  container: "{{NAMESPACE}}", name: "Test"
+} }) { success fqn } }
+```
 
 ```graphql
 mutation { create(input: { dataMember: {

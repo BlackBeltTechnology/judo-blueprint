@@ -3,11 +3,11 @@ id: "entity-re-fetch-pattern"
 title: "Entity Re-fetch at Operation Start"
 domain: "backend"
 category: "operation"
-score: 117.7
+score: 61.8
 usage_count: 8
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

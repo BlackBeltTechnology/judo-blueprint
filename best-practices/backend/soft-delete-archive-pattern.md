@@ -3,11 +3,11 @@ id: "soft-delete-archive-pattern"
 title: "Soft Delete via Archive Flag Pattern"
 domain: "backend"
 category: "operation"
-score: 35.0
+score: 55.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - park-here
   - judo-partner

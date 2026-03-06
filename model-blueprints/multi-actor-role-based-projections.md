@@ -1,7 +1,8 @@
 ---
-id: multi-actor-role-based-projections
+id: "multi-actor-role-based-projections"
 title: "Multi-Actor Role-Based Transfer Object Projections"
-usage_count: 7
+score: 41.7
+usage_count: 5
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
@@ -9,11 +10,8 @@ projects:
   - viterra_demo
   - doors-model
   - ams-model
-  - kozut-eugyfel-client
   - skillmatrix-model
-  - kozut-eugyfel-model-test
 ---
-
 ## Description
 
 A pattern where the same underlying entity types are exposed through multiple role-specific transfer object projections, one per actor type. Each actor sees a tailored view of the domain: some fields are omitted (e.g., partners do not see internal logistics fields), some are read-only, and some are denormalized into display strings (e.g., `projectAsString` instead of a project relation). The Role enum defines all possible roles (e.g., PARTNER, LOGISTICIAN, DOORMAN, READ_ONLY, ADMIN), and each role maps to a dedicated ActorType. The User entity carries a `role` attribute typed to this enum, and associations to role-relevant entities (e.g., partner association for PARTNER role users, company association for internal users, projects for scoped access).
@@ -26,7 +24,7 @@ In some projects (e.g., kozut-eugyfel-client), the actors represent internal org
 
 In some projects (e.g., skillmatrix-model), the actors correspond to boolean role flags on the User entity (isActiveAdmin, isActiveHREmployee, isActiveProfessional) rather than a Role enum. Each actor package (admin, hrEmployee, professional, manager) contains completely different TOs for the same entities, with the admin seeing user management views, the HR employee seeing competence/skill management, the professional seeing personal skill self-assessment, and the manager seeing subordinate skill approval.
 
-In some projects (e.g., kozut-eugyfel-model-test), the actor types are bound directly to entity subtypes via `actorType` references on the entity definition. The abstract User entity (Felhasznalo) has concrete subtypes (SzervezetiEgysegVezeto, UgyfelszolgalatiMunkatars, SzervezetiEgysegMunkatars) each carrying an `actorType` reference to their corresponding ActorType, and the actors share entity-level access points via a central Admin actor.
+In some projects, the actor types are bound directly to entity subtypes via `actorType` references on the entity definition. The abstract User entity has concrete subtypes each carrying an `actorType` reference to their corresponding ActorType, and the actors share entity-level access points via a central Admin actor.
 
 ## Detection Query
 
@@ -258,17 +256,3 @@ mutation { create(input: { transferObjectType: {
   - Manager role is implicit (determined by managedUnits relationship, not a boolean flag)
   - Deep per-actor specialization: the manager actor has unique Subordinate/TrainingPlan/UnapprovedSkillsView TOs not present in other actor views
   - The HREmployee acts as the domain administrator for competences, skills, and search, while Admin handles only user account management
-
-### kozut-eugyfel-model-test
-- **5 Actor types**: Admin (anonymous, managed), EUgyfelAlkalmazas (anonymous, managed), UgyfelszolgalatiMunkatars (bound to entity), SzervezetiEgysegMunkatars (bound to entity), SzervezetiEgysegVezeto (bound to entity)
-- **No Role enum** -- roles are determined by entity generalization hierarchy: abstract Felhasznalo -> FelelosFelhasznalo (abstract) -> SzervezetiEgysegVezeto, UgyfelszolgalatiMunkatars; Felhasznalo -> SzervezetiEgysegMunkatars
-- **Felhasznalo (User) abstract entity**: nev, email (req, identifier), szervezetiEgyseg (enum), megye (enum) + DERIVED role flags: szervezetiEgysegVezeto, ugyfelszolgalatiMunkatars, szervezetiEgysegMunkatars (computed via `self!kindof(...)`)
-- **Actor-entity binding**: Each concrete user subtype carries an `actorType` reference to its corresponding ActorType definition, directly coupling the entity's type with the actor's identity
-- **Admin actor** accesses: szervezetiEgysegVezetok, szervezetiEgysegMunkatarsak, jarokeloBejelentes, tovabbitasok, ugyfelszolgalatiMunkatarsak -- centralized data management with CRUD on user entities
-- **EUgyfelAlkalmazas actor** accesses: eUgyfelszolgalatBejelentesek -- external application API for report creation
-- **Key differences from kozut-eugyfel-client**:
-  - User roles are determined by entity generalization (concrete subtypes) rather than a job role enum or boolean flags
-  - Actor types are bound directly to entity subtypes via `actorType` on the EntityType definition
-  - Transfer objects are self-mapped (entity maps to itself) rather than having separate unmapped TO projections in per-actor packages
-  - The Admin actor manages all user subtypes and report access in a single actor, rather than having separate per-actor packages with distinct TOs
-  - This is a simplified test variant: no per-actor TO packages, no worker actor dashboard, no notification subsystem

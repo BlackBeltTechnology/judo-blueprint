@@ -1,13 +1,13 @@
 ---
-id: application-vendor-integration-registry
+id: "application-vendor-integration-registry"
 title: "Application-Vendor Integration Registry (Enterprise Architecture)"
+score: 36.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - InterfaceRegister
 ---
-
 ## Description
 
 An enterprise integration registry entity cluster for tracking applications, their vendors, connections between applications, and deployment instances. The core entities are:
@@ -85,7 +85,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Application", name: "vendor",
   target: "{{NAMESPACE}}::Vendor", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -153,7 +153,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::HighLevelConnection", name: "senderApplication",
   target: "{{NAMESPACE}}::Application", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -161,7 +161,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::HighLevelConnection", name: "receiverApplication",
   target: "{{NAMESPACE}}::Application", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

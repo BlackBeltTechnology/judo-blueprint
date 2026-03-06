@@ -165,9 +165,20 @@ rm -rf /tmp/judo-projects/<name>/
 
 **IMPORTANT**: Do NOT launch the agent for the next project until the current project's agent has completed. This keeps context manageable.
 
-### Step 4: Generate Summary Report
+### Step 4: Validate All Blueprint Mutations
 
-After all projects are processed:
+After all projects are processed, run the full test suite to catch any mutation regressions:
+
+```bash
+$CLAUDE_PROJECT_DIR/tests/test-blueprint-mutations.sh
+```
+
+- If all pass: proceed to summary
+- If any fail: report the failures to the user. List each failed blueprint with its specific error(s). These should be fixed before considering the collection run complete.
+
+### Step 5: Generate Summary Report
+
+After validation:
 
 1. Count total blueprint files:
    ```bash

@@ -3,11 +3,11 @@ id: "dual-role-relation"
 title: "Dual-Role Relation Pattern for Same Entity Type"
 domain: "model"
 category: "relation"
-score: 15.0
+score: 17.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - mjsz
 ---

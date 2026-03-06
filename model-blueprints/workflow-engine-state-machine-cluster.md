@@ -1,13 +1,13 @@
 ---
-id: workflow-engine-state-machine-cluster
+id: "workflow-engine-state-machine-cluster"
 title: "Workflow Engine State Machine Entity Cluster"
+score: 43.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - workflow-poc
 ---
-
 ## Description
 
 A complete, reusable workflow/state machine engine modeled as an interconnected entity cluster. The pattern provides a generic, data-driven workflow execution engine where workflow definitions are stored as entities (not hardcoded), enabling runtime-configurable business processes. The core entities are:
@@ -115,7 +115,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Workflow", name: "versions",
   target: "{{NAMESPACE}}::WorkflowVersion", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -123,7 +123,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Workflow", name: "head",
   target: "{{NAMESPACE}}::WorkflowVersion", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -131,28 +131,28 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Workflow", name: "published",
   target: "{{NAMESPACE}}::WorkflowVersion", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Workflow", name: "upload",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Workflow"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Workflow", name: "publish",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Workflow"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Workflow", name: "commit",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Workflow"
 } }) { success fqn } }
 ```
 
@@ -205,7 +205,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::WorkflowVersion", name: "states",
   target: "{{NAMESPACE}}::State", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -213,7 +213,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::WorkflowVersion", name: "initialState",
   target: "{{NAMESPACE}}::State", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -221,7 +221,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::WorkflowVersion", name: "events",
   target: "{{NAMESPACE}}::Event", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -229,7 +229,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::WorkflowVersion", name: "workflow",
   target: "{{NAMESPACE}}::Workflow", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -276,7 +276,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::State", name: "transitions",
   target: "{{NAMESPACE}}::Transition", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -284,7 +284,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::State", name: "onEnter",
   target: "{{NAMESPACE}}::Action", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -292,7 +292,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::State", name: "onLeave",
   target: "{{NAMESPACE}}::Action", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -300,7 +300,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::State", name: "supervisor",
   target: "{{NAMESPACE}}::Role", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -329,7 +329,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Transition", name: "event",
   target: "{{NAMESPACE}}::EventType", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -337,7 +337,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Transition", name: "onTransition",
   target: "{{NAMESPACE}}::Action", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -345,7 +345,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Transition", name: "guards",
   target: "{{NAMESPACE}}::Guard", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -353,7 +353,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Transition", name: "nextStates",
   target: "{{NAMESPACE}}::State", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -361,7 +361,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Transition", name: "role",
   target: "{{NAMESPACE}}::Role", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -404,7 +404,7 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Action", name: "run",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Action"
 } }) { success fqn } }
 ```
 
@@ -439,7 +439,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Token", name: "state",
   target: "{{NAMESPACE}}::State", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -447,7 +447,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Token", name: "assignee",
   target: "{{NAMESPACE}}::User", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -455,49 +455,49 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Token", name: "context",
   target: "{{NAMESPACE}}::Context", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Token", name: "trigger",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Token"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Token", name: "checkout",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Token"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Token", name: "release",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Token"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Token", name: "execute",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Token"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Token", name: "assign",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Token"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Token", name: "navigate",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Token"
 } }) { success fqn } }
 ```
 
@@ -526,7 +526,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Context", name: "attributes",
   target: "{{NAMESPACE}}::ContextAttribute", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -534,7 +534,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Context", name: "tokens",
   target: "{{NAMESPACE}}::Token", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -542,7 +542,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Context", name: "workflow",
   target: "{{NAMESPACE}}::Workflow", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -550,7 +550,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Context", name: "logs",
   target: "{{NAMESPACE}}::LogEntry", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -558,21 +558,21 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Context", name: "type",
   target: "{{NAMESPACE}}::ContextType", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Context", name: "trigger",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Context"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Context", name: "createContext",
-  operationType: STATIC
+  operationType: "STATIC", binding: "{{NAMESPACE}}::Context"
 } }) { success fqn } }
 ```
 

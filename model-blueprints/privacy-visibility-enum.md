@@ -1,13 +1,13 @@
 ---
-id: privacy-visibility-enum
+id: "privacy-visibility-enum"
 title: "Privacy Visibility Enum (Granular Data Visibility Levels)"
+score: 33.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - sanctuary-backend
 ---
-
 ## Description
 
 An enumeration representing granular visibility levels for user data fields. Instead of a binary public/private toggle, this enum provides multiple scoping levels that control who can see a particular piece of user information. The levels form an expanding hierarchy of visibility:
@@ -89,10 +89,17 @@ mutation { create(input: { dataMember: {
 ```
 
 ```graphql
+mutation { create(input: { entityType: {
+  container: "{{NAMESPACE}}", name: "User",
+  createable: true, updateable: true, deleteable: true
+} }) { success fqn } }
+```
+
+```graphql
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::User", name: "privacySettings",
   target: "{{NAMESPACE}}::UserPrivacySettings", lower: 0, upper: 1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 

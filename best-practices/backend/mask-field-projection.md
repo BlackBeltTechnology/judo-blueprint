@@ -3,11 +3,11 @@ id: "mask-field-projection"
 title: "Mask Pattern for Field Projection"
 domain: "backend"
 category: "data-access"
-score: 104.2
+score: 63.0
 usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - alba

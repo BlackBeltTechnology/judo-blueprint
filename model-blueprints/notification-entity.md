@@ -1,14 +1,13 @@
 ---
-id: notification-entity
+id: "notification-entity"
 title: "Notification Entity with Status and Type Enums"
-usage_count: 2
+score: 68.0
+usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - mlszksz-platform
-  - kozut-eugyfel-client
 ---
-
 ## Description
 
 A Notification entity for tracking push/email notifications sent to users. It carries a type (enum distinguishing what triggered the notification), a title and message for display, a status enum (PENDING/SENT/FAILED) for delivery tracking, a referenceEntityId to link back to the triggering entity, a createdAt timestamp, and a retryCount for failed delivery attempts. The entity associates to a User (1..1). A companion Device entity tracks user device registrations (FCM tokens, platform type, active status) for push notification delivery. Both are typically non-CRUD, managed by backend services.
@@ -126,7 +125,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Notification", name: "user",
   target: "{{NAMESPACE}}::User", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

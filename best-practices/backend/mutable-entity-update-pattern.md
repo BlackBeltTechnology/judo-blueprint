@@ -3,11 +3,11 @@ id: "mutable-entity-update-pattern"
 title: "Mutable Entity Update Pattern"
 domain: "backend"
 category: "data-access"
-score: 133.5
+score: 61.8
 usage_count: 9
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

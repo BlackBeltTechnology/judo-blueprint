@@ -3,17 +3,15 @@ id: "self-access-point"
 title: "Self-Referencing Access Point for Own Profile"
 domain: "model"
 category: "access"
-score: 74.6
-usage_count: 5
+score: 42.3
+usage_count: 3
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
-  - skillmatrix-frontend
   - alba
   - skillmatrix-model
   - judo-partner
-  - ams-frontend
 ---
 ## Description
 

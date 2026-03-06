@@ -1,13 +1,13 @@
 ---
-id: idm-realm-keycloak-integration
+id: "idm-realm-keycloak-integration"
 title: "IDM/Realm Keycloak Integration Entity Cluster"
+score: 44.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - ubives
 ---
-
 ## Description
 
 A pair of entities that model external Identity Management (IDM) system integration, specifically for Keycloak or similar OIDC providers. The structure consists of:
@@ -62,7 +62,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::IdmEntity", name: "realm",
   target: "{{NAMESPACE}}::RealmEntity", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -83,7 +83,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::RealmEntity", name: "idm",
   target: "{{NAMESPACE}}::IdmEntity", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

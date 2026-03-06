@@ -1,13 +1,13 @@
 ---
-id: toggle-active-operation
+id: "toggle-active-operation"
 title: "Toggle Active Boolean Operation Pattern"
+score: 73.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - rackinspect
 ---
-
 ## Description
 
 A pervasive pattern where entities carry an `active` boolean attribute (default: true) and a `toggleActive` instance operation with custom implementation that flips the flag. This provides soft-enable/disable semantics without deletion. The toggle operation is an INSTANCE-type custom operation. Many entities in the same model apply this identical pattern, making it a cross-cutting concern. Some entities extend the pattern with additional toggle operations (togglePrimary, toggleBilling, toggleHeadquarters, togglePostal, toggleDelivery) for multi-flag management.
@@ -28,6 +28,13 @@ Look for entities that have an `active` attribute with default "true" and a `tog
 ## Creation Mutations
 
 ```graphql
+mutation { create(input: { entityType: {
+  container: "{{NAMESPACE}}", name: "{{ENTITY_NAME}}",
+  createable: false, updateable: false, deleteable: false
+} }) { success fqn } }
+```
+
+```graphql
 mutation { create(input: { dataMember: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "active"
 } }) { success fqn } }
@@ -36,7 +43,8 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "toggleActive",
-  customImplementation: true, operationType: INSTANCE
+  customImplementation: true, operationType: "INSTANCE",
+  binding: "{{NAMESPACE}}::{{ENTITY_NAME}}.toggleActive"
 } }) { success fqn } }
 ```
 

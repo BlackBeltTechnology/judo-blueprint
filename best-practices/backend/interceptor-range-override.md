@@ -3,11 +3,11 @@ id: "interceptor-range-override"
 title: "Range Interceptor for Context-Filtered Dropdowns"
 domain: "backend"
 category: "interceptor"
-score: 27.7
+score: 68.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - park-here

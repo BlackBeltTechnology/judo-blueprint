@@ -28,4 +28,3 @@
 | 22 | kozut-eugyfel-client | done | 0cbdaa0 | done |
 | 23 | skillmatrix-model | done | 8e2d18f | done |
 | 24 | skillmatrix-frontend | skipped (identical ESM to skillmatrix-model) | ee0cf0e | done |
-| 25 | kozut-eugyfel-model-test | done | 1e609af | done |

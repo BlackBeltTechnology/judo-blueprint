@@ -1,13 +1,13 @@
 ---
-id: user-with-role-and-rolegroup-entities
+id: "user-with-role-and-rolegroup-entities"
 title: "User Entity with Role and RoleGroup Entities (Hierarchical Role Assignment)"
+score: 33.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - sanctuary-backend
 ---
-
 ## Description
 
 A User entity with identity and profile attributes, associated to Role entities via a bidirectional many-to-many relation, and to RoleGroup entities via a separate bidirectional many-to-many relation. RoleGroups aggregate multiple Roles into named collections, enabling bulk role assignment. This provides a two-level role hierarchy: individual roles can be assigned directly to users, and role groups can be assigned to users to grant all roles within the group at once.
@@ -85,7 +85,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::RoleGroup", name: "roles",
   target: "{{NAMESPACE}}::Role", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -126,7 +126,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { twoWayRelationMember: {
   container: "{{NAMESPACE}}::User", name: "roles",
   target: "{{NAMESPACE}}::Role", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -134,7 +134,7 @@ mutation { create(input: { twoWayRelationMember: {
 mutation { create(input: { twoWayRelationMember: {
   container: "{{NAMESPACE}}::User", name: "roleGroups",
   target: "{{NAMESPACE}}::RoleGroup", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -157,7 +157,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::User", name: "privacySettings",
   target: "{{NAMESPACE}}::UserPrivacySettings", lower: 0, upper: 1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -180,7 +180,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::User", name: "settings",
   target: "{{NAMESPACE}}::UserSettings", lower: 0, upper: 1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -241,7 +241,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::User", name: "positionTitle",
   target: "{{NAMESPACE}}::PositionTitle", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

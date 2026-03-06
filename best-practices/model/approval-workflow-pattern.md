@@ -3,13 +3,12 @@ id: "approval-workflow-pattern"
 title: "Approval Workflow with Requested/Approved Levels"
 domain: "model"
 category: "operation"
-score: 24.2
-usage_count: 2
+score: 30.4
+usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
-  - skillmatrix-frontend
   - skillmatrix-model
 ---
 ## Description

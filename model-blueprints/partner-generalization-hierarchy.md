@@ -1,13 +1,13 @@
 ---
-id: partner-generalization-hierarchy
+id: "partner-generalization-hierarchy"
 title: "Partner Generalization Hierarchy (Multi-Type Business Partner)"
+score: 32.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - doors-model
 ---
-
 ## Description
 
 A Partner entity generalization hierarchy where a base Partner entity is extended by multiple concrete subtypes representing different legal forms of business partners. The base Partner entity holds shared attributes (name, email, phone) and shared relations (bankAccounts composition, mainBankAccount association, postalAddress composition to Address). Concrete subtypes add type-specific attributes and address relations.
@@ -72,7 +72,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "bankAccounts",
   target: "{{NAMESPACE}}::BankAccount", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -80,7 +80,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Partner", name: "postalAddress",
   target: "{{NAMESPACE}}::Address", lower: 0, upper: 1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -116,7 +116,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::CompanylikePartner", name: "hqAddress",
   target: "{{NAMESPACE}}::Address", lower: 0, upper: 1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 

@@ -1,13 +1,13 @@
 ---
-id: document-review-state-machine
+id: "document-review-state-machine"
 title: "Document Review State Machine with Guard Attributes"
+score: 16.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - judo-demo-miniworkflow
 ---
-
 ## Description
 
 A Document entity that implements a multi-step review/approval state machine using a state enum, boolean guard attributes, and state-transition operations. The document carries a `currentState` attribute typed to a DocumentState enum with five states: IN_PROGRESS (initial draft), REVIEW_REQUESTED (submitted for review), ACCEPTED (approved by reviewer), REJECTED (declined by reviewer), and CLOSED (finalized). Four instance operations implement the state transitions: `requestReview` (IN_PROGRESS -> REVIEW_REQUESTED), `accept` (REVIEW_REQUESTED -> ACCEPTED), `reject` (REVIEW_REQUESTED -> REJECTED), and `close` (ACCEPTED -> CLOSED or REJECTED -> CLOSED).
@@ -130,7 +130,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "owner",
   target: "{{NAMESPACE}}::User", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -139,28 +139,28 @@ mutation { create(input: { oneWayRelationMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "requestReview",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{ENTITY_NAME}}"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "accept",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{ENTITY_NAME}}"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "reject",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{ENTITY_NAME}}"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "close",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{ENTITY_NAME}}"
 } }) { success fqn } }
 ```
 

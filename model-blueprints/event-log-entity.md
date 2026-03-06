@@ -1,15 +1,13 @@
 ---
-id: event-log-entity
+id: "event-log-entity"
 title: "Event Log Entity with Type Enum and Actor Reference"
-usage_count: 3
+score: 42.0
+usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - alba
-  - kozut-eugyfel-client
-  - kozut-eugyfel-model-test
 ---
-
 ## Description
 
 An Event entity that records domain-level events as a chronological log. Each event has a type attribute (typed to an EventType enum defining specific event kinds), a message string for human-readable details, a createdAt timestamp, a reference to the entity the event is about (e.g., product 0..1 ASSOC), and a reference to the user who performed the action (performedBy 0..1 ASSOC). The entity is non-CRUD, created by backend operations when significant state changes occur.
@@ -20,7 +18,7 @@ This pattern is suitable when events need to be displayed on a specific entity's
 
 Some variants (e.g., kozut-eugyfel-client) denormalize the actor information into string attributes on the event (kezdemenyezoNev/initiatorName, celFelhasznaloNev/targetUserName) rather than using a relation to the User entity, and add a subsidiary Ertesites (Notification) entity composed by each event for user notification delivery.
 
-Some variants (e.g., kozut-eugyfel-model-test) use a **generalization-based event hierarchy** instead of a type enum: an abstract Esemeny base entity with concrete subtypes (Tovabbitas, Lezaras, Megjegyzes, Letrehozas) that each extend the base entity via generalization. In this variant, the event type is determined by the concrete subtype rather than an enum attribute, and subtypes can carry additional type-specific attributes and relations (e.g., UgyintezoBeallitas has a celFelhasznalo relation that Lezaras does not). The base entity provides shared attributes (szoveg, idopont) and a relation to the initiating user (kezdemenyezo). This approach is used with static email-sending operations (emailKuldes, emailKuldesTobbCimzett) on the abstract base entity.
+Some variants use a **generalization-based event hierarchy** instead of a type enum: an abstract base event entity with concrete subtypes (e.g., Forward, Close, Comment, Create) that each extend the base entity via generalization. In this variant, the event type is determined by the concrete subtype rather than an enum attribute, and subtypes can carry additional type-specific attributes and relations. The base entity provides shared attributes (text, timestamp) and a relation to the initiating user. This approach is used with static email-sending operations on the abstract base entity.
 
 ## Detection Query
 
@@ -82,7 +80,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Event", name: "{{ENTITY_RELATION}}",
   target: "{{NAMESPACE}}::{{ENTITY_TYPE}}", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -90,7 +88,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Event", name: "performedBy",
   target: "{{NAMESPACE}}::User", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -124,22 +122,3 @@ mutation { create(input: { oneWayRelationMember: {
   - The parent Bejelentes entity exposes DERIVED filtered views of the events collection (megjegyzesek for comments, tovabbitasok for forwardings)
 - **Transfer Objects**:
   - `munkatars::Esemeny` -- bejelentesAzonosito (DERIVED), szoveg, idopont, esemenyTipus (req), celFelhasznaloNev, kezdemenyezoNev (req) -- flattened event view for the worker actor
-
-### kozut-eugyfel-model-test
-- **Generalization-based event hierarchy** (instead of type enum):
-  - **Esemeny (Event) abstract entity**: `e_ugyfelszolgalat::Esemeny::Esemeny` (non-CRUD, abstract)
-    - Attributes: szoveg (text/message), idopont (timestamp)
-    - Relations: kezdemenyezo (initiator 0..1 TwoWay ASSOC to Felhasznalo)
-    - Static operations: emailKuldes (customImpl=true, EmailKuldesInput), emailKuldesTobbCimzett (customImpl=true, EmailKuldesTobbCimzettInput)
-  - **UgyintezoBeallitas (AssigneeSettings) abstract entity** extends Esemeny:
-    - Adds: celFelhasznalo (target user 1..1 OneWay ASSOC to Felhasznalo)
-  - **Tovabbitas (Forwarding)** extends UgyintezoBeallitas -- concrete forwarding event
-  - **Lezaras (Closure)** extends Esemeny -- concrete closure event
-  - **Megjegyzes (Comment)** extends Esemeny -- adds ertesitesiLista (notification list 0..* ASSOC to Felhasznalo)
-  - **Letrehozas (Creation)** extends Esemeny -- concrete creation event
-- **Key differences from kozut-eugyfel-client**:
-  - Event type is determined by the concrete entity subtype rather than an EsemenyTipus enum
-  - Subtypes can have type-specific relations (UgyintezoBeallitas.celFelhasznalo, Megjegyzes.ertesitesiLista) that do not exist on all events
-  - Two-level generalization: Esemeny -> UgyintezoBeallitas -> Tovabbitas
-  - Email sending is implemented as static operations on the abstract Esemeny entity with dedicated input TOs (EmailKuldesInput: targy, szoveg, cimzett; EmailKuldesTobbCimzettInput: targy, szoveg, cimzettek 0..* Cimzett)
-  - No denormalized actor name attributes -- uses relation (kezdemenyezo) to Felhasznalo directly

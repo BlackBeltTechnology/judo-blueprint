@@ -1,13 +1,13 @@
 ---
-id: test-attempt-lifecycle-entity
+id: "test-attempt-lifecycle-entity"
 title: "Test/Attempt Lifecycle Entity with Status Tracking"
+score: 39.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - trivia
 ---
-
 ## Description
 
 A Test (or Attempt) entity that represents a user's participation in a timed activity, with a multi-stage lifecycle status enum tracking progress from creation through completion or failure. The entity carries:
@@ -152,7 +152,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Test", name: "{{CONTEXT_RELATION}}",
   target: "{{NAMESPACE}}::{{CONTEXT_ENTITY}}", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -160,7 +160,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Test", name: "player",
   target: "{{NAMESPACE}}::User", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -168,7 +168,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Test", name: "{{ITEMS_RELATION}}",
   target: "{{NAMESPACE}}::{{ITEM_ENTITY}}", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -177,21 +177,21 @@ mutation { create(input: { oneWayRelationMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Test", name: "start",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Test"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Test", name: "submit",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Test"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Test", name: "exclude",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::Test"
 } }) { success fqn } }
 ```
 

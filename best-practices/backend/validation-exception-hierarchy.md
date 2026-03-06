@@ -3,11 +3,11 @@ id: "validation-exception-hierarchy"
 title: "Validation Exception Hierarchy (Field-Level and Business-Level)"
 domain: "backend"
 category: "error"
-score: 74.2
+score: 65.8
 usage_count: 5
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - mlszksz-platform

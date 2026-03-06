@@ -3,11 +3,11 @@ id: "document-generation-pipeline"
 title: "Document Generation Pipeline (XDocReport + PDF Conversion)"
 domain: "backend"
 category: "integration"
-score: 30.4
+score: 54.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - doors-model

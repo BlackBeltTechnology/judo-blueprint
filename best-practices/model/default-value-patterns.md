@@ -3,16 +3,15 @@ id: "default-value-patterns"
 title: "Default Value Conventions"
 domain: "model"
 category: "entity"
-score: 270.0
-usage_count: 18
+score: 59.2
+usage_count: 16
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
   - itracker
-  - skillmatrix-frontend
   - alba
   - skillmatrix-model
   - mlszksz-platform
@@ -26,7 +25,6 @@ projects:
   - judo-partner
   - workflow-poc
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 

@@ -1,13 +1,13 @@
 ---
-id: bank-account-entity
+id: "bank-account-entity"
 title: "Bank Account Entity with Bank Reference"
+score: 32.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - doors-model
 ---
-
 ## Description
 
 A BankAccount entity representing a financial bank account with an accountNumber attribute and a reference to a Bank entity. The Bank entity serves as a lookup/reference data table with name and giroCode (bank identifier code). BankAccounts are composed by both Company and Partner entities, with a designated mainBankAccount association pointing to the primary account. The BankAccount has a validateBankAccount operation that auto-resolves the bank reference by matching the first 3 digits of the account number against the bank's giroCode.
@@ -83,17 +83,23 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::BankAccount", name: "bank",
   target: "{{NAMESPACE}}::Bank", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ### Composition from parent entities
 
 ```graphql
+mutation { create(input: { entityType: {
+  container: "{{NAMESPACE}}", name: "{{PARENT_ENTITY}}"
+} }) { success fqn } }
+```
+
+```graphql
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}", name: "bankAccounts",
   target: "{{NAMESPACE}}::BankAccount", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -101,7 +107,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { twoWayRelationMember: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}", name: "mainBankAccount",
   target: "{{NAMESPACE}}::BankAccount", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -110,7 +116,7 @@ mutation { create(input: { twoWayRelationMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::BankAccount", name: "validateBankAccount",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::BankAccount.validateBankAccount"
 } }) { success fqn } }
 ```
 

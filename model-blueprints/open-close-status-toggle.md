@@ -1,6 +1,7 @@
 ---
-id: open-close-status-toggle
+id: "open-close-status-toggle"
 title: "Open/Close Two-State Status Toggle with Operations"
+score: 36.7
 usage_count: 3
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -9,7 +10,6 @@ projects:
   - ams-model
   - skillmatrix-model
 ---
-
 ## Description
 
 A two-state status enumeration with OPEN and CLOSED members, paired with `open` and `close` instance operations on the entity for toggling between states. The entity starts in the CLOSED state (default) and can be opened to allow participation/access, then closed again to stop it. In some variants, the entity defaults to OPEN instead of CLOSED. In some variants, the toggle uses a boolean `closed` attribute (default: false) instead of a status enum. This pattern models time-bounded or admin-controlled availability windows -- contests, registration periods, enrollment windows, campaigns, training plans, or any entity that needs to be explicitly activated and deactivated.
@@ -75,14 +75,14 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "open",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{ENTITY_NAME}}.open"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "close",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{ENTITY_NAME}}.close"
 } }) { success fqn } }
 ```
 
@@ -109,14 +109,14 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::{{ENTITY_NAME}}", name: "open",
-  operationType: MAPPED
+  operationType: "INSTANCE", binding: "{{SERVICE_NAMESPACE}}::{{ENTITY_NAME}}.open"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::{{ENTITY_NAME}}", name: "close",
-  operationType: MAPPED
+  operationType: "INSTANCE", binding: "{{SERVICE_NAMESPACE}}::{{ENTITY_NAME}}.close"
 } }) { success fqn } }
 ```
 

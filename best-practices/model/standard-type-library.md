@@ -3,16 +3,15 @@ id: "standard-type-library"
 title: "Standard Primitive Type and Measures Library"
 domain: "model"
 category: "type"
-score: 328.5
-usage_count: 21
+score: 59.5
+usage_count: 18
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
   - itracker
-  - skillmatrix-frontend
   - actiongroup-test-react
   - alba
   - skillmatrix-model
@@ -26,10 +25,8 @@ projects:
   - park-here
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 

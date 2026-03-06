@@ -1,13 +1,13 @@
 ---
-id: task-list-with-checkout-release
+id: "task-list-with-checkout-release"
 title: "Task List with Checkout/Release Assignment Pattern"
+score: 43.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - workflow-poc
 ---
-
 ## Description
 
 A transfer object pattern for human task management where tasks (derived from workflow tokens) are presented in a task list with checkout/release semantics for task ownership. The pattern consists of:
@@ -148,42 +148,48 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::Task", name: "checkout",
-  operationType: MAPPED
+  binding: "{{SERVICE_NAMESPACE}}::Task.checkout",
+  operationType: "MAPPED"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::Task", name: "release",
-  operationType: MAPPED
+  binding: "{{SERVICE_NAMESPACE}}::Task.release",
+  operationType: "MAPPED"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::Task", name: "assign",
-  operationType: MAPPED
+  binding: "{{SERVICE_NAMESPACE}}::Task.assign",
+  operationType: "MAPPED"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::Task", name: "execute",
-  operationType: MAPPED
+  binding: "{{SERVICE_NAMESPACE}}::Task.execute",
+  operationType: "MAPPED"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::Task", name: "navigate",
-  operationType: MAPPED
+  binding: "{{SERVICE_NAMESPACE}}::Task.navigate",
+  operationType: "MAPPED"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::TaskList", name: "startWorkflow",
-  operationType: MAPPED
+  binding: "{{SERVICE_NAMESPACE}}::TaskList.startWorkflow",
+  operationType: "MAPPED"
 } }) { success fqn } }
 ```
 

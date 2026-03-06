@@ -3,17 +3,14 @@ id: "hungarian-full-localization"
 title: "Full Hungarian Localization with Python i18n Utilities"
 domain: "frontend"
 category: "i18n"
-score: 82.7
-usage_count: 5
+score: 54.0
+usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
-  - kozut-eugyfel-client
-  - kozut-eugyfel-model-test
   - doors-model
-  - ams-frontend
 ---
 ## Description
 
@@ -44,9 +41,6 @@ Translation key categories:
 
 ### kozut-eugyfel-client (Flutter)
 Hungarian as primary language in ARB-based Flutter localization. 150+ translation keys per actor covering navigation (Sajat feladatok, Aktiv bejelentesek, Lezart bejelentesek), entities (Bejelentes, Felhasznalo, Megye), actions (Bejelentes letrehozasa, Bejelentes lezarasa), and enum values (AKTIV, LEZART, MEGNYITAS). English as secondary fallback. No Python scripts needed -- ARB files are generated directly.
-
-### kozut-eugyfel-model-test
-Model defines all Hungarian domain terms as labels on transfer object attributes and menu items. Domain terms (Bejelentes, Felhasznalo, Megye, Esemeny) remain in Hungarian even in the English locale, confirming the application is primarily Hungarian-language.
 
 ### doors-model
 ESM XML model embeds Hungarian labels directly on all UI elements: menu items (Feladataim, Szerzodeseim, Partnerek), table columns (Letrehozas datuma, Nyilvantartasi szam), form fields (Dokumentum statusza), and buttons (Jovahagyas, Elutasitas, Alairas, Lezaras). A few labels remain in English (Divisions, Positions, Banks, In progress). Labels would generate i18n translation keys when the frontend is produced.

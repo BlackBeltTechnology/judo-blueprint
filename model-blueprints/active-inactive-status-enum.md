@@ -1,16 +1,14 @@
 ---
-id: active-inactive-status-enum
+id: "active-inactive-status-enum"
 title: "Active/Inactive Two-State Status Enum"
-usage_count: 4
+score: 36.7
+usage_count: 2
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - viterra_demo
   - sanctuary-backend
-  - kozut-eugyfel-client
-  - kozut-eugyfel-model-test
 ---
-
 ## Description
 
 A minimal two-state status enumeration with ACTIVE and INACTIVE (or semantically equivalent) members. This is the simplest form of a status lifecycle enum, representing entities that are either currently in use (ACTIVE) or no longer in use (INACTIVE/ARCHIVED). Unlike the three-state ACTIVE/SUSPENDED/DEACTIVATED pattern, this enum has no intermediate state -- entities are either on or off. Unlike a simple boolean `active` flag, using an enum provides extensibility (additional states can be added later) and clearer semantics in queries and UI.
@@ -75,11 +73,3 @@ mutation { create(input: { enumerationMember: {
 - The Munkatars (Worker) actor separates active and closed tickets into two different access points: `aktivBejelentesek` (active reports) and `lezartBejelentesek` (closed reports)
 - State transitions are controlled by operations: `lezaras` (closure) moves from AKTIV to LEZART, `megnyitas` (reopening) moves from LEZART to AKTIV
 - Permission guard DERIVED booleans (lezarasEngedely, megnyitasEngedely) control which operations are available based on the current state
-
-### kozut-eugyfel-model-test
-- **Enum**: `e_ugyfelszolgalat::Bejelentes::BejelentesAllapot` -- AKTIV(1), LEZART(2)
-- Same Hungarian-language ACTIVE/CLOSED semantics as kozut-eugyfel-client, but in a different package (`Bejelentes` sub-package rather than `entities`)
-- Used as the `allapot` (status) required attribute on the base Bejelentes (Report/Ticket) entity in a generalization hierarchy
-- In this test variant, the Bejelentes entity is part of a generalization hierarchy (JarokeloBejelentes and EUgyfelszolgalatBejelentes extend the base Bejelentes), so the status enum applies uniformly across all ticket subtypes
-- State transitions are controlled by operations on the base entity: `lezaras` (closure) moves from AKTIV to LEZART
-- Unlike kozut-eugyfel-client, this variant does not have a `megnyitas` (reopen) operation or permission guard DERIVED booleans

@@ -3,11 +3,11 @@ id: "derived-access-status-filtering"
 title: "Derived Access Points for Status-Based Filtered Views"
 domain: "frontend"
 category: "mapping"
-score: 19.6
+score: 32.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - doors-model
 ---

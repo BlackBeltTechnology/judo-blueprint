@@ -1,13 +1,13 @@
 ---
-id: language-proficiency-enum
+id: "language-proficiency-enum"
 title: "Language Proficiency Skill Level Enum"
+score: 30.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - skillmatrix-model
 ---
-
 ## Description
 
 An enumeration representing language proficiency levels, paired with a LanguageSkill junction entity that associates a User with a Language at a specific proficiency level. The enum members follow a progression from lowest to highest proficiency: BEGINNER, CONVERSATIONAL, FLUENT, NATIVE. The LanguageSkill entity carries the proficiency level (typed to this enum), an optional note for additional context, and a required association to a Language reference data entity. LanguageSkill instances are owned by the User entity via COMPOSITION, meaning they are lifecycle-bound to the user.
@@ -90,7 +90,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::LanguageSkill", name: "language",
   target: "{{NAMESPACE}}::Language", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

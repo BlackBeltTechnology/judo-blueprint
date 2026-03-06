@@ -1,6 +1,7 @@
 ---
-id: reservation-booking-entity
+id: "reservation-booking-entity"
 title: "Reservation/Booking Entity with Time Slots and Status"
+score: 54.7
 usage_count: 2
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -8,7 +9,6 @@ projects:
   - park-here
   - reserve-app
 ---
-
 ## Description
 
 A Reservation (or Booking) entity that models time-bounded resource reservations. It captures a date, startTime, endTime for the time slot, a reservationStatus enum (ACTIVE/DELETED/EXPIRED) for lifecycle management, and a reservationType enum to distinguish different booking categories (e.g., NORMAL, QUICK, GUEST, LONG). The entity carries audit trail attributes (created, createdBy, modified, modifiedBy) for tracking who made and last changed the booking. It associates to an owner User (1..1), the reserved resource (e.g., ParkingSlot 1..1), and optionally to a guest entity (0..1 COMPOSITION) for third-party bookings and a vehicle/asset reference (0..1). Denormalized display fields (reserverName, reserverEmail, reserverCarId) enable quick display without joining. Reminder tracking fields (hasToNotify, reminderTimer, remindedBeforeStart, remindedBeforeEnd) support notification workflows. The entity is typically non-CRUD, managed entirely through custom operations on transfer objects.
@@ -149,7 +149,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Reservation", name: "owner",
   target: "{{NAMESPACE}}::User", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -157,7 +157,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Reservation", name: "{{RESOURCE_NAME}}",
   target: "{{NAMESPACE}}::{{RESOURCE_TYPE}}", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -165,7 +165,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Reservation", name: "guest",
   target: "{{NAMESPACE}}::Guest", lower: 0, upper: 1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 

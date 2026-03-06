@@ -3,11 +3,11 @@ id: "aggregated-stored-field"
 title: "Aggregated Stored Field for Denormalized Collection Data"
 domain: "model"
 category: "entity"
-score: 12.3
+score: 42.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - alba
 ---

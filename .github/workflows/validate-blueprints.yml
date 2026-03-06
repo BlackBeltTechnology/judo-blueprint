@@ -1,0 +1,60 @@
+name: Validate Blueprint Mutations
+
+on:
+  push:
+    paths:
+      - 'model-blueprints/**'
+      - 'tests/**'
+      - '.github/workflows/validate-blueprints.yml'
+  pull_request:
+    paths:
+      - 'model-blueprints/**'
+      - 'tests/**'
+      - '.github/workflows/validate-blueprints.yml'
+
+jobs:
+  validate:
+    name: Test blueprint mutations
+    runs-on: judong
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'zulu'
+
+      - name: Setup maven settings.xml
+        uses: whelk-io/maven-settings-xml-action@v20
+        with:
+          servers: >
+            [
+                {
+                    "id": "judo-ng",
+                    "username": "${{ secrets.JUDONG_NEXUS_USERNAME }}",
+                    "password": "${{ secrets.JUDONG_NEXUS_PASSWORD }}"
+                }
+            ]
+
+      - name: Download judo-cli
+        run: |
+          mvn validate -P download-model-cli \
+            --batch-mode \
+            --no-transfer-progress
+        env:
+          MAVEN_OPTS: "-Xmx512m"
+
+      - name: Verify judo-cli
+        run: |
+          ls -lh .claude/judo-cli.jar
+          java -jar .claude/judo-cli.jar --version 2>&1 || true
+
+      - name: Run blueprint mutation tests
+        shell: bash
+        run: tests/test-blueprint-mutations.sh
+        env:
+          JUDO_CLI_JAR: ${{ github.workspace }}/.claude/judo-cli.jar

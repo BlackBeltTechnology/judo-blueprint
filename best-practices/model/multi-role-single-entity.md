@@ -3,22 +3,19 @@ id: "multi-role-single-entity"
 title: "Multi-Role Single Entity with Boolean Flags"
 domain: "model"
 category: "entity"
-score: 160.8
-usage_count: 10
+score: 46.4
+usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
-  - skillmatrix-frontend
   - skillmatrix-model
-  - kozut-eugyfel-client
   - judo-demo-miniworkflow
   - ams-model
   - park-here
   - indamedia-adtrack
   - InterfaceRegister
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 

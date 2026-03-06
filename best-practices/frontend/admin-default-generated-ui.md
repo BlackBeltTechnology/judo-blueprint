@@ -3,18 +3,16 @@ id: "admin-default-generated-ui"
 title: "Admin Frontend with Default Generated JUDO UI"
 domain: "frontend"
 category: "page"
-score: 91.9
-usage_count: 6
+score: 42.2
+usage_count: 4
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - itracker
-  - skillmatrix-frontend
   - reserve-app
   - doors-model
-  - ams-frontend
 ---
 ## Description
 

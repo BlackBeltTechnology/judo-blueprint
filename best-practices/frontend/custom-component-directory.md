@@ -3,11 +3,11 @@ id: "custom-component-directory"
 title: "Custom Component Directory Outside Generator Scope"
 domain: "frontend"
 category: "component"
-score: 59.2
+score: 53.7
 usage_count: 4
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

@@ -1,13 +1,13 @@
 ---
-id: product-with-approval-workflow
+id: "product-with-approval-workflow"
 title: "Product Entity with Draft/Finalize/Approve Workflow and Versioning"
+score: 42.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - alba
 ---
-
 ## Description
 
 A Product entity representing a content item (educational resource, document, or similar) that follows a three-stage approval workflow: DRAFT (being authored), FINALIZED (submitted for review), and APPROVED (officially accepted). The Product has rich content attributes (title, introduction, goal, areaOfDevelopment, extent, requiredResources, relatedLiterature), a state attribute typed to a ProductState enum, and multiple classification relations (audience, curriculum, resultTypes -- all 0..* ASSOCIATION to lookup entities). The Product carries authorship relations: an author (0..1 ASSOC to User), an impersonatingAuthor (0..1 ASSOC to User for delegation), and an approvedBy (0..1 ASSOC to User recording who approved it). File attachments are composed (0..* COMPOSITION to Attachment).
@@ -122,7 +122,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Product", name: "author",
   target: "{{NAMESPACE}}::User", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -130,7 +130,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Product", name: "approvedBy",
   target: "{{NAMESPACE}}::User", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -138,42 +138,42 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Product", name: "attachments",
   target: "{{NAMESPACE}}::Attachment", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Product", name: "finalize",
-  customImplementation: true, operationType: INSTANCE
+  customImplementation: true, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Product"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Product", name: "approveVersion",
-  customImplementation: true, operationType: INSTANCE
+  customImplementation: true, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Product"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Product", name: "revokeApproval",
-  customImplementation: true, operationType: INSTANCE
+  customImplementation: true, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Product"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Product", name: "assignApproval",
-  customImplementation: true, operationType: INSTANCE
+  customImplementation: true, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Product"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::Product", name: "draftNewVersion",
-  customImplementation: false, operationType: INSTANCE
+  customImplementation: false, operationType: "INSTANCE", binding: "{{NAMESPACE}}::Product"
 } }) { success fqn } }
 ```
 
@@ -208,7 +208,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::ProductVersion", name: "origin",
   target: "{{NAMESPACE}}::Product", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

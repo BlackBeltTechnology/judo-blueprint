@@ -1,13 +1,13 @@
 ---
-id: identity-account-organization-cluster
+id: "identity-account-organization-cluster"
 title: "Identity-Account-Organization Multi-Tenant Cluster"
+score: 44.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - ubives
 ---
-
 ## Description
 
 A multi-tier entity cluster for identity and multi-tenant organization management. The structure consists of:
@@ -60,7 +60,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::IdentityEntity", name: "account",
   target: "{{NAMESPACE}}::AccountEntity", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -68,7 +68,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::IdentityEntity", name: "user",
   target: "{{NAMESPACE}}::UserEntity", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -101,7 +101,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::AccountEntity", name: "identity",
   target: "{{NAMESPACE}}::IdentityEntity", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -109,7 +109,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::AccountEntity", name: "organizationAccesses",
   target: "{{NAMESPACE}}::OrganizationAccessEntity", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -142,21 +142,21 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::UserEntity", name: "identity",
   target: "{{NAMESPACE}}::IdentityEntity", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::UserEntity", name: "enableUser",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::UserEntity"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::UserEntity", name: "disableUser",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::UserEntity"
 } }) { success fqn } }
 ```
 
@@ -213,42 +213,42 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::OrganizationAccessEntity", name: "organization",
   target: "{{NAMESPACE}}::OrganizationEntity", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::OrganizationAccessEntity", name: "cancelAccess",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::OrganizationAccessEntity"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::OrganizationAccessEntity", name: "changeAccessToAdmin",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::OrganizationAccessEntity"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::OrganizationAccessEntity", name: "changeAccessToOwner",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::OrganizationAccessEntity"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::OrganizationAccessEntity", name: "enableAccess",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::OrganizationAccessEntity"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::OrganizationAccessEntity", name: "disableAccess",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::OrganizationAccessEntity"
 } }) { success fqn } }
 ```
 

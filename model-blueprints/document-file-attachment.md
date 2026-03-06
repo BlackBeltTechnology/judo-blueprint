@@ -1,7 +1,8 @@
 ---
-id: document-file-attachment
+id: "document-file-attachment"
 title: "Document/File Attachment Entity"
-usage_count: 7
+score: 54.3
+usage_count: 6
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
@@ -11,9 +12,7 @@ projects:
   - alba
   - judo-demo-miniworkflow
   - doors-model
-  - kozut-eugyfel-model-test
 ---
-
 ## Description
 
 A Document entity for file attachments with a binary `file` or `document` attribute and metadata fields. It associates back to the parent entity (e.g., announcement -> Announcement, 0..1). This is a generic file attachment pattern where any content entity can have multiple documents attached via association or composition. The entity is non-CRUD (created through parent entity operations). Transfer objects expose the file and metadata for viewing, and a DocumentInput unmapped TO provides the file field for upload operations. Some variants add versioning (version attribute) and a PDF rendition (documentPDF binary). The simplest variant is an Attachment entity with only a single binary attribute (picture or attachment), composed by the parent. Richer variants add a `type` discriminator attribute alongside the file and an optional description. Some variants store the file directly as an attribute on the parent entity (e.g., Contract.file, Contract.signedFile) rather than creating a separate entity, with upload operations using dedicated input TOs (UploadFileInput, UploadSignedFileInput). URL-based variants (e.g., Kep/Image with a `url` string attribute instead of a binary file) store a reference to an externally-hosted file rather than the file content itself.
@@ -81,7 +80,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Document", name: "{{PARENT_NAME}}",
   target: "{{NAMESPACE}}::{{PARENT_TYPE}}", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -161,14 +160,3 @@ mutation { create(input: { dataMember: {
 - The generateDocument operation creates the contract document from a template (customImplementation=true, delegated to backend Java code)
 - The uploadSignedContract operation stores the signed version after physical signature
 - **ContractLog entity** also stores file versions: contractVersion (ContractTemplate) and signedContractVersion (SignedContract), providing a history of document versions alongside event logs
-
-### kozut-eugyfel-model-test
-- **Kep (Image) entity**: `e_ugyfelszolgalat::Bejelentes::Kep` (CRUD: createable=true, updateable=true, deleteable=true)
-  - Attributes: url (req, String) -- URL reference to an externally-hosted image rather than a binary file
-  - No relations on the entity itself
-  - Owned by Bejelentes (Report/Ticket) via `kepek` (images 0..* COMPOSITION)
-- URL-based variant: instead of storing a binary file attribute, the entity stores a URL string pointing to an externally-hosted image (e.g., from the Jarokelo external reporting system)
-- Named "Kep" (Hungarian for "Image") rather than "Document" or "Attachment"
-- Unlike most other variants, this entity is CRUD-enabled (createable=true, updateable=true, deleteable=true), allowing direct creation and modification of image references
-- This is the simplest URL-based attachment: a single `url` attribute with no additional metadata (no description, type, or timestamp)
-- The same Kep entity pattern also exists in the kozut-eugyfel-client production variant with the same structure

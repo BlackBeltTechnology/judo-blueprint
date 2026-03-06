@@ -1,13 +1,13 @@
 ---
-id: interface-specification-generalization-hierarchy
+id: "interface-specification-generalization-hierarchy"
 title: "Interface Specification Generalization Hierarchy (Protocol Type Registry)"
+score: 36.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - InterfaceRegister
 ---
-
 ## Description
 
 A generalization hierarchy of interface specification entities representing different communication protocol types. The base entity InterfaceSpecification carries common attributes shared by all protocol types: id, name, description, a link to documentation (URL), a specification document (binary attachment), and direction of data transmission (enum). Concrete subtypes specialize for specific protocols, adding protocol-specific attributes:
@@ -204,7 +204,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Email", name: "tos",
   target: "{{NAMESPACE}}::EmailRecipient", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 

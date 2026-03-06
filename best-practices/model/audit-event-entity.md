@@ -3,18 +3,16 @@ id: "audit-event-entity"
 title: "Dedicated Audit Event Entity for State Change Tracking"
 domain: "model"
 category: "entity"
-score: 110.0
-usage_count: 7
+score: 48.0
+usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - alba
   - mlszksz-platform
-  - kozut-eugyfel-client
   - judo-demo-miniworkflow
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
 ---
 ## Description

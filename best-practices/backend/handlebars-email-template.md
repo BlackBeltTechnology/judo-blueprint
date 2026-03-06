@@ -3,11 +3,11 @@ id: "handlebars-email-template"
 title: "Handlebars Template Rendering"
 domain: "backend"
 category: "integration"
-score: 35.8
+score: 53.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - park-here
   - workflow-poc

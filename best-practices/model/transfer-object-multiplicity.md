@@ -3,13 +3,12 @@ id: "transfer-object-multiplicity"
 title: "Transfer Object Multiplicity per Entity"
 domain: "model"
 category: "transfer"
-score: 119.6
-usage_count: 8
+score: 41.8
+usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
-  - skillmatrix-frontend
   - alba
   - skillmatrix-model
   - viterra_demo

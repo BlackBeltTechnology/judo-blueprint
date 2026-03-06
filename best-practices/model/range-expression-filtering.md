@@ -3,14 +3,13 @@ id: "range-expression-filtering"
 title: "Range Expression Filtering for Relation Selection"
 domain: "model"
 category: "relation"
-score: 96.5
-usage_count: 7
+score: 48.2
+usage_count: 6
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
-  - skillmatrix-frontend
   - alba
   - skillmatrix-model
   - viterra_demo

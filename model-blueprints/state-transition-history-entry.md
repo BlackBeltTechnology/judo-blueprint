@@ -1,13 +1,13 @@
 ---
-id: state-transition-history-entry
+id: "state-transition-history-entry"
 title: "State Transition History Entry Entity"
+score: 16.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - judo-demo-miniworkflow
 ---
-
 ## Description
 
 A history entry entity that records state transitions on a parent entity. Each entry captures: `fromState` (the previous state, optional for the initial state), `toState` (the new state, required), `eventTime` (timestamp of the transition, required), `message` (optional commentary, e.g., rejection reason), and a `user` association (1..1) identifying who performed the transition. The entries are composed (0..* COMPOSITION) by the parent entity, forming a chronological audit trail of all state changes.
@@ -76,7 +76,13 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}HistoryEntry", name: "user",
   target: "{{NAMESPACE}}::User", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
+} }) { success fqn } }
+```
+
+```graphql
+mutation { create(input: { entityType: {
+  container: "{{NAMESPACE}}", name: "{{PARENT_ENTITY}}"
 } }) { success fqn } }
 ```
 
@@ -84,7 +90,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}", name: "{{HISTORY_RELATION_NAME}}",
   target: "{{NAMESPACE}}::{{PARENT_ENTITY}}HistoryEntry", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 

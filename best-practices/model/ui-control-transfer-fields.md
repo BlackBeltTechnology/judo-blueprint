@@ -3,23 +3,20 @@ id: "ui-control-transfer-fields"
 title: "UI Control Fields on Transfer Objects"
 domain: "model"
 category: "transfer"
-score: 161.5
-usage_count: 11
+score: 45.8
+usage_count: 8
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - itracker
-  - skillmatrix-frontend
   - alba
   - skillmatrix-model
   - viterra_demo
-  - kozut-eugyfel-client
   - judo-demo-miniworkflow
   - ams-model
   - park-here
   - judo-partner
-  - ams-frontend
 ---
 ## Description
 

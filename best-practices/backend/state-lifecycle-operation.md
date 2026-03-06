@@ -3,11 +3,11 @@ id: "state-lifecycle-operation"
 title: "State Lifecycle Management via Bound Operations"
 domain: "backend"
 category: "operation"
-score: 159.2
+score: 57.3
 usage_count: 11
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

@@ -3,11 +3,11 @@ id: "relation-based-entity-creation"
 title: "Relation-Based Child Entity Creation"
 domain: "backend"
 category: "data-access"
-score: 80.0
+score: 51.6
 usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - ubives

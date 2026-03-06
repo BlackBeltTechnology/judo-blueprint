@@ -1,13 +1,13 @@
 ---
-id: forecast-versioning-snapshot
+id: "forecast-versioning-snapshot"
 title: "Forecast Versioning with Monthly Snapshot Composition"
+score: 38.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - itracker
 ---
-
 ## Description
 
 A versioning pattern for periodic financial forecasts where a parent entity (e.g., Initiative) maintains both current monthly forecasts and archived forecast versions. The structure has three levels:
@@ -151,7 +151,16 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::ForecastVersion", name: "monthlyForecasts",
   target: "{{NAMESPACE}}::MonthlyForecastVersion", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
+} }) { success fqn } }
+```
+
+### Parent entity (container for forecasts and versions)
+
+```graphql
+mutation { create(input: { entityType: {
+  container: "{{NAMESPACE}}", name: "{{PARENT_ENTITY}}",
+  createable: true, updateable: true, deleteable: true
 } }) { success fqn } }
 ```
 
@@ -161,7 +170,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}", name: "monthlyForecasts",
   target: "{{NAMESPACE}}::MonthlyForecast", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
@@ -169,14 +178,14 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}", name: "forecastVersions",
   target: "{{NAMESPACE}}::ForecastVersion", lower: 0, upper: -1,
-  relationKind: COMPOSITION
+  relationKind: "COMPOSITION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{PARENT_ENTITY}}", name: "archiveForecast",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{PARENT_ENTITY}}#archiveForecast"
 } }) { success fqn } }
 ```
 

@@ -1,13 +1,13 @@
 ---
-id: workflow-versioning-pattern
+id: "workflow-versioning-pattern"
 title: "Workflow/Definition Versioning with Head and Published Pointers"
+score: 43.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - workflow-poc
 ---
-
 ## Description
 
 A versioning pattern for domain definitions (workflows, templates, configurations) where a parent entity manages an ordered series of version entities. The parent holds:
@@ -90,7 +90,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{DEFINITION_NAME}}", name: "versions",
   target: "{{NAMESPACE}}::{{DEFINITION_NAME}}Version", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -98,7 +98,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{DEFINITION_NAME}}", name: "head",
   target: "{{NAMESPACE}}::{{DEFINITION_NAME}}Version", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -106,21 +106,21 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{DEFINITION_NAME}}", name: "published",
   target: "{{NAMESPACE}}::{{DEFINITION_NAME}}Version", lower: 0, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{DEFINITION_NAME}}", name: "upload",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{DEFINITION_NAME}}.upload"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{DEFINITION_NAME}}", name: "publish",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{DEFINITION_NAME}}.publish"
 } }) { success fqn } }
 ```
 
@@ -164,7 +164,7 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::{{DEFINITION_NAME}}Version", name: "commit",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::{{DEFINITION_NAME}}Version.commit"
 } }) { success fqn } }
 ```
 
@@ -172,7 +172,7 @@ mutation { create(input: { operation: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::{{DEFINITION_NAME}}Version", name: "{{PARENT_RELATION}}",
   target: "{{NAMESPACE}}::{{DEFINITION_NAME}}", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 

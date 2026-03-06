@@ -3,16 +3,13 @@ id: "zero-customization-generated-frontend"
 title: "Zero-Customization Fully Generated Frontend"
 domain: "frontend"
 category: "framework"
-score: 70.2
-usage_count: 5
+score: 42.6
+usage_count: 2
 alternative_count: 2
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - itracker
-  - skillmatrix-frontend
-  - kozut-eugyfel-client
-  - kozut-eugyfel-model-test
   - reserve-app
 alternatives:
   - single-actor-heavy-customization
@@ -59,9 +56,6 @@ Three Flutter actor frontends (Admin: 147 files, HR Employee: 1,093 files, Profe
 
 ### kozut-eugyfel-client (Flutter)
 Three Flutter actor frontends (Munkatars: ~1,200 files, Admin: ~1,000, E-Ugyfel: ~330) with zero hand-written Dart code. No `custom/` folders, no `.generator-ignore` files. 12 Handlebars template overrides handle download/upload, custom theme palette, user widget with logo, and dependency management. All pages and stores are fully generated. Anonymous access for citizen portal entirely model-driven.
-
-### kozut-eugyfel-model-test
-Pure model project with zero frontend source code -- all UI is generated from the ESM model. The model defines 3 actors, 16+ entities, 7 enums, and bound operations that produce ~2,530 Dart files in the companion client with no hand-written code.
 
 ### reserve-app
 Four of five actor frontends (PartnerActor, LogisticianActor, DoormanActor, Readonly) have zero code customizations. All `.generator-ignore` files contain only `.generator-ignore` and `.gitignore`. Three actors (Logistician, Doorman, Readonly) are dashboard-only placeholders with zero access points. PartnerActor has 2 access points (profile, reservations) but no hooks activated. All theme, layout, and i18n files are fully generated.

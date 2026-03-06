@@ -3,13 +3,12 @@ id: "external-system-staging-entity"
 title: "External System Staging Entity for Integration"
 domain: "model"
 category: "entity"
-score: 49.2
-usage_count: 3
+score: 53.5
+usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
-  - kozut-eugyfel-client
   - indamedia-adtrack
   - judo-partner
 ---

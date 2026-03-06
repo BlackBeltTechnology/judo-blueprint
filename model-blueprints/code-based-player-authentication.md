@@ -1,13 +1,13 @@
 ---
-id: code-based-player-authentication
+id: "code-based-player-authentication"
 title: "Code-Based Player Authentication with Registration Flow"
+score: 39.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - trivia
 ---
-
 ## Description
 
 A lightweight authentication pattern for anonymous or semi-anonymous users (players, participants) where access is controlled via a temporary code rather than a full username/password authentication flow. The User entity carries a `code` attribute (the active access code) and a `tmpCode` attribute (a pending code awaiting activation). A separate Admin entity represents the privileged actor with email and active attributes.
@@ -95,7 +95,7 @@ mutation { create(input: { dataMember: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{NAMESPACE}}::User", name: "reset",
-  operationType: INSTANCE
+  operationType: "INSTANCE", binding: "{{NAMESPACE}}::User.reset"
 } }) { success fqn } }
 ```
 
@@ -150,14 +150,14 @@ mutation { create(input: { transferObjectType: {
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::Application", name: "register",
-  operationType: STATIC
+  operationType: "STATIC", binding: "{{SERVICE_NAMESPACE}}::Application.register"
 } }) { success fqn } }
 ```
 
 ```graphql
 mutation { create(input: { operation: {
   container: "{{SERVICE_NAMESPACE}}::Application", name: "activate",
-  operationType: STATIC
+  operationType: "STATIC", binding: "{{SERVICE_NAMESPACE}}::Application.activate"
 } }) { success fqn } }
 ```
 

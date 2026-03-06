@@ -1,13 +1,13 @@
 ---
-id: invitation-with-recipients
+id: "invitation-with-recipients"
 title: "Invitation Entity with Recipient Tracking"
+score: 68.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
 projects:
   - mlszksz-platform
 ---
-
 ## Description
 
 An Invitation entity representing a batch invitation with a message, createdAt timestamp, and a createdBy relation to the User who sent it. A recipientCount attribute denormalizes the number of recipients. The Invitation has a one-to-many association to InvitationRecipient entities, each tracking: email address, sentAt timestamp, verificationToken, verificationExpiresAt, and a boolean flag usedForSuccessfulRegistration. The Invitation is owned by an Organization (via composition). This pattern supports bulk user invitations with individual tracking of each recipient's verification status.
@@ -54,7 +54,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Invitation", name: "createdBy",
   target: "{{NAMESPACE}}::User", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -62,7 +62,7 @@ mutation { create(input: { oneWayRelationMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::Invitation", name: "recipients",
   target: "{{NAMESPACE}}::InvitationRecipient", lower: 0, upper: -1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
@@ -101,7 +101,7 @@ mutation { create(input: { dataMember: {
 mutation { create(input: { oneWayRelationMember: {
   container: "{{NAMESPACE}}::InvitationRecipient", name: "invitation",
   target: "{{NAMESPACE}}::Invitation", lower: 1, upper: 1,
-  relationKind: ASSOCIATION
+  relationKind: "ASSOCIATION"
 } }) { success fqn } }
 ```
 
