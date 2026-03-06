@@ -2,15 +2,10 @@ name: Validate Blueprint Mutations
 
 on:
   push:
-    paths:
-      - 'model-blueprints/**'
-      - 'tests/**'
-      - '.github/workflows/validate-blueprints.yml'
+    branches: [ develop ]
   pull_request:
-    paths:
-      - 'model-blueprints/**'
-      - 'tests/**'
-      - '.github/workflows/validate-blueprints.yml'
+    branches: [ develop, master ]
+  workflow_dispatch:
 
 jobs:
   validate:
