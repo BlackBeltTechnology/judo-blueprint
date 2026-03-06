@@ -42,7 +42,7 @@ jobs:
 
       - name: Download judo-cli
         run: |
-          mvn validate -P download-model-cli \
+          ./mvnw validate -P download-model-cli \
             --batch-mode \
             --no-transfer-progress
         env:
