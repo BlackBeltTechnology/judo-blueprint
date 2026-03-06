@@ -3,7 +3,7 @@ id: "interceptor-template-postcall"
 title: "Post-Call Interceptor for Data Stripping/Modification"
 domain: "backend"
 category: "interceptor"
-score: 51.5
+score: 59.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

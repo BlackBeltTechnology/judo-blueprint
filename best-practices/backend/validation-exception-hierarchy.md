@@ -3,7 +3,7 @@ id: "validation-exception-hierarchy"
 title: "Validation Exception Hierarchy (Field-Level and Business-Level)"
 domain: "backend"
 category: "error"
-score: 65.8
+score: 76.6
 usage_count: 5
 alternative_count: 1
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "osgi-karaf-bundle-architecture"
 title: "OSGi Bundle Architecture with Karaf Deployment"
 domain: "backend"
 category: "config"
-score: 60.7
+score: 83.2
 usage_count: 16
 alternative_count: 0
 first_seen: "2026-03-04"

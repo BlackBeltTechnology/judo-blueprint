@@ -3,7 +3,7 @@ id: "actor-based-transfer-projection"
 title: "Actor-Based Transfer Object Projection"
 domain: "model"
 category: "transfer"
-score: 42.8
+score: 47.0
 usage_count: 10
 alternative_count: 1
 first_seen: "2026-03-04"

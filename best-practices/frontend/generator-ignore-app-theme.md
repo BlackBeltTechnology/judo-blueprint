@@ -3,7 +3,7 @@ id: "generator-ignore-app-theme"
 title: "Generator-Ignore for App.tsx and Theme"
 domain: "frontend"
 category: "build"
-score: 57.5
+score: 69.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

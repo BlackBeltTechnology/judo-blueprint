@@ -3,7 +3,7 @@ id: "unmapped-transfer-dto"
 title: "Unmapped Transfer Object (DTO) Pattern"
 domain: "model"
 category: "transfer"
-score: 55.4
+score: 77.4
 usage_count: 12
 alternative_count: 0
 first_seen: "2026-03-04"

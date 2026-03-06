@@ -3,7 +3,7 @@ id: "derived-relation-navigation"
 title: "Derived Relation via Navigation Expression"
 domain: "model"
 category: "relation"
-score: 54.0
+score: 73.2
 usage_count: 8
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -1,7 +1,7 @@
 ---
 id: "accept-reject-operations"
 title: "Accept/Reject Approval Operations Pattern"
-score: 46.3
+score: 65.1
 usage_count: 7
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

@@ -3,7 +3,7 @@ id: "document-generation-pipeline"
 title: "Document Generation Pipeline (XDocReport + PDF Conversion)"
 domain: "backend"
 category: "integration"
-score: 54.0
+score: 66.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

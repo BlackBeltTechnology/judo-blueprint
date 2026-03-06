@@ -3,7 +3,7 @@ id: "soft-delete-archive-pattern"
 title: "Soft Delete via Archive Flag Pattern"
 domain: "backend"
 category: "operation"
-score: 55.5
+score: 63.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

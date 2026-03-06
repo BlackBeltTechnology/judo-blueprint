@@ -3,7 +3,7 @@ id: "handlebars-email-template"
 title: "Handlebars Template Rendering"
 domain: "backend"
 category: "integration"
-score: 53.5
+score: 61.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

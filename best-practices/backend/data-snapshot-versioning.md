@@ -3,7 +3,7 @@ id: "data-snapshot-versioning"
 title: "Data Snapshot Versioning (Immutable History Records)"
 domain: "backend"
 category: "operation"
-score: 48.4
+score: 54.4
 usage_count: 3
 alternative_count: 1
 first_seen: "2026-03-04"

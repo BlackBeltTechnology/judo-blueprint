@@ -3,7 +3,7 @@ id: "conditional-visibility-getter"
 title: "Conditional Visibility Getter Expression"
 domain: "model"
 category: "transfer"
-score: 51.5
+score: 59.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

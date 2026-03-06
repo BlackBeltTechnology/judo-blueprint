@@ -1,7 +1,7 @@
 ---
 id: "platform-configuration-singleton"
 title: "Platform Configuration Singleton Entity"
-score: 70.7
+score: 75.7
 usage_count: 3
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

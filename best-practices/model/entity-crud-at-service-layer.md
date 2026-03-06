@@ -3,7 +3,7 @@ id: "entity-crud-at-service-layer"
 title: "CRUD Permissions Controlled at Service Layer"
 domain: "model"
 category: "access"
-score: 56.5
+score: 80.1
 usage_count: 15
 alternative_count: 0
 first_seen: "2026-03-04"

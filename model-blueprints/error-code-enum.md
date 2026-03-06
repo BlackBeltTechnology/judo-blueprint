@@ -1,7 +1,7 @@
 ---
 id: "error-code-enum"
 title: "Error Code Enumeration with Business Error Transfer Object"
-score: 55.5
+score: 65.7
 usage_count: 5
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

@@ -3,7 +3,7 @@ id: "builder-pattern-entity-creation"
 title: "Builder Pattern for Entity Creation (ForCreate Types)"
 domain: "backend"
 category: "data-access"
-score: 59.3
+score: 79.5
 usage_count: 11
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "transfer-object-multiplicity"
 title: "Transfer Object Multiplicity per Entity"
 domain: "model"
 category: "transfer"
-score: 41.8
+score: 45.2
 usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"

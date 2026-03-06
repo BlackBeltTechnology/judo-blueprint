@@ -3,7 +3,7 @@ id: "custom-implementation-placeholder"
 title: "Custom Implementation Placeholder Operations"
 domain: "model"
 category: "operation"
-score: 61.8
+score: 77.5
 usage_count: 8
 alternative_count: 0
 first_seen: "2026-03-04"

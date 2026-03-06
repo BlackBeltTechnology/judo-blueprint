@@ -3,7 +3,7 @@ id: "audit-event-trail"
 title: "Audit Event Trail via Entity-Based Event Logging"
 domain: "backend"
 category: "operation"
-score: 51.1
+score: 67.8
 usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"

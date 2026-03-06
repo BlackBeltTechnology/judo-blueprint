@@ -3,7 +3,7 @@ id: "category-enum-pattern"
 title: "Category/Classification Enumeration Pattern"
 domain: "model"
 category: "enum"
-score: 56.9
+score: 71.7
 usage_count: 13
 alternative_count: 0
 first_seen: "2026-03-04"

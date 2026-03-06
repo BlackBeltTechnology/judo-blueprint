@@ -3,7 +3,7 @@ id: "flat-entity-model"
 title: "Flat Entity Model (No Generalization)"
 domain: "model"
 category: "entity"
-score: 48.8
+score: 66.0
 usage_count: 12
 alternative_count: 1
 first_seen: "2026-03-04"

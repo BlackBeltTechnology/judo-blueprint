@@ -3,7 +3,7 @@ id: "dual-operation-layer"
 title: "Dual Operation Layer (Actor-Level and Entity-Level)"
 domain: "backend"
 category: "operation"
-score: 44.7
+score: 61.0
 usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -1,7 +1,7 @@
 ---
 id: "dashboard-transfer-object"
 title: "Dashboard Transfer Object with Statistics"
-score: 53.7
+score: 62.7
 usage_count: 2
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

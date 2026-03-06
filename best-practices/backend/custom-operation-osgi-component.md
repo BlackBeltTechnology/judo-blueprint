@@ -3,7 +3,7 @@ id: "custom-operation-osgi-component"
 title: "Custom Operation OSGi Component Registration"
 domain: "backend"
 category: "di"
-score: 59.8
+score: 80.8
 usage_count: 14
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "external-system-staging-entity"
 title: "External System Staging Entity for Integration"
 domain: "model"
 category: "entity"
-score: 53.5
+score: 58.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

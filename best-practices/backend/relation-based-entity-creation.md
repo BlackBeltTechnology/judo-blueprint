@@ -3,7 +3,7 @@ id: "relation-based-entity-creation"
 title: "Relation-Based Child Entity Creation"
 domain: "backend"
 category: "data-access"
-score: 51.6
+score: 63.6
 usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"

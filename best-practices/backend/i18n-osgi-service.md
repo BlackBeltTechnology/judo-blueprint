@@ -3,7 +3,7 @@ id: "i18n-osgi-service"
 title: "I18n Service with ThreadLocal Locale and OSGi Proxy"
 domain: "backend"
 category: "config"
-score: 68.4
+score: 75.9
 usage_count: 4
 alternative_count: 0
 first_seen: "2026-03-04"

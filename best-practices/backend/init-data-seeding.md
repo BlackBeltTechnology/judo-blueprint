@@ -3,7 +3,7 @@ id: "init-data-seeding"
 title: "Application Init Data Seeding Operation"
 domain: "backend"
 category: "operation"
-score: 49.3
+score: 66.2
 usage_count: 8
 alternative_count: 1
 first_seen: "2026-03-04"

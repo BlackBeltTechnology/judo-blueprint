@@ -3,7 +3,7 @@ id: "script-driven-operations"
 title: "Script-Driven Operations (Zero Custom Java)"
 domain: "backend"
 category: "operation"
-score: 38.4
+score: 43.2
 usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"

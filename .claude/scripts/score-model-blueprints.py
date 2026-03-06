@@ -77,7 +77,7 @@ def calculate_components(meta, project_order, project_weights, total_projects):
     Returns (usage_raw, recency_raw, weight_norm):
       - usage_raw: usage_count (will be min-max normalized later)
       - recency_raw: average recency index across projects (will be normalized)
-      - weight_norm: average project weight mapped to 0-100 directly
+      - weight_norm: max project weight mapped to 0-100 directly
     """
     projects = meta.get("projects", [])
     usage_raw = meta.get("usage_count", 0)
@@ -90,12 +90,13 @@ def calculate_components(meta, project_order, project_weights, total_projects):
             recency_values.append(proj_index / total_projects)
     recency_raw = sum(recency_values) / len(recency_values) if recency_values else 0
 
-    # Weight: average across projects, map [-10,+10] to [0,100]
+    # Weight: max across projects, map [-10,+10] to [0,100]
+    # Using max (not average) so adding more projects never lowers the weight component.
+    # The usage component already rewards having more projects.
     if projects:
-        weights = [project_weights.get(p, 0) for p in projects]
-        avg_weight = sum(weights) / len(weights)
-        avg_weight = max(-10, min(10, avg_weight))
-        weight_norm = (avg_weight + 10) / 20 * 100  # -10→0, 0→50, +10→100
+        max_weight = max(project_weights.get(p, 0) for p in projects)
+        max_weight = max(-10, min(10, max_weight))
+        weight_norm = (max_weight + 10) / 20 * 100  # -10→0, 0→50, +10→100
     else:
         weight_norm = 50.0  # neutral
 

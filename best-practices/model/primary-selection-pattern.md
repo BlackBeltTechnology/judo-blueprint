@@ -3,7 +3,7 @@ id: "primary-selection-pattern"
 title: "Primary Selection Pattern for Collection Items"
 domain: "model"
 category: "operation"
-score: 61.5
+score: 73.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

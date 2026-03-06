@@ -3,7 +3,7 @@ id: "snapshot-versioning-pattern"
 title: "Snapshot Versioning via Clone-to-Version Entities"
 domain: "model"
 category: "entity"
-score: 49.7
+score: 56.5
 usage_count: 4
 alternative_count: 1
 first_seen: "2026-03-04"

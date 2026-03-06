@@ -3,7 +3,7 @@ id: "two-phase-registration"
 title: "Two-Phase Registration with Email Verification"
 domain: "backend"
 category: "auth"
-score: 52.7
+score: 64.7
 usage_count: 3
 alternative_count: 1
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "interceptor-access-control-flags"
 title: "Access Control via __updateable/__deleteable Payload Flags"
 domain: "backend"
 category: "interceptor"
-score: 61.5
+score: 73.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

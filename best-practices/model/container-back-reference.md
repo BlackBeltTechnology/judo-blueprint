@@ -3,7 +3,7 @@ id: "container-back-reference"
 title: "Derived Container Back-Reference Pattern"
 domain: "model"
 category: "relation"
-score: 49.0
+score: 69.5
 usage_count: 6
 alternative_count: 0
 first_seen: "2026-03-04"

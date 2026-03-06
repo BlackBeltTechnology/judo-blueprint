@@ -3,7 +3,7 @@ id: "derived-attribute-flattening"
 title: "Derived Attribute Flattening"
 domain: "model"
 category: "transfer"
-score: 59.8
+score: 82.4
 usage_count: 17
 alternative_count: 0
 first_seen: "2026-03-04"

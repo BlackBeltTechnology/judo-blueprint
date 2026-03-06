@@ -3,7 +3,7 @@ id: "facade-service-pattern"
 title: "Facade Service Pattern for Domain Operations"
 domain: "backend"
 category: "service"
-score: 64.6
+score: 68.6
 usage_count: 3
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "interceptor-aggregation-postcall"
 title: "Post-Call Interceptor for Denormalized Aggregation Fields"
 domain: "backend"
 category: "interceptor"
-score: 56.5
+score: 65.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

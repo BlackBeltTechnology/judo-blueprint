@@ -3,7 +3,7 @@ id: "keycloak-jit-user-provisioning"
 title: "Keycloak Just-In-Time User Provisioning via AuthenticationInterceptor"
 domain: "backend"
 category: "auth"
-score: 59.0
+score: 68.6
 usage_count: 5
 alternative_count: 1
 first_seen: "2026-03-04"

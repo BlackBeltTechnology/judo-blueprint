@@ -1,7 +1,7 @@
 ---
 id: "reservation-booking-entity"
 title: "Reservation/Booking Entity with Time Slots and Status"
-score: 54.7
+score: 62.2
 usage_count: 2
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

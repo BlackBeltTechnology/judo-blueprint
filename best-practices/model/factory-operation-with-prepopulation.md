@@ -3,7 +3,7 @@ id: "factory-operation-with-prepopulation"
 title: "Factory Operation with Child Pre-Population"
 domain: "model"
 category: "operation"
-score: 28.5
+score: 40.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

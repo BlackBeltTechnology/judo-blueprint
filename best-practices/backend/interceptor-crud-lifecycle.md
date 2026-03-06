@@ -3,7 +3,7 @@ id: "interceptor-crud-lifecycle"
 title: "Interceptor as CRUD Lifecycle Hook"
 domain: "backend"
 category: "interceptor"
-score: 58.4
+score: 74.6
 usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"

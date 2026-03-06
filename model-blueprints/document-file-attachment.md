@@ -1,7 +1,7 @@
 ---
 id: "document-file-attachment"
 title: "Document/File Attachment Entity"
-score: 54.3
+score: 75.3
 usage_count: 6
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

@@ -3,7 +3,7 @@ id: "safe-failure-pattern"
 title: "Safe Failure Pattern for Non-Critical Operations"
 domain: "backend"
 category: "error"
-score: 57.0
+score: 66.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

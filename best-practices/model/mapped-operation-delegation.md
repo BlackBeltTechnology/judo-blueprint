@@ -3,7 +3,7 @@ id: "mapped-operation-delegation"
 title: "Mapped Operation Delegation Pattern"
 domain: "model"
 category: "operation"
-score: 47.9
+score: 71.9
 usage_count: 9
 alternative_count: 0
 first_seen: "2026-03-04"

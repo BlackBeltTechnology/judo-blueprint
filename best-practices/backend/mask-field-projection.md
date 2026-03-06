@@ -3,7 +3,7 @@ id: "mask-field-projection"
 title: "Mask Pattern for Field Projection"
 domain: "backend"
 category: "data-access"
-score: 63.0
+score: 77.5
 usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"

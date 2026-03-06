@@ -3,7 +3,7 @@ id: "panel-dashboard-transfer"
 title: "Panel/Dashboard Transfer Object as UI Entry Point"
 domain: "model"
 category: "transfer"
-score: 62.9
+score: 75.9
 usage_count: 6
 alternative_count: 0
 first_seen: "2026-03-04"

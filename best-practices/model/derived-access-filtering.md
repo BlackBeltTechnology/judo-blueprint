@@ -3,7 +3,7 @@ id: "derived-access-filtering"
 title: "Derived Access Point with Getter Filtering"
 domain: "model"
 category: "access"
-score: 54.9
+score: 77.7
 usage_count: 13
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "composition-ownership"
 title: "Composition Ownership for Lifecycle-Bound Children"
 domain: "model"
 category: "relation"
-score: 58.4
+score: 81.5
 usage_count: 17
 alternative_count: 0
 first_seen: "2026-03-04"

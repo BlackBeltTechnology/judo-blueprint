@@ -3,7 +3,7 @@ id: "sequence-based-identifier"
 title: "Sequence-Based Identifier Pattern"
 domain: "model"
 category: "entity"
-score: 39.4
+score: 43.0
 usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"

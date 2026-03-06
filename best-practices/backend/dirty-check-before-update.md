@@ -3,7 +3,7 @@ id: "dirty-check-before-update"
 title: "Dirty-Check Before Update to Avoid Unnecessary Writes"
 domain: "backend"
 category: "data-access"
-score: 59.0
+score: 71.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "typed-exception-error-handling"
 title: "Typed Exception with Error Code Enumeration"
 domain: "backend"
 category: "error"
-score: 61.7
+score: 76.3
 usage_count: 7
 alternative_count: 1
 first_seen: "2026-03-04"

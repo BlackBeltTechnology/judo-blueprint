@@ -3,7 +3,7 @@ id: "service-based-transfer-organization"
 title: "Service-Based Transfer Object Organization"
 domain: "model"
 category: "transfer"
-score: 62.0
+score: 76.6
 usage_count: 7
 alternative_count: 1
 first_seen: "2026-03-04"

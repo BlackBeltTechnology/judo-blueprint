@@ -3,7 +3,7 @@ id: "upsert-create-or-update"
 title: "Upsert Pattern (Create or Update)"
 domain: "backend"
 category: "operation"
-score: 57.6
+score: 64.6
 usage_count: 3
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "service-delegation-pattern"
 title: "Service Delegation from Custom Operations"
 domain: "backend"
 category: "service"
-score: 64.2
+score: 77.2
 usage_count: 6
 alternative_count: 0
 first_seen: "2026-03-04"

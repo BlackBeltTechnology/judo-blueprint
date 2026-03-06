@@ -3,7 +3,7 @@ id: "hungarian-full-localization"
 title: "Full Hungarian Localization with Python i18n Utilities"
 domain: "frontend"
 category: "i18n"
-score: 54.0
+score: 66.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

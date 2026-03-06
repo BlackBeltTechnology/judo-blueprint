@@ -3,7 +3,7 @@ id: "soft-delete-active-flag"
 title: "Soft Delete via Active Boolean Flag"
 domain: "model"
 category: "entity"
-score: 57.6
+score: 77.8
 usage_count: 11
 alternative_count: 0
 first_seen: "2026-03-04"

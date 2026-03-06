@@ -3,7 +3,7 @@ id: "naming-conventions"
 title: "JUDO Model Naming Conventions"
 domain: "model"
 category: "namespace"
-score: 61.5
+score: 84.2
 usage_count: 19
 alternative_count: 0
 first_seen: "2026-03-04"

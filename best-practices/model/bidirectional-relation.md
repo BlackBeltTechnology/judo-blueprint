@@ -3,7 +3,7 @@ id: "bidirectional-relation"
 title: "Bidirectional (Two-Way) Relation Pattern"
 domain: "model"
 category: "relation"
-score: 55.6
+score: 73.6
 usage_count: 15
 alternative_count: 0
 first_seen: "2026-03-04"

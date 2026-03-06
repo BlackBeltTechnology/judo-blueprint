@@ -3,7 +3,7 @@ id: "interceptor-global-logging"
 title: "Global Operation Logging Interceptor"
 domain: "backend"
 category: "interceptor"
-score: 58.0
+score: 78.7
 usage_count: 10
 alternative_count: 0
 first_seen: "2026-03-04"

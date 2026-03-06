@@ -3,7 +3,7 @@ id: "collection-lower-bound-zero"
 title: "Collection Relations Always Use 0 Lower Bound"
 domain: "model"
 category: "relation"
-score: 60.4
+score: 83.1
 usage_count: 18
 alternative_count: 0
 first_seen: "2026-03-04"

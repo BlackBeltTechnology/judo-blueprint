@@ -3,7 +3,7 @@ id: "quartz-scheduled-job"
 title: "Quartz Scheduled Job with OSGi Configuration"
 domain: "backend"
 category: "scheduling"
-score: 68.4
+score: 75.9
 usage_count: 4
 alternative_count: 0
 first_seen: "2026-03-04"

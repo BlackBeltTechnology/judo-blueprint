@@ -3,7 +3,7 @@ id: "generator-override-extra-dependencies"
 title: "Generator Override for Extra NPM Dependencies"
 domain: "frontend"
 category: "build"
-score: 59.5
+score: 71.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

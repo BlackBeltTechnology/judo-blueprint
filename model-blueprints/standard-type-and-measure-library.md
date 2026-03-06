@@ -1,7 +1,7 @@
 ---
 id: "standard-type-and-measure-library"
 title: "Standard Type and Measure Library (Shared Type System)"
-score: 43.8
+score: 46.0
 usage_count: 8
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

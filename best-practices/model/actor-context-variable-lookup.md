@@ -3,7 +3,7 @@ id: "actor-context-variable-lookup"
 title: "Actor Context Variable Lookup Pattern"
 domain: "model"
 category: "access"
-score: 44.0
+score: 47.4
 usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"

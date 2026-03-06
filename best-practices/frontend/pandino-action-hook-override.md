@@ -3,7 +3,7 @@ id: "pandino-action-hook-override"
 title: "Pandino Service Registry for Action Hook Overrides"
 domain: "frontend"
 category: "hook"
-score: 52.4
+score: 70.4
 usage_count: 4
 alternative_count: 0
 first_seen: "2026-03-04"

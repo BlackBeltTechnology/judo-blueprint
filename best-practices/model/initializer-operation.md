@@ -3,7 +3,7 @@ id: "initializer-operation"
 title: "Static Initializer Operation for Data Seeding"
 domain: "model"
 category: "operation"
-score: 55.4
+score: 78.4
 usage_count: 14
 alternative_count: 0
 first_seen: "2026-03-04"

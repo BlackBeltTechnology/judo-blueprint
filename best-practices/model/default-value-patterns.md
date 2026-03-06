@@ -3,7 +3,7 @@ id: "default-value-patterns"
 title: "Default Value Conventions"
 domain: "model"
 category: "entity"
-score: 59.2
+score: 81.7
 usage_count: 16
 alternative_count: 0
 first_seen: "2026-03-04"

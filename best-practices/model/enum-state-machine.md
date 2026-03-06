@@ -3,7 +3,7 @@ id: "enum-state-machine"
 title: "Enum-Based State Machine Pattern"
 domain: "model"
 category: "enum"
-score: 58.1
+score: 78.6
 usage_count: 12
 alternative_count: 2
 first_seen: "2026-03-04"

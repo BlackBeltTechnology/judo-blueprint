@@ -3,7 +3,7 @@ id: "generator-ignore-config-protection"
 title: "Generator-Ignore for Configuration Protection"
 domain: "backend"
 category: "config"
-score: 61.5
+score: 82.7
 usage_count: 15
 alternative_count: 0
 first_seen: "2026-03-04"

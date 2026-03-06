@@ -3,7 +3,7 @@ id: "generalization-base-entity"
 title: "Generalization Base Entity for Shared Infrastructure"
 domain: "model"
 category: "entity"
-score: 57.0
+score: 72.5
 usage_count: 6
 alternative_count: 1
 first_seen: "2026-03-04"

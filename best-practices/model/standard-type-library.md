@@ -3,7 +3,7 @@ id: "standard-type-library"
 title: "Standard Primitive Type and Measures Library"
 domain: "model"
 category: "type"
-score: 59.5
+score: 82.7
 usage_count: 18
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "ui-control-transfer-fields"
 title: "UI Control Fields on Transfer Objects"
 domain: "model"
 category: "transfer"
-score: 45.8
+score: 61.9
 usage_count: 8
 alternative_count: 0
 first_seen: "2026-03-04"

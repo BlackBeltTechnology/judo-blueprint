@@ -3,7 +3,7 @@ id: "multi-role-single-entity"
 title: "Multi-Role Single Entity with Boolean Flags"
 domain: "model"
 category: "entity"
-score: 46.4
+score: 61.4
 usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"

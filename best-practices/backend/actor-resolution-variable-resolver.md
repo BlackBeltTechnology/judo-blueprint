@@ -3,7 +3,7 @@ id: "actor-resolution-variable-resolver"
 title: "Actor Resolution via VariableResolver Pattern"
 domain: "backend"
 category: "auth"
-score: 54.9
+score: 70.9
 usage_count: 9
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -3,7 +3,7 @@ id: "singleton-entity"
 title: "Singleton Entity Pattern"
 domain: "model"
 category: "entity"
-score: 50.9
+score: 67.0
 usage_count: 8
 alternative_count: 0
 first_seen: "2026-03-04"

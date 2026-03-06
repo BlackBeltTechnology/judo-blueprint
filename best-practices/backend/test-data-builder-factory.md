@@ -3,7 +3,7 @@ id: "test-data-builder-factory"
 title: "Test Data Builder Factory with Service Injection Bridge"
 domain: "backend"
 category: "testing"
-score: 72.0
+score: 75.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

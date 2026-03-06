@@ -3,7 +3,7 @@ id: "toggle-operation-pattern"
 title: "Toggle Operation for Boolean Flag Mutation"
 domain: "model"
 category: "operation"
-score: 72.0
+score: 75.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"

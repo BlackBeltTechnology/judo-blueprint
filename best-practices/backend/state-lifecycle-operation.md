@@ -3,7 +3,7 @@ id: "state-lifecycle-operation"
 title: "State Lifecycle Management via Bound Operations"
 domain: "backend"
 category: "operation"
-score: 57.3
+score: 77.5
 usage_count: 11
 alternative_count: 0
 first_seen: "2026-03-04"

@@ -1,7 +1,7 @@
 ---
 id: "initializer-entity-with-init-operation"
 title: "Initializer Entity with Static Init Operation"
-score: 61.2
+score: 84.0
 usage_count: 13
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

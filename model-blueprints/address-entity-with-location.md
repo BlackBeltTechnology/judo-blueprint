@@ -1,7 +1,7 @@
 ---
 id: "address-entity-with-location"
 title: "Address Entity with Geolocation"
-score: 61.0
+score: 71.0
 usage_count: 3
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

@@ -3,7 +3,7 @@ id: "filestore-mediated-file-transfer"
 title: "FileStore-Mediated File Transfer Pattern"
 domain: "backend"
 category: "integration"
-score: 60.1
+score: 77.5
 usage_count: 10
 alternative_count: 0
 first_seen: "2026-03-04"

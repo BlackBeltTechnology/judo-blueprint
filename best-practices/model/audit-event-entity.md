@@ -3,7 +3,7 @@ id: "audit-event-entity"
 title: "Dedicated Audit Event Entity for State Change Tracking"
 domain: "model"
 category: "entity"
-score: 48.0
+score: 67.2
 usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"
