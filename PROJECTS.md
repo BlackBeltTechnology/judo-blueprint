@@ -1,7 +1,8 @@
 # JUDO Project Priority Timeline
 
 > Newest projects first (highest priority). Based on first commit date of each repo.
-> To add a new project: append one row here. `/collect-best-practices` or `/collect-model-blueprints` will pick it up automatically.
+> To add a new project: use `.claude/scripts/add-project.sh <name> <git-url> [weight]` or append a row manually.
+> `/collect-best-practices` or `/collect-model-blueprints` will pick it up automatically.
 
 | #   | Project                    | Git URL                                                       | First Commit | Last Commit | Commits | Weight [-10;+10] |
 | --- | -------------------------- | ------------------------------------------------------------- | ------------ | ----------- | ------- | ---------------- |

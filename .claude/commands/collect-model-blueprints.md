@@ -17,9 +17,12 @@ allowed-tools:
   - TaskGet
 ---
 
-Orchestrate the collection of reusable model structural fragments (blueprints) from JUDO project source code into the `model-blueprints/` catalog. Each blueprint is a directory containing up to 4 files: `BLUEPRINT.md` (description + metadata), `model.md` (detection queries + mutations + examples), `backend.md` (backend implementation patterns), and `frontend.md` (frontend implementation patterns).
+Orchestrate the collection of reusable structural fragments (blueprints) from JUDO project source code into the `model-blueprints/` catalog. Blueprints come in two flavors:
 
-Projects are **cloned fresh from Git on-demand** to `/tmp/judo-projects/`, analyzed by three specialized agents in sequence (model first, then backend + frontend in parallel), then cleaned up.
+1. **Model blueprints** — structural fragments discovered from the ESM model (entity clusters, enums, TOs), with optional backend/frontend implementation. Directory contains: `BLUEPRINT.md`, `model.md`, and optionally `backend.md`/`frontend.md`.
+2. **Implementation-only blueprints** — patterns discovered from custom backend/frontend code that have no model counterpart (e.g., external service integrations, cross-cutting hook patterns, custom component systems). Directory contains: `BLUEPRINT.md` with `impl_only: true`, plus `backend.md` and/or `frontend.md` (no `model.md`).
+
+Projects are **cloned fresh from Git on-demand** to `/tmp/judo-projects/`, analyzed by three specialized agents (model first, then backend + frontend in parallel — with backend/frontend also performing **discovery scans** for implementation-only patterns), then cleaned up.
 
 ## Command-Specific Task Initialization
 
@@ -146,7 +149,7 @@ If clone fails (private repo, network issue), log the error, mark as `skipped` i
 ls /tmp/judo-projects/<name>/model/*.model 2>/dev/null | grep -v '\-esm\.model$'
 ```
 
-Get the model file path. **CRITICAL**: Only use files matching `model/*.model` — **NEVER** use `*-esm.model` files (those are compiled/generated artifacts, not source models). If no valid `.model` file exists after excluding `-esm.model`, mark Model/Backend/Frontend all as `skipped` in PROGRESS.md and continue to next project.
+Get the model file path. **CRITICAL**: Only use files matching `model/*.model` — **NEVER** use `*-esm.model` files (those are compiled/generated artifacts, not source models). If no valid `.model` file exists after excluding `-esm.model`, mark `Model` as `skipped` in PROGRESS.md — but **do NOT skip the project entirely**. The project may still have custom backend/frontend implementations worth discovering. Proceed to Stage 2 (3e) with no model file and no blueprint IDs from model analysis.
 
 #### 3c. Stage 1: Model Blueprint Analysis (sequential)
 
@@ -186,19 +189,31 @@ Update PROGRESS.md: mark `Model: done` for this project.
 python3 $CLAUDE_PROJECT_DIR/query-catalog.py list --project <PROJECT> --type blueprint
 ```
 
-This returns all blueprints whose `projects:` frontmatter includes this project — works both when Stage 1 just ran (the model agent updates frontmatter) and when resuming (Model already `done`). Extract the blueprint IDs from the output table.
+This returns all blueprints whose `projects:` frontmatter includes this project — works both when Stage 1 just ran (the model agent updates frontmatter) and when resuming (Model already `done`). Extract the blueprint IDs from the output table. If no blueprint IDs are found (e.g., the project has no model file), pass an empty list — the agents will still run **discovery mode** to find implementation-only patterns.
 
 Launch **both** agents in parallel using `run_in_background: true`:
 
 **Backend agent:**
 - `subagent_type`: `judo-backend-blueprint-analyzer`
 - `description`: "Backend blueprints: <PROJECT>"
-- `prompt`: "Analyze project **<PROJECT>**. Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path>`. Blueprint IDs to analyze: `<comma-separated-ids>`. For each blueprint, read its BLUEPRINT.md and model.md to understand the structural pattern, then search the project's backend code (custom/**/*.java, interceptors, DI wiring) for related implementations. Write backend.md for each blueprint where you find implementation. Also add a `## Backend Implementation` reference section to BLUEPRINT.md if you create a backend.md. Report what you found."
+- `prompt`: "Analyze project **<PROJECT>**. Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path or 'none'>`. Blueprint IDs to analyze: `<comma-separated-ids or 'none'>`.
+
+**IMPORTANT: Run Phase 0 (Discovery Scan) FIRST.** Before processing blueprint IDs, scan the project's backend code for implementation-only patterns — custom implementations that don't correspond to any model-level blueprint. Check custom/**/*.java, separate Maven modules (keycloak-client/, integration/, etc.), interceptors, and service layers. Create new impl-only blueprints (with `impl_only: true`) for patterns not already in the catalog.
+
+**Then run Phase 1 (Match Mode).** For each blueprint ID, read its BLUEPRINT.md and model.md to understand the structural pattern, then search the project's backend code (custom/**/*.java, interceptors, DI wiring) for related implementations. Write backend.md for each blueprint where you find implementation. Also add a `## Backend Implementation` reference section to BLUEPRINT.md if you create a backend.md.
+
+Report what you found, including both impl-only blueprints created AND backend.md files written for existing blueprints."
 
 **Frontend agent:**
 - `subagent_type`: `judo-frontend-blueprint-analyzer`
 - `description`: "Frontend blueprints: <PROJECT>"
-- `prompt`: "Analyze project **<PROJECT>**. Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path>`. Blueprint IDs to analyze: `<comma-separated-ids>`. For each blueprint, read its BLUEPRINT.md and model.md to understand the structural pattern, then search the project's frontend code (custom/**, hooks, theme, layout) for related implementations. Write frontend.md for each blueprint where you find implementation. Also add a `## Frontend Implementation` reference section to BLUEPRINT.md if you create a frontend.md. Report what you found."
+- `prompt`: "Analyze project **<PROJECT>**. Project path: `/tmp/judo-projects/<PROJECT>/`. Model file: `<model-path or 'none'>`. Blueprint IDs to analyze: `<comma-separated-ids or 'none'>`.
+
+**IMPORTANT: Run Phase 0 (Discovery Scan) FIRST.** Before processing blueprint IDs, scan the project's frontend code for implementation-only patterns — custom components, cross-cutting Pandino hooks, theme systems, and other custom implementations that don't correspond to any model-level blueprint. Check custom/**, application-customizer, .generator-ignore, src/theme/, src/layout/. Create new impl-only blueprints (with `impl_only: true`) for patterns not already in the catalog.
+
+**Then run Phase 1 (Match Mode).** For each blueprint ID, read its BLUEPRINT.md and model.md to understand the structural pattern, then search the project's frontend code (custom/**, hooks, theme, layout) for related implementations. Write frontend.md for each blueprint where you find implementation. Also add a `## Frontend Implementation` reference section to BLUEPRINT.md if you create a frontend.md.
+
+Report what you found, including both impl-only blueprints created AND frontend.md files written for existing blueprints."
 
 Wait for both agents to complete.
 
@@ -246,10 +261,13 @@ After validation:
    echo "model.md:"; find model-blueprints/ -name "model.md" | wc -l
    echo "backend.md:"; find model-blueprints/ -name "backend.md" | wc -l
    echo "frontend.md:"; find model-blueprints/ -name "frontend.md" | wc -l
+   echo "Impl-only:"; grep -rl "impl_only: true" model-blueprints/*/BLUEPRINT.md 2>/dev/null | wc -l
    ```
 
 2. Present the results to the user:
    - Total blueprints cataloged
+   - Model blueprints (with model.md)
+   - **Implementation-only blueprints** (with `impl_only: true`, no model.md)
    - Blueprints with backend implementation
    - Blueprints with frontend implementation
    - Top fragments by usage count
@@ -260,9 +278,11 @@ After validation:
 
 ## Key Design Decisions
 
-### Three-Stage Pipeline: Model -> Validate -> Backend + Frontend
+### Three-Stage Pipeline: Model -> Validate -> Backend + Frontend (with Discovery)
 
 The model blueprint must be written first because the backend/frontend agents **read** the BLUEPRINT.md and model.md to understand what entities/operations to search for. The model agent creates the structural definition, then the backend/frontend agents search for implementation patterns based on that definition.
+
+**However**, the backend/frontend agents also run a **discovery scan** (Phase 0) before matching against known blueprints. This discovers implementation-only patterns — custom code that doesn't correspond to any model entity. These get their own blueprint directories with `impl_only: true` and no `model.md`. This means even projects without a `.model` file can contribute blueprints.
 
 ### Full Clone (not Sparse)
 

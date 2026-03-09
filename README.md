@@ -44,7 +44,20 @@ The command will:
 
 ### Add a New Project
 
-Append a row to `PROJECTS.md`. The next `/collect-best-practices` run detects it as "NEW" automatically.
+Use the `add-project.sh` script to add a project entry:
+
+```bash
+.claude/scripts/add-project.sh "my-project" "git@github.com:org/repo.git"
+.claude/scripts/add-project.sh "my-project" "git@github.com:org/repo.git" 5  # With weight +5
+```
+
+The script automatically:
+- Clones the repo to fetch first/last commit dates and commit count
+- Adds a properly formatted row to `PROJECTS.md`
+- Sorts entries by first commit date (newest first = highest priority)
+- Renumbers all rows
+
+Alternatively, you can manually append a row to `PROJECTS.md`. The next `/collect-best-practices` run detects it as "NEW" automatically.
 
 ### Re-analyze a Project
 
@@ -179,6 +192,7 @@ Then re-run the scoring scripts with `--update` to apply.
 
 | Script | Description |
 |--------|-------------|
+| `add-project.sh` | **Add new project entry** — clones repo, fetches commit info, adds sorted row to PROJECTS.md |
 | `query-catalog.py` | **Unified catalog query** — list all items (names + scores) or get full content by ID |
 | `score-best-practices.py` | Score best practices (0–100, usage + recency − alternatives × weight) |
 | `score-model-blueprints.py` | Score model blueprints (0–100, usage + recency × weight) |
