@@ -139,7 +139,7 @@ substitute_placeholders() {
 test_blueprint() {
     local md_path="$1"
     local blueprint_id
-    blueprint_id="$(basename "$md_path" .md)"
+    blueprint_id="$(basename "$(dirname "$md_path")")"
     AUTO_COUNTER=0
 
     local mutations=()
@@ -224,7 +224,7 @@ if [[ ! -f "$SANDBOX_MODEL" ]]; then
 fi
 
 if [[ -n "$SINGLE_BLUEPRINT" ]]; then
-    md="$BLUEPRINTS_DIR/${SINGLE_BLUEPRINT}.md"
+    md="$BLUEPRINTS_DIR/${SINGLE_BLUEPRINT}/model.md"
     if [[ ! -f "$md" ]]; then
         echo "ERROR: Blueprint not found: $md" >&2
         exit 2
@@ -232,9 +232,8 @@ if [[ -n "$SINGLE_BLUEPRINT" ]]; then
     files=("$md")
 else
     files=()
-    for f in "$BLUEPRINTS_DIR"/*.md; do
-        local_name="$(basename "$f")"
-        [[ "$local_name" == "PROGRESS.md" || "$local_name" == "CONVENTIONS.md" ]] && continue
+    for f in "$BLUEPRINTS_DIR"/*/model.md; do
+        [[ -f "$f" ]] || continue
         files+=("$f")
     done
 fi

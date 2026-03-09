@@ -13,11 +13,15 @@ Usage:
   python3 query-catalog.py list                              # All best-practices + blueprints
   python3 query-catalog.py list --type best-practice          # Only best-practices
   python3 query-catalog.py list --type blueprint              # Only blueprints
+  python3 query-catalog.py list --type blueprint --layer backend  # Blueprints that have backend.md
   python3 query-catalog.py list --domain model                # Only model-domain best-practices
   python3 query-catalog.py list --domain model --type all     # Model best-practices + blueprints
   python3 query-catalog.py list --category entity             # Filter by category
-  python3 query-catalog.py get audit-log-entity               # Full content of one item
-  python3 query-catalog.py get collection-lower-bound-zero    # Full content of one item
+  python3 query-catalog.py get audit-log-entity               # Full content (BLUEPRINT.md + model.md)
+  python3 query-catalog.py get audit-log-entity --layer backend   # Only backend.md content
+  python3 query-catalog.py get audit-log-entity --layer frontend  # Only frontend.md content
+  python3 query-catalog.py get audit-log-entity --layer model     # Only model.md content
+  python3 query-catalog.py get audit-log-entity --layer all       # All files concatenated
   python3 query-catalog.py get id1 id2 id3                    # Full content of multiple items
 """
 
@@ -70,7 +74,16 @@ def parse_frontmatter(filepath):
     return meta, content
 
 
-def scan_all(base_dir, type_filter=None, domain_filter=None, category_filter=None):
+def detect_blueprint_layers(blueprint_dir):
+    """Detect which layer files exist in a blueprint directory."""
+    layers = []
+    for layer in ["model", "backend", "frontend"]:
+        if os.path.isfile(os.path.join(blueprint_dir, f"{layer}.md")):
+            layers.append(layer)
+    return layers
+
+
+def scan_all(base_dir, type_filter=None, domain_filter=None, category_filter=None, layer_filter=None):
     """Scan both best-practices and model-blueprints. Returns list of (meta, filepath, item_type)."""
     items = []
 
@@ -90,17 +103,25 @@ def scan_all(base_dir, type_filter=None, domain_filter=None, category_filter=Non
                 if meta:
                     items.append((meta, filepath, "best-practice"))
 
-    # Scan model-blueprints
+    # Scan model-blueprints (directory-based: model-blueprints/<id>/BLUEPRINT.md)
     if type_filter in (None, "all", "blueprint", "mb"):
         blueprints_dir = os.path.join(base_dir, "model-blueprints")
         if os.path.isdir(blueprints_dir):
-            for filename in sorted(os.listdir(blueprints_dir)):
-                if not filename.endswith(".md") or filename in ("PROGRESS.md", "INDEX.md"):
+            for entry in sorted(os.listdir(blueprints_dir)):
+                subdir = os.path.join(blueprints_dir, entry)
+                if not os.path.isdir(subdir):
                     continue
-                filepath = os.path.join(blueprints_dir, filename)
-                meta, _ = parse_frontmatter(filepath)
-                if meta:
-                    items.append((meta, filepath, "blueprint"))
+                bp_file = os.path.join(subdir, "BLUEPRINT.md")
+                if os.path.isfile(bp_file):
+                    meta, _ = parse_frontmatter(bp_file)
+                    if meta:
+                        layers = detect_blueprint_layers(subdir)
+                        meta["_layers"] = layers
+                        # Apply layer filter: only include blueprints that have the requested layer
+                        if layer_filter and layer_filter != "all":
+                            if layer_filter not in layers:
+                                continue
+                        items.append((meta, bp_file, "blueprint"))
 
     # Apply category filter
     if category_filter:
@@ -109,52 +130,104 @@ def scan_all(base_dir, type_filter=None, domain_filter=None, category_filter=Non
     return items
 
 
-def find_by_id(base_dir, item_id):
-    """Find a specific item by its id across all catalogs. Returns (filepath, full_content) or None."""
-    # Check best-practices (all domains)
-    for domain in ["model", "backend", "frontend"]:
-        filepath = os.path.join(base_dir, "best-practices", domain, f"{item_id}.md")
-        if os.path.isfile(filepath):
-            meta, content = parse_frontmatter(filepath)
-            if meta and meta.get("id") == item_id:
-                return filepath, content
+def find_by_id(base_dir, item_id, layer=None):
+    """Find a specific item by its id across all catalogs.
 
-    # Check model-blueprints
-    filepath = os.path.join(base_dir, "model-blueprints", f"{item_id}.md")
-    if os.path.isfile(filepath):
-        meta, content = parse_frontmatter(filepath)
+    For blueprints, the layer parameter controls what content is returned:
+      None or "all"  -> BLUEPRINT.md + model.md (default, backward compatible)
+      "model"        -> only model.md
+      "backend"      -> only backend.md
+      "frontend"     -> only frontend.md
+
+    Returns (filepath, full_content) or None.
+    """
+    # Check best-practices (all domains) — layer filter doesn't apply here
+    if layer in (None, "all"):
+        for domain in ["model", "backend", "frontend"]:
+            filepath = os.path.join(base_dir, "best-practices", domain, f"{item_id}.md")
+            if os.path.isfile(filepath):
+                meta, content = parse_frontmatter(filepath)
+                if meta and meta.get("id") == item_id:
+                    return filepath, content
+
+    # Check model-blueprints (directory-based)
+    bp_dir = os.path.join(base_dir, "model-blueprints", item_id)
+    bp_file = os.path.join(bp_dir, "BLUEPRINT.md")
+    if os.path.isfile(bp_file):
+        meta, content = parse_frontmatter(bp_file)
         if meta and meta.get("id") == item_id:
-            return filepath, content
+            # Return specific layer file
+            if layer and layer != "all":
+                layer_file = os.path.join(bp_dir, f"{layer}.md")
+                if os.path.isfile(layer_file):
+                    with open(layer_file, "r", encoding="utf-8") as f:
+                        return layer_file, f.read()
+                else:
+                    return None  # requested layer doesn't exist
+            # Default: BLUEPRINT.md + model.md concatenated
+            model_file = os.path.join(bp_dir, "model.md")
+            if os.path.isfile(model_file):
+                with open(model_file, "r", encoding="utf-8") as f:
+                    content += "\n" + f.read()
+            # If --layer all, also append backend.md and frontend.md
+            if layer == "all":
+                for extra in ["backend.md", "frontend.md"]:
+                    extra_file = os.path.join(bp_dir, extra)
+                    if os.path.isfile(extra_file):
+                        with open(extra_file, "r", encoding="utf-8") as f:
+                            content += "\n" + f.read()
+            return bp_file, content
 
-    # Fallback: scan all files in case filename != id
-    for domain in ["model", "backend", "frontend"]:
-        domain_dir = os.path.join(base_dir, "best-practices", domain)
-        if not os.path.isdir(domain_dir):
-            continue
-        for filename in os.listdir(domain_dir):
-            if not filename.endswith(".md") or filename == "INDEX.md":
+    # Fallback: scan all best-practice files in case filename != id
+    if layer in (None, "all"):
+        for domain in ["model", "backend", "frontend"]:
+            domain_dir = os.path.join(base_dir, "best-practices", domain)
+            if not os.path.isdir(domain_dir):
                 continue
-            filepath = os.path.join(domain_dir, filename)
-            meta, content = parse_frontmatter(filepath)
-            if meta and meta.get("id") == item_id:
-                return filepath, content
+            for filename in os.listdir(domain_dir):
+                if not filename.endswith(".md") or filename == "INDEX.md":
+                    continue
+                filepath = os.path.join(domain_dir, filename)
+                meta, content = parse_frontmatter(filepath)
+                if meta and meta.get("id") == item_id:
+                    return filepath, content
 
+    # Fallback: scan blueprint directories
     blueprints_dir = os.path.join(base_dir, "model-blueprints")
     if os.path.isdir(blueprints_dir):
-        for filename in os.listdir(blueprints_dir):
-            if not filename.endswith(".md") or filename in ("PROGRESS.md", "INDEX.md"):
+        for entry in os.listdir(blueprints_dir):
+            subdir = os.path.join(blueprints_dir, entry)
+            if not os.path.isdir(subdir):
                 continue
-            filepath = os.path.join(blueprints_dir, filename)
-            meta, content = parse_frontmatter(filepath)
-            if meta and meta.get("id") == item_id:
-                return filepath, content
+            bp_file = os.path.join(subdir, "BLUEPRINT.md")
+            if os.path.isfile(bp_file):
+                meta, content = parse_frontmatter(bp_file)
+                if meta and meta.get("id") == item_id:
+                    if layer and layer != "all":
+                        layer_file = os.path.join(subdir, f"{layer}.md")
+                        if os.path.isfile(layer_file):
+                            with open(layer_file, "r", encoding="utf-8") as f:
+                                return layer_file, f.read()
+                        else:
+                            return None
+                    model_file = os.path.join(subdir, "model.md")
+                    if os.path.isfile(model_file):
+                        with open(model_file, "r", encoding="utf-8") as f:
+                            content += "\n" + f.read()
+                    if layer == "all":
+                        for extra in ["backend.md", "frontend.md"]:
+                            extra_file = os.path.join(subdir, extra)
+                            if os.path.isfile(extra_file):
+                                with open(extra_file, "r", encoding="utf-8") as f:
+                                    content += "\n" + f.read()
+                    return bp_file, content
 
     return None
 
 
 def cmd_list(args, base_dir):
     """List all items with id, title, score/usage_count only."""
-    items = scan_all(base_dir, args.type, args.domain, args.category)
+    items = scan_all(base_dir, args.type, args.domain, args.category, args.layer)
 
     if not items:
         print("No items found.")
@@ -168,26 +241,29 @@ def cmd_list(args, base_dir):
     items.sort(key=sort_key, reverse=True)
 
     # Print compact table
-    print(f"{'Type':<15} {'Score':<7} {'Uses':<5} {'Domain':<10} {'Category':<14} {'ID':<45} {'Title'}")
+    print(f"{'Type':<15} {'Score':<7} {'Uses':<5} {'Domain':<10} {'Layers':<14} {'ID':<45} {'Title'}")
     print("-" * 160)
 
     for meta, filepath, item_type in items:
         score = meta.get("score", "-")
         uses = meta.get("usage_count", 0)
         domain = meta.get("domain", "model") if item_type == "best-practice" else "model"
-        category = meta.get("category", "-") if item_type == "best-practice" else "-"
         item_id = meta.get("id", "?")
         title = meta.get("title", "?")
 
         if item_type == "blueprint":
             score = "-"
+            layers = ",".join(meta.get("_layers", []))
+        else:
+            category = meta.get("category", "-")
+            layers = category
 
         print(
             f"{item_type:<15} "
             f"{str(score):<7} "
             f"{uses:<5} "
             f"{domain:<10} "
-            f"{category:<14} "
+            f"{layers:<14} "
             f"{item_id:<45} "
             f"{title}"
         )
@@ -197,10 +273,14 @@ def cmd_list(args, base_dir):
 
 def cmd_get(args, base_dir):
     """Get the full content of one or more items by id."""
+    layer = getattr(args, "layer", None)
     for item_id in args.ids:
-        result = find_by_id(base_dir, item_id)
+        result = find_by_id(base_dir, item_id, layer=layer)
         if result is None:
-            print(f"ERROR: Item '{item_id}' not found in any catalog.", file=sys.stderr)
+            if layer:
+                print(f"ERROR: Item '{item_id}' not found or has no {layer}.md layer.", file=sys.stderr)
+            else:
+                print(f"ERROR: Item '{item_id}' not found in any catalog.", file=sys.stderr)
             continue
 
         filepath, content = result
@@ -237,10 +317,20 @@ def main():
         default=None,
         help="Filter by category (e.g., entity, hook, interceptor)"
     )
+    list_parser.add_argument(
+        "--layer", choices=["model", "backend", "frontend", "all"],
+        default=None,
+        help="Filter blueprints by which layer files exist (model, backend, frontend)"
+    )
 
     # get subcommand
     get_parser = subparsers.add_parser("get", help="Get full content of item(s) by id")
     get_parser.add_argument("ids", nargs="+", help="One or more item IDs to retrieve")
+    get_parser.add_argument(
+        "--layer", choices=["model", "backend", "frontend", "all"],
+        default=None,
+        help="Return only a specific layer file (model.md, backend.md, frontend.md) or all files"
+    )
 
     args = parser.parse_args()
 

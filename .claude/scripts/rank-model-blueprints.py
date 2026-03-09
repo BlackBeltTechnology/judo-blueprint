@@ -65,17 +65,21 @@ def parse_frontmatter(filepath):
 
 
 def scan_blueprints(base_dir):
-    """Scan model-blueprints/ and return all blueprint metadata."""
+    """Scan model-blueprints/<id>/BLUEPRINT.md and return all blueprint metadata."""
     blueprints_dir = os.path.join(base_dir, "model-blueprints")
     if not os.path.isdir(blueprints_dir):
         return []
 
     blueprints = []
-    for filename in sorted(os.listdir(blueprints_dir)):
-        if not filename.endswith(".md") or filename in ("PROGRESS.md", "INDEX.md"):
+    for entry in sorted(os.listdir(blueprints_dir)):
+        subdir = os.path.join(blueprints_dir, entry)
+        if not os.path.isdir(subdir):
             continue
 
-        filepath = os.path.join(blueprints_dir, filename)
+        filepath = os.path.join(subdir, "BLUEPRINT.md")
+        if not os.path.isfile(filepath):
+            continue
+
         meta = parse_frontmatter(filepath)
         if meta:
             blueprints.append(meta)

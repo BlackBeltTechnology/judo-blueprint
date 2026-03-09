@@ -204,11 +204,10 @@ For each fragment identified:
 6. Write the updated blueprint
 
 **If new fragment:**
-1. Create a new file: `$CLAUDE_PROJECT_DIR/model-blueprints/<fragment-id>.md`
-2. Set `usage_count: 1`, `first_seen` and `last_updated` to today
-3. Add the source project to `projects` list
-4. Fill in description, detection query, creation mutations, and first example
-5. Write the new blueprint
+1. Create a new directory: `$CLAUDE_PROJECT_DIR/model-blueprints/<fragment-id>/`
+2. Write `BLUEPRINT.md` with frontmatter (id, title, usage_count: 1, first_seen, last_updated, projects) + `## Description` + `## Model Definition` section linking to model.md
+3. Write `model.md` with `## Detection Query` + `## Creation Mutations` + `## Examples`
+4. Both files go inside the same directory
 
 ### Phase 5: Validate Mutations
 
@@ -249,8 +248,9 @@ See `model-blueprints/CONVENTIONS.md` for the full list of mutation rules. Key p
 
 ## Blueprint File Format
 
-Each blueprint file in `model-blueprints/` uses this format:
+Each blueprint is a **directory** in `model-blueprints/<id>/` with two files:
 
+**`BLUEPRINT.md`** — metadata + description + links to other files:
 ```markdown
 ---
 id: fragment-kebab-name
@@ -266,6 +266,13 @@ projects:
 
 [What this model fragment is and when it's useful]
 
+## Model Definition
+
+See [model.md](model.md) for detection queries, creation mutations, and examples.
+```
+
+**`model.md`** — detection queries, mutations, and examples:
+```markdown
 ## Detection Query
 
 [GraphQL query to find this fragment in a model — look for matching attribute/relation names]
@@ -321,12 +328,12 @@ When done, output a brief summary:
 ## Constraints
 
 - **Read-only for project files**: Never modify files in the project path
-- **Write only to model-blueprints/**: All output goes to `$CLAUDE_PROJECT_DIR/model-blueprints/`
+- **Write only to model-blueprints/<id>/**: Each blueprint gets a directory with `BLUEPRINT.md` and `model.md`
 - **CLI-first**: Always use judo-cli to query model data; never parse `.model` files directly
 - **Stay in domain**: Only analyze model structural fragments. Do not analyze backend Java code or frontend React code
 - **Idempotent reruns**: Read blueprints first and only update timestamps/counts/projects
 - **Preserve existing examples**: When updating a blueprint, keep all existing examples
-- **One fragment per file**: Each model blueprint gets its own `.md` file
+- **One fragment per directory**: Each model blueprint gets its own directory with `BLUEPRINT.md` + `model.md`
 - **Structural focus**: Blueprints are about recurring shapes (attribute sets, entity clusters), NOT coding guidelines
 - **Include mutations**: Every blueprint MUST include GraphQL mutations to recreate the fragment
 - **Project-agnostic**: No hardcoded project lists — work with whatever path is given

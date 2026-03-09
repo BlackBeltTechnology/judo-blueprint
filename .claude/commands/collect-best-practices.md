@@ -119,6 +119,10 @@ Each domain column can be: `done`, `skipped` (no relevant source), or `pending`.
 The `Last SHA` column stores the 7-char short SHA of HEAD at the time of last analysis.
 The `Status` column is `done` when all requested domain columns are done/skipped, otherwise `pending`.
 
+#### Sync PROGRESS.md with PROJECTS.md
+
+Compare PROJECTS.md against PROGRESS.md. If any project in PROJECTS.md is missing from PROGRESS.md, add it as a new row with all domains set to `pending`, Last SHA to `-`, and Status to `pending`. This ensures new projects added to PROJECTS.md are automatically picked up.
+
 ### Step 2: Version Check + User Selection
 
 Run the version check script to compare remote HEAD SHAs against last-analyzed SHAs:

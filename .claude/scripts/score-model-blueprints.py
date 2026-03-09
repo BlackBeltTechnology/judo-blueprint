@@ -183,19 +183,22 @@ def update_frontmatter(filepath, meta, body, new_score):
 
 
 def scan_blueprints(base_dir):
-    """Scan model-blueprints/ and return all blueprint metadata."""
+    """Scan model-blueprints/<id>/BLUEPRINT.md and return all blueprint metadata."""
     blueprints_dir = os.path.join(base_dir, "model-blueprints")
     if not os.path.isdir(blueprints_dir):
         return []
 
     blueprints = []
-    skip_files = {"PROGRESS.md", "INDEX.md", "CONVENTIONS.md"}
 
-    for filename in sorted(os.listdir(blueprints_dir)):
-        if not filename.endswith(".md") or filename in skip_files:
+    for entry in sorted(os.listdir(blueprints_dir)):
+        subdir = os.path.join(blueprints_dir, entry)
+        if not os.path.isdir(subdir):
             continue
 
-        filepath = os.path.join(blueprints_dir, filename)
+        filepath = os.path.join(subdir, "BLUEPRINT.md")
+        if not os.path.isfile(filepath):
+            continue
+
         meta, body = parse_frontmatter(filepath)
 
         if meta is None:
@@ -203,7 +206,7 @@ def scan_blueprints(base_dir):
             continue
 
         meta["_filepath"] = filepath
-        meta["_filename"] = filename
+        meta["_filename"] = entry
         meta["_body"] = body
         blueprints.append(meta)
 

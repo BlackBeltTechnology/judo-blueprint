@@ -4,7 +4,7 @@ description: "Add a single model blueprint by describing it and linking to a Git
 argument-hint: "<description> <github-url>"
 user-invocable: true
 allowed-tools:
-  - Task(judo-model-blueprint-analyzer)
+  - Task(judo-model-blueprint-analyzer, judo-backend-blueprint-analyzer, judo-frontend-blueprint-analyzer)
   - Bash
   - Read
   - Write
@@ -18,7 +18,7 @@ allowed-tools:
   - TaskGet
 ---
 
-Add a single model blueprint to the catalog by describing the structural fragment and linking to a GitHub project or file where it occurs. The command clones the project, uses CLI queries to survey the model and identify the described fragment, then generates detection queries and creation mutations.
+Add a single model blueprint to the catalog by describing the structural fragment and linking to a GitHub project or file where it occurs. The command clones the project, uses CLI queries to survey the model and identify the described fragment, then generates detection queries and creation mutations. Optionally runs backend/frontend analysis too.
 
 ## Command-Specific Task Initialization
 
@@ -115,7 +115,7 @@ https://github.com/{owner}/{repo}[/blob|tree/{branch}/{path}]
 mkdir -p /tmp/judo-projects/
 ```
 
-Clone the repo (shallow, fast):
+Clone the repo (shallow, full — backend/frontend code may be needed):
 ```bash
 git clone --depth 1 https://github.com/{owner}/{repo}.git /tmp/judo-projects/{repo}/
 ```
@@ -172,7 +172,7 @@ Model file: `{model-path}`
 **Critical: Use CLI queries to determine the correct mutations.**
 
 Follow this process:
-1. Read existing model blueprints from model-blueprints/ first — check if this fragment already exists
+1. Read existing model blueprints from model-blueprints/ first — check if this fragment already exists (use `query-catalog.py list --type blueprint`)
 2. Use CLI queries to survey the model:
    - Query entity types to find the described structural pattern
    - Query enumeration types if the fragment involves enums
@@ -181,9 +181,11 @@ Follow this process:
 3. From the query results, identify the exact attributes, relations, operations, and enums that make up this fragment
 4. Write detection queries that match this fragment's characteristic shape
 5. Generate creation mutations using the discovered attribute names, relation kinds, cardinalities, and enum members as the template
-6. Create or update the blueprint file in model-blueprints/ with the full description, detection query, creation mutations, and a concrete example from this project
+6. Create or update the blueprint directory in model-blueprints/<id>/ with:
+   - BLUEPRINT.md: frontmatter + description + Model Definition link to model.md
+   - model.md: detection query + creation mutations + concrete example from this project
 
-The mutations should use `{{PLACEHOLDER}}` template variables for namespace and entity names while preserving the discovered structural details (attribute names, relation kinds, cardinalities, enum member names). Report what you found.
+The mutations should use `{{PLACEHOLDER}}` template variables for namespace and entity names while preserving the discovered structural details (attribute names, relation kinds, cardinalities, enum member names). Report what you found including the blueprint ID.
 ```
 
 #### 3c. Wait for Agent
@@ -203,19 +205,32 @@ $CLAUDE_PROJECT_DIR/tests/test-blueprint-mutations.sh --blueprint <new-blueprint
 
 ### Step 5: Cleanup and Report
 
-#### 5a. Cleanup
+#### 5a. Ask About Backend/Frontend Analysis
+
+After the model blueprint is created, ask the user:
+
+**"Also run backend/frontend analysis for this project on the new blueprint?"**
+
+If yes:
+- Launch both `judo-backend-blueprint-analyzer` and `judo-frontend-blueprint-analyzer` with `run_in_background: true`
+- Provide the blueprint ID and project path
+- Wait for both to complete
+- Report what was found
+
+#### 5b. Cleanup
 
 Remove the cloned project:
 ```bash
 rm -rf /tmp/judo-projects/{repo}/
 ```
 
-#### 5b. Report
+#### 5c. Report
 
 Display a summary to the user:
 - Fragment description
 - Source project
-- Model blueprint file created or updated
+- Blueprint directory created or updated (`model-blueprints/<id>/`)
+- Files created: BLUEPRINT.md, model.md, and optionally backend.md/frontend.md
 - Key mutations generated (list the mutation types used: entityType, dataMember, oneWayRelationMember, enumerationType, etc.)
 - Suggestion: "Run `/collect-model-blueprints` to discover this fragment across all other projects and update its usage count"
 
@@ -224,9 +239,10 @@ Display a summary to the user:
 ## Notes
 
 - This command is the **single-fragment complement** to `/collect-model-blueprints` (which batch-processes all projects)
-- Always uses `judo-model-blueprint-analyzer` — no domain detection needed since blueprints are model-only
+- Uses `judo-model-blueprint-analyzer` for model analysis, and optionally `judo-backend-blueprint-analyzer` + `judo-frontend-blueprint-analyzer` for implementation patterns
 - The agent uses **CLI queries** to discover the fragment's exact shape and generate matching mutations — it does NOT guess mutations from the description alone
 - The same agent, blueprint format, and mutation patterns are used as in `/collect-model-blueprints` — fragments are fully compatible
+- Blueprints are stored as directories: `model-blueprints/<id>/` with `BLUEPRINT.md`, `model.md`, and optionally `backend.md`/`frontend.md`
 - Cloned repos go to `/tmp/judo-projects/` and are cleaned up after the agent finishes
 - No changes are made to `model-blueprints/PROGRESS.md` — this command is for ad-hoc additions, not tracked batch runs
 - If the described fragment already exists as a blueprint, the agent updates usage count and adds the new project as an example

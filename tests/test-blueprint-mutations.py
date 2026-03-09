@@ -215,7 +215,7 @@ def test_blueprint(md_path: str, model_path: str) -> dict:
     global _AUTO_COUNTER
     _AUTO_COUNTER = 0  # reset per blueprint
 
-    blueprint_id = os.path.splitext(os.path.basename(md_path))[0]
+    blueprint_id = os.path.basename(os.path.dirname(md_path))
     mutations = extract_mutations(md_path)
 
     if not mutations:
@@ -293,19 +293,15 @@ def main():
         )
         sys.exit(2)
 
-    # Collect blueprints
+    # Collect blueprints (directory-based: model-blueprints/<id>/model.md)
     if args.blueprint:
-        md = os.path.join(BLUEPRINTS_DIR, args.blueprint + ".md")
+        md = os.path.join(BLUEPRINTS_DIR, args.blueprint, "model.md")
         if not os.path.exists(md):
             print(f"ERROR: Blueprint not found: {md}", file=sys.stderr)
             sys.exit(2)
         files = [md]
     else:
-        files = sorted(
-            f
-            for f in glob.glob(os.path.join(BLUEPRINTS_DIR, "*.md"))
-            if os.path.basename(f) not in ("PROGRESS.md", "CONVENTIONS.md")
-        )
+        files = sorted(glob.glob(os.path.join(BLUEPRINTS_DIR, "*", "model.md")))
 
     if not files:
         print("No blueprint files found.", file=sys.stderr)
@@ -317,7 +313,7 @@ def main():
     start_time = time.time()
 
     for md_path in files:
-        bp_id = os.path.splitext(os.path.basename(md_path))[0]
+        bp_id = os.path.basename(os.path.dirname(md_path))
         if not args.json:
             print(f"Testing: {bp_id}...", end=" ", flush=True)
 
