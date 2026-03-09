@@ -19,6 +19,7 @@
 # Usage:
 #   tests/test-blueprint-mutations.sh                      # test all
 #   tests/test-blueprint-mutations.sh --blueprint <id>     # test one
+#   tests/test-blueprint-mutations.sh --blueprint <a> --blueprint <b>  # test several
 set -euo pipefail
 
 # ---- Configuration ----
@@ -204,10 +205,10 @@ test_blueprint() {
 
 # ---- Main ----
 
-SINGLE_BLUEPRINT=""
+BLUEPRINT_IDS=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --blueprint) SINGLE_BLUEPRINT="$2"; shift 2 ;;
+        --blueprint) BLUEPRINT_IDS+=("$2"); shift 2 ;;
         *) echo "Unknown option: $1" >&2; exit 2 ;;
     esac
 done
@@ -223,13 +224,16 @@ if [[ ! -f "$SANDBOX_MODEL" ]]; then
     exit 2
 fi
 
-if [[ -n "$SINGLE_BLUEPRINT" ]]; then
-    md="$BLUEPRINTS_DIR/${SINGLE_BLUEPRINT}/model.md"
-    if [[ ! -f "$md" ]]; then
-        echo "ERROR: Blueprint not found: $md" >&2
-        exit 2
-    fi
-    files=("$md")
+if [[ ${#BLUEPRINT_IDS[@]} -gt 0 ]]; then
+    files=()
+    for bp_id in "${BLUEPRINT_IDS[@]}"; do
+        md="$BLUEPRINTS_DIR/${bp_id}/model.md"
+        if [[ ! -f "$md" ]]; then
+            echo "ERROR: Blueprint not found: $md" >&2
+            exit 2
+        fi
+        files+=("$md")
+    done
 else
     files=()
     for f in "$BLUEPRINTS_DIR"/*/model.md; do
