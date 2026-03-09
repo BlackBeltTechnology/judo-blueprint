@@ -28,3 +28,11 @@ This pattern is suitable for any scenario where users take timed assessments, qu
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.
+
+## Frontend Implementation
+
+See [frontend.md](frontend.md) for frontend implementation patterns and examples.

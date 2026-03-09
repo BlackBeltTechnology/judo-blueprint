@@ -1,7 +1,7 @@
 ---
 id: "credential-generalization-hierarchy"
 title: "Credential Generalization Hierarchy (Platform-Specific API Credentials)"
-score: 57.0
+score: 63.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -17,3 +17,7 @@ This pattern enables a single Account entity to work with different external API
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

@@ -21,3 +21,7 @@ This pattern is suitable for quiz, exam, survey, and assessment applications whe
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Frontend Implementation
+
+See [frontend.md](frontend.md) for frontend implementation patterns and examples.

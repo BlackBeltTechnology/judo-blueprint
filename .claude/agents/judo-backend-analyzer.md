@@ -6,7 +6,6 @@ description: >
   reads source code directly, and updates best-practices/backend/ with discovered patterns.
   No dependency on research/ — works directly from project source.
 tools: [Read, Write, Grep, Glob, Bash, AskUserQuestion]
-maxTurns: 50
 ---
 
 You are the **Backend Analyzer** for JUDO projects.
@@ -85,14 +84,14 @@ Instead of reading ALL catalog files, use the **query-catalog.py** script to lis
 
 1. **List all backend best-practices** (names + scores only):
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py list --domain backend
+python3 $CLAUDE_PROJECT_DIR/query-catalog.py list --domain backend
 ```
 This returns a compact table: `Type | Score | Uses | Domain | Category | ID | Title`
 
 2. **Build a mental index** from the listing: note all IDs, titles, scores, and usage counts
 3. After Phase 2 (analyzing backend source), **selectively read only matching items**:
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <id-1> <id-2> <id-3> ...
+python3 $CLAUDE_PROJECT_DIR/query-catalog.py get <id-1> <id-2> <id-3> ...
 ```
 Pass multiple IDs in one call to get full content of only the items relevant to this project.
 
@@ -115,7 +114,7 @@ The project path is given in your prompt (e.g., `/tmp/judo-projects/trivia/`).
 
 Now **selectively fetch** the best practices that look like they match what you found:
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <matching-id-1> <matching-id-2> ...
+python3 $CLAUDE_PROJECT_DIR/query-catalog.py get <matching-id-1> <matching-id-2> ...
 ```
 Read only the matching items, then update them directly.
 

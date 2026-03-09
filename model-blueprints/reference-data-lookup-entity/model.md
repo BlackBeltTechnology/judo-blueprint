@@ -204,3 +204,28 @@ Five entities follow the reference data lookup pattern:
   - Referenced by Skill via `approvedLevel` and `requestedLevel` (0..1 OneWay ASSOC), and by SkillTarget via `skillLevel` (1..1 OneWay ASSOC)
   - Transfer objects: hrEmployee::SkillLevel (name, score MAPPED), manager::SkillLevel (name MAPPED), professional::SkillLevel (used in skill display)
   - Represents proficiency tiers (e.g., Beginner=1, Intermediate=2, Advanced=3, Expert=4) with names and numeric scores
+
+### mlszksz-platform
+Three entities follow the reference data lookup pattern with name + isActive flag:
+- **City**: `MLSZKSZPlatform::entities::City` -- name (req, default: ""), isActive (req, default: true); relation: postalCodes (0..* ASSOC to PostalCode)
+  - Name + isActive variant representing cities in a geographic lookup hierarchy
+  - Non-CRUD entity (createable=false, updateable=false, deleteable=false)
+  - Referenced by Address via `city` (1..1 ASSOC)
+  - Paired with PostalCode in a bidirectional city-postalCode reference data hierarchy
+  - Admin TO (`MLSZKSZPlatform::services::admin::City`): name, isActive + postalCodes relation + activateToggle and updateCity operations
+  - CompanyAdmin TO (`MLSZKSZPlatform::services::companyadmin::City`): name + postalCodes relation (read-only view, no operations)
+
+- **Capability**: `MLSZKSZPlatform::entities::Capability` -- name (req), description (optional), isActive (req, default: true); no relations
+  - Extended name + description + isActive variant representing organizational capabilities/tags
+  - CRUD entity (createable=true, updateable=true, deleteable=true)
+  - Referenced by Organization, Offer, Request, and RegistrationRequest via `capabilities` (0..* ASSOC) for tagging
+  - Admin TO (`MLSZKSZPlatform::services::admin::Capability`): name, description, isActive + activateToggle and updateCapability operations
+  - Feed TO (`MLSZKSZPlatform::services::feed::Capability`): name, description, isActive (read-only)
+
+- **PostalCode**: `MLSZKSZPlatform::entities::PostalCode` -- code (req); relation: cities (0..* ASSOC to City)
+  - Code-only variant (no name or active flag) representing postal codes
+  - CRUD entity (createable=true, updateable=true, deleteable=true)
+  - Referenced by Address via `postalCode` (1..1 ASSOC)
+  - The City-PostalCode pair forms a bidirectional geographic reference data hierarchy, where a PostalCode can belong to multiple cities and a city can have multiple postal codes
+
+All seeded via the Initializer.init operation. The `isActive` flag name is unique to this project (other projects use `active`, `isEnabled`, or no flag).

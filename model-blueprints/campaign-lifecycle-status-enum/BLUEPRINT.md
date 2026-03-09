@@ -1,7 +1,7 @@
 ---
 id: "campaign-lifecycle-status-enum"
 title: "Campaign/Operational Lifecycle Status Enum (Ongoing/Finished/Deleted)"
-score: 57.0
+score: 63.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -15,3 +15,7 @@ A three-state status enumeration for operational or campaign-like entities with 
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

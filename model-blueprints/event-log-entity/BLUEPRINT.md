@@ -1,7 +1,7 @@
 ---
 id: "event-log-entity"
 title: "Event Log Entity with Type Enum and Actor Reference"
-score: 42.0
+score: 51.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -23,3 +23,7 @@ Some variants use a **generalization-based event hierarchy** instead of a type e
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

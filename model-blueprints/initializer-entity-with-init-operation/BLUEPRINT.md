@@ -27,3 +27,7 @@ A minimal Initializer entity with a marker attribute and a single static operati
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

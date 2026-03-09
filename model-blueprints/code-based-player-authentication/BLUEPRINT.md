@@ -26,3 +26,11 @@ This is similar to the token-based verification pattern but simpler: there is no
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.
+
+## Frontend Implementation
+
+See [frontend.md](frontend.md) for frontend implementation patterns and examples.

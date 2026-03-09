@@ -1,7 +1,7 @@
 ---
 id: "task-entity-with-assignment"
 title: "Task Entity with Assignee, Type, and State Enums"
-score: 42.0
+score: 51.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -25,3 +25,11 @@ This pattern is distinct from the workflow-engine Task/Token pattern in that it 
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.
+
+## Frontend Implementation
+
+See [frontend.md](frontend.md) for frontend implementation patterns and examples.

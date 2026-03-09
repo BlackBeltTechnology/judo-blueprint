@@ -9,7 +9,7 @@
 } } }
 ```
 
-Look for entities that have an `active` attribute with default "true" and a `toggleActive` operation of type INSTANCE.
+Look for entities that have an `active` or `isActive` attribute with default "true" and a `toggleActive` or `activateToggle` operation of type INSTANCE.
 
 ## Creation Mutations
 
@@ -54,3 +54,10 @@ Entities with the toggleActive pattern (15 entities):
 - `rackinspect::entities::UserAddress` -- active (default: true), toggleActive + togglePrimary
 - `rackinspect::entities::UserEmail` -- active (default: true), toggleActive + togglePrimary
 - `rackinspect::entities::UserPhone` -- active (default: true), toggleActive + togglePrimary
+
+### mlszksz-platform
+Transfer objects with the activateToggle pattern (TO-level variant):
+- `MLSZKSZPlatform::services::admin::City` -- isActive attribute on entity `MLSZKSZPlatform::entities::City` (req, default: true); activateToggle INSTANCE operation on the admin City TO
+- `MLSZKSZPlatform::services::admin::Capability` -- isActive attribute on entity `MLSZKSZPlatform::entities::Capability` (req, default: true); activateToggle INSTANCE operation on the admin Capability TO
+
+This project uses `isActive` (entity-level attribute) and `activateToggle` (TO-level operation) instead of `active` and `toggleActive`. The toggle operation is defined on the transfer object in the admin service package rather than on the entity itself, and is not marked as customImplementation, indicating it uses model-defined behavior to flip the isActive flag.

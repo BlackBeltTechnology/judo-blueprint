@@ -1,16 +1,17 @@
 ---
 id: "multi-actor-role-based-projections"
 title: "Multi-Actor Role-Based Transfer Object Projections"
-score: 41.7
-usage_count: 5
+score: 63.8
+usage_count: 6
 first_seen: "2026-03-05"
-last_updated: "2026-03-05"
+last_updated: "2026-03-09"
 projects:
   - reserve-app
   - viterra_demo
   - doors-model
   - ams-model
   - skillmatrix-model
+  - mlszksz-platform
 ---
 ## Description
 
@@ -26,6 +27,16 @@ In some projects (e.g., skillmatrix-model), the actors correspond to boolean rol
 
 In some projects, the actor types are bound directly to entity subtypes via `actorType` references on the entity definition. The abstract User entity has concrete subtypes each carrying an `actorType` reference to their corresponding ActorType, and the actors share entity-level access points via a central Admin actor.
 
+In some projects (e.g., mlszksz-platform), the services are organized into named sub-packages per role (admin, companyadmin, companyreader, feed, registration, technical) rather than per-actor actor packages. Each sub-package contains its own set of TOs for the same entities, with the admin package exposing full management views, the companyadmin package providing organization-scoped management, the companyreader package showing read-only profile/organization views, and the feed package presenting consumer-facing content views.
+
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Frontend Implementation
+
+See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

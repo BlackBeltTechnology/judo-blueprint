@@ -228,3 +228,28 @@ mutation { create(input: { transferObjectType: {
   - Manager role is implicit (determined by managedUnits relationship, not a boolean flag)
   - Deep per-actor specialization: the manager actor has unique Subordinate/TrainingPlan/UnapprovedSkillsView TOs not present in other actor views
   - The HREmployee acts as the domain administrator for competences, skills, and search, while Admin handles only user account management
+
+### mlszksz-platform
+- **2 Actor types**: MLSZKSZ (main actor at `MLSZKSZPlatform::services::MLSZKSZ`), RegistrationPoint (registration-specific actor at `MLSZKSZPlatform::services::registration::RegistrationPoint`)
+- **UserRole enum**: `MLSZKSZPlatform::types::UserRole` -- COMPANY_ADMIN(0), COMPANY_READER(1), PLATFORM_ADMIN(2), ASSOCIATION_LEADERSHIP(3)
+- **User entity**: `MLSZKSZPlatform::entities::User` (CRUD)
+  - Attributes: name (req), email (req), role (req, UserRole enum), status (req, UserStatus enum), isVisible (default: true), isSilentMode (default: false), emailNotifications, organizationName, notifyOffers/notifyRequests/notifyAnnouncements/notifyNews (all default: true), lastLogin
+  - Relations: organization (1..1 ASSOC), inquiries (0..* ASSOC), devices (0..* ASSOC), notifications (0..* ASSOC)
+- **6 service sub-packages** with role-specific TOs (package-per-role instead of actor-per-role):
+  - **admin** -- Platform-wide administration: AdminDashboard (isLeadership + 14 relations: cities, capabilities, organizations, registrationRequests, announcements, statistics, auditLog, configuration + 7 operations: createCity, createCapability, createAnnouncement, createOrganization, syncFeed, inviteBulk, exportAuditLog); admin::Announcement (11 attributes + documents + publish/delete/editAnnouncement); admin::RegistrationRequest (12 attributes + accept/reject); admin::Statistics (16 count attributes + organizationStatistics relation)
+  - **companyadmin** -- Organization-scoped management: OrganizationAdminPanel (17 attributes + 8 relations: activeCompanyUsers, capabilities, userInvitationRequest, news, offers, requests, address, notActiveCompanyUsers + 9 operations: inviteUser, createUser, createNews, createOffer, createRequest, updateAddress, updateComapnyData, suspend, activate); CompanyUser (9 attributes + changeVisibility/activate/deactivate/suspend); News/Offer/Request TOs with publish/delete/edit/moderationDelete operations
+  - **companyreader** -- Read-only organization view: CompanyReaderOrganization (13 attributes + capabilities/users relations, no operations); ProfilePanel (9 attributes + companyReaderOrganization relation + requestPasskeySetup operation)
+  - **feed** -- Consumer-facing content: FeedPanel (feedEntryTO/capabilities/notifications relations + requestPost/registerDevice/deactivateDevice/updateDeviceToken operations); FeedEntryTO (11 attributes + request/offer/news/organization/announcement relations); NotificationTO (6 attributes + deleteNotification operation)
+  - **registration** -- Public registration flow: RegistrationTransfer (no attributes, 3 operations: registration, validate, verifyUserInvitation); RegistrationInput (17 attributes + postalCode relation)
+  - **technical** -- Shared utilities: BusinessError (code, message -- unmapped error TO); User (15 attributes + organization relation -- technical user projection with access guard attributes NotAccessToAdminBoard, NotAccessToCompanyBoard, notAccessToProfile)
+- **Same entities projected differently per package**:
+  - Organization: admin sees organizations list with full management; companyadmin sees OrganizationAdminPanel with scoped management (9 operations); companyreader sees CompanyReaderOrganization read-only; feed sees OrganizationSearch for discovery
+  - User: admin sees CompanyUser with suspend/activate/deactivate operations; companyadmin sees CompanyUser with visibility/status operations; companyreader sees Users (name, email only); feed sees User (name, email); technical sees User with access guard attributes
+  - Post/News/Offer/Request: companyadmin sees full management TOs with publish/delete/edit/moderationDelete operations; feed sees consumer TOs with inquiry operations
+  - Capability: admin sees full CRUD with activateToggle; companyadmin and feed see read-only views
+- **Key differences from other projects**:
+  - Uses named sub-packages under `services` rather than separate actor packages (admin, companyadmin, companyreader, feed, registration, technical)
+  - Only 2 actor types (MLSZKSZ and RegistrationPoint) rather than one-per-role; role routing is done in the application layer based on UserRole enum
+  - The UserRole enum (COMPANY_ADMIN, COMPANY_READER, PLATFORM_ADMIN, ASSOCIATION_LEADERSHIP) defines access levels, but each package provides tailored TOs rather than each role getting its own actor type
+  - Rich dashboard pattern: AdminDashboard and OrganizationAdminPanel aggregate multiple entity collections into a single root TO with create operations
+  - Registration is handled via a dedicated actor (RegistrationPoint) with public-facing operations that do not require authentication

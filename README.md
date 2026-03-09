@@ -185,7 +185,7 @@ Then re-run the scoring scripts with `--update` to apply.
 | `rank-model-blueprints.py` | Rank model blueprints by usage count across projects |
 | `check-project-versions.sh` | Compare remote HEAD SHAs against last-analyzed versions in PROGRESS.md |
 
-All scripts live in `.claude/scripts/` and accept `--help` for full usage.
+Most scripts live in `.claude/scripts/` and accept `--help` for full usage. `query-catalog.py` lives in the project root.
 
 ### Querying the Catalog
 
@@ -193,23 +193,23 @@ The `query-catalog.py` script provides a lightweight way to browse and selective
 
 ```bash
 # List everything (compact: id + title + score)
-python3 .claude/scripts/query-catalog.py list
+python3 query-catalog.py list
 
 # Filter by type
-python3 .claude/scripts/query-catalog.py list --type blueprint       # Only model blueprints
-python3 .claude/scripts/query-catalog.py list --type best-practice   # Only best practices
+python3 query-catalog.py list --type blueprint       # Only model blueprints
+python3 query-catalog.py list --type best-practice   # Only best practices
 
 # Filter by domain
-python3 .claude/scripts/query-catalog.py list --domain model         # Model best-practices
-python3 .claude/scripts/query-catalog.py list --domain backend       # Backend best-practices
-python3 .claude/scripts/query-catalog.py list --domain frontend      # Frontend best-practices
+python3 query-catalog.py list --domain model         # Model best-practices
+python3 query-catalog.py list --domain backend       # Backend best-practices
+python3 query-catalog.py list --domain frontend      # Frontend best-practices
 
 # Filter by category
-python3 .claude/scripts/query-catalog.py list --category entity
+python3 query-catalog.py list --category entity
 
 # Get full content of specific items (by ID)
-python3 .claude/scripts/query-catalog.py get audit-log-entity
-python3 .claude/scripts/query-catalog.py get collection-lower-bound-zero enum-state-machine
+python3 query-catalog.py get audit-log-entity
+python3 query-catalog.py get collection-lower-bound-zero enum-state-machine
 ```
 
 Agents follow a **list-then-get** workflow: run `list` to see all names and scores, survey the project, then `get` only the IDs that match patterns found in the project. This keeps context usage minimal while still allowing agents to update existing entries directly.

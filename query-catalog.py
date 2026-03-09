@@ -17,6 +17,9 @@ Usage:
   python3 query-catalog.py list --domain model                # Only model-domain best-practices
   python3 query-catalog.py list --domain model --type all     # Model best-practices + blueprints
   python3 query-catalog.py list --category entity             # Filter by category
+  python3 query-catalog.py list --project mlszksz-platform    # Items that reference a project
+  python3 query-catalog.py list --where usage_count=3         # Generic frontmatter filter
+  python3 query-catalog.py list --where score=68.0 --type blueprint  # Combine filters
   python3 query-catalog.py get audit-log-entity               # Full content (BLUEPRINT.md + model.md)
   python3 query-catalog.py get audit-log-entity --layer backend   # Only backend.md content
   python3 query-catalog.py get audit-log-entity --layer frontend  # Only frontend.md content
@@ -83,7 +86,63 @@ def detect_blueprint_layers(blueprint_dir):
     return layers
 
 
-def scan_all(base_dir, type_filter=None, domain_filter=None, category_filter=None, layer_filter=None):
+def match_where(meta, where_filters):
+    """Check if a meta dict matches all --where KEY=VALUE filters.
+
+    Supports:
+      - Scalar match: key=value (string, int, or float comparison)
+      - List membership: if the frontmatter value is a list, checks if value is in it
+      - Numeric comparisons: key>N, key>=N, key<N, key<=N
+    """
+    for expr in where_filters:
+        for op in (">=", "<=", ">", "<", "="):
+            if op in expr:
+                key, val = expr.split(op, 1)
+                key = key.strip()
+                val = val.strip()
+                break
+        else:
+            continue
+
+        meta_val = meta.get(key)
+        if meta_val is None:
+            return False
+
+        if op == "=":
+            if isinstance(meta_val, list):
+                if val not in meta_val:
+                    return False
+            elif isinstance(meta_val, (int, float)):
+                try:
+                    if meta_val != type(meta_val)(val):
+                        return False
+                except (ValueError, TypeError):
+                    if str(meta_val) != val:
+                        return False
+            else:
+                if str(meta_val) != val:
+                    return False
+        else:
+            # Numeric comparison
+            try:
+                num_meta = float(meta_val) if not isinstance(meta_val, (int, float)) else meta_val
+                num_val = float(val)
+            except (ValueError, TypeError):
+                return False
+            if op == ">" and not (num_meta > num_val):
+                return False
+            elif op == ">=" and not (num_meta >= num_val):
+                return False
+            elif op == "<" and not (num_meta < num_val):
+                return False
+            elif op == "<=" and not (num_meta <= num_val):
+                return False
+
+    return True
+
+
+def scan_all(base_dir, type_filter=None, domain_filter=None, category_filter=None,
+             layer_filter=None, project_filter=None, where_filters=None):
     """Scan both best-practices and model-blueprints. Returns list of (meta, filepath, item_type)."""
     items = []
 
@@ -126,6 +185,15 @@ def scan_all(base_dir, type_filter=None, domain_filter=None, category_filter=Non
     # Apply category filter
     if category_filter:
         items = [(m, f, t) for m, f, t in items if m.get("category", "") == category_filter]
+
+    # Apply project filter (check if project is in the projects list)
+    if project_filter:
+        items = [(m, f, t) for m, f, t in items
+                 if project_filter in m.get("projects", [])]
+
+    # Apply generic --where filters
+    if where_filters:
+        items = [(m, f, t) for m, f, t in items if match_where(m, where_filters)]
 
     return items
 
@@ -227,7 +295,8 @@ def find_by_id(base_dir, item_id, layer=None):
 
 def cmd_list(args, base_dir):
     """List all items with id, title, score/usage_count only."""
-    items = scan_all(base_dir, args.type, args.domain, args.category, args.layer)
+    items = scan_all(base_dir, args.type, args.domain, args.category, args.layer,
+                     args.project, args.where)
 
     if not items:
         print("No items found.")
@@ -321,6 +390,16 @@ def main():
         "--layer", choices=["model", "backend", "frontend", "all"],
         default=None,
         help="Filter blueprints by which layer files exist (model, backend, frontend)"
+    )
+    list_parser.add_argument(
+        "--project",
+        default=None,
+        help="Filter items that reference this project in their projects list"
+    )
+    list_parser.add_argument(
+        "--where", nargs="+", metavar="KEY=VALUE",
+        default=None,
+        help="Generic frontmatter filter(s). Supports =, >, >=, <, <= (e.g., usage_count>=3, score>40)"
     )
 
     # get subcommand

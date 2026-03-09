@@ -5,8 +5,7 @@ description: >
   Receives a project path (e.g., /tmp/judo-projects/trivia/) in the prompt,
   reads source code directly, and updates model-blueprints/ with discovered patterns.
   No dependency on research/ — works directly from project source.
-tools: [Read, Write, Grep, Glob, Bash, AskUserQuestion]
-maxTurns: 50
+tools: [Read, Write, Grep, Glob, Bash, AskUserQuestion, TaskCreate, TaskUpdate, TaskList, TaskGet]
 ---
 
 You are the **Model Blueprint Analyzer** for JUDO projects.
@@ -132,14 +131,14 @@ Instead of reading ALL catalog files, use the **query-catalog.py** script to lis
 
 1. **List all blueprints** (names + scores only):
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py list --type blueprint
+python3 $CLAUDE_PROJECT_DIR/query-catalog.py list --type blueprint
 ```
 This returns a compact table: `Type | Score | Uses | Domain | Category | ID | Title`
 
 2. **Build a mental index** from the listing: note the IDs, titles, and usage counts
 3. After Phase 2 (surveying the model), **selectively read only matching blueprints**:
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <blueprint-id-1> <blueprint-id-2> ...
+python3 $CLAUDE_PROJECT_DIR/query-catalog.py get <blueprint-id-1> <blueprint-id-2> ...
 ```
 Pass multiple IDs in one call to get full content of only the relevant blueprints.
 
@@ -170,7 +169,7 @@ Follow these steps **in order**, using the verified queries above:
 
 Now **selectively fetch** the blueprints that look like they match what you found:
 ```bash
-python3 $CLAUDE_PROJECT_DIR/.claude/scripts/query-catalog.py get <matching-id-1> <matching-id-2> ...
+python3 $CLAUDE_PROJECT_DIR/query-catalog.py get <matching-id-1> <matching-id-2> ...
 ```
 
 Compare the entity/enum/transfer shapes you found against:
@@ -185,7 +184,18 @@ Look for these kinds of structural fragments:
 - **Transfer object projections**: Common ways entities are exposed via TOs
 - **Operation patterns**: Recurring operation signatures (approve/reject, activate/deactivate)
 
-### Phase 4: Write/Update Model Blueprint Files
+### Phase 4: Create Task List and Process One Blueprint at a Time
+
+**Create one task per identified blueprint** using TaskCreate:
+
+For each blueprint (new or existing match):
+- `subject`: "Write/update blueprint: <blueprint-id>"
+- `description`: "Read existing <blueprint-id> files (if any), write/update BLUEPRINT.md and model.md with mutations and examples from this project, then validate mutations."
+- `activeForm`: "Writing <blueprint-id>"
+
+Then process blueprints **one at a time**, in task order. Mark each task as `in_progress` before starting, `completed` when done.
+
+#### Per-Blueprint Workflow
 
 **IMPORTANT:** Before writing mutations, review the conventions in `model-blueprints/CONVENTIONS.md`. Key rules:
 - Enum-like values (`relationKind`, `operationType`, `memberType`) must be **quoted strings** (e.g., `"ASSOCIATION"` not `ASSOCIATION`)
@@ -193,10 +203,17 @@ Look for these kinds of structural fragments:
 - Entities must be created before their children (dependency order)
 - Only use supported create input types: `entityType`, `dataMember`, `oneWayRelationMember`, `twoWayRelationMember`, `enumerationType`, `enumerationMember`, `transferObjectType`, `generalization`, `mapping`, `operation`, `parameter`, `package`
 
-For each fragment identified:
+##### Step 1: Read ONE Blueprint (if existing)
+
+If updating an existing blueprint, read its current files:
+```bash
+python3 $CLAUDE_PROJECT_DIR/query-catalog.py get <blueprint-id>
+```
+
+##### Step 2: Write/Update Files
 
 **If existing blueprint matches:**
-1. Read the current blueprint file
+1. Read the current blueprint files (from Step 1)
 2. Add the project name to the `projects` list (if not already there)
 3. Increment `usage_count` by 1
 4. Update `last_updated` to today's date
@@ -208,6 +225,8 @@ For each fragment identified:
 2. Write `BLUEPRINT.md` with frontmatter (id, title, usage_count: 1, first_seen, last_updated, projects) + `## Description` + `## Model Definition` section linking to model.md
 3. Write `model.md` with `## Detection Query` + `## Creation Mutations` + `## Examples`
 4. Both files go inside the same directory
+
+##### Step 3: Validate Mutations (then mark task completed)
 
 ### Phase 5: Validate Mutations
 

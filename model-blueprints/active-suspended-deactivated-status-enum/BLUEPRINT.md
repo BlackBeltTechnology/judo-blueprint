@@ -15,3 +15,7 @@ A three-state lifecycle enumeration with members ACTIVE, SUSPENDED, and DEACTIVA
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

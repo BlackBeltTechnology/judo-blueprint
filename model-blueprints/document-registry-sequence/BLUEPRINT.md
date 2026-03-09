@@ -15,3 +15,7 @@ A DocumentRegistry entity that manages sequential document numbering for differe
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

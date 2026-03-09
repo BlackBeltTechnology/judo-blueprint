@@ -24,3 +24,7 @@ This pattern is suitable for applications that need batch data ingestion from ex
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

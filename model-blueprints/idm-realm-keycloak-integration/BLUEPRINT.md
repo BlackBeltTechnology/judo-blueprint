@@ -20,3 +20,7 @@ This pattern enables multi-tenant authentication where each organization gets it
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

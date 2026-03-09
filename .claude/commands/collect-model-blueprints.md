@@ -162,11 +162,14 @@ Launch the model blueprint analyzer agent using the Task tool with `run_in_backg
 
 #### 3d. Stage 1.5: Validate Model Mutations
 
-After the model agent completes, validate the mutations:
+After the model agent completes, validate **only the blueprints that were created or updated** (from the list collected in 3c):
 
 ```bash
-$CLAUDE_PROJECT_DIR/tests/test-blueprint-mutations.sh
+# For each blueprint ID from the agent's output:
+$CLAUDE_PROJECT_DIR/tests/test-blueprint-mutations.sh --blueprint <blueprint-id>
 ```
+
+Run one validation per modified blueprint. Do NOT run the full test suite here — only test the ones that changed.
 
 - If all pass: proceed to Stage 2
 - If any fail: report the failures to the user. These should be fixed before backend/frontend analysis.
@@ -177,9 +180,13 @@ Update PROGRESS.md: mark `Model: done` for this project.
 
 **Check PROGRESS.md**: Skip `Backend` or `Frontend` if already `done` or `skipped`.
 
-**Determine which blueprint IDs to analyze:**
-- If Stage 1 just ran: use the list of blueprint IDs from the model agent's output
-- If resuming (Model already `done`): search `model-blueprints/*/BLUEPRINT.md` for blueprints that list this project in their `projects:` frontmatter
+**Determine which blueprint IDs to analyze** using `query-catalog.py`:
+
+```bash
+python3 $CLAUDE_PROJECT_DIR/query-catalog.py list --project <PROJECT> --type blueprint
+```
+
+This returns all blueprints whose `projects:` frontmatter includes this project — works both when Stage 1 just ran (the model agent updates frontmatter) and when resuming (Model already `done`). Extract the blueprint IDs from the output table.
 
 Launch **both** agents in parallel using `run_in_background: true`:
 
@@ -216,12 +223,13 @@ rm -rf /tmp/judo-projects/<name>/
 
 **IMPORTANT**: Do NOT start the next project until all agents for the current project have completed.
 
-### Step 4: Validate All Blueprint Mutations
+### Step 4: Validate Modified Blueprint Mutations
 
-After all projects are processed, run the full test suite:
+After all projects are processed, validate **only the blueprints that were created or updated** during this run. Maintain a cumulative list of all blueprint IDs touched across all projects, then test each one:
 
 ```bash
-$CLAUDE_PROJECT_DIR/tests/test-blueprint-mutations.sh
+# For each blueprint ID that was created or updated during the run:
+$CLAUDE_PROJECT_DIR/tests/test-blueprint-mutations.sh --blueprint <blueprint-id>
 ```
 
 - If all pass: proceed to summary

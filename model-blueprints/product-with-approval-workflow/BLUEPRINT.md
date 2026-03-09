@@ -1,7 +1,7 @@
 ---
 id: "product-with-approval-workflow"
 title: "Product Entity with Draft/Finalize/Approve Workflow and Versioning"
-score: 42.0
+score: 51.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -30,3 +30,11 @@ Transfer objects provide role-specific views: AdminProduct (full access with all
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.
+
+## Frontend Implementation
+
+See [frontend.md](frontend.md) for frontend implementation patterns and examples.

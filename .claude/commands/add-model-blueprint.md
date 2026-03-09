@@ -41,7 +41,7 @@ Create the following tasks before starting work:
 
 4. **Task: Validate blueprint mutations**
    - `subject`: "Validate blueprint mutations"
-   - `description`: "Run test-blueprint-mutations.py --blueprint <id> to validate the new blueprint's mutations against Sandbox."
+   - `description`: "Run test-blueprint-mutations.sh --blueprint <id> to validate the new blueprint's mutations against Sandbox."
    - `activeForm`: "Validating mutations"
 
 5. **Task: Cleanup and report**

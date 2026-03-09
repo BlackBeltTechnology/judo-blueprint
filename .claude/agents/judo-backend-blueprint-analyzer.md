@@ -5,8 +5,7 @@ description: >
   and a list of blueprint IDs, reads each blueprint's BLUEPRINT.md and model.md
   to understand the structural pattern, then searches the project's backend code
   for related implementations. Writes backend.md inside each blueprint directory.
-tools: [Read, Write, Grep, Glob, Bash, AskUserQuestion]
-maxTurns: 50
+tools: [Read, Write, Grep, Glob, Bash, AskUserQuestion, TaskCreate, TaskUpdate, TaskList, TaskGet]
 ---
 
 You are the **Backend Blueprint Analyzer** for JUDO projects.
@@ -47,17 +46,30 @@ Useful cross-reference queries:
 
 ## Analysis Process
 
-### Phase 1: Read Blueprint Definitions
+### Initialization: Create Task List
 
-For each blueprint ID in your prompt:
+Parse the list of blueprint IDs from your prompt. **Create one task per blueprint** using TaskCreate:
+
+For each blueprint ID:
+- `subject`: "Analyze backend: <blueprint-id>"
+- `description`: "Read <blueprint-id> BLUEPRINT.md + model.md, search project backend code for implementations, write/update backend.md if found."
+- `activeForm`: "Analyzing <blueprint-id> backend"
+
+Then process blueprints **one at a time**, in task order.
+
+### Per-Blueprint Workflow (repeat for each task)
+
+Mark the current task as `in_progress`, then follow these three steps:
+
+#### Step 1: Read ONE Blueprint
 
 1. Read `$CLAUDE_PROJECT_DIR/model-blueprints/<id>/BLUEPRINT.md` — understand what the blueprint is about (Description)
 2. Read `$CLAUDE_PROJECT_DIR/model-blueprints/<id>/model.md` — understand the entities, enums, operations, and transfer objects involved (Detection Query, Creation Mutations, Examples)
 3. Extract key entity/operation names that you'll search for in backend code
 
-### Phase 2: Search Backend Code
+#### Step 2: Search Backend Code
 
-For each blueprint, search the project for backend implementations:
+Search the project for backend implementations related to **this one blueprint**:
 
 1. **Custom operations** — search `<project-path>/**/custom/**/*.java` for classes referencing the blueprint's entities or operations
    ```bash
@@ -75,7 +87,9 @@ For each blueprint, search the project for backend implementations:
 
 5. **CLI cross-reference** — if the blueprint includes operations, query the model to find which have `customImplementation: true`, then find the matching Java classes
 
-### Phase 3: Write/Update backend.md and BLUEPRINT.md
+#### Step 3: Write/Update backend.md and BLUEPRINT.md
+
+After searching, write results for **this one blueprint**, then mark the task as `completed` and move to the next.
 
 For each blueprint where you found backend implementation:
 

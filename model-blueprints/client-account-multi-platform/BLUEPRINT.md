@@ -1,7 +1,7 @@
 ---
 id: "client-account-multi-platform"
 title: "Client-Account-Campaign Multi-Platform Integration Cluster"
-score: 57.0
+score: 63.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"
@@ -24,3 +24,7 @@ This pattern enables a single client to connect to multiple ad platforms (Google
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

@@ -29,3 +29,7 @@ The Item entity links a reservation to its cargo details: each item references a
 ## Model Definition
 
 See [model.md](model.md) for detection queries, creation mutations, and examples.
+
+## Backend Implementation
+
+See [backend.md](backend.md) for backend implementation patterns and examples.

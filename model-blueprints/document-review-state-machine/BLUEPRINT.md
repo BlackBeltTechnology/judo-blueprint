@@ -1,7 +1,7 @@
 ---
 id: "document-review-state-machine"
 title: "Document Review State Machine with Guard Attributes"
-score: 16.0
+score: 40.0
 usage_count: 1
 first_seen: "2026-03-05"
 last_updated: "2026-03-05"

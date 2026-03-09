@@ -106,3 +106,12 @@ mutation { create(input: { dataMember: {
 - Error codes cover: authentication/validation (INVALID_CODE), state violations (CONTEST_NOT_OPEN, TEST_NOT_STARTED, TEST_ALREADY_STARTED, TEST_CLOSED)
 - Uses simplified TO name `Error` instead of `BusinessError`, and `code` field name (like ubives and workflow-poc)
 - All error codes relate to quiz workflow state preconditions: the player must use a valid code, the contest must be open, the test must be in the right state
+
+### mlszksz-platform
+- **No ErrorCode enum** -- this project omits the enum entirely
+- **BusinessError TO**: `MLSZKSZPlatform::services::technical::BusinessError` (unmapped)
+  - Attributes: code (optional), message (optional)
+  - Located in the `technical` service sub-package rather than the main `services` or `entities` package
+- Simplified variant: the BusinessError TO uses string-typed `code` and `message` attributes without a companion ErrorCode enum. Error codes are defined in application code rather than in the model, making this the most lightweight variant of the pattern
+- Uses `code` field name (like ubives, workflow-poc, and trivia) rather than `errorCode`
+- Used as the output type for custom operations across the platform to communicate domain-level failures (e.g., registration validation, invitation processing, feed sync errors)
