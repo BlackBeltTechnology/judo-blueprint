@@ -27,4 +27,4 @@
 | 21 | ams-frontend | skipped (identical ESM to ams-model) | skipped | skipped | 99ba5de | done |
 | 22 | kozut-eugyfel-client | done | skipped | skipped | 0cbdaa0 | done |
 | 23 | skillmatrix-model | done | skipped | skipped | 8e2d18f | done |
-| 24 | skillmatrix-frontend | skipped (identical ESM to skillmatrix-model) | skipped | skipped | ee0cf0e | done |
+| 24 | skillmatrix-frontend | skipped | skipped | skipped | ee0cf0e | done |

@@ -302,12 +302,8 @@ def cmd_list(args, base_dir):
         print("No items found.")
         return
 
-    # Sort: best-practices by score desc, blueprints by usage_count desc
-    def sort_key(item):
-        meta = item[0]
-        return meta.get("score", 0) if item[2] == "best-practice" else meta.get("usage_count", 0) * 10
-
-    items.sort(key=sort_key, reverse=True)
+    # Sort all items by score descending
+    items.sort(key=lambda item: item[0].get("score", 0), reverse=True)
 
     # Print compact table
     print(f"{'Type':<15} {'Score':<7} {'Uses':<5} {'Domain':<10} {'Layers':<14} {'ID':<45} {'Title'}")
@@ -321,7 +317,6 @@ def cmd_list(args, base_dir):
         title = meta.get("title", "?")
 
         if item_type == "blueprint":
-            score = "-"
             layers = ",".join(meta.get("_layers", []))
         else:
             category = meta.get("category", "-")
