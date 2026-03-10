@@ -3,11 +3,11 @@ id: "dialog-based-navigation"
 title: "Dialog-Based Navigation with State Machine"
 domain: "frontend"
 category: "navigation"
-score: 10.4
+score: 39.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
 ---

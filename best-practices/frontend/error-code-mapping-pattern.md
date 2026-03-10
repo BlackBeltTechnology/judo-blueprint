@@ -3,11 +3,11 @@ id: "error-code-mapping-pattern"
 title: "Backend Error Code to UI Flow Mapping"
 domain: "frontend"
 category: "component"
-score: 21.2
+score: 69.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect

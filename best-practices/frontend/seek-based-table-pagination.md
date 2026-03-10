@@ -3,17 +3,13 @@ id: "seek-based-table-pagination"
 title: "Seek-Based (Keyset) Table Pagination"
 domain: "frontend"
 category: "table"
-score: 75.8
-usage_count: 5
+score: 34.4
+usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
-  - skillmatrix-frontend
   - actiongroup-test-react
-  - kozut-eugyfel-client
-  - kozut-eugyfel-model-test
-  - ams-frontend
 ---
 ## Description
 
@@ -53,9 +49,6 @@ React implementation fetches `limit + 1` items (e.g., 11 for page size 10). If r
 
 ### kozut-eugyfel-client
 ~40 table pages across 3 Flutter actors use cursor-based seek pagination. Each page store tracks `nextPageCounter` and exposes `@computed` getters `nextButtonEnable` and `previousButtonEnable`. Filter types include string, dateTime, numeric, boolean, and enum with `selectableFilters` and `availableFilterList` observable patterns.
-
-### kozut-eugyfel-model-test
-Model generates ~40 table pages with seek-based pagination across 3 actors. Admin has 6 top-level tables (Felhasznalok, Bejelentesek, Megyek, etc.), Munkatars has 5 (Feladatok, Aktiv/Lezart Bejelentesek, Ertesitesek), plus sub-entity tables with client-side pagination.
 
 ### ams-frontend
 Applications table (10 rows, computed as `12.0 - 2`), Campaigns table, Users table, Approval List table, and Subordinates table all use cursor-based seek pagination. Embedded tables in Campaign View use client-side pagination: Confirmation Requests at 100 items per page, Applications at 1 item per page.

@@ -3,11 +3,11 @@ id: "jaxb-external-api-client"
 title: "JAXB-Based External API Client with Response Caching"
 domain: "backend"
 category: "integration"
-score: 16.1
+score: 47.2
 usage_count: 1
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - judo-partner
 alternatives:

@@ -3,30 +3,26 @@ id: "initializer-operation"
 title: "Static Initializer Operation for Data Seeding"
 domain: "model"
 category: "operation"
-score: 265.8
-usage_count: 18
+score: 78.4
+usage_count: 14
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
   - itracker
-  - skillmatrix-frontend
   - actiongroup-test-react
   - skillmatrix-model
   - mlszksz-platform
   - viterra_demo
-  - kozut-eugyfel-client
   - mjsz
   - judo-demo-miniworkflow
   - ams-model
   - park-here
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 

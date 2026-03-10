@@ -3,11 +3,11 @@ id: "bulk-csv-import-export"
 title: "Bulk CSV Import/Export via FileStore"
 domain: "backend"
 category: "operation"
-score: 13.1
+score: 68.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - mlszksz-platform
 ---

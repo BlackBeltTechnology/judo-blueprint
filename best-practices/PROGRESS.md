@@ -15,7 +15,6 @@
 | 9 | viterra_demo | done | done | skipped | - | done |
 | 10 | kozut-eugyfel-client | done | skipped | done | - | done |
 | 11 | bhs-global-operation | done | done | skipped | - | done |
-| 12 | kuzut-test-eugyfel-model | done | skipped | skipped | - | done |
 | 13 | mjsz | done | done | skipped | - | done |
 | 14 | judo-demo-miniworkflow | done | done | skipped | - | done |
 | 15 | ubives | skipped | done | skipped | - | done |
@@ -25,7 +24,6 @@
 | 19 | indamedia-adtrack | done | done | skipped | - | done |
 | 20 | InterfaceRegister | done | done | skipped | - | done |
 | 21 | judo-partner | done | done | skipped | - | done |
-| 22 | kozut-eugyfel-model-test | done | skipped | done | - | done |
 | 23 | workflow-poc | done | done | done | - | done |
 | 24 | reserve-app | done | done | done | - | done |
 | 25 | doors-model | skipped | done | done | - | done |

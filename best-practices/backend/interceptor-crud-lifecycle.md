@@ -3,11 +3,11 @@ id: "interceptor-crud-lifecycle"
 title: "Interceptor as CRUD Lifecycle Hook"
 domain: "backend"
 category: "interceptor"
-score: 77.3
+score: 74.6
 usage_count: 5
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - alba

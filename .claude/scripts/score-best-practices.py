@@ -3,10 +3,11 @@
 Best Practice Scoring Script
 
 Reads all best-practice files from best-practices/{model,backend,frontend}/*.md,
-parses their YAML frontmatter, and calculates weighted scores based on:
-- usage_count: how many projects use this pattern (weight: 10 per use)
-- recency_bonus: newer projects give higher weight
-- alternative_penalty: patterns with many alternatives score lower (-2 per alt)
+parses their YAML frontmatter, and calculates scores normalized to 0-100:
+- raw_score = usage_count * 10 + recency_bonus - alternative_penalty
+- Normalized to 0-100 range across all patterns
+- Project weights from PROJECTS.md act as proportional multipliers:
+  weight 0 = 1.0x (neutral), +10 = 2.0x (double), -10 = 0x (zeroed)
 
 Usage:
   python3 score-best-practices.py                    # Score all domains
@@ -24,37 +25,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-# Project ordering from RESEARCH-TRACKER.md (index 1-26, later = newer = higher weight)
-PROJECT_ORDER = {
-    "trivia": 1,
-    "rackinspect": 2,
-    "itracker": 3,
-    "skillmatrix-frontend": 4,
-    "actiongroup-test-react": 5,
-    "alba": 6,
-    "skillmatrix-model": 7,
-    "mlszksz-platform": 8,
-    "viterra_demo": 9,
-    "kozut-eugyfel-client": 10,
-    "bhs-global-operation": 11,
-    "kuzut-test-eugyfel-model": 12,
-    "mjsz": 13,
-    "judo-demo-miniworkflow": 14,
-    "ubives": 15,
-    "ams-model": 16,
-    "sanctuary-backend": 17,
-    "park-here": 18,
-    "indamedia-adtrack": 19,
-    "InterfaceRegister": 20,
-    "judo-partner": 21,
-    "kozut-eugyfel-model-test": 22,
-    "workflow-poc": 23,
-    "reserve-app": 24,
-    "doors-model": 25,
-    "ams-frontend": 26,
-}
+from _projects import parse_projects_md
 
-TOTAL_PROJECTS = len(PROJECT_ORDER)
 DOMAINS = ["model", "backend", "frontend"]
 
 
@@ -112,27 +84,77 @@ def parse_frontmatter(filepath):
     return meta, body
 
 
-def calculate_score(meta):
-    """Calculate weighted score for a best practice."""
-    usage_count = meta.get("usage_count", 0)
-    alternative_count = meta.get("alternative_count", 0)
+def calculate_components(meta, project_order, project_weights, total_projects):
+    """Calculate the three scoring components for a best practice.
+
+    Returns (usage_raw, recency_raw, weight_norm):
+      - usage_raw: usage_count minus alternative penalty (will be normalized)
+      - recency_raw: average recency index across projects (will be normalized)
+      - weight_norm: max project weight mapped to 0-100 directly
+    """
     projects = meta.get("projects", [])
+    alternative_count = meta.get("alternative_count", 0)
+    usage_raw = meta.get("usage_count", 0) - alternative_count * 0.2
 
-    # Base score from usage
-    base_score = usage_count * 10
-
-    # Recency bonus: newer projects (higher index) give more weight
-    recency_bonus = 0.0
+    recency_values = []
     for proj in projects:
-        proj_index = PROJECT_ORDER.get(proj, 0)
+        proj_index = project_order.get(proj, 0)
         if proj_index > 0:
-            recency_bonus += (proj_index / TOTAL_PROJECTS) * 10
+            recency_values.append(proj_index / total_projects)
+    recency_raw = sum(recency_values) / len(recency_values) if recency_values else 0
 
-    # Alternative penalty
-    alternative_penalty = alternative_count * 2
+    # Weight: max across projects, map [-10,+10] to [0,100]
+    # Using max (not average) so adding more projects never lowers the weight component.
+    # The usage component already rewards having more projects.
+    if projects:
+        max_weight = max(project_weights.get(p, 0) for p in projects)
+        max_weight = max(-10, min(10, max_weight))
+        weight_norm = (max_weight + 10) / 20 * 100
+    else:
+        weight_norm = 50.0
 
-    score = base_score + recency_bonus - alternative_penalty
-    return round(score, 1)
+    return usage_raw, recency_raw, weight_norm
+
+
+# Component weights: weight has 60% influence, usage 20%, recency 20%
+USAGE_WEIGHT = 0.20
+RECENCY_WEIGHT = 0.20
+PROJECT_WEIGHT = 0.60
+
+
+def calculate_scores(best_practices, project_order, project_weights, total_projects):
+    """Calculate final 0-100 scores using weighted combination of 3 components."""
+    for bp in best_practices:
+        usage_raw, recency_raw, weight_norm = calculate_components(
+            bp, project_order, project_weights, total_projects
+        )
+        bp["_usage_raw"] = usage_raw
+        bp["_recency_raw"] = recency_raw
+        bp["_weight_norm"] = weight_norm
+
+    usage_vals = [bp["_usage_raw"] for bp in best_practices]
+    recency_vals = [bp["_recency_raw"] for bp in best_practices]
+
+    usage_min, usage_max = min(usage_vals), max(usage_vals)
+    recency_min, recency_max = min(recency_vals), max(recency_vals)
+
+    for bp in best_practices:
+        if usage_max > usage_min:
+            usage_norm = (bp["_usage_raw"] - usage_min) / (usage_max - usage_min) * 100
+        else:
+            usage_norm = 50.0
+
+        if recency_max > recency_min:
+            recency_norm = (bp["_recency_raw"] - recency_min) / (recency_max - recency_min) * 100
+        else:
+            recency_norm = 50.0
+
+        final = (
+            USAGE_WEIGHT * usage_norm
+            + RECENCY_WEIGHT * recency_norm
+            + PROJECT_WEIGHT * bp["_weight_norm"]
+        )
+        bp["score"] = round(max(0, min(100, final)), 1)
 
 
 def update_frontmatter(filepath, meta, body, new_score):
@@ -300,6 +322,11 @@ def main():
 
     args = parser.parse_args()
 
+    # Read project order from PROJECTS.md (single source of truth)
+    project_order, project_weights, total_projects = parse_projects_md(args.base_dir)
+    if total_projects == 0:
+        print("WARNING: Could not read PROJECTS.md, scores may be inaccurate.", file=sys.stderr)
+
     domains = [args.domain] if args.domain else None
     best_practices = scan_best_practices(args.base_dir, domains)
 
@@ -307,9 +334,8 @@ def main():
         print("No best-practice files found. Run the best-practice collector agents first.")
         sys.exit(0)
 
-    # Recalculate scores
-    for bp in best_practices:
-        bp["score"] = calculate_score(bp)
+    # Calculate scores: 3-component weighted combination (usage 20%, recency 20%, weight 60%)
+    calculate_scores(best_practices, project_order, project_weights, total_projects)
 
     # Update files if requested
     if args.update:

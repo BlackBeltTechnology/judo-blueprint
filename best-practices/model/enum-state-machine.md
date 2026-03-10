@@ -3,11 +3,11 @@ id: "enum-state-machine"
 title: "Enum-Based State Machine Pattern"
 domain: "model"
 category: "enum"
-score: 237.2
-usage_count: 16
+score: 78.6
+usage_count: 12
 alternative_count: 2
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
@@ -15,16 +15,12 @@ projects:
   - alba
   - mlszksz-platform
   - viterra_demo
-  - kozut-eugyfel-client
-  - kuzut-test-eugyfel-model
   - judo-demo-miniworkflow
   - ams-model
   - park-here
   - indamedia-adtrack
   - judo-partner
-  - kozut-eugyfel-model-test
   - reserve-app
-  - ams-frontend
 alternatives:
   - derived-state-from-history
   - entity-based-state-machine
@@ -63,9 +59,6 @@ Six independent state machines across the model: **PostStatus** (DRAFT -> PUBLIS
 
 ### KozutEugyfelClient
 **BejelentesAllapot** with 2 states: AKTIV (active) and LEZART (closed). `Bejelentes.lezaras` transitions AKTIV -> LEZART, `Bejelentes.megnyitas` transitions LEZART -> AKTIV. All operations guard with `if (this.allapot == BejelentesAllapot#AKTIV)` before executing, and 6 derived `*Engedely` (permission) booleans check state + user role.
-
-### KuzutTestEugyfelModel
-**BejelentesAllapot** with 2 states: AKTIV (ordinal 1) and LEZART (ordinal 2). Used as a required `allapot` attribute on abstract `Bejelentes`, inherited by `JarokeloBejelentes`. This is the simplest possible state machine -- a binary active/closed lifecycle. No transition operations are defined in the model; the `szinkronizal` custom operation likely handles state updates from the external Jarokelo system.
 
 ### judo-demo-miniworkflow
 **DocumentState** with 5 states: IN_PROGRESS -> REVIEW_REQUESTED -> ACCEPTED/REJECTED -> CLOSED. Uniquely, the current state is not stored but derived from the latest `DocumentHistoryEntry` via `self.documentHistoryEntries!head(h | h.eventTime DESC).toState`. Four operations (`requestReview`, `accept`, `reject`, `close`) create history entries with the target state. Derived booleans (`isAcceptable`, `isClosable`, `isReviewable`, `isRejectable`) combine state checks with actor ownership.

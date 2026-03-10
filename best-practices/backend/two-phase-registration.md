@@ -3,11 +3,11 @@ id: "two-phase-registration"
 title: "Two-Phase Registration with Email Verification"
 domain: "backend"
 category: "auth"
-score: 37.2
+score: 64.7
 usage_count: 3
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - mlszksz-platform

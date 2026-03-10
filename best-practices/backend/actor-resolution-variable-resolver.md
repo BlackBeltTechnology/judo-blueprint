@@ -3,11 +3,11 @@ id: "actor-resolution-variable-resolver"
 title: "Actor Resolution via VariableResolver Pattern"
 domain: "backend"
 category: "auth"
-score: 147.7
+score: 70.9
 usage_count: 9
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - alba
   - mlszksz-platform

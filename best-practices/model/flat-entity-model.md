@@ -3,11 +3,11 @@ id: "flat-entity-model"
 title: "Flat Entity Model (No Generalization)"
 domain: "model"
 category: "entity"
-score: 184.9
-usage_count: 13
+score: 66.0
+usage_count: 12
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - itracker
@@ -15,7 +15,6 @@ projects:
   - alba
   - skillmatrix-model
   - viterra_demo
-  - kozut-eugyfel-client
   - mjsz
   - judo-demo-miniworkflow
   - sanctuary-backend

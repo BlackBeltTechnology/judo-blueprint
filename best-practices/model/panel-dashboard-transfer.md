@@ -3,11 +3,11 @@ id: "panel-dashboard-transfer"
 title: "Panel/Dashboard Transfer Object as UI Entry Point"
 domain: "model"
 category: "transfer"
-score: 113.8
-usage_count: 7
+score: 75.9
+usage_count: 6
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - mlszksz-platform
@@ -15,7 +15,6 @@ projects:
   - indamedia-adtrack
   - InterfaceRegister
   - judo-partner
-  - ams-frontend
 ---
 ## Description
 

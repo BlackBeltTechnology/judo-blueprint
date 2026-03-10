@@ -3,14 +3,13 @@ id: "notification-entity-pattern"
 title: "Asynchronous Notification Entity with Device Management"
 domain: "model"
 category: "entity"
-score: 26.9
-usage_count: 2
+score: 68.4
+usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - mlszksz-platform
-  - kozut-eugyfel-client
 ---
 ## Description
 

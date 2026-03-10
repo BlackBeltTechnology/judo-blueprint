@@ -3,11 +3,11 @@ id: "product-versioning-container"
 title: "Version Container Pattern for Entity Versioning"
 domain: "backend"
 category: "operation"
-score: 10.3
+score: 42.2
 usage_count: 1
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - alba
 alternatives:

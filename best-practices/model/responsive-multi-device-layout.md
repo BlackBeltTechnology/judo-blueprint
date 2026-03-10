@@ -3,15 +3,13 @@ id: "responsive-multi-device-layout"
 title: "Responsive Multi-Device Page Layout Pattern"
 domain: "model"
 category: "ui"
-score: 45.8
-usage_count: 3
+score: 34.4
+usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - actiongroup-test-react
-  - kozut-eugyfel-client
-  - ams-frontend
 ---
 ## Description
 

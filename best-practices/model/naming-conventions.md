@@ -3,24 +3,21 @@ id: "naming-conventions"
 title: "JUDO Model Naming Conventions"
 domain: "model"
 category: "namespace"
-score: 359.6
-usage_count: 24
+score: 84.2
+usage_count: 19
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
   - itracker
-  - skillmatrix-frontend
   - actiongroup-test-react
   - alba
   - skillmatrix-model
   - mlszksz-platform
   - viterra_demo
-  - kozut-eugyfel-client
   - bhs-global-operation
-  - kuzut-test-eugyfel-model
   - mjsz
   - judo-demo-miniworkflow
   - ams-model
@@ -29,10 +26,8 @@ projects:
   - indamedia-adtrack
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 
@@ -86,9 +81,6 @@ Hungarian-language naming throughout: entities (`Bejelentes`, `Felhasznalo`, `Es
 
 ### BHS Global Operation
 Skeleton project confirming baseline conventions. Model name: PascalCase with abbreviation (`BHSGlobalOperation`). Package names: camelCase (`types`, `measures`). Type names: PascalCase (`String`, `Long`, `Email`). Unit names: camelCase (`milligram`, `kilometrePerHour`, `squareMetre`). Access annotations: camelCase (`dashboard`, `profile`).
-
-### KuzutTestEugyfelModel
-Hungarian naming consistent with kozut-eugyfel-client: entities (`Bejelentes`, `JarokeloBejelentes`, `Kep`), attributes (`idopont`, `targy`, `szoveg`, `allapot`, `helyszin`), relation (`kepek`), enum (`BejelentesAllapot`), enum members (`AKTIV`, `LEZART`), operation (`szinkronizal`). Packages: `types`, `measures`, `bejelentes`. Confirms diacritic removal in identifiers (e.g., `allapot` not `allapot`).
 
 ### MJSZ
 Entities: PascalCase singular (`Player`, `Team`, `Match`, `Club`, `Season`, `Tournament`, `Transfer`, `License`, `Venue`, `Application`). Attributes: camelCase with full words (`dateOfBirth`, `visitorScore`, `licenseExpiration`, `goalsDifference`). Relations: plural for collections (`players`, `teams`, `licenses`, `transfers`), singular for single (`club`, `season`, `venue`). Role-based relation naming: `homeTeam`/`visitorTeam`, `homeMatches`/`visitorMatches` for dual-role relations to the same entity.

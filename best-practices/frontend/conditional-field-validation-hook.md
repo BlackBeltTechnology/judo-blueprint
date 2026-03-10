@@ -3,11 +3,11 @@ id: "conditional-field-validation-hook"
 title: "Conditional Field Validation via Action Hook"
 domain: "frontend"
 category: "hook"
-score: 19.2
+score: 45.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - reserve-app
 ---

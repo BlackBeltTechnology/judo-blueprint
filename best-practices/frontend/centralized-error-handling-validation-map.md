@@ -3,11 +3,11 @@ id: "centralized-error-handling-validation-map"
 title: "Centralized Error Handler with Validation Map"
 domain: "frontend"
 category: "component"
-score: 9.9
+score: 34.2
 usage_count: 1
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - actiongroup-test-react
 alternatives:

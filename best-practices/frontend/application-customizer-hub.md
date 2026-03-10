@@ -3,11 +3,11 @@ id: "application-customizer-hub"
 title: "Application Customizer as Central Hook Registration Hub"
 domain: "frontend"
 category: "hook"
-score: 48.8
+score: 72.3
 usage_count: 3
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - workflow-poc

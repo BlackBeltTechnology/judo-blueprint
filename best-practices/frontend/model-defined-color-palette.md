@@ -3,15 +3,13 @@ id: "model-defined-color-palette"
 title: "Model-Defined Color Palette via ESM Actor Properties"
 domain: "frontend"
 category: "theme"
-score: 38.7
-usage_count: 3
+score: 38.0
+usage_count: 1
 alternative_count: 2
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - itracker
-  - skillmatrix-frontend
-  - ams-frontend
 alternatives:
   - dark-theme-override
   - flutter-theme-template-override

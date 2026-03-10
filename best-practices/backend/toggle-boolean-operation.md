@@ -3,11 +3,11 @@ id: "toggle-boolean-operation"
 title: "Toggle Boolean Flag Operation Pattern"
 domain: "backend"
 category: "operation"
-score: 39.6
+score: 74.3
 usage_count: 3
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
   - mlszksz-platform

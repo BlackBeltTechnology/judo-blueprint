@@ -3,11 +3,11 @@ id: "enum-sentinel-value"
 title: "Enum Sentinel Value Pattern"
 domain: "model"
 category: "enum"
-score: 28.1
+score: 39.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - InterfaceRegister

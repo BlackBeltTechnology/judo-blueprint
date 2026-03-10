@@ -3,11 +3,11 @@ id: "operation-result-caching"
 title: "Operation Result Caching in Entity Relations"
 domain: "model"
 category: "operation"
-score: 12.7
+score: 30.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - skillmatrix-model
 ---

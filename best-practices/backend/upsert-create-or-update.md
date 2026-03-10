@@ -3,11 +3,11 @@ id: "upsert-create-or-update"
 title: "Upsert Pattern (Create or Update)"
 domain: "backend"
 category: "operation"
-score: 52.3
+score: 64.6
 usage_count: 3
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - park-here
   - indamedia-adtrack

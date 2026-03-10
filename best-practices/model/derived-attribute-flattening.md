@@ -3,22 +3,20 @@ id: "derived-attribute-flattening"
 title: "Derived Attribute Flattening"
 domain: "model"
 category: "transfer"
-score: 314.2
-usage_count: 21
+score: 82.4
+usage_count: 17
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
   - itracker
-  - skillmatrix-frontend
   - actiongroup-test-react
   - alba
   - skillmatrix-model
   - mlszksz-platform
   - viterra_demo
-  - kozut-eugyfel-client
   - mjsz
   - judo-demo-miniworkflow
   - ams-model
@@ -26,10 +24,8 @@ projects:
   - indamedia-adtrack
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 

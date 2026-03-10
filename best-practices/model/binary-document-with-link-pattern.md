@@ -3,11 +3,11 @@ id: "binary-document-with-link-pattern"
 title: "Binary Document with URL Link Pair"
 domain: "model"
 category: "entity"
-score: 17.7
+score: 36.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - InterfaceRegister
 ---

@@ -3,11 +3,11 @@ id: "http-error-interceptor"
 title: "HTTP Error Interceptor for Global Error Handling"
 domain: "frontend"
 category: "component"
-score: 8.8
+score: 73.2
 usage_count: 1
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - rackinspect
 alternatives:

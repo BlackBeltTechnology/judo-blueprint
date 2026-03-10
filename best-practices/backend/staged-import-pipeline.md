@@ -3,11 +3,11 @@ id: "staged-import-pipeline"
 title: "Staged Multi-Phase Import Pipeline"
 domain: "backend"
 category: "operation"
-score: 18.1
+score: 47.4
 usage_count: 1
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - judo-partner
 ---

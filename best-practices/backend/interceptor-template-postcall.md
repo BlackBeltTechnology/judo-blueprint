@@ -3,11 +3,11 @@ id: "interceptor-template-postcall"
 title: "Post-Call Interceptor for Data Stripping/Modification"
 domain: "backend"
 category: "interceptor"
-score: 27.3
+score: 59.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - park-here

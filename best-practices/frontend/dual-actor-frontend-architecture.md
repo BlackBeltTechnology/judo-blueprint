@@ -3,20 +3,16 @@ id: "dual-actor-frontend-architecture"
 title: "Dual-Actor Frontend Architecture (Custom + Generated)"
 domain: "frontend"
 category: "framework"
-score: 122.2
-usage_count: 8
+score: 42.0
+usage_count: 4
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - itracker
-  - skillmatrix-frontend
-  - kozut-eugyfel-client
-  - kozut-eugyfel-model-test
   - reserve-app
   - doors-model
-  - ams-frontend
 alternatives:
   - single-actor-heavy-customization
 ---
@@ -56,9 +52,6 @@ Three actor frontends: **Admin** (5 pages, user management), **HR Employee** (65
 
 ### kozut-eugyfel-client (Flutter)
 Three actor frontends: **Munkatars** (~75 pages, employee task and report management), **Admin** (~40 pages, user/org/county management), **E-Ugyfel Alkalmazas** (~3 pages, public citizen portal with anonymous access). Extends to 3 actors with different authentication levels -- OAuth required for workers/admin, anonymous access for citizens. All generated with shared template overrides.
-
-### kozut-eugyfel-model-test
-ESM model defines 3 actors with distinct access levels: Admin (6 menu items, full CRUD), Munkatars (5 menu items, task-focused with bound operations), EugyfelAlkalmazas (minimal read-only, anonymous access). Model-level actor definition drives separate Flutter app generation.
 
 ### reserve-app
 Five actor frontends: **AdminActor** (13 access points, full CRUD management with 1 custom hook), **PartnerActor** (2 access points, reservation management), **LogisticianActor** (dashboard only), **DoormanActor** (dashboard only), **Readonly** (dashboard only). Extends the multi-actor pattern to 5 roles with 3 dashboard-only placeholder actors. Partner uses restricted "ForPartner" transfer objects with fewer attributes.

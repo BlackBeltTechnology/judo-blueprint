@@ -3,11 +3,11 @@ id: "data-snapshot-versioning"
 title: "Data Snapshot Versioning (Immutable History Records)"
 domain: "backend"
 category: "operation"
-score: 45.3
+score: 54.4
 usage_count: 3
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - itracker
   - indamedia-adtrack

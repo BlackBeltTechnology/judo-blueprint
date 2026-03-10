@@ -3,24 +3,20 @@ id: "derived-relation-navigation"
 title: "Derived Relation via Navigation Expression"
 domain: "model"
 category: "relation"
-score: 180.4
-usage_count: 12
+score: 73.2
+usage_count: 8
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
-  - skillmatrix-frontend
   - alba
   - skillmatrix-model
-  - kozut-eugyfel-client
   - sanctuary-backend
   - park-here
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
-  - ams-frontend
 ---
 ## Description
 

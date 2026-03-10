@@ -3,22 +3,19 @@ id: "custom-implementation-placeholder"
 title: "Custom Implementation Placeholder Operations"
 domain: "model"
 category: "operation"
-score: 162.3
-usage_count: 11
+score: 77.5
+usage_count: 8
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
-  - skillmatrix-frontend
   - alba
   - mlszksz-platform
-  - kuzut-test-eugyfel-model
   - park-here
   - indamedia-adtrack
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
 ---
 ## Description
@@ -56,9 +53,6 @@ Six operations use placeholders: `Test.submit` (scoring logic), `Test.exclude` (
 
 ### MLSZKSZPlatform
 10 custom operations covering workflow, integration, and admin functions: `Initializer.init` (data seeding), `AdminDashboard.createAnnouncement/createOrganization/syncFeed/inviteBulk/exportAuditLog` (complex admin workflows), `AdminConfigurationTO.updateConfiguration` (platform settings), `FeedPanel.requestPost` (feed interaction), `RegistrationTransfer.registration/validate/verifyUserInvitation/lookupPostalCode` (multi-step registration with email verification). The `.generator-ignore` lists 44 `*CustomImplementation.java.default` files, showing extensive custom backend work.
-
-### KuzutTestEugyfelModel
-Single custom operation: `JarokeloBejelentes.szinkronizal` (synchronize) -- a STATIC, stateful operation with `customImplementation="true"` and `body=""`. Designed for external system integration with the Jarokelo road defect reporting system. No parameters or return type defined in the model, suggesting all sync logic is in the Java implementation.
 
 ### ParkHere
 All 20+ operations use `customImplementation=true` with `// sdk` or empty body comments. Key operations include: `favoriteCar`, `deleteCar` (car management), `reservation`, `modificateReservation`, `deleteReservation`, `cancelReservation` (reservation lifecycle), `holiday`, `deleteHoliday`, `queryReservationsForHoliday` (holiday management), `configuration`, `createDoorman`, `createDay` (admin configuration). All use `BusinessError` fault type for consistent error handling.

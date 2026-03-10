@@ -3,29 +3,25 @@ id: "category-enum-pattern"
 title: "Category/Classification Enumeration Pattern"
 domain: "model"
 category: "enum"
-score: 265.8
-usage_count: 17
+score: 71.7
+usage_count: 13
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - itracker
-  - skillmatrix-frontend
   - actiongroup-test-react
   - alba
   - skillmatrix-model
   - mlszksz-platform
-  - kozut-eugyfel-client
   - ams-model
   - sanctuary-backend
   - park-here
   - indamedia-adtrack
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 

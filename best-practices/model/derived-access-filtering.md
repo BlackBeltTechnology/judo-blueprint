@@ -3,29 +3,25 @@ id: "derived-access-filtering"
 title: "Derived Access Point with Getter Filtering"
 domain: "model"
 category: "access"
-score: 256.9
-usage_count: 17
+score: 77.7
+usage_count: 13
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
   - itracker
-  - skillmatrix-frontend
   - alba
   - skillmatrix-model
   - viterra_demo
-  - kozut-eugyfel-client
   - judo-demo-miniworkflow
   - ams-model
   - park-here
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 

@@ -3,11 +3,11 @@ id: "operation-return-type-navigation"
 title: "Operation Return Type for View Navigation"
 domain: "model"
 category: "operation"
-score: 32.3
+score: 41.5
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - viterra_demo
   - workflow-poc

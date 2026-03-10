@@ -3,11 +3,11 @@ id: "composite-identifier-pattern"
 title: "Composite Identifier (Multiple Identifier Attributes)"
 domain: "model"
 category: "entity"
-score: 35.8
+score: 43.0
 usage_count: 2
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - InterfaceRegister
   - judo-partner

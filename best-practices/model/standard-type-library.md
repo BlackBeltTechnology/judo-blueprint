@@ -3,23 +3,21 @@ id: "standard-type-library"
 title: "Standard Primitive Type and Measures Library"
 domain: "model"
 category: "type"
-score: 328.5
-usage_count: 22
+score: 82.7
+usage_count: 18
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - trivia
   - rackinspect
   - itracker
-  - skillmatrix-frontend
   - actiongroup-test-react
   - alba
   - skillmatrix-model
   - mlszksz-platform
   - viterra_demo
   - bhs-global-operation
-  - kuzut-test-eugyfel-model
   - mjsz
   - judo-demo-miniworkflow
   - ams-model
@@ -27,10 +25,8 @@ projects:
   - park-here
   - InterfaceRegister
   - judo-partner
-  - kozut-eugyfel-model-test
   - workflow-poc
   - reserve-app
-  - ams-frontend
 ---
 ## Description
 
@@ -80,9 +76,6 @@ Standard types in `viterra::types`: String, Long, Integer, Double, Float, Boolea
 
 ### BHS Global Operation
 Skeleton project with 14 standard types in `BHSGlobalOperation::types` (Text maxLength=250) and the most comprehensive measures package observed: 25 measures with 100+ units covering all 7 SI base units plus 18 derived quantities (Velocity, Acceleration, Force, Work, Power, Frequency, Pressure, Density, Capacitance, Resistance, etc.). No domain entities defined to consume these types.
-
-### KuzutTestEugyfelModel
-12 standard types in `E_Ugyfel::types`: String (255), Long (18), Integer (9), Double (15,4), Float (7,4), Boolean, Date, Timestamp (second), Phone (20), Text (250), URL (1024), Email (255, regex). Comprehensive measures package with 20+ measures (Mass, Time, Length, Temperature, Area, Volume, Velocity, etc.) -- none used by domain entities. Text maxLength=250, matching the itracker/BHS pattern rather than the 4000 default.
 
 ### MJSZ
 Standard types in `mjsz::types`: String, Long, Integer, Double, Float, Boolean, Date, Timestamp, Time, Phone, Text, URL, Email (regex-validated). Comprehensive `mjsz::measures` package with 9 measures (Mass, Time, Length, Temperature, Area, Volume, Velocity, Acceleration, Momentum, Force, Work). Notable: Boolean type defined but not used in the model -- Integer flags (0/1) used instead for summation support in Match.homeWin/draw/visitorWin.

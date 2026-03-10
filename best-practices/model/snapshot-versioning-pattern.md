@@ -3,11 +3,11 @@ id: "snapshot-versioning-pattern"
 title: "Snapshot Versioning via Clone-to-Version Entities"
 domain: "model"
 category: "entity"
-score: 63.4
+score: 56.5
 usage_count: 4
 alternative_count: 1
 first_seen: "2026-03-04"
-last_updated: "2026-03-04"
+last_updated: "2026-03-06"
 projects:
   - itracker
   - indamedia-adtrack
