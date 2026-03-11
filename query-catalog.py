@@ -401,6 +401,94 @@ def cmd_describe(args, base_dir):
         print()
 
 
+def cmd_search(args, base_dir):
+    """Search across BLUEPRINT.md files for a pattern (case-insensitive)."""
+    try:
+        pattern = re.compile(args.pattern, re.IGNORECASE)
+    except re.error as e:
+        print(f"ERROR: Invalid regex pattern '{args.pattern}': {e}", file=sys.stderr)
+        return
+
+    results = []
+
+    # Search model-blueprints
+    blueprints_dir = os.path.join(base_dir, "model-blueprints")
+    if os.path.isdir(blueprints_dir):
+        for entry in sorted(os.listdir(blueprints_dir)):
+            subdir = os.path.join(blueprints_dir, entry)
+            if not os.path.isdir(subdir):
+                continue
+            bp_file = os.path.join(subdir, "BLUEPRINT.md")
+            if not os.path.isfile(bp_file):
+                continue
+
+            meta, content = parse_frontmatter(bp_file)
+            if not meta:
+                continue
+
+            lines = content.split('\n')
+            matches = []
+            for i, line in enumerate(lines):
+                if pattern.search(line):
+                    start = max(0, i - 1)
+                    end = min(len(lines), i + 2)
+                    snippet = '\n'.join(lines[start:end])
+                    matches.append((i + 1, snippet))
+
+            if matches:
+                results.append((
+                    meta.get('id', entry),
+                    meta.get('title', '?'),
+                    meta.get('score', 0),
+                    matches
+                ))
+
+    # Search best-practices (all domains)
+    for domain in ["model", "backend", "frontend"]:
+        domain_dir = os.path.join(base_dir, "best-practices", domain)
+        if not os.path.isdir(domain_dir):
+            continue
+        for filename in sorted(os.listdir(domain_dir)):
+            if not filename.endswith(".md") or filename == "INDEX.md":
+                continue
+            filepath = os.path.join(domain_dir, filename)
+            meta, content = parse_frontmatter(filepath)
+            if not meta:
+                continue
+
+            lines = content.split('\n')
+            matches = []
+            for i, line in enumerate(lines):
+                if pattern.search(line):
+                    start = max(0, i - 1)
+                    end = min(len(lines), i + 2)
+                    snippet = '\n'.join(lines[start:end])
+                    matches.append((i + 1, snippet))
+
+            if matches:
+                results.append((
+                    meta.get('id', filename.replace('.md', '')),
+                    meta.get('title', '?'),
+                    meta.get('score', 0),
+                    matches
+                ))
+
+    if not results:
+        print(f"No matches for pattern '{args.pattern}'.")
+        return
+
+    for bp_id, title, score, matches in results:
+        print(f"=== {bp_id} (score: {score}) ===")
+        print(f"Title: {title}")
+        for line_num, snippet in matches:
+            print(f"  Line {line_num}:")
+            for sline in snippet.split('\n'):
+                print(f"    {sline}")
+        print()
+
+    print(f"Found matches in {len(results)} blueprint(s).")
+
+
 def cmd_get(args, base_dir):
     """Get the full content of one or more items by id."""
     layer = getattr(args, "layer", None)
@@ -470,6 +558,13 @@ def main():
     )
     describe_parser.add_argument("ids", nargs="+", help="One or more item IDs to describe")
 
+    # search subcommand
+    search_parser = subparsers.add_parser(
+        "search",
+        help="Search across BLUEPRINT.md files for a pattern"
+    )
+    search_parser.add_argument("pattern", help="Regex pattern to search for (case-insensitive)")
+
     # get subcommand
     get_parser = subparsers.add_parser("get", help="Get full content of item(s) by id")
     get_parser.add_argument("ids", nargs="+", help="One or more item IDs to retrieve")
@@ -485,6 +580,8 @@ def main():
         cmd_list(args, args.base_dir)
     elif args.command == "describe":
         cmd_describe(args, args.base_dir)
+    elif args.command == "search":
+        cmd_search(args, args.base_dir)
     elif args.command == "get":
         cmd_get(args, args.base_dir)
 
