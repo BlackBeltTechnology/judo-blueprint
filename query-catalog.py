@@ -2,9 +2,11 @@
 """
 Unified Catalog Query Script
 
-Queries best-practices and model-blueprints catalogs with two modes:
-  list     Show all items with just id, title, and score (compact for agent selection)
-  get ID   Show the full content of a specific item by id
+Queries best-practices and model-blueprints catalogs with four modes:
+  list          Show all items with just id, title, and score (compact for agent selection)
+  describe ID   Show BLUEPRINT.md content (frontmatter + description) without layer files
+  search PAT    Search across BLUEPRINT.md files for a regex pattern (case-insensitive)
+  get ID        Show the full content of a specific item by id (with optional layer selection)
 
 This allows agents to first see what exists (names + scores only), then selectively
 read only the items relevant to the project they're analyzing.
@@ -20,6 +22,10 @@ Usage:
   python3 query-catalog.py list --project mlszksz-platform    # Items that reference a project
   python3 query-catalog.py list --where usage_count=3         # Generic frontmatter filter
   python3 query-catalog.py list --where score=68.0 --type blueprint  # Combine filters
+  python3 query-catalog.py describe audit-log-entity          # BLUEPRINT.md content (no layer files)
+  python3 query-catalog.py describe id1 id2 id3              # Describe multiple items
+  python3 query-catalog.py search "entity"                    # Search all BLUEPRINT.md files
+  python3 query-catalog.py search "transfer.*pattern"         # Regex search (case-insensitive)
   python3 query-catalog.py get audit-log-entity               # Full content (BLUEPRINT.md + model.md)
   python3 query-catalog.py get audit-log-entity --layer backend   # Only backend.md content
   python3 query-catalog.py get audit-log-entity --layer frontend  # Only frontend.md content
@@ -335,6 +341,154 @@ def cmd_list(args, base_dir):
     print(f"\nTotal: {len(items)} items")
 
 
+def cmd_describe(args, base_dir):
+    """Show BLUEPRINT.md content (frontmatter + description) for one or more items."""
+    for item_id in args.ids:
+        # Direct path for model-blueprints
+        bp_dir = os.path.join(base_dir, "model-blueprints", item_id)
+        bp_file = os.path.join(bp_dir, "BLUEPRINT.md")
+
+        if not os.path.isfile(bp_file):
+            # Fallback: scan model-blueprints directories by frontmatter id
+            found = False
+            blueprints_dir = os.path.join(base_dir, "model-blueprints")
+            if os.path.isdir(blueprints_dir):
+                for entry in os.listdir(blueprints_dir):
+                    subdir = os.path.join(blueprints_dir, entry)
+                    candidate = os.path.join(subdir, "BLUEPRINT.md")
+                    if os.path.isfile(candidate):
+                        meta, _ = parse_frontmatter(candidate)
+                        if meta and meta.get("id") == item_id:
+                            bp_file = candidate
+                            found = True
+                            break
+
+            # Also check best-practices (all domains) if not found in blueprints
+            if not found:
+                for domain in ["model", "backend", "frontend"]:
+                    domain_dir = os.path.join(base_dir, "best-practices", domain)
+                    if not os.path.isdir(domain_dir):
+                        continue
+                    # Try direct filename match
+                    filepath = os.path.join(domain_dir, f"{item_id}.md")
+                    if os.path.isfile(filepath):
+                        meta, content = parse_frontmatter(filepath)
+                        if meta and meta.get("id") == item_id:
+                            bp_file = filepath
+                            found = True
+                            break
+                    # Fallback: scan all files in domain
+                    for filename in os.listdir(domain_dir):
+                        if not filename.endswith(".md") or filename == "INDEX.md":
+                            continue
+                        filepath = os.path.join(domain_dir, filename)
+                        meta, content = parse_frontmatter(filepath)
+                        if meta and meta.get("id") == item_id:
+                            bp_file = filepath
+                            found = True
+                            break
+                    if found:
+                        break
+
+            if not found:
+                print(f"ERROR: Blueprint '{item_id}' not found.", file=sys.stderr)
+                continue
+
+        # Read and print full content (frontmatter + body, no layer files)
+        _, content = parse_frontmatter(bp_file)
+        print(f"=== {item_id} ===")
+        print(content)
+        print()
+
+
+def cmd_search(args, base_dir):
+    """Search across BLUEPRINT.md files for a pattern (case-insensitive)."""
+    try:
+        pattern = re.compile(args.pattern, re.IGNORECASE)
+    except re.error as e:
+        print(f"ERROR: Invalid regex pattern '{args.pattern}': {e}", file=sys.stderr)
+        return
+
+    results = []
+
+    # Search model-blueprints
+    blueprints_dir = os.path.join(base_dir, "model-blueprints")
+    if os.path.isdir(blueprints_dir):
+        for entry in sorted(os.listdir(blueprints_dir)):
+            subdir = os.path.join(blueprints_dir, entry)
+            if not os.path.isdir(subdir):
+                continue
+            bp_file = os.path.join(subdir, "BLUEPRINT.md")
+            if not os.path.isfile(bp_file):
+                continue
+
+            meta, content = parse_frontmatter(bp_file)
+            if not meta:
+                continue
+
+            lines = content.split('\n')
+            matches = []
+            for i, line in enumerate(lines):
+                if pattern.search(line):
+                    start = max(0, i - 1)
+                    end = min(len(lines), i + 2)
+                    snippet = '\n'.join(lines[start:end])
+                    matches.append((i + 1, snippet))
+
+            if matches:
+                results.append((
+                    meta.get('id', entry),
+                    meta.get('title', '?'),
+                    meta.get('score', 0),
+                    matches
+                ))
+
+    # Search best-practices (all domains)
+    for domain in ["model", "backend", "frontend"]:
+        domain_dir = os.path.join(base_dir, "best-practices", domain)
+        if not os.path.isdir(domain_dir):
+            continue
+        for filename in sorted(os.listdir(domain_dir)):
+            if not filename.endswith(".md") or filename == "INDEX.md":
+                continue
+            filepath = os.path.join(domain_dir, filename)
+            meta, content = parse_frontmatter(filepath)
+            if not meta:
+                continue
+
+            lines = content.split('\n')
+            matches = []
+            for i, line in enumerate(lines):
+                if pattern.search(line):
+                    start = max(0, i - 1)
+                    end = min(len(lines), i + 2)
+                    snippet = '\n'.join(lines[start:end])
+                    matches.append((i + 1, snippet))
+
+            if matches:
+                results.append((
+                    meta.get('id', filename.replace('.md', '')),
+                    meta.get('title', '?'),
+                    meta.get('score', 0),
+                    matches
+                ))
+
+    if not results:
+        print(f"No matches for pattern '{args.pattern}'.")
+        return
+
+    for bp_id, title, score, matches in results:
+        print(f"=== {bp_id} (score: {score}) ===")
+        print(f"Title: {title}")
+        for line_num, snippet in matches:
+            print(f"  Line {line_num}:")
+            for sline in snippet.split('\n'):
+                print(f"    {sline}")
+        print()
+
+    print(f"Found matches in {len(results)} blueprint(s).")
+
+
 def cmd_get(args, base_dir):
     """Get the full content of one or more items by id."""
     layer = getattr(args, "layer", None)
@@ -397,6 +551,20 @@ def main():
         help="Generic frontmatter filter(s). Supports =, >, >=, <, <= (e.g., usage_count>=3, score>40)"
     )
 
+    # describe subcommand
+    describe_parser = subparsers.add_parser(
+        "describe",
+        help="Show BLUEPRINT.md content (frontmatter + description) for one or more items"
+    )
+    describe_parser.add_argument("ids", nargs="+", help="One or more item IDs to describe")
+
+    # search subcommand
+    search_parser = subparsers.add_parser(
+        "search",
+        help="Search across BLUEPRINT.md files for a pattern"
+    )
+    search_parser.add_argument("pattern", help="Regex pattern to search for (case-insensitive)")
+
     # get subcommand
     get_parser = subparsers.add_parser("get", help="Get full content of item(s) by id")
     get_parser.add_argument("ids", nargs="+", help="One or more item IDs to retrieve")
@@ -410,6 +578,10 @@ def main():
 
     if args.command == "list":
         cmd_list(args, args.base_dir)
+    elif args.command == "describe":
+        cmd_describe(args, args.base_dir)
+    elif args.command == "search":
+        cmd_search(args, args.base_dir)
     elif args.command == "get":
         cmd_get(args, args.base_dir)
 
