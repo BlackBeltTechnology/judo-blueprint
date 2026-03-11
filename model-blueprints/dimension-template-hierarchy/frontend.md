@@ -1,0 +1,20 @@
+## Overview
+
+The dimension template hierarchy has the most extensive frontend customization in the rackinspect project. It involves custom React components for rendering dynamic dimension parameter forms (both form/edit and view modes), a comprehensive utility library for template-to-instance data transformations, and numerous dialog/page action hooks for managing template groups and parameters. The pattern replaces generated table components with custom accordion-based forms that dynamically render fields based on the template's ValueType (NUMERIC, STRING, ENUM, BOOLEAN).
+
+## Implementation Pattern
+
+- **Custom visual element components**: Two core custom components (`DimensionParametersFormComponent` and `DimensionParametersViewComponent`) replace the generated table views for dimension groups. They are registered via Pandino's `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` and render dimension parameters as accordion panels with dynamic form fields. The view component renders a rich UI with MUI Accordion, TextField, Checkbox, Switch, SingleRelationInput (for ENUM selectable values), and multi-row support for multiLine groups.
+- **Dimension template helper utility**: A shared `dimensionTemplateHelper.ts` provides functions for fetching template parameters (`fetchDimensionTemplateParamater`), populating instance values from templates (`populateDimensionGroupValues`), handling value changes (`onValueChange`, `onBatchValueChangeOnView`), managing multi-row groups (`onRowAdd`, `onRowDelete`), and lazy CRUD operations for persisted rows (`onLazyRowAddForRackView`, `onLazyRowDeleteForRackView`).
+- **Template group form hooks**: Dialog and page action hooks customize the template group creation and viewing experience. The `postGetTemplateAction` in the group form hook sets transient boolean flags (`dimensionTemplateIsRackTransient`, `dimensionTemplateIsRackElementTransient`) based on the parent template's type (RACK vs RACK_ELEMENT), controlling which fields are visible.
+- **Selector filtering**: Custom selector dialog hooks filter dimension template groups in the add-selector to only show groups where `rackDimensionTemplateGroupIsUndefined` is true, preventing already-assigned groups from appearing.
+- **i18n overrides**: Generator-override Handlebars template adds custom i18n keys for dimension UI: row selection dialogs, add/delete row buttons, loading states, and error messages.
+- **Reuse across multiple contexts**: The same `DimensionParametersFormComponent` and `DimensionParametersViewComponent` are registered as custom implementations for RepairCategory (form + view), Rack (view), ElementFault (form + view), and ErrorItemRow (view), each with different data sources but identical rendering logic.
+
+## Examples
+
+### rackinspect
+- Framework: React
+- Key files: `custom/hooks/custom-implementations/DimensionParametersFormComponent.tsx`, `custom/hooks/custom-implementations/DimensionParametersViewComponent.tsx`, `custom/hooks/utils/dimensionTemplateHelper.ts`, `custom/hooks/dialogs/registerServicesDimension_serviceDimensionTemplateGroupsRelationFormPageActionsHook.ts`, `custom/hooks/dialogs/registerDimensionGroupFormRackElementDimensionTemplateGroupSelectorActions.ts`, `generator-overrides/ui-react/actor/public/i18n/application_default_extra.fragment.hbs`
+- Pattern: The `DimensionParametersViewComponent` (750+ lines) renders accordion panels per DimensionGroup. Each group shows parameters as a dynamic form: NUMERIC fields use NumericInput, STRING uses TextField, BOOLEAN uses Checkbox/Switch, ENUM uses SingleRelationInput with selectable values. Multi-line groups support adding/deleting rows with template parameter cloning. The component is registered via `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` in 6+ different page contexts.
+- Notable: This is the largest custom component in the project. The `dimensionTemplateHelper.ts` utility (1000+ lines) handles the full template-to-instance lifecycle including value population from rack dimension groups, UUID-based row identification, and lazy server-side CRUD for persisted dimension data.

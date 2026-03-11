@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>hu.blackbelt.judo</groupId>
+    <artifactId>judo-blueprint</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>JUDO Blueprint</name>
+    <description>Pattern catalog and knowledge base for JUDO projects</description>
+
+    <properties>
+        <judo-model-cli-version>1.1.0.20260126_071613_e7eac4ad_develop</judo-model-cli-version>
+    </properties>
+
+    <profiles>
+        <!-- Downloads judo-cli.jar into .claude/ for AI agent model operations.
+             Activates automatically when .claude/judo-cli.jar is missing.
+             Manual run: mvn validate -P download-model-cli
+             Change version: update <judo-model-cli-version> property above,
+                             delete .claude/judo-cli.jar, then run mvn validate -->
+        <profile>
+            <id>download-model-cli</id>
+            <activation>
+                <file>
+                    <missing>${project.basedir}/.claude/judo-cli.jar</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.6.1</version>
+                        <executions>
+                            <execution>
+                                <id>download-judo-cli</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>hu.blackbelt.judo.runtime</groupId>
+                                            <artifactId>judo-model-cli</artifactId>
+                                            <version>${judo-model-cli-version}</version>
+                                            <classifier>standalone</classifier>
+                                            <type>jar</type>
+                                            <outputDirectory>${project.basedir}/.claude</outputDirectory>
+                                            <destFileName>judo-cli.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>judo-ng</id>
+            <url>https://nexus.judo.technology/repository/maven-judong</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+</project>
