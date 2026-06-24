@@ -4,6 +4,13 @@
 
 The frontend uses Material-UI (MUI) theming system for consistent styling. Themes can be customized through palette configuration and applied globally or to specific components.
 
+JUDO theming is **two-layered**:
+
+1. **Actor palette (model-driven)** — the `ActorType` in the ESM model carries 7 color attributes (`primaryColor`, `secondaryColor`, `backgroundColor`, `paperBackgroundColor`, `textPrimaryColor`, `textSecondaryColor`, `subtitleColor`) plus `applicationLogo`. The generator renders these into `src/theme/palette.ts`. **To change the app-wide brand palette, edit the ActorType in the ESM model — not `palette.ts` directly** (editing `palette.ts` requires a `.generator-ignore` entry and loses cross-actor consistency).
+2. **Component sub-themes (frontend)** — `applicationCustomizer.subThemes` maps generated component names to partial MUI themes, applied via a nested `ThemeProvider`. Use this for per-card, per-view, per-table color variations.
+
+For the **authoring side** (ESM mutations to set ActorType colors, plan sub-theme keys via consistent Group naming, and enable data-driven `generateVisualPropertiesHook` / `TableRowHighlightingHook`), see the `judo-model-cli` skill's `ui-mutations.md` — specifically the **Visual Language → Theming & colors** section and **Recipes 18 (sub-theme card colors) and 19 (row highlighting)**.
+
 ## Color Palette
 
 ### Light Theme
@@ -476,7 +483,8 @@ export const customTheme = createTheme({
 ### Step 3: Apply Theme
 
 ```bash
-# Protect from regeneration
+# Generator emits src/theme/typography.ts. Hand-edit in place = case 1 of the
+# .generator-ignore rule — add to protect from regeneration.
 echo "src/theme/typography.ts" >> .generator-ignore
 ```
 

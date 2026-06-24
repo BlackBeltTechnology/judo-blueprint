@@ -97,6 +97,11 @@ Multiple initializer operations on a dedicated `Initializer` entity: `initUsers`
 - Cons: Initializer logic can become complex, sample data may need cleanup in production
 - Prefer when: Application needs reference data or default configuration on first startup
 
+## Anti-Patterns
+
+- **`initializer=true` with an input parameter** — EVL rejects with: `Initializer operation: <op> must be static without input.` Initializer is a zero-arg startup hook only. If user-supplied parameters are needed at creation time (name, language, config), use a plain `STATIC` operation with `initializer=false` and invoke it explicitly from the UI via a toolbar action or custom hook; never combine `initializer=true` with an input TO.
+- **Using initializer for transactional business logic** — runs once at startup; not safe for re-runnable or user-triggered operations.
+
 ## Related Patterns
 
 - [singleton-entity](singleton-entity.md)

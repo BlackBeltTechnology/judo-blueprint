@@ -3,6 +3,45 @@
 > [!IMPORTANT]
 > This guide covers `OperationCallInterceptor` for intercepting business logic operations. For handling user authentication events, please see the [Authentication Guide](authentication-guide.md).
 
+## Pattern: Backend-Computed TO Attribute (JQL Escape Hatch)
+
+Certain derived values cannot be expressed as an entity-level `DERIVED` `DataMember`:
+
+- **Bipartite quantifiers** such as "for every supported language ∧ for every paragraph, an approved translation exists" — JQL lambda scopes do not nest, so the outer variable (and `self`) is invisible inside an inner `!forall` / `!filter`.
+- **Collection-valued context variables** — `!getVariable(...)` only returns a scalar `String`; `Sequence<String>!getVariable(...)` is not valid JQL grammar.
+- **External lookups** — anything that requires I/O at read-time.
+
+The canonical escape hatch keeps the value on the TO (so the UI and consumers see it) without forcing it through JQL:
+
+1. **Remove** the `DERIVED` `DataMember` from the `EntityType`.
+2. On each `TransferObjectType` that exposes the value, declare it as `memberType="TRANSIENT"` with **no `binding`**:
+
+    ```xml
+    <attributes xsi:type="structure:DataMember"
+                name="readyForAllLanguages"
+                dataType="_boolTypeId"
+                memberType="TRANSIENT"
+                identifier="false"/>
+    ```
+
+3. Register an `OperationCallInterceptor` that fires **after** the mapped read operations (`_getById`, list queries, etc.), enriching the outgoing payload in place.
+
+```java
+@Component(property = { "judo.model.name=<model>" })
+public class MyTransientEnricher implements OperationCallInterceptor {
+    @Override public List<String> getOperations() {
+        return List.of("<model>.services.MyTO._getById",
+                       "<model>.services.MyTO._query");
+    }
+    @Override public Payload postCall(Payload result, ...) {
+        result.put("readyForAllLanguages", compute(result));
+        return result;
+    }
+}
+```
+
+**Why not a view / union?** A transient TO member is the narrowest, least invasive choice: the entity model stays pure, the TO surface matches the spec, and the value is re-computed per request with no cache-invalidation surface. Use an entity-level denormalisation only when the value must also be filterable/sortable at the DAO layer.
+
 ## Advanced Interceptor Patterns
 
 The JUDO framework provides two types of interceptors, `OperationCallInterceptor` and `AuthenticationInterceptor`, which can be used to implement a variety of powerful, cross-cutting patterns.
@@ -630,7 +669,7 @@ The generator creates `.default` template files as **blueprints** for custom int
 1. **Renamed** to `.java` extension to be compiled
 2. **Customized** by implementing the method bodies and uncommenting relevant code
 
-**Note**: The renamed `.java` files do NOT need to be added to `.generator-ignore` because the generator only creates `.default` files, never `.java` files. Your `.java` implementations are safe from regeneration.
+**Note**: The renamed `.java` files do NOT need to be added to `.generator-ignore` because the generator only creates `.default` files, never `.java` files. Your `.java` implementations are safe from regeneration. This is case 2 of the `.generator-ignore` rule (see backend [README.md](README.md#generator-ignore--one-rule) or [custom-operations.md](custom-operations.md#generator-ignore--one-rule)).
 
 ### Workflow: Using .default Templates
 
@@ -653,6 +692,7 @@ mvn install
 **Important Notes**:
 - Do NOT edit `.java.default` files directly - they are regenerated on each build
 - Do NOT add `.java` files to `.generator-ignore` - the generator only creates `.default` files, your `.java` implementations are never overwritten
+- Do NOT add `.java.default` files to `.generator-ignore` either — keep them regenerating as a read-only reference. See [`.generator-ignore` — One Rule](README.md#generator-ignore--one-rule).
 - Always work with the `.java` file after renaming
 
 ### Common .default Template Patterns

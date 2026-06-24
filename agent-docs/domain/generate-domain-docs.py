@@ -154,7 +154,7 @@ def generate_entity_reference(entities, output_file):
     """Generate entity-reference.md from extracted data"""
     with open(output_file, 'w') as f:
         f.write("# Complete Entity Reference\n\n")
-        f.write("This document provides detailed information about all entities in the Webshop domain model.\n\n")
+        f.write("This document provides detailed information about all entities in the webshop domain model.\n\n")
         f.write(f"**Total Entities**: {len(entities)}\n\n")
         
         f.write("## Entity Summary\n\n")

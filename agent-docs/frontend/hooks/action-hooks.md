@@ -445,6 +445,8 @@ export const campaignPageActions: PageActionHook = () => {
 
 ## OperationFlowManager
 
+> **Design principle: one representation per concept.** Default mapped-TO output navigation lands on a generated standalone `<TO>View` route. Same row also reachable via `Actor.access.<area>.<rel> → row → detail` — a DIFFERENT generated page. Use `OperationFlowManager` to redirect every post-op landing into the access-context view; standalone routes are generated but unvisited. See [operation-flow-manager-redirect.md](../../../best-practices/frontend/operation-flow-manager-redirect.md) for the redirect recipes and [relation-driven-crud-with-custom-input.md](../../../best-practices/model/relation-driven-crud-with-custom-input.md) for the capability ladder and return-type matrix that motivate the redirect.
+
 ### Purpose
 
 Control navigation and behavior after operations (create, update, delete). Customize where users go after completing actions.
@@ -636,10 +638,15 @@ filterUserOptions: (formData, options) => {
 ### 4. Protect Custom Hooks
 
 ```bash
-# Add to .generator-ignore
-echo "src/custom/hooks/containerActions.tsx" >> .generator-ignore
-echo "src/custom/hooks/pageActions.tsx" >> .generator-ignore
-echo "src/custom/hooks/operationFlowManager.tsx" >> .generator-ignore
+# Apply the One Rule (see hooks/README.md → Understanding .generator-ignore).
+# Brand-new hand-written files → NO .generator-ignore entry (case 3).
+# Only add an entry if the generator emits a stub at that exact path AND you
+# hand-edited it in place (case 1).
+# Flag for human review: whether containerActions.tsx / pageActions.tsx /
+# operationFlowManager.tsx are generator-emitted stubs in this template is
+# unclear. Verify with:
+#   find src/custom -name 'containerActions*' -o -name 'pageActions*' -o -name 'operationFlowManager*'
+# after a clean generate; treat any .default match as case 2 (no entry, no .default in ignore).
 ```
 
 ### 5. Debounce Autocomplete

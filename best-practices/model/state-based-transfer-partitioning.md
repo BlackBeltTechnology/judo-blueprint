@@ -11,6 +11,12 @@ last_updated: "2026-03-06"
 projects:
   - viterra_demo
 ---
+## Why this pattern exists
+
+Derived relation / access membership invariant (rung 5 of capability ladder) rejects UPDATE that exits the filter's predicate. Filter attributes are read-only through filtered paths. Direct state transitions through a filtered access (`status == 'OPEN'`) trying to set `status = 'CLOSED'` get rejected with a validation error.
+
+Partition + return-type-driven navigation is the canonical workaround. Custom op flips state and returns the destination partition's TO; UI navigates by return-type. See [derived-relation-membership-invariant.md](derived-relation-membership-invariant.md) for the underlying rule and [relation-driven-crud-with-custom-input.md](relation-driven-crud-with-custom-input.md) for the broader CRUD model.
+
 ## Description
 
 The same entity is exposed through multiple transfer objects where each transfer is filtered by the entity's lifecycle state. Instead of a single transfer showing all records with the status as a column, the access layer creates separate entry points per state group, each targeting a different transfer object with appropriate CRUD permissions. This enforces that editable and read-only views are structurally distinct.

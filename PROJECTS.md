@@ -6,8 +6,8 @@
 
 | #   | Project                    | Git URL                                                       | First Commit | Last Commit | Commits | Weight [-10;+10] |
 | --- | -------------------------- | ------------------------------------------------------------- | ------------ | ----------- | ------- | ---------------- |
+| 0   | **rackinspect**            | git@github.com:BlackBeltTechnology/rackinspect.git            | 2025-08-07   | 2026-02-17  | 206     | 10               |
 | 1   | **mlszksz-platform**       | git@github.com:BlackBeltTechnology/mlszksz-platform.git       | 2026-01-07   | 2026-02-24  | 104     | 6                |
-| 2   | **rackinspect**            | git@github.com:BlackBeltTechnology/rackinspect.git            | 2025-08-07   | 2026-02-17  | 206     | 8                |
 | 3   | **indamedia-adtrack**      | git@github.com:BlackBeltTechnology/indamedia-adtrack.git      | 2025-06-16   | 2025-07-10  | 56      | 5                |
 | 4   | **judo-partner**           | git@github.com:BlackBeltTechnology/judo-partner.git           | 2025-03-13   | 2025-04-16  | 61      | 0                |
 | 5   | **park-here**              | git@github.com:BlackBeltTechnology/park-here.git              | 2025-03-10   | 2025-05-13  | 71      | 5                |

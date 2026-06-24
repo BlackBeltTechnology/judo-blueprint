@@ -571,9 +571,10 @@ export const UserMenu: FC = () => {
 ### 4. Protect Custom Components
 
 ```bash
-# Add to .generator-ignore
-echo "src/custom/components/NotificationBell.tsx" >> .generator-ignore
-echo "src/custom/components/UserProfileMenu.tsx" >> .generator-ignore
+# Apply the One Rule (see hooks/README.md → Understanding .generator-ignore).
+# NotificationBell.tsx and UserProfileMenu.tsx are brand-new hand-written
+# components (case 3); the generator never emits these paths. NO
+# .generator-ignore entry needed.
 ```
 
 ### 5. Test Responsiveness

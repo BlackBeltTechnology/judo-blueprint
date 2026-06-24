@@ -4,16 +4,17 @@ title: "Dedicated Audit Event Entity for State Change Tracking"
 domain: "model"
 category: "entity"
 score: 67.2
-usage_count: 5
+usage_count: 6
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-06"
+last_updated: "2026-05-12"
 projects:
   - alba
   - mlszksz-platform
   - judo-demo-miniworkflow
   - judo-partner
   - workflow-poc
+  - compsych-letter-demo
 ---
 ## Description
 
@@ -54,6 +55,9 @@ A dedicated immutable entity records important state transitions as an audit tra
 
 ### workflow-poc
 `LogEntry` entity with `type: LogEntryType` (COMPLETION), `level: LogLevel` (TRACE, INFO), `timestamp: Timestamp` (default `Timestamp!now()`), `userEmail: String` (optional), `message: String` (optional). Related to `Context` via `Context.logs [0..*]`. Tracks workflow engine events like token completions. The `isUserEmailDefined` derived boolean enables conditional display of user information in the log viewer.
+
+### compsych-letter-demo
+`LlmAuditEvent` entity for LLM/agent mutation tracking with `kind: LlmAuditEventKind` (8 members covering 4 system flows — VARIANT_TRANSLATE, VARIANT_AUTOCREATE_ON_GENERATION, VARIANT_RETRANSLATE_CASCADE, RULE_DESCRIPTION_REGENERATE — and 4 agent-tool flows — AGENT_TEMPLATE_BODY_EDIT, AGENT_TEMPLATE_FRONTMATTER_EDIT, AGENT_VARIANT_BODY_EDIT, AGENT_RULE_SPEL_EDIT). Attributes: `occurredAt: Timestamp` (default `Timestamp!now()`), `targetType: StringType32`, `targetIdentifier: StringType128`, `beforeHash: StringType64 [0..1]`, `afterHash: StringType64 [0..1]`, `summary: StringType500 [0..1]`, `llmModel: StringType128 [0..1]`, `success: Boolean` (default `true`), `errorCode: ErrorCode [0..1]`. Composed under `User` via `User.llmAuditEvents [0..*]` (containment). Entity-level CRUD all `false`; rows written exclusively by `LlmAuditService.record(...)` wrapped in try/catch (safe-failure: audit loss never blocks the underlying op). Two distinguishing twists vs. the other examples: (a) **SHA-256 hex hashes**, not full content snapshots, in `beforeHash`/`afterHash` — detects change without exploding storage; (b) **single post-call row**, not pre+post pair — a pre-call row never followed by a post-call row (JVM crash) adds noise without forensic value. Also exercises the *every-EntityType-needs-a-self-mapping* rule (see `judo-model-docs/advanced-modeling-patterns.md`): even though no `TransferObjectType` projects the entity, the EVL validator still requires `mapping{target=LlmAuditEvent}`.
 
 ## Trade-offs
 

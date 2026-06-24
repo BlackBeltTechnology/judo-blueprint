@@ -77,6 +77,13 @@ Each actor's `IntezendoBejelentes` TO exposes 3 MAPPED operations delegating to 
 - Cons: Additional indirection layer, must keep entity and transfer operation signatures in sync
 - Prefer when: Always for operations that have entity-level implementations -- this is the standard delegation pattern
 
+## Anti-Patterns
+
+- **`binding` set to FQN instead of simple name** — EVL rejects with: `Binding of mapped operation: <op> must be the name of a non static operation in the mapping of the referencing transfer object type`. The `binding` field accepts only the simple operation name (e.g. `deleteTemplate`), not the full entity-qualified path (`compsychletter::entities::Template.deleteTemplate`).
+- **MAPPED TO op output type declared as TO type instead of entity type** — EVL's binding-parameter check requires MAPPED op output types to match the entity op output type. If the entity op returns `Template`, the MAPPED op must also return `Template` (the entity), not `TemplateTO`. The generator handles the entity→TO projection at the API boundary automatically.
+- **One-way MAPPED relation declared as COMPOSITION** — EVL warns: `Mapped one way relation: <rel> cannot be composition.` MAPPED relations on TOs that project entity compositions must use `containment=AGGREGATION` (not `COMPOSITION`). Only direct compositions on entity types can be COMPOSITION; their TO projections are aggregations.
+- **Forgetting the entity-level INSTANCE op** — MAPPED ops bind to entity ops; the entity op must exist first. Declaring MAPPED bindings before the corresponding entity INSTANCE ops causes EVL binding-resolution failures.
+
 ## Related Patterns
 
 - [actor-based-transfer-projection](actor-based-transfer-projection.md)

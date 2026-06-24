@@ -22,10 +22,12 @@ For model design specifications (entities, attributes, relations, operations), s
 
 ## Reference Documentation
 
+- **[Model Development Guide](model-development.md)**: Modeling workflow, naming conventions, and **JQL expression language reference**.
+- **[UI Authoring Guide](ui-authoring-guide.md)**: How to compose `<form>`, `<table>`, `<view>` scaffolds on `TransferObjectType`s and wire them onto an `ActorType` menu. **Read this before authoring UI elements.**
 - **[Advanced Modeling Patterns](advanced-modeling-patterns.md)**: Reusable design patterns for common modeling problems.
 - **[Generalization Guide](generalization-guide.md)**: Entity inheritance and generalization patterns.
 - **[XMI ID Traceability](xmi-id-traceability.md)**: How JUDO maintains traceability from model elements to generated artifacts.
-- **[ESM Metamodel](./esm_metamodel/README.md)**: Detailed breakdown of every component in `esm.ecore`.
+- **[ESM Metamodel](./esm_metamodel/SKILL.md)**: Detailed breakdown of every component in `esm.ecore`.
 
 ## Quick Reference
 
@@ -50,7 +52,7 @@ For model design specifications (entities, attributes, relations, operations), s
 
 ```yaml
 name: Customer
-namespace: Webshop::entities
+namespace: webshop::entities
 extends: AbstractEntity
 crud:
   createable: true

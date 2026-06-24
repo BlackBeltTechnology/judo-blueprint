@@ -246,6 +246,96 @@ curl -s "http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&fo
 curl -s "http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json" | jq -r '.overallResult'
 ```
 
+### Detailed Health Check (Felix Web Console)
+
+The public `/system/health` endpoint returns only the aggregate result. For a per-check breakdown (each Felix Health Check's status, log messages, and execution time) use the Web Console endpoint:
+
+```
+http://localhost:8181/system/console/healthcheck?tags=*&overrideGlobalTimeout=
+```
+
+- **Auth**: HTTP Basic, default Karaf user — username `karaf`, password `karaf`.
+- **`tags=*`**: include every registered check (use a specific tag, e.g. `{{ lowerCase model.name \}}`, to narrow).
+- **`overrideGlobalTimeout=`** (empty): disables the global timeout so slow checks complete instead of being reported as `HEALTH_CHECK_TIMED_OUT`. Provide a value in ms to set a custom timeout.
+
+```bash
+curl -u karaf:karaf \
+  "http://localhost:8181/system/console/healthcheck?tags=*&overrideGlobalTimeout="
+```
+
+Use this endpoint when `/system/health` reports `CRITICAL`/`WARN` and you need to see which individual check failed and its log output.
+
+### Tracing a Failure Back to a Missing Component
+
+Most JUDO platform health checks (`Components`, `Bundles`, the per-model `<modelname>` check) fail because an OSGi Declarative Services component never reached `active`. The Felix Web Console SCR Components endpoint is the next hop after the health check log.
+
+- **URL**: `http://localhost:8181/system/console/components` (HTML) or `…/components.json` (JSON).
+- **Auth**: HTTP Basic, `karaf` / `karaf`.
+- **Drill-down**: `…/components/<component.name>.json` returns the component's bundle, configuration policy, and every `Reference …` line — the unsatisfied reference is what the SCR is waiting on.
+
+**States to recognise:**
+
+| State | Meaning | Action |
+|---|---|---|
+| `active` | Running. | Healthy. |
+| `satisfied` | All refs bound, not yet activated (lazy / factory). | Usually fine. |
+| `no config` | `configurationPolicy=require`, no PID configured. | Check `etc/<pid>.cfg` and `/system/console/configMgr`. |
+| `unsatisfied (reference)` | One or more `@Reference`s not bound. | Open the component JSON, find the missing `Reference …` line, then locate its provider bundle/component. |
+| `failed activation` | `@Activate` threw. | Check `data/log/karaf.log` for the stack trace. |
+| *(component absent from list)* | Bundle not started, or `@Component` annotation/SCR descriptor missing. | Check `/system/console/bundles` for the owning bundle's state (`Installed`/`Resolved` instead of `Active`). |
+
+**Worked example** (real failing run from a JUDO project):
+
+```
+/system/console/healthcheck?tags=*&overrideGlobalTimeout=
+  → TEMPORARILY_UNAVAILABLE
+    Missing platform components:
+      [hu.blackbelt.judo.services.healthcheck.osgi.JaxRsApplicationsReady]
+```
+
+Look it up in the components endpoint:
+
+```bash
+curl -s -u karaf:karaf "http://localhost:8181/system/console/components.json" \
+  | jq -r '.data[] | select(.name | test("JaxRsApplicationsReady")) | "\(.state)\t\(.bundleId)\t\(.name)"'
+```
+
+If the grep returns **nothing**, the component is not even registered — inspect its owning bundle:
+
+```bash
+curl -s -u karaf:karaf "http://localhost:8181/system/console/bundles.json" \
+  | jq -r '.data[] | select(.symbolicName | test("healthcheck")) | "\(.state)\t\(.symbolicName)"'
+```
+
+If the grep returns a row with state `unsatisfied (reference)`, fetch the component detail and read the `Reference …` properties to identify the missing service:
+
+```bash
+curl -s -u karaf:karaf \
+  "http://localhost:8181/system/console/components/<component.name>.json" \
+  | jq -r '.data[0].props[] | select(.key | startswith("Reference ")) | "\(.key): \(.value)"'
+```
+
+> **Per-model wiring & marker services**: many "missing component" failures are actually missing *services* (e.g. `*Ready` markers) registered programmatically by per-model SCR components, which in turn are spawned via `ConfigurationAdmin` factory configs from `*Activator` components in `judo-platform-services/`. For the full 3-tier chain (model deployer → activator → target component) and the matching trace-back checklist, see [`../backend/debugging-and-monitoring-guide.md`](../backend/debugging-and-monitoring-guide.md) → *"The Activator → ConfigAdmin → Component Chain"*.
+
+### One-shot Runtime Snapshot (Configuration Status Dump)
+
+For a single-file capture of *everything* the Felix Web Console can show — bundles, services, DS components, ConfigAdmin PIDs, framework properties, threads, memory, system properties, and platform-specific printers — use the **Configuration Status** download.
+
+```bash
+# Full plain-text snapshot
+curl -u karaf:karaf -o judo-status.txt \
+  "http://localhost:8181/system/console/config/configuration-status-$(date +%Y%m%d-%H%M%S).txt"
+
+# Full ZIP (each tab as a separate file)
+curl -u karaf:karaf -o judo-status.zip \
+  "http://localhost:8181/system/console/config/configuration-status-$(date +%Y%m%d-%H%M%S).zip"
+
+# Single tab (e.g. Components, Configurations, Bundles, Services, Health Checks)
+curl -u karaf:karaf "http://localhost:8181/system/console/config/Components.nfo"
+```
+
+The filename segment is a placeholder — the server only inspects the `.txt` / `.zip` / `.nfo` extension. Useful for: attaching to bug reports, diffing before-vs-after a deploy/undeploy, and feeding into LLM-assisted diagnosis. See backend debugging guide for details and integration with the trace-back checklist.
+
 ## Next Steps
 
 1. **New to the project?** Start with [Local Development](./local-development.md)

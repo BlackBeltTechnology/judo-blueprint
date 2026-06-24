@@ -101,7 +101,100 @@ Standard 10+ module layout: model, sdk, internal, app (empty -- no custom operat
 - Cons: OSGi complexity (classloader issues, bundle lifecycle), harder to debug than monolithic apps
 - Alternative: Spring Boot monolith, Docker container per service (microservices)
 
+## Hot-Reload Caveats (Observed)
+
+These are operational gotchas that have surfaced on live JUDO-Karaf deployments. Worth knowing before relying on hot reload.
+
+### 1. `judo.sh start` extracts the karaf-offline tarball; m2-only installs are NOT picked up
+
+`./judo.sh start` (and `judo.sh build start`) extract
+`application/karaf-offline/target/<app>-application-karaf-offline-<version>.tar.gz`
+into `application/.karaf/`. The system bundles served at startup come from
+that tarball's `system/` tree, NOT from `~/.m2/repository/`.
+
+Consequence: `mvn -o install -DskipTests -pl application/internal` updates
+the m2 cache but the next `./judo.sh start` boots with the **previous**
+bundle from the karaf-offline assembly. Symptoms: code change appears to
+have no effect; `unzip -p .karaf/data/cache/bundle<N>/version*/bundle.jar`
+shows the old class file even though the source compiles correctly.
+
+**Fix**: rebuild the assembly after the module change:
+
+```bash
+mvn -o install -DskipTests -pl application/internal,application/karaf-features,application/karaf-offline
+```
+
+or run a full `./judo.sh build -F -M` (skip frontend + model regen) when
+the code change is in a backend module. `mvnd`-based incremental builds
+are fine — just make sure `karaf-offline` is part of the build reactor.
+
+### 2. `bundle:watch` hot-reload of a bundle with split-package stubs breaks all components in that bundle
+
+Karaf's `bundle:watch` re-installs a bundle in place when its file
+changes. This **shifts OSGi package wires** that were resolved at the
+original cold-boot time.
+
+If a hand-written class lives in a package that another bundle exports
+("split package"), the cold-boot wiring usually resolves the package to
+the bundle that defines that class. After a `bundle:watch` reload, the
+resolver may shift the wire to the *other* bundle, which doesn't carry
+the hand-written class — SCR reflection over the reloaded bundle's
+components fails with `ClassNotFoundException` for the missing class,
+cascading to `Field [...] not found; Component will fail` errors for
+every `@Reference` in that bundle.
+
+**Concrete example (compsych-letter-demo)**: the temporary stub
+`BusinessErrorException.java` lives in
+`application/internal/src/main/java/.../services/businesserror/` while
+the SDK bundle exports the same package without that class. Cold boot:
+resolver picks `internal` as the package provider, all components
+activate fine. `bundle:watch` after `mvn install`: resolver picks `sdk`,
+ALL components in `internal` fail (`SpelEvaluatorImpl`,
+`YamlParserImpl`, `HttpDocumentConverterClient`,
+`InMemoryDocumentConverterClient`, `LangChain4jLlmProvider`,
+`MockLlmProvider`, `ChatSessionStore`, `AgentRestResource`).
+
+**Workarounds**:
+
+1. **Cold restart instead of hot reload** when the bundle contains
+   split-package stubs: `pkill -f karaf.main.Main && ./judo.sh start -K`
+   (assumes postgres + keycloak already running).
+2. **Eliminate the split package** by either embedding the missing
+   classes into the bundle (`<Conditional-Package>` or
+   `<Embed-Dependency>` in maven-bundle-plugin instructions) or by
+   moving the hand-written class into a package that no other bundle
+   exports.
+3. **Replace the hand-written stub** with the generator-emitted class
+   as soon as the model declares an operation that uses it (for the
+   `BusinessErrorException` example: the first Wave-3 operation that
+   declares `BusinessError` as a fault).
+
+This caveat applies to any JUDO project that carries hand-written
+stand-ins for not-yet-generated SDK classes. It is invisible until the
+first `bundle:watch` reload, because cold boot always works.
+
+### 3. Cold restart requires a fresh schema check loop on schema drift
+
+The platform refuses to complete startup if the running database is
+behind the compiled RDBMS model. Symptoms in `console.out`:
+
+```
+WARN  Retry N - Waiting for compatibility schema model
+WARN  Error message There are RDBMS model changes which have not been applied to database
+DATABASE HAVE TO BE UPDATED!
+Create table operation: <model>.entities.<Entity> - T_ENTITIES_<ENTITY>
+```
+
+The model deployer retries indefinitely; REST endpoints never register;
+`/api/agent/chat` etc. return 404 even though the bundle is installed.
+
+**Fix**: either `./judo.sh schema-upgrade` (PostgreSQL only —
+generates and applies the difference) or `./judo.sh clean` (DESTRUCTIVE,
+wipes the postgres docker volume; only acceptable for dev environments).
+
 ## Related Patterns
 
 - custom-operation-osgi-component
 - generator-ignore-config-protection
+- karaf-customization-via-fragments
+- custom-jaxrs-sse-endpoint

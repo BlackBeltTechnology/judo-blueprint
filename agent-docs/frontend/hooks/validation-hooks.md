@@ -647,8 +647,11 @@ await validateLocation(value);
 ### 5. Protect Custom Validators
 
 ```bash
-# Add to .generator-ignore
-echo "src/custom/hooks/containerActions.tsx" >> .generator-ignore
+# Apply the One Rule (see hooks/README.md → Understanding .generator-ignore).
+# Brand-new hand-written file → NO .generator-ignore entry (case 3).
+# Only add an entry if the generator emits a stub at this exact path AND it
+# was hand-edited in place (case 1).
+# Flag for human review: containerActions.tsx generator-emit status unclear.
 ```
 
 ## Complete Example

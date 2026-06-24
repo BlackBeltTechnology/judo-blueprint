@@ -595,9 +595,16 @@ const statistics = computeStats(data);
 ### 5. Protect Custom Hooks
 
 ```bash
-# Always add custom hooks to .generator-ignore
-echo "src/custom/hooks/usePrincipal.tsx" >> .generator-ignore
-echo "src/custom/hooks/useViewData.tsx" >> .generator-ignore
+# Do NOT blindly add custom-hook paths to .generator-ignore. Apply the One Rule
+# (see hooks/README.md → "Understanding .generator-ignore"):
+#   - Brand-new hand-written file generator never emits at path → case 3, NO entry.
+#   - Generator-emitted stub hand-edited in place                → case 1, add entry.
+#   - .tsx.default rename pattern                                → case 2, NO entry
+#     (and do NOT add the .default either).
+# Flag for human review: unclear whether usePrincipal.tsx / useViewData.tsx are
+# generator-emitted stubs in this template. Verify with:
+#   find src/custom -name 'usePrincipal*' -o -name 'useViewData*'
+# after a clean generate. Treat any .default as case 2; any non-.default emission as case 1.
 ```
 
 ## Troubleshooting

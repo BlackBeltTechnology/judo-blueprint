@@ -36,7 +36,7 @@ Hooks are **customization points** in the generated code where you can inject yo
 
 **Alternative (Not Recommended):**
 - ❌ Edit generated files → Build fails on checksum mismatch
-- ❌ Add to `.generator-ignore` → Lose generator updates
+- ❌ Add a `.default` stub or a brand-new file to `.generator-ignore` → Lose generator updates / pointless noise. See One Rule below.
 - ❌ Template overrides → Complex to maintain
 
 ## Hook Architecture
@@ -173,7 +173,8 @@ vim src/custom/application-customizer.tsx.default
 # Copy/rename to remove .default
 cp src/custom/application-customizer.tsx.default src/custom/application-customizer.tsx
 
-# Protect from regeneration
+# Case 1: now hand-editing the generator-emitted path in place — protect it.
+# See "Understanding .generator-ignore" below for the rule.
 echo "src/custom/application-customizer.tsx" >> .generator-ignore
 
 # Edit the file
@@ -277,7 +278,8 @@ EOF
 # Edit application-customizer.tsx.default to add registration
 
 # Step 5: Protect custom hook
-echo "src/custom/hooks/tableRowHighlighting.tsx" >> .generator-ignore
+# No .generator-ignore entry — tableRowHighlighting.tsx is a brand-new hand-written
+# file (case 3); the generator never emits this path.
 
 # Step 6: Test
 cd application/frontend-react/webshop__[actor_fqn]
@@ -355,38 +357,46 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ## Understanding .generator-ignore
 
+### One Rule
+
+`.generator-ignore` uses `.gitignore`-style matching, scoped to generator output. Single purpose: stop the generator from re-emitting a file at path X because you hand-edited that exact generated file in place. It is **not** a "this file is custom" marker, and it is **not** needed for files the generator never produces.
+
+Three cases:
+
+1. **Generator emits file at path X, you hand-edit X in place.** → Add `X` to `.generator-ignore`. The only legitimate case. Examples: generator-emitted stub `src/custom/application-customizer.tsx`, generator-emitted `src/theme/palette.ts`, or a directly-edited file under `src/generated/`.
+2. **`.default` rename pattern.** Generator emits `X.default`. Rename to `X` once and fill in the body. The generator re-emits `X.default` next round as a reference; it never touches `X`. → `X` is OUTSIDE generator scope. **No entry needed.** Do NOT add `X.default` either — you want it to keep regenerating as a reference.
+3. **Brand-new hand-written file the generator never emits at that path** (new custom hook file, new component under `src/custom/components/`). → OUTSIDE generator scope. **No entry needed.**
+
+Adding purely-custom files to `.generator-ignore` is noise; remove such entries.
+
 ### When to Use
 
-**Add to .generator-ignore:**
-- ✅ Custom files you create from scratch
-- ✅ Template files you **renamed** (removed .default)
-- ✅ Generated files you **edited directly** (not preferred)
+**Add to .generator-ignore (case 1 only):**
+- ✅ Generator-emitted stubs that you hand-edit in place (e.g. `src/custom/application-customizer.tsx`)
+- ✅ Generated files you must edit directly because no hook exists (e.g. files under `src/generated/`)
 
 **Don't add to .generator-ignore:**
-- ❌ Template files with .default extension
-- ❌ Generated files you haven't modified
+- ❌ `*.default` template files — keep them regenerating as references
+- ❌ Brand-new hand-written files the generator never emits
+- ❌ Files renamed away from `.default` — outside generator scope
 
 ### Example .generator-ignore
 
 ```
-# Custom application customizer (if renamed from .default)
+# Case 1 only: paths the generator emits AND you hand-edit in place.
+
+# Generator-emitted stub, hand-edited in place
 src/custom/application-customizer.tsx
 
-# Custom hooks (created from scratch)
-src/custom/hooks/tableRowHighlighting.tsx
-src/custom/hooks/usePrincipal.tsx
-src/custom/hooks/useCustomAuth.tsx
-
-# Custom components
-src/custom/components/CampaignChart.tsx
-src/custom/components/NotificationBell.tsx
-
-# Theme customizations (if renamed)
+# Generator-emitted theme files, hand-edited in place
 src/theme/palette.ts
 src/theme/typography.ts
 
-# Directly edited generated files (not recommended)
+# Directly edited generated file (not recommended)
 # src/generated/pages/CustomPage.tsx
+
+# Do NOT list brand-new hand-written files — the generator never emits them.
+# Do NOT list *.default — keep them regenerating as a reference.
 ```
 
 ### Verify Protection
@@ -426,7 +436,8 @@ context.registerService<TableRowHighlightingHook>(
 # ✅ Recommended
 vim src/custom/application-customizer.tsx.default
 
-# ⚠️ Acceptable but requires .generator-ignore
+# ⚠️ Acceptable. Per directive, the generator-emitted `application-customizer.tsx`
+# (without .default) is a case-1 path: hand-edit it in place → add to .generator-ignore.
 cp src/custom/application-customizer.tsx.default src/custom/application-customizer.tsx
 echo "src/custom/application-customizer.tsx" >> .generator-ignore
 ```
@@ -493,10 +504,13 @@ grep -r "export const.*Table" src/generated/pages/
 
 ### "File overwritten after build"
 
-**Add to .generator-ignore:**
-```bash
-echo "src/custom/hooks/myHook.tsx" >> .generator-ignore
-```
+**Diagnose first — do NOT blindly add to `.generator-ignore`:**
+- If `src/custom/hooks/myHook.tsx` is a brand-new file you wrote and the generator never emits at that path → case 3, no entry needed. The "overwrite" suggests something else (build output, formatter, git). Investigate.
+- If the generator DOES emit a stub at that path and you hand-edited it → case 1:
+  ```bash
+  echo "src/custom/hooks/myHook.tsx" >> .generator-ignore
+  ```
+- If a `.default` stub exists (`myHook.tsx.default`), use the rename pattern — no entry needed (case 2).
 
 ### "Type errors with hook interface"
 

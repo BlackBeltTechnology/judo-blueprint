@@ -596,9 +596,10 @@ renderCell: (params) => {
 ### 4. Protect Custom Files
 
 ```bash
-# Add to .generator-ignore
-echo "src/custom/hooks/tableRowHighlighting.tsx" >> .generator-ignore
-echo "src/custom/components/EntityChartSidekick.tsx" >> .generator-ignore
+# Apply the One Rule (see hooks/README.md → Understanding .generator-ignore).
+# tableRowHighlighting.tsx and EntityChartSidekick.tsx are brand-new hand-written
+# files (case 3); the generator never emits these paths. NO .generator-ignore
+# entry needed. Adding them is noise.
 ```
 
 ### 5. Use Theme Colors

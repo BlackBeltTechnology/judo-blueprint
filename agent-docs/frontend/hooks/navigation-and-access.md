@@ -772,9 +772,13 @@ if (!principal) {
 ### 4. Protect Custom Components
 
 ```bash
-# Add to .generator-ignore
-echo "src/custom/hooks/redirectService.tsx" >> .generator-ignore
-echo "src/custom/components/AccessFilter.tsx" >> .generator-ignore
+# Apply the One Rule (see hooks/README.md → Understanding .generator-ignore).
+# Brand-new hand-written files → NO .generator-ignore entry (case 3).
+# Only add an entry if the generator emits a stub at that exact path AND it
+# was hand-edited in place (case 1).
+# Flag for human review: redirectService.tsx and AccessFilter.tsx generator-emit
+# status unclear; AccessFilter.tsx under src/custom/components/ looks like a
+# brand-new hand-written component (case 3, no entry).
 ```
 
 ## Complete Example

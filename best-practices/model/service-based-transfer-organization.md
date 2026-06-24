@@ -34,6 +34,8 @@ Transfer objects are organized into service-domain packages (e.g., `services::fa
 - Permission control via entity-level flags (e.g., `User.permissionTo*` booleans)
 - Same entity may appear in multiple service packages with different projections
 
+**API surface isolation variant:** When a public REST / programmatic API needs projections separate from the UI's `services::` namespace, introduce a `services::api::` sub-package. UI TOs stay in `services::<domain>::`; API projections and unmapped DTOs live in `services::api::`. Benefits: future API versioning (`services::api::v2::`) without touching UI TOs; grep / model queries can scope to `api::` only. CompSychLetter uses this split for `DataObjectApiTO` + generation DTOs vs the `AuthoringDashboard` / `DocumentsDashboard` UI projections.
+
 ## Examples
 
 ### RackInspect

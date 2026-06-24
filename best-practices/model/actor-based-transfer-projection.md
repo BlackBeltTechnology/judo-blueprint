@@ -78,6 +78,22 @@ Single `Admin` actor with 6 transfer objects (one per entity) using "TO" suffix 
 ### AMS-Frontend
 2 actors (Manager, Admin) with 7 TOs from 7 entities. `User` entity projected 3 ways: `manager::Subordinate` (email renamed to `identifier`, plus name fields), `manager::ManagerApprovalList` (relation-only TO with filtered `approvals` and `approveAll` operation), and `admin::User` (3 basic attributes). Manager sees only open-campaign confirmation requests; Admin has full CRUD on campaigns and applications.
 
+## Caveats — multi-TO same-entity for principal entities
+
+Principal entities (entities backing `ActorType.principal`) support multiple actor-based projections, but two framework constraints govern the design.
+
+**1. Only one TO per actor holds `actorType`.** `TransferObjectType.actorType` is the eOpposite of `ActorType.principal`. Single-valued on both sides. Setting `actorType=<Actor>` on a second TO mapping the same entity transparently reassigns `ActorType.principal` to that TO; the previous TO loses the back-link (cleared to null). Pick one principal TO; other projections on the same entity exist as plain mapped TOs without `actorType`.
+
+**2. Keycloak managed-realm sync (`managed=true`) is bound to the principal TO's DAO metadata.** Framework-injected create / update / delete against the Keycloak realm fires only when the DAO layer is invoked with the principal TO's metadata. Admin user-management TOs and list TOs mapping the same principal entity do NOT auto-sync — entity row updates; Keycloak realm user does not.
+
+**Design rule for principal entities.** Keep ONE lean principal TO that owns `actorType` and (when `managed=true`) framework-managed Keycloak sync. Add separate mapped TOs for admin / list projections on the same entity. When an admin surface must also sync Keycloak, expose the mutation as a custom operation on the admin TO that re-dispatches through the **principal TO's DAO**. Direct CUD on the admin TO is DB-only.
+
+**Empirical validation (2026-05-11, `compsych-letter-demo`).** `compsychletter::services::UserPrincipal` (lean principal) and `compsychletter::services::UserTO` (admin) both map `User` entity; actor = `compsychletter::actors::LetterUser`. Reassigning `UserTO.actorType=LetterUser` swapped `LetterUser.principal` from `UserPrincipal` to `UserTO`. Build broke at `esm2ui/claim.etl`: *"Could not find attribute: userName"*. Restoring `LetterUser.principal=UserPrincipal` cleared `UserTO.actorType` to null. Build succeeded.
+
+**No `<X>ListTO` for relation target.** Reinforces the one-TO-per-relation-target rule — admin / list projections coexist as plain mapped TOs but the relation row TO + detail TO must be the same mapped TO. Separate `<X>ListTO` forces a custom row-click handler to navigate to the detail TO and creates dual-maintenance. See [relation-driven-crud-with-custom-input.md — §1](relation-driven-crud-with-custom-input.md#1-relation-auto-wiring-from-mapped-target-to).
+
+**Worked admin example.** Canonical admin user-management surface combining the multi-TO same-entity constraint with read-only access + custom-op delegation through the principal TO's DAO: [managed-actor-admin-pattern.md](../backend/managed-actor-admin-pattern.md).
+
 ## Trade-offs
 
 - Pros: Strong separation of concerns per actor, fine-grained data exposure control, each UI gets exactly the data it needs

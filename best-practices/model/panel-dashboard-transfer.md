@@ -4,10 +4,10 @@ title: "Panel/Dashboard Transfer Object as UI Entry Point"
 domain: "model"
 category: "transfer"
 score: 75.9
-usage_count: 6
+usage_count: 7
 alternative_count: 0
 first_seen: "2026-03-04"
-last_updated: "2026-03-06"
+last_updated: "2026-05-13"
 projects:
   - rackinspect
   - mlszksz-platform
@@ -15,6 +15,7 @@ projects:
   - indamedia-adtrack
   - InterfaceRegister
   - judo-partner
+  - compsychletter
 ---
 ## Description
 
@@ -51,13 +52,21 @@ Multiple dashboard/panel TOs across services: `AdminDashboard` (8 operations: cr
 ### AMS-Frontend
 `ManagerApprovalList` transfer mapped to `User` entity, accessed via `self` getter on the Manager actor. Provides a bulk approval dashboard with a filtered `approvals` relation (pending requests from open campaigns) and an `approveAll` operation. Used as the "Approve All Pending" navigation entry point, aggregating approval context into a single action view.
 
+### CompSychLetter
+Three business-area dashboards on a single actor (`LetterUser`), each accessed via a separate `self`-getter DERIVED access point (`0..1`): `authoring -> AuthoringDashboard`, `documents -> DocumentsDashboard`, (data dashboard planned). Each dashboard maps to `compsychletter::entities::User` with `getterExpression="self"`. `AuthoringDashboard` exposes three DERIVED tab relations — `templates -> TemplateTO (0..*)`, `rules -> RuleTO (0..*)`, `designs -> DesignTO (0..*)` — using Phase-0 unscoped getters: `compsychletter::entities::Template!filter(t | true)`. Per-area projection TOs (`TemplateTO`, `RuleTO`, `DesignTO`, `OriginalBodyTO`, `LanguageVariantTO`) are all-CRUD-false MAPPED projections, reachable only through the dashboard. The `!filter(t | true)` idiom is valid for DERIVED relations on mapped TOs (unlike `ActorType.accesses` where a bare boolean literal is rejected by the ASM validator); it serves as a Phase-0 placeholder until per-user scoping is introduced as a later additive refinement.
+
+## Required Companion
+
+Every dashboard `Access` must be paired with a `MenuItemAccess` on the actor's `menuItems` to appear in the navigation drawer. The React generator drives `useMenus()` and `routes.tsx` from `menuItems`, not from `accesses` — an unpaired access is API-only and invisible. See [access-paired-with-menu-item](access-paired-with-menu-item.md). The CompSychLetter participant above is at Phase-0 with this pairing intentionally deferred (`menuItems.totalCount = 0`); Phase-1 adds three `MenuItemAccess` entries (one per dashboard) with MDI icons.
+
 ## Trade-offs
 
 - Pros: Clean UI entry point per domain, centralizes list view and creation in one TO, supports dashboard-specific operations
-- Cons: Additional TO layer, may become bloated if too many operations are added
+- Cons: Additional TO layer, may become bloated if too many operations are added; requires a parallel `MenuItemAccess` per dashboard to be user-reachable
 - Prefer when: UI needs a dashboard/list view with creation capability for a specific domain
 
 ## Related Patterns
 
+- [access-paired-with-menu-item](access-paired-with-menu-item.md) — mandatory menu pairing
 - [service-based-transfer-organization](service-based-transfer-organization.md)
 - [unmapped-transfer-dto](unmapped-transfer-dto.md)

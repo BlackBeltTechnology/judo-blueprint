@@ -31,27 +31,43 @@ The standard pattern for registering custom operation implementations as OSGi De
 ## Structure
 
 ```java
-@Component(immediate = true, service = GeneratedOperationInterface.class)
-public class OperationNameCustomImplementation implements GeneratedOperationInterface {
+// Value-returning operation
+@Component(immediate = true, service = DeleteVariant.class)   // service = the generated interface
+public class DeleteVariantCustomImplementation implements DeleteVariant {
 
     @Reference
-    EntityDao entityDao;
-
-    @Reference
-    ExternalService externalService;
+    LanguageVariantDao languageVariantDao;
 
     @Override
-    public ReturnType apply(EntityType _this, InputType input) {
-        // Business logic using injected DAOs
+    public LanguageVariant apply(LanguageVariant _this) throws BusinessErrorException {
+        // value-returning ops use apply(...)
+        return languageVariantDao.update(_this);
+    }
+}
+
+// Void operation
+@Component(immediate = true, service = DeleteTemplate.class)
+public class DeleteTemplateCustomImplementation implements DeleteTemplate {
+
+    @Reference
+    TemplateDao templateDao;
+
+    @Override
+    public void accept(Template _this) throws BusinessErrorException {
+        // void ops use accept(...)
+        templateDao.delete(_this);
     }
 }
 ```
 
 Key elements:
 - `immediate = true` ensures the component starts when the bundle activates
-- `service = X.class` registers the implementation as an OSGi service for the generated interface
+- `service = X.class` MUST reference the generated interface class exactly; not a supertype, not `Object.class`
+- The generated interface name is **`OperationName`** only — e.g. `DeleteVariant`, `RenameTemplate`, `CreateTemplate`. NOT `EntityNameOperationNameOperation`.
+- Void-returning ops implement `accept(...)`; value-returning ops implement `apply(...)`. The method name `execute` does not exist on generated interfaces.
+- `_this` is the entity instance the operation is called on (first parameter for INSTANCE ops); absent for STATIC ops.
 - `@Reference` injects DAO and service dependencies from the OSGi service registry
-- The class resides in `application/app/src/main/java/.../custom/` directory
+- Generated interfaces live under `application/app/src/main/java/.../operation/compsychletter/<path>/` (or wherever the `judo-psm-generator-sdk-core-empty-custom-operation-osgi` plugin writes them for this project).
 
 ## Examples
 
@@ -102,6 +118,12 @@ Key elements:
 - Pros: Standard OSGi pattern, supports hot-reload in Karaf, clear separation of generated and custom code
 - Cons: Requires OSGi container, cannot easily unit test without OSGi or a DI bridge pattern
 - Alternative: Delegation pattern where OSGi component delegates to POJO (see agent-docs)
+
+## Anti-Patterns
+
+- **Wrong method name (`execute`)** — The generated `@FunctionalInterface` declares `accept` (void) or `apply` (value-returning). Implementing `execute(...)` instead compiles because `@Override` on a non-existent interface method is a compile error — it will be caught immediately. Using `execute` without `@Override` compiles but the OSGi service is never called (the generated call site calls `accept`/`apply`).
+- **Wrong interface name pattern** — The generator emits class name `OperationName` (e.g. `DeleteVariant`), not `EntityNameOperationNameOperation` (e.g. `LanguageVariantDeleteVariantOperation`). Using the wrong name causes `ClassNotFoundException` or `cannot be resolved to a type` at compile time.
+- **Omitting `throws BusinessErrorException` on `apply`/`accept`** — The generated interface declares the checked exception; implementations must also declare it or the class will not compile when implementing the interface.
 
 ## Related Patterns
 

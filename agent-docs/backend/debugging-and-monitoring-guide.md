@@ -130,6 +130,208 @@ JUDO uses Apache Felix Health Check to provide a status endpoint for automated m
 *   **Endpoint URL**: `http://localhost:8181/system/health?tags=<ModelName>`
 *   **Checks**: The endpoint verifies that all models, operations, and platform components (Dispatcher, REST endpoints, persistence layer) have been deployed and initialized successfully. A `200 OK` response indicates a healthy application.
 
+#### Detailed Health Check (Felix Web Console)
+
+For a per-check breakdown (each registered check, its status, log messages, and execution time):
+
+*   **Endpoint URL**: `http://localhost:8181/system/console/healthcheck?tags=*&overrideGlobalTimeout=`
+*   **Auth**: HTTP Basic, `karaf` / `karaf` (default Karaf user).
+*   **`tags=*`**: include every check; replace with a specific tag (e.g. `<ModelName>`) to narrow.
+*   **`overrideGlobalTimeout=`**: empty disables the global timeout (slow checks complete instead of returning `HEALTH_CHECK_TIMED_OUT`); pass a number in ms to set a custom timeout.
+
+```bash
+curl -u karaf:karaf \
+  "http://localhost:8181/system/console/healthcheck?tags=*&overrideGlobalTimeout="
+```
+
+Use when `/system/health` reports a non-OK overall status and you need to identify which individual check failed.
+
+#### Tracing a Failure Back to a Missing SCR Component
+
+JUDO platform health checks (`Components`, `Bundles`, the per-model `<modelname>` check) typically fail because an OSGi Declarative Services component never reached `active`. The Felix Web Console SCR Components endpoint is the next hop after reading the health check log.
+
+- **URL**: `http://localhost:8181/system/console/components` (HTML) or `…/components.json` (JSON).
+- **Auth**: HTTP Basic, `karaf` / `karaf`.
+- **Drill-down**: `…/components/<component.name>.json` returns the component's bundle, configuration policy, and every `Reference …` line — each `unsatisfied (reference)` row points at exactly the service the SCR is waiting on.
+
+**Component states to recognise:**
+
+| State | Meaning | Action |
+|---|---|---|
+| `active` | Running. | Healthy. |
+| `satisfied` | References bound, not yet activated (lazy / factory). | Usually fine. |
+| `no config` | `configurationPolicy=require` and PID has no config. | Check `etc/<pid>.cfg` and `/system/console/configMgr`. |
+| `unsatisfied (reference)` | One or more `@Reference`s not bound. | Open component JSON, find missing `Reference …` line, locate its provider. |
+| `failed activation` | `@Activate` threw. | Check `data/log/karaf.log` for the stack trace. |
+| *(component absent)* | Bundle not started, or `@Component` annotation / SCR descriptor missing. | Check `/system/console/bundles` for owning bundle (`Installed`/`Resolved` instead of `Active`). |
+
+**Worked example** (real failing run):
+
+```
+/system/console/healthcheck?tags=*&overrideGlobalTimeout=
+  → TEMPORARILY_UNAVAILABLE
+    Missing platform components:
+      [hu.blackbelt.judo.services.healthcheck.osgi.JaxRsApplicationsReady]
+```
+
+Look it up:
+
+```bash
+curl -s -u karaf:karaf "http://localhost:8181/system/console/components.json" \
+  | jq -r '.data[] | select(.name | test("JaxRsApplicationsReady")) | "\(.state)\t\(.bundleId)\t\(.name)"'
+```
+
+- **Empty result** → component not registered. Inspect owning bundle:
+  ```bash
+  curl -s -u karaf:karaf "http://localhost:8181/system/console/bundles.json" \
+    | jq -r '.data[] | select(.symbolicName | test("healthcheck")) | "\(.state)\t\(.symbolicName)"'
+  ```
+- **State `unsatisfied (reference)`** → fetch component detail and read each `Reference …` to find the missing service:
+  ```bash
+  curl -s -u karaf:karaf \
+    "http://localhost:8181/system/console/components/<component.name>.json" \
+    | jq -r '.data[0].props[] | select(.key | startswith("Reference ")) | "\(.key): \(.value)"'
+  ```
+
+#### The Activator → ConfigAdmin → Component Chain (Per-Model Wiring)
+
+Many JUDO "missing component" failures are wiring failures along a 3-tier chain JUDO uses to instantiate platform services *per model*. Understanding the chain is the difference between a 30-second diagnosis and an hour of grepping.
+
+**Tier 1 — Model deployers publish model services and fire events.**
+
+- Bundles: `judo-services-karaf-model-deployer`, `judo-services-model-bundle-deployer`, `judo-services-application-index`.
+- Discover `*-internal` model bundles, register `EsmModel` / `PsmModel` / `AsmModel` OSGi services with property `name=<modelName>`, post `EventAdmin` event on topic `hu/blackbelt/judo/Event/MODEL_CHANGED` with `eventType=DEPLOY|UNDEPLOY`, `modelName=<modelName>`.
+
+**Tier 2 — Per-area `*Activator` components react to those events and spawn factory configs via `ConfigurationAdmin`.**
+
+Canonical examples in `judo-platform-services/`:
+
+| Activator | Spawns factory configs for |
+|---|---|
+| `HealthCheckActivator` | `ModelsCheck`, `PlatformComponentsCheck`, `OperationsCheck`, `JaxRsApplicationListener`, `ApplicationListener`, `StatusTracker` |
+| `CxfActivator` | per-model CXF bus / JAX-RS server configs |
+| `DispatcherServiceActivator` | per-model dispatcher PIDs |
+| `KeycloakSecurityActivator`, `CxfSecurityActivator` | per-model security wiring |
+| `RdbmsDaoActivator`, `SingleDatasourceRdbmsDaoActivator` | per-model DAO / datasource configs |
+
+Shape of every activator:
+
+```java
+@Component(immediate = true,
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           property = EventConstants.EVENT_TOPIC + "=" + MODEL_CHANGED_EVENT)
+public class XxxActivator implements EventHandler {
+    @Reference ConfigurationAdmin configAdmin;
+
+    void registerFor(String modelName) {
+        configAdmin.createFactoryConfiguration(targetPid, "?")
+            .update(props(
+                "modelName", modelName,
+                "hc.tags",   modelName,
+                "asmModel.target", "(" + DEFAULT_SOURCE_NAME_PROPERTY_KEY + "=" + modelName + ")",
+                CREATED_BY,  this.getClass().getName()));   // marker for cleanup
+    }
+}
+```
+
+Key conventions:
+
+- **Marker prop** `.__createdBy = <ActivatorFQN>` on every spawned config → used on UNDEPLOY to filter and delete only this activator's configs.
+- **`.target` filters** wire each spawned component to the right per-model service: `asmModel.target=(name=<model>)`, `openIdConfigurationProvider.target=(judo.model.name=<model>)`, etc. See `hu.blackbelt.judo.services.core.osgi.TrackerBasedComponentActivator` for the `DEFAULT_SOURCE_NAME_PROPERTY_KEY` (`name`) / `DEFAULT_TARGET_NAME_PROPERTY_KEY` (`judo.model.name`) constants.
+- **Activator itself has `configurationPolicy=REQUIRE`** → needs its own root config in `etc/<activator-pid>.cfg`. If that file is missing/empty, the activator never starts and *none* of its downstream factory configs get created.
+
+**Tier 3 — Target components activate per spawned factory config; some programmatically register marker services.**
+
+Example: `JaxRsApplicationListener` is `@Component(configurationPolicy=REQUIRE)`. Once its per-model factory config exists and `AsmModel` is bound, `@Activate` opens a `ServiceTracker` for JAX-RS `Application` services filtered by `(judo.model.name=<model>)`. When all actor-type applications are tracked, it calls:
+
+```java
+context.registerService(JaxRsApplicationsReady.class, new JaxRsApplicationsReady() {}, props);
+```
+
+**Critical:** `JaxRsApplicationsReady` is *only* a service registration — not an `@Component`. It will never appear in `/system/console/components`. The only places to verify it are `/system/console/services` or via OSGi `BundleContext.getServiceReferences(...)`.
+
+Other marker services that follow this same "register programmatically when ready" pattern: `*Ready` services published by `TrackerBasedComponentActivator` subclasses across `judo-services-dispatcher-osgi`, `judo-services-dao-rdbms-osgi`, `judo-services-security-osgi`.
+
+#### Trace-Back Checklist
+
+When a per-model health check reports `Missing platform components: [X]`:
+
+1. **Is `X` an SCR component or a programmatically-registered service?**
+   - `curl -s -u karaf:karaf .../components.json | jq -r '.data[].name' | grep X` — if absent, NOT an SCR component.
+   - Then check services: `curl -s -u karaf:karaf .../services.json | jq -r '.data[].types[]' | grep X`.
+
+2. **Find the publisher** that programmatically registers `X` — in `judo-platform-services/`:
+   ```bash
+   grep -rn "registerService(X.class\|registerService(.*X\.class" --include="*.java"
+   ```
+
+3. **Check the publisher component's SCR state**:
+   - `no config` → Tier-2 activator did not create the factory config. Go to step 4.
+   - `unsatisfied (reference)` → a `.target` filter does not match. Read the component JSON's `Reference …` lines.
+   - `active` but `X` still not registered → publisher's `ServiceTracker` is waiting on a runtime condition. Check `/system/console/services` for the tracked type.
+
+4. **Find the activator** that creates the publisher's factory config:
+   ```bash
+   grep -rn "<PublisherClass>\.class" --include="*.java" judo-platform-services/
+   ```
+
+5. **Check the activator's SCR state and root config**:
+   - `no config` → root cause: `etc/<activator-pid>.cfg` missing or empty in the Karaf assembly.
+   - `unsatisfied (reference)` → `@Reference ConfigurationAdmin` or model reference not bound.
+   - `active` → inspect spawned factory configs: `curl -s -u karaf:karaf .../configMgr.json | jq -r '.pids[] | select(.fpid=="<publisher-pid>")'`. If absent, the `MODEL_CHANGED` event never reached the activator.
+
+6. **Verify Tier 1**: are `judo-services-karaf-model-deployer` and `judo-services-model-bundle-deployer` bundles `Active`? Is the `<app>-internal` bundle active? Without these, no model services exist and no `MODEL_CHANGED` events are posted.
+
+**Endpoints used in the checklist:**
+
+| Endpoint | Purpose |
+|---|---|
+| `/system/console/healthcheck?tags=*&overrideGlobalTimeout=` | Per-check failure log |
+| `/system/console/components(.json)` | SCR component states, unsatisfied references |
+| `/system/console/services(.json)` | Programmatically registered services (e.g. `*Ready` markers) |
+| `/system/console/configMgr(.json)` | Existing PIDs and factory configs |
+| `/system/console/bundles(.json)` | Bundle states (Active vs. Installed/Resolved) |
+| `/system/console/events` | Recent EventAdmin events incl. `MODEL_CHANGED` |
+
+All endpoints share the same HTTP Basic auth (`karaf` / `karaf`).
+
+#### One-shot Dump: Configuration Status
+
+For offline analysis, bug reports, or LLM-assisted diagnosis, grab the entire runtime state in a single file via the Felix Web Console **Configuration Status** page (`/system/console/config`). It aggregates every registered `ConfigurationPrinter` — bundles, services, DS components, ConfigAdmin PIDs, framework properties, threads, memory, system properties, and any health-check or platform-specific printers.
+
+**Download endpoints** (the filename segment is a placeholder — the server only inspects the extension):
+
+| Format | URL |
+|---|---|
+| Full text | `http://localhost:8181/system/console/config/configuration-status-<any>.txt` |
+| Full ZIP (one file per tab) | `http://localhost:8181/system/console/config/configuration-status-<any>.zip` |
+| Single tab text (`<tab>` = printer label, lowercased / URL-safe) | `http://localhost:8181/system/console/config/<tab>.nfo` |
+
+Examples:
+
+```bash
+# Full text snapshot for archival / diff
+curl -u karaf:karaf -o judo-status.txt \
+  "http://localhost:8181/system/console/config/configuration-status-$(date +%Y%m%d-%H%M%S).txt"
+
+# Zip (each tab as a separate file inside)
+curl -u karaf:karaf -o judo-status.zip \
+  "http://localhost:8181/system/console/config/configuration-status-$(date +%Y%m%d-%H%M%S).zip"
+
+# Just the DS Components or Configurations tab
+curl -u karaf:karaf "http://localhost:8181/system/console/config/Components.nfo"
+curl -u karaf:karaf "http://localhost:8181/system/console/config/Configurations.nfo"
+```
+
+When to prefer the dump over the JSON endpoints:
+
+- **Reproducing an issue**: capture once, share or attach to a ticket; everyone sees the same state.
+- **Trace-back over time**: take a `.txt` snapshot before and after a deploy/undeploy; `diff` them to see exactly which configs / services / components changed.
+- **LLM analysis**: paste relevant tab sections directly into an agent prompt instead of stitching together multiple `curl | jq` outputs.
+- **Offline triage**: production systems where you can pull a snapshot once but can't interactively poke the console.
+
+For live drill-down (single component, current state), keep using the `*.json` endpoints from the table above.
+
 ---
 
 ## Performance Monitoring

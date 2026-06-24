@@ -108,7 +108,27 @@ The project path is given in your prompt (e.g., `/tmp/judo-projects/trivia/`).
 3. **Scan interceptors**: `<project-path>/**/interceptor*` or `**/*Interceptor*.java` — interceptor implementations
 4. **Check DI wiring**: Look for Guice modules, OSGi DS annotations, service bindings
 5. **Cross-reference with CLI**: Match backend implementations to model-defined operations and entities
-6. **Identify patterns**: Recurring patterns in data access, error handling, validation, authentication
+6. **Scan generator fragment overrides** (backend / karaf customization). The generator scans **two** fragment-file layouts; both are equivalent and a project may use either or mix them. Inventory both:
+
+   - **Layout A — sibling**: fragment file next to the generated artifact.
+     - `<project-path>/application/karaf-features/src/main/feature/feature.xml.<slot>.fragment.hbs`
+     - `<project-path>/application/<module>/pom.xml.<slot>.fragment.hbs` (every module under `application/`)
+   - **Layout B — centralized**: fragment files under `generator-overrides/` mirroring the path of the generated artifact.
+     - `<project-path>/application/generator-overrides/karaf-features/src/main/feature/feature.xml.<slot>.fragment.hbs`
+     - `<project-path>/application/generator-overrides/<module>/pom.xml.<slot>.fragment.hbs`
+     - `<project-path>/application/generator-overrides/pom.xml.extra-modules.fragment.hbs` (application-root sub-module additions)
+
+   For each project:
+
+   a. Read `<project-path>/application/karaf-features/src/main/feature/feature.xml` and any module's `pom.xml` to enumerate the available `<slot>` names from `<!-- To define create '...fragment.hbs' file -->` markers. Known slots: `extra-repositories`, `extra-bundles`, `model-bundles` for `feature.xml`; `project-definition`, `properties-definition`, `extra-plugin-management`, `extra-plugins`, `extra-dependencies` for each `pom.xml`; `extra-modules` for the application-root pom.
+   b. Glob both layouts for `*.fragment.hbs` files and record which slots the project actually populates.
+   c. **Inside each `feature.xml.extra-bundles.fragment.hbs`, look for `<config name="...">...</config>` blocks**. These are the recommended way to ship OSGi PID configuration (registered into Config Admin at feature-install time) and the strictly-better alternative to plain `.cfg` files. Specifically capture:
+      - the PID (the `name=` attribute),
+      - whether the body uses `${env:VAR:-default}` env-var substitution (this is the marker of the runtime-configurable pattern — same `feature.xml` works in dev / staging / prod by changing `judo-karaf.env`),
+      - whether the consuming component declares `configurationPolicy = ConfigurationPolicy.REQUIRE` (inline `<config>` makes this safe; `karaf-features/etc/*.cfg` typically does not).
+   d. Inventory `<project-path>/application/karaf-features/etc/*.cfg` — plain `.cfg` files (no `.hbs`). For each, check whether the `karaf-offline` assembly actually packages `karaf-features/etc/` into the runtime Karaf `etc/` (grep `karaf-offline/pom.xml` and any sibling `pom.xml.extra-plugins.fragment.hbs` for a resource copy targeting `etc/` or for `<copy>` / `<configFile>` elements). Record the result — a `.cfg` that is not packaged is a miswiring that the project compensates for via `configurationPolicy = OPTIONAL` on the consuming component, and should be flagged as a candidate for migration to inline `<config>`.
+   e. Add each finding to the existing `karaf-customization-via-fragments` best-practice in `best-practices/backend/`: increment `usage_count`, append the project to `projects`, add a concise example (3–7 lines) under `## Examples` describing which slots the project uses, whether it uses Layout A or B, and any inline `<config>` PIDs with env-var substitution. Do **not** create a new pattern for the fragment-override mechanism itself — fold all variants into this one entry. Only create a new pattern if a project demonstrates a genuinely different customization technique (e.g. a dedicated `karaf-offline` assembly override module, or a non-fragment template-override technique not covered here).
+7. **Identify patterns**: Recurring patterns in data access, error handling, validation, authentication
 
 ### Phase 3: Update Best Practices
 

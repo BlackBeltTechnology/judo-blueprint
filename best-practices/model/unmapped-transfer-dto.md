@@ -42,6 +42,8 @@ Naming conventions for unmapped DTOs:
 - `*Data` suffix for read-only data containers
 - `*Output` suffix for operation results
 
+**Type consistency with entity attributes:** When an unmapped DTO field mirrors an entity binary attribute (e.g., an output DTO carrying the same file as `Document.finalFile`), use the **same named `BinaryType` instance** as the entity attribute. This avoids a type mismatch at the DAO layer when the backend writes through both attributes and keeps model queries consistent. Do not introduce a new binary type just for the DTO if an existing named instance already covers the required payload.
+
 ## Examples
 
 ### Trivia
@@ -94,6 +96,12 @@ Transient report DTO `report::Competence` confirmed with all-transient attribute
 - Pros: Clean operation signatures, no persistence overhead, purpose-built for each operation
 - Cons: More transfer types to maintain, may proliferate for complex APIs
 - Prefer when: Operation input/output does not map to a single entity, or for error/fault types
+
+## Anti-Patterns
+
+- **Members declared as `STORED` instead of `TRANSIENT`** — Unmapped TOs have no entity backing; their data members must be `memberType: TRANSIENT`. Using `STORED` (the judo-model-cli default for DataMember create) causes EVL to fail with: `Container of stored data member: <attr> must be in entity type.` Always explicitly set `memberType: TRANSIENT` when adding attributes to unmapped TOs.
+- **Omitting Form + Table representations on input TOs** — EVL requires every TO used as an operation input type to declare both a `Form` and a `Table` representation, even if the UI never renders them. Missing representations cause: `Form/Table of: <TO> must be defined, because it’s used as an input type.` Add minimal Form + Table immediately after creating the TO.
+- **Omitting View + Table representations on output TOs** — Same constraint applies for TOs and entities used as operation output types: `View/Table of: <TO> must be defined, because it’s used as an output type.`
 
 ## Related Patterns
 
