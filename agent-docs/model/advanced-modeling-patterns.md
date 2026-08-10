@@ -193,21 +193,78 @@ JQL provides **three** categories for accessing user/session data. They have cri
 
 These patterns capture rules the JUDO ESM EVL validator enforces but that neither the YAML spec vocabulary nor the CLI error messages make obvious. They surface only under the full `./judo.sh build` pipeline, and ignoring them is a large source of model-authoring churn.
 
-### Pattern: Asymmetric bidirectional relations (AGGREGATION × ASSOCIATION)
+### Pattern: Relation kind is layer-dependent
 
-*   **Use Case**: A parent-child relationship between two entities that must be navigable from both sides (e.g. `Partner` has many `PartnerSupportedLanguage`, and each `PartnerSupportedLanguage` points back at its `Partner`).
-*   **Problem**: The UML-intuitive answer — declare both ends as `COMPOSITION` or both as `AGGREGATION` — fails EVL with *"Bidirectional association: X cannot be composition"* or *"Partner of bidirectional association: X cannot be aggregation"*.
-*   **Pattern**: The **only** combination that passes is asymmetric:
-    *   Owner end (the `upper ≠ 1` end, i.e. the collection side) = `AGGREGATION`
-    *   Child end (the `upper = 1` end, i.e. the back-pointer) = `ASSOCIATION`
-*   **Cardinality companion rule**: EVL additionally emits *"At least one reference of a bidirectional association should have lower bound with zero"*. Relax the owner-collection end (`1..*` → `0..*`); relaxing the child end breaks referential integrity.
-*   **Scope**: This rule applies to **entity-to-entity** relations only. Entity `ASSOCIATION` on its own is also forbidden; on an entity, every unidirectional relation must be `AGGREGATION` or `COMPOSITION`. `ASSOCIATION` is reserved for TO-to-TO relations.
+> **Corrected 2027-02-16.** An earlier revision of this section claimed entity `ASSOCIATION` was
+> forbidden, that every unidirectional entity relation had to be `AGGREGATION` or `COMPOSITION`, and
+> that bidirectional entity relations required an asymmetric `AGGREGATION` × `ASSOCIATION` split.
+> **All three are wrong.** They were generalised from a single project and the root cause was
+> misread — see the diagnostic note below, which is the reusable part.
+
+*   **Rule**, measured across **nine** models in `PROJECTS.md`:
+
+    | Owner | Allowed | Never observed |
+    |---|---|---|
+    | `EntityType` | `ASSOCIATION` or `COMPOSITION` | — |
+    | `TransferObjectType` | `AGGREGATION` or `ASSOCIATION` | `COMPOSITION` (0 of 632) |
+
+*   **Counts** (AdTrack, alba, compsych-letter-demo, e-demokracia, mlszksz-platform, park-here, rackinspect, trivia, ubives):
+
+    ```
+    EntityType         one-way  ASSOCIATION 182 | COMPOSITION 85 | AGGREGATION 10*
+    EntityType         two-way  ASSOCIATION 130 | AGGREGATION  0 | COMPOSITION  0
+    TransferObjectType one-way  AGGREGATION 418 | ASSOCIATION 214 | COMPOSITION 0
+    TransferObjectType two-way  none in the corpus
+    ```
+
+    `*` **All ten entity `AGGREGATION` relations are in one model, `compsych-letter-demo`** — and in
+    that model **no entity carries a self-mapping**. That is not a coincidence; it is the bug.
+
+*   **Both ends of a bidirectional entity relation are `ASSOCIATION`.** 130 of 130 across the corpus,
+    with zero counter-examples. There is no asymmetric split at the entity layer.
+
+*   **Diagnostic — the misreading worth keeping.** An entity missing its self-mapping is treated by
+    EVL as an *unmapped transfer object*, and the error it emits is
+    *"Unmapped transfer object type: X can only have aggregation kind relations. Y is not aggregation."*
+    That message names `aggregation`, so the obvious response is to change the relation kind — which
+    silences it. **The relation kind was never the problem.** The fix is the self-mapping (see the
+    pattern below); changing kinds is a workaround that leaves a model whose entity relations disagree
+    with every other project in the corpus. This section previously quoted that very error under the
+    self-mapping pattern while also recommending the workaround above it, and the contradiction went
+    unnoticed.
+
+    > **If you see "can only have aggregation kind relations", add the self-mapping. Do not change
+    > the relation kind.**
+
+*   **Unverified, retained for provenance**: the EVL messages *"Bidirectional association: X cannot be
+    composition"* and *"Partner of bidirectional association: X cannot be aggregation"*, and the
+    companion *"At least one reference of a bidirectional association should have lower bound with
+    zero"*. These are plausible — the corpus has no bidirectional entity `COMPOSITION` or
+    `AGGREGATION` to contradict them, which is consistent with EVL rejecting both. They were not
+    reproduced during this correction. Treat them as constraints on what bidirectional ends may be,
+    not as a mandate for `AGGREGATION`.
 
 ### Pattern: Derived-member self-binding
 
 *   **Use Case**: Any `DataMember` whose `memberType` is `DERIVED`.
-*   **Rule**: Every derived `DataMember` must set `binding="<self-id>"` pointing at its own `xmi:id`. EVL emits *"Derived data member X must bind itself"* otherwise.
-*   **Authoring**: This is distinct from — and complements — the mandatory self-mapping on every `EntityType` (see [structure.md](./esm_metamodel/structure.md), *Mandatory self-mapping on `EntityType`*). Code generators that emit YAML→XMI must set both.
+*   **Convention**: Set `binding="<self-id>"` pointing at the member's own `xmi:id`.
+*   **⚠️ EVL does NOT enforce this — corrected 2027-02-16.** An earlier revision stated EVL emits
+    *"Derived data member X must bind itself"*. Reproduced against `judo-cli` with a create →
+    `validate --strict` → `discard` probe: an unbound `DERIVED` member passes EVL cleanly. A control
+    in the same session (an entity created without its self-mapping) **did** fail, confirming
+    `validate` reads the in-memory model and that the probe was meaningful. `mlszksz-platform` also
+    ships **5 unbound derived entity members** against 6 bound.
+*   **Follow it anyway.** Entity data members are self-bound 138 of 145 in that model, the cost is one
+    `update` mutation per derived member, and the full `./judo.sh build` runs validators EVL does not
+    — the MAPPED-member rule below is a documented case of a constraint that fires only there. Cheap
+    insurance against a late failure; not a rule you can rely on EVL to catch for you.
+*   **The CLI does half of it silently.** `create(dataMember, memberType: STORED)` sets `binding` to
+    self automatically; `memberType: DERIVED` leaves it **null**. Measured on a fresh model: 26 of 26
+    STORED bound, 0 of 1 DERIVED. A generator that assumes the CLI is consistent will emit correct
+    stored members and unbound derived ones.
+*   **Authoring**: Distinct from — and complementary to — the mandatory self-mapping on every
+    `EntityType` (see [structure.md](./esm_metamodel/structure.md), *Mandatory self-mapping on
+    `EntityType`*), which **is** EVL-enforced. Code generators emitting YAML→XMI should set both.
 
 ### Pattern: MAPPED member `required` must match its binding
 
@@ -223,6 +280,7 @@ These patterns capture rules the JUDO ESM EVL validator enforces but that neithe
     *   *"Entity type: X must have mapping with a target pointing to the entity type"* — fires when another TO references `X` as its `mapping.target`.
     *   *"Unmapped transfer object type: X can only have aggregation kind relations. Y is not aggregation."* — fires when `X` itself carries an `ASSOCIATION` or `COMPOSITION` relation but has no self-mapping, **even if no TO references `X` at all**. Observed 2026-05-12 on `compsych-letter-demo` `RuleViolation` (ASSOCIATION → `Rule`) and `DataObject` (COMPOSITION → `RuleViolation`): neither was yet referenced by any TO, yet both EVL messages appeared together after the self-mapping was omitted.
 *   **Authoring**: Add the self-mapping immediately after every `create.entityType` call, before adding any relations. See [structure.md](./esm_metamodel/structure.md) *"Mandatory self-mapping on EntityType"* for the canonical statement of this rule. Previously noted under CLI authoring of `compsych-letter-demo`'s `User`+`UserPrincipal` shape 2026-05-11 (TO-target trigger); broadened to cover the relation-kind trigger 2026-05-12.
+*   **⚠️ Do not "fix" the second error by changing the relation kind.** *"can only have aggregation kind relations"* names `aggregation`, so switching the relation to `AGGREGATION` silences it — and leaves the missing self-mapping in place. That workaround is visible in the corpus: `compsych-letter-demo` holds **all ten** entity-level `AGGREGATION` relations found across nine models, and **none** of its entities carries a self-mapping. See *Relation kind is layer-dependent* above; entity relations are `ASSOCIATION` or `COMPOSITION` everywhere else.
 
 ### Pattern: Mandatory UI scaffolding for operation-I/O TOs
 
