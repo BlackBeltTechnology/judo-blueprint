@@ -14,6 +14,7 @@ This document covers advanced customization patterns identified from production 
 - [Table Row Highlighting System](#table-row-highlighting-system)
 - [Custom Component Replacement](#custom-component-replacement)
 - [Configuration Patterns](#configuration-patterns)
+- [Date and Time Field Semantics (Same-Day Guard)](#date-and-time-field-semantics-same-day-guard)
 
 ---
 
@@ -2091,6 +2092,44 @@ const SettingsPage = () => {
   );
 };
 ```
+
+---
+
+## Date and Time Field Semantics (Same-Day Guard)
+
+JUDO deserializes model attributes by their ESM type, and the runtime `Date` you receive differs by type. This is a frequent source of "it shows as happening now, but on the wrong day" bugs.
+
+| ESM type | Deserializer (`data-api/rest/serialization.ts`) | Runtime `Date` you get |
+|----------|--------------------------------------------------|------------------------|
+| `Time` | `serviceTimeToUiTime` = `parse(str, 'HH:mm:ss', new Date())` | **Today's date** at the given time-of-day; only the time-of-day is meaningful |
+| `Date` | `serviceDateToUiDate` = `new Date(str)` | The real **calendar day** (midnight) |
+| `Timestamp` | `serviceDateToUiDate` | Full instant |
+
+### Pitfall
+
+Two `Time` fields (e.g. `startTime`, `endTime`) and a derived "now" `Time` (e.g. `currentTime`) are all pinned to **today**. Comparing them tells you the time-of-day relationship **only** — it says nothing about which day the record is for. A record scheduled for another day still gets a `currentTime` that lands inside its `[startTime, endTime]` window, so a naive comparison marks it "currently active/running".
+
+### Rule
+
+Never decide "is this happening now / today" from `Time` fields alone. Gate on the record's `Date` field being the same calendar day as now:
+
+```typescript
+export function isSameCalendarDay(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+// "running now" only when the record's day is today AND the time-of-day is inside the window.
+// `now` here is a Time field (e.g. currentTime) — already pinned to today by the deserializer.
+const isRunning =
+  now != null &&
+  isSameCalendarDay(recordDate /* Date */, now) &&
+  now.getTime() >= startTime.getTime() &&
+  now.getTime() <= endTime.getTime();
+```
+
+Keep this in a small pure module so it is unit-testable without a DOM, and add a regression test for the "another day, time-of-day inside the window → NOT running" case.
+
+**Real example**: `park_here` `UserActiveReservationsCard` — `startTime`/`endTime`/`currentTime` are `Time`, `date` is `Date`. `computeReservationTimeline(reservationDate, start, end, now)` gates the live "running now" treatment (and the "starts in…" minute hint) on `isSameCalendarDay`, so a future-day reservation is never shown as running.
 
 ---
 

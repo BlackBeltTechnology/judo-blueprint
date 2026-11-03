@@ -531,6 +531,34 @@ migration-test:
     - mvn judo-rdbms-schema:execute -DbaseModelVersion=${BASE_VERSION} -DupdateModelVersion=${CI_COMMIT_TAG} -DjdbcUrl=jdbc:postgresql://postgres/webshop_test -DdbUser=webshop -DdbPassword=test
 ```
 
+## New required Binary/FileType attribute backfill (RDBMS filestore)
+
+When a new entity attribute is marked **required** in the ESM model, the generated incremental DDL still adds the column as **nullable** — JUDO enforces `required` at the application layer, not via a DB `NOT NULL`. Existing rows therefore get `NULL`, which breaks app-layer required validation and NPEs any reader (e.g. `configuration.getFooTemplate().getId()`). Add a data backfill to the (otherwise empty) `06_updateDataAfterIncremental_*.changeset.xml`, reusing the same `context="<base>_<update>"` as the `05` DDL changeset.
+
+### Scalar / enum attribute
+
+```sql
+UPDATE t_entities_<entity> SET c_foo = <model-default> WHERE c_foo IS NULL;
+```
+
+### Binary / FileType attribute (RDBMS filestore backend)
+
+A `Binary`/`FileType` attribute maps to a **single TEXT column** holding a serialized `FileType` JSON: `{"fileName":"...","id":"<uuid>","mimeType":"..."}`. The `id` references a row in the RDBMS filestore table `store_<app>` (`file_id, filename, data bytea, size, mime_type, create_time`). Seed the file first, then point the column at it — both idempotent:
+
+```sql
+INSERT INTO store_<app> (file_id, filename, data, size, mime_type, create_time)
+SELECT '<fixed-uuid>', '<name>', decode('<base64-of-file>','base64'), <bytes>, '*/*', now()
+WHERE NOT EXISTS (SELECT 1 FROM store_<app> WHERE file_id = '<fixed-uuid>');
+
+UPDATE t_entities_<entity>
+SET c_foo = '{"fileName":"<name>","id":"<fixed-uuid>","mimeType":"*/*"}'
+WHERE c_foo IS NULL;
+```
+
+Use a **deterministic** uuid (e.g. `uuid5(URL, "<app>/<name>")`) so the migration is reproducible. Reusing an existing file's id (copying another template column) is a quick non-null stand-in but renders the wrong content — prefer seeding the real file. Embed the file bytes as base64 inside a `<sql><![CDATA[ ... ]]></sql>` changeSet.
+
+> For local dev use the review-gated `local-schema-migration` skill (generate → analyze → backfill in `06` → confirm → execute → verify 0 NULLs). Never `judo-rdbms-schema:apply` (it fuses generate+execute and skips the backfill gate).
+
 ## See Also
 
 - **Liquibase Documentation**: https://docs.liquibase.com/
