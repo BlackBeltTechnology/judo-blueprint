@@ -1,56 +1,69 @@
-## Examples
+## Model shape
 
-### doors-model
-**Entity types (all in doors::entities package):**
+The shape has a Contract with a status and a stage list, a Workflow that owns workflow stage templates, and an abstract Stage with two concrete kinds.
 
-- **Contract**: `doors::entities::Contract` (non-CRUD)
-  - Attributes (20): title, status (DocumentStatus, default: CREATED), kind (ContractKind, req, default: CREATION), role (ContractRole, req, default: PURCHASER), netValue (Long), creationDate (Date, default: now()), signDate, financialAprvDate, financialAprvName, legalAprvDate, legalAprvName, registrationNumber, version (Integer), year (Integer), sequence (Integer), file (ContractTemplate), signedFile (SignedContract), isSpecial (Boolean, req, default: false), isTemplateBased (Boolean, req, default: false), forceSpecial, forceSpecialAvailable, isSuitableForGeneration
-  - Relations (15): stages [0..*] COMPOSITION ContractStage, contractLogs [0..*] COMPOSITION ContractLog, comments [0..*] COMPOSITION Comment, contract_AE99 [0..1] COMPOSITION Contract_AE99, contractType [1..1] ASSOC ContractType (bidirectional), contractor [1..1] ASSOC Company (bidirectional), partner [1..1] ASSOC Partner, signee [0..1] ASSOC Employee (bidirectional), officer [1..1] ASSOC Employee (bidirectional), division [1..1] ASSOC Division (bidirectional), workflow [0..1] ASSOC Workflow, openStage [0..1] ASSOC ContractStage (bidirectional), lastApprover [0..1] ASSOC Employee, contractorBankAccount [0..1] DERIVED (self.contractor.mainBankAccount), partnerBankAccount [0..1] DERIVED (self.partner.mainBankAccount)
-  - Operations (14): startApproval (output: StartApprovalResult), approve, reject (input: RejectInput), sign, close, setNextStage, setResponsible, addSignee, validate (custom, output: ValidateContractResult), addLog (input: ContractLog), generateDocument (custom), updateDocument, uploadFile (custom, input: UploadFileInput), uploadSignedContract (custom, input: UploadSignedFileInput)
+- **Contract** has title (required), status (required, ContractStatus enumeration), netValue and signDate. It owns its runtime stages through a composition (stages, to ContractStage) and refers to at most one Workflow (0..1, association). It has three operations: startApproval, approve and reject.
+- **ContractStatus** is an enumeration with six values: CREATED, PENDING, APPROVED, SIGNED, CLOSED and REJECTED.
+- **Workflow** has a name (required) and owns its stage templates through a composition (stages, to WorkflowStage).
+- **Stage** is the abstract base: name (required), order (required), and activityType (required, StageType enumeration).
+- **WorkflowStage** and **ContractStage** extend Stage. WorkflowStage is the template. ContractStage is the runtime copy, with autoApproved, completed and rejected flags.
+- **StageType** is an enumeration with two values: COMMENT and APPROVE.
 
-- **Workflow**: `doors::entities::Workflow` (non-CRUD)
-  - Attributes: name (req)
-  - Relations: stages [0..*] COMPOSITION WorkflowStage
+A template is copied into a runtime stage when approval starts, so the template is never changed by a running contract.
 
-- **Stage**: `doors::entities::Stage` (non-CRUD, base entity for WorkflowStage and ContractStage)
-  - Attributes: name (req), order (Integer, req), activityType (StageType, req, default: APPROVE), conditionNetValueUpperLimit (Integer, req, default: -1), conditionNetValueLowerLimit (Integer, req, default: 0), conditionSpecial (StageCondition, req, default: DONTCARE), conditionTemplateBased (StageCondition, req, default: DONTCARE), conditionFinancialSpecial (StageCondition, req, default: DONTCARE), conditionLegalSpecial (StageCondition, req, default: DONTCARE)
-  - Relations: responsible [1..1] ASSOC Role
+Generated UI pages follow from the entities. The Contract's stage list is shown read-only on its view page; the approve and reject actions appear as standard buttons.
 
-- **WorkflowStage**: `doors::entities::WorkflowStage` (non-CRUD, extends Stage)
-  - No additional attributes or relations beyond Stage
+## Structure diagram
 
-- **ContractStage**: `doors::entities::ContractStage` (non-CRUD, extends Stage)
-  - Additional attributes: autoApproved (Boolean), completed (Boolean, req, default: false), rejected (Boolean, req, default: false), comment (Text)
-  - Additional relations: responsiblePositions [0..*] ASSOC Position (bidirectional), pendingContract [0..1] ASSOC Contract (bidirectional)
-
-- **ContractType**: `doors::entities::ContractType` (non-CRUD)
-  - Attributes: name (req), code (req, identifier), title, isSpecial (Boolean, req, default: false), isTemplateBased (Boolean, req, default: false), isFinancialSpecial (Boolean), isLegalSpecial (Boolean), template (ContractTypeTemplate)
-  - Relations: legalCategory [1..1] ASSOC LegalCategory, financialCategory [1..1] ASSOC FinancialCategory, contracts [0..*] ASSOC Contract (bidirectional)
-  - Operations: createContract (custom, input: CreateContractInputTO, output: CreateContractResult), createContractWithTemplate (custom, input/output), createContractWithoutTemplate (custom, input/output), init (STATIC)
-
-- **ContractLog**: `doors::entities::ContractLog` (non-CRUD)
-  - Attributes: timestamp (Timestamp, req), user (String, req), event (ContractEvent, req), sequence (Integer), contractVersion (ContractTemplate), signedContractVersion (SignedContract)
-
-- **Comment**: `doors::entities::Comment` (non-CRUD)
-  - Attributes: text (Text), timestamp (Timestamp, req), user (String, req)
-
-**Enumerations:**
-- `DocumentStatus`: CREATED(1), PENDING(2), APPROVED(3), SIGNED(4), REJECTED(5), CLOSED(6)
-- `ContractKind`: CREATION(1), MODIFICATION(2), TERMINATION(3)
-- `ContractRole`: PURCHASER(1), SUPPLIER(2), BARTER(3)
-- `ContractPeriod`: FIXED_DATE(1), INFINITE(3), FIXED_TO_INFINITE(4)
-- `ContractPerformance`: SINGLE(1), CONTINUOUS(2)
-- `StageType`: COMMENT(1), APPROVE(2)
-- `StageCondition`: DONTCARE(1), EXECUTE(2), SKIP(3)
-- `ContractEvent`: CREATED(1), SIGNED(3), CLOSED(6), UPLOADED(7)
-- `Currency`: HUF(1), EUR(2), USD(3)
-- `PartnerType`: FREELANCE(1), RESIDENT_ENTERPRISE(2), FOREIGN_ENTERPRISE(3), FOUNDATION(4), ORGANIZATION(5), GOVERMENT(6), OTHER(7)
-
-**Workflow lifecycle:**
-1. ContractType.createContract creates a new Contract with status=CREATED
-2. Contract.startApproval validates the contract, transitions to PENDING, copies WorkflowStages into ContractStages, and begins stage processing
-3. Contract.setNextStage evaluates conditions and either auto-approves or assigns responsible Positions
-4. Contract.approve completes the current stage and advances to the next
-5. Contract.reject marks the current stage as rejected and sets status to REJECTED (can be restarted)
-6. Contract.sign transitions from APPROVED to SIGNED
-7. Contract.close transitions from SIGNED to CLOSED
+<!-- mermaid:generated fragment=contract-management-workflow-cluster cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Contract {
+    <<Entity>>
+    +String title [1]
+    +ContractStatus status [1]
+    +Double netValue
+    +Date signDate
+  }
+  class ContractStage {
+    <<Entity>>
+    +Boolean autoApproved
+    +Boolean completed
+    +Boolean rejected
+  }
+  class ContractStatus {
+    <<Enumeration>>
+    CREATED
+    PENDING
+    APPROVED
+    SIGNED
+    CLOSED
+    REJECTED
+  }
+  class Stage {
+    <<Abstract Entity>>
+    +String name [1]
+    +Integer order [1]
+    +StageType activityType [1]
+  }
+  class StageType {
+    <<Enumeration>>
+    COMMENT
+    APPROVE
+  }
+  class Workflow {
+    <<Entity>>
+    +String name [1]
+  }
+  class WorkflowStage {
+    <<Entity>>
+  }
+  Contract *-- "*" ContractStage : stages
+  Contract --> "0..1" Workflow : workflow
+  Contract ..> ContractStatus : status
+  Stage ..> StageType : activityType
+  Stage <|-- ContractStage
+  Stage <|-- WorkflowStage
+  Workflow *-- "*" WorkflowStage : stages
+```
+<!-- /mermaid:generated -->

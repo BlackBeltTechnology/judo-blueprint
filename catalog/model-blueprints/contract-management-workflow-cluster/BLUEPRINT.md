@@ -1,48 +1,72 @@
 ---
 id: contract-management-workflow-cluster
 title: Contract Management with Workflow Approval Stages
-description: A comprehensive contract management entity cluster centered around a Contract entity with a multi-stage approval workflow engine.
-aliases: []
-keywords: [contract, management, workflow, approval, stages, cluster]
+description: A contract entity with a multi-stage approval workflow, where workflow stage templates are copied into runtime stages on the contract when approval starts.
+aliases: [contract approval workflow, staged approval, contract stages]
+keywords: [contract, workflow, approval, stage, template, runtime copy, abstract stage, generalization]
 tags: ["domain:model", "layer:model", "project:doors-model", "status:single-project"]
 category: pattern
 status: single-project
 projects: [doors-model]
 evidence: ["doors-model:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [product-with-approval-workflow, approval-workflow-pattern]
+fragment: contract-management-workflow-cluster
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-09
 ---
-## Description
+## Intent
 
-A comprehensive contract management entity cluster centered around a Contract entity with a multi-stage approval workflow engine. The core entities are:
+Run a contract through a sequence of approval stages defined once as a workflow. Each contract gets its own copy of the stages when approval starts, so later changes to the template do not alter a contract already in review.
 
-- **Contract** -- the main entity representing a contract document with extensive attributes (title, status, netValue, kind, role, signDate, creationDate, registrationNumber, version, year, sequence, file, signedFile, and multiple boolean flags). The Contract progresses through a status lifecycle: CREATED -> PENDING -> APPROVED -> SIGNED -> CLOSED (with REJECTED as a branch from PENDING). Operations include startApproval, approve, reject, sign, close, validate, uploadFile, uploadSignedContract, generateDocument, and workflow management helpers (setNextStage, setResponsible, addSignee, addLog).
+### Workflow stages are templates, contract stages are copies
 
-- **ContractType** -- a classification entity for contracts with code, name, title, and boolean flags (isSpecial, isTemplateBased, isFinancialSpecial, isLegalSpecial) plus a template attribute. References LegalCategory and FinancialCategory for regulatory classification. Has factory operations (createContract, createContractWithTemplate, createContractWithoutTemplate) for contract creation.
+The workflow owns its stage templates. Starting approval copies each template onto the contract as a runtime stage. The contract then tracks its own progress through those copies.
 
-- **Workflow** -- a named workflow definition entity that owns WorkflowStage entries via composition.
+### Stage kinds share one abstract base
 
-- **Stage** (abstract base) -- defines workflow stage structure: name, order, activityType (StageType enum: COMMENT/APPROVE), responsible (Role), and condition attributes (conditionNetValueUpperLimit, conditionNetValueLowerLimit, conditionTemplateBased, conditionSpecial, conditionFinancialSpecial, conditionLegalSpecial using StageCondition enum: DONTCARE/EXECUTE/SKIP).
+Workflow stages and contract stages both extend one abstract Stage. The common fields (name, order, activity type) are defined once. Each kind adds only what it needs.
 
-- **WorkflowStage** -- extends Stage; owned by Workflow as a template definition of stages.
+## Structure
 
-- **ContractStage** -- extends Stage; owned by Contract as runtime instances of stages. Adds autoApproved, completed, rejected boolean attributes, a comment field, and responsiblePositions/pendingContract relations. Created by copying WorkflowStage templates when startApproval is invoked.
+The Contract entity has a title (required), a status (required, from the ContractStatus enumeration), a net value and a sign date. It owns a list of contract stages through a composition and refers to at most one Workflow (0..1). It has operations to start approval, approve and reject.
 
-- **ContractLog** -- an event log entity composed by Contract, recording timestamp, user, event (ContractEvent enum: CREATED/SIGNED/CLOSED/UPLOADED), sequence number, and file version snapshots (contractVersion, signedContractVersion).
+The ContractStatus enumeration has six values: created, pending, approved, signed, closed and rejected.
 
-- **Comment** -- a simple text+timestamp+user entity composed by Contract for rejection comments.
+The Workflow entity has a name (required) and owns its workflow stages through a composition.
 
-Key structural patterns:
-- Template/instance pattern: WorkflowStage is a template; ContractStage is its runtime copy
-- Generalization: both WorkflowStage and ContractStage extend the abstract Stage entity
-- Condition-based routing: stage conditions determine whether a stage is EXECUTE'd, SKIP'd, or DONTCARE'd based on contract attributes
-- Position-based authorization: each stage references responsible Positions who can approve
-- Auto-approval: stages that do not match conditions are automatically approved, advancing the workflow
-- Document generation: contracts can have their documents generated from templates via backend code
+The abstract Stage has a name (required), an order (required) and an activity type (required, from the StageType enumeration with the values comment and approve). WorkflowStage and ContractStage both extend it. ContractStage adds flags for auto-approved, completed and rejected.
 
-## Model Definition
+## Constraints
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+- A contract stage is created from a workflow stage only when approval starts. The contract never changes the template.
+- Stages are ordered by their order value. Two stages of one workflow do not share an order.
+- The status moves forward through the stages and reaches rejected only from pending. The enumeration does not enforce this; the operations do.
+- Interceptors do not run for the approval operations, which are custom. Each one must check the current status and the caller's role.
+- A stage that does not match the contract's conditions is approved automatically and does not wait for a person.
+
+## Variations
+
+- **Conditions per stage.** A stage can run, skip or be ignored depending on contract attributes such as the net value. Add condition fields to the template and evaluate them when the runtime stage is created.
+- **Position-based approval.** Each stage names the role or position allowed to approve it. Check that role in the approve operation.
+- **Comment stage.** A stage with the comment activity type records a comment and does not block the workflow.
+
+## When to use
+
+- A document needs a fixed sequence of approvals that can differ by workflow.
+- Each document must keep a record of the stages it went through, even if the template later changes.
+- Approvers are chosen by role or position for each stage.
+
+## When to avoid
+
+- The approval path is a single step. Use one approve operation without stages.
+- The sequence is decided by the people involved, not by a template. Use free-form review with comments.
+- The workflow must branch and loop with many guards. Use a state machine with transitions instead.
+
+## Related
+
+- [[approval-workflow-pattern]] — the general pattern for an approval that someone signs off
+- [[product-with-approval-workflow]] — an approval workflow on a product, a simpler form of the same need
+- [[document-review-state-machine]] — a review of a document with explicit state transitions
+- [[content-lifecycle-status-enum]] — a status enumeration used for lifecycle values
+- [[safe-failure-pattern]] — keeping the audit record when a stage side effect fails
