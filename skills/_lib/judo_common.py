@@ -46,6 +46,19 @@ def run_cli(args: list[str], cwd: str | os.PathLike | None, check: bool = True, 
     return r
 
 
+def run_cli_once(args: list[str], cwd: str | os.PathLike, model: str, check: bool = True) -> subprocess.CompletedProcess:
+    """Run one CLI command against a throwaway model copy, then stop its server.
+
+    The CLI starts one server per model file and keeps it alive until the idle
+    timeout; scripts that work on temp copies must stop it or servers pile up.
+    """
+    try:
+        return run_cli(args, cwd=cwd, check=check, model=model)
+    finally:
+        subprocess.run(["java", "-jar", str(cli_jar()), "-q", "-m", str(model), "server", "stop"],
+                       cwd=cwd, capture_output=True, text=True)
+
+
 def die(msg: str, code: int = 1):
     print(msg, file=sys.stderr)
     sys.exit(code)

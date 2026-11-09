@@ -24,7 +24,7 @@ import tempfile
 import shutil
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "_lib"))
-from judo_common import repo_root, run_cli, cli_version, die  # noqa: E402
+from judo_common import repo_root, run_cli, run_cli_once, cli_version, die  # noqa: E402
 
 START = re.compile(r"<!-- mermaid:generated fragment=(\S+) cli=(\S+) -->")
 END = "<!-- /mermaid:generated -->"
@@ -76,7 +76,7 @@ def render_fragment(fid: str, opts: list[str]) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         m = pathlib.Path(tmp) / "Sandbox.model"
         shutil.copy(frag, m)
-        r = run_cli(["mermaid", "model", "--scope", pkg_of(fid), "--split", "none", *opts], cwd=tmp, model=str(m))
+        r = run_cli_once(["mermaid", "model", "--scope", pkg_of(fid), "--split", "none", *opts], cwd=tmp, model=str(m))
     return r.stdout.strip()
 
 

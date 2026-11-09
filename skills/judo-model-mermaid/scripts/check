@@ -19,7 +19,7 @@ import sys
 import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "_lib"))
-from judo_common import repo_root, run_cli  # noqa: E402
+from judo_common import repo_root, run_cli, run_cli_once  # noqa: E402
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -50,7 +50,7 @@ def check_one(fid: str) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         m = pathlib.Path(tmp) / "Sandbox.model"
         shutil.copy(frag, m)
-        v = run_cli(["validate", "--strict"], cwd=tmp, model=str(m), check=False)
+        v = run_cli_once(["validate", "--strict"], cwd=tmp, model=str(m), check=False)
         if v.returncode != 0:
             res["errors"].append("validate --strict failed:\n" + (v.stdout + v.stderr)[-1500:])
     files = render.entry_files(fid)
