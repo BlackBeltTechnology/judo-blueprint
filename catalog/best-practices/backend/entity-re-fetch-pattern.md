@@ -1,22 +1,20 @@
 ---
-id: "entity-re-fetch-pattern"
-title: "Entity Re-fetch at Operation Start"
-domain: "backend"
-category: "operation"
-score: 77.5
-usage_count: 8
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - alba
-  - mlszksz-platform
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - workflow-poc
+id: entity-re-fetch-pattern
+title: Entity Re-fetch at Operation Start
+description: "In bound custom operations, the `_this` parameter is re-fetched from the database at the very start of the method."
+aliases: []
+keywords: [re, fetch, at, operation, start]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: operation
+status: established
+projects: [trivia, rackinspect, alba, mlszksz-platform, park-here, indamedia-adtrack, judo-partner, workflow-poc]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [dao-fluent-query-filter, state-lifecycle-operation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -67,7 +65,8 @@ Re-fetch used in multiple contexts: `workflowDao.getById(_this.identifier()).get
 - Cons: Adds an extra database round-trip per operation call, `.get()` on Optional without guard can throw NoSuchElementException
 - Alternative: Trust the dispatcher-provided data (risky if other operations mutate concurrently)
 
-## Related Patterns
+## Related
 
-- dao-fluent-query-filter
-- state-lifecycle-operation
+- [[dao-fluent-query-filter]]
+- [[state-lifecycle-operation]]
+

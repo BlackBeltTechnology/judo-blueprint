@@ -1,15 +1,20 @@
 ---
-id: "operation-output-with-behaviors"
-title: "Operation Output with CRUD Behaviors"
-domain: "model"
-category: "operation"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: operation-output-with-behaviors
+title: Operation Output with CRUD Behaviors
+description: "An operation's output parameter can specify CRUD behaviors (REFRESH, UPDATE, DELETE) on the returned entity, enabling the UI to immediately operate on the result without navigating away."
+aliases: []
+keywords: [operation, output, crud, behaviors]
+tags: ["domain:model", "layer:model", "project:actiongroup-test-react", "status:single-project"]
+category: operation
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [unmapped-transfer-dto, mapped-operation-delegation]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -44,7 +49,8 @@ An operation's output parameter can specify CRUD behaviors (REFRESH, UPDATE, DEL
 - Cons: Only applicable when the output is a single entity reference, behaviors are fixed (not conditional)
 - Prefer when: An operation returns an entity that the user is likely to want to edit or manage immediately
 
-## Related Patterns
+## Related
 
-- [unmapped-transfer-dto](unmapped-transfer-dto.md) (for operations returning non-entity data)
-- [mapped-operation-delegation](mapped-operation-delegation.md)
+- [[unmapped-transfer-dto]] (for operations returning non-entity data)
+- [[mapped-operation-delegation]]
+

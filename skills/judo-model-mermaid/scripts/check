@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""Check catalog fragments: strict validation + diagram equals a fresh render.
+
+Usage: check <id>... | --all  [--json]
+
+Per fragment, in a scratch directory:
+ 1. validate --strict on fragments/<id>.model
+ 2. render bp::<pkg> and compare with the entry's generated block
+ 3. fail if the render shows a class not declared inside bp::<pkg>
+    (except <<external>> stubs)
+Also fails when an entry declares `fragment: <id>` with no fragment file.
+"""
+import argparse
+import json
+import pathlib
+import re
+import shutil
+import sys
+import tempfile
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "_lib"))
+from judo_common import repo_root, run_cli  # noqa: E402
+
+HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+import importlib.util  # noqa: E402
+
+spec = importlib.util.spec_from_loader("render", loader=None)
+render = importlib.util.module_from_spec(spec)
+render.__dict__["__file__"] = str(HERE / "render")
+exec(compile((HERE / "render").read_text(), str(HERE / "render"), "exec"), render.__dict__)
+
+
+def declared_fragments() -> dict:
+    """id -> entry file for every entry declaring fragment: <id>."""
+    out = {}
+    for f in (repo_root() / "catalog").rglob("*.md"):
+        fm = render.frontmatter(f.read_text())
+        v = fm.get("fragment", "").strip().strip('"')
+        if v and not v.startswith("none") and v != "pending":
+            out[v] = f
+    return out
+
+
+def check_one(fid: str) -> dict:
+    res = {"id": fid, "ok": True, "errors": []}
+    frag = repo_root() / "fragments" / f"{fid}.model"
+    if not frag.exists():
+        return {"id": fid, "ok": False, "errors": ["fragment file missing"]}
+    with tempfile.TemporaryDirectory() as tmp:
+        m = pathlib.Path(tmp) / "Sandbox.model"
+        shutil.copy(frag, m)
+        v = run_cli(["validate", "--strict"], cwd=tmp, model=str(m), check=False)
+        if v.returncode != 0:
+            res["errors"].append("validate --strict failed:\n" + (v.stdout + v.stderr)[-1500:])
+    files = render.entry_files(fid)
+    if not files:
+        res["errors"].append("no catalog entry for fragment")
+    else:
+        bp = repo_root() / "catalog" / "model-blueprints" / fid / "BLUEPRINT.md"
+        fm = render.frontmatter((bp if bp.exists() else files[0]).read_text())
+        fresh = render.render_fragment(fid, render.diagram_opts(fm))
+        text = files[0].read_text()
+        s = render.START.search(text)
+        if not s or render.END not in text[s.end():]:
+            res["errors"].append(f"no generated block in {files[0].relative_to(repo_root())}")
+        else:
+            body = text[s.end(): text.index(render.END, s.end())]
+            got = re.sub(r"^\s*```mermaid\n|```\s*$", "", body.strip()).strip()
+            if got != fresh.strip():
+                res["errors"].append("generated block differs from a fresh render (hand edit or stale)")
+        # leak check: classes in the render must be declared in the fragment package
+        classes = re.findall(r"^\s*class (\w+)\s*\{(.*?)\}", fresh, re.S | re.M)
+        model_text = frag.read_text()
+        pkg = fid.replace("-", "_")
+        pkg_block = model_text[model_text.find(f'name="{pkg}"'):]
+        for name, bodytxt in classes:
+            if "<<external>>" in bodytxt:
+                continue
+            if f'name="{name}"' not in pkg_block:
+                res["errors"].append(f"class {name} rendered but not declared in bp::{pkg}")
+    res["ok"] = not res["errors"]
+    return res
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0], formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
+    ap.add_argument("ids", nargs="*")
+    ap.add_argument("--all", action="store_true")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+    decl = declared_fragments()
+    ids = sorted(set(decl) | {p.stem for p in (repo_root() / "fragments").glob("*.model")}) if a.all else a.ids
+    if not ids:
+        ap.print_help()
+        return 2
+    results = [check_one(i) for i in ids]
+    if a.json:
+        print(json.dumps({"passed": sum(r["ok"] for r in results), "failed": sum(not r["ok"] for r in results), "results": results}, indent=2))
+    else:
+        for r in results:
+            print(("ok  " if r["ok"] else "FAIL") + " " + r["id"])
+            for e in r["errors"]:
+                print("     " + e.replace("\n", "\n     "))
+        print(f"{sum(r['ok'] for r in results)} passed, {sum(not r['ok'] for r in results)} failed")
+    return 0 if all(r["ok"] for r in results) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,12 +1,19 @@
 ---
-id: "post-generalization-hierarchy"
-title: "Abstract Post with Concrete Content Subtypes"
-score: 68.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
+id: post-generalization-hierarchy
+title: Abstract Post with Concrete Content Subtypes
+description: "An abstract Post base entity with common content attributes (title, description, status, createdAt, publishedAt, postType) and relations (author -> User, organization -> Organization, inquiries -> Inquiry via composition)."
+aliases: []
+keywords: [abstract, post, concrete, content, subtypes, generalization, hierarchy]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

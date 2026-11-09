@@ -1,16 +1,20 @@
 ---
-id: "approval-workflow-conditional-visibility"
-title: "Approval Workflow with Conditional Button Visibility"
-domain: "frontend"
-category: "form"
-score: 36.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - doors-model
+id: approval-workflow-conditional-visibility
+title: Approval Workflow with Conditional Button Visibility
+description: Implement a multi-step approval workflow UI entirely through model-level configuration using derived boolean attributes for conditional visibility.
+aliases: []
+keywords: [approval, workflow, conditional, button, visibility]
+tags: ["domain:frontend", "layer:frontend", "project:itracker", "project:doors-model", "status:emerging"]
+category: form
+status: emerging
+projects: [itracker, doors-model]
+evidence: ["itracker:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [zero-customization-generated-frontend, model-defined-color-palette]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -60,7 +64,8 @@ Campaign management has 2 states (OPEN, CLOSED) with derived booleans `isOpen`, 
 - **Cons**: Requires careful backend design of derived booleans; visibility logic not visible in frontend code; complex workflows need many derived flags; UI refresh required after state changes
 - **When to use**: State machine workflows (approval, review, publishing) where button visibility depends on entity status and user role
 
-## Related Patterns
+## Related
 
-- [zero-customization-generated-frontend](zero-customization-generated-frontend.md)
-- [model-defined-color-palette](model-defined-color-palette.md)
+- [[zero-customization-generated-frontend]]
+- [[model-defined-color-palette]]
+

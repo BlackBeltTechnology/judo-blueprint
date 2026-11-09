@@ -1,12 +1,19 @@
 ---
-id: "user-with-role-and-rolegroup-entities"
-title: "User Entity with Role and RoleGroup Entities (Hierarchical Role Assignment)"
-score: 33.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - sanctuary-backend
+id: user-with-role-and-rolegroup-entities
+title: User Entity with Role and RoleGroup Entities (Hierarchical Role Assignment)
+description: "A User entity with identity and profile attributes, associated to Role entities via a bidirectional many-to-many relation, and to RoleGroup entities via a separate bidirectional many-to-many relation."
+aliases: []
+keywords: [user, role, rolegroup, entities, hierarchical, assignment]
+tags: ["domain:model", "layer:model", "project:sanctuary-backend", "status:single-project"]
+category: pattern
+status: single-project
+projects: [sanctuary-backend]
+evidence: ["sanctuary-backend:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

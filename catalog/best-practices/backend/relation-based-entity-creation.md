@@ -1,19 +1,20 @@
 ---
-id: "relation-based-entity-creation"
-title: "Relation-Based Child Entity Creation"
-domain: "backend"
-category: "data-access"
-score: 63.6
-usage_count: 5
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - ubives
-  - park-here
-  - judo-partner
-  - workflow-poc
+id: relation-based-entity-creation
+title: Relation-Based Child Entity Creation
+description: "Creating child entities through a parent entity's DAO relation method rather than directly via the child DAO."
+aliases: []
+keywords: [relation, based, child, creation]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:ubives", "project:park-here", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: data-access
+status: established
+projects: [trivia, ubives, park-here, judo-partner, workflow-poc]
+evidence: ["trivia:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [builder-pattern-entity-creation, dao-fluent-query-filter]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -58,7 +59,8 @@ Extensive use for workflow structure creation: `workflowVersionDao.createEvents(
 - Cons: Requires the parent entity to be persisted first, child must be a modeled containment relation
 - Alternative: Create child directly via child DAO and set parent relation in the builder
 
-## Related Patterns
+## Related
 
-- builder-pattern-entity-creation
-- dao-fluent-query-filter
+- [[builder-pattern-entity-creation]]
+- [[dao-fluent-query-filter]]
+

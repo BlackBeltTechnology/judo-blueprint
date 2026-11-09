@@ -1,16 +1,20 @@
 ---
-id: "factory-operation-with-prepopulation"
-title: "Factory Operation with Child Pre-Population"
-domain: "model"
-category: "operation"
-score: 40.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - judo-demo-miniworkflow
+id: factory-operation-with-prepopulation
+title: Factory Operation with Child Pre-Population
+description: A static operation on the transfer layer acts as a factory that creates an entity along with a complete set of pre-populated child entities.
+aliases: []
+keywords: [factory, operation, child, pre, population, prepopulation]
+tags: ["domain:model", "layer:model", "project:itracker", "project:judo-demo-miniworkflow", "status:emerging"]
+category: operation
+status: emerging
+projects: [itracker, judo-demo-miniworkflow]
+evidence: ["itracker:unrecorded", "judo-demo-miniworkflow:unrecorded"]
+alternatives: []
+related: [unmapped-transfer-dto, transient-relation-parameter, actor-context-variable-lookup]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -42,8 +46,9 @@ A static operation on the transfer layer acts as a factory that creates an entit
 - Cons: Rigid pre-population (always same number of children), operation body can be verbose for many children
 - Prefer when: Creating an entity requires a predefined set of child entities based on domain rules
 
-## Related Patterns
+## Related
 
-- [unmapped-transfer-dto](unmapped-transfer-dto.md)
-- [transient-relation-parameter](transient-relation-parameter.md)
-- [actor-context-variable-lookup](actor-context-variable-lookup.md)
+- [[unmapped-transfer-dto]]
+- [[transient-relation-parameter]]
+- [[actor-context-variable-lookup]]
+

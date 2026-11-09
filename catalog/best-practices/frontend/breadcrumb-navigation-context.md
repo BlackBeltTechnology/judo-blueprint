@@ -1,15 +1,20 @@
 ---
-id: "breadcrumb-navigation-context"
-title: "Breadcrumb Navigation Context with History Tracking"
-domain: "frontend"
-category: "navigation"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: breadcrumb-navigation-context
+title: Breadcrumb Navigation Context with History Tracking
+description: "Wrap React Router navigation in a custom `BreadcrumbProvider` context that tracks navigation history as a breadcrumb stack."
+aliases: []
+keywords: [breadcrumb, navigation, context, history, tracking]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: navigation
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [dialog-based-navigation, complete-frontend-replacement]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -50,7 +55,8 @@ clearNavigate('/galaxies');
 - **Cons**: Parallel to browser history (can get out of sync); breadcrumb state lost on page refresh; clearNavigate needed for sidebar navigation
 - **When to use**: JUDO applications with deep entity navigation hierarchies where browser back button behavior is insufficient
 
-## Related Patterns
+## Related
 
-- [dialog-based-navigation](dialog-based-navigation.md)
-- [complete-frontend-replacement](complete-frontend-replacement.md)
+- [[dialog-based-navigation]]
+- [[complete-frontend-replacement]]
+

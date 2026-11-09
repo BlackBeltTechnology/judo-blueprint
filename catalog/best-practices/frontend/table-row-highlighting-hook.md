@@ -1,15 +1,20 @@
 ---
-id: "table-row-highlighting-hook"
-title: "Table Row Highlighting Hook for Conditional Colors"
-domain: "frontend"
-category: "table"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: table-row-highlighting-hook
+title: Table Row Highlighting Hook for Conditional Colors
+description: "Apply conditional background colors to table rows based on data values using the `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY` Pandino service."
+aliases: []
+keywords: [table, row, highlighting, hook, conditional, colors]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: table
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, custom-visual-element-override]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,7 +56,8 @@ Two highlighting hooks: (1) Offer items table uses blue (`#0095ff`) for MATERIAL
 - **Cons**: Limited to background color; more complex styling (icons, badges) requires custom visual element override; colors are hardcoded
 - **When to use**: When table rows need visual differentiation based on enum values, status, or data thresholds
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [custom-visual-element-override](custom-visual-element-override.md)
+- [[pandino-action-hook-override]]
+- [[custom-visual-element-override]]
+

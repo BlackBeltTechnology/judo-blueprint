@@ -1,12 +1,19 @@
 ---
-id: "venue-with-bookable-resources"
-title: "Venue with Bookable Resource Slots"
-score: 61.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - park-here
+id: venue-with-bookable-resources
+title: Venue with Bookable Resource Slots
+description: "A two-level resource hierarchy for bookable venues: a Venue/Facility entity (e.g., ParkingGarage) containing multiple bookable Resource/Slot entities (e.g., ParkingSlot)."
+aliases: []
+keywords: [venue, bookable, resource, slots, resources]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:park-here", "status:single-project"]
+category: pattern
+status: single-project
+projects: [park-here]
+evidence: ["park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

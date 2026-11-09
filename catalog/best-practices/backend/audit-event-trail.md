@@ -1,21 +1,20 @@
 ---
-id: "audit-event-trail"
-title: "Audit Event Trail via Entity-Based Event Logging"
-domain: "backend"
-category: "operation"
-score: 67.8
-usage_count: 7
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
-  - mlszksz-platform
-  - judo-demo-miniworkflow
-  - park-here
-  - judo-partner
-  - workflow-poc
-  - doors-model
+id: audit-event-trail
+title: Audit Event Trail via Entity-Based Event Logging
+description: "An audit trail pattern where every significant state change creates an `Event` entity stored in the database."
+aliases: []
+keywords: [audit, event, trail, based, logging]
+tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:park-here", "project:judo-partner", "project:workflow-poc", "project:doors-model", "status:established"]
+category: operation
+status: established
+projects: [alba, mlszksz-platform, judo-demo-miniworkflow, park-here, judo-partner, workflow-poc, doors-model]
+evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [state-lifecycle-operation, builder-pattern-entity-creation, data-snapshot-versioning]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -70,8 +69,9 @@ Lightweight audit via entity fields rather than separate Event entities. Reserva
 - Cons: Events grow linearly with operations (no compaction), localized messages are not easily translatable, no event aggregation or summary
 - Alternative: Application log files (not queryable), external event store (Kafka, EventBridge), log-based audit (less structured)
 
-## Related Patterns
+## Related
 
-- state-lifecycle-operation
-- builder-pattern-entity-creation
-- data-snapshot-versioning
+- [[state-lifecycle-operation]]
+- [[builder-pattern-entity-creation]]
+- [[data-snapshot-versioning]]
+

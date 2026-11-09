@@ -1,15 +1,20 @@
 ---
-id: "interceptor-call-replacement"
-title: "Interceptor Call Replacement via ignoreDecoratedCall"
-domain: "backend"
-category: "interceptor"
-score: 42.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
+id: interceptor-call-replacement
+title: Interceptor Call Replacement via ignoreDecoratedCall
+description: "An interceptor pattern where `ignoreDecoratedCall()` returns `true`, causing the original (decorated) operation to be completely skipped."
+aliases: []
+keywords: [interceptor, call, replacement, ignoredecoratedcall]
+tags: ["domain:backend", "layer:backend", "project:alba", "status:single-project"]
+category: interceptor
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
+alternatives: []
+related: [interceptor-crud-lifecycle, interceptor-global-logging, custom-operation-osgi-component]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -66,8 +71,9 @@ Key: `ignoreDecoratedCall() = true` prevents the original operation from executi
 - Cons: Original operation is silently suppressed (can be confusing to debug), interceptor must handle all aspects of the replaced operation, return value may not match caller expectations
 - Alternative: Custom operation that wraps or overrides the generated operation, or model-level customization of the create behavior
 
-## Related Patterns
+## Related
 
-- interceptor-crud-lifecycle
-- interceptor-global-logging
-- custom-operation-osgi-component
+- [[interceptor-crud-lifecycle]]
+- [[interceptor-global-logging]]
+- [[custom-operation-osgi-component]]
+

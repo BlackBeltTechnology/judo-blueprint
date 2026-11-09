@@ -1,14 +1,19 @@
 ---
-id: "open-close-status-toggle"
-title: "Open/Close Two-State Status Toggle with Operations"
-score: 36.7
-usage_count: 3
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - trivia
-  - ams-model
-  - skillmatrix-model
+id: open-close-status-toggle
+title: Open/Close Two-State Status Toggle with Operations
+description: "A two-state status enumeration with OPEN and CLOSED members, paired with `open` and `close` instance operations on the entity for toggling between states."
+aliases: []
+keywords: [open, close, two, state, status, toggle, operations]
+tags: ["domain:model", "layer:model", "project:trivia", "project:ams-model", "project:skillmatrix-model", "status:emerging"]
+category: pattern
+status: emerging
+projects: [trivia, ams-model, skillmatrix-model]
+evidence: ["trivia:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

@@ -1,19 +1,20 @@
 ---
-id: "zero-customization-generated-frontend"
-title: "Zero-Customization Fully Generated Frontend"
-domain: "frontend"
-category: "framework"
-score: 42.6
-usage_count: 2
-alternative_count: 2
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - reserve-app
-alternatives:
-  - single-actor-heavy-customization
-  - complete-frontend-replacement
+id: zero-customization-generated-frontend
+title: Zero-Customization Fully Generated Frontend
+description: "A JUDO frontend where 100% of the UI is generated from the ESM model with no code-level customizations."
+aliases: []
+keywords: [zero, customization, fully, generated, frontend]
+tags: ["domain:frontend", "layer:frontend", "project:itracker", "project:reserve-app", "status:emerging"]
+category: framework
+status: emerging
+projects: [itracker, reserve-app]
+evidence: ["itracker:unrecorded", "reserve-app:unrecorded"]
+alternatives: [single-actor-heavy-customization, complete-frontend-replacement]
+related: [admin-default-generated-ui, model-defined-color-palette, hook-scaffold-default-pattern, single-actor-heavy-customization, complete-frontend-replacement]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -66,11 +67,12 @@ Four of five actor frontends (PartnerActor, LogisticianActor, DoormanActor, Read
 - **Cons**: UI flexibility limited to model capabilities; no custom business logic in frontend; standard look-and-feel; cannot implement advanced UX patterns (auto-scroll, masking, PDF preview)
 - **When to use**: Internal tools, MVPs, prototypes, or applications where the standard JUDO CRUD UI meets all requirements
 
-## Related Patterns
+## Related
 
-- [admin-default-generated-ui](admin-default-generated-ui.md)
-- [model-defined-color-palette](model-defined-color-palette.md)
-- [hook-scaffold-default-pattern](hook-scaffold-default-pattern.md)
-- [single-actor-heavy-customization](single-actor-heavy-customization.md)
-- [complete-frontend-replacement](complete-frontend-replacement.md)
+- [[admin-default-generated-ui]]
+- [[model-defined-color-palette]]
+- [[hook-scaffold-default-pattern]]
+- [[single-actor-heavy-customization]]
+- [[complete-frontend-replacement]]
 - [flutter-frontend-framework](flutter-frontend-framework.md)
+

@@ -1,17 +1,20 @@
 ---
-id: "entity-based-state-machine"
-title: "Entity-Based State Machine Pattern"
-domain: "model"
-category: "entity"
-score: 43.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - workflow-poc
-alternatives:
-  - enum-state-machine
+id: entity-based-state-machine
+title: Entity-Based State Machine Pattern
+description: "Instead of using an enum to represent lifecycle states, a full entity model implements the state machine pattern using separate State, Transition, Guard, and Action entities."
+aliases: []
+keywords: [based, state, machine]
+tags: ["domain:model", "layer:model", "project:workflow-poc", "status:single-project"]
+category: entity
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: [enum-state-machine]
+related: [enum-state-machine, generalization-base-entity, composition-ownership, custom-implementation-placeholder]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -39,9 +42,10 @@ Full workflow engine implementation: `State` defines positions with optional `on
 - Prefer enum-state-machine when: States are few, fixed, and known at design time
 - Prefer entity-based-state-machine when: Workflows must be configurable at runtime, states/transitions are user-defined, or complex workflow features (guards, actions, roles) are needed
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md) (simpler alternative for fixed lifecycle states)
-- [generalization-base-entity](generalization-base-entity.md) (Action uses generalization for pluggable behavior)
-- [composition-ownership](composition-ownership.md) (states composed within versions, transitions within states)
-- [custom-implementation-placeholder](custom-implementation-placeholder.md) (Action.run uses placeholder body)
+- [[enum-state-machine]] (simpler alternative for fixed lifecycle states)
+- [[generalization-base-entity]] (Action uses generalization for pluggable behavior)
+- [[composition-ownership]] (states composed within versions, transitions within states)
+- [[custom-implementation-placeholder]] (Action.run uses placeholder body)
+

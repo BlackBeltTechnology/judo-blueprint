@@ -1,15 +1,20 @@
 ---
-id: "external-api-adapter-pattern"
-title: "External API Adapter with Factory Provider"
-domain: "backend"
-category: "integration"
-score: 57.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - indamedia-adtrack
+id: external-api-adapter-pattern
+title: External API Adapter with Factory Provider
+description: A multi-layer adapter pattern for integrating with external REST/gRPC APIs in a platform-agnostic way.
+aliases: []
+keywords: [external, api, adapter, factory, provider]
+tags: ["domain:backend", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
+category: integration
+status: single-project
+projects: [indamedia-adtrack]
+evidence: ["indamedia-adtrack:unrecorded"]
+alternatives: []
+related: [service-delegation-pattern, filestore-mediated-file-transfer, facade-service-pattern]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -75,8 +80,9 @@ public class CampaignCostInfo {
 - Cons: Extra abstraction layers, new DTOs to maintain alongside model entities, provider factory grows with each platform
 - Alternative: Direct API client usage in services (simpler but couples business logic to specific platform), OSGi service registry for automatic platform discovery
 
-## Related Patterns
+## Related
 
-- service-delegation-pattern
-- filestore-mediated-file-transfer
-- facade-service-pattern
+- [[service-delegation-pattern]]
+- [[filestore-mediated-file-transfer]]
+- [[facade-service-pattern]]
+

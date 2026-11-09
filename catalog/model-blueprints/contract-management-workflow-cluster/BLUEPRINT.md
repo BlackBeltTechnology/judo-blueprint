@@ -1,12 +1,19 @@
 ---
-id: "contract-management-workflow-cluster"
-title: "Contract Management with Workflow Approval Stages"
-score: 32.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - doors-model
+id: contract-management-workflow-cluster
+title: Contract Management with Workflow Approval Stages
+description: A comprehensive contract management entity cluster centered around a Contract entity with a multi-stage approval workflow engine.
+aliases: []
+keywords: [contract, management, workflow, approval, stages, cluster]
+tags: ["domain:model", "layer:model", "project:doors-model", "status:single-project"]
+category: pattern
+status: single-project
+projects: [doors-model]
+evidence: ["doors-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

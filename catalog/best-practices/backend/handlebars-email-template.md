@@ -1,16 +1,20 @@
 ---
-id: "handlebars-email-template"
-title: "Handlebars Template Rendering"
-domain: "backend"
-category: "integration"
-score: 61.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - park-here
-  - workflow-poc
+id: handlebars-email-template
+title: Handlebars Template Rendering
+description: Content is rendered using Handlebars templates compiled at runtime.
+aliases: []
+keywords: [handlebars, template, rendering, email]
+tags: ["domain:backend", "layer:backend", "project:park-here", "project:workflow-poc", "status:emerging"]
+category: integration
+status: emerging
+projects: [park-here, workflow-poc]
+evidence: ["park-here:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [email-service-integration, filestore-mediated-file-transfer, init-data-seeding]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -55,8 +59,9 @@ emailService.sendMessage(EmailService.EmailMessage.emailBuilder()
 - Cons: Handlebars has limited logic capabilities, template errors are runtime failures, base64 images increase email size
 - Alternative: Freemarker/Thymeleaf templates, external email service (SendGrid templates), or plain-text emails
 
-## Related Patterns
+## Related
 
-- email-service-integration
-- filestore-mediated-file-transfer
-- init-data-seeding
+- [[email-service-integration]]
+- [[filestore-mediated-file-transfer]]
+- [[init-data-seeding]]
+

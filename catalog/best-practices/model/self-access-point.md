@@ -1,17 +1,20 @@
 ---
-id: "self-access-point"
-title: "Self-Referencing Access Point for Own Profile"
-domain: "model"
-category: "access"
-score: 42.3
-usage_count: 3
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
-  - skillmatrix-model
-  - judo-partner
+id: self-access-point
+title: Self-Referencing Access Point for Own Profile
+description: "An actor's access point uses `self` as the getter expression to expose the logged-in user's own entity record."
+aliases: []
+keywords: [self, referencing, access, point, own, profile]
+tags: ["domain:model", "layer:model", "project:alba", "project:skillmatrix-model", "project:judo-partner", "status:emerging"]
+category: access
+status: emerging
+projects: [alba, skillmatrix-model, judo-partner]
+evidence: ["alba:unrecorded", "skillmatrix-model:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [derived-access-filtering, actor-based-transfer-projection, transfer-generalization]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -49,8 +52,9 @@ Manager actor's `approvalAll [0..1]` uses `self` getter targeting `ManagerApprov
 - Cons: Limited to single-record access (0..1), the transfer must map to the actor's principal entity
 - Prefer when: An actor needs to access and manage their own profile or dashboard data
 
-## Related Patterns
+## Related
 
-- [derived-access-filtering](derived-access-filtering.md)
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [transfer-generalization](transfer-generalization.md)
+- [[derived-access-filtering]]
+- [[actor-based-transfer-projection]]
+- [[transfer-generalization]]
+

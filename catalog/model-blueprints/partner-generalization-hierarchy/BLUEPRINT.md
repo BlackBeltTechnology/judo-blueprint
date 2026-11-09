@@ -1,12 +1,19 @@
 ---
-id: "partner-generalization-hierarchy"
-title: "Partner Generalization Hierarchy (Multi-Type Business Partner)"
-score: 32.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - doors-model
+id: partner-generalization-hierarchy
+title: Partner Generalization Hierarchy (Multi-Type Business Partner)
+description: A Partner entity generalization hierarchy where a base Partner entity is extended by multiple concrete subtypes representing different legal forms of business partners.
+aliases: []
+keywords: [partner, generalization, hierarchy, multi, type, business]
+tags: ["domain:model", "layer:model", "project:doors-model", "status:single-project"]
+category: pattern
+status: single-project
+projects: [doors-model]
+evidence: ["doors-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

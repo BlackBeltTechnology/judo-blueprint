@@ -1,14 +1,19 @@
 ---
 id: platform-email-template-service
-title: "Platform Email Service with Database-Stored Handlebars Templates"
-impl_only: true
-usage_count: 3
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
-  - rackinspect
-  - park-here
+title: Platform Email Service with Database-Stored Handlebars Templates
+description: "A transactional email service pattern that uses Handlebars templates stored in the database (via a Configuration singleton entity) to send various platform emails: invitations, verification links, approval notifications, post-published a..."
+aliases: []
+keywords: [platform, email, service, database, stored, handlebars, templates, template]
+tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "project:rackinspect", "project:park-here", "status:emerging"]
+category: pattern
+status: emerging
+projects: [mlszksz-platform, rackinspect, park-here]
+evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

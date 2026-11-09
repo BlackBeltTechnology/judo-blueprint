@@ -1,12 +1,19 @@
 ---
-id: "capability-lookup-entity"
-title: "Capability/Tag Lookup Entity"
-score: 68.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
+id: capability-lookup-entity
+title: Capability/Tag Lookup Entity
+description: A Capability (or Tag/Category) entity that serves as a reusable lookup/classification entity.
+aliases: []
+keywords: [capability, tag, lookup]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

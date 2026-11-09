@@ -1,19 +1,20 @@
 ---
-id: "sequence-based-identifier"
-title: "Sequence-Based Identifier Pattern"
-domain: "model"
-category: "entity"
-score: 43.0
-usage_count: 5
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
-  - mjsz
-  - InterfaceRegister
-  - workflow-poc
+id: sequence-based-identifier
+title: Sequence-Based Identifier Pattern
+description: An entity attribute marked as an identifier uses a sequence-based default value expression to auto-generate unique sequential IDs.
+aliases: []
+keywords: [sequence, based, identifier]
+tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:mjsz", "project:InterfaceRegister", "project:workflow-poc", "status:established"]
+category: entity
+status: established
+projects: [trivia, itracker, mjsz, InterfaceRegister, workflow-poc]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "mjsz:unrecorded", "InterfaceRegister:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [default-value-patterns]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,6 +57,7 @@ Uses count-based ID generation on transfer objects instead of the SEQUENCE varia
 - Cons: Not suitable for distributed systems without coordination, sequential IDs may leak information about record counts
 - Prefer when: You need simple, auto-incrementing numeric identifiers for an entity
 
-## Related Patterns
+## Related
 
-- [default-value-patterns](default-value-patterns.md)
+- [[default-value-patterns]]
+

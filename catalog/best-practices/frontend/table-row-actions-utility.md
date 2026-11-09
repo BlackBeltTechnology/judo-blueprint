@@ -1,15 +1,20 @@
 ---
-id: "table-row-actions-utility"
-title: "Table Row Actions Utility with Configurable Display"
-domain: "frontend"
-category: "table"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: table-row-actions-utility
+title: Table Row Actions Utility with Configurable Display
+description: "A utility function `columnsActionCalculator()` that generates a DataGrid action column from an array of `TableRowAction` definitions."
+aliases: []
+keywords: [table, row, actions, utility, configurable, display]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: table
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [seek-based-table-pagination, session-storage-table-state]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,7 +56,8 @@ Display modes: `shownActions: 0` (hidden), `1` (all in dropdown), `2` (1 button 
 - **Cons**: Fixed column width may not fit all labels; dropdown adds click overhead; no per-row action visibility control
 - **When to use**: Any DataGrid table that needs row-level actions (delete, navigate, custom operations)
 
-## Related Patterns
+## Related
 
-- [seek-based-table-pagination](seek-based-table-pagination.md)
-- [session-storage-table-state](session-storage-table-state.md)
+- [[seek-based-table-pagination]]
+- [[session-storage-table-state]]
+

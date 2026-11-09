@@ -1,12 +1,19 @@
 ---
-id: "freight-reservation-cluster"
-title: "Freight Reservation Entity Cluster (Logistics Domain)"
-score: 45.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - reserve-app
+id: freight-reservation-cluster
+title: Freight Reservation Entity Cluster (Logistics Domain)
+description: A domain-specific entity cluster for managing freight/logistics reservations at a warehouse or facility.
+aliases: []
+keywords: [freight, reservation, cluster, logistics, domain]
+tags: ["domain:model", "layer:model", "layer:backend", "project:reserve-app", "status:single-project"]
+category: pattern
+status: single-project
+projects: [reserve-app]
+evidence: ["reserve-app:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

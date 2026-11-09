@@ -1,21 +1,20 @@
 ---
-id: "keycloak-jit-user-provisioning"
-title: "Keycloak Just-In-Time User Provisioning via AuthenticationInterceptor"
-domain: "backend"
-category: "auth"
-score: 68.6
-usage_count: 5
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
-  - mlszksz-platform
-  - ubives
-  - park-here
-  - indamedia-adtrack
-alternatives:
-  - two-phase-registration
+id: keycloak-jit-user-provisioning
+title: Keycloak Just-In-Time User Provisioning via AuthenticationInterceptor
+description: "An `AuthenticationInterceptor` (not `OperationCallInterceptor`) that auto-provisions users on first Keycloak login."
+aliases: []
+keywords: [keycloak, just, time, user, provisioning, authenticationinterceptor, jit]
+tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "status:established"]
+category: auth
+status: established
+projects: [alba, mlszksz-platform, ubives, park-here, indamedia-adtrack]
+evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
+alternatives: [two-phase-registration]
+related: [two-phase-registration, actor-resolution-variable-resolver, dao-fluent-query-filter]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -86,8 +85,9 @@ Key: Uses `AuthenticationInterceptor` interface (not `OperationCallInterceptor`)
 - Cons: Trusts Keycloak token blindly (no signature verification at this level), user attributes may not be present in all token configurations, no role mapping from Keycloak groups
 - Alternative: Two-phase email registration (see `two-phase-registration`) for applications without external IdP
 
-## Related Patterns
+## Related
 
-- two-phase-registration
-- actor-resolution-variable-resolver
-- dao-fluent-query-filter
+- [[two-phase-registration]]
+- [[actor-resolution-variable-resolver]]
+- [[dao-fluent-query-filter]]
+

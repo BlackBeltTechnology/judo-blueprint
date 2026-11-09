@@ -1,15 +1,20 @@
 ---
-id: "token-based-quota-limit"
-title: "Token-Based Quota Limit Pattern"
-domain: "model"
-category: "entity"
-score: 61.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - park-here
+id: token-based-quota-limit
+title: Token-Based Quota Limit Pattern
+description: "User entities define per-type numeric quota attributes (e.g., `maxNormalReservation`, `maxGuestReservation`) that limit how many active instances of a specific type a user can create."
+aliases: []
+keywords: [token, based, quota, limit]
+tags: ["domain:model", "layer:model", "project:park-here", "status:single-project"]
+category: entity
+status: single-project
+projects: [park-here]
+evidence: ["park-here:unrecorded"]
+alternatives: []
+related: [category-enum-pattern, error-code-enum-pattern, default-value-patterns, multi-role-single-entity]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -35,9 +40,10 @@ User entity has 3 configurable quota attributes: `maxNormalReservation` (Integer
 - Cons: Quota check in operations rather than model-level validation, must remember to check in every creation path
 - Prefer when: Domain requires limiting how many active instances of categorized types a user can own
 
-## Related Patterns
+## Related
 
-- [category-enum-pattern](category-enum-pattern.md) (quota types correspond to category enum members)
-- [error-code-enum-pattern](error-code-enum-pattern.md) (quota exceeded reported via error code)
-- [default-value-patterns](default-value-patterns.md) (quota defaults)
-- [multi-role-single-entity](multi-role-single-entity.md) (quotas stored on the same user entity as role flags)
+- [[category-enum-pattern]] (quota types correspond to category enum members)
+- [[error-code-enum-pattern]] (quota exceeded reported via error code)
+- [[default-value-patterns]] (quota defaults)
+- [[multi-role-single-entity]] (quotas stored on the same user entity as role flags)
+

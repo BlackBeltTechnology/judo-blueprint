@@ -1,15 +1,20 @@
 ---
-id: "permission-flag-enum"
-title: "Permission Flag Enumeration for Role-Based Access"
-domain: "model"
-category: "enum"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: permission-flag-enum
+title: Permission Flag Enumeration for Role-Based Access
+description: "A single-actor system implements role-based access control through a `Permission` entity with a `PermissionFlag` enumeration."
+aliases: []
+keywords: [permission, flag, enumeration, role, based, access, enum]
+tags: ["domain:model", "layer:model", "project:rackinspect", "status:single-project"]
+category: enum
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [entity-crud-at-service-layer, toggle-operation-pattern]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -37,7 +42,8 @@ A single-actor system implements role-based access control through a `Permission
 - Cons: Adding a new feature requires enum + boolean + recalculation logic changes, denormalized booleans on User
 - Prefer when: Single-actor system needs role-based access control per feature/module
 
-## Related Patterns
+## Related
 
-- [entity-crud-at-service-layer](entity-crud-at-service-layer.md)
-- [toggle-operation-pattern](toggle-operation-pattern.md)
+- [[entity-crud-at-service-layer]]
+- [[toggle-operation-pattern]]
+

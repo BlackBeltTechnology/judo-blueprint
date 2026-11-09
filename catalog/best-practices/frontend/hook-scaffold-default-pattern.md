@@ -1,19 +1,20 @@
 ---
-id: "hook-scaffold-default-pattern"
-title: "Hook Scaffold .ts.default Convention"
-domain: "frontend"
-category: "hook"
-score: 71.6
-usage_count: 5
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - workflow-poc
-  - reserve-app
+id: hook-scaffold-default-pattern
+title: Hook Scaffold .ts.default Convention
+description: "The JUDO generator creates hook scaffold files with `.ts.default` extension under `src/custom/hooks/`."
+aliases: []
+keywords: [hook, scaffold, ts, default, convention]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "project:itracker", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: hook
+status: established
+projects: [trivia, rackinspect, itracker, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, application-customizer-hub]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -70,7 +71,8 @@ Scaffolds generated across 5 actor frontends. Only 1 scaffold activated in Admin
 - **Cons**: Large number of scaffolds can be overwhelming; no documentation on which hooks are most useful; inactive hooks add directory clutter
 - **When to use**: This is the standard JUDO pattern for all generated frontends -- hooks are automatically scaffolded
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [application-customizer-hub](application-customizer-hub.md)
+- [[pandino-action-hook-override]]
+- [[application-customizer-hub]]
+

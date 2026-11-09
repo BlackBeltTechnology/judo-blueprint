@@ -1,13 +1,19 @@
 ---
-id: "active-inactive-status-enum"
-title: "Active/Inactive Two-State Status Enum"
-score: 36.7
-usage_count: 2
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - viterra_demo
-  - sanctuary-backend
+id: active-inactive-status-enum
+title: Active/Inactive Two-State Status Enum
+description: A minimal two-state status enumeration with ACTIVE and INACTIVE (or semantically equivalent) members.
+aliases: []
+keywords: [active, inactive, two, state, status, enum]
+tags: ["domain:model", "layer:model", "project:viterra_demo", "project:sanctuary-backend", "status:emerging"]
+category: pattern
+status: emerging
+projects: [viterra_demo, sanctuary-backend]
+evidence: ["viterra_demo:unrecorded", "sanctuary-backend:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

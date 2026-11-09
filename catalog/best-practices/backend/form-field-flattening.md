@@ -1,15 +1,20 @@
 ---
-id: "form-field-flattening"
-title: "Form Field Flattening for Complex Create Operations"
-domain: "backend"
-category: "interceptor"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: form-field-flattening
+title: Form Field Flattening for Complex Create Operations
+description: "Complex create forms use flattened `form_*` fields on the parent transfer object."
+aliases: []
+keywords: [form, field, flattening, complex, create, operations]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
+category: interceptor
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [interceptor-crud-lifecycle, interceptor-access-control-flags]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -46,7 +51,8 @@ public Object preCall(EOperation op, Object payload) {
 - Cons: Fragile string-based Payload manipulation, form_* field naming convention must be manually maintained, hard to test
 - Alternative: Multi-step create wizard in frontend, or separate create operations for parent and children
 
-## Related Patterns
+## Related
 
-- interceptor-crud-lifecycle
-- interceptor-access-control-flags
+- [[interceptor-crud-lifecycle]]
+- [[interceptor-access-control-flags]]
+

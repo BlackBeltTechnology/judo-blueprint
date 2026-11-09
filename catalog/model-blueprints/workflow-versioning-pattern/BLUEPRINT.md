@@ -1,12 +1,19 @@
 ---
-id: "workflow-versioning-pattern"
-title: "Workflow/Definition Versioning with Head and Published Pointers"
-score: 43.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - workflow-poc
+id: workflow-versioning-pattern
+title: Workflow/Definition Versioning with Head and Published Pointers
+description: "A versioning pattern for domain definitions (workflows, templates, configurations) where a parent entity manages an ordered series of version entities."
+aliases: []
+keywords: [workflow, definition, versioning, head, published, pointers]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:workflow-poc", "status:single-project"]
+category: pattern
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

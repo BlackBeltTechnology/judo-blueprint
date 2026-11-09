@@ -1,12 +1,19 @@
 ---
 id: recaptcha-waf-interceptor
-title: "reCAPTCHA WAF Interceptor for Public Operations"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: reCAPTCHA WAF Interceptor for Public Operations
+description: "An `OperationCallInterceptor` that validates reCAPTCHA tokens on public-facing operations (e.g., registration, verification) to block bot traffic."
+aliases: []
+keywords: [recaptcha, waf, interceptor, public, operations]
+tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

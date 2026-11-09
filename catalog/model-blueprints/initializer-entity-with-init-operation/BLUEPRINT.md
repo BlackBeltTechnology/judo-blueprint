@@ -1,24 +1,19 @@
 ---
-id: "initializer-entity-with-init-operation"
-title: "Initializer Entity with Static Init Operation"
-score: 84.0
-usage_count: 13
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
-  - rackinspect
-  - park-here
-  - ubives
-  - workflow-poc
-  - judo-demo-miniworkflow
-  - trivia
-  - itracker
-  - viterra_demo
-  - InterfaceRegister
-  - mjsz
-  - doors-model
-  - ams-model
+id: initializer-entity-with-init-operation
+title: Initializer Entity with Static Init Operation
+description: "A minimal Initializer entity with a marker attribute and a single static operation `init` with custom implementation."
+aliases: []
+keywords: [initializer, static, init, operation]
+tags: ["domain:model", "layer:model", "layer:backend", "project:mlszksz-platform", "project:rackinspect", "project:park-here", "project:ubives", "project:workflow-poc", "project:judo-demo-miniworkflow", "project:trivia", "project:itracker", "project:viterra_demo", "project:InterfaceRegister", "project:mjsz", "project:doors-model", "project:ams-model", "status:established"]
+category: pattern
+status: established
+projects: [mlszksz-platform, rackinspect, park-here, ubives, workflow-poc, judo-demo-miniworkflow, trivia, itracker, viterra_demo, InterfaceRegister, mjsz, doors-model, ams-model]
+evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "mjsz:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

@@ -1,16 +1,20 @@
 ---
-id: "viewmodel-context-pattern"
-title: "ViewModel Context Pattern for Generated Pages"
-domain: "frontend"
-category: "state"
-score: 40.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
+id: viewmodel-context-pattern
+title: ViewModel Context Pattern for Generated Pages
+description: Each generated JUDO page uses a React Context-based ViewModel pattern.
+aliases: []
+keywords: [viewmodel, context, generated, pages]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "status:emerging"]
+category: state
+status: emerging
+projects: [trivia, itracker]
+evidence: ["trivia:unrecorded", "itracker:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, event-bus-refresh-coordination]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -55,7 +59,8 @@ All 15 pages across both actors (9 UserActor + 6 Admin) follow the identical pat
 - **Cons**: Generated boilerplate per page; context can cause unnecessary re-renders if not optimized; tight coupling between ViewModel and page
 - **When to use**: This is the standard JUDO generated page pattern -- automatically created for all pages
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [event-bus-refresh-coordination](event-bus-refresh-coordination.md)
+- [[pandino-action-hook-override]]
+- [[event-bus-refresh-coordination]]
+

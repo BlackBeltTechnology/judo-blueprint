@@ -1,15 +1,20 @@
 ---
-id: "post-operation-navigation-hook"
-title: "Post-Operation Navigation with Success Feedback"
-domain: "frontend"
-category: "hook"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: post-operation-navigation-hook
+title: Post-Operation Navigation with Success Feedback
+description: "Override `postOperationAction` callbacks in page or dialog hooks to provide user feedback and navigate to related views after a backend operation completes."
+aliases: []
+keywords: [post, operation, navigation, success, feedback, hook]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: hook
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, pdf-preview-inline-display]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -44,7 +49,8 @@ Three page hooks implement post-operation navigation for price modifiers: after 
 - **Cons**: Multiple sequential async operations can be slow; error handling needed for each step; refresh-heavy pattern
 - **When to use**: After any backend operation where the user should see the result or be guided to a related view
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [pdf-preview-inline-display](pdf-preview-inline-display.md)
+- [[pandino-action-hook-override]]
+- [[pdf-preview-inline-display]]
+

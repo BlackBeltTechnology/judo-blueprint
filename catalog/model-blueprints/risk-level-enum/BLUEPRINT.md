@@ -1,12 +1,19 @@
 ---
-id: "risk-level-enum"
-title: "Risk Level Enum (LOW/MEDIUM/HIGH)"
-score: 38.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - itracker
+id: risk-level-enum
+title: Risk Level Enum (LOW/MEDIUM/HIGH)
+description: "A three-level risk classification enumeration with members LOW, MEDIUM, and HIGH."
+aliases: []
+keywords: [risk, level, enum, low, medium, high]
+tags: ["domain:model", "layer:model", "project:itracker", "status:single-project"]
+category: pattern
+status: single-project
+projects: [itracker]
+evidence: ["itracker:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

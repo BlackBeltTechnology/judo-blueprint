@@ -1,21 +1,20 @@
 ---
-id: "actor-context-variable-lookup"
-title: "Actor Context Variable Lookup Pattern"
-domain: "model"
-category: "access"
-score: 47.4
-usage_count: 7
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - alba
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
+id: actor-context-variable-lookup
+title: Actor Context Variable Lookup Pattern
+description: "Operations and derived access expressions use `TypeName!getVariable(\"ACTOR\", \"fieldName\")` to look up attributes of the currently authenticated actor."
+aliases: []
+keywords: [actor, context, variable, lookup]
+tags: ["domain:model", "layer:model", "project:itracker", "project:alba", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: access
+status: established
+projects: [itracker, alba, viterra_demo, judo-demo-miniworkflow, InterfaceRegister, judo-partner, workflow-poc]
+evidence: ["itracker:unrecorded", "alba:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [derived-access-filtering, default-value-patterns]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -70,7 +69,8 @@ Pervasive ACTOR variable usage for workflow authorization. `Token.isAssigneeLogg
 - Cons: Relies on actor claim configuration, limited to claim-exposed fields, requires understanding of the ACTOR variable scope
 - Prefer when: Operations or access expressions need the current user identity for ownership or filtering
 
-## Related Patterns
+## Related
 
-- [derived-access-filtering](derived-access-filtering.md)
-- [default-value-patterns](default-value-patterns.md)
+- [[derived-access-filtering]]
+- [[default-value-patterns]]
+

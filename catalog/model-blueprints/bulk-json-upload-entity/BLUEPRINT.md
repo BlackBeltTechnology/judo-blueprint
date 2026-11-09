@@ -1,12 +1,19 @@
 ---
-id: "bulk-json-upload-entity"
-title: "Bulk JSON Upload Entity with Question/Data Import"
-score: 39.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - trivia
+id: bulk-json-upload-entity
+title: Bulk JSON Upload Entity with Question/Data Import
+description: An Upload entity that records bulk data imports via JSON.
+aliases: []
+keywords: [bulk, json, upload, question, data, import]
+tags: ["domain:model", "layer:model", "layer:backend", "project:trivia", "status:single-project"]
+category: pattern
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

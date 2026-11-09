@@ -1,17 +1,20 @@
 ---
-id: "react-intl-flat-key-pattern"
-title: "React-Intl Flat Key Translation Pattern"
-domain: "frontend"
-category: "i18n"
-score: 34.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
-alternatives:
-  - i18n-custom-translation-keys
+id: react-intl-flat-key-pattern
+title: React-Intl Flat Key Translation Pattern
+description: "Use `react-intl` (FormatJS) with flat dot-separated key strings in a single TypeScript locale file."
+aliases: []
+keywords: [react, intl, flat, key, translation]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: i18n
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: [i18n-custom-translation-keys]
+related: [i18n-custom-translation-keys, hungarian-full-localization]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -52,7 +55,8 @@ Single `src/i18n/en.ts` file with flat key-value messages. Keys cover navigator 
 - **Cons**: All translations in one file (no splitting by feature); no namespace separation; flat keys can get long; only one locale file shown
 - **When to use**: Custom JUDO frontends with simple i18n needs and a single primary locale
 
-## Related Patterns
+## Related
 
-- [i18n-custom-translation-keys](i18n-custom-translation-keys.md)
-- [hungarian-full-localization](hungarian-full-localization.md)
+- [[i18n-custom-translation-keys]]
+- [[hungarian-full-localization]]
+

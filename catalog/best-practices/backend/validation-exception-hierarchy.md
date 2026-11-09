@@ -1,21 +1,20 @@
 ---
-id: "validation-exception-hierarchy"
-title: "Validation Exception Hierarchy (Field-Level and Business-Level)"
-domain: "backend"
-category: "error"
-score: 76.6
-usage_count: 5
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-alternatives:
-  - typed-exception-error-handling
+id: validation-exception-hierarchy
+title: Validation Exception Hierarchy (Field-Level and Business-Level)
+description: "A structured exception hierarchy for different error scenarios, centralized via a static `ExceptionUtils` factory class."
+aliases: []
+keywords: [validation, exception, hierarchy, field, level, business]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "status:established"]
+category: error
+status: established
+projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, judo-partner]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
+alternatives: [typed-exception-error-handling]
+related: [typed-exception-error-handling, interceptor-crud-lifecycle, i18n-osgi-service]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -62,8 +61,9 @@ Uses both `BusinessErrorException` and `ValidationException` in different contex
 - Cons: Three exception types to choose from (can cause confusion), Hungarian hardcoded strings in some interceptors bypass i18n
 - Alternative: Single modeled `ErrorException` with error codes (simpler but less granular)
 
-## Related Patterns
+## Related
 
-- typed-exception-error-handling
-- interceptor-crud-lifecycle
-- i18n-osgi-service
+- [[typed-exception-error-handling]]
+- [[interceptor-crud-lifecycle]]
+- [[i18n-osgi-service]]
+

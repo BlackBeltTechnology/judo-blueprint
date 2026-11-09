@@ -1,15 +1,20 @@
 ---
-id: "impersonation-relation"
-title: "Impersonation Relation for Admin-on-Behalf-of Actions"
-domain: "model"
-category: "relation"
-score: 42.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
+id: impersonation-relation
+title: Impersonation Relation for Admin-on-Behalf-of Actions
+description: An entity includes a separate optional relation to a User entity specifically for recording when an administrator performs actions on behalf of another user.
+aliases: []
+keywords: [impersonation, relation, admin, behalf, actions]
+tags: ["domain:model", "layer:model", "project:alba", "status:single-project"]
+category: relation
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
+alternatives: []
+related: [actor-context-variable-lookup, actor-based-transfer-projection]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -35,7 +40,8 @@ An entity includes a separate optional relation to a User entity specifically fo
 - Cons: Additional relation to maintain, requires admin-specific UI for selection, may cause confusion if both are set
 - Prefer when: Admin users need to create or manage content attributed to other users in the system
 
-## Related Patterns
+## Related
 
-- [actor-context-variable-lookup](actor-context-variable-lookup.md) (primary author set via actor context)
-- [actor-based-transfer-projection](actor-based-transfer-projection.md) (impersonation exposed only to admin transfers)
+- [[actor-context-variable-lookup]] (primary author set via actor context)
+- [[actor-based-transfer-projection]] (impersonation exposed only to admin transfers)
+

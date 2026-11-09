@@ -1,15 +1,20 @@
 ---
-id: "form-blur-action-hook"
-title: "Form Blur Action Hook for Field Auto-Composition"
-domain: "frontend"
-category: "hook"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: form-blur-action-hook
+title: Form Blur Action Hook for Field Auto-Composition
+description: "Override `onXxxBlurAction` in form or view/edit action hooks to automatically compose or compute field values when a user leaves (blurs) a form field."
+aliases: []
+keywords: [form, blur, action, hook, field, auto, composition]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: hook
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, post-refresh-validation-propagation]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,7 +61,8 @@ Six files implement address auto-composition: 3 FormActionsHooks (Partner, Addre
 - **Cons**: Blur-based triggers can miss edge cases (paste, autofill); same logic duplicated across form and view/edit hooks; must handle guard conditions
 - **When to use**: When a field value should be auto-computed from other fields on the same form
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [post-refresh-validation-propagation](post-refresh-validation-propagation.md)
+- [[pandino-action-hook-override]]
+- [[post-refresh-validation-propagation]]
+

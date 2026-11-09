@@ -1,22 +1,20 @@
 ---
-id: "ui-control-transfer-fields"
-title: "UI Control Fields on Transfer Objects"
-domain: "model"
-category: "transfer"
-score: 61.9
-usage_count: 8
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - alba
-  - skillmatrix-model
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - ams-model
-  - park-here
-  - judo-partner
+id: ui-control-transfer-fields
+title: UI Control Fields on Transfer Objects
+description: "Actor-level transfer objects include additional boolean or string attributes that control UI behavior (form editability, button visibility, display labels) but have no corresponding entity attribute."
+aliases: []
+keywords: [ui, control, fields, transfer, objects]
+tags: ["domain:model", "layer:model", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:judo-partner", "status:established"]
+category: transfer
+status: established
+projects: [itracker, alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, park-here, judo-partner]
+evidence: ["itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, conditional-visibility-getter]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -77,7 +75,8 @@ Entity-level UI control attributes: `User.isNotAdministrator = not self.isAdmini
 - Cons: Transfer objects become larger than their entities, may need custom backend logic to populate
 - Prefer when: UI needs to conditionally show/hide buttons or toggle editability based on entity state or user role
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [conditional-visibility-getter](conditional-visibility-getter.md)
+- [[actor-based-transfer-projection]]
+- [[conditional-visibility-getter]]
+

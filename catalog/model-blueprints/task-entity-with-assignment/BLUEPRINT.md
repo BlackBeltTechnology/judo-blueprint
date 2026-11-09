@@ -1,12 +1,19 @@
 ---
-id: "task-entity-with-assignment"
+id: task-entity-with-assignment
 title: "Task Entity with Assignee, Type, and State Enums"
-score: 51.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - alba
+description: A Task entity that models assignable work items within an approval or review workflow.
+aliases: []
+keywords: [task, assignee, type, state, enums, assignment]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:alba", "status:single-project"]
+category: pattern
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

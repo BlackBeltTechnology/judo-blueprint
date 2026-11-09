@@ -1,15 +1,20 @@
 ---
-id: "read-tracking-postcall-interceptor"
-title: "Read Tracking Post-Call Interceptor with Deduplication"
-domain: "backend"
-category: "interceptor"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: read-tracking-postcall-interceptor
+title: Read Tracking Post-Call Interceptor with Deduplication
+description: "A post-call interceptor that tracks first-time reads of content (e.g., announcements) per user for analytics and engagement tracking."
+aliases: []
+keywords: [read, tracking, post, call, interceptor, deduplication, postcall]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: interceptor
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [audit-event-trail, interceptor-aggregation-postcall, actor-resolution-variable-resolver]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -70,8 +75,9 @@ public class ReadTrackingInterceptor implements OperationCallInterceptor {
 - Cons: Extra DB query per view for deduplication, audit log table grows with reads, no page-view counting (only first read), performance impact on high-traffic pages
 - Alternative: Dedicated read-tracking entity, client-side analytics (Google Analytics), Redis-based counters
 
-## Related Patterns
+## Related
 
-- audit-event-trail
-- interceptor-aggregation-postcall
-- actor-resolution-variable-resolver
+- [[audit-event-trail]]
+- [[interceptor-aggregation-postcall]]
+- [[actor-resolution-variable-resolver]]
+

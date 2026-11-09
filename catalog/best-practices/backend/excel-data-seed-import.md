@@ -1,17 +1,20 @@
 ---
-id: "excel-data-seed-import"
-title: "Excel-Based Initial Data Seeding"
-domain: "backend"
-category: "operation"
-score: 73.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-alternatives:
-  - init-data-seeding
+id: excel-data-seed-import
+title: Excel-Based Initial Data Seeding
+description: An initialization custom operation that seeds the database with master data from Excel files on application startup.
+aliases: []
+keywords: [excel, based, initial, data, seeding, seed, import]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
+category: operation
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: [init-data-seeding]
+related: [custom-operation-osgi-component, service-delegation-pattern, bulk-json-import-export, init-data-seeding]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,9 +59,10 @@ public class ExcelDataImporter {
 - Cons: 30+ setter injections are verbose, Excel parsing adds dependency (Apache POI), no incremental update support
 - Alternative: SQL scripts, Liquibase/Flyway migrations, JSON seed files, model-script-based init (see init-data-seeding), or database dump restore
 
-## Related Patterns
+## Related
 
-- custom-operation-osgi-component
-- service-delegation-pattern
-- bulk-json-import-export
-- init-data-seeding
+- [[custom-operation-osgi-component]]
+- [[service-delegation-pattern]]
+- [[bulk-json-import-export]]
+- [[init-data-seeding]]
+

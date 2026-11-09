@@ -1,15 +1,20 @@
 ---
-id: "relation-traversal-validation"
-title: "Relation Traversal for Cross-Entity Validation"
-domain: "backend"
-category: "operation"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: relation-traversal-validation
+title: Relation Traversal for Cross-Entity Validation
+description: Validating entity state by navigating relationships via DAO query methods rather than storing denormalized copies.
+aliases: []
+keywords: [relation, traversal, cross, validation]
+tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
+category: operation
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [entity-re-fetch-pattern, typed-exception-error-handling]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -46,7 +51,8 @@ Start, Submit, and Enter operations all validate contest status by traversing Te
 - Cons: Additional DB queries per validation, N+1 risk if done in loops, no caching
 - Alternative: Denormalize status onto child entity, or use model-level derived attributes
 
-## Related Patterns
+## Related
 
-- entity-re-fetch-pattern
-- typed-exception-error-handling
+- [[entity-re-fetch-pattern]]
+- [[typed-exception-error-handling]]
+

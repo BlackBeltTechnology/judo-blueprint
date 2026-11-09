@@ -1,15 +1,20 @@
 ---
-id: "recaptcha-precall-interceptor"
-title: "reCAPTCHA Pre-Call Interceptor for Bot Protection"
-domain: "backend"
-category: "interceptor"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: recaptcha-precall-interceptor
+title: reCAPTCHA Pre-Call Interceptor for Bot Protection
+description: "A pre-call interceptor that validates reCAPTCHA tokens on public-facing operations (e.g., registration endpoints) to prevent bot attacks."
+aliases: []
+keywords: [recaptcha, pre, call, interceptor, bot, protection, precall]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: interceptor
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [interceptor-security-filter-validation, interceptor-global-logging, two-phase-registration]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -64,8 +69,9 @@ Configuration:
 - Cons: Only checks token presence (not validity with Google API), throws raw RuntimeException instead of typed error, bypass flag could be accidentally enabled in production
 - Alternative: Server-side Google reCAPTCHA API verification, rate limiting, or Web Application Firewall (WAF)
 
-## Related Patterns
+## Related
 
-- interceptor-security-filter-validation
-- interceptor-global-logging
-- two-phase-registration
+- [[interceptor-security-filter-validation]]
+- [[interceptor-global-logging]]
+- [[two-phase-registration]]
+

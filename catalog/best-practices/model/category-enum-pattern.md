@@ -1,27 +1,20 @@
 ---
-id: "category-enum-pattern"
-title: "Category/Classification Enumeration Pattern"
-domain: "model"
-category: "enum"
-score: 71.7
-usage_count: 13
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - ams-model
-  - sanctuary-backend
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: category-enum-pattern
+title: Category/Classification Enumeration Pattern
+description: Simple enumerations are used to classify entities into fixed categories that do not have lifecycle transitions.
+aliases: []
+keywords: [category, classification, enumeration, enum]
+tags: ["domain:model", "layer:model", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:ams-model", "project:sanctuary-backend", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: enum
+status: established
+projects: [itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [enum-state-machine, default-value-patterns]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -95,7 +88,8 @@ Three category enums: **BejelentesTipusMegnevezes** (JAROKELO, ALTALANOS) classi
 - Cons: Adding new categories requires model changes, not suitable for frequently changing classifications (use reference entities instead)
 - Prefer when: Classification values are stable and known at design time; prefer reference entities (like `Region`, `SRTCategory`) when values need to be managed at runtime
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md) (for lifecycle enums with transitions)
-- [default-value-patterns](default-value-patterns.md)
+- [[enum-state-machine]] (for lifecycle enums with transitions)
+- [[default-value-patterns]]
+

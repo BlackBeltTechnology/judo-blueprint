@@ -1,16 +1,20 @@
 ---
-id: "external-system-staging-entity"
-title: "External System Staging Entity for Integration"
-domain: "model"
-category: "entity"
-score: 58.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - indamedia-adtrack
-  - judo-partner
+id: external-system-staging-entity
+title: External System Staging Entity for Integration
+description: A dedicated staging entity serves as a buffer for data received from external systems before it is validated and transformed into domain entities.
+aliases: []
+keywords: [external, system, staging, integration]
+tags: ["domain:model", "layer:model", "project:indamedia-adtrack", "project:judo-partner", "status:emerging"]
+category: entity
+status: emerging
+projects: [indamedia-adtrack, judo-partner]
+evidence: ["indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [initializer-operation, unmapped-transfer-dto, category-enum-pattern]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -43,8 +47,9 @@ NAV (Hungarian tax authority) integration uses a multi-entity staging subsystem:
 - Cons: Additional entity to maintain, data transformation logic in operations, potential data staleness in staging
 - Prefer when: Integrating with external systems that have different data formats or when deduplication/validation is needed before domain entity creation
 
-## Related Patterns
+## Related
 
-- [initializer-operation](initializer-operation.md) (synchronization operations run periodically)
-- [unmapped-transfer-dto](unmapped-transfer-dto.md) (input DTOs for external data)
-- [category-enum-pattern](category-enum-pattern.md) (BejelentesTipus classifies source system)
+- [[initializer-operation]] (synchronization operations run periodically)
+- [[unmapped-transfer-dto]] (input DTOs for external data)
+- [[category-enum-pattern]] (BejelentesTipus classifies source system)
+

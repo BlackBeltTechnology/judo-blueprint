@@ -1,12 +1,19 @@
 ---
-id: "scoreboard-personal-best-pattern"
-title: "Scoreboard with Personal Best Ranking Pattern"
-score: 39.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - trivia
+id: scoreboard-personal-best-pattern
+title: Scoreboard with Personal Best Ranking Pattern
+description: A Scoreboard transfer object that aggregates ranked results (personal bests) for a competitive activity.
+aliases: []
+keywords: [scoreboard, personal, best, ranking]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:trivia", "status:single-project"]
+category: pattern
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

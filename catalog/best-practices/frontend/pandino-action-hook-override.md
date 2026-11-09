@@ -1,18 +1,20 @@
 ---
-id: "pandino-action-hook-override"
-title: "Pandino Service Registry for Action Hook Overrides"
-domain: "frontend"
-category: "hook"
-score: 70.4
-usage_count: 4
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - reserve-app
+id: pandino-action-hook-override
+title: Pandino Service Registry for Action Hook Overrides
+description: The JUDO framework uses Pandino (an OSGi-like service registry for JavaScript) to enable runtime action hook injection in generated pages.
+aliases: []
+keywords: [pandino, service, registry, action, hook, overrides, override]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "project:itracker", "project:reserve-app", "status:established"]
+category: hook
+status: established
+projects: [trivia, rackinspect, itracker, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [hook-scaffold-default-pattern, application-customizer-hub]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -67,7 +69,8 @@ Single Pandino hook registration in AdminActor: `registerServicesAdminActorStora
 - **Cons**: Pandino adds runtime complexity; hook registration requires understanding the service registry; debugging can be harder
 - **When to use**: Standard JUDO pattern for customizing generated page actions without modifying generated code
 
-## Related Patterns
+## Related
 
-- [hook-scaffold-default-pattern](hook-scaffold-default-pattern.md)
-- [application-customizer-hub](application-customizer-hub.md)
+- [[hook-scaffold-default-pattern]]
+- [[application-customizer-hub]]
+

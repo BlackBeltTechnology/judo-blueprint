@@ -1,12 +1,19 @@
 ---
-id: "invitation-with-key-based-acceptance"
-title: "Invitation Entity with Key-Based Acceptance Flow"
-score: 44.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - ubives
+id: invitation-with-key-based-acceptance
+title: Invitation Entity with Key-Based Acceptance Flow
+description: An Invitation entity that implements an invitation workflow using cryptographic keys (public/private key pair) rather than simple verification tokens.
+aliases: []
+keywords: [invitation, key, based, acceptance, flow]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:ubives", "status:single-project"]
+category: pattern
+status: single-project
+projects: [ubives]
+evidence: ["ubives:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

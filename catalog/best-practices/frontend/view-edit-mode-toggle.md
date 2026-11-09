@@ -1,17 +1,20 @@
 ---
-id: "view-edit-mode-toggle"
-title: "View/Edit Mode Toggle Pattern for Detail Pages"
-domain: "frontend"
-category: "form"
-score: 34.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
-alternatives:
-  - flutter-clone-edit-save-pattern
+id: view-edit-mode-toggle
+title: View/Edit Mode Toggle Pattern for Detail Pages
+description: "Detail/view pages use a boolean `editMode` state to toggle between read-only and editable form fields."
+aliases: []
+keywords: [view, edit, mode, toggle, detail, pages]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: form
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [centralized-error-handling-validation-map, action-group-input-output-routing]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -53,8 +56,9 @@ Galaxy View and ChooseTheMessiah output pages use `editMode` toggle. View mode s
 - **Cons**: All fields must handle both modes; CSS class toggling can be fragile; cancel discards all unsaved changes
 - **When to use**: Standard pattern for JUDO React entity detail pages that support both viewing and inline editing
 
-## Related Patterns
+## Related
 
-- [centralized-error-handling-validation-map](centralized-error-handling-validation-map.md)
-- [action-group-input-output-routing](action-group-input-output-routing.md)
+- [[centralized-error-handling-validation-map]]
+- [[action-group-input-output-routing]]
 - [flutter-clone-edit-save-pattern](flutter-clone-edit-save-pattern.md)
+

@@ -1,16 +1,20 @@
 ---
-id: "dirty-check-before-update"
-title: "Dirty-Check Before Update to Avoid Unnecessary Writes"
-domain: "backend"
-category: "data-access"
-score: 71.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - alba
+id: dirty-check-before-update
+title: Dirty-Check Before Update to Avoid Unnecessary Writes
+description: "Before persisting an entity update, snapshot the entity state, perform modifications, then compare the before and after states."
+aliases: []
+keywords: [dirty, check, before, update, avoid, unnecessary, writes]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba", "status:emerging"]
+category: data-access
+status: emerging
+projects: [rackinspect, alba]
+evidence: ["rackinspect:unrecorded", "alba:unrecorded"]
+alternatives: []
+related: [mutable-entity-update-pattern, permission-denormalization]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -47,7 +51,8 @@ if (!before.equals(entity.toMap())) {
 - Cons: `toMap()` creates a full copy (memory overhead), Map equality may have edge cases with null vs absent keys
 - Alternative: Track individual field changes manually, or rely on database-level change detection
 
-## Related Patterns
+## Related
 
-- mutable-entity-update-pattern
-- permission-denormalization
+- [[mutable-entity-update-pattern]]
+- [[permission-denormalization]]
+

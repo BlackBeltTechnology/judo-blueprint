@@ -1,12 +1,19 @@
 ---
-id: "interface-specification-generalization-hierarchy"
-title: "Interface Specification Generalization Hierarchy (Protocol Type Registry)"
-score: 36.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - InterfaceRegister
+id: interface-specification-generalization-hierarchy
+title: Interface Specification Generalization Hierarchy (Protocol Type Registry)
+description: A generalization hierarchy of interface specification entities representing different communication protocol types.
+aliases: []
+keywords: [interface, specification, generalization, hierarchy, protocol, type, registry]
+tags: ["domain:model", "layer:model", "project:InterfaceRegister", "status:single-project"]
+category: pattern
+status: single-project
+projects: [InterfaceRegister]
+evidence: ["InterfaceRegister:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

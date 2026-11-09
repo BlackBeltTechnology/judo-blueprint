@@ -1,15 +1,20 @@
 ---
-id: "infinity-create-mode"
-title: "Infinity Create Mode with Template Copying"
-domain: "frontend"
-category: "form"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: infinity-create-mode
+title: Infinity Create Mode with Template Copying
+description: Enable rapid sequential creation of similar entities by generating a template that copies most field values from the previously created entry while resetting specific fields.
+aliases: []
+keywords: [infinity, create, mode, template, copying]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: form
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, post-operation-navigation-hook]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,7 +56,8 @@ async postGetTemplateAction(ownerData, data, storeDiff) {
 - **Cons**: Carried-over values may not always be correct; users must check pre-populated fields; complex for entities with many relations
 - **When to use**: Inspection workflows, batch data entry, any scenario where consecutive records share common parent data
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [post-operation-navigation-hook](post-operation-navigation-hook.md)
+- [[pandino-action-hook-override]]
+- [[post-operation-navigation-hook]]
+

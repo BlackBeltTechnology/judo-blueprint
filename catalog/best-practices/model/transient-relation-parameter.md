@@ -1,18 +1,20 @@
 ---
-id: "transient-relation-parameter"
-title: "Transient Relation for Operation Parameters"
-domain: "model"
-category: "relation"
-score: 41.9
-usage_count: 4
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
-  - actiongroup-test-react
-  - alba
+id: transient-relation-parameter
+title: Transient Relation for Operation Parameters
+description: Unmapped transfer objects use transient relations (memberType=TRANSIENT) to hold collections of data that exist only during operation execution and are never persisted.
+aliases: []
+keywords: [transient, relation, operation, parameters, parameter]
+tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:actiongroup-test-react", "project:alba", "status:established"]
+category: relation
+status: established
+projects: [trivia, itracker, actiongroup-test-react, alba]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded"]
+alternatives: []
+related: [unmapped-transfer-dto]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -47,6 +49,7 @@ Unmapped transfer objects use transient relations (memberType=TRANSIENT) to hold
 - Cons: Data is ephemeral (lost after operation completes), cannot be referenced later
 - Prefer when: An operation needs a structured collection input that should not be stored
 
-## Related Patterns
+## Related
 
-- [unmapped-transfer-dto](unmapped-transfer-dto.md)
+- [[unmapped-transfer-dto]]
+

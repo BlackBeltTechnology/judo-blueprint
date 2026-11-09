@@ -1,12 +1,19 @@
 ---
-id: "dimension-template-hierarchy"
-title: "Dimension Template Hierarchy (Template/Instance Pattern)"
-score: 73.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - rackinspect
+id: dimension-template-hierarchy
+title: Dimension Template Hierarchy (Template/Instance Pattern)
+description: A template/instance pattern for configurable measurement dimensions.
+aliases: []
+keywords: [dimension, template, hierarchy, instance]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

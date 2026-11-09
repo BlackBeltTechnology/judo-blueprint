@@ -1,12 +1,19 @@
 ---
-id: "privacy-visibility-enum"
-title: "Privacy Visibility Enum (Granular Data Visibility Levels)"
-score: 33.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - sanctuary-backend
+id: privacy-visibility-enum
+title: Privacy Visibility Enum (Granular Data Visibility Levels)
+description: An enumeration representing granular visibility levels for user data fields.
+aliases: []
+keywords: [privacy, visibility, enum, granular, data, levels]
+tags: ["domain:model", "layer:model", "project:sanctuary-backend", "status:single-project"]
+category: pattern
+status: single-project
+projects: [sanctuary-backend]
+evidence: ["sanctuary-backend:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

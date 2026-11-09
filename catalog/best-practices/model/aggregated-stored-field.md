@@ -1,15 +1,20 @@
 ---
-id: "aggregated-stored-field"
-title: "Aggregated Stored Field for Denormalized Collection Data"
-domain: "model"
-category: "entity"
-score: 42.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
+id: aggregated-stored-field
+title: Aggregated Stored Field for Denormalized Collection Data
+description: "An entity stores pre-computed aggregated data from its collection relations in dedicated \"*Aggregated\" suffix fields."
+aliases: []
+keywords: [aggregated, stored, field, denormalized, collection, data]
+tags: ["domain:model", "layer:model", "project:alba", "status:single-project"]
+category: entity
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
+alternatives: []
+related: [derived-attribute-flattening, custom-implementation-placeholder]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -37,7 +42,8 @@ An entity stores pre-computed aggregated data from its collection relations in d
 - Cons: Risk of stale data if update triggers fail, requires custom sync logic, unclear update contract, storage duplication
 - Prefer when: Collection data needs to be displayed frequently in summarized form and read performance is prioritized over data freshness; consider derived attributes as an alternative when real-time accuracy is more important
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md) (alternative: compute on every read)
-- [custom-implementation-placeholder](custom-implementation-placeholder.md) (update logic in custom code)
+- [[derived-attribute-flattening]] (alternative: compute on every read)
+- [[custom-implementation-placeholder]] (update logic in custom code)
+

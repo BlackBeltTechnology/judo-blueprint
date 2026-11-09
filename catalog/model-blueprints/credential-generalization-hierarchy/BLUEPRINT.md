@@ -1,12 +1,19 @@
 ---
-id: "credential-generalization-hierarchy"
-title: "Credential Generalization Hierarchy (Platform-Specific API Credentials)"
-score: 63.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - indamedia-adtrack
+id: credential-generalization-hierarchy
+title: Credential Generalization Hierarchy (Platform-Specific API Credentials)
+description: "An abstract or minimal Credential base entity that serves as a common reference point for API credentials, with platform-specific concrete subtypes inheriting from it via generalization."
+aliases: []
+keywords: [credential, generalization, hierarchy, platform, specific, api, credentials]
+tags: ["domain:model", "layer:model", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
+category: pattern
+status: single-project
+projects: [indamedia-adtrack]
+evidence: ["indamedia-adtrack:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

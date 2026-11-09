@@ -1,12 +1,19 @@
 ---
-id: "language-proficiency-enum"
-title: "Language Proficiency Skill Level Enum"
-score: 30.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - skillmatrix-model
+id: language-proficiency-enum
+title: Language Proficiency Skill Level Enum
+description: "An enumeration representing language proficiency levels, paired with a LanguageSkill junction entity that associates a User with a Language at a specific proficiency level."
+aliases: []
+keywords: [language, proficiency, skill, level, enum]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
+category: pattern
+status: single-project
+projects: [skillmatrix-model]
+evidence: ["skillmatrix-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

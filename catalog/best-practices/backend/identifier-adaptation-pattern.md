@@ -1,16 +1,20 @@
 ---
-id: "identifier-adaptation-pattern"
-title: "Identifier Adaptation for Mapped Transfer Objects"
-domain: "backend"
-category: "data-access"
-score: 42.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - alba
+id: identifier-adaptation-pattern
+title: Identifier Adaptation for Mapped Transfer Objects
+description: "The JUDO SDK `adaptTo()` mechanism converts between identifier types for mapped transfer objects that share the same underlying entity."
+aliases: []
+keywords: [identifier, adaptation, mapped, transfer, objects]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:alba", "status:emerging"]
+category: data-access
+status: emerging
+projects: [trivia, alba]
+evidence: ["trivia:unrecorded", "alba:unrecorded"]
+alternatives: []
+related: [dao-fluent-query-filter, dual-dao-pattern]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -45,7 +49,8 @@ Operations use `_this.identifier().adaptTo(ProductIdentifier.class)` to convert 
 - Cons: Only works for TOs mapped to the same entity, requires understanding of the model's TO mapping structure
 - Alternative: Query the entity directly and manually construct the needed view
 
-## Related Patterns
+## Related
 
-- dao-fluent-query-filter
-- dual-dao-pattern
+- [[dao-fluent-query-filter]]
+- [[dual-dao-pattern]]
+

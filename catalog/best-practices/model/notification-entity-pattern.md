@@ -1,15 +1,20 @@
 ---
-id: "notification-entity-pattern"
-title: "Asynchronous Notification Entity with Device Management"
-domain: "model"
-category: "entity"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: notification-entity-pattern
+title: Asynchronous Notification Entity with Device Management
+description: A system-managed notification entity models asynchronous push notifications with delivery tracking.
+aliases: []
+keywords: [asynchronous, notification, device, management]
+tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single-project"]
+category: entity
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [enum-state-machine, category-enum-pattern, bidirectional-relation, audit-event-entity]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -48,9 +53,10 @@ A system-managed notification entity models asynchronous push notifications with
 - Cons: Requires external service integration (FCM), device token management complexity, growing notification table needs eventual cleanup
 - Prefer when: Application needs push notifications to mobile/web clients with delivery guarantees
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md) (NotificationStatus lifecycle)
-- [category-enum-pattern](category-enum-pattern.md) (NotificationType, DevicePlatform)
-- [bidirectional-relation](bidirectional-relation.md) (Device <-> User, Notification <-> User)
-- [audit-event-entity](audit-event-entity.md) (similar immutable event tracking pattern)
+- [[enum-state-machine]] (NotificationStatus lifecycle)
+- [[category-enum-pattern]] (NotificationType, DevicePlatform)
+- [[bidirectional-relation]] (Device <-> User, Notification <-> User)
+- [[audit-event-entity]] (similar immutable event tracking pattern)
+

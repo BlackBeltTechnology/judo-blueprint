@@ -1,15 +1,20 @@
 ---
-id: "feed-targeting-strategy"
-title: "Pluggable Feed Targeting Strategy Pattern"
-domain: "backend"
-category: "service"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: feed-targeting-strategy
+title: Pluggable Feed Targeting Strategy Pattern
+description: A Strategy pattern for determining which organizations or users should see a piece of content in a feed system.
+aliases: []
+keywords: [pluggable, feed, targeting, strategy]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: service
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [service-delegation-pattern, dao-fluent-query-filter, state-lifecycle-operation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -68,8 +73,9 @@ Two strategies: `AllActiveOrganizationsTargetingStrategy` (broadcasts to all act
 - Cons: Strategy selection logic must be maintained when new content types are added, capability matching loads all orgs then filters in memory
 - Alternative: Database-level targeting via SQL views, event-driven pub/sub, or model-level filter expressions
 
-## Related Patterns
+## Related
 
-- service-delegation-pattern
-- dao-fluent-query-filter
-- state-lifecycle-operation
+- [[service-delegation-pattern]]
+- [[dao-fluent-query-filter]]
+- [[state-lifecycle-operation]]
+

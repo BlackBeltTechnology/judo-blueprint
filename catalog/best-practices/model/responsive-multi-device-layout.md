@@ -1,15 +1,20 @@
 ---
-id: "responsive-multi-device-layout"
-title: "Responsive Multi-Device Page Layout Pattern"
-domain: "model"
-category: "ui"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: responsive-multi-device-layout
+title: Responsive Multi-Device Page Layout Pattern
+description: "Every page definition in the UI model contains four device-specific PageContainer variants (mobile, tablet, desktop, default) with a column-based grid system."
+aliases: []
+keywords: [responsive, multi, device, page, layout]
+tags: ["domain:model", "layer:model", "project:actiongroup-test-react", "status:single-project"]
+category: ui
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [action-group-conditional-enabling]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -54,6 +59,7 @@ UI model (6.7 MB) defines responsive interfaces with mobile (col="4.0"), tablet 
 - Cons: 4x replication of component structure increases model size, changes must be applied to all 4 containers
 - Prefer when: Always for JUDO UI models -- this is the standard responsive layout approach
 
-## Related Patterns
+## Related
 
-- [action-group-conditional-enabling](action-group-conditional-enabling.md) (ActionGroups adapt across device layouts)
+- [[action-group-conditional-enabling]] (ActionGroups adapt across device layouts)
+

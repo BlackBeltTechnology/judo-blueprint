@@ -1,16 +1,20 @@
 ---
-id: "interceptor-aggregation-postcall"
-title: "Post-Call Interceptor for Denormalized Aggregation Fields"
-domain: "backend"
-category: "interceptor"
-score: 65.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
-  - mlszksz-platform
+id: interceptor-aggregation-postcall
+title: Post-Call Interceptor for Denormalized Aggregation Fields
+description: A post-call interceptor that automatically maintains denormalized aggregated string fields on an entity after update operations.
+aliases: []
+keywords: [post, call, interceptor, denormalized, aggregation, fields, postcall]
+tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "status:emerging"]
+category: interceptor
+status: emerging
+projects: [alba, mlszksz-platform]
+evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded"]
+alternatives: []
+related: [interceptor-crud-lifecycle, dirty-check-before-update, permission-denormalization]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -73,8 +77,9 @@ public class EntityUpdateInterceptor implements OperationCallInterceptor {
 - Cons: Extra DB queries in postCall for every update, aggregated fields can become stale if relations are modified outside the intercepted operations
 - Alternative: Computed database views, model-level derived attributes, or frontend-side aggregation
 
-## Related Patterns
+## Related
 
-- interceptor-crud-lifecycle
-- dirty-check-before-update
-- permission-denormalization
+- [[interceptor-crud-lifecycle]]
+- [[dirty-check-before-update]]
+- [[permission-denormalization]]
+

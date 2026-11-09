@@ -1,23 +1,20 @@
 ---
-id: "typed-exception-error-handling"
-title: "Typed Exception with Error Code Enumeration"
-domain: "backend"
-category: "error"
-score: 76.3
-usage_count: 7
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - mlszksz-platform
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - workflow-poc
-alternatives:
-  - validation-exception-hierarchy
+id: typed-exception-error-handling
+title: Typed Exception with Error Code Enumeration
+description: "Custom operations throw typed exceptions using JUDO's modeled fault mechanism."
+aliases: []
+keywords: [typed, exception, error, code, enumeration, handling]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:workflow-poc", "status:established"]
+category: error
+status: established
+projects: [trivia, rackinspect, mlszksz-platform, ubives, park-here, indamedia-adtrack, workflow-poc]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "workflow-poc:unrecorded"]
+alternatives: [validation-exception-hierarchy]
+related: [state-lifecycle-operation, validation-exception-hierarchy]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -70,7 +67,8 @@ Uses `DeclarationErrorException` with `DeclarationErrorCode` enum and `Declarati
 - Cons: Requires modeled fault type in ESM, error messages are hardcoded strings (not i18n), some operations use RuntimeException instead (gap)
 - Alternative: `ValidationException` for field-level errors, `RuntimeException` for unrecoverable errors (less structured)
 
-## Related Patterns
+## Related
 
-- state-lifecycle-operation
-- validation-exception-hierarchy
+- [[state-lifecycle-operation]]
+- [[validation-exception-hierarchy]]
+

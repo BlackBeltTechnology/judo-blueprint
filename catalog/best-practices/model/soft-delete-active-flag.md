@@ -1,25 +1,20 @@
 ---
-id: "soft-delete-active-flag"
-title: "Soft Delete via Active Boolean Flag"
-domain: "model"
-category: "entity"
-score: 77.8
-usage_count: 11
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - sanctuary-backend
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - reserve-app
+id: soft-delete-active-flag
+title: Soft Delete via Active Boolean Flag
+description: "Entities include a required boolean `active` or `isEnabled` attribute (default: `true`) to implement soft delete."
+aliases: []
+keywords: [soft, delete, active, boolean, flag]
+tags: ["domain:model", "layer:model", "project:rackinspect", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:sanctuary-backend", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:reserve-app", "status:established"]
+category: entity
+status: established
+projects: [rackinspect, alba, skillmatrix-model, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, sanctuary-backend, park-here, indamedia-adtrack, judo-partner, reserve-app]
+evidence: ["rackinspect:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [toggle-operation-pattern, default-value-patterns]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -77,7 +72,8 @@ Uses the `ActiveStatus` enum (active/archived) on `User.status` and `PositionTit
 - Cons: Requires filtering inactive records in all queries, database grows over time
 - Prefer when: Records have references from other entities and physical deletion would break integrity
 
-## Related Patterns
+## Related
 
-- [toggle-operation-pattern](toggle-operation-pattern.md)
-- [default-value-patterns](default-value-patterns.md)
+- [[toggle-operation-pattern]]
+- [[default-value-patterns]]
+

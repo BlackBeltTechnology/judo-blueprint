@@ -1,16 +1,20 @@
 ---
-id: "interceptor-range-override"
-title: "Range Interceptor for Context-Filtered Dropdowns"
-domain: "backend"
-category: "interceptor"
-score: 73.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - park-here
+id: interceptor-range-override
+title: Range Interceptor for Context-Filtered Dropdowns
+description: Post-call interceptors that override the default reference range results (dropdown/autocomplete data) by filtering based on the current editing context.
+aliases: []
+keywords: [range, interceptor, context, filtered, dropdowns, override]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:park-here", "status:emerging"]
+category: interceptor
+status: emerging
+projects: [rackinspect, park-here]
+evidence: ["rackinspect:unrecorded", "park-here:unrecorded"]
+alternatives: []
+related: [interceptor-crud-lifecycle, interceptor-access-control-flags]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -52,7 +56,8 @@ Includes camelCase-to-UPPER_SNAKE_CASE attribute name conversion for orderBy map
 - Cons: Complex Payload manipulation, must handle pagination/sorting manually, camelCase-to-UPPER_SNAKE conversion is fragile
 - Alternative: Model-level range filtering expressions, or custom frontend autocomplete with dedicated query operation
 
-## Related Patterns
+## Related
 
-- interceptor-crud-lifecycle
-- interceptor-access-control-flags
+- [[interceptor-crud-lifecycle]]
+- [[interceptor-access-control-flags]]
+

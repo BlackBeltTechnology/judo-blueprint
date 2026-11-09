@@ -1,12 +1,19 @@
 ---
 id: external-api-adapter-provider-pattern
-title: "External API Adapter with Provider Service Pattern"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - indamedia-adtrack
+title: External API Adapter with Provider Service Pattern
+description: "A multi-module adapter pattern for integrating with external platform APIs (e.g., Google Ads, Meta Ads) through a pluggable provider architecture."
+aliases: []
+keywords: [external, api, adapter, provider, service]
+tags: ["domain:model", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
+category: pattern
+status: single-project
+projects: [indamedia-adtrack]
+evidence: ["indamedia-adtrack:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

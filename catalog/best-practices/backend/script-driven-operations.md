@@ -1,19 +1,20 @@
 ---
-id: "script-driven-operations"
-title: "Script-Driven Operations (Zero Custom Java)"
-domain: "backend"
-category: "operation"
-score: 43.2
-usage_count: 5
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - reserve-app
-  - doors-model
+id: script-driven-operations
+title: Script-Driven Operations (Zero Custom Java)
+description: "A JUDO architecture pattern where all business logic is defined as model scripts in the ESM model file and compiled to Java via the `script2operation.jar` artifact."
+aliases: []
+keywords: [script, driven, operations, zero, custom, java]
+tags: ["domain:backend", "layer:backend", "project:itracker", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:reserve-app", "project:doors-model", "status:established"]
+category: operation
+status: established
+projects: [itracker, viterra_demo, judo-demo-miniworkflow, reserve-app, doors-model]
+evidence: ["itracker:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [custom-operation-osgi-component, state-lifecycle-operation, init-data-seeding]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -76,8 +77,9 @@ Extensive inline business logic in JUDO expression language across 10+ model-lev
 - Cons: Limited to what the model scripting language can express, no external service integration, no complex error handling, harder to debug compiled scripts
 - Alternative: Custom Java implementations via `CustomImplementation` classes for operations requiring external integrations, complex algorithms, or fine-grained error handling
 
-## Related Patterns
+## Related
 
-- custom-operation-osgi-component
-- state-lifecycle-operation
-- init-data-seeding
+- [[custom-operation-osgi-component]]
+- [[state-lifecycle-operation]]
+- [[init-data-seeding]]
+

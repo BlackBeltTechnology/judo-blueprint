@@ -1,26 +1,20 @@
 ---
-id: "actor-based-transfer-projection"
-title: "Actor-Based Transfer Object Projection"
-domain: "model"
-category: "transfer"
-score: 47.0
-usage_count: 10
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
-  - alba
-  - skillmatrix-model
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - sanctuary-backend
-  - reserve-app
-alternatives:
-  - service-based-transfer-organization
+id: actor-based-transfer-projection
+title: Actor-Based Transfer Object Projection
+description: Each actor (user role) in the system gets its own dedicated set of transfer objects that project different views of the same underlying entities.
+aliases: []
+keywords: [actor, based, transfer, object, projection]
+tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:reserve-app", "status:established"]
+category: transfer
+status: established
+projects: [trivia, itracker, alba, skillmatrix-model, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, reserve-app]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "reserve-app:unrecorded"]
+alternatives: [service-based-transfer-organization]
+related: [derived-attribute-flattening, unmapped-transfer-dto, derived-access-filtering, service-based-transfer-organization]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -84,9 +78,10 @@ Single `Admin` actor with 6 transfer objects (one per entity) using "TO" suffix 
 - Cons: More transfer objects to maintain, potential duplication of mapping logic across actors
 - Prefer when: Multiple user roles need different views of the same data
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md)
-- [unmapped-transfer-dto](unmapped-transfer-dto.md)
-- [derived-access-filtering](derived-access-filtering.md)
-- [service-based-transfer-organization](service-based-transfer-organization.md) (alternative: per-service domain organization)
+- [[derived-attribute-flattening]]
+- [[unmapped-transfer-dto]]
+- [[derived-access-filtering]]
+- [[service-based-transfer-organization]] (alternative: per-service domain organization)
+

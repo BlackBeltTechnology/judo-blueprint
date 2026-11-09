@@ -1,18 +1,20 @@
 ---
-id: "model-defined-color-palette"
-title: "Model-Defined Color Palette via ESM Actor Properties"
-domain: "frontend"
-category: "theme"
-score: 38.0
-usage_count: 1
-alternative_count: 2
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-alternatives:
-  - dark-theme-override
-  - flutter-theme-template-override
+id: model-defined-color-palette
+title: Model-Defined Color Palette via ESM Actor Properties
+description: Define the application color palette directly in the ESM model on actor types rather than overriding theme files in code.
+aliases: []
+keywords: [model, defined, color, palette, esm, actor, properties]
+tags: ["domain:frontend", "layer:frontend", "project:itracker", "status:single-project"]
+category: theme
+status: single-project
+projects: [itracker]
+evidence: ["itracker:unrecorded"]
+alternatives: [dark-theme-override]
+related: [dark-theme-override, generator-ignore-app-theme]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -62,9 +64,10 @@ Both Admin and Manager actors use identical model-defined palette: primary #3C41
 - **Cons**: Limited to properties the generator supports (7 color slots); no component-level overrides; no dark mode toggle; cannot add custom CSS variables
 - **When to use**: When the standard MUI palette properties are sufficient for branding and no component-level style overrides are needed
 
-## Related Patterns
+## Related
 
-- [dark-theme-override](dark-theme-override.md)
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
+- [[dark-theme-override]]
+- [[generator-ignore-app-theme]]
 - [flutter-app-design-customizer](flutter-app-design-customizer.md)
 - [flutter-theme-template-override](flutter-theme-template-override.md)
+

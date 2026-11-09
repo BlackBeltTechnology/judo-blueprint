@@ -1,15 +1,20 @@
 ---
-id: "timed-quiz-auto-advance"
-title: "Timed Quiz with Auto-Advance on Expiry"
-domain: "frontend"
-category: "component"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: timed-quiz-auto-advance
+title: Timed Quiz with Auto-Advance on Expiry
+description: A quiz/survey component that shows one question at a time with a countdown timer.
+aliases: []
+keywords: [timed, quiz, auto, advance, expiry]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
+category: component
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [pin-code-auto-submit-input, dialog-based-navigation]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -57,7 +62,8 @@ useEffect(() => {
 - **Cons**: Complex interval/state management; must handle cleanup carefully; accessibility concerns with timed interactions
 - **When to use**: Quiz games, timed assessments, gamified learning applications
 
-## Related Patterns
+## Related
 
-- [pin-code-auto-submit-input](pin-code-auto-submit-input.md)
-- [dialog-based-navigation](dialog-based-navigation.md)
+- [[pin-code-auto-submit-input]]
+- [[dialog-based-navigation]]
+

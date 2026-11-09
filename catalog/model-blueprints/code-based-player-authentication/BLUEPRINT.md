@@ -1,12 +1,19 @@
 ---
-id: "code-based-player-authentication"
-title: "Code-Based Player Authentication with Registration Flow"
-score: 39.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - trivia
+id: code-based-player-authentication
+title: Code-Based Player Authentication with Registration Flow
+description: "A lightweight authentication pattern for anonymous or semi-anonymous users (players, participants) where access is controlled via a temporary code rather than a full username/password authentication flow."
+aliases: []
+keywords: [code, based, player, authentication, registration, flow]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:trivia", "status:single-project"]
+category: pattern
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

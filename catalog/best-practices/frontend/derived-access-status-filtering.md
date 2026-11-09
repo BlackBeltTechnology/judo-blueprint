@@ -1,15 +1,20 @@
 ---
-id: "derived-access-status-filtering"
-title: "Derived Access Points for Status-Based Filtered Views"
-domain: "frontend"
-category: "mapping"
-score: 32.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - doors-model
+id: derived-access-status-filtering
+title: Derived Access Points for Status-Based Filtered Views
+description: "Use multiple DERIVED access points on an actor, each with a `getterExpression` filter, to create separate menu items that show filtered views of the same underlying entity based on its lifecycle status."
+aliases: []
+keywords: [derived, access, points, status, based, filtered, views, filtering]
+tags: ["domain:frontend", "layer:frontend", "project:doors-model", "status:single-project"]
+category: mapping
+status: single-project
+projects: [doors-model]
+evidence: ["doors-model:unrecorded"]
+alternatives: []
+related: [approval-workflow-conditional-visibility, dual-actor-frontend-architecture, admin-default-generated-ui]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -63,8 +68,9 @@ Employee actor defines 19 access points, of which 12+ are DERIVED with status-ba
 - **Cons**: Many menu items can overwhelm the navigation; each filtered view is a separate generated page (code duplication); adding a new status requires a new access point and menu item; no ability to combine status filters at runtime
 - **When to use**: Workflow-driven applications where entities progress through lifecycle states and users need quick access to entities in specific states
 
-## Related Patterns
+## Related
 
-- [approval-workflow-conditional-visibility](approval-workflow-conditional-visibility.md)
-- [dual-actor-frontend-architecture](dual-actor-frontend-architecture.md)
-- [admin-default-generated-ui](admin-default-generated-ui.md)
+- [[approval-workflow-conditional-visibility]]
+- [[dual-actor-frontend-architecture]]
+- [[admin-default-generated-ui]]
+

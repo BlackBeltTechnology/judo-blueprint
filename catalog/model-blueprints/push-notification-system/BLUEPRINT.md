@@ -1,12 +1,19 @@
 ---
 id: push-notification-system
-title: "Push Notification System with Deep Linking and Badge"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Push Notification System with Deep Linking and Badge
+description: A complete push notification frontend system for Capacitor native apps that integrates Firebase Cloud Messaging (FCM) with the JUDO backend.
+aliases: []
+keywords: [push, notification, system, deep, linking, badge]
+tags: ["domain:model", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

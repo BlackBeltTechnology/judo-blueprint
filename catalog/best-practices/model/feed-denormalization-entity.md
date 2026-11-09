@@ -1,15 +1,20 @@
 ---
-id: "feed-denormalization-entity"
-title: "Feed Denormalization Entity for Precomputed Views"
-domain: "model"
-category: "entity"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: feed-denormalization-entity
+title: Feed Denormalization Entity for Precomputed Views
+description: A dedicated read-only entity stores denormalized copies of data from multiple source entities to enable fast feed/listing rendering without joins.
+aliases: []
+keywords: [feed, denormalization, precomputed, views]
+tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single-project"]
+category: entity
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [derived-attribute-flattening, category-enum-pattern, default-value-patterns]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -37,8 +42,9 @@ A dedicated read-only entity stores denormalized copies of data from multiple so
 - Cons: Data redundancy, must be kept synchronized with source entities, eventual consistency risk, storage overhead
 - Prefer when: Application has a feed/timeline view that aggregates data from multiple entity types and requires high read performance
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md) (feed attributes are flattened from source entities)
-- [category-enum-pattern](category-enum-pattern.md) (FeedEntryType classifies entries)
-- [default-value-patterns](default-value-patterns.md) (empty string defaults for display fields)
+- [[derived-attribute-flattening]] (feed attributes are flattened from source entities)
+- [[category-enum-pattern]] (FeedEntryType classifies entries)
+- [[default-value-patterns]] (empty string defaults for display fields)
+

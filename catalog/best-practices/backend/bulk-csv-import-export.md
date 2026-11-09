@@ -1,15 +1,20 @@
 ---
-id: "bulk-csv-import-export"
-title: "Bulk CSV Import/Export via FileStore"
-domain: "backend"
-category: "operation"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: bulk-csv-import-export
+title: Bulk CSV Import/Export via FileStore
+description: Custom operations for bulk data import and export using CSV files mediated through the FileStore service.
+aliases: []
+keywords: [bulk, csv, import, export, filestore]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: operation
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [filestore-mediated-file-transfer, bulk-json-import-export, email-service-integration]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -65,8 +70,9 @@ Two CSV operations: (1) `ExportAuditLogCustomImplementation` exports audit logs 
 - Cons: Loads entire CSV into memory (no streaming), no CSV library used (manual escaping), no validation of CSV format, N+1 email sends
 - Alternative: Apache Commons CSV for parsing, streaming CSV for large datasets, background job for bulk email sending
 
-## Related Patterns
+## Related
 
-- filestore-mediated-file-transfer
-- bulk-json-import-export
-- email-service-integration
+- [[filestore-mediated-file-transfer]]
+- [[bulk-json-import-export]]
+- [[email-service-integration]]
+

@@ -1,12 +1,19 @@
 ---
-id: "work-status-lifecycle-enum"
+id: work-status-lifecycle-enum
 title: "Work Status Lifecycle Enum (Not Started/In Progress/Done/Won't Fix)"
-score: 73.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - rackinspect
+description: "A four-state work/task lifecycle enumeration with members: NOT_STARTED, IN_PROGRESS, DONE, and WONT_FIX."
+aliases: []
+keywords: [work, status, lifecycle, enum, not, started, progress, done]
+tags: ["domain:model", "layer:model", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

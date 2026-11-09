@@ -1,12 +1,19 @@
 ---
-id: "idm-realm-keycloak-integration"
-title: "IDM/Realm Keycloak Integration Entity Cluster"
-score: 44.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - ubives
+id: idm-realm-keycloak-integration
+title: IDM/Realm Keycloak Integration Entity Cluster
+description: "A pair of entities that model external Identity Management (IDM) system integration, specifically for Keycloak or similar OIDC providers."
+aliases: []
+keywords: [idm, realm, keycloak, integration, cluster]
+tags: ["domain:model", "layer:model", "layer:backend", "project:ubives", "status:single-project"]
+category: pattern
+status: single-project
+projects: [ubives]
+evidence: ["ubives:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

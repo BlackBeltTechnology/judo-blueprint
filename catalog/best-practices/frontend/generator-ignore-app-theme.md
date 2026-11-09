@@ -1,16 +1,20 @@
 ---
-id: "generator-ignore-app-theme"
-title: "Generator-Ignore for App.tsx and Theme"
-domain: "frontend"
-category: "build"
-score: 69.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
+id: generator-ignore-app-theme
+title: Generator-Ignore for App.tsx and Theme
+description: "Protect the application root component (`src/App.tsx`) and theme configuration (`src/theme/index.tsx`) from being overwritten by the JUDO code generator by listing them in `.generator-ignore`."
+aliases: []
+keywords: [generator, ignore, app, tsx, theme]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "status:emerging"]
+category: build
+status: emerging
+projects: [trivia, rackinspect]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded"]
+alternatives: []
+related: [complete-frontend-replacement, dark-theme-override, pwa-manifest-customization, generator-ignore-i18n-layout]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -43,9 +47,10 @@ Player frontend `.generator-ignore` protects `src/App.tsx`, `src/theme/index.tsx
 - **Cons**: Protected files may drift from framework changes; developer must manually apply framework updates to ignored files
 - **When to use**: Any time you need to customize the app shell, theme, or other generated files
 
-## Related Patterns
+## Related
 
-- [complete-frontend-replacement](complete-frontend-replacement.md)
-- [dark-theme-override](dark-theme-override.md)
-- [pwa-manifest-customization](pwa-manifest-customization.md)
-- [generator-ignore-i18n-layout](generator-ignore-i18n-layout.md)
+- [[complete-frontend-replacement]]
+- [[dark-theme-override]]
+- [[pwa-manifest-customization]]
+- [[generator-ignore-i18n-layout]]
+

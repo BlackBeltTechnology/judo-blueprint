@@ -1,15 +1,20 @@
 ---
-id: "binary-document-with-link-pattern"
-title: "Binary Document with URL Link Pair"
-domain: "model"
-category: "entity"
-score: 36.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - InterfaceRegister
+id: binary-document-with-link-pattern
+title: Binary Document with URL Link Pair
+description: An entity stores both a binary document attribute (for uploaded files) and a companion URL string attribute (for external links to the same document).
+aliases: []
+keywords: [binary, document, url, link, pair]
+tags: ["domain:model", "layer:model", "project:InterfaceRegister", "status:single-project"]
+category: entity
+status: single-project
+projects: [InterfaceRegister]
+evidence: ["InterfaceRegister:unrecorded"]
+alternatives: []
+related: [standard-type-library, generalization-base-entity]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -34,7 +39,8 @@ An entity stores both a binary document attribute (for uploaded files) and a com
 - Cons: Potential inconsistency if both link and document are provided but differ, doubles the storage fields
 - Prefer when: Users need flexibility to either upload documents or reference them by URL
 
-## Related Patterns
+## Related
 
-- [standard-type-library](standard-type-library.md) (Binary and URL types)
-- [generalization-base-entity](generalization-base-entity.md) (shared document attributes inherited by subtypes)
+- [[standard-type-library]] (Binary and URL types)
+- [[generalization-base-entity]] (shared document attributes inherited by subtypes)
+

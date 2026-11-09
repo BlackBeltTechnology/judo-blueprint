@@ -1,20 +1,20 @@
 ---
-id: "panel-dashboard-transfer"
-title: "Panel/Dashboard Transfer Object as UI Entry Point"
-domain: "model"
-category: "transfer"
-score: 75.9
-usage_count: 6
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
+id: panel-dashboard-transfer
+title: Panel/Dashboard Transfer Object as UI Entry Point
+description: "Dedicated transfer objects with a \"Panel\" or \"Dashboard\" suffix serve as entry points for UI dashboard views."
+aliases: []
+keywords: [panel, dashboard, transfer, object, as, ui, entry, point]
+tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "status:established"]
+category: transfer
+status: established
+projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, InterfaceRegister, judo-partner]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [service-based-transfer-organization, unmapped-transfer-dto]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -57,7 +57,8 @@ Multiple dashboard/panel TOs across services: `AdminDashboard` (8 operations: cr
 - Cons: Additional TO layer, may become bloated if too many operations are added
 - Prefer when: UI needs a dashboard/list view with creation capability for a specific domain
 
-## Related Patterns
+## Related
 
-- [service-based-transfer-organization](service-based-transfer-organization.md)
-- [unmapped-transfer-dto](unmapped-transfer-dto.md)
+- [[service-based-transfer-organization]]
+- [[unmapped-transfer-dto]]
+

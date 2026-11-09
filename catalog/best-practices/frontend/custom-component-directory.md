@@ -1,18 +1,20 @@
 ---
-id: "custom-component-directory"
-title: "Custom Component Directory Outside Generator Scope"
-domain: "frontend"
-category: "component"
-score: 71.7
-usage_count: 4
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - workflow-poc
-  - reserve-app
+id: custom-component-directory
+title: Custom Component Directory Outside Generator Scope
+description: "Place all hand-written custom components in a dedicated directory (e.g., `src/trivia/`, `src/custom/`) that the JUDO code generator does not know about."
+aliases: []
+keywords: [custom, component, directory, outside, generator, scope]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: component
+status: established
+projects: [trivia, rackinspect, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [complete-frontend-replacement, glassmorphic-styled-components, application-customizer-hub]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,8 +58,9 @@ AdminActor uses `src/custom/hooks/dialogs/` with a single file: `registerService
 - **Cons**: Custom components cannot leverage generated page scaffolding; import paths cross between custom and generated directories
 - **When to use**: Whenever adding custom React components that are not page overrides or hook overrides
 
-## Related Patterns
+## Related
 
-- [complete-frontend-replacement](complete-frontend-replacement.md)
-- [glassmorphic-styled-components](glassmorphic-styled-components.md)
-- [application-customizer-hub](application-customizer-hub.md)
+- [[complete-frontend-replacement]]
+- [[glassmorphic-styled-components]]
+- [[application-customizer-hub]]
+

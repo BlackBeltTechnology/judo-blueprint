@@ -1,15 +1,20 @@
 ---
-id: "generator-ignore-i18n-layout"
-title: "Generator-Ignore for i18n Files and Layout Config"
-domain: "frontend"
-category: "build"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: generator-ignore-i18n-layout
+title: Generator-Ignore for i18n Files and Layout Config
+description: Protect locale-specific translation files and layout configuration from being overwritten by the JUDO code generator.
+aliases: []
+keywords: [generator, ignore, i18n, files, layout, config]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: build
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [generator-ignore-app-theme, i18n-custom-translation-keys, application-customizer-hub]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -38,8 +43,9 @@ Protect locale-specific translation files and layout configuration from being ov
 - **Cons**: Must manually add new generated translation keys when model changes; i18n files grow large; layout config may miss new framework options
 - **When to use**: Any project requiring full localization in a non-default language, or custom layout configuration
 
-## Related Patterns
+## Related
 
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
-- [i18n-custom-translation-keys](i18n-custom-translation-keys.md)
-- [application-customizer-hub](application-customizer-hub.md)
+- [[generator-ignore-app-theme]]
+- [[i18n-custom-translation-keys]]
+- [[application-customizer-hub]]
+

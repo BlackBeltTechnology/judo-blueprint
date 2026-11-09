@@ -1,12 +1,19 @@
 ---
-id: "product-with-approval-workflow"
-title: "Product Entity with Draft/Finalize/Approve Workflow and Versioning"
-score: 51.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - alba
+id: product-with-approval-workflow
+title: Product Entity with Draft/Finalize/Approve Workflow and Versioning
+description: "A Product entity representing a content item (educational resource, document, or similar) that follows a three-stage approval workflow: DRAFT (being authored), FINALIZED (submitted for review), and APPROVED (officially accepted)."
+aliases: []
+keywords: [product, draft, finalize, approve, workflow, versioning, approval]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:alba", "status:single-project"]
+category: pattern
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

@@ -1,20 +1,20 @@
 ---
-id: "container-back-reference"
-title: "Derived Container Back-Reference Pattern"
-domain: "model"
-category: "relation"
-score: 69.5
-usage_count: 6
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - skillmatrix-model
-  - mjsz
-  - ams-model
-  - park-here
-  - judo-partner
+id: container-back-reference
+title: Derived Container Back-Reference Pattern
+description: "Child entities have a DERIVED ASSOCIATION relation named `container` with cardinality `0..1` pointing back to their parent entity."
+aliases: []
+keywords: [derived, container, back, reference]
+tags: ["domain:model", "layer:model", "project:rackinspect", "project:skillmatrix-model", "project:mjsz", "project:ams-model", "project:park-here", "project:judo-partner", "status:established"]
+category: relation
+status: established
+projects: [rackinspect, skillmatrix-model, mjsz, ams-model, park-here, judo-partner]
+evidence: ["rackinspect:unrecorded", "skillmatrix-model:unrecorded", "mjsz:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [composition-ownership, derived-relation-navigation, derived-access-filtering]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -64,8 +64,9 @@ Extensive container navigation across composed children. `Team.name = self!conta
 - Cons: Derived relations are read-only, slight runtime computation cost, naming convention must be followed
 - Prefer when: Child entities need to navigate to their parent for display or computed attributes
 
-## Related Patterns
+## Related
 
-- [composition-ownership](composition-ownership.md)
-- [derived-relation-navigation](derived-relation-navigation.md)
-- [derived-access-filtering](derived-access-filtering.md)
+- [[composition-ownership]]
+- [[derived-relation-navigation]]
+- [[derived-access-filtering]]
+

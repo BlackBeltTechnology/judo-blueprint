@@ -1,12 +1,19 @@
 ---
-id: "client-account-multi-platform"
-title: "Client-Account-Campaign Multi-Platform Integration Cluster"
-score: 63.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - indamedia-adtrack
+id: client-account-multi-platform
+title: Client-Account-Campaign Multi-Platform Integration Cluster
+description: A multi-tier entity cluster for managing external platform integrations on behalf of clients.
+aliases: []
+keywords: [client, account, campaign, multi, platform, integration, cluster]
+tags: ["domain:model", "layer:model", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
+category: pattern
+status: single-project
+projects: [indamedia-adtrack]
+evidence: ["indamedia-adtrack:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

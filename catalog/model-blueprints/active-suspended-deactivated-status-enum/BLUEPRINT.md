@@ -1,12 +1,19 @@
 ---
-id: "active-suspended-deactivated-status-enum"
-title: "Active/Suspended/Deactivated Status Enum"
-score: 68.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
+id: active-suspended-deactivated-status-enum
+title: Active/Suspended/Deactivated Status Enum
+description: "A three-state lifecycle enumeration with members ACTIVE, SUSPENDED, and DEACTIVATED."
+aliases: []
+keywords: [active, suspended, deactivated, status, enum]
+tags: ["domain:model", "layer:model", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

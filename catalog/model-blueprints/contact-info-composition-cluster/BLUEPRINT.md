@@ -1,12 +1,19 @@
 ---
-id: "contact-info-composition-cluster"
+id: contact-info-composition-cluster
 title: "Contact Info Composition Cluster (Email, Phone, Address)"
-score: 73.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - rackinspect
+description: "A set of small, composable contact information entities that are owned by a parent entity through composition: EmailAddress (email, name, active), PhoneNumber (phone, name, active, isFax), and Address (streetName, city, postalCode, build..."
+aliases: []
+keywords: [contact, info, composition, cluster, email, phone, address]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

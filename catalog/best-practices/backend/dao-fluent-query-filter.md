@@ -1,24 +1,20 @@
 ---
-id: "dao-fluent-query-filter"
-title: "Fluent DAO Query with Type-Safe Filters"
-domain: "backend"
-category: "data-access"
-score: 79.5
-usage_count: 10
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - alba
-  - mlszksz-platform
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: dao-fluent-query-filter
+title: Fluent DAO Query with Type-Safe Filters
+description: "The standard JUDO data access pattern using generated SDK DAOs with fluent, chainable query builders and type-safe filter classes."
+aliases: []
+keywords: [fluent, dao, query, type, safe, filters, filter]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: data-access
+status: established
+projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [builder-pattern-entity-creation, relation-based-entity-creation, mask-field-projection]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -93,8 +89,9 @@ Uses `StringFilter.equalTo()` for name-based lookups across workflow entities: `
 - Cons: Filters are AND-only when chained (OR requires `filterBy(String)` with JQL), no built-in pagination in trivia usage, no mask usage observed in trivia
 - Alternative: Raw JQL expressions via `filterBy(String)` for OR logic or complex conditions
 
-## Related Patterns
+## Related
 
-- builder-pattern-entity-creation
-- relation-based-entity-creation
-- mask-field-projection
+- [[builder-pattern-entity-creation]]
+- [[relation-based-entity-creation]]
+- [[mask-field-projection]]
+

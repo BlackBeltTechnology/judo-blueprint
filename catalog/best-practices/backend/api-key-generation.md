@@ -1,15 +1,20 @@
 ---
-id: "api-key-generation"
-title: "SecureRandom API Key Generation Pattern"
-domain: "backend"
-category: "service"
-score: 44.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - ubives
+id: api-key-generation
+title: SecureRandom API Key Generation Pattern
+description: "A utility pattern for generating random alphanumeric API keys using `java.security.SecureRandom`."
+aliases: []
+keywords: [securerandom, api, key, generation]
+tags: ["domain:backend", "layer:backend", "project:ubives", "status:single-project"]
+category: service
+status: single-project
+projects: [ubives]
+evidence: ["ubives:unrecorded"]
+alternatives: []
+related: [two-phase-registration, service-delegation-pattern]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -50,7 +55,8 @@ Usage contexts:
 - Cons: No built-in expiration or rotation, no collision detection, not UUID-based (harder to trace), 32-char alphanumeric may not meet all API key standards
 - Alternative: `UUID.randomUUID().toString()` for standard UUID format, JWT-based tokens for self-contained claims, external token service (Vault, AWS KMS)
 
-## Related Patterns
+## Related
 
-- two-phase-registration
-- service-delegation-pattern
+- [[two-phase-registration]]
+- [[service-delegation-pattern]]
+

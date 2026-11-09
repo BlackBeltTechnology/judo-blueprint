@@ -1,16 +1,20 @@
 ---
-id: "operation-return-type-navigation"
-title: "Operation Return Type for View Navigation"
-domain: "model"
-category: "operation"
-score: 41.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - viterra_demo
-  - workflow-poc
+id: operation-return-type-navigation
+title: Operation Return Type for View Navigation
+description: "A state-transition operation returns a transfer object of a different type than the current view, causing the UI framework to automatically navigate to the appropriate view for the returned type."
+aliases: []
+keywords: [operation, return, type, view, navigation]
+tags: ["domain:model", "layer:model", "project:viterra_demo", "project:workflow-poc", "status:emerging"]
+category: operation
+status: emerging
+projects: [viterra_demo, workflow-poc]
+evidence: ["viterra_demo:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [state-based-transfer-partitioning, mapped-operation-delegation, enum-state-machine]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -48,8 +52,9 @@ The workflow engine uses a redirect pattern for post-operation navigation. `Toke
 - Cons: Return type must be carefully chosen to match the target view, only works for single-entity returns
 - Prefer when: A state transition moves an entity from one logical partition to another and the user should see the new view immediately
 
-## Related Patterns
+## Related
 
-- [state-based-transfer-partitioning](state-based-transfer-partitioning.md)
-- [mapped-operation-delegation](mapped-operation-delegation.md)
-- [enum-state-machine](enum-state-machine.md)
+- [[state-based-transfer-partitioning]]
+- [[mapped-operation-delegation]]
+- [[enum-state-machine]]
+

@@ -1,12 +1,19 @@
 ---
-id: "document-review-state-machine"
-title: "Document Review State Machine with Guard Attributes"
-score: 40.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - judo-demo-miniworkflow
+id: document-review-state-machine
+title: Document Review State Machine with Guard Attributes
+description: "A Document entity that implements a multi-step review/approval state machine using a state enum, boolean guard attributes, and state-transition operations."
+aliases: []
+keywords: [document, review, state, machine, guard, attributes]
+tags: ["domain:model", "layer:model", "project:judo-demo-miniworkflow", "status:single-project"]
+category: pattern
+status: single-project
+projects: [judo-demo-miniworkflow]
+evidence: ["judo-demo-miniworkflow:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

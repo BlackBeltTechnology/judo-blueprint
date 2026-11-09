@@ -1,12 +1,19 @@
 ---
-id: "competence-skill-matrix-cluster"
-title: "Competence/Skill Matrix Entity Cluster with Levels and Approval"
-score: 30.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - skillmatrix-model
+id: competence-skill-matrix-cluster
+title: Competence/Skill Matrix Entity Cluster with Levels and Approval
+description: An entity cluster for managing employee competences and skill assessments.
+aliases: []
+keywords: [competence, skill, matrix, cluster, levels, approval]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
+category: pattern
+status: single-project
+projects: [skillmatrix-model]
+evidence: ["skillmatrix-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

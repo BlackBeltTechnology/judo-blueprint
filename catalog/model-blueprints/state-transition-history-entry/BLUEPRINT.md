@@ -1,12 +1,19 @@
 ---
-id: "state-transition-history-entry"
-title: "State Transition History Entry Entity"
-score: 40.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - judo-demo-miniworkflow
+id: state-transition-history-entry
+title: State Transition History Entry Entity
+description: A history entry entity that records state transitions on a parent entity.
+aliases: []
+keywords: [state, transition, history, entry]
+tags: ["domain:model", "layer:model", "project:judo-demo-miniworkflow", "status:single-project"]
+category: pattern
+status: single-project
+projects: [judo-demo-miniworkflow]
+evidence: ["judo-demo-miniworkflow:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

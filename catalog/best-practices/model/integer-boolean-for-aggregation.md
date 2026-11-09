@@ -1,15 +1,20 @@
 ---
-id: "integer-boolean-for-aggregation"
-title: "Integer Boolean Flags for Aggregation Support"
-domain: "model"
-category: "entity"
-score: 17.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mjsz
+id: integer-boolean-for-aggregation
+title: Integer Boolean Flags for Aggregation Support
+description: Derived attributes that represent boolean conditions (true/false) are typed as Integer (0 or 1) rather than Boolean.
+aliases: []
+keywords: [integer, boolean, flags, aggregation, support]
+tags: ["domain:model", "layer:model", "project:mjsz", "status:single-project"]
+category: entity
+status: single-project
+projects: [mjsz]
+evidence: ["mjsz:unrecorded"]
+alternatives: []
+related: [derived-attribute-flattening, null-safe-collection-aggregation]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -42,7 +47,8 @@ points: Integer = 3 * self.matches!sum(m | m.homeWin)
 - Cons: Less type-safe than Boolean (any integer value possible), less semantic (0/1 less clear than true/false)
 - Prefer when: Boolean-like attributes need to participate in arithmetic aggregations (scores, points, statistics)
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md)
-- [null-safe-collection-aggregation](null-safe-collection-aggregation.md)
+- [[derived-attribute-flattening]]
+- [[null-safe-collection-aggregation]]
+

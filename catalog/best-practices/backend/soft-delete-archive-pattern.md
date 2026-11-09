@@ -1,16 +1,20 @@
 ---
-id: "soft-delete-archive-pattern"
-title: "Soft Delete via Archive Flag Pattern"
-domain: "backend"
-category: "operation"
-score: 63.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - park-here
-  - judo-partner
+id: soft-delete-archive-pattern
+title: Soft Delete via Archive Flag Pattern
+description: "Instead of physically deleting entities, a boolean `isArchived` flag is set to true, preserving the data for historical reference and potential recovery."
+aliases: []
+keywords: [soft, delete, archive, flag]
+tags: ["domain:backend", "layer:backend", "project:park-here", "project:judo-partner", "status:emerging"]
+category: operation
+status: emerging
+projects: [park-here, judo-partner]
+evidence: ["park-here:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [mutable-entity-update-pattern, dao-fluent-query-filter]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -47,7 +51,8 @@ dao.queryCars(userId)
 - Cons: Database grows indefinitely, queries must always include archive filter (easy to forget), no automatic cleanup
 - Alternative: Hard delete with cascade, or move to archive table
 
-## Related Patterns
+## Related
 
-- mutable-entity-update-pattern
-- dao-fluent-query-filter
+- [[mutable-entity-update-pattern]]
+- [[dao-fluent-query-filter]]
+

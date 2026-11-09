@@ -1,12 +1,19 @@
 ---
 id: interceptor-derived-statistics-calculation
-title: "Interceptor-Based Derived Statistics Calculation"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Interceptor-Based Derived Statistics Calculation
+description: "A pattern for computing derived statistics fields that cannot be expressed in JUEL (the model's expression language) by using `OperationCallInterceptor` postCall hooks."
+aliases: []
+keywords: [interceptor, based, derived, statistics, calculation]
+tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

@@ -1,12 +1,19 @@
 ---
-id: "test-attempt-lifecycle-entity"
-title: "Test/Attempt Lifecycle Entity with Status Tracking"
-score: 39.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - trivia
+id: test-attempt-lifecycle-entity
+title: Test/Attempt Lifecycle Entity with Status Tracking
+description: "A Test (or Attempt) entity that represents a user's participation in a timed activity, with a multi-stage lifecycle status enum tracking progress from creation through completion or failure."
+aliases: []
+keywords: [test, attempt, lifecycle, status, tracking]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:trivia", "status:single-project"]
+category: pattern
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

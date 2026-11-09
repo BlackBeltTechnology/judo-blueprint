@@ -1,17 +1,20 @@
 ---
-id: "self-referencing-versioning"
-title: "Self-Referencing Association for Entity Versioning"
-domain: "model"
-category: "relation"
-score: 73.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-alternatives:
-  - snapshot-versioning-pattern
+id: self-referencing-versioning
+title: Self-Referencing Association for Entity Versioning
+description: "An entity maintains a version chain via a self-referencing association (`previousVersion -> Self [0..1]`) combined with a `lastVersion` boolean flag."
+aliases: []
+keywords: [self, referencing, association, versioning]
+tags: ["domain:model", "layer:model", "project:rackinspect", "status:single-project"]
+category: relation
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: [snapshot-versioning-pattern]
+related: [enum-state-machine, snapshot-versioning-pattern]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -40,7 +43,8 @@ An entity maintains a version chain via a self-referencing association (`previou
 - Cons: Previous versions remain in the same table, potentially large table for heavily versioned entities, traversal requires multiple hops
 - Prefer when: An entity needs version history with the ability to compare or rollback
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md)
-- [snapshot-versioning-pattern](snapshot-versioning-pattern.md) (alternative: clone child data into separate version entities)
+- [[enum-state-machine]]
+- [[snapshot-versioning-pattern]] (alternative: clone child data into separate version entities)
+

@@ -1,15 +1,20 @@
 ---
-id: "staged-import-pipeline"
-title: "Staged Multi-Phase Import Pipeline"
-domain: "backend"
-category: "operation"
-score: 47.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - judo-partner
+id: staged-import-pipeline
+title: Staged Multi-Phase Import Pipeline
+description: "A multi-phase data import pipeline where raw imported data is first staged into intermediate entities, then validated individually (potentially against external services), and finally migrated into production entities."
+aliases: []
+keywords: [staged, multi, phase, import, pipeline]
+tags: ["domain:backend", "layer:backend", "project:judo-partner", "status:single-project"]
+category: operation
+status: single-project
+projects: [judo-partner]
+evidence: ["judo-partner:unrecorded"]
+alternatives: []
+related: [bulk-json-import-export, filestore-mediated-file-transfer, upsert-create-or-update]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -77,8 +82,9 @@ Three-phase partner import pipeline: (1) `PartnerImportCustomImplementation` rea
 - Cons: Extra entities to maintain (staging tables), longer overall import time due to multi-phase approach, status management adds complexity
 - Alternative: Direct import (parse and create in one step, simpler but no error isolation), database-level bulk operations (faster but no external validation)
 
-## Related Patterns
+## Related
 
-- bulk-json-import-export
-- filestore-mediated-file-transfer
-- upsert-create-or-update
+- [[bulk-json-import-export]]
+- [[filestore-mediated-file-transfer]]
+- [[upsert-create-or-update]]
+

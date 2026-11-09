@@ -1,19 +1,20 @@
 ---
-id: "interceptor-crud-lifecycle"
-title: "Interceptor as CRUD Lifecycle Hook"
-domain: "backend"
-category: "interceptor"
-score: 74.6
-usage_count: 5
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - alba
-  - park-here
-  - judo-partner
-  - reserve-app
+id: interceptor-crud-lifecycle
+title: Interceptor as CRUD Lifecycle Hook
+description: "Interceptors that hook into the generated CRUD operations (_createInstance, _updateInstance, _deleteInstance) to add cross-cutting behavior that the framework cannot express in the model."
+aliases: []
+keywords: [interceptor, as, crud, lifecycle, hook]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba", "project:park-here", "project:judo-partner", "project:reserve-app", "status:established"]
+category: interceptor
+status: established
+projects: [rackinspect, alba, park-here, judo-partner, reserve-app]
+evidence: ["rackinspect:unrecorded", "alba:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [interceptor-global-logging, interceptor-access-control-flags, interceptor-range-override, form-field-flattening]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -77,9 +78,10 @@ public class EntityCreateInterceptor implements OperationCallInterceptor {
 - Cons: Interceptors interact with raw Payload objects (less type-safe than custom operations), harder to debug, order dependency between interceptors
 - Alternative: Custom operations that wrap CRUD logic entirely (more control but more boilerplate)
 
-## Related Patterns
+## Related
 
-- interceptor-global-logging
-- interceptor-access-control-flags
-- interceptor-range-override
-- form-field-flattening
+- [[interceptor-global-logging]]
+- [[interceptor-access-control-flags]]
+- [[interceptor-range-override]]
+- [[form-field-flattening]]
+

@@ -1,18 +1,20 @@
 ---
-id: "dark-theme-override"
-title: "Custom Dark MUI Theme Override"
-domain: "frontend"
-category: "theme"
-score: 39.0
-usage_count: 1
-alternative_count: 2
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-alternatives:
-  - model-defined-color-palette
-  - mui-extensive-component-overrides
+id: dark-theme-override
+title: Custom Dark MUI Theme Override
+description: "Override the generated JUDO theme with a fully custom MUI `createTheme()` configuration, typically in `src/theme/index.tsx`."
+aliases: []
+keywords: [custom, dark, mui, theme, override]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
+category: theme
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: [model-defined-color-palette, mui-extensive-component-overrides]
+related: [generator-ignore-app-theme, glassmorphic-styled-components, model-defined-color-palette, mui-extensive-component-overrides]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -50,9 +52,10 @@ Player frontend uses a hardcoded dark theme with orange primary (`#eb5a29`), lig
 - **Cons**: Must be maintained manually on framework upgrades; may miss new theme tokens added by the framework
 - **When to use**: Any project requiring a branded visual identity different from the default JUDO theme
 
-## Related Patterns
+## Related
 
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
-- [glassmorphic-styled-components](glassmorphic-styled-components.md)
-- [model-defined-color-palette](model-defined-color-palette.md)
-- [mui-extensive-component-overrides](mui-extensive-component-overrides.md)
+- [[generator-ignore-app-theme]]
+- [[glassmorphic-styled-components]]
+- [[model-defined-color-palette]]
+- [[mui-extensive-component-overrides]]
+

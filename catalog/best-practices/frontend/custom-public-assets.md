@@ -1,17 +1,20 @@
 ---
-id: "custom-public-assets"
+id: custom-public-assets
 title: "Custom Public Assets (Logos, Images, Icons)"
-domain: "frontend"
-category: "customization"
-score: 42.6
-usage_count: 3
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
-  - workflow-poc
+description: "Add custom static assets (images, logos, icons, QR codes) to the `public/` directory of a JUDO frontend."
+aliases: []
+keywords: [custom, public, assets, logos, images, icons]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:workflow-poc", "status:emerging"]
+category: customization
+status: emerging
+projects: [trivia, itracker, workflow-poc]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [pwa-manifest-customization, generator-ignore-app-theme]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -55,7 +58,8 @@ Invitech company branding logo (`invitech_logo.png`) deployed via flutter.yaml c
 - **Cons**: Manual management; generator may add conflicting files; large images increase bundle size
 - **When to use**: Any project needing custom branding, background images, or sharing assets
 
-## Related Patterns
+## Related
 
-- [pwa-manifest-customization](pwa-manifest-customization.md)
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
+- [[pwa-manifest-customization]]
+- [[generator-ignore-app-theme]]
+

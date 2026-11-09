@@ -1,12 +1,19 @@
 ---
 id: organization-discovery-search-component
-title: "Organization Discovery Search Component"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Organization Discovery Search Component
+description: "A custom organization discovery/search component that replaces the generated data grid table with a filterable, infinite-scrolling card-based directory."
+aliases: []
+keywords: [organization, discovery, search, component]
+tags: ["domain:model", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

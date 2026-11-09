@@ -1,15 +1,20 @@
 ---
-id: "action-group-input-output-routing"
-title: "Action Group Input/Output Routing Pattern"
-domain: "frontend"
-category: "page"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: action-group-input-output-routing
+title: Action Group Input/Output Routing Pattern
+description: Model action groups as dedicated routes with separate input and output page components.
+aliases: []
+keywords: [action, group, input, output, routing]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: page
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [promise-based-dialog-system, breadcrumb-navigation-context, complete-frontend-replacement]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -59,8 +64,9 @@ if (exists(result)) {
 - **Cons**: Each action group adds routes and page components; navigation flow can be deep; output-to-output chains complicate back navigation
 - **When to use**: When model operations require dedicated input forms or display structured output results
 
-## Related Patterns
+## Related
 
-- [promise-based-dialog-system](promise-based-dialog-system.md)
-- [breadcrumb-navigation-context](breadcrumb-navigation-context.md)
-- [complete-frontend-replacement](complete-frontend-replacement.md)
+- [[promise-based-dialog-system]]
+- [[breadcrumb-navigation-context]]
+- [[complete-frontend-replacement]]
+

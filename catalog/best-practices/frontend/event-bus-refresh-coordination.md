@@ -1,16 +1,20 @@
 ---
-id: "event-bus-refresh-coordination"
-title: "Event Bus for Cross-Page Refresh Coordination"
-domain: "frontend"
-category: "state"
-score: 40.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
+id: event-bus-refresh-coordination
+title: Event Bus for Cross-Page Refresh Coordination
+description: Generated JUDO pages use a publish/subscribe event bus to coordinate data refreshes across related pages.
+aliases: []
+keywords: [event, bus, cross, page, refresh, coordination]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "status:emerging"]
+category: state
+status: emerging
+projects: [trivia, itracker]
+evidence: ["trivia:unrecorded", "itracker:unrecorded"]
+alternatives: []
+related: [viewmodel-context-pattern, pandino-action-hook-override]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,7 +55,8 @@ Event bus coordinates refreshes across the initiative workflow. When the Initiat
 - **Cons**: Event key strings are opaque (model IDs); hard to debug event flows; no guaranteed delivery order
 - **When to use**: Automatically used in generated JUDO pages -- understanding this helps when debugging data synchronization issues
 
-## Related Patterns
+## Related
 
-- [viewmodel-context-pattern](viewmodel-context-pattern.md)
-- [pandino-action-hook-override](pandino-action-hook-override.md)
+- [[viewmodel-context-pattern]]
+- [[pandino-action-hook-override]]
+

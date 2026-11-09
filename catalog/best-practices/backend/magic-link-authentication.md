@@ -1,16 +1,20 @@
 ---
-id: "magic-link-authentication"
-title: "Keycloak Magic Link Authentication Flow"
-domain: "backend"
-category: "auth"
-score: 66.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
-  - ubives
+id: magic-link-authentication
+title: Keycloak Magic Link Authentication Flow
+description: A custom Keycloak authenticator that enables passwordless email-based login via magic links.
+aliases: []
+keywords: [keycloak, magic, link, authentication, flow]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "project:ubives", "status:emerging"]
+category: auth
+status: emerging
+projects: [mlszksz-platform, ubives]
+evidence: ["mlszksz-platform:unrecorded", "ubives:unrecorded"]
+alternatives: []
+related: [keycloak-jit-user-provisioning, two-phase-registration, email-service-integration]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -68,8 +72,9 @@ Custom `MagicLinkAuthenticator` deployed as Keycloak SPI extension. `KeycloakFac
 - Cons: Requires Keycloak deployment and SPI extension, email delivery latency affects login experience, token reuse can be a security concern, complex deployment (custom JAR in Keycloak)
 - Alternative: Standard Keycloak password-based login, OIDC with social login providers, two-phase code registration (see `two-phase-registration`)
 
-## Related Patterns
+## Related
 
-- keycloak-jit-user-provisioning
-- two-phase-registration
-- email-service-integration
+- [[keycloak-jit-user-provisioning]]
+- [[two-phase-registration]]
+- [[email-service-integration]]
+

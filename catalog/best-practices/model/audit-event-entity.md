@@ -1,19 +1,20 @@
 ---
-id: "audit-event-entity"
-title: "Dedicated Audit Event Entity for State Change Tracking"
-domain: "model"
-category: "entity"
-score: 67.2
-usage_count: 5
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
-  - mlszksz-platform
-  - judo-demo-miniworkflow
-  - judo-partner
-  - workflow-poc
+id: audit-event-entity
+title: Dedicated Audit Event Entity for State Change Tracking
+description: A dedicated immutable entity records important state transitions as an audit trail.
+aliases: []
+keywords: [dedicated, audit, event, state, change, tracking]
+tags: ["domain:model", "layer:model", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: entity
+status: established
+projects: [alba, mlszksz-platform, judo-demo-miniworkflow, judo-partner, workflow-poc]
+evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [enum-state-machine, category-enum-pattern, custom-implementation-placeholder]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -61,8 +62,9 @@ A dedicated immutable entity records important state transitions as an audit tra
 - Cons: Growing event table over time, requires custom operation code to create events, additional storage overhead
 - Prefer when: Domain requires tracking who did what and when, especially for approval/workflow state transitions
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md) (events track state transitions)
-- [category-enum-pattern](category-enum-pattern.md) (EventType classifies events)
-- [custom-implementation-placeholder](custom-implementation-placeholder.md) (events created in custom code)
+- [[enum-state-machine]] (events track state transitions)
+- [[category-enum-pattern]] (EventType classifies events)
+- [[custom-implementation-placeholder]] (events created in custom code)
+

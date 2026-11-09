@@ -1,20 +1,20 @@
 ---
-id: "snapshot-versioning-pattern"
-title: "Snapshot Versioning via Clone-to-Version Entities"
-domain: "model"
-category: "entity"
-score: 56.5
-usage_count: 4
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - indamedia-adtrack
-  - judo-partner
-  - workflow-poc
-alternatives:
-  - self-referencing-versioning
+id: snapshot-versioning-pattern
+title: Snapshot Versioning via Clone-to-Version Entities
+description: "An entity maintains a history of snapshots by cloning its current data into separate \"history\" or \"version\" entities."
+aliases: []
+keywords: [snapshot, versioning, clone, version, entities]
+tags: ["domain:model", "layer:model", "project:itracker", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: entity
+status: established
+projects: [itracker, indamedia-adtrack, judo-partner, workflow-poc]
+evidence: ["itracker:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: [self-referencing-versioning]
+related: [self-referencing-versioning, composition-ownership, audit-event-entity]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -52,8 +52,9 @@ An entity maintains a history of snapshots by cloning its current data into sepa
 - Prefer self-referencing-versioning when: The entire entity needs versioning (not just child data)
 - Prefer snapshot-versioning when: Only a subset of child data needs periodic snapshots with aggregated summaries
 
-## Related Patterns
+## Related
 
-- [self-referencing-versioning](self-referencing-versioning.md) (alternative: linked-list versioning of the entity itself)
-- [composition-ownership](composition-ownership.md)
-- [audit-event-entity](audit-event-entity.md) (related: event-based audit trail)
+- [[self-referencing-versioning]] (alternative: linked-list versioning of the entity itself)
+- [[composition-ownership]]
+- [[audit-event-entity]] (related: event-based audit trail)
+

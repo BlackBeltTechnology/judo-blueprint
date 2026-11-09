@@ -1,17 +1,20 @@
 ---
-id: "product-versioning-container"
-title: "Version Container Pattern for Entity Versioning"
-domain: "backend"
-category: "operation"
-score: 42.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
-alternatives:
-  - data-snapshot-versioning
+id: product-versioning-container
+title: Version Container Pattern for Entity Versioning
+description: A versioning pattern using a dedicated container entity to group all versions of a product/document.
+aliases: []
+keywords: [version, container, versioning, product]
+tags: ["domain:backend", "layer:backend", "project:alba", "status:single-project"]
+category: operation
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
+alternatives: [data-snapshot-versioning]
+related: [data-snapshot-versioning, state-lifecycle-operation, builder-pattern-entity-creation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -65,8 +68,9 @@ productVersionsDao.addVersions(container, newVersion);
 - Cons: Full entity cloning is expensive and creates data duplication, relation cloning must be done manually for each relation type, container entity adds model complexity
 - Alternative: Data snapshot versioning (immutable history copies -- see `data-snapshot-versioning`), event sourcing, or temporal table patterns
 
-## Related Patterns
+## Related
 
-- data-snapshot-versioning
-- state-lifecycle-operation
-- builder-pattern-entity-creation
+- [[data-snapshot-versioning]]
+- [[state-lifecycle-operation]]
+- [[builder-pattern-entity-creation]]
+

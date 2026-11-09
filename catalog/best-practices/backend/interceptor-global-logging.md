@@ -1,24 +1,20 @@
 ---
-id: "interceptor-global-logging"
-title: "Global Operation Logging Interceptor"
-domain: "backend"
-category: "interceptor"
-score: 78.7
-usage_count: 10
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - alba
-  - mlszksz-platform
-  - judo-demo-miniworkflow
-  - ubives
-  - park-here
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: interceptor-global-logging
+title: Global Operation Logging Interceptor
+description: "A global pre-call interceptor that logs every intercepted operation's fully qualified name."
+aliases: []
+keywords: [global, operation, logging, interceptor]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: interceptor
+status: established
+projects: [trivia, rackinspect, alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [interceptor-security-filter-validation, interceptor-template-postcall, interceptor-crud-lifecycle]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -81,8 +77,9 @@ Both `LogOperationCallInterceptor` and `LogAuthenticationInterceptor` exist as `
 - Cons: Performance overhead if left enabled in production (intercepts ALL operations), no filtering capability
 - Alternative: Targeted interceptor with `getOperations()` for specific operations only
 
-## Related Patterns
+## Related
 
-- interceptor-security-filter-validation
-- interceptor-template-postcall
-- interceptor-crud-lifecycle
+- [[interceptor-security-filter-validation]]
+- [[interceptor-template-postcall]]
+- [[interceptor-crud-lifecycle]]
+

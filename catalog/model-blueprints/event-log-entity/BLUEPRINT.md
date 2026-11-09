@@ -1,12 +1,19 @@
 ---
-id: "event-log-entity"
-title: "Event Log Entity with Type Enum and Actor Reference"
-score: 51.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - alba
+id: event-log-entity
+title: Event Log Entity with Type Enum and Actor Reference
+description: An Event entity that records domain-level events as a chronological log.
+aliases: []
+keywords: [event, log, type, enum, actor, reference]
+tags: ["domain:model", "layer:model", "layer:backend", "project:alba", "status:single-project"]
+category: pattern
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

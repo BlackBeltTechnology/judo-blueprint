@@ -1,15 +1,20 @@
 ---
-id: "yaml-configuration-upload"
-title: "YAML-as-Configuration Upload and Parse Pattern"
-domain: "backend"
-category: "operation"
-score: 43.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - workflow-poc
+id: yaml-configuration-upload
+title: YAML-as-Configuration Upload and Parse Pattern
+description: "A pattern where domain configuration (e.g., workflow definitions, rule sets) is uploaded as YAML files via the FileStore service, parsed at runtime using Jackson with YAMLFactory, validated against cross-reference rules, and materialized..."
+aliases: []
+keywords: [yaml, as, configuration, upload, parse]
+tags: ["domain:backend", "layer:backend", "project:workflow-poc", "status:single-project"]
+category: operation
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+related: [filestore-mediated-file-transfer, typed-exception-error-handling, data-snapshot-versioning, builder-pattern-entity-creation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -69,9 +74,10 @@ Key elements:
 - Cons: YAML parsing errors are runtime failures, schema evolution requires Java record changes, no IDE support for custom YAML schema, cross-reference validation is manual
 - Alternative: JSON configuration (more widely supported), database-driven UI forms (more user-friendly), model-level scripting (tighter platform integration)
 
-## Related Patterns
+## Related
 
-- filestore-mediated-file-transfer
-- typed-exception-error-handling
-- data-snapshot-versioning
-- builder-pattern-entity-creation
+- [[filestore-mediated-file-transfer]]
+- [[typed-exception-error-handling]]
+- [[data-snapshot-versioning]]
+- [[builder-pattern-entity-creation]]
+

@@ -1,30 +1,20 @@
 ---
-id: "osgi-karaf-bundle-architecture"
-title: "OSGi Bundle Architecture with Karaf Deployment"
-domain: "backend"
-category: "config"
-score: 83.2
-usage_count: 16
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - mlszksz-platform
-  - viterra_demo
-  - bhs-global-operation
-  - mjsz
-  - judo-demo-miniworkflow
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: osgi-karaf-bundle-architecture
+title: OSGi Bundle Architecture with Karaf Deployment
+description: The application is structured as multiple OSGi bundles deployed to Apache Karaf.
+aliases: []
+keywords: [osgi, bundle, architecture, karaf, deployment]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:bhs-global-operation", "project:mjsz", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: config
+status: established
+projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [custom-operation-osgi-component, generator-ignore-config-protection]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -101,7 +91,8 @@ Standard 10+ module layout: model, sdk, internal, app (empty -- no custom operat
 - Cons: OSGi complexity (classloader issues, bundle lifecycle), harder to debug than monolithic apps
 - Alternative: Spring Boot monolith, Docker container per service (microservices)
 
-## Related Patterns
+## Related
 
-- custom-operation-osgi-component
-- generator-ignore-config-protection
+- [[custom-operation-osgi-component]]
+- [[generator-ignore-config-protection]]
+

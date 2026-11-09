@@ -1,16 +1,20 @@
 ---
-id: "enum-sentinel-value"
-title: "Enum Sentinel Value Pattern"
-domain: "model"
-category: "enum"
-score: 39.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - InterfaceRegister
+id: enum-sentinel-value
+title: Enum Sentinel Value Pattern
+description: "Enumerations include a sentinel member (like `NONE`) that represents the absence of a meaningful value."
+aliases: []
+keywords: [enum, sentinel, value]
+tags: ["domain:model", "layer:model", "project:trivia", "project:InterfaceRegister", "status:emerging"]
+category: enum
+status: emerging
+projects: [trivia, InterfaceRegister]
+evidence: ["trivia:unrecorded", "InterfaceRegister:unrecorded"]
+alternatives: []
+related: [conditional-visibility-getter, enum-state-machine, default-value-patterns]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -37,8 +41,9 @@ Enumerations include a sentinel member (like `NONE`) that represents the absence
 - Cons: Sentinel must be handled in business logic (not a "real" value), adds an extra enum member
 - Prefer when: An enum-typed attribute needs to represent "not yet set" or "hidden" states
 
-## Related Patterns
+## Related
 
-- [conditional-visibility-getter](conditional-visibility-getter.md)
-- [enum-state-machine](enum-state-machine.md)
-- [default-value-patterns](default-value-patterns.md)
+- [[conditional-visibility-getter]]
+- [[enum-state-machine]]
+- [[default-value-patterns]]
+

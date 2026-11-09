@@ -1,15 +1,20 @@
 ---
-id: "operation-flow-redirect-pattern"
-title: "Operation Flow Redirect via Generator Override and OperationFlowManager"
-domain: "frontend"
-category: "navigation"
-score: 43.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - workflow-poc
+id: operation-flow-redirect-pattern
+title: Operation Flow Redirect via Generator Override and OperationFlowManager
+description: "Implement dynamic post-operation navigation by combining a Handlebars generator template override with a custom `OperationFlowManager` service."
+aliases: []
+keywords: [operation, flow, redirect, generator, override, operationflowmanager]
+tags: ["domain:frontend", "layer:frontend", "project:workflow-poc", "status:single-project"]
+category: navigation
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+related: [post-operation-navigation-hook, handlebars-generator-template-override, application-customizer-hub]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -75,8 +80,9 @@ Workflow operations (`startWorkflow`, `navigate`, `execute`, `assign`) return `C
 - **Cons**: Requires Handlebars template knowledge; tightly couples frontend to backend redirect contract; generator override is fragile if framework changes template structure; debugging redirect flow is harder than simple navigation
 - **When to use**: Workflow or multi-step operation systems where the backend determines the next UI step after an operation completes
 
-## Related Patterns
+## Related
 
-- [post-operation-navigation-hook](post-operation-navigation-hook.md)
-- [handlebars-generator-template-override](handlebars-generator-template-override.md)
-- [application-customizer-hub](application-customizer-hub.md)
+- [[post-operation-navigation-hook]]
+- [[handlebars-generator-template-override]]
+- [[application-customizer-hub]]
+

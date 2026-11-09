@@ -1,12 +1,19 @@
 ---
-id: "freight-logistics-state-enum"
-title: "Freight/Logistics Lifecycle State Enum"
-score: 45.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - reserve-app
+id: freight-logistics-state-enum
+title: Freight/Logistics Lifecycle State Enum
+description: "A multi-state lifecycle enumeration for freight, delivery, or logistics reservation workflows."
+aliases: []
+keywords: [freight, logistics, lifecycle, state, enum]
+tags: ["domain:model", "layer:model", "project:reserve-app", "status:single-project"]
+category: pattern
+status: single-project
+projects: [reserve-app]
+evidence: ["reserve-app:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

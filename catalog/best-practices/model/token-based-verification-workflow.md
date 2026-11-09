@@ -1,15 +1,20 @@
 ---
-id: "token-based-verification-workflow"
-title: "Token-Based Verification Workflow Pattern"
-domain: "model"
-category: "operation"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: token-based-verification-workflow
+title: Token-Based Verification Workflow Pattern
+description: Entities that require email-based verification use a set of token-related attributes to implement a multi-step verification workflow.
+aliases: []
+keywords: [token, based, verification, workflow]
+tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single-project"]
+category: operation
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [enum-state-machine, custom-implementation-placeholder, singleton-entity]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -40,8 +45,9 @@ Three entities use token-based verification: **RegistrationRequest** (`verificat
 - Cons: Requires email service integration, token management adds complexity, expired tokens need cleanup
 - Prefer when: External users need to verify their identity via email before gaining access (registration, invitation workflows)
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md) (status lifecycle for verification entities)
-- [custom-implementation-placeholder](custom-implementation-placeholder.md) (token generation/validation in custom code)
-- [singleton-entity](singleton-entity.md) (Configuration singleton stores expiry settings)
+- [[enum-state-machine]] (status lifecycle for verification entities)
+- [[custom-implementation-placeholder]] (token generation/validation in custom code)
+- [[singleton-entity]] (Configuration singleton stores expiry settings)
+

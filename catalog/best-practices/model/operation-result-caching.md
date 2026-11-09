@@ -1,15 +1,20 @@
 ---
-id: "operation-result-caching"
-title: "Operation Result Caching in Entity Relations"
-domain: "model"
-category: "operation"
-score: 30.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - skillmatrix-model
+id: operation-result-caching
+title: Operation Result Caching in Entity Relations
+description: "An entity stores operation results in a stored relation, effectively caching the output of an expensive or user-triggered computation."
+aliases: []
+keywords: [operation, result, caching, relations]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
+category: operation
+status: single-project
+projects: [skillmatrix-model]
+evidence: ["skillmatrix-model:unrecorded"]
+alternatives: []
+related: [mapped-operation-delegation, derived-relation-navigation]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -37,7 +42,8 @@ An entity stores operation results in a stored relation, effectively caching the
 - Cons: Cached results may become stale, clearing and re-populating may be costly for large result sets, consumes storage
 - Prefer when: Operation results need to be persisted for later viewing, or the computation is expensive and should not run on every page load
 
-## Related Patterns
+## Related
 
-- [mapped-operation-delegation](mapped-operation-delegation.md)
-- [derived-relation-navigation](derived-relation-navigation.md)
+- [[mapped-operation-delegation]]
+- [[derived-relation-navigation]]
+

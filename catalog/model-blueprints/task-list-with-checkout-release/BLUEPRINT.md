@@ -1,12 +1,19 @@
 ---
-id: "task-list-with-checkout-release"
-title: "Task List with Checkout/Release Assignment Pattern"
-score: 43.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - workflow-poc
+id: task-list-with-checkout-release
+title: Task List with Checkout/Release Assignment Pattern
+description: A transfer object pattern for human task management where tasks (derived from workflow tokens) are presented in a task list with checkout/release semantics for task ownership.
+aliases: []
+keywords: [task, list, checkout, release, assignment]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:workflow-poc", "status:single-project"]
+category: pattern
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

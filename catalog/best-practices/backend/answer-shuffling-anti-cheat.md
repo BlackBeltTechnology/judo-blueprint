@@ -1,15 +1,20 @@
 ---
-id: "answer-shuffling-anti-cheat"
-title: "Answer and Question Shuffling for Anti-Cheating"
-domain: "backend"
-category: "operation"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: answer-shuffling-anti-cheat
+title: Answer and Question Shuffling for Anti-Cheating
+description: "Two-layer randomization to prevent cheating in quiz/test applications: (1) answer position shuffling during question import so the correct answer is not always in the same position, and (2) question order shuffling during test creation s..."
+aliases: []
+keywords: [answer, question, shuffling, anti, cheating, cheat]
+tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
+category: operation
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [bulk-json-import-export, state-lifecycle-operation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -47,7 +52,8 @@ Upload operation shuffles answer positions [A,B,C,D] when importing questions, r
 - Cons: `Collections.shuffle()` uses unseeded Random (not cryptographically secure), shuffling at import time means shuffled order is permanent
 - Alternative: Shuffle at display time (more flexible), use seeded random for reproducibility in testing
 
-## Related Patterns
+## Related
 
-- bulk-json-import-export
-- state-lifecycle-operation
+- [[bulk-json-import-export]]
+- [[state-lifecycle-operation]]
+

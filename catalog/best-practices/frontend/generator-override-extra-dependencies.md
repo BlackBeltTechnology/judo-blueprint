@@ -1,16 +1,20 @@
 ---
-id: "generator-override-extra-dependencies"
-title: "Generator Override for Extra NPM Dependencies"
-domain: "frontend"
-category: "build"
-score: 71.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - workflow-poc
+id: generator-override-extra-dependencies
+title: Generator Override for Extra NPM Dependencies
+description: "Add extra npm dependencies to the generated `package.json` without modifying the generated file directly."
+aliases: []
+keywords: [generator, override, extra, npm, dependencies]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "status:emerging"]
+category: build
+status: emerging
+projects: [rackinspect, workflow-poc]
+evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [pdf-preview-inline-display, generator-ignore-app-theme]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -50,7 +54,8 @@ Adds visualization dependencies via `package.json` (protected in `.generator-ign
 - **Cons**: Fragment file syntax must match generator expectations; version conflicts possible with generated dependencies; no lock file management
 - **When to use**: Whenever custom components require npm packages not included in the generated dependencies
 
-## Related Patterns
+## Related
 
-- [pdf-preview-inline-display](pdf-preview-inline-display.md)
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
+- [[pdf-preview-inline-display]]
+- [[generator-ignore-app-theme]]
+

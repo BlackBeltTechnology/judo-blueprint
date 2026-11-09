@@ -1,17 +1,20 @@
 ---
-id: "upsert-create-or-update"
-title: "Upsert Pattern (Create or Update)"
-domain: "backend"
-category: "operation"
-score: 64.6
-usage_count: 3
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
+id: upsert-create-or-update
+title: Upsert Pattern (Create or Update)
+description: A custom operation that checks whether a singleton or unique entity exists and either creates it (if absent) or updates it (if present).
+aliases: []
+keywords: [upsert, create, or, update]
+tags: ["domain:backend", "layer:backend", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "status:emerging"]
+category: operation
+status: emerging
+projects: [park-here, indamedia-adtrack, judo-partner]
+evidence: ["park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [init-data-seeding, mutable-entity-update-pattern, builder-pattern-entity-creation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -53,8 +56,9 @@ public void accept(Context _this, Input input) {
 - Cons: Not atomic (race condition if two requests arrive simultaneously), no optimistic locking
 - Alternative: Database-level upsert (INSERT ON CONFLICT), or Init operation for initial seeding
 
-## Related Patterns
+## Related
 
-- init-data-seeding
-- mutable-entity-update-pattern
-- builder-pattern-entity-creation
+- [[init-data-seeding]]
+- [[mutable-entity-update-pattern]]
+- [[builder-pattern-entity-creation]]
+

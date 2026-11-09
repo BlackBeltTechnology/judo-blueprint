@@ -1,16 +1,20 @@
 ---
-id: "null-safe-collection-aggregation"
-title: "Null-Safe Collection Aggregation Pattern"
-domain: "model"
-category: "operation"
-score: 38.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - mjsz
+id: null-safe-collection-aggregation
+title: Null-Safe Collection Aggregation Pattern
+description: "When aggregating collection values with `!sum()`, optional (nullable) fields are first filtered using `!filter(x | x.field!isDefined())` before the sum is applied."
+aliases: []
+keywords: [null, safe, collection, aggregation]
+tags: ["domain:model", "layer:model", "project:itracker", "project:mjsz", "status:emerging"]
+category: operation
+status: emerging
+projects: [itracker, mjsz]
+evidence: ["itracker:unrecorded", "mjsz:unrecorded"]
+alternatives: []
+related: [derived-attribute-flattening, derived-relation-navigation]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -48,7 +52,8 @@ In `archiveForecast`, `sumOfSavingPotential` directly sums the required field: `
 - Cons: Verbose compared to a built-in null-coalescing aggregate, easy to forget the guard on optional fields
 - Prefer when: Aggregating over collections where some items may have null values in the aggregated field
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md)
-- [derived-relation-navigation](derived-relation-navigation.md)
+- [[derived-attribute-flattening]]
+- [[derived-relation-navigation]]
+

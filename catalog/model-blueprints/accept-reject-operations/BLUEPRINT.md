@@ -1,18 +1,19 @@
 ---
-id: "accept-reject-operations"
-title: "Accept/Reject Approval Operations Pattern"
-score: 65.1
-usage_count: 7
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
-  - judo-demo-miniworkflow
-  - trivia
-  - itracker
-  - doors-model
-  - ams-model
-  - skillmatrix-model
+id: accept-reject-operations
+title: Accept/Reject Approval Operations Pattern
+description: "A pair of instance operations `accept` and `reject` (or `approve` and `reject`) on transfer objects representing requests that require approval."
+aliases: []
+keywords: [accept, reject, approval, operations]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:trivia", "project:itracker", "project:doors-model", "project:ams-model", "project:skillmatrix-model", "status:established"]
+category: pattern
+status: established
+projects: [mlszksz-platform, judo-demo-miniworkflow, trivia, itracker, doors-model, ams-model, skillmatrix-model]
+evidence: ["mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

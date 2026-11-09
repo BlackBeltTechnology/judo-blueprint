@@ -1,19 +1,20 @@
 ---
-id: "two-phase-registration"
-title: "Two-Phase Registration with Email Verification"
-domain: "backend"
-category: "auth"
-score: 64.7
-usage_count: 3
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - mlszksz-platform
-  - ubives
-alternatives:
-  - keycloak-jit-user-provisioning
+id: two-phase-registration
+title: Two-Phase Registration with Email Verification
+description: "A lightweight custom authentication flow using two phases: (1) Registration generates a temporary code and sends it via email, (2) Activation verifies the code and promotes it to a permanent credential."
+aliases: []
+keywords: [two, phase, registration, email, verification]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:mlszksz-platform", "project:ubives", "status:emerging"]
+category: auth
+status: emerging
+projects: [trivia, mlszksz-platform, ubives]
+evidence: ["trivia:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded"]
+alternatives: [keycloak-jit-user-provisioning]
+related: [email-service-integration, typed-exception-error-handling, keycloak-jit-user-provisioning]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -65,8 +66,9 @@ Invitation-based registration: (1) admin invites user/account with email, creati
 - Cons: Not as secure as OAuth/JWT, 4-digit code is brute-forceable, no expiry on codes, no rate limiting
 - Alternative: Keycloak integration with AuthenticationInterceptor for JIT provisioning (more secure, standard)
 
-## Related Patterns
+## Related
 
-- email-service-integration
-- typed-exception-error-handling
-- keycloak-jit-user-provisioning
+- [[email-service-integration]]
+- [[typed-exception-error-handling]]
+- [[keycloak-jit-user-provisioning]]
+

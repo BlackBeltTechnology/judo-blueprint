@@ -1,12 +1,19 @@
 ---
-id: "invitation-with-recipients"
-title: "Invitation Entity with Recipient Tracking"
-score: 68.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
+id: invitation-with-recipients
+title: Invitation Entity with Recipient Tracking
+description: "An Invitation entity representing a batch invitation with a message, createdAt timestamp, and a createdBy relation to the User who sent it."
+aliases: []
+keywords: [invitation, recipient, tracking, recipients]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

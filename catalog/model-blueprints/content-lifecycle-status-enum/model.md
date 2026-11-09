@@ -1,37 +1,3 @@
-## Detection Query
-
-```graphql
-{ esm { enumerationtypes(where: { name: { like: "%Status%" } }) {
-  items { fqn name members { items { name ordinal } } }
-} } }
-```
-
-## Creation Mutations
-
-```graphql
-mutation { create(input: { enumerationType: {
-  container: "{{TYPES_NAMESPACE}}", name: "{{CONTENT_TYPE}}Status"
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationMember: {
-  container: "{{TYPES_NAMESPACE}}::{{CONTENT_TYPE}}Status", name: "DRAFT", ordinal: 0
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationMember: {
-  container: "{{TYPES_NAMESPACE}}::{{CONTENT_TYPE}}Status", name: "PUBLISHED", ordinal: 1
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationMember: {
-  container: "{{TYPES_NAMESPACE}}::{{CONTENT_TYPE}}Status", name: "DELETED", ordinal: 2
-} }) { success fqn } }
-```
-
 ## Examples
 
 ### mlszksz-platform

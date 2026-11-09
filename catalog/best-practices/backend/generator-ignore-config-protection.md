@@ -1,29 +1,20 @@
 ---
-id: "generator-ignore-config-protection"
-title: "Generator-Ignore for Configuration Protection"
-domain: "backend"
-category: "config"
-score: 82.7
-usage_count: 15
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - mlszksz-platform
-  - viterra_demo
-  - bhs-global-operation
-  - judo-demo-miniworkflow
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: generator-ignore-config-protection
+title: Generator-Ignore for Configuration Protection
+description: "The `.generator-ignore` file at the project root lists files that should be excluded from code generation overwrites."
+aliases: []
+keywords: [generator, ignore, configuration, protection, config]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:bhs-global-operation", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: config
+status: established
+projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, bhs-global-operation, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [osgi-karaf-bundle-architecture]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -98,6 +89,7 @@ Root `.generator-ignore` protects the standard 4 files: itself, `judo.properties
 - Cons: Must be manually maintained, forgetting to add a file means it gets overwritten on next build
 - Alternative: External configuration management (Vault, K8s secrets), environment-only config
 
-## Related Patterns
+## Related
 
-- osgi-karaf-bundle-architecture
+- [[osgi-karaf-bundle-architecture]]
+

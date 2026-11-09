@@ -1,20 +1,20 @@
 ---
-id: "service-delegation-pattern"
-title: "Service Delegation from Custom Operations"
-domain: "backend"
-category: "service"
-score: 77.2
-usage_count: 6
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
+id: service-delegation-pattern
+title: Service Delegation from Custom Operations
+description: Custom operations act as thin OSGi wrappers that delegate all business logic to shared service classes.
+aliases: []
+keywords: [service, delegation, from, custom, operations]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "status:established"]
+category: service
+status: established
+projects: [rackinspect, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [custom-operation-osgi-component, test-data-builder-factory]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -73,7 +73,8 @@ public class SharedServiceImpl implements SharedService {
 - Cons: Extra layer of indirection, service interfaces must be maintained, harder to trace call flow
 - Alternative: Put all logic directly in custom operations (simpler for small projects, but does not scale)
 
-## Related Patterns
+## Related
 
-- custom-operation-osgi-component
-- test-data-builder-factory
+- [[custom-operation-osgi-component]]
+- [[test-data-builder-factory]]
+

@@ -1,25 +1,20 @@
 ---
-id: "state-lifecycle-operation"
-title: "State Lifecycle Management via Bound Operations"
-domain: "backend"
-category: "operation"
-score: 77.5
-usage_count: 11
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - mlszksz-platform
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - park-here
-  - indamedia-adtrack
-  - workflow-poc
-  - doors-model
+id: state-lifecycle-operation
+title: State Lifecycle Management via Bound Operations
+description: Bound operations that manage entity state transitions through a defined lifecycle.
+aliases: []
+keywords: [state, lifecycle, management, bound, operations, operation]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:park-here", "project:indamedia-adtrack", "project:workflow-poc", "project:doors-model", "status:established"]
+category: operation
+status: established
+projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, park-here, indamedia-adtrack, workflow-poc, doors-model]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [entity-re-fetch-pattern, typed-exception-error-handling, data-snapshot-versioning, audit-event-trail]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -92,9 +87,10 @@ Contract lifecycle: CREATED -> PENDING -> APPROVED/REJECTED -> SIGNED -> CLOSED.
 - Cons: State machine logic spread across multiple operation classes, PB recalculation duplicated between Submit and Exclude
 - Alternative: Centralized state machine service, or model-level state machine definition
 
-## Related Patterns
+## Related
 
-- entity-re-fetch-pattern
-- typed-exception-error-handling
-- data-snapshot-versioning
-- audit-event-trail
+- [[entity-re-fetch-pattern]]
+- [[typed-exception-error-handling]]
+- [[data-snapshot-versioning]]
+- [[audit-event-trail]]
+

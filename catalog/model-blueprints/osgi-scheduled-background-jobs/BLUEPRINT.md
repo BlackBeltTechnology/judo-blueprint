@@ -1,15 +1,19 @@
 ---
 id: osgi-scheduled-background-jobs
-title: "OSGi Scheduled Background Job Framework"
-impl_only: true
-usage_count: 4
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
-  - rackinspect
-  - indamedia-adtrack
-  - park-here
+title: OSGi Scheduled Background Job Framework
+description: A pattern for implementing scheduled background jobs in JUDO applications using OSGi Declarative Services.
+aliases: []
+keywords: [osgi, scheduled, background, job, framework, jobs]
+tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "project:rackinspect", "project:indamedia-adtrack", "project:park-here", "status:established"]
+category: pattern
+status: established
+projects: [mlszksz-platform, rackinspect, indamedia-adtrack, park-here]
+evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

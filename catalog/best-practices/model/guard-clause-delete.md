@@ -1,15 +1,20 @@
 ---
-id: "guard-clause-delete"
-title: "Guard Clause for Conditional Delete Operations"
-domain: "model"
-category: "operation"
-score: 30.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - skillmatrix-model
+id: guard-clause-delete
+title: Guard Clause for Conditional Delete Operations
+description: Delete operations include guard clauses that check preconditions before allowing deletion.
+aliases: []
+keywords: [guard, clause, conditional, delete, operations]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
+category: operation
+status: single-project
+projects: [skillmatrix-model]
+evidence: ["skillmatrix-model:unrecorded"]
+alternatives: []
+related: [soft-delete-active-flag, mapped-operation-delegation]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -39,7 +44,8 @@ Model source confirms both guard-clause delete operations. `Competence.delete()`
 - Cons: Silent failure (returns without error), no error message to the user about why deletion was blocked
 - Prefer when: Deletion has preconditions that must be checked and dependent data must be cleaned up
 
-## Related Patterns
+## Related
 
-- [soft-delete-active-flag](soft-delete-active-flag.md)
-- [mapped-operation-delegation](mapped-operation-delegation.md)
+- [[soft-delete-active-flag]]
+- [[mapped-operation-delegation]]
+

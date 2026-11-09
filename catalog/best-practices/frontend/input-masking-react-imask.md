@@ -1,15 +1,20 @@
 ---
-id: "input-masking-react-imask"
-title: "Input Masking with react-imask for Formatted Fields"
-domain: "frontend"
-category: "form"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: input-masking-react-imask
+title: Input Masking with react-imask for Formatted Fields
+description: "Use the `react-imask` library (IMaskInput) within custom visual element overrides to enforce specific input formats on text fields."
+aliases: []
+keywords: [input, masking, react, imask, formatted, fields]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: form
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [custom-visual-element-override]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -49,6 +54,7 @@ Partner view/edit uses `react-imask` for three VAT ID fields: `vatId` and `vatId
 - **Cons**: Requires custom visual element override (not just a hook); `react-imask` adds bundle size; mask pattern must match backend validation
 - **When to use**: Tax IDs, phone numbers, postal codes, or any field with a fixed format pattern
 
-## Related Patterns
+## Related
 
-- [custom-visual-element-override](custom-visual-element-override.md)
+- [[custom-visual-element-override]]
+

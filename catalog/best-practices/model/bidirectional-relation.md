@@ -1,29 +1,20 @@
 ---
-id: "bidirectional-relation"
-title: "Bidirectional (Two-Way) Relation Pattern"
-domain: "model"
-category: "relation"
-score: 73.6
-usage_count: 15
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - sanctuary-backend
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: bidirectional-relation
+title: Bidirectional (Two-Way) Relation Pattern
+description: Two entities define a TwoWayRelationMember that represents both sides of a bidirectional association.
+aliases: []
+keywords: [bidirectional, two, way, relation]
+tags: ["domain:model", "layer:model", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: relation
+status: established
+projects: [itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, judo-partner, workflow-poc, reserve-app]
+evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [composition-ownership, container-back-reference]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -102,7 +93,8 @@ Multiple bidirectional pairs for the workflow engine: `Token.assignee [0..1] <->
 - Cons: Tighter coupling between entities, both entities must be aware of the relation, may add complexity
 - Prefer when: Both entities need to navigate to each other and referential consistency must be enforced automatically
 
-## Related Patterns
+## Related
 
-- [composition-ownership](composition-ownership.md)
-- [container-back-reference](container-back-reference.md) (alternative for one-way back-navigation)
+- [[composition-ownership]]
+- [[container-back-reference]] (alternative for one-way back-navigation)
+

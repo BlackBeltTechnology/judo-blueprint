@@ -1,17 +1,20 @@
 ---
-id: "i18n-custom-translation-keys"
+id: i18n-custom-translation-keys
 title: "Custom Translation Keys with custom.* Prefix"
-domain: "frontend"
-category: "i18n"
-score: 73.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-alternatives:
-  - react-intl-flat-key-pattern
+description: "Add project-specific translation keys using a `custom.*` prefix convention in both the locale-specific JSON files (e.g., `application_hu-HU.json`) and the generator override extra fragment (for English defaults)."
+aliases: []
+keywords: [custom, translation, keys, prefix, i18n]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: i18n
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: [react-intl-flat-key-pattern]
+related: [i18n-generator-override-extra-fragment, react-intl-flat-key-pattern]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -49,7 +52,8 @@ t('custom.dialog.row-selection.title', { groupLabel, defaultValue: `Select Row f
 - **Cons**: Two places to maintain (locale JSON + generator fragment); no automated key validation; can accumulate unused keys
 - **When to use**: Any custom component that displays user-facing text
 
-## Related Patterns
+## Related
 
-- [i18n-generator-override-extra-fragment](i18n-generator-override-extra-fragment.md)
-- [react-intl-flat-key-pattern](react-intl-flat-key-pattern.md)
+- [[i18n-generator-override-extra-fragment]]
+- [[react-intl-flat-key-pattern]]
+

@@ -1,12 +1,19 @@
 ---
 id: sensitive-field-double-entry-verification
-title: "Sensitive Field Double-Entry Verification UI"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
+title: Sensitive Field Double-Entry Verification UI
+description: A frontend-only pattern for preventing data entry errors on sensitive numeric fields by requiring the user to enter the value twice.
+aliases: []
+keywords: [sensitive, field, double, entry, verification, ui]
+tags: ["domain:model", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

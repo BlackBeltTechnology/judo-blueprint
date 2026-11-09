@@ -1,15 +1,20 @@
 ---
-id: "autocomplete-range-override"
-title: "Autocomplete Range Override for Context-Filtered Queries"
-domain: "frontend"
-category: "hook"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: autocomplete-range-override
+title: Autocomplete Range Override for Context-Filtered Queries
+description: "Override `xxxAutocompleteRangeAction` in dialog or page hooks to customize the data source for autocomplete/dropdown fields based on the current context."
+aliases: []
+keywords: [autocomplete, range, override, context, filtered, queries]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: hook
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -49,6 +54,7 @@ Multiple dialog hooks override rack, warehouse, and rack element autocomplete ra
 - **Cons**: Requires specialized backend service endpoints; more hooks to maintain; context dependency can be complex
 - **When to use**: When autocomplete fields should show filtered options based on parent entity relationships or current selection
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
+- [[pandino-action-hook-override]]
+

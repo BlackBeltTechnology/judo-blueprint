@@ -1,15 +1,20 @@
 ---
-id: "duplicate-detection-normalization"
-title: "Duplicate Detection via Name Normalization and Similarity"
-domain: "backend"
-category: "operation"
-score: 47.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - judo-partner
+id: duplicate-detection-normalization
+title: Duplicate Detection via Name Normalization and Similarity
+description: "A pattern for detecting duplicate entities by normalizing string fields (removing punctuation, company form suffixes, and case variations) and computing similarity scores."
+aliases: []
+keywords: [duplicate, detection, name, normalization, similarity]
+tags: ["domain:backend", "layer:backend", "project:judo-partner", "status:single-project"]
+category: operation
+status: single-project
+projects: [judo-partner]
+evidence: ["judo-partner:unrecorded"]
+alternatives: []
+related: [soft-delete-archive-pattern, dao-fluent-query-filter, mask-field-projection]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -64,8 +69,9 @@ Key elements:
 - Cons: Normalization logic is domain-specific (Hungarian company forms), recalculating flags across all duplicates on every change is O(n), Jaro-Winkler threshold may produce false positives/negatives
 - Alternative: Database-level fuzzy matching (pg_trgm), phonetic matching (Soundex/Metaphone), manual duplicate review queue
 
-## Related Patterns
+## Related
 
-- soft-delete-archive-pattern
-- dao-fluent-query-filter
-- mask-field-projection
+- [[soft-delete-archive-pattern]]
+- [[dao-fluent-query-filter]]
+- [[mask-field-projection]]
+

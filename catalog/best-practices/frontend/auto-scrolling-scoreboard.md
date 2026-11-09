@@ -1,15 +1,20 @@
 ---
-id: "auto-scrolling-scoreboard"
-title: "Auto-Scrolling Scoreboard/Leaderboard Component"
-domain: "frontend"
-category: "component"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: auto-scrolling-scoreboard
+title: Auto-Scrolling Scoreboard/Leaderboard Component
+description: "A TV/kiosk-style leaderboard component that auto-scrolls through entries, pauses on user interaction, and auto-refreshes data when reaching the bottom."
+aliases: []
+keywords: [auto, scrolling, scoreboard, leaderboard, component]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
+category: component
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [glassmorphic-styled-components, complete-frontend-replacement]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,7 +61,8 @@ Top 3 use medal avatar colors: gold `#D4AF37`, silver `#B0B0B0`, bronze `#8C7853
 - **Cons**: Custom implementation (not a library); scroll behavior may vary on different devices; requires careful interval cleanup
 - **When to use**: Event/conference apps, game leaderboards, public display screens
 
-## Related Patterns
+## Related
 
-- [glassmorphic-styled-components](glassmorphic-styled-components.md)
-- [complete-frontend-replacement](complete-frontend-replacement.md)
+- [[glassmorphic-styled-components]]
+- [[complete-frontend-replacement]]
+

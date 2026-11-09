@@ -1,12 +1,19 @@
 ---
-id: "exchange-rate-entity"
-title: "Exchange Rate Entity with Source/Target Currency"
-score: 73.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - rackinspect
+id: exchange-rate-entity
+title: Exchange Rate Entity with Source/Target Currency
+description: An ExchangeRate entity that records currency conversion rates between a source and target Currency.
+aliases: []
+keywords: [exchange, rate, source, target, currency]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

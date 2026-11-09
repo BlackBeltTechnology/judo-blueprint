@@ -1,15 +1,20 @@
 ---
-id: "i18n-generator-override-extra-fragment"
-title: "i18n Generator Override Extra Fragment for Custom Keys"
-domain: "frontend"
-category: "i18n"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: i18n-generator-override-extra-fragment
+title: i18n Generator Override Extra Fragment for Custom Keys
+description: "Inject custom translation keys into the generated default English translation file (`application_default.json`) using a Handlebars template fragment."
+aliases: []
+keywords: [i18n, generator, override, extra, fragment, custom, keys]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: i18n
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [i18n-custom-translation-keys, generator-override-extra-dependencies]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -46,7 +51,8 @@ Fragment content (JSON key-value pairs, no wrapping braces):
 - **Cons**: Fragment syntax must match generator expectations; Handlebars template expressions possible but rarely needed; must keep in sync with locale files
 - **When to use**: Alongside any custom component that needs its own translation keys
 
-## Related Patterns
+## Related
 
-- [i18n-custom-translation-keys](i18n-custom-translation-keys.md)
-- [generator-override-extra-dependencies](generator-override-extra-dependencies.md)
+- [[i18n-custom-translation-keys]]
+- [[generator-override-extra-dependencies]]
+

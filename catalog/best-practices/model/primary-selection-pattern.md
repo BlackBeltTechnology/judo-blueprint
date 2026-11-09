@@ -1,16 +1,20 @@
 ---
-id: "primary-selection-pattern"
-title: "Primary Selection Pattern for Collection Items"
-domain: "model"
-category: "operation"
-score: 73.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - judo-partner
+id: primary-selection-pattern
+title: Primary Selection Pattern for Collection Items
+description: "When an entity owns a collection of child items (e.g., addresses, phone numbers, email addresses), one item can be designated as the \"primary\" or default entry."
+aliases: []
+keywords: [primary, selection, collection, items]
+tags: ["domain:model", "layer:model", "project:rackinspect", "project:judo-partner", "status:emerging"]
+category: operation
+status: emerging
+projects: [rackinspect, judo-partner]
+evidence: ["rackinspect:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [toggle-operation-pattern, composition-ownership]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -39,7 +43,8 @@ When an entity owns a collection of child items (e.g., addresses, phone numbers,
 - Cons: Requires both a collection and a single reference on the parent, toggle logic must clear previous primary
 - Prefer when: A collection of contact information or addresses needs a designated default entry
 
-## Related Patterns
+## Related
 
-- [toggle-operation-pattern](toggle-operation-pattern.md)
-- [composition-ownership](composition-ownership.md)
+- [[toggle-operation-pattern]]
+- [[composition-ownership]]
+

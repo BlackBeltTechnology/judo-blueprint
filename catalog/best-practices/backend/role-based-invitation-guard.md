@@ -1,15 +1,20 @@
 ---
-id: "role-based-invitation-guard"
-title: "Role-Based Invitation Permission Guard"
-domain: "backend"
-category: "auth"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: role-based-invitation-guard
+title: Role-Based Invitation Permission Guard
+description: A service-level authorization pattern that restricts which roles a user can assign when inviting others to an organization.
+aliases: []
+keywords: [role, based, invitation, permission, guard]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: auth
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [actor-resolution-variable-resolver, typed-exception-error-handling, service-delegation-pattern]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -54,8 +59,9 @@ public void accept(Panel _this, InvitationInput input) throws BusinessErrorExcep
 - Cons: Hardcoded in Java (not configurable at runtime), permission matrix must be maintained when new roles are added, no model-level enforcement
 - Alternative: Model-level access control expressions, database-driven permission matrix, or Keycloak role-based access policies
 
-## Related Patterns
+## Related
 
-- actor-resolution-variable-resolver
-- typed-exception-error-handling
-- service-delegation-pattern
+- [[actor-resolution-variable-resolver]]
+- [[typed-exception-error-handling]]
+- [[service-delegation-pattern]]
+

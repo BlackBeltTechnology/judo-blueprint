@@ -1,28 +1,20 @@
 ---
-id: "custom-operation-osgi-component"
-title: "Custom Operation OSGi Component Registration"
-domain: "backend"
-category: "di"
-score: 80.8
-usage_count: 14
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - mlszksz-platform
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - doors-model
+id: custom-operation-osgi-component
+title: Custom Operation OSGi Component Registration
+description: The standard pattern for registering custom operation implementations as OSGi Declarative Services components.
+aliases: []
+keywords: [custom, operation, osgi, component, registration]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:doors-model", "status:established"]
+category: di
+status: established
+projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, doors-model]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [dual-dao-pattern, entity-re-fetch-pattern, service-delegation-pattern, script-driven-operations]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -103,9 +95,10 @@ Key elements:
 - Cons: Requires OSGi container, cannot easily unit test without OSGi or a DI bridge pattern
 - Alternative: Delegation pattern where OSGi component delegates to POJO (see agent-docs)
 
-## Related Patterns
+## Related
 
-- dual-dao-pattern
-- entity-re-fetch-pattern
-- service-delegation-pattern
-- script-driven-operations
+- [[dual-dao-pattern]]
+- [[entity-re-fetch-pattern]]
+- [[service-delegation-pattern]]
+- [[script-driven-operations]]
+

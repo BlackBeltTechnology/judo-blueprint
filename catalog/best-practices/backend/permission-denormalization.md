@@ -1,15 +1,20 @@
 ---
-id: "permission-denormalization"
-title: "Permission Denormalization from Role Assignments"
-domain: "backend"
-category: "auth"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: permission-denormalization
+title: Permission Denormalization from Role Assignments
+description: A role-based permission system where permission flags are denormalized onto the User entity as individual boolean fields.
+aliases: []
+keywords: [permission, denormalization, from, role, assignments]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
+category: auth
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [interceptor-crud-lifecycle, dirty-check-before-update]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -48,7 +53,8 @@ if (!before.equals(user.toMap())) {
 - Cons: O(N) recalculation for all users on role changes, 22+ boolean fields create wide entity, denormalization can drift if cascade is missed
 - Alternative: Join-based permission check at query time, or external IdP (Keycloak) for role management
 
-## Related Patterns
+## Related
 
-- interceptor-crud-lifecycle
-- dirty-check-before-update
+- [[interceptor-crud-lifecycle]]
+- [[dirty-check-before-update]]
+

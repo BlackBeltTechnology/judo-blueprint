@@ -1,19 +1,19 @@
 ---
-id: "standard-type-and-measure-library"
-title: "Standard Type and Measure Library (Shared Type System)"
-score: 46.0
-usage_count: 8
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - bhs-global-operation
-  - viterra_demo
-  - InterfaceRegister
-  - mjsz
-  - sanctuary-backend
-  - doors-model
-  - ams-model
-  - skillmatrix-model
+id: standard-type-and-measure-library
+title: Standard Type and Measure Library (Shared Type System)
+description: A standardized type system and comprehensive SI measurement unit library embedded in a JUDO model.
+aliases: []
+keywords: [standard, type, measure, library, shared, system]
+tags: ["domain:model", "layer:model", "project:bhs-global-operation", "project:viterra_demo", "project:InterfaceRegister", "project:mjsz", "project:sanctuary-backend", "project:doors-model", "project:ams-model", "project:skillmatrix-model", "status:established"]
+category: pattern
+status: established
+projects: [bhs-global-operation, viterra_demo, InterfaceRegister, mjsz, sanctuary-backend, doors-model, ams-model, skillmatrix-model]
+evidence: ["bhs-global-operation:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "mjsz:unrecorded", "sanctuary-backend:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

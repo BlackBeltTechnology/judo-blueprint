@@ -1,12 +1,19 @@
 ---
 id: inline-pdf-preview-post-action
-title: "Inline PDF Preview via Post-Operation Action Hook"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
+title: Inline PDF Preview via Post-Operation Action Hook
+description: "A frontend-only pattern for displaying PDF documents inline in the browser after a server-side document generation operation completes, instead of showing the default generated output view dialog."
+aliases: []
+keywords: [inline, pdf, preview, post, operation, action, hook]
+tags: ["domain:model", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

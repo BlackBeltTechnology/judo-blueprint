@@ -1,12 +1,19 @@
 ---
 id: cards-container-configuration-hook
-title: "Cards Container Configuration Hook (Custom Card Layout)"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - park-here
+title: Cards Container Configuration Hook (Custom Card Layout)
+description: "A frontend-only pattern for replacing the default data grid table rendering with a responsive card-based layout using the `CardsContainerConfigHook` Pandino hook."
+aliases: []
+keywords: [cards, container, configuration, hook, custom, card, layout]
+tags: ["domain:model", "layer:frontend", "project:park-here", "status:single-project"]
+category: pattern
+status: single-project
+projects: [park-here]
+evidence: ["park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

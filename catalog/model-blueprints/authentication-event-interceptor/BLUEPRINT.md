@@ -1,14 +1,19 @@
 ---
 id: authentication-event-interceptor
-title: "Authentication Event Interceptor (Login Tracking and Audit)"
-impl_only: true
-usage_count: 3
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
-  - indamedia-adtrack
-  - park-here
+title: Authentication Event Interceptor (Login Tracking and Audit)
+description: "An `AuthenticationInterceptor` that hooks into the JUDO authentication pipeline to perform side effects on user login."
+aliases: []
+keywords: [authentication, event, interceptor, login, tracking, audit]
+tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "project:indamedia-adtrack", "project:park-here", "status:emerging"]
+category: pattern
+status: emerging
+projects: [mlszksz-platform, indamedia-adtrack, park-here]
+evidence: ["mlszksz-platform:unrecorded", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

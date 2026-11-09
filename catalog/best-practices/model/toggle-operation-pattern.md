@@ -1,16 +1,20 @@
 ---
-id: "toggle-operation-pattern"
-title: "Toggle Operation for Boolean Flag Mutation"
-domain: "model"
-category: "operation"
-score: 75.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
+id: toggle-operation-pattern
+title: Toggle Operation for Boolean Flag Mutation
+description: "Entities with boolean flags expose dedicated `toggle*` or `activate*` operations (e.g., `toggleActive`, `togglePrimary`, `activateToggle`, `changeVisibility`) rather than allowing direct attribute mutation."
+aliases: []
+keywords: [toggle, operation, boolean, flag, mutation]
+tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-platform", "status:emerging"]
+category: operation
+status: emerging
+projects: [rackinspect, mlszksz-platform]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded"]
+alternatives: []
+related: [soft-delete-active-flag, primary-selection-pattern, mapped-operation-delegation]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -38,8 +42,9 @@ Entities with boolean flags expose dedicated `toggle*` or `activate*` operations
 - Cons: More operations to define and maintain, simple flag flips require round-trip to server
 - Prefer when: Boolean flag changes have side effects or business rules; always for `active` and `primary` flags
 
-## Related Patterns
+## Related
 
-- [soft-delete-active-flag](soft-delete-active-flag.md)
-- [primary-selection-pattern](primary-selection-pattern.md)
-- [mapped-operation-delegation](mapped-operation-delegation.md)
+- [[soft-delete-active-flag]]
+- [[primary-selection-pattern]]
+- [[mapped-operation-delegation]]
+

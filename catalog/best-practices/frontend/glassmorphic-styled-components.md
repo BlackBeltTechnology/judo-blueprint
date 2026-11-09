@@ -1,15 +1,20 @@
 ---
-id: "glassmorphic-styled-components"
-title: "Glassmorphic MUI Styled Components Library"
-domain: "frontend"
-category: "component"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: glassmorphic-styled-components
+title: Glassmorphic MUI Styled Components Library
+description: "A reusable library of MUI `styled()` components implementing a glassmorphic (frosted glass) design language."
+aliases: []
+keywords: [glassmorphic, mui, styled, components, library]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
+category: component
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [dark-theme-override, custom-component-directory]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,7 +56,8 @@ export const ThreeDGlossyButton = styled(Button)({
 - **Cons**: Requires backdrop-filter browser support; may not integrate well with generated JUDO components; design system is project-specific
 - **When to use**: When building custom UI with a distinct visual identity that goes beyond MUI theme overrides
 
-## Related Patterns
+## Related
 
-- [dark-theme-override](dark-theme-override.md)
-- [custom-component-directory](custom-component-directory.md)
+- [[dark-theme-override]]
+- [[custom-component-directory]]
+

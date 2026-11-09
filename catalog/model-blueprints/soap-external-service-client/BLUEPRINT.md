@@ -1,12 +1,19 @@
 ---
 id: soap-external-service-client
-title: "SOAP External Service Client (WSDL-Generated OSGi Service)"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
+title: SOAP External Service Client (WSDL-Generated OSGi Service)
+description: A pattern for integrating with external SOAP/WSDL web services in a JUDO application by wrapping auto-generated JAX-WS client stubs behind a clean OSGi service interface.
+aliases: []
+keywords: [soap, external, service, client, wsdl, generated, osgi]
+tags: ["domain:model", "layer:backend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

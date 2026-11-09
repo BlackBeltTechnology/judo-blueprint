@@ -1,13 +1,19 @@
 ---
 id: error-handler-interceptor-customization
-title: "Error Handler Interceptor Customization"
-impl_only: true
-usage_count: 2
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
-  - park-here
+title: Error Handler Interceptor Customization
+description: A frontend-only pattern for intercepting and customizing error handling behavior in JUDO React applications.
+aliases: []
+keywords: [error, handler, interceptor, customization]
+tags: ["domain:model", "layer:frontend", "project:rackinspect", "project:park-here", "status:emerging"]
+category: pattern
+status: emerging
+projects: [rackinspect, park-here]
+evidence: ["rackinspect:unrecorded", "park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

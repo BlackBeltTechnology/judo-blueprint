@@ -1,0 +1,292 @@
+#!/usr/bin/env python3
+"""Lint catalog entries against references/format.md.
+
+Usage: entry-lint [paths...] [--json] [--legacy] [--profile entries|agent-docs|all]
+
+Without paths: the whole catalog/. Paths may be entry dirs, files or folders.
+--legacy allows `format: legacy` entries to skip section/fragment rules.
+"""
+import argparse
+import json
+import pathlib
+import re
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "_lib"))
+from judo_common import repo_root  # noqa: E402
+
+ROOT = repo_root()
+CAT = ROOT / "catalog"
+
+BP_SECTIONS = ["Intent", "Structure", "Constraints", "Variations", "When to use", "When to avoid", "Related"]
+PR_SECTIONS = ["Intent", "Practice", "Rationale", "Example", "When to avoid", "Related"]
+FORBIDDEN_FM = ["score", "usage_count", "alternative_count"]
+CLI_PATTERNS = [
+    (re.compile(r"```\s*graphql", re.I), "graphql fence"),
+    (re.compile(r"^\s*mutation\s*\{", re.M), "GraphQL mutation"),
+    (re.compile(r"java\s+-jar"), "java -jar invocation"),
+    (re.compile(r"\bjudo[-_]cli\b"), "judo-cli reference"),
+    (re.compile(r"\bcreate\s+-t\s+\w+"), "CLI create command"),
+    (re.compile(r"\s--ns[\s=]"), "CLI --ns option"),
+    (re.compile(r"\bmermaid model\b"), "CLI mermaid command"),
+    (re.compile(r"\bvalidate --strict\b"), "CLI validate command"),
+    (re.compile(r"\./judo\.sh|\bjudo\.sh\s+(build|start|generate|stop|clean|prune)"), "judo.sh command"),
+]
+HARNESS = [(re.compile(r"\.claude/"), ".claude path"), (re.compile(r"SKILL\.md"), "SKILL.md link"),
+           (re.compile(r"\bjudospec\b"), "judospec")]
+PRIVACY = [(re.compile(r"/Users/[a-z]+|/home/[a-z]+"), "home path"),
+           (re.compile(r"[\w.+-]+@[\w-]+\.(?:com|hu|io|org|net)\b"), "e-mail")]
+FENCE = re.compile(r"^```.*?^```", re.S | re.M)
+GEN = re.compile(r"<!-- mermaid:generated fragment=(\S+) cli=(\S+) -->(.*?)<!-- /mermaid:generated -->", re.S)
+HBS = re.compile(r"\{\{[^}]*\}\}")
+STATUS = {1: "single-project", 2: "emerging", 3: "emerging"}
+
+
+def parse_fm(text):
+    m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+    if not m:
+        return None, "missing frontmatter", text
+    fm, err = {}, None
+    lines = m.group(1).splitlines()
+    for i, line in enumerate(lines):
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        if line.startswith((" ", "\t", "-")):
+            err = err or f"multi-line value near '{line.strip()[:40]}' (use flow lists)"
+            continue
+        if ":" not in line:
+            err = err or f"bad frontmatter line '{line[:40]}'"
+            continue
+        k, v = line.split(":", 1)
+        v = v.strip()
+        if v in ("|", ">", "|-", ">-", ">+", "|+"):
+            err = err or f"block scalar for {k}"
+        fm[k.strip()] = v
+    return fm, err, text[m.end():]
+
+
+def flow_list(v):
+    v = (v or "").strip()
+    if v.startswith("[") and v.endswith("]"):
+        return [x.strip().strip("\"'") for x in v[1:-1].split(",") if x.strip()]
+    return [v.strip("\"'")] if v else []
+
+
+def sections(body):
+    return [m.group(1).strip() for m in re.finditer(r"^## (.+)$", body, re.M)]
+
+
+def strip_fences(body):
+    return FENCE.sub("", body)
+
+
+def all_ids():
+    ids = {p.name for p in (CAT / "model-blueprints").iterdir() if (p / "BLUEPRINT.md").exists()}
+    ids |= {p.stem for p in (CAT / "best-practices").glob("*/*.md") if p.name != "AGENTS.md" and p.name != "README.md"}
+    return ids
+
+
+def lint_content(path, text, errs, profile):
+    body_nofence = strip_fences(text)
+    for rx, name in CLI_PATTERNS:
+        # judo-cli is allowed in agent-docs (the CLI doc itself lives there)
+        if profile == "agent-docs":
+            break
+        target = text if "graphql" in name or "mutation" in name else text
+        if rx.search(target):
+            errs.append(f"forbidden content: {name}")
+    for rx, name in HARNESS:
+        if rx.search(text):
+            errs.append(f"harness wording: {name}")
+    for rx, name in PRIVACY:
+        if rx.search(text):
+            errs.append(f"privacy: {name}")
+    if HBS.search(GEN.sub("", body_nofence)):
+        errs.append("Handlebars outside code fences")
+    # chunk size
+    parts = re.split(r"^#{1,6} .*$", text, flags=re.M)
+    for p in parts:
+        if len(p) > 4000:
+            errs.append(f"section body over 4000 chars without sub-heading ({len(p)})")
+            break
+
+
+def lint_entry_fm(path, fm, err, errs, ids, legacy_ok):
+    if err:
+        errs.append(f"frontmatter: {err}")
+    for k in ["id", "title", "description"]:
+        if not fm.get(k):
+            errs.append(f"frontmatter: missing {k}")
+    for k in FORBIDDEN_FM:
+        if k in fm:
+            errs.append(f"frontmatter: forbidden key {k}")
+    projects = flow_list(fm.get("projects"))
+    if projects:
+        want = STATUS.get(len(set(projects)), "established")
+        if fm.get("status", "").strip("\"'") != want:
+            errs.append(f"status must be {want} for {len(set(projects))} project(s)")
+    for alt in flow_list(fm.get("alternatives")):
+        if alt not in ids:
+            errs.append(f"alternatives: unknown id {alt}")
+    legacy = fm.get("format", "").strip("\"'") == "legacy"
+    frag = fm.get("fragment", "").strip("\"'")
+    if not frag:
+        errs.append("frontmatter: missing fragment (id, 'none: <reason>' or pending+legacy)")
+    elif frag == "pending" and not (legacy and legacy_ok):
+        errs.append("fragment: pending is only allowed with format: legacy")
+    return legacy, frag
+
+
+def lint_blueprint(d, ids, legacy_ok):
+    out = []
+    bp = d / "BLUEPRINT.md"
+    errs = []
+    if not bp.exists():
+        return [(str(d), ["missing BLUEPRINT.md"])]
+    layers = [f for f in ["model.md", "backend.md", "frontend.md"] if (d / f).exists()]
+    if not layers:
+        errs.append("no layer file (model.md/backend.md/frontend.md)")
+    text = bp.read_text()
+    fm, err, body = parse_fm(text)
+    if fm is None:
+        return [(str(bp), [err])]
+    legacy, frag = lint_entry_fm(bp, fm, err, errs, ids, legacy_ok)
+    if fm.get("id", "").strip("\"'") != d.name:
+        errs.append(f"id '{fm.get('id')}' != directory name")
+    if not (legacy and legacy_ok):
+        secs = sections(body)
+        missing = [s for s in BP_SECTIONS if s not in secs]
+        if missing:
+            errs.append(f"missing sections: {', '.join(missing)}")
+        else:
+            order = [secs.index(s) for s in BP_SECTIONS]
+            if order != sorted(order):
+                errs.append("sections out of order")
+        if frag and not frag.startswith("none") and frag != "pending":
+            mt = (d / "model.md").read_text() if (d / "model.md").exists() else ""
+            if not GEN.search(mt):
+                errs.append("fragment declared but model.md has no generated block")
+            if not (ROOT / "fragments" / f"{frag}.model").exists():
+                errs.append(f"fragments/{frag}.model missing")
+    lint_content(bp, text, errs, "entries")
+    out.append((str(bp.relative_to(ROOT)), errs))
+    for f in layers:
+        e2 = []
+        t = (d / f).read_text()
+        if t.startswith("---\n"):
+            e2.append("layer files carry no frontmatter")
+        lint_content(d / f, t, e2, "entries")
+        out.append((str((d / f).relative_to(ROOT)), e2))
+    return out
+
+
+def lint_practice(f, ids, legacy_ok):
+    errs = []
+    text = f.read_text()
+    fm, err, body = parse_fm(text)
+    if fm is None:
+        return [(str(f.relative_to(ROOT)), [err])]
+    legacy, frag = lint_entry_fm(f, fm, err, errs, ids, legacy_ok)
+    if fm.get("id", "").strip("\"'") != f.stem:
+        errs.append(f"id '{fm.get('id')}' != file name")
+    dom = f.parent.name
+    tags = flow_list(fm.get("tags"))
+    dtags = [t for t in tags if t.startswith("domain:")]
+    if dtags and dtags[0] != f"domain:{dom}":
+        errs.append(f"tag {dtags[0]} != folder {dom}")
+    if not (legacy and legacy_ok):
+        secs = sections(body)
+        missing = [s for s in PR_SECTIONS if s not in secs]
+        if missing:
+            errs.append(f"missing sections: {', '.join(missing)}")
+        if frag and not frag.startswith("none") and frag != "pending":
+            if not GEN.search(text):
+                errs.append("fragment declared but no generated block")
+            if not (ROOT / "fragments" / f"{frag}.model").exists():
+                errs.append(f"fragments/{frag}.model missing")
+    lint_content(f, text, errs, "entries")
+    return [(str(f.relative_to(ROOT)), errs)]
+
+
+def lint_agent_doc(f):
+    errs = []
+    text = f.read_text()
+    if f.name != "AGENTS.md":
+        fm, err, _ = parse_fm(text)
+        if fm is None:
+            errs.append("missing frontmatter")
+        else:
+            if err:
+                errs.append(f"frontmatter: {err}")
+            for k in ["title", "description"]:
+                if not fm.get(k):
+                    errs.append(f"frontmatter: missing {k}")
+    for rx, name in HARNESS:
+        if rx.search(text):
+            errs.append(f"harness wording: {name}")
+    if HBS.search(strip_fences(text).replace("`{{", "").replace("{{`", "")):
+        # inline code spans with {{ are allowed
+        inline = re.sub(r"`[^`\n]*`", "", strip_fences(text))
+        if HBS.search(inline):
+            errs.append("Handlebars outside code")
+    if re.search(r"\bwebshop\b|\bmyapp\b|rackinspect", text, re.I):
+        errs.append("sample project name")
+    for p in re.split(r"^#{1,6} .*$", text, flags=re.M):
+        if len(p) > 4000:
+            errs.append(f"section body over 4000 chars without sub-heading ({len(p)})")
+            break
+    return [(str(f.relative_to(ROOT)), errs)]
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0], formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
+    ap.add_argument("paths", nargs="*")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--legacy", action="store_true")
+    ap.add_argument("--profile", default="all", choices=["entries", "agent-docs", "all"])
+    a = ap.parse_args()
+    ids = all_ids()
+    targets = [pathlib.Path(p).resolve() for p in a.paths] or [CAT]
+    results = []
+    seen = set()
+
+    def visit(p):
+        if p in seen:
+            return
+        seen.add(p)
+        if p.is_dir() and (p / "BLUEPRINT.md").exists():
+            if a.profile in ("entries", "all"):
+                results.extend(lint_blueprint(p, ids, a.legacy))
+            return
+        if p.is_dir():
+            for c in sorted(p.iterdir()):
+                if c.is_dir() or c.suffix == ".md":
+                    visit(c)
+            return
+        if p.suffix != ".md":
+            return
+        rel = p.relative_to(ROOT).parts
+        if "agent-docs" in rel:
+            if a.profile in ("agent-docs", "all"):
+                results.extend(lint_agent_doc(p))
+        elif "best-practices" in rel and p.name not in ("AGENTS.md", "README.md"):
+            if a.profile in ("entries", "all"):
+                results.extend(lint_practice(p, ids, a.legacy))
+        elif "model-blueprints" in rel and p.name == "BLUEPRINT.md":
+            visit(p.parent)
+    for t in targets:
+        visit(t)
+    bad = [(f, e) for f, e in results if e]
+    if a.json:
+        print(json.dumps({"files": len(results), "failed": len(bad), "errors": {f: e for f, e in bad}}, indent=2))
+    else:
+        for f, e in bad:
+            print(f"FAIL {f}")
+            for x in e:
+                print(f"     {x}")
+        print(f"{len(results)} files, {len(bad)} failed")
+    return 1 if bad else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

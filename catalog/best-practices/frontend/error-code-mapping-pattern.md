@@ -1,16 +1,20 @@
 ---
-id: "error-code-mapping-pattern"
-title: "Backend Error Code to UI Flow Mapping"
-domain: "frontend"
-category: "component"
-score: 69.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
+id: error-code-mapping-pattern
+title: Backend Error Code to UI Flow Mapping
+description: Map backend error codes from API responses to specific UI actions or flows.
+aliases: []
+keywords: [backend, error, code, ui, flow, mapping]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "status:emerging"]
+category: component
+status: emerging
+projects: [trivia, rackinspect]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded"]
+alternatives: []
+related: [generated-service-layer-reuse, localstorage-session-persistence, http-error-interceptor]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -58,8 +62,9 @@ Registers a global HTTP error interceptor via `register-error-handler-intercepto
 - **Cons**: Tight coupling between frontend and backend error code contract; requires maintaining error code mappings; error structure parsing can be fragile
 - **When to use**: Any application with known error scenarios that require specific UI responses
 
-## Related Patterns
+## Related
 
-- [generated-service-layer-reuse](generated-service-layer-reuse.md)
-- [localstorage-session-persistence](localstorage-session-persistence.md)
-- [http-error-interceptor](http-error-interceptor.md)
+- [[generated-service-layer-reuse]]
+- [[localstorage-session-persistence]]
+- [[http-error-interceptor]]
+

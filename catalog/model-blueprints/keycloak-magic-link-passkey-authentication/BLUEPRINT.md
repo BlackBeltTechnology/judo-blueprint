@@ -1,12 +1,19 @@
 ---
 id: keycloak-magic-link-passkey-authentication
-title: "Keycloak Magic Link and Passkey Authentication Integration"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Keycloak Magic Link and Passkey Authentication Integration
+description: A comprehensive Keycloak integration pattern that implements passwordless authentication via magic link emails and passkey (WebAuthn) support.
+aliases: []
+keywords: [keycloak, magic, link, passkey, authentication, integration]
+tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

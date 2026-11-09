@@ -1,24 +1,20 @@
 ---
-id: "filestore-mediated-file-transfer"
-title: "FileStore-Mediated File Transfer Pattern"
-domain: "backend"
-category: "integration"
-score: 77.5
-usage_count: 10
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - alba
-  - mlszksz-platform
-  - viterra_demo
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - workflow-poc
-  - doors-model
+id: filestore-mediated-file-transfer
+title: FileStore-Mediated File Transfer Pattern
+description: File upload and download operations use the JUDO FileStore service as an intermediary rather than handling files directly in REST endpoints.
+aliases: []
+keywords: [filestore, mediated, file, transfer]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "project:doors-model", "status:established"]
+category: integration
+status: established
+projects: [trivia, rackinspect, alba, mlszksz-platform, viterra_demo, park-here, indamedia-adtrack, judo-partner, workflow-poc, doors-model]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [bulk-json-import-export, email-service-integration, document-generation-pipeline, handlebars-email-template]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -90,9 +86,10 @@ Three file-handling custom operations on Contract entity: `uploadFile` (uploads 
 - Cons: Extra indirection, files in RDBMS can cause DB bloat, no streaming for large files
 - Alternative: Direct filesystem storage, S3-compatible object storage
 
-## Related Patterns
+## Related
 
-- bulk-json-import-export
-- email-service-integration
-- document-generation-pipeline
-- handlebars-email-template
+- [[bulk-json-import-export]]
+- [[email-service-integration]]
+- [[document-generation-pipeline]]
+- [[handlebars-email-template]]
+

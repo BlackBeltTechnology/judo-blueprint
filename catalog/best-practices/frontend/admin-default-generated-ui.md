@@ -1,18 +1,20 @@
 ---
-id: "admin-default-generated-ui"
-title: "Admin Frontend with Default Generated JUDO UI"
-domain: "frontend"
-category: "page"
-score: 42.2
-usage_count: 4
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
-  - reserve-app
-  - doors-model
+id: admin-default-generated-ui
+title: Admin Frontend with Default Generated JUDO UI
+description: "Use the JUDO-generated frontend as-is for administrative CRUD operations, with minimal or zero customizations."
+aliases: []
+keywords: [admin, frontend, default, generated, judo, ui]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:reserve-app", "project:doors-model", "status:established"]
+category: page
+status: established
+projects: [trivia, itracker, reserve-app, doors-model]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [dual-actor-frontend-architecture, hook-scaffold-default-pattern]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -64,7 +66,8 @@ Admin Flutter actor manages 3 entity types (Applications, Campaigns, Users) with
 - **Cons**: Limited UX flexibility; all entities look and behave the same; no custom business logic in frontend
 - **When to use**: Internal admin dashboards, back-office tools, or when admin UX is not a priority
 
-## Related Patterns
+## Related
 
-- [dual-actor-frontend-architecture](dual-actor-frontend-architecture.md)
-- [hook-scaffold-default-pattern](hook-scaffold-default-pattern.md)
+- [[dual-actor-frontend-architecture]]
+- [[hook-scaffold-default-pattern]]
+

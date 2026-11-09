@@ -1,13 +1,19 @@
 ---
-id: "user-with-boolean-role-flags"
-title: "User Entity with Boolean Role Flags (Instead of Role Enum/Entity)"
-score: 34.7
-usage_count: 2
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - InterfaceRegister
-  - skillmatrix-model
+id: user-with-boolean-role-flags
+title: User Entity with Boolean Role Flags (Instead of Role Enum/Entity)
+description: "A User entity that represents application users with individual boolean attributes for each role/permission level, rather than using a Role enum, a Role entity association, or a single role attribute."
+aliases: []
+keywords: [user, boolean, role, flags, instead, enum]
+tags: ["domain:model", "layer:model", "project:InterfaceRegister", "project:skillmatrix-model", "status:emerging"]
+category: pattern
+status: emerging
+projects: [InterfaceRegister, skillmatrix-model]
+evidence: ["InterfaceRegister:unrecorded", "skillmatrix-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

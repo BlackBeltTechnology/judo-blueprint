@@ -1,33 +1,3 @@
-## Detection Query
-
-```graphql
-{ esm { enumerationtypes(limit: 50) {
-  items { fqn name members { items { name ordinal } } }
-} } }
-```
-
-Look for enums with exactly two members where one represents an active/enabled state and the other represents an inactive/archived/closed state.
-
-## Creation Mutations
-
-```graphql
-mutation { create(input: { enumerationType: {
-  container: "{{NAMESPACE}}", name: "{{STATUS_NAME}}"
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationMember: {
-  container: "{{NAMESPACE}}::{{STATUS_NAME}}", name: "{{ACTIVE_MEMBER}}", ordinal: 1
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationMember: {
-  container: "{{NAMESPACE}}::{{STATUS_NAME}}", name: "{{INACTIVE_MEMBER}}", ordinal: 2
-} }) { success fqn } }
-```
-
 ## Examples
 
 ### viterra_demo

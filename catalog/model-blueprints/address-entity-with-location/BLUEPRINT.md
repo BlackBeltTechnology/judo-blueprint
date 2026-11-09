@@ -1,14 +1,19 @@
 ---
-id: "address-entity-with-location"
-title: "Address Entity with Geolocation"
-score: 71.0
-usage_count: 3
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
-  - rackinspect
-  - doors-model
+id: address-entity-with-location
+title: Address Entity with Geolocation
+description: "An Address entity that captures structured address fields (street, building, floor, door, postal code) along with a composed Location entity for geographic coordinates (latitude, longitude)."
+aliases: []
+keywords: [address, geolocation, location]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "project:rackinspect", "project:doors-model", "status:emerging"]
+category: pattern
+status: emerging
+projects: [mlszksz-platform, rackinspect, doors-model]
+evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

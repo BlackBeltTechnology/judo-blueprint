@@ -1,15 +1,20 @@
 ---
-id: "personal-best-tracking"
-title: "Boolean Flag Personal Best Tracking with Recalculation"
-domain: "backend"
-category: "operation"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: personal-best-tracking
+title: Boolean Flag Personal Best Tracking with Recalculation
+description: "Tracking a \"best\" record among a set of related entities using a boolean flag rather than a computed view."
+aliases: []
+keywords: [boolean, flag, personal, best, tracking, recalculation]
+tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
+category: operation
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [state-lifecycle-operation, dao-fluent-query-filter]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -49,7 +54,8 @@ Submit operation sets PB when new score > existing PB score, or same score with 
 - Cons: Duplicated comparison logic, in-memory iteration for recalculation (could use DB sort), flag can become inconsistent if not updated atomically
 - Alternative: Computed view/query that always calculates best on read, or centralized PB service
 
-## Related Patterns
+## Related
 
-- state-lifecycle-operation
-- dao-fluent-query-filter
+- [[state-lifecycle-operation]]
+- [[dao-fluent-query-filter]]
+

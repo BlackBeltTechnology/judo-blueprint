@@ -1,31 +1,20 @@
 ---
-id: "derived-attribute-flattening"
-title: "Derived Attribute Flattening"
-domain: "model"
-category: "transfer"
-score: 82.4
-usage_count: 17
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: derived-attribute-flattening
+title: Derived Attribute Flattening
+description: "Transfer objects flatten navigation paths from entity relations into derived attributes, eliminating the need for clients to traverse relations."
+aliases: []
+keywords: [derived, attribute, flattening]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: transfer
+status: established
+projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, literal-derived-attribute]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -117,7 +106,8 @@ Same model as AMS-Model. Abstract `Request` uses 5 derived attributes for denorm
 - Cons: Derived attributes are read-only, may introduce performance overhead for deep navigation
 - Prefer when: UI needs flat tabular data from related entities
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [literal-derived-attribute](literal-derived-attribute.md)
+- [[actor-based-transfer-projection]]
+- [[literal-derived-attribute]]
+

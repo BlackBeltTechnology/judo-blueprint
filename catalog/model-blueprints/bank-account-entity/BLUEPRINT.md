@@ -1,12 +1,19 @@
 ---
-id: "bank-account-entity"
-title: "Bank Account Entity with Bank Reference"
-score: 32.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - doors-model
+id: bank-account-entity
+title: Bank Account Entity with Bank Reference
+description: A BankAccount entity representing a financial bank account with an accountNumber attribute and a reference to a Bank entity.
+aliases: []
+keywords: [bank, account, reference]
+tags: ["domain:model", "layer:model", "project:doors-model", "status:single-project"]
+category: pattern
+status: single-project
+projects: [doors-model]
+evidence: ["doors-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

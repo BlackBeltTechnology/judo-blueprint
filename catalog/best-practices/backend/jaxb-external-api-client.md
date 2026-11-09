@@ -1,17 +1,20 @@
 ---
-id: "jaxb-external-api-client"
-title: "JAXB-Based External API Client with Response Caching"
-domain: "backend"
-category: "integration"
-score: 47.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - judo-partner
-alternatives:
-  - soap-client-integration
+id: jaxb-external-api-client
+title: JAXB-Based External API Client with Response Caching
+description: "An external API client built with JAXB-generated classes from XSD schemas, deployed as a separate OSGi bundle."
+aliases: []
+keywords: [jaxb, based, external, api, client, response, caching]
+tags: ["domain:backend", "layer:backend", "project:judo-partner", "status:single-project"]
+category: integration
+status: single-project
+projects: [judo-partner]
+evidence: ["judo-partner:unrecorded"]
+alternatives: [soap-client-integration]
+related: [soap-client-integration, external-api-adapter-pattern, osgi-karaf-bundle-architecture]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -69,8 +72,9 @@ NAV Online Invoice System (Hungarian Tax Authority) API v3.0 integration via ded
 - Cons: JAXB adds code generation complexity, XML is verbose compared to REST/JSON, cache invalidation requires manual operation, separate bundle adds deployment complexity
 - Alternative: CXF SOAP client (see `soap-client-integration`) for WSDL-based services, REST API with JSON (simpler if available), in-memory caching (simpler but lost on restart)
 
-## Related Patterns
+## Related
 
-- soap-client-integration
-- external-api-adapter-pattern
-- osgi-karaf-bundle-architecture
+- [[soap-client-integration]]
+- [[external-api-adapter-pattern]]
+- [[osgi-karaf-bundle-architecture]]
+

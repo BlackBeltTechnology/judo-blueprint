@@ -1,16 +1,20 @@
 ---
-id: "bulk-json-import-export"
-title: "Bulk JSON Import/Export via FileStore"
-domain: "backend"
-category: "operation"
-score: 44.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - judo-partner
+id: bulk-json-import-export
+title: Bulk JSON Import/Export via FileStore
+description: Admin operations for bulk import and export of entity data using JSON files mediated through the FileStore service.
+aliases: []
+keywords: [bulk, json, import, export, filestore]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:judo-partner", "status:emerging"]
+category: operation
+status: emerging
+projects: [trivia, judo-partner]
+evidence: ["trivia:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [filestore-mediated-file-transfer, builder-pattern-entity-creation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,7 +60,8 @@ Upload/Download operations for bulk question management. Upload reads JSON from 
 - Cons: Loads entire JSON into memory (no streaming), IOException swallowed in trivia Upload, N+1 category lookups in Download
 - Alternative: CSV import/export, streaming JSON parser for large datasets, database-level bulk operations
 
-## Related Patterns
+## Related
 
-- filestore-mediated-file-transfer
-- builder-pattern-entity-creation
+- [[filestore-mediated-file-transfer]]
+- [[builder-pattern-entity-creation]]
+

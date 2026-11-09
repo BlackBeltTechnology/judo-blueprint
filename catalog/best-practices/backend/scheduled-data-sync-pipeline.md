@@ -1,15 +1,20 @@
 ---
-id: "scheduled-data-sync-pipeline"
-title: "Scheduled Data Synchronization Pipeline from External API"
-domain: "backend"
-category: "scheduling"
-score: 57.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - indamedia-adtrack
+id: scheduled-data-sync-pipeline
+title: Scheduled Data Synchronization Pipeline from External API
+description: "A scheduled background job pipeline that periodically fetches data from an external API, creates snapshot records of raw API responses, updates or creates daily cost/metric records, and recalculates aggregated summary values across paren..."
+aliases: []
+keywords: [scheduled, data, synchronization, pipeline, from, external, api, sync]
+tags: ["domain:backend", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
+category: scheduling
+status: single-project
+projects: [indamedia-adtrack]
+evidence: ["indamedia-adtrack:unrecorded"]
+alternatives: []
+related: [quartz-scheduled-job, external-api-adapter-pattern, data-snapshot-versioning, upsert-create-or-update]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -88,9 +93,10 @@ void updateOrCreateCosts(List<CostInfo> costs) {
 - Cons: Frequent API polling can hit rate limits, no incremental sync (re-fetches full data), job coordination relies on timing rather than explicit dependencies
 - Alternative: Webhook/push-based updates (reduces polling), event-driven sync, message queue for decoupled processing
 
-## Related Patterns
+## Related
 
-- quartz-scheduled-job
-- external-api-adapter-pattern
-- data-snapshot-versioning
-- upsert-create-or-update
+- [[quartz-scheduled-job]]
+- [[external-api-adapter-pattern]]
+- [[data-snapshot-versioning]]
+- [[upsert-create-or-update]]
+

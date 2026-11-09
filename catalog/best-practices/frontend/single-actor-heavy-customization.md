@@ -1,18 +1,20 @@
 ---
-id: "single-actor-heavy-customization"
-title: "Single-Actor Frontend with Heavy Hook Customization"
-domain: "frontend"
-category: "framework"
-score: 73.0
-usage_count: 1
-alternative_count: 2
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-alternatives:
-  - dual-actor-frontend-architecture
-  - zero-customization-generated-frontend
+id: single-actor-heavy-customization
+title: Single-Actor Frontend with Heavy Hook Customization
+description: "A JUDO project with a single actor frontend that relies entirely on the generated page structure but heavily customizes behavior through Pandino hooks, custom visual element overrides, and action hooks."
+aliases: []
+keywords: [single, actor, frontend, heavy, hook, customization]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: framework
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: [dual-actor-frontend-architecture, zero-customization-generated-frontend]
+related: [dual-actor-frontend-architecture, application-customizer-hub, pandino-action-hook-override, zero-customization-generated-frontend]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,9 +53,10 @@ Single `GenericUser` actor with 87 custom files, 100+ Pandino registrations, 29 
 - **Cons**: Hook system has limits (some UI patterns require visual element override); large number of hooks can be hard to navigate; application-customizer grows very large
 - **When to use**: Enterprise CRUD applications where the generated UI is adequate but needs significant behavioral customization
 
-## Related Patterns
+## Related
 
-- [dual-actor-frontend-architecture](dual-actor-frontend-architecture.md)
-- [application-customizer-hub](application-customizer-hub.md)
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [zero-customization-generated-frontend](zero-customization-generated-frontend.md)
+- [[dual-actor-frontend-architecture]]
+- [[application-customizer-hub]]
+- [[pandino-action-hook-override]]
+- [[zero-customization-generated-frontend]]
+

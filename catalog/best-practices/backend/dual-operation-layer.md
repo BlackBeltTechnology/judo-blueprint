@@ -1,21 +1,20 @@
 ---
-id: "dual-operation-layer"
-title: "Dual Operation Layer (Actor-Level and Entity-Level)"
-domain: "backend"
-category: "operation"
-score: 61.0
-usage_count: 7
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - ubives
-  - park-here
-  - InterfaceRegister
-  - doors-model
+id: dual-operation-layer
+title: Dual Operation Layer (Actor-Level and Entity-Level)
+description: "Every entity operation in a JUDO project exists in two parallel namespaces: (1) the actor-level layer under `actors/<actorName>/<entity>/` which is exposed to the frontend and includes security context, and (2) the entity-level layer und..."
+aliases: []
+keywords: [dual, operation, layer, actor, level]
+tags: ["domain:backend", "layer:backend", "project:itracker", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:InterfaceRegister", "project:doors-model", "status:established"]
+category: operation
+status: established
+projects: [itracker, viterra_demo, judo-demo-miniworkflow, ubives, park-here, InterfaceRegister, doors-model]
+evidence: ["itracker:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [custom-operation-osgi-component, dual-dao-pattern, script-driven-operations]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -70,8 +69,9 @@ Two actor packages (admin, employee) with different views and capabilities. Admi
 - Cons: Operation logic may be duplicated across layers, twice as many scaffolds to maintain, can be confusing which layer to customize
 - Alternative: Single operation layer with access control handled by interceptors or model-level expressions
 
-## Related Patterns
+## Related
 
-- custom-operation-osgi-component
-- dual-dao-pattern
-- script-driven-operations
+- [[custom-operation-osgi-component]]
+- [[dual-dao-pattern]]
+- [[script-driven-operations]]
+

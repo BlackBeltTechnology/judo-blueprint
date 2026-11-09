@@ -1,15 +1,20 @@
 ---
-id: "multi-provider-app-wrapper"
-title: "Multi-Provider App Wrapper Pattern"
-domain: "frontend"
-category: "state"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: multi-provider-app-wrapper
+title: Multi-Provider App Wrapper Pattern
+description: "Compose the application root with a nested stack of React Context providers, each managing a specific cross-cutting concern: date localization, MUI theming, internationalization, toast notifications, dialog system, and navigation/breadcr..."
+aliases: []
+keywords: [multi, provider, app, wrapper]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: state
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [promise-based-dialog-system, breadcrumb-navigation-context, complete-frontend-replacement]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -54,8 +59,9 @@ Provider responsibilities:
 - **Cons**: Deep nesting can be hard to read; provider order matters; adding new providers requires modifying App.tsx; potential re-render cascades
 - **When to use**: Standard pattern for JUDO React applications needing theming, i18n, notifications, and dialog support
 
-## Related Patterns
+## Related
 
-- [promise-based-dialog-system](promise-based-dialog-system.md)
-- [breadcrumb-navigation-context](breadcrumb-navigation-context.md)
-- [complete-frontend-replacement](complete-frontend-replacement.md)
+- [[promise-based-dialog-system]]
+- [[breadcrumb-navigation-context]]
+- [[complete-frontend-replacement]]
+

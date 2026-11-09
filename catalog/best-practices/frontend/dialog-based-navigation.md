@@ -1,15 +1,20 @@
 ---
-id: "dialog-based-navigation"
-title: "Dialog-Based Navigation with State Machine"
-domain: "frontend"
-category: "navigation"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: dialog-based-navigation
+title: Dialog-Based Navigation with State Machine
+description: Replace React Router-based navigation with a state machine that controls which page/dialog is visible.
+aliases: []
+keywords: [dialog, based, navigation, state, machine]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
+category: navigation
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [complete-frontend-replacement, localstorage-session-persistence]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -49,7 +54,8 @@ Player frontend uses a 5-value `PageType` state machine (`contests`, `contest`, 
 - **Cons**: No deep linking; browser back button does not work; no URL-based state sharing; harder to test specific states
 - **When to use**: Games, wizards, kiosk applications, or any UI where URL routing is unnecessary
 
-## Related Patterns
+## Related
 
-- [complete-frontend-replacement](complete-frontend-replacement.md)
-- [localstorage-session-persistence](localstorage-session-persistence.md)
+- [[complete-frontend-replacement]]
+- [[localstorage-session-persistence]]
+

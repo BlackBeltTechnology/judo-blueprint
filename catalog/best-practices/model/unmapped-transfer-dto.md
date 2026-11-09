@@ -1,26 +1,20 @@
 ---
-id: "unmapped-transfer-dto"
-title: "Unmapped Transfer Object (DTO) Pattern"
-domain: "model"
-category: "transfer"
-score: 77.4
-usage_count: 12
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - judo-demo-miniworkflow
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
+id: unmapped-transfer-dto
+title: Unmapped Transfer Object (DTO) Pattern
+description: "Unmapped transfer objects have no entity mapping and serve as standalone data containers for operation inputs, outputs, and fault types."
+aliases: []
+keywords: [unmapped, transfer, object, dto]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:judo-demo-miniworkflow", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: transfer
+status: established
+projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, judo-demo-miniworkflow, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [transient-relation-parameter, actor-based-transfer-projection]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -95,7 +89,8 @@ Transient report DTO `report::Competence` confirmed with all-transient attribute
 - Cons: More transfer types to maintain, may proliferate for complex APIs
 - Prefer when: Operation input/output does not map to a single entity, or for error/fault types
 
-## Related Patterns
+## Related
 
-- [transient-relation-parameter](transient-relation-parameter.md)
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
+- [[transient-relation-parameter]]
+- [[actor-based-transfer-projection]]
+

@@ -1,12 +1,19 @@
 ---
 id: capacitor-native-file-handling
-title: "Capacitor Native File Download and Open"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Capacitor Native File Download and Open
+description: A platform-aware file handling system that overrides the generated file download behavior for Capacitor native apps.
+aliases: []
+keywords: [capacitor, native, file, download, open, handling]
+tags: ["domain:model", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

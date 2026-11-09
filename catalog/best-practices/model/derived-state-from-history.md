@@ -1,17 +1,20 @@
 ---
-id: "derived-state-from-history"
-title: "Derived State from History Trail"
-domain: "model"
-category: "entity"
-score: 16.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - judo-demo-miniworkflow
-alternatives:
-  - enum-state-machine
+id: derived-state-from-history
+title: Derived State from History Trail
+description: "Instead of storing the current lifecycle state directly on an entity, the state is derived from the most recent entry in a composed history collection."
+aliases: []
+keywords: [derived, state, from, history, trail]
+tags: ["domain:model", "layer:model", "project:judo-demo-miniworkflow", "status:single-project"]
+category: entity
+status: single-project
+projects: [judo-demo-miniworkflow]
+evidence: ["judo-demo-miniworkflow:unrecorded"]
+alternatives: [enum-state-machine]
+related: [enum-state-machine, audit-event-entity, composition-ownership, collection-lower-bound-zero]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -39,9 +42,10 @@ Instead of storing the current lifecycle state directly on an entity, the state 
 - Prefer when: Complete audit trail of state transitions is a requirement, or when state synchronization between stored state and audit history has been a source of bugs
 - Prefer [enum-state-machine](enum-state-machine.md) when: Audit trail is not needed, or performance of state reads is critical
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md) (alternative: stored state with simpler reads)
-- [audit-event-entity](audit-event-entity.md) (the history entry is an audit event)
-- [composition-ownership](composition-ownership.md) (history entries are composed within the parent)
-- [collection-lower-bound-zero](collection-lower-bound-zero.md) (history collection starts empty)
+- [[enum-state-machine]] (alternative: stored state with simpler reads)
+- [[audit-event-entity]] (the history entry is an audit event)
+- [[composition-ownership]] (history entries are composed within the parent)
+- [[collection-lower-bound-zero]] (history collection starts empty)
+

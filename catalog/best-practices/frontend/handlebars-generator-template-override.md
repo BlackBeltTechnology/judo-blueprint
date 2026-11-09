@@ -1,15 +1,20 @@
 ---
-id: "handlebars-generator-template-override"
-title: "Handlebars Generator Template Override for Cross-Cutting Frontend Logic"
-domain: "frontend"
-category: "build"
-score: 43.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - workflow-poc
+id: handlebars-generator-template-override
+title: Handlebars Generator Template Override for Cross-Cutting Frontend Logic
+description: Override specific Handlebars template fragments used by the JUDO code generator to inject custom logic into all generated frontend components that match a pattern.
+aliases: []
+keywords: [handlebars, generator, template, override, cross, cutting, frontend, logic]
+tags: ["domain:frontend", "layer:frontend", "project:workflow-poc", "status:single-project"]
+category: build
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+related: [operation-flow-redirect-pattern, generator-override-extra-dependencies, generator-ignore-app-theme]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,9 +61,10 @@ Overrides `operation-primary-output-handler.fragment.hbs` to intercept operation
 - **Cons**: Requires deep knowledge of generator internals and Handlebars template structure; fragile if framework updates the template; hard to debug (generated output must be inspected); risk of breaking all generated pages if template is incorrect
 - **When to use**: When a cross-cutting concern (redirect handling, custom output processing, authentication flow) needs to be injected into many generated components based on model annotations
 
-## Related Patterns
+## Related
 
-- [operation-flow-redirect-pattern](operation-flow-redirect-pattern.md)
-- [generator-override-extra-dependencies](generator-override-extra-dependencies.md)
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
+- [[operation-flow-redirect-pattern]]
+- [[generator-override-extra-dependencies]]
+- [[generator-ignore-app-theme]]
 - [flutter-generator-template-override](flutter-generator-template-override.md)
+

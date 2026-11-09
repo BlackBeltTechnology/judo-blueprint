@@ -1,24 +1,20 @@
 ---
-id: "init-data-seeding"
-title: "Application Init Data Seeding Operation"
-domain: "backend"
-category: "operation"
-score: 66.2
-usage_count: 8
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - mlszksz-platform
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - ubives
-  - park-here
-  - InterfaceRegister
-  - doors-model
-alternatives:
-  - excel-data-seed-import
+id: init-data-seeding
+title: Application Init Data Seeding Operation
+description: "An `Init` operation on a singleton `Application` entity that seeds the database with essential reference data on first startup."
+aliases: []
+keywords: [application, init, data, seeding, operation]
+tags: ["domain:backend", "layer:backend", "project:itracker", "project:mlszksz-platform", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:InterfaceRegister", "project:doors-model", "status:established"]
+category: operation
+status: established
+projects: [itracker, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, ubives, park-here, InterfaceRegister, doors-model]
+evidence: ["itracker:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded"]
+alternatives: [excel-data-seed-import]
+related: [excel-data-seed-import, script-driven-operations, custom-operation-osgi-component]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -83,8 +79,9 @@ Massive seed data initialization via `ContractType.init` (static custom operatio
 - Cons: No idempotency guard (running twice creates duplicates unless handled), hardcoded data in model/code, not suitable for large data sets
 - Alternative: Excel-based import (see `excel-data-seed-import`) for large reference data, SQL migration scripts, or external data loading tools
 
-## Related Patterns
+## Related
 
-- excel-data-seed-import
-- script-driven-operations
-- custom-operation-osgi-component
+- [[excel-data-seed-import]]
+- [[script-driven-operations]]
+- [[custom-operation-osgi-component]]
+

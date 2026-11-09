@@ -1,33 +1,3 @@
-## Detection Query
-
-```graphql
-{ esm { enumerationtypes(limit: 50) {
-  items { fqn name members { items { name ordinal } } }
-} } }
-```
-
-Look for enums with exactly two members: DRAFT and DONE.
-
-## Creation Mutations
-
-```graphql
-mutation { create(input: { enumerationType: {
-  container: "{{NAMESPACE}}", name: "{{ENTITY_NAME}}Status"
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationMember: {
-  container: "{{NAMESPACE}}::{{ENTITY_NAME}}Status", name: "DRAFT", ordinal: 1
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationMember: {
-  container: "{{NAMESPACE}}::{{ENTITY_NAME}}Status", name: "DONE", ordinal: 2
-} }) { success fqn } }
-```
-
 ## Examples
 
 ### rackinspect

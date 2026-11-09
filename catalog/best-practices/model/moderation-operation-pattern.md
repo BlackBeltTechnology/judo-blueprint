@@ -1,15 +1,20 @@
 ---
-id: "moderation-operation-pattern"
-title: "Moderation Delete Operation Pattern"
-domain: "model"
-category: "operation"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: moderation-operation-pattern
+title: Moderation Delete Operation Pattern
+description: "Content entities expose a separate `moderationDelete` operation alongside the regular `delete` operation."
+aliases: []
+keywords: [moderation, delete, operation]
+tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single-project"]
+category: operation
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [audit-event-entity, enum-state-machine, soft-delete-active-flag]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -36,8 +41,9 @@ Three content entities have dual delete paths: `News.delete` + `News.moderationD
 - Cons: Duplicates delete logic (two operations per entity), adds complexity to the operation surface
 - Prefer when: Content management systems where administrative moderation must be tracked separately from user actions
 
-## Related Patterns
+## Related
 
-- [audit-event-entity](audit-event-entity.md) (distinct audit entries for moderation actions)
-- [enum-state-machine](enum-state-machine.md) (both paths lead to DELETED status)
-- [soft-delete-active-flag](soft-delete-active-flag.md) (status-based soft delete preserves moderated content)
+- [[audit-event-entity]] (distinct audit entries for moderation actions)
+- [[enum-state-machine]] (both paths lead to DELETED status)
+- [[soft-delete-active-flag]] (status-based soft delete preserves moderated content)
+

@@ -1,15 +1,20 @@
 ---
-id: "session-storage-table-state"
-title: "SessionStorage Table State Persistence"
-domain: "frontend"
-category: "table"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: session-storage-table-state
+title: SessionStorage Table State Persistence
+description: "Persist table sort model and active filters to `sessionStorage` so that navigating away from a table page and returning preserves the user's sort and filter preferences."
+aliases: []
+keywords: [sessionstorage, table, state, persistence, session, storage]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: table
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [seek-based-table-pagination, table-row-actions-utility]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -55,7 +60,8 @@ Galaxies table and Galaxy Matter table both persist `sortModel` and `filters` to
 - **Cons**: Lost when browser tab closes; no cross-tab sharing; sessionStorage has 5MB limit; stored as JSON strings (no type safety)
 - **When to use**: Any table page where users benefit from persistent sort/filter state across navigation within a session
 
-## Related Patterns
+## Related
 
-- [seek-based-table-pagination](seek-based-table-pagination.md)
-- [table-row-actions-utility](table-row-actions-utility.md)
+- [[seek-based-table-pagination]]
+- [[table-row-actions-utility]]
+

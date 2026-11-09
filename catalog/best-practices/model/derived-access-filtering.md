@@ -1,27 +1,20 @@
 ---
-id: "derived-access-filtering"
-title: "Derived Access Point with Getter Filtering"
-domain: "model"
-category: "access"
-score: 77.7
-usage_count: 13
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - skillmatrix-model
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - ams-model
-  - park-here
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: derived-access-filtering
+title: Derived Access Point with Getter Filtering
+description: Access points use the DERIVED access type with getter expressions to filter or restrict the data visible to an actor.
+aliases: []
+keywords: [derived, access, point, getter, filtering]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: access
+status: established
+projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, park-here, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, singleton-entity, range-expression-filtering, container-back-reference]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -100,9 +93,10 @@ Manager actor uses 3 DERIVED accesses: `subordinates = self.subordinates` (navig
 - Cons: Filter expressions limited to JQL, complex multi-tenant logic may need custom code
 - Prefer when: Different actors need different subsets of the same entity data
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [singleton-entity](singleton-entity.md)
-- [range-expression-filtering](range-expression-filtering.md)
-- [container-back-reference](container-back-reference.md)
+- [[actor-based-transfer-projection]]
+- [[singleton-entity]]
+- [[range-expression-filtering]]
+- [[container-back-reference]]
+

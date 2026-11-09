@@ -1,29 +1,20 @@
 ---
-id: "enum-state-machine"
-title: "Enum-Based State Machine Pattern"
-domain: "model"
-category: "enum"
-score: 78.6
-usage_count: 12
-alternative_count: 2
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - mlszksz-platform
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - ams-model
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - reserve-app
-alternatives:
-  - derived-state-from-history
-  - entity-based-state-machine
+id: enum-state-machine
+title: Enum-Based State Machine Pattern
+description: Entities use enumeration-typed status attributes to model lifecycle state machines.
+aliases: []
+keywords: [enum, based, state, machine]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:reserve-app", "status:established"]
+category: enum
+status: established
+projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, judo-partner, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+alternatives: [derived-state-from-history, entity-based-state-machine]
+related: [conditional-visibility-getter, default-value-patterns, derived-state-from-history, entity-based-state-machine]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -90,9 +81,10 @@ Two parallel state machines: **Status** (PENDING/APPROVED/REJECTED) for access r
 - Cons: No built-in guard conditions (must be coded in operation bodies), adding states requires enum changes
 - Prefer when: Entities have well-defined lifecycle stages with explicit transitions
 
-## Related Patterns
+## Related
 
-- [conditional-visibility-getter](conditional-visibility-getter.md)
-- [default-value-patterns](default-value-patterns.md)
-- [derived-state-from-history](derived-state-from-history.md) (alternative: state derived from audit trail)
-- [entity-based-state-machine](entity-based-state-machine.md) (alternative: runtime-configurable state machine via entities)
+- [[conditional-visibility-getter]]
+- [[default-value-patterns]]
+- [[derived-state-from-history]] (alternative: state derived from audit trail)
+- [[entity-based-state-machine]] (alternative: runtime-configurable state machine via entities)
+

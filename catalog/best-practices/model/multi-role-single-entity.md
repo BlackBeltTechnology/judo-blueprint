@@ -1,21 +1,20 @@
 ---
-id: "multi-role-single-entity"
-title: "Multi-Role Single Entity with Boolean Flags"
-domain: "model"
-category: "entity"
-score: 61.4
-usage_count: 7
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - skillmatrix-model
-  - judo-demo-miniworkflow
-  - ams-model
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - reserve-app
+id: multi-role-single-entity
+title: Multi-Role Single Entity with Boolean Flags
+description: A single entity serves as the unified identity for all actor types in the system.
+aliases: []
+keywords: [multi, role, single, boolean, flags]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:reserve-app", "status:established"]
+category: entity
+status: established
+projects: [skillmatrix-model, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, InterfaceRegister, reserve-app]
+evidence: ["skillmatrix-model:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, default-value-patterns, derived-access-filtering]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -68,8 +67,9 @@ Model source confirms 4 ActorTypes: `AdminActor`, `UserActor` (`isActiveExpressi
 - Cons: All role data on one entity (may grow large), cannot have role-specific attributes on the entity, requires careful access filtering per role
 - Prefer when: Users can hold multiple roles simultaneously and role assignment is a simple enable/disable
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [default-value-patterns](default-value-patterns.md)
-- [derived-access-filtering](derived-access-filtering.md)
+- [[actor-based-transfer-projection]]
+- [[default-value-patterns]]
+- [[derived-access-filtering]]
+

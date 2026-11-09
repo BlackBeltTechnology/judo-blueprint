@@ -1,17 +1,20 @@
 ---
-id: "soap-client-integration"
-title: "CXF SOAP Client Integration for External Services"
-domain: "backend"
-category: "integration"
-score: 73.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-alternatives:
-  - jaxb-external-api-client
+id: soap-client-integration
+title: CXF SOAP Client Integration for External Services
+description: "Integration with external SOAP web services using Apache CXF `JaxWsProxyFactoryBean`."
+aliases: []
+keywords: [cxf, soap, client, integration, external, services]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
+category: integration
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: [jaxb-external-api-client]
+related: [quartz-scheduled-job, custom-operation-osgi-component, jaxb-external-api-client]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -54,8 +57,9 @@ MNB (Hungarian National Bank) SOAP client in dedicated `mnb-soap-client/` module
 - Cons: SOAP is verbose, XML parsing is manual, CXF classloader issues in OSGi, external service dependency
 - Alternative: JAXB-based HTTP client (see `jaxb-external-api-client`) for non-WSDL XML APIs, REST API client, or third-party exchange rate REST APIs
 
-## Related Patterns
+## Related
 
-- quartz-scheduled-job
-- custom-operation-osgi-component
-- jaxb-external-api-client
+- [[quartz-scheduled-job]]
+- [[custom-operation-osgi-component]]
+- [[jaxb-external-api-client]]
+

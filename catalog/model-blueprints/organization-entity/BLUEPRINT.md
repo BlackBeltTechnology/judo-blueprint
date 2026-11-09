@@ -1,12 +1,19 @@
 ---
-id: "organization-entity"
-title: "Organization Entity with Contact Info and Membership"
-score: 68.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
+id: organization-entity
+title: Organization Entity with Contact Info and Membership
+description: An Organization entity representing a company or group in a multi-tenant platform.
+aliases: []
+keywords: [organization, contact, info, membership]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

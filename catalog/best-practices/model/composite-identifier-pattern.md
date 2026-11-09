@@ -1,16 +1,20 @@
 ---
-id: "composite-identifier-pattern"
-title: "Composite Identifier (Multiple Identifier Attributes)"
-domain: "model"
-category: "entity"
-score: 43.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - InterfaceRegister
-  - judo-partner
+id: composite-identifier-pattern
+title: Composite Identifier (Multiple Identifier Attributes)
+description: "An entity uses multiple attributes marked as `identifier=true` to form a composite identifier."
+aliases: []
+keywords: [composite, identifier, multiple, attributes]
+tags: ["domain:model", "layer:model", "project:InterfaceRegister", "project:judo-partner", "status:emerging"]
+category: entity
+status: emerging
+projects: [InterfaceRegister, judo-partner]
+evidence: ["InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [sequence-based-identifier, naming-conventions]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -38,7 +42,8 @@ Four entities use composite identifiers with dual `id + name` identifier fields:
 - Cons: More complex uniqueness constraints, both fields must be provided and unique, may complicate relation references
 - Prefer when: Entities need both a stable system identifier and a unique human-readable name
 
-## Related Patterns
+## Related
 
-- [sequence-based-identifier](sequence-based-identifier.md)
-- [naming-conventions](naming-conventions.md)
+- [[sequence-based-identifier]]
+- [[naming-conventions]]
+

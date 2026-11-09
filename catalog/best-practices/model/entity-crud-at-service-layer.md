@@ -1,29 +1,20 @@
 ---
-id: "entity-crud-at-service-layer"
-title: "CRUD Permissions Controlled at Service Layer"
-domain: "model"
-category: "access"
-score: 80.1
-usage_count: 15
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - skillmatrix-model
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: entity-crud-at-service-layer
+title: CRUD Permissions Controlled at Service Layer
+description: "All entities are defined with `createable=false`, `updateable=false`, `deleteable=false` at the entity level."
+aliases: []
+keywords: [crud, permissions, controlled, at, service, layer]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: access
+status: established
+projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, derived-access-filtering]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -98,7 +89,8 @@ All 7 entities have CRUD disabled at entity level. Admin actor grants CRUD on `c
 - Cons: Entity-level flags may seem redundant (always false), requires careful access configuration
 - Prefer when: Always in JUDO -- this is the standard architecture pattern
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [derived-access-filtering](derived-access-filtering.md)
+- [[actor-based-transfer-projection]]
+- [[derived-access-filtering]]
+

@@ -1,15 +1,20 @@
 ---
-id: "state-based-transfer-partitioning"
-title: "State-Based Transfer Object Partitioning"
-domain: "model"
-category: "transfer"
-score: 37.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - viterra_demo
+id: state-based-transfer-partitioning
+title: State-Based Transfer Object Partitioning
+description: "The same entity is exposed through multiple transfer objects where each transfer is filtered by the entity's lifecycle state."
+aliases: []
+keywords: [state, based, transfer, object, partitioning]
+tags: ["domain:model", "layer:model", "project:viterra_demo", "status:single-project"]
+category: transfer
+status: single-project
+projects: [viterra_demo]
+evidence: ["viterra_demo:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, enum-state-machine, derived-access-filtering, operation-return-type-navigation]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -37,9 +42,10 @@ The same entity is exposed through multiple transfer objects where each transfer
 - Cons: More transfer objects to maintain, state transitions require returning the correct transfer type for navigation
 - Prefer when: An entity has a clear mutable/immutable lifecycle boundary where different states need fundamentally different UI experiences
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [enum-state-machine](enum-state-machine.md)
-- [derived-access-filtering](derived-access-filtering.md)
-- [operation-return-type-navigation](operation-return-type-navigation.md)
+- [[actor-based-transfer-projection]]
+- [[enum-state-machine]]
+- [[derived-access-filtering]]
+- [[operation-return-type-navigation]]
+

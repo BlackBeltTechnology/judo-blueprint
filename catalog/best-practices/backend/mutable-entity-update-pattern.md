@@ -1,23 +1,20 @@
 ---
-id: "mutable-entity-update-pattern"
-title: "Mutable Entity Update Pattern"
-domain: "backend"
-category: "data-access"
-score: 78.5
-usage_count: 9
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - alba
-  - mlszksz-platform
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - workflow-poc
+id: mutable-entity-update-pattern
+title: Mutable Entity Update Pattern
+description: Entities returned by DAO queries are mutable objects.
+aliases: []
+keywords: [mutable, update]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: data-access
+status: established
+projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [builder-pattern-entity-creation, dao-fluent-query-filter, mask-field-projection]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -75,8 +72,9 @@ Context label update: `context.setLabel(input.getLabel().get()); contextDao.upda
 - Cons: Updates all fields (no partial update without mask), mutable objects can lead to accidental state changes
 - Alternative: Masked updates via `dao.update(entity, mask)` for partial field updates (more performant)
 
-## Related Patterns
+## Related
 
-- builder-pattern-entity-creation
-- dao-fluent-query-filter
-- mask-field-projection
+- [[builder-pattern-entity-creation]]
+- [[dao-fluent-query-filter]]
+- [[mask-field-projection]]
+

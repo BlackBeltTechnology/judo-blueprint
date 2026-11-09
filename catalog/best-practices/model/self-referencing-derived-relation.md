@@ -1,15 +1,20 @@
 ---
-id: "self-referencing-derived-relation"
-title: "Self-Referencing Derived Relation"
-domain: "model"
-category: "relation"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: self-referencing-derived-relation
+title: Self-Referencing Derived Relation
+description: "A transfer object defines a derived relation whose getter expression is `self`, creating a self-referencing relation."
+aliases: []
+keywords: [self, referencing, derived, relation]
+tags: ["domain:model", "layer:model", "project:trivia", "status:single-project"]
+category: relation
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, derived-attribute-flattening]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -32,7 +37,8 @@ A transfer object defines a derived relation whose getter expression is `self`, 
 - Cons: May be confusing that a relation points to "the same thing", requires understanding of transfer projection model
 - Prefer when: The same entity needs to be presented in multiple UI views simultaneously
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [derived-attribute-flattening](derived-attribute-flattening.md)
+- [[actor-based-transfer-projection]]
+- [[derived-attribute-flattening]]
+

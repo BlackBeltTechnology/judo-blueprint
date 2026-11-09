@@ -1,12 +1,19 @@
 ---
 id: xdocreport-document-generation-pipeline
-title: "XDocReport Document Generation Pipeline (DOCX Templates to PDF)"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
+title: XDocReport Document Generation Pipeline (DOCX Templates to PDF)
+description: A multi-layer document generation pipeline that produces PDF and DOCX reports from Freemarker-powered DOCX templates using the XDocReport library.
+aliases: []
+keywords: [xdocreport, document, generation, pipeline, docx, templates, pdf]
+tags: ["domain:model", "layer:backend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

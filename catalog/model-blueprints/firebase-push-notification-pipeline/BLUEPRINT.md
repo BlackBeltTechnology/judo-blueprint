@@ -1,12 +1,19 @@
 ---
 id: firebase-push-notification-pipeline
-title: "Firebase Push Notification Delivery Pipeline"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Firebase Push Notification Delivery Pipeline
+description: A complete push notification delivery pipeline built on Firebase Cloud Messaging (FCM).
+aliases: []
+keywords: [firebase, push, notification, delivery, pipeline]
+tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

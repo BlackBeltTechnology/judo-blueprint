@@ -1,15 +1,20 @@
 ---
-id: "multi-tenant-keycloak-realm"
-title: "Multi-Tenant Isolation via Keycloak Realms"
-domain: "backend"
-category: "auth"
-score: 44.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - ubives
+id: multi-tenant-keycloak-realm
+title: Multi-Tenant Isolation via Keycloak Realms
+description: A multi-tenancy pattern where each organization (tenant) receives its own Keycloak realm for complete user and authentication isolation.
+aliases: []
+keywords: [multi, tenant, isolation, keycloak, realms, realm]
+tags: ["domain:backend", "layer:backend", "project:ubives", "status:single-project"]
+category: auth
+status: single-project
+projects: [ubives]
+evidence: ["ubives:unrecorded"]
+alternatives: []
+related: [keycloak-jit-user-provisioning, magic-link-authentication, osgi-karaf-bundle-architecture]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -68,8 +73,9 @@ Key elements:
 - Cons: Realm proliferation (one per tenant) increases Keycloak resource usage, realm creation/deletion is slow, hardcoded admin credentials in KeycloakFactory, no connection pooling for admin client
 - Alternative: Single realm with groups/roles for tenant isolation (simpler but less isolated), external multi-tenant IdP, application-level tenant filtering
 
-## Related Patterns
+## Related
 
-- keycloak-jit-user-provisioning
-- magic-link-authentication
-- osgi-karaf-bundle-architecture
+- [[keycloak-jit-user-provisioning]]
+- [[magic-link-authentication]]
+- [[osgi-karaf-bundle-architecture]]
+

@@ -1,15 +1,20 @@
 ---
-id: "many-aggregation-crud-pattern"
-title: "Many-Aggregation CRUD Operations Pattern"
-domain: "frontend"
-category: "page"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: many-aggregation-crud-pattern
+title: Many-Aggregation CRUD Operations Pattern
+description: "Manage many-to-many or one-to-many entity associations through a dedicated table page with Add, Remove, and Clear operations."
+aliases: []
+keywords: [many, aggregation, crud, operations]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: page
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [promise-based-dialog-system, action-group-input-output-routing, seek-based-table-pagination]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -49,8 +54,9 @@ Galaxy Matter table at `/galaxy/:id/matterTable` demonstrates all 3 operations. 
 - **Cons**: Three service methods to coordinate; no optimistic updates; clear is destructive without confirmation; range dialog must exclude existing items
 - **When to use**: Any entity with many-aggregation relationships that users need to manage (add/remove/clear associated entities)
 
-## Related Patterns
+## Related
 
-- [promise-based-dialog-system](promise-based-dialog-system.md)
-- [action-group-input-output-routing](action-group-input-output-routing.md)
-- [seek-based-table-pagination](seek-based-table-pagination.md)
+- [[promise-based-dialog-system]]
+- [[action-group-input-output-routing]]
+- [[seek-based-table-pagination]]
+

@@ -1,15 +1,20 @@
 ---
-id: "action-group-conditional-enabling"
-title: "ActionGroup with Conditional Enabling and Featured Actions"
-domain: "model"
-category: "ui"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: action-group-conditional-enabling
+title: ActionGroup with Conditional Enabling and Featured Actions
+description: "ActionGroups in the JUDO UI model group related operation buttons together with support for conditional enabling based on derived boolean attributes, featured action highlighting, and page-state-aware disabling."
+aliases: []
+keywords: [actiongroup, conditional, enabling, featured, actions, action, group]
+tags: ["domain:model", "layer:model", "project:actiongroup-test-react", "status:single-project"]
+category: ui
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [derived-attribute-flattening, ui-control-transfer-fields]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,7 +56,8 @@ ActionGroups in the JUDO UI model group related operation buttons together with 
 - Cons: Same ActionGroup must be replicated across device layouts, limited to single-attribute enabling condition (no compound expressions)
 - Prefer when: Multiple related operations share an enablement condition and benefit from visual grouping with a primary/secondary action hierarchy
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md) (provides the derived boolean attributes used by enabledBy)
-- [ui-control-transfer-fields](ui-control-transfer-fields.md) (similar UI-state-from-model approach)
+- [[derived-attribute-flattening]] (provides the derived boolean attributes used by enabledBy)
+- [[ui-control-transfer-fields]] (similar UI-state-from-model approach)
+

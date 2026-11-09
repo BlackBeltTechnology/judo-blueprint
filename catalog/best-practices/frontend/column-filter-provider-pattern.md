@@ -1,15 +1,20 @@
 ---
-id: "column-filter-provider-pattern"
-title: "Column and Filter Definition Provider Pattern"
-domain: "frontend"
-category: "table"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: column-filter-provider-pattern
+title: Column and Filter Definition Provider Pattern
+description: "Extract table column definitions and filter option definitions into separate provider functions or custom hooks, keeping table page components focused on layout and data fetching."
+aliases: []
+keywords: [column, filter, definition, provider]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: table
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [table-row-actions-utility, session-storage-table-state]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -61,7 +66,8 @@ Galaxy Matter table uses standalone `columnDefsProvider.ts` and `filterOptionsPr
 - **Cons**: Extra files per table; provider pattern adds indirection; two approaches (files vs hooks) can be inconsistent
 - **When to use**: Table pages with complex column definitions, multiple filter types, or shared column configurations
 
-## Related Patterns
+## Related
 
-- [table-row-actions-utility](table-row-actions-utility.md)
-- [session-storage-table-state](session-storage-table-state.md)
+- [[table-row-actions-utility]]
+- [[session-storage-table-state]]
+

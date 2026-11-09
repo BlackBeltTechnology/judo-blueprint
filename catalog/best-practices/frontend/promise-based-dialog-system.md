@@ -1,15 +1,20 @@
 ---
-id: "promise-based-dialog-system"
-title: "Promise-Based Dialog System with Context Provider"
-domain: "frontend"
-category: "component"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: promise-based-dialog-system
+title: Promise-Based Dialog System with Context Provider
+description: "Implement a centralized dialog system using React Context where each dialog type (Filter, Range, Confirmation, Page) is exposed via a custom hook that returns a Promise."
+aliases: []
+keywords: [promise, based, dialog, system, context, provider]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: component
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [complete-frontend-replacement, action-group-input-output-routing]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,7 +61,8 @@ await openPageDialog(<OutputComponent data={result} />);
 - **Cons**: All dialog state lives in a single context provider; cannot compose dialogs (no dialog-within-dialog); Promise rejection must be handled for cancel
 - **When to use**: Any JUDO frontend needing reusable filter, selection, confirmation, or page-embedded dialogs
 
-## Related Patterns
+## Related
 
-- [complete-frontend-replacement](complete-frontend-replacement.md)
-- [action-group-input-output-routing](action-group-input-output-routing.md)
+- [[complete-frontend-replacement]]
+- [[action-group-input-output-routing]]
+

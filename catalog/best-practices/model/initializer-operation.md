@@ -1,28 +1,20 @@
 ---
-id: "initializer-operation"
-title: "Static Initializer Operation for Data Seeding"
-domain: "model"
-category: "operation"
-score: 78.4
-usage_count: 14
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - actiongroup-test-react
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - park-here
-  - InterfaceRegister
-  - judo-partner
-  - reserve-app
+id: initializer-operation
+title: Static Initializer Operation for Data Seeding
+description: A static operation on a singleton entity marked as an initializer runs automatically on application startup.
+aliases: []
+keywords: [static, initializer, operation, data, seeding]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:InterfaceRegister", "project:judo-partner", "project:reserve-app", "status:established"]
+category: operation
+status: established
+projects: [trivia, rackinspect, itracker, actiongroup-test-react, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, InterfaceRegister, judo-partner, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [singleton-entity, custom-implementation-placeholder]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -97,7 +89,8 @@ Multiple initializer operations on a dedicated `Initializer` entity: `initUsers`
 - Cons: Initializer logic can become complex, sample data may need cleanup in production
 - Prefer when: Application needs reference data or default configuration on first startup
 
-## Related Patterns
+## Related
 
-- [singleton-entity](singleton-entity.md)
-- [custom-implementation-placeholder](custom-implementation-placeholder.md)
+- [[singleton-entity]]
+- [[custom-implementation-placeholder]]
+

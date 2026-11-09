@@ -1,15 +1,20 @@
 ---
-id: "dual-role-relation"
-title: "Dual-Role Relation Pattern for Same Entity Type"
-domain: "model"
-category: "relation"
-score: 17.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mjsz
+id: dual-role-relation
+title: Dual-Role Relation Pattern for Same Entity Type
+description: "When an entity can participate in the same relationship type under different roles, two separate bidirectional relations are defined to the same target entity instead of a single generic relation with a role attribute."
+aliases: []
+keywords: [dual, role, relation, same, type]
+tags: ["domain:model", "layer:model", "project:mjsz", "status:single-project"]
+category: relation
+status: single-project
+projects: [mjsz]
+evidence: ["mjsz:unrecorded"]
+alternatives: []
+related: [bidirectional-relation, derived-attribute-flattening, null-safe-collection-aggregation]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -41,8 +46,9 @@ Match.visitorTeam -> Team [1..1] <-> Team.visitorMatches [0..*]
 - Cons: More complex relation graph, more relations to maintain, entity appears multiple times in partner's relation list
 - Prefer when: An entity participates in the same type of relationship under distinct, well-defined roles with different calculation needs
 
-## Related Patterns
+## Related
 
-- [bidirectional-relation](bidirectional-relation.md)
-- [derived-attribute-flattening](derived-attribute-flattening.md)
-- [null-safe-collection-aggregation](null-safe-collection-aggregation.md)
+- [[bidirectional-relation]]
+- [[derived-attribute-flattening]]
+- [[null-safe-collection-aggregation]]
+

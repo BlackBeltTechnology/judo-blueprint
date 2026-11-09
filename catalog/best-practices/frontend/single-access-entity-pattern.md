@@ -1,15 +1,20 @@
 ---
-id: "single-access-entity-pattern"
-title: "Single Access Entity Fetch and Create-If-Missing"
-domain: "frontend"
-category: "page"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: single-access-entity-pattern
+title: Single Access Entity Fetch and Create-If-Missing
+description: "Fetch a singleton entity (single access pattern) using `godServiceForEntity.get('{}')` with an empty JSON key."
+aliases: []
+keywords: [single, access, fetch, create, if, missing]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: page
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [action-group-input-output-routing, view-edit-mode-toggle]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -53,7 +58,8 @@ Earth entity uses `godServiceForEarthImpl.get('{}')` to check existence. If foun
 - **Cons**: Extra API call for existence check; empty key `'{}'` is a JUDO convention that may confuse developers; create flow needs back navigation
 - **When to use**: Any entity that follows the single-access pattern in the JUDO model (exactly one instance per actor)
 
-## Related Patterns
+## Related
 
-- [action-group-input-output-routing](action-group-input-output-routing.md)
-- [view-edit-mode-toggle](view-edit-mode-toggle.md)
+- [[action-group-input-output-routing]]
+- [[view-edit-mode-toggle]]
+

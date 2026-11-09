@@ -1,15 +1,20 @@
 ---
-id: "lazy-vs-greedy-data-persistence"
-title: "Lazy vs Greedy Data Persistence Modes for Custom Components"
-domain: "frontend"
-category: "state"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: lazy-vs-greedy-data-persistence
+title: Lazy vs Greedy Data Persistence Modes for Custom Components
+description: Custom components that manage their own data can implement two data persistence strategies.
+aliases: []
+keywords: [lazy, vs, greedy, data, persistence, modes, custom, components]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: state
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [custom-visual-element-override]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -53,6 +58,7 @@ DimensionParametersViewComponent supports both modes. Greedy mode is used in fau
 - **Cons**: Dual implementation adds complexity; lazy mode requires per-operation error handling; state synchronization between modes can be tricky
 - **When to use**: Complex custom components embedded in both form (creation) and view/edit (modification) contexts
 
-## Related Patterns
+## Related
 
-- [custom-visual-element-override](custom-visual-element-override.md)
+- [[custom-visual-element-override]]
+

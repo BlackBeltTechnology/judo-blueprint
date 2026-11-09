@@ -1,18 +1,20 @@
 ---
-id: "quartz-scheduled-job"
-title: "Quartz Scheduled Job with OSGi Configuration"
-domain: "backend"
-category: "scheduling"
-score: 75.9
-usage_count: 4
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
-  - park-here
-  - indamedia-adtrack
+id: quartz-scheduled-job
+title: Quartz Scheduled Job with OSGi Configuration
+description: Background scheduled jobs using Quartz Scheduler integrated with OSGi.
+aliases: []
+keywords: [quartz, scheduled, job, osgi, configuration]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "status:established"]
+category: scheduling
+status: established
+projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
+alternatives: []
+related: [osgi-karaf-bundle-architecture, soap-client-integration]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -70,7 +72,8 @@ public class UpdateExchangeRatesJob implements Job {
 - Cons: RAMJobStore loses state on restart, manual UserTransaction management is error-prone, no built-in retry
 - Alternative: OSGi Scheduler service, external scheduler (cron, Kubernetes CronJob), or event-driven approach
 
-## Related Patterns
+## Related
 
-- osgi-karaf-bundle-architecture
-- soap-client-integration
+- [[osgi-karaf-bundle-architecture]]
+- [[soap-client-integration]]
+

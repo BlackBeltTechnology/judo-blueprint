@@ -1,15 +1,20 @@
 ---
-id: "transfer-generalization"
-title: "Transfer Object Generalization (Inheritance)"
-domain: "model"
-category: "transfer"
-score: 30.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - skillmatrix-model
+id: transfer-generalization
+title: Transfer Object Generalization (Inheritance)
+description: Transfer objects use generalization (inheritance) to extend a base transfer with additional relations and operations.
+aliases: []
+keywords: [transfer, object, generalization, inheritance]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
+category: transfer
+status: single-project
+projects: [skillmatrix-model]
+evidence: ["skillmatrix-model:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, transfer-object-multiplicity]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -42,7 +47,8 @@ Each actor package has an `IntezendoBejelentes` transfer that extends the actor'
 - Cons: Inheritance coupling (changes to base affect all derived), limited to single inheritance, may be confusing if overused
 - Prefer when: Multiple transfer objects share a common base attribute set but differ in available relations and operations
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [transfer-object-multiplicity](transfer-object-multiplicity.md)
+- [[actor-based-transfer-projection]]
+- [[transfer-object-multiplicity]]
+

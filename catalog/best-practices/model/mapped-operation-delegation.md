@@ -1,23 +1,20 @@
 ---
-id: "mapped-operation-delegation"
-title: "Mapped Operation Delegation Pattern"
-domain: "model"
-category: "operation"
-score: 71.9
-usage_count: 9
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - skillmatrix-model
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - ams-model
-  - workflow-poc
+id: mapped-operation-delegation
+title: Mapped Operation Delegation Pattern
+description: Transfer-level operations use the MAPPED type to delegate to their corresponding entity-level operations.
+aliases: []
+keywords: [mapped, operation, delegation]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:workflow-poc", "status:established"]
+category: operation
+status: established
+projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, workflow-poc]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, custom-implementation-placeholder]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -77,7 +74,8 @@ Each actor's `IntezendoBejelentes` TO exposes 3 MAPPED operations delegating to 
 - Cons: Additional indirection layer, must keep entity and transfer operation signatures in sync
 - Prefer when: Always for operations that have entity-level implementations -- this is the standard delegation pattern
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [custom-implementation-placeholder](custom-implementation-placeholder.md)
+- [[actor-based-transfer-projection]]
+- [[custom-implementation-placeholder]]
+

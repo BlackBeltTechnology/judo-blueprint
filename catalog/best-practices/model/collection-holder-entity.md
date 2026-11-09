@@ -1,15 +1,20 @@
 ---
-id: "collection-holder-entity"
-title: "Collection Holder Entity (No Attributes)"
-domain: "model"
-category: "entity"
-score: 42.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
+id: collection-holder-entity
+title: Collection Holder Entity (No Attributes)
+description: An entity with no stored attributes of its own exists solely to hold a collection of related entities.
+aliases: []
+keywords: [collection, holder, no, attributes]
+tags: ["domain:model", "layer:model", "project:alba", "status:single-project"]
+category: entity
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
+alternatives: []
+related: [derived-relation-navigation, collection-lower-bound-zero]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -34,7 +39,8 @@ An entity with no stored attributes of its own exists solely to hold a collectio
 - Cons: Additional entity with no data, could be replaced with a direct 0..* relation in simpler cases, adds complexity to the entity graph
 - Prefer when: A parent needs a guaranteed collection container that supports complex derived navigation; consider direct 0..* relation as a simpler alternative
 
-## Related Patterns
+## Related
 
-- [derived-relation-navigation](derived-relation-navigation.md) (uses holder for navigation expressions)
-- [collection-lower-bound-zero](collection-lower-bound-zero.md)
+- [[derived-relation-navigation]] (uses holder for navigation expressions)
+- [[collection-lower-bound-zero]]
+

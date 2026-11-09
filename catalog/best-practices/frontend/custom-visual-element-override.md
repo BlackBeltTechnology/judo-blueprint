@@ -1,16 +1,20 @@
 ---
-id: "custom-visual-element-override"
-title: "Custom Visual Element Override via Pandino"
-domain: "frontend"
-category: "component"
-score: 71.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - workflow-poc
+id: custom-visual-element-override
+title: Custom Visual Element Override via Pandino
+description: "Replace a generated UI group or table component within a page with an entirely custom React component using the `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` Pandino service registration."
+aliases: []
+keywords: [custom, visual, element, override, pandino]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "status:emerging"]
+category: component
+status: emerging
+projects: [rackinspect, workflow-poc]
+evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, application-customizer-hub]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -57,7 +61,8 @@ export const MyCustomComponent: FC<CustomProps> = ({ data, editMode, storeDiff, 
 - **Cons**: Custom component must handle all edge cases the generated one did; no automatic updates from generator; tight coupling to page structure
 - **When to use**: When a specific form group, table, or section needs UI that cannot be achieved through hook overrides alone
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [application-customizer-hub](application-customizer-hub.md)
+- [[pandino-action-hook-override]]
+- [[application-customizer-hub]]
+

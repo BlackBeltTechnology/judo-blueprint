@@ -1,15 +1,20 @@
 ---
-id: "attribute-renaming-in-transfer"
-title: "Attribute Renaming in Transfer Projection"
-domain: "model"
-category: "transfer"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: attribute-renaming-in-transfer
+title: Attribute Renaming in Transfer Projection
+description: "Transfer objects map entity attributes to differently-named transfer attributes, providing more meaningful or context-appropriate names for the API/UI layer."
+aliases: []
+keywords: [attribute, renaming, transfer, projection]
+tags: ["domain:model", "layer:model", "project:trivia", "status:single-project"]
+category: transfer
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [derived-attribute-flattening, actor-based-transfer-projection]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -35,7 +40,8 @@ Transfer objects map entity attributes to differently-named transfer attributes,
 - Cons: Mapping indirection can make debugging harder, must document the name mapping
 - Prefer when: Entity attribute names are technical/internal and a more user-friendly name is needed at the API level
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md)
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
+- [[derived-attribute-flattening]]
+- [[actor-based-transfer-projection]]
+

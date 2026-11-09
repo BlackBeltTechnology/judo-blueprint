@@ -1,33 +1,20 @@
 ---
-id: "naming-conventions"
-title: "JUDO Model Naming Conventions"
-domain: "model"
-category: "namespace"
-score: 84.2
-usage_count: 19
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - bhs-global-operation
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - sanctuary-backend
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: naming-conventions
+title: JUDO Model Naming Conventions
+description: "Consistent naming conventions across JUDO models for entities, attributes, relations, operations, enumerations, and packages."
+aliases: []
+keywords: [judo, model, naming, conventions]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:bhs-global-operation", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: namespace
+status: established
+projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -124,6 +111,7 @@ Hierarchical namespace: `ams::types`, `ams::measures`, `ams::entities`, `ams::ac
 - Cons: Some names may be verbose (e.g., `timestampOfCreation`), but clarity is preferred
 - Prefer when: Always -- naming conventions should be applied uniformly
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md) (actor package naming)
+- [[actor-based-transfer-projection]] (actor package naming)
+

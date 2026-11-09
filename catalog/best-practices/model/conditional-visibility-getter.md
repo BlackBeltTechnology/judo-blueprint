@@ -1,16 +1,20 @@
 ---
-id: "conditional-visibility-getter"
-title: "Conditional Visibility Getter Expression"
-domain: "model"
-category: "transfer"
-score: 59.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - park-here
+id: conditional-visibility-getter
+title: Conditional Visibility Getter Expression
+description: Derived attributes on transfer objects use conditional (ternary) getter expressions to reveal or hide data based on the state of a parent or related entity.
+aliases: []
+keywords: [conditional, visibility, getter, expression]
+tags: ["domain:model", "layer:model", "project:trivia", "project:park-here", "status:emerging"]
+category: transfer
+status: emerging
+projects: [trivia, park-here]
+evidence: ["trivia:unrecorded", "park-here:unrecorded"]
+alternatives: []
+related: [enum-state-machine, derived-attribute-flattening]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -42,7 +46,8 @@ Reservation entity uses ternary expressions to adapt display attributes based on
 - Cons: Limited to simple conditions in getter expressions, complex logic may need custom operations
 - Prefer when: Data visibility depends on lifecycle state and must be enforced server-side
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md)
-- [derived-attribute-flattening](derived-attribute-flattening.md)
+- [[enum-state-machine]]
+- [[derived-attribute-flattening]]
+

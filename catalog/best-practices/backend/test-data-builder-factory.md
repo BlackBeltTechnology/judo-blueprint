@@ -1,16 +1,20 @@
 ---
-id: "test-data-builder-factory"
-title: "Test Data Builder Factory with Service Injection Bridge"
-domain: "backend"
-category: "testing"
-score: 75.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
+id: test-data-builder-factory
+title: Test Data Builder Factory with Service Injection Bridge
+description: "Integration test infrastructure consisting of: (1) `TestDataBuilder` -- a factory class that creates commonly-needed test entities (currencies, items, offers, racks) with caching for reused defaults, (2) `ServiceInjector` -- a utility th..."
+aliases: []
+keywords: [test, data, builder, factory, service, injection, bridge]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "status:emerging"]
+category: testing
+status: emerging
+projects: [rackinspect, mlszksz-platform]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded"]
+alternatives: []
+related: [service-delegation-pattern, custom-operation-osgi-component]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -57,7 +61,8 @@ PriceService priceService = ReferenceInjector.createAndInject(PriceServiceImpl.c
 - Cons: Reflection-based injection is fragile, ServiceInjector requires manual maintenance when services change
 - Alternative: Test-specific Guice modules, or mock-based unit tests instead of integration tests
 
-## Related Patterns
+## Related
 
-- service-delegation-pattern
-- custom-operation-osgi-component
+- [[service-delegation-pattern]]
+- [[custom-operation-osgi-component]]
+

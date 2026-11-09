@@ -1,15 +1,20 @@
 ---
-id: "approval-workflow-pattern"
-title: "Approval Workflow with Requested/Approved Levels"
-domain: "model"
-category: "operation"
-score: 30.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - skillmatrix-model
+id: approval-workflow-pattern
+title: Approval Workflow with Requested/Approved Levels
+description: "An entity models an approval workflow using two parallel relation fields: one for the requested value (set by the requester) and one for the approved value (set by the approver)."
+aliases: []
+keywords: [approval, workflow, requested, approved, levels]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
+category: operation
+status: single-project
+projects: [skillmatrix-model]
+evidence: ["skillmatrix-model:unrecorded"]
+alternatives: []
+related: [mapped-operation-delegation, derived-attribute-flattening]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -41,7 +46,8 @@ Model source confirms the full cascade chain: `Skill.approve()` (instance, sets 
 - Cons: Two relations for what is conceptually one value, requires careful handling when either is undefined
 - Prefer when: A value must go through an approval process before becoming effective
 
-## Related Patterns
+## Related
 
-- [mapped-operation-delegation](mapped-operation-delegation.md)
-- [derived-attribute-flattening](derived-attribute-flattening.md)
+- [[mapped-operation-delegation]]
+- [[derived-attribute-flattening]]
+

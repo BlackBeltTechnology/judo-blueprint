@@ -1,12 +1,19 @@
 ---
 id: shared-service-helper-module
-title: "Shared Service Helper Module for Form Logic"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - park-here
+title: Shared Service Helper Module for Form Logic
+description: "A frontend-only pattern for extracting shared form logic (field auto-computation, validation constraints, default initialization, and business rule application) into standalone TypeScript service modules under `src/custom/services/`."
+aliases: []
+keywords: [shared, service, helper, module, form, logic]
+tags: ["domain:model", "layer:frontend", "project:park-here", "status:single-project"]
+category: pattern
+status: single-project
+projects: [park-here]
+evidence: ["park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

@@ -1,16 +1,20 @@
 ---
-id: "document-generation-pipeline"
-title: "Document Generation Pipeline (XDocReport + PDF Conversion)"
-domain: "backend"
-category: "integration"
-score: 66.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - doors-model
+id: document-generation-pipeline
+title: Document Generation Pipeline (XDocReport + PDF Conversion)
+description: "A multi-stage document generation pipeline: (1) load DOCX template from Configuration entity via FileStoreService, (2) build a data model using deeply nested Mask queries, (3) generate DOCX using XDocReport with Freemarker templating eng..."
+aliases: []
+keywords: [document, generation, pipeline, xdocreport, pdf, conversion]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:doors-model", "status:emerging"]
+category: integration
+status: emerging
+projects: [rackinspect, doors-model]
+evidence: ["rackinspect:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [filestore-mediated-file-transfer, email-service-integration]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,7 +60,8 @@ String fileId = fileStoreService.put(new ByteArrayInputStream(result), "document
 - Cons: External JODConverter dependency for PDF, complex template debugging, large mask queries for data, thread-safety requires synchronized methods
 - Alternative: Pure Java PDF generation (iText, Apache PDFBox), or cloud document APIs
 
-## Related Patterns
+## Related
 
-- filestore-mediated-file-transfer
-- email-service-integration
+- [[filestore-mediated-file-transfer]]
+- [[email-service-integration]]
+

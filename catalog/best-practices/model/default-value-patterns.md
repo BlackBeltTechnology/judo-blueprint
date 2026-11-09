@@ -1,30 +1,20 @@
 ---
-id: "default-value-patterns"
-title: "Default Value Conventions"
-domain: "model"
-category: "entity"
-score: 81.7
-usage_count: 16
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: default-value-patterns
+title: Default Value Conventions
+description: Entities and transfer objects use consistent default value conventions.
+aliases: []
+keywords: [default, value, conventions, patterns]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: entity
+status: established
+projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [enum-state-machine, sequence-based-identifier]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -111,7 +101,8 @@ Boolean active defaults on 11 lookup entities: `Gate.active = true`, `Partner.ac
 - Cons: Transfer-level defaults may diverge from entity expectations if not coordinated
 - Prefer when: Entities have predictable initial states; always set enum defaults to the starting lifecycle state
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md)
-- [sequence-based-identifier](sequence-based-identifier.md)
+- [[enum-state-machine]]
+- [[sequence-based-identifier]]
+

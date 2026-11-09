@@ -1,12 +1,19 @@
 ---
-id: "report-definition-with-run-operation"
-title: "Report Definition Entity with Run Operation and Result Export"
-score: 30.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - skillmatrix-model
+id: report-definition-with-run-operation
+title: Report Definition Entity with Run Operation and Result Export
+description: "A report definition entity that captures report parameters (selected entities, filters) and produces report results via a `run` instance operation."
+aliases: []
+keywords: [report, definition, run, operation, result, export]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
+category: pattern
+status: single-project
+projects: [skillmatrix-model]
+evidence: ["skillmatrix-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

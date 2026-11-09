@@ -1,39 +1,3 @@
-## Detection Query
-
-```graphql
-{ esm { entitytypes(limit: 100) {
-  items { fqn name
-    attributes { items { name defaultExpression } }
-    operations { items { name operationType } }
-  }
-} } }
-```
-
-Look for entities that have an `active` or `isActive` attribute with default "true" and a `toggleActive` or `activateToggle` operation of type INSTANCE.
-
-## Creation Mutations
-
-```graphql
-mutation { create(input: { entityType: {
-  container: "{{NAMESPACE}}", name: "{{ENTITY_NAME}}",
-  createable: false, updateable: false, deleteable: false
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { dataMember: {
-  container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "active"
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { operation: {
-  container: "{{NAMESPACE}}::{{ENTITY_NAME}}", name: "toggleActive",
-  customImplementation: true, operationType: "INSTANCE",
-  binding: "{{NAMESPACE}}::{{ENTITY_NAME}}.toggleActive"
-} }) { success fqn } }
-```
-
 ## Examples
 
 ### rackinspect

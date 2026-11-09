@@ -1,12 +1,19 @@
 ---
-id: "campaign-lifecycle-status-enum"
-title: "Campaign/Operational Lifecycle Status Enum (Ongoing/Finished/Deleted)"
-score: 63.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - indamedia-adtrack
+id: campaign-lifecycle-status-enum
+title: Campaign/Operational Lifecycle Status Enum (Ongoing/Finished/Deleted)
+description: "A three-state status enumeration for operational or campaign-like entities with members ONGOING (actively running), FINISHED (completed/concluded), and DELETED (soft-removed)."
+aliases: []
+keywords: [campaign, operational, lifecycle, status, enum, ongoing, finished, deleted]
+tags: ["domain:model", "layer:model", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
+category: pattern
+status: single-project
+projects: [indamedia-adtrack]
+evidence: ["indamedia-adtrack:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

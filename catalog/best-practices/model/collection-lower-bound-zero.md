@@ -1,32 +1,20 @@
 ---
-id: "collection-lower-bound-zero"
-title: "Collection Relations Always Use 0 Lower Bound"
-domain: "model"
-category: "relation"
-score: 83.1
-usage_count: 18
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - sanctuary-backend
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: collection-lower-bound-zero
+title: Collection Relations Always Use 0 Lower Bound
+description: "All collection relations (multi-valued) in JUDO models use `0` as their lower bound, resulting in cardinality `0..*`."
+aliases: []
+keywords: [collection, relations, always, use, lower, bound, zero]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: relation
+status: established
+projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [composition-ownership]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -113,6 +101,7 @@ Same model as AMS-Model (frontend project shares the model). All 10 collection r
 - Cons: Cannot express "must have at least one" at the model level (must enforce in operations)
 - Prefer when: Always -- this is the standard JUDO best practice for collection cardinalities
 
-## Related Patterns
+## Related
 
-- [composition-ownership](composition-ownership.md)
+- [[composition-ownership]]
+

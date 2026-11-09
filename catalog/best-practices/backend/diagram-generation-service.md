@@ -1,15 +1,20 @@
 ---
-id: "diagram-generation-service"
-title: "Automatic Diagram Generation from Entity Data"
-domain: "backend"
-category: "service"
-score: 43.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - workflow-poc
+id: diagram-generation-service
+title: Automatic Diagram Generation from Entity Data
+description: "A utility service pattern that generates visual diagram representations (e.g., Mermaid state diagrams) from persistent entity data."
+aliases: []
+keywords: [automatic, diagram, generation, from, data, service]
+tags: ["domain:backend", "layer:backend", "project:workflow-poc", "status:single-project"]
+category: service
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+related: [handlebars-email-template, token-based-workflow-execution, data-snapshot-versioning]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -70,8 +75,9 @@ Key elements:
 - Cons: Limited to Mermaid syntax capabilities, complex diagrams may be hard to read, no layout control (Mermaid auto-layouts), string-based generation is fragile
 - Alternative: External diagram generation service, client-side rendering only (no server storage), PlantUML (more feature-rich), custom SVG generation
 
-## Related Patterns
+## Related
 
-- handlebars-email-template
-- token-based-workflow-execution
-- data-snapshot-versioning
+- [[handlebars-email-template]]
+- [[token-based-workflow-execution]]
+- [[data-snapshot-versioning]]
+

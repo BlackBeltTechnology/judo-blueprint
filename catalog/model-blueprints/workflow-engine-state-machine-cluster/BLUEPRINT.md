@@ -1,12 +1,19 @@
 ---
-id: "workflow-engine-state-machine-cluster"
-title: "Workflow Engine State Machine Entity Cluster"
-score: 43.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - workflow-poc
+id: workflow-engine-state-machine-cluster
+title: Workflow Engine State Machine Entity Cluster
+description: "A complete, reusable workflow/state machine engine modeled as an interconnected entity cluster."
+aliases: []
+keywords: [workflow, engine, state, machine, cluster]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:workflow-poc", "status:single-project"]
+category: pattern
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

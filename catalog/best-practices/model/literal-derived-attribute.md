@@ -1,17 +1,20 @@
 ---
-id: "literal-derived-attribute"
-title: "Literal Constant Derived Attribute"
-domain: "model"
-category: "transfer"
-score: 59.9
-usage_count: 3
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - alba
-  - park-here
+id: literal-derived-attribute
+title: Literal Constant Derived Attribute
+description: "A derived attribute on a transfer object uses a literal constant string (or value) as its getter expression, always returning the same fixed value regardless of the underlying entity state."
+aliases: []
+keywords: [literal, constant, derived, attribute]
+tags: ["domain:model", "layer:model", "project:trivia", "project:alba", "project:park-here", "status:emerging"]
+category: transfer
+status: emerging
+projects: [trivia, alba, park-here]
+evidence: ["trivia:unrecorded", "alba:unrecorded", "park-here:unrecorded"]
+alternatives: []
+related: [derived-attribute-flattening, ui-control-transfer-fields]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -41,7 +44,8 @@ A derived attribute on a transfer object uses a literal constant string (or valu
 - Cons: Value is hardcoded in the model, requires model change to update
 - Prefer when: A fixed label or constant needs to be exposed to clients through the transfer layer
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md)
-- [ui-control-transfer-fields](ui-control-transfer-fields.md)
+- [[derived-attribute-flattening]]
+- [[ui-control-transfer-fields]]
+

@@ -1,18 +1,20 @@
 ---
-id: "i18n-osgi-service"
-title: "I18n Service with ThreadLocal Locale and OSGi Proxy"
-domain: "backend"
-category: "config"
-score: 75.9
-usage_count: 4
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
-  - park-here
-  - indamedia-adtrack
+id: i18n-osgi-service
+title: I18n Service with ThreadLocal Locale and OSGi Proxy
+description: "An internationalization infrastructure using: (1) an interface with `@MessageByKey` annotated methods for all translatable messages, (2) a properties file per locale, (3) an `InheritableThreadLocal` locale supplier for thread-safe locale..."
+aliases: []
+keywords: [i18n, service, threadlocal, locale, osgi, proxy]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "status:established"]
+category: config
+status: established
+projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
+alternatives: []
+related: [validation-exception-hierarchy, osgi-karaf-bundle-architecture]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -61,7 +63,8 @@ throw ExceptionUtils.createBusinessErrorException("NOT_FOUND", i18n.error_not_fo
 - Cons: New message requires both interface method and properties entry, BundleActivator is manual wiring, no runtime language switching for existing threads
 - Alternative: Direct ResourceBundle usage, Spring MessageSource, or external i18n library
 
-## Related Patterns
+## Related
 
-- validation-exception-hierarchy
-- osgi-karaf-bundle-architecture
+- [[validation-exception-hierarchy]]
+- [[osgi-karaf-bundle-architecture]]
+

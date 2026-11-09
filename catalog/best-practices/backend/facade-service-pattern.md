@@ -1,17 +1,20 @@
 ---
-id: "facade-service-pattern"
-title: "Facade Service Pattern for Domain Operations"
-domain: "backend"
-category: "service"
-score: 68.6
-usage_count: 3
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
-  - park-here
-  - indamedia-adtrack
+id: facade-service-pattern
+title: Facade Service Pattern for Domain Operations
+description: "A Facade service that provides a unified interface for a domain's operations while delegating to specialized sub-services internally."
+aliases: []
+keywords: [facade, service, domain, operations]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "status:emerging"]
+category: service
+status: emerging
+projects: [mlszksz-platform, park-here, indamedia-adtrack]
+evidence: ["mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
+alternatives: []
+related: [service-delegation-pattern, custom-operation-osgi-component, state-lifecycle-operation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -73,8 +76,9 @@ public class PostCreationServiceImpl implements PostCreationService {
 - Cons: Extra indirection layer, facade methods are pure pass-through, facade interface must be maintained alongside sub-service interfaces
 - Alternative: Direct injection of sub-services by callers (simpler but more coupling), single monolithic service (simpler but harder to maintain)
 
-## Related Patterns
+## Related
 
-- service-delegation-pattern
-- custom-operation-osgi-component
-- state-lifecycle-operation
+- [[service-delegation-pattern]]
+- [[custom-operation-osgi-component]]
+- [[state-lifecycle-operation]]
+

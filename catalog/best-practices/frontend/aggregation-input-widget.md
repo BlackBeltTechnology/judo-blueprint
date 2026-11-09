@@ -1,15 +1,20 @@
 ---
-id: "aggregation-input-widget"
-title: "Aggregation Input Widget for Entity Associations"
-domain: "frontend"
-category: "form"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: aggregation-input-widget
+title: Aggregation Input Widget for Entity Associations
+description: A reusable form widget for displaying and managing entity associations (single-aggregation or required-relation fields).
+aliases: []
+keywords: [aggregation, input, widget, associations]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: form
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [promise-based-dialog-system, view-edit-mode-toggle]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -48,7 +53,8 @@ Props: `value`, `labelList`, `icon`, `readonly`, `onSet`, `onView`, `onCreate`, 
 - **Cons**: Complex prop interface (7 callbacks); label concatenation is fragile; assumes single-select associations
 - **When to use**: Any form field representing an entity association where users need to view, select, create, or remove the associated entity
 
-## Related Patterns
+## Related
 
-- [promise-based-dialog-system](promise-based-dialog-system.md)
-- [view-edit-mode-toggle](view-edit-mode-toggle.md)
+- [[promise-based-dialog-system]]
+- [[view-edit-mode-toggle]]
+

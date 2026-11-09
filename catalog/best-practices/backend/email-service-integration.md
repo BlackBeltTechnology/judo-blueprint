@@ -1,20 +1,20 @@
 ---
-id: "email-service-integration"
-title: "Email Service Integration via OSGi"
-domain: "backend"
-category: "integration"
-score: 74.9
-usage_count: 6
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - alba
-  - mlszksz-platform
-  - ubives
-  - park-here
+id: email-service-integration
+title: Email Service Integration via OSGi
+description: "Sending emails from custom operations using the `hu.blackbelt.email.api.EmailService` OSGi service."
+aliases: []
+keywords: [email, service, integration, osgi]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "status:established"]
+category: integration
+status: established
+projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded"]
+alternatives: []
+related: [two-phase-registration, filestore-mediated-file-transfer, document-generation-pipeline, handlebars-email-template]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -69,9 +69,10 @@ SendGrid SMTP relay configured via environment variables (`SMTP_HOST`, `SMTP_POR
 - Cons: No templating engine (body is plain string), no HTML email support shown, hardcoded from address
 - Alternative: Template-based email with Thymeleaf/Freemarker, or external email service API (SendGrid, etc.)
 
-## Related Patterns
+## Related
 
-- two-phase-registration
-- filestore-mediated-file-transfer
-- document-generation-pipeline
-- handlebars-email-template
+- [[two-phase-registration]]
+- [[filestore-mediated-file-transfer]]
+- [[document-generation-pipeline]]
+- [[handlebars-email-template]]
+

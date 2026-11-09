@@ -1,12 +1,19 @@
 ---
-id: "environment-enum"
-title: "Environment Enum (DEV/TEST/PROD Deployment Stages)"
-score: 36.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - InterfaceRegister
+id: environment-enum
+title: Environment Enum (DEV/TEST/PROD Deployment Stages)
+description: "An enumeration representing deployment environment stages, typically with three members: DEV (development), TEST (testing/staging), and PROD (production)."
+aliases: []
+keywords: [environment, enum, dev, test, prod, deployment, stages]
+tags: ["domain:model", "layer:model", "project:InterfaceRegister", "status:single-project"]
+category: pattern
+status: single-project
+projects: [InterfaceRegister]
+evidence: ["InterfaceRegister:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

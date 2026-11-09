@@ -1,12 +1,19 @@
 ---
 id: masked-input-integration
-title: "Masked Input Field Integration (react-imask)"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
+title: Masked Input Field Integration (react-imask)
+description: "A frontend-only pattern for integrating masked input fields (via `react-imask` / `IMaskInput`) into JUDO forms by replacing a generated group component with a custom visual element that renders MUI TextFields with input masks."
+aliases: []
+keywords: [masked, input, field, integration, react, imask]
+tags: ["domain:model", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

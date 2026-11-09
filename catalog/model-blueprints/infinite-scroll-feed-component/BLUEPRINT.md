@@ -1,12 +1,19 @@
 ---
 id: infinite-scroll-feed-component
-title: "Infinite-Scroll Card-Based Feed Component"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Infinite-Scroll Card-Based Feed Component
+description: "A custom card-based social feed component that replaces the default generated data grid table with an infinite-scrolling, mobile-optimized feed."
+aliases: []
+keywords: [infinite, scroll, card, based, feed, component]
+tags: ["domain:model", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

@@ -1,23 +1,20 @@
 ---
-id: "service-based-transfer-organization"
-title: "Service-Based Transfer Object Organization"
-domain: "model"
-category: "transfer"
-score: 76.6
-usage_count: 7
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
-  - park-here
-  - indamedia-adtrack
-  - InterfaceRegister
-  - judo-partner
-  - reserve-app
-alternatives:
-  - actor-based-transfer-projection
+id: service-based-transfer-organization
+title: Service-Based Transfer Object Organization
+description: "Transfer objects are organized into service-domain packages (e.g., `services::fault_registry_services`, `services::partner_service`, `services::offer_services`) rather than actor-specific packages."
+aliases: []
+keywords: [service, based, transfer, object, organization]
+tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:reserve-app", "status:established"]
+category: transfer
+status: established
+projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, reserve-app]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+alternatives: [actor-based-transfer-projection]
+related: [actor-based-transfer-projection, unmapped-transfer-dto, panel-dashboard-transfer]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -63,8 +60,9 @@ All 40 transfer objects organized in `ReserveApp::services` package with 5 actor
 - Cons: No built-in actor-level data isolation, permission enforcement must be done manually, all services visible to the single actor
 - Prefer when: Application has one user type with role-based permissions rather than fundamentally different actor types
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md) (alternative: per-actor organization)
-- [unmapped-transfer-dto](unmapped-transfer-dto.md)
-- [panel-dashboard-transfer](panel-dashboard-transfer.md)
+- [[actor-based-transfer-projection]] (alternative: per-actor organization)
+- [[unmapped-transfer-dto]]
+- [[panel-dashboard-transfer]]
+

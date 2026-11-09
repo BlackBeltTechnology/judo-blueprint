@@ -1,15 +1,20 @@
 ---
-id: "seek-based-table-pagination"
-title: "Seek-Based (Keyset) Table Pagination"
-domain: "frontend"
-category: "table"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: seek-based-table-pagination
+title: Seek-Based (Keyset) Table Pagination
+description: Table pages in JUDO frontends use seek-based (keyset) pagination instead of offset-based pagination.
+aliases: []
+keywords: [seek, based, keyset, table, pagination]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: table
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [session-storage-table-state]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -59,8 +64,9 @@ Applications table (10 rows, computed as `12.0 - 2`), Campaigns table, Users tab
 - **Cons**: No random page access (jump to page N); must traverse sequentially; more complex cursor management than offset
 - **When to use**: Standard JUDO table pattern -- used in both React and Flutter frontends for server-side paginated tables
 
-## Related Patterns
+## Related
 
 - [flutter-frontend-framework](flutter-frontend-framework.md)
 - [three-layout-responsive-pattern](three-layout-responsive-pattern.md)
-- [session-storage-table-state](session-storage-table-state.md)
+- [[session-storage-table-state]]
+

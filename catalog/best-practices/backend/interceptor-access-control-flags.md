@@ -1,16 +1,20 @@
 ---
-id: "interceptor-access-control-flags"
-title: "Access Control via __updateable/__deleteable Payload Flags"
-domain: "backend"
-category: "interceptor"
-score: 73.5
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - judo-partner
+id: interceptor-access-control-flags
+title: Access Control via __updateable/__deleteable Payload Flags
+description: "Post-call interceptors on list and refresh operations that set special `__updateable` and `__deleteable` flags on returned Payload objects."
+aliases: []
+keywords: [access, control, updateable, deleteable, payload, flags, interceptor]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:judo-partner", "status:emerging"]
+category: interceptor
+status: emerging
+projects: [rackinspect, judo-partner]
+evidence: ["rackinspect:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [interceptor-crud-lifecycle, interceptor-range-override]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -48,7 +52,8 @@ For refresh (single-instance) interceptors, the return is a single `Map<String, 
 - Cons: Operates on raw Map payloads (no type safety), must implement both list and refresh interceptors for consistency, business logic duplicated between list and refresh
 - Alternative: Model-level access expressions, or custom frontend logic to disable buttons
 
-## Related Patterns
+## Related
 
-- interceptor-crud-lifecycle
-- interceptor-range-override
+- [[interceptor-crud-lifecycle]]
+- [[interceptor-range-override]]
+

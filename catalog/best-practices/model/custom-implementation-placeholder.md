@@ -1,22 +1,20 @@
 ---
-id: "custom-implementation-placeholder"
-title: "Custom Implementation Placeholder Operations"
-domain: "model"
-category: "operation"
-score: 77.5
-usage_count: 8
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - alba
-  - mlszksz-platform
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - workflow-poc
+id: custom-implementation-placeholder
+title: Custom Implementation Placeholder Operations
+description: "Operations that require complex business logic beyond JQL capabilities are defined in the model with empty or comment-only bodies (`// no code`, `// no op`, `// sdk`)."
+aliases: []
+keywords: [custom, implementation, placeholder, operations]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: operation
+status: established
+projects: [trivia, rackinspect, alba, mlszksz-platform, park-here, indamedia-adtrack, judo-partner, workflow-poc]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [singleton-entity]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -75,6 +73,7 @@ Several operations use placeholder bodies for custom or deferred implementation:
 - Cons: Disconnect between model and implementation, empty bodies may be missed during review
 - Prefer when: Business logic is too complex for JQL expressions or requires external integrations
 
-## Related Patterns
+## Related
 
-- [singleton-entity](singleton-entity.md)
+- [[singleton-entity]]
+

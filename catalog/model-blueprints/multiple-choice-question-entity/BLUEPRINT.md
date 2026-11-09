@@ -1,12 +1,19 @@
 ---
-id: "multiple-choice-question-entity"
-title: "Multiple-Choice Question Entity with Choice Enum"
-score: 39.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - trivia
+id: multiple-choice-question-entity
+title: Multiple-Choice Question Entity with Choice Enum
+description: A Question entity representing a multiple-choice question with fixed answer options.
+aliases: []
+keywords: [multiple, choice, question, enum]
+tags: ["domain:model", "layer:model", "layer:frontend", "project:trivia", "status:single-project"]
+category: pattern
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

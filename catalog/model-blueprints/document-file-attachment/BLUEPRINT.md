@@ -1,17 +1,19 @@
 ---
-id: "document-file-attachment"
-title: "Document/File Attachment Entity"
-score: 75.3
-usage_count: 6
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
-  - rackinspect
-  - reserve-app
-  - alba
-  - judo-demo-miniworkflow
-  - doors-model
+id: document-file-attachment
+title: Document/File Attachment Entity
+description: "A Document entity for file attachments with a binary `file` or `document` attribute and metadata fields."
+aliases: []
+keywords: [document, file, attachment]
+tags: ["domain:model", "layer:model", "layer:backend", "project:mlszksz-platform", "project:rackinspect", "project:reserve-app", "project:alba", "project:judo-demo-miniworkflow", "project:doors-model", "status:established"]
+category: pattern
+status: established
+projects: [mlszksz-platform, rackinspect, reserve-app, alba, judo-demo-miniworkflow, doors-model]
+evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "reserve-app:unrecorded", "alba:unrecorded", "judo-demo-miniworkflow:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

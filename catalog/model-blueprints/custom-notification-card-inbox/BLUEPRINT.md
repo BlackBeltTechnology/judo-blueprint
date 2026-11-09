@@ -1,12 +1,19 @@
 ---
 id: custom-notification-card-inbox
-title: "Custom Notification Card Inbox Component"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Custom Notification Card Inbox Component
+description: A custom notification inbox component that replaces the generated notifications data grid table with a card-based notification list.
+aliases: []
+keywords: [custom, notification, card, inbox, component]
+tags: ["domain:model", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

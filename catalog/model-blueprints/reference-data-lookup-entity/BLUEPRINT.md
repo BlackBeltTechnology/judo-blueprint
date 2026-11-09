@@ -1,21 +1,19 @@
 ---
-id: "reference-data-lookup-entity"
-title: "Reference Data Lookup Entity (Name + Active/Enabled)"
-score: 71.0
-usage_count: 10
-first_seen: "2026-03-05"
-last_updated: "2026-03-09"
-projects:
-  - reserve-app
-  - alba
-  - trivia
-  - itracker
-  - viterra_demo
-  - InterfaceRegister
-  - doors-model
-  - ams-model
-  - skillmatrix-model
-  - mlszksz-platform
+id: reference-data-lookup-entity
+title: Reference Data Lookup Entity (Name + Active/Enabled)
+description: "A minimal reference data entity with a `name` (required) attribute and optionally an `active` or `isEnabled` boolean attribute (default: true) for soft-enable/disable."
+aliases: []
+keywords: [reference, data, lookup, name, active, enabled]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:reserve-app", "project:alba", "project:trivia", "project:itracker", "project:viterra_demo", "project:InterfaceRegister", "project:doors-model", "project:ams-model", "project:skillmatrix-model", "project:mlszksz-platform", "status:established"]
+category: pattern
+status: established
+projects: [reserve-app, alba, trivia, itracker, viterra_demo, InterfaceRegister, doors-model, ams-model, skillmatrix-model, mlszksz-platform]
+evidence: ["reserve-app:unrecorded", "alba:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-09
+format: legacy
 ---
 ## Description
 

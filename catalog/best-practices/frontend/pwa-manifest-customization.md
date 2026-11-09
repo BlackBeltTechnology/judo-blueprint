@@ -1,15 +1,20 @@
 ---
-id: "pwa-manifest-customization"
-title: "PWA Manifest Customization"
-domain: "frontend"
-category: "build"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: pwa-manifest-customization
+title: PWA Manifest Customization
+description: "Customize the `public/manifest.json` file for Progressive Web App (PWA) capabilities by listing it in `.generator-ignore`."
+aliases: []
+keywords: [pwa, manifest, customization]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
+category: build
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [generator-ignore-app-theme, custom-public-assets]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -43,7 +48,8 @@ Player frontend customizes `manifest.json` with `"name": "JUDO Trivia"`, `"short
 - **Cons**: Requires managing manifest updates manually; must coordinate with actual icons and theme colors
 - **When to use**: Mobile-first applications or any app intended to be installed as a PWA
 
-## Related Patterns
+## Related
 
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
-- [custom-public-assets](custom-public-assets.md)
+- [[generator-ignore-app-theme]]
+- [[custom-public-assets]]
+

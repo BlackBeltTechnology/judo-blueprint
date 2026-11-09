@@ -1,16 +1,20 @@
 ---
-id: "hungarian-full-localization"
-title: "Full Hungarian Localization with Python i18n Utilities"
-domain: "frontend"
-category: "i18n"
-score: 66.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - doors-model
+id: hungarian-full-localization
+title: Full Hungarian Localization with Python i18n Utilities
+description: "Provide complete Hungarian (hu-HU) localization for a JUDO frontend application, including both application-specific translations (entity fields, menu items, enumerations) and system-level translations (login, actions, dialogs, errors)."
+aliases: []
+keywords: [full, hungarian, localization, python, i18n, utilities]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:doors-model", "status:emerging"]
+category: i18n
+status: emerging
+projects: [rackinspect, doors-model]
+evidence: ["rackinspect:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [generator-ignore-i18n-layout, i18n-custom-translation-keys, i18n-generator-override-extra-fragment]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -54,9 +58,10 @@ Both Admin and Manager actors support English (default) and Hungarian locales vi
 - **Cons**: Large files require careful management; model changes add new keys that must be manually translated; no runtime language switching
 - **When to use**: Enterprise applications deployed in a specific locale where full localization is required
 
-## Related Patterns
+## Related
 
-- [generator-ignore-i18n-layout](generator-ignore-i18n-layout.md)
-- [i18n-custom-translation-keys](i18n-custom-translation-keys.md)
-- [i18n-generator-override-extra-fragment](i18n-generator-override-extra-fragment.md)
+- [[generator-ignore-i18n-layout]]
+- [[i18n-custom-translation-keys]]
+- [[i18n-generator-override-extra-fragment]]
 - [flutter-arb-localization](flutter-arb-localization.md)
+

@@ -1,20 +1,20 @@
 ---
-id: "range-expression-filtering"
-title: "Range Expression Filtering for Relation Selection"
-domain: "model"
-category: "relation"
-score: 60.7
-usage_count: 6
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - alba
-  - skillmatrix-model
-  - viterra_demo
-  - park-here
-  - reserve-app
+id: range-expression-filtering
+title: Range Expression Filtering for Relation Selection
+description: Transfer object relations use range expressions to restrict the set of selectable target entities.
+aliases: []
+keywords: [range, expression, filtering, relation, selection]
+tags: ["domain:model", "layer:model", "project:trivia", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:park-here", "project:reserve-app", "status:established"]
+category: relation
+status: established
+projects: [trivia, alba, skillmatrix-model, viterra_demo, park-here, reserve-app]
+evidence: ["trivia:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "park-here:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [enum-state-machine, derived-access-filtering]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -61,7 +61,8 @@ Model source confirms 8+ range expressions with `rangeType="DERIVED"`. Key patte
 - Cons: Only supports filter-based restrictions (no complex logic), expression must be JQL-compatible
 - Prefer when: A relation should only allow linking to a subset of target entities based on status or other criteria
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md)
-- [derived-access-filtering](derived-access-filtering.md)
+- [[enum-state-machine]]
+- [[derived-access-filtering]]
+

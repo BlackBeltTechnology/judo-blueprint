@@ -1,15 +1,20 @@
 ---
-id: "conditional-field-validation-hook"
-title: "Conditional Field Validation via Action Hook"
-domain: "frontend"
-category: "hook"
-score: 45.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - reserve-app
+id: conditional-field-validation-hook
+title: Conditional Field Validation via Action Hook
+description: "Override a generated page's field validation behavior using a Pandino action hook that returns conditional `isFieldRequired` functions."
+aliases: []
+keywords: [conditional, field, validation, action, hook]
+tags: ["domain:frontend", "layer:frontend", "project:reserve-app", "status:single-project"]
+category: hook
+status: single-project
+projects: [reserve-app]
+evidence: ["reserve-app:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, hook-scaffold-default-pattern, application-customizer-hub, approval-workflow-conditional-visibility]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -52,9 +57,10 @@ AdminActor StorageTypes AccessViewPage dialog hook makes `name` conditionally re
 - **Cons**: Must understand the hook interface contract (which `isFieldRequired` names are available); validation is frontend-only unless backend also enforces it; one hook file per page/dialog
 - **When to use**: When a form field should be conditionally required based on other field values in the same entity
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [hook-scaffold-default-pattern](hook-scaffold-default-pattern.md)
-- [application-customizer-hub](application-customizer-hub.md)
-- [approval-workflow-conditional-visibility](approval-workflow-conditional-visibility.md)
+- [[pandino-action-hook-override]]
+- [[hook-scaffold-default-pattern]]
+- [[application-customizer-hub]]
+- [[approval-workflow-conditional-visibility]]
+

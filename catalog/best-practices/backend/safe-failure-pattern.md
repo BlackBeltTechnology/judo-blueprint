@@ -1,16 +1,20 @@
 ---
-id: "safe-failure-pattern"
-title: "Safe Failure Pattern for Non-Critical Operations"
-domain: "backend"
-category: "error"
-score: 66.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
-  - workflow-poc
+id: safe-failure-pattern
+title: Safe Failure Pattern for Non-Critical Operations
+description: "A defensive error handling pattern where non-critical operations (audit logging, analytics, notifications) are wrapped in try-catch blocks that log failures but never propagate exceptions."
+aliases: []
+keywords: [safe, failure, non, critical, operations]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "project:workflow-poc", "status:emerging"]
+category: error
+status: emerging
+projects: [mlszksz-platform, workflow-poc]
+evidence: ["mlszksz-platform:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [audit-event-trail, quartz-scheduled-job, interceptor-aggregation-postcall]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -67,8 +71,9 @@ Applied in 3 contexts: (1) `AuditLogServiceImpl.log()` wraps all audit creation 
 - Cons: Silent failures can hide bugs, no retry mechanism, lost audit entries not recoverable, warn-level logging may be missed
 - Alternative: Dead letter queue for failed operations, async processing with retry, circuit breaker pattern
 
-## Related Patterns
+## Related
 
-- audit-event-trail
-- quartz-scheduled-job
-- interceptor-aggregation-postcall
+- [[audit-event-trail]]
+- [[quartz-scheduled-job]]
+- [[interceptor-aggregation-postcall]]
+

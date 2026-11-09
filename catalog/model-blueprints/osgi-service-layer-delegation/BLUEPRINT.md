@@ -1,15 +1,19 @@
 ---
 id: osgi-service-layer-delegation
-title: "OSGi Service Layer Delegation (Shared Business Services)"
-impl_only: true
-usage_count: 4
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
-  - rackinspect
-  - indamedia-adtrack
-  - park-here
+title: OSGi Service Layer Delegation (Shared Business Services)
+description: "An architectural pattern where custom operations delegate business logic to shared OSGi service interfaces defined in a `common` module, with implementations spread across multiple Maven modules (`common`, `keycloak-client`, `firebase`)."
+aliases: []
+keywords: [osgi, service, layer, delegation, shared, business, services]
+tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "project:rackinspect", "project:indamedia-adtrack", "project:park-here", "status:established"]
+category: pattern
+status: established
+projects: [mlszksz-platform, rackinspect, indamedia-adtrack, park-here]
+evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

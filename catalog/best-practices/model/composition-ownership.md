@@ -1,31 +1,20 @@
 ---
-id: "composition-ownership"
-title: "Composition Ownership for Lifecycle-Bound Children"
-domain: "model"
-category: "relation"
-score: 81.5
-usage_count: 17
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - sanctuary-backend
-  - park-here
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: composition-ownership
+title: Composition Ownership for Lifecycle-Bound Children
+description: Composition relations are used sparingly and only when child entities are lifecycle-bound to their parent (cascade delete).
+aliases: []
+keywords: [composition, ownership, lifecycle, bound, children]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:park-here", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: relation
+status: established
+projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [conditional-visibility-getter, container-back-reference]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -109,7 +98,8 @@ Single composition: `Campaign.confirmationRequests -> ConfirmationRequest [0..*]
 - Cons: Composition children cannot be shared across parents, must be created within parent context
 - Prefer when: Child entities have no meaning outside their parent; prefer association for independent entities
 
-## Related Patterns
+## Related
 
-- [conditional-visibility-getter](conditional-visibility-getter.md) (uses `!container()` for composition navigation)
-- [container-back-reference](container-back-reference.md)
+- [[conditional-visibility-getter]] (uses `!container()` for composition navigation)
+- [[container-back-reference]]
+

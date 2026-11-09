@@ -1,22 +1,20 @@
 ---
-id: "generalization-base-entity"
-title: "Generalization Base Entity for Shared Infrastructure"
-domain: "model"
-category: "entity"
-score: 72.5
-usage_count: 6
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
-  - ams-model
-  - indamedia-adtrack
-  - InterfaceRegister
-  - workflow-poc
-alternatives:
-  - flat-entity-model
+id: generalization-base-entity
+title: Generalization Base Entity for Shared Infrastructure
+description: "A base entity provides shared attributes and relations (timestamps, document management, user assignment, audit history) that are inherited by multiple concrete entity types via generalization."
+aliases: []
+keywords: [generalization, base, shared, infrastructure]
+tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-platform", "project:ams-model", "project:indamedia-adtrack", "project:InterfaceRegister", "project:workflow-poc", "status:established"]
+category: entity
+status: established
+projects: [rackinspect, mlszksz-platform, ams-model, indamedia-adtrack, InterfaceRegister, workflow-poc]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ams-model:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "workflow-poc:unrecorded"]
+alternatives: [flat-entity-model]
+related: [flat-entity-model, enum-state-machine]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -62,7 +60,8 @@ Abstract `Request` base entity with 12 attributes (including 5 derived), 2 manda
 - Cons: Inheritance hierarchy adds complexity, all subtypes must conform to base contract, polymorphic queries may be needed
 - Prefer when: Multiple entities share the same workflow infrastructure (timestamps, documents, user assignment)
 
-## Related Patterns
+## Related
 
-- [flat-entity-model](flat-entity-model.md) (alternative: no inheritance)
-- [enum-state-machine](enum-state-machine.md)
+- [[flat-entity-model]] (alternative: no inheritance)
+- [[enum-state-machine]]
+

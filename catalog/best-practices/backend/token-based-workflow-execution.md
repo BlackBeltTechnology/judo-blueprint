@@ -1,15 +1,20 @@
 ---
-id: "token-based-workflow-execution"
-title: "Token-Based Workflow Execution with Fork/Join"
-domain: "backend"
-category: "service"
-score: 43.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - workflow-poc
+id: token-based-workflow-execution
+title: Token-Based Workflow Execution with Fork/Join
+description: A pattern for implementing a workflow/state machine engine using persistent token entities.
+aliases: []
+keywords: [token, based, workflow, execution, fork, join]
+tags: ["domain:backend", "layer:backend", "project:workflow-poc", "status:single-project"]
+category: service
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+related: [state-lifecycle-operation, correlation-based-event-chaining, spel-guard-evaluation, audit-event-trail]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -82,9 +87,10 @@ Key elements:
 - Cons: Database overhead for token CRUD on every transition, fork/join logic is complex and error-prone, no built-in timeout or deadline handling, single-threaded correlation chain processing
 - Alternative: External BPM engine (Camunda, jBPM), simple enum-based state machine (for linear workflows), event sourcing with projections
 
-## Related Patterns
+## Related
 
-- state-lifecycle-operation
-- correlation-based-event-chaining
-- spel-guard-evaluation
-- audit-event-trail
+- [[state-lifecycle-operation]]
+- [[correlation-based-event-chaining]]
+- [[spel-guard-evaluation]]
+- [[audit-event-trail]]
+

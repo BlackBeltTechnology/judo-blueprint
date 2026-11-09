@@ -1,15 +1,20 @@
 ---
-id: "getmask-data-optimization"
-title: "Custom getMask() Override for Data Fetch Optimization"
-domain: "frontend"
-category: "hook"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: getmask-data-optimization
+title: Custom getMask() Override for Data Fetch Optimization
+description: "Override the `getMask()` action in page hooks to specify exactly which fields to fetch from the backend, optimizing network payload for list views."
+aliases: []
+keywords: [custom, getmask, override, data, fetch, optimization]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: hook
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -44,6 +49,7 @@ FaultRegistryPanel list hook overrides `getMask()` to fetch only fields needed f
 - **Cons**: Must be manually maintained when page columns change; incorrect masks cause missing data; no compile-time validation of mask strings
 - **When to use**: List views or panels with complex entities where the default mask fetches too much data
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
+- [[pandino-action-hook-override]]
+

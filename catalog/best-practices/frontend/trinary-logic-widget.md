@@ -1,15 +1,20 @@
 ---
-id: "trinary-logic-widget"
-title: "Trinary Logic Combobox for Nullable Booleans"
-domain: "frontend"
-category: "form"
-score: 34.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
+id: trinary-logic-widget
+title: Trinary Logic Combobox for Nullable Booleans
+description: "A custom form widget for nullable boolean fields that maps three values: `true` (\"Yes\"), `false` (\"No\"), and `null` (\"Unknown\")."
+aliases: []
+keywords: [trinary, logic, combobox, nullable, booleans, widget]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: form
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [view-edit-mode-toggle, promise-based-dialog-system]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -48,7 +53,8 @@ Also used in FilterDialog as `trinaryLogic` filter type for boolean column filte
 - **Cons**: Custom widget not part of standard MUI; must be maintained separately; "Unknown" label may confuse users expecting "Not Set"
 - **When to use**: Any form or filter that needs to represent a nullable boolean (true/false/null) field
 
-## Related Patterns
+## Related
 
-- [view-edit-mode-toggle](view-edit-mode-toggle.md)
-- [promise-based-dialog-system](promise-based-dialog-system.md)
+- [[view-edit-mode-toggle]]
+- [[promise-based-dialog-system]]
+

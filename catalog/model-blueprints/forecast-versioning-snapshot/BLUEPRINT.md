@@ -1,12 +1,19 @@
 ---
-id: "forecast-versioning-snapshot"
-title: "Forecast Versioning with Monthly Snapshot Composition"
-score: 38.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - itracker
+id: forecast-versioning-snapshot
+title: Forecast Versioning with Monthly Snapshot Composition
+description: "A versioning pattern for periodic financial forecasts where a parent entity (e.g., Initiative) maintains both current monthly forecasts and archived forecast versions."
+aliases: []
+keywords: [forecast, versioning, monthly, snapshot, composition]
+tags: ["domain:model", "layer:model", "project:itracker", "status:single-project"]
+category: pattern
+status: single-project
+projects: [itracker]
+evidence: ["itracker:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

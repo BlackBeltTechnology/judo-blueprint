@@ -1,12 +1,19 @@
 ---
-id: "history-audit-trail-entity"
-title: "History Audit Trail Entity (Who/What/When)"
-score: 73.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - rackinspect
+id: history-audit-trail-entity
+title: History Audit Trail Entity (Who/What/When)
+description: "A minimal History entity that records an audit trail of actions with three attributes: whoDid (the user who performed the action), whatDid (description of the action), and whenDid (timestamp of the action)."
+aliases: []
+keywords: [history, audit, trail, who, what, when]
+tags: ["domain:model", "layer:model", "layer:backend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

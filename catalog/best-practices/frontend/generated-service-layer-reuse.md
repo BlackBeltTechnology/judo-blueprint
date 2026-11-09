@@ -1,16 +1,20 @@
 ---
-id: "generated-service-layer-reuse"
-title: "Reusing Generated TypeScript Service Layer in Custom UI"
-domain: "frontend"
-category: "mapping"
-score: 38.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - actiongroup-test-react
+id: generated-service-layer-reuse
+title: Reusing Generated TypeScript Service Layer in Custom UI
+description: "When replacing the generated JUDO UI with a custom frontend, continue to import and use the generated TypeScript service implementations (Axios-based REST clients) and transfer object type definitions."
+aliases: []
+keywords: [reusing, generated, typescript, service, layer, custom, ui, reuse]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:actiongroup-test-react", "status:emerging"]
+category: mapping
+status: emerging
+projects: [trivia, actiongroup-test-react]
+evidence: ["trivia:unrecorded", "actiongroup-test-react:unrecorded"]
+alternatives: []
+related: [complete-frontend-replacement, error-code-mapping-pattern]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -50,7 +54,8 @@ Imports generated Axios services directly: `godServiceForGalaxiesImpl` (root CRU
 - **Cons**: Couples custom UI to generated service interfaces; service API changes require regeneration
 - **When to use**: Always, when building custom UI within a JUDO project -- there is no reason to bypass the generated service layer
 
-## Related Patterns
+## Related
 
-- [complete-frontend-replacement](complete-frontend-replacement.md)
-- [error-code-mapping-pattern](error-code-mapping-pattern.md)
+- [[complete-frontend-replacement]]
+- [[error-code-mapping-pattern]]
+

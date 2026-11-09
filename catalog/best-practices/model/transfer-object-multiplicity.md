@@ -1,21 +1,20 @@
 ---
-id: "transfer-object-multiplicity"
-title: "Transfer Object Multiplicity per Entity"
-domain: "model"
-category: "transfer"
-score: 45.2
-usage_count: 7
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
-  - skillmatrix-model
-  - viterra_demo
-  - judo-demo-miniworkflow
-  - ams-model
-  - workflow-poc
-  - reserve-app
+id: transfer-object-multiplicity
+title: Transfer Object Multiplicity per Entity
+description: "A single entity is exposed through multiple transfer objects, each tailored for a specific actor and purpose."
+aliases: []
+keywords: [transfer, object, multiplicity, per]
+tags: ["domain:model", "layer:model", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: transfer
+status: established
+projects: [alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, workflow-poc, reserve-app]
+evidence: ["alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [actor-based-transfer-projection, derived-attribute-flattening, unmapped-transfer-dto]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -64,8 +63,9 @@ A single entity is exposed through multiple transfer objects, each tailored for 
 - Cons: Large number of transfer objects to maintain, changes to the entity may require updates to many TOs, naming must be clear to avoid confusion
 - Prefer when: A core entity serves multiple actors with significantly different data and permission needs
 
-## Related Patterns
+## Related
 
-- [actor-based-transfer-projection](actor-based-transfer-projection.md)
-- [derived-attribute-flattening](derived-attribute-flattening.md)
-- [unmapped-transfer-dto](unmapped-transfer-dto.md)
+- [[actor-based-transfer-projection]]
+- [[derived-attribute-flattening]]
+- [[unmapped-transfer-dto]]
+

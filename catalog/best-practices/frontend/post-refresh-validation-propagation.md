@@ -1,15 +1,20 @@
 ---
-id: "post-refresh-validation-propagation"
-title: "Post-Refresh Validation Propagation from Backend Errors"
-domain: "frontend"
-category: "hook"
-score: 73.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
+id: post-refresh-validation-propagation
+title: Post-Refresh Validation Propagation from Backend Errors
+description: "Use the `postRefreshAction` hook to map backend-computed validation errors to field-level validation messages in the UI."
+aliases: []
+keywords: [post, refresh, validation, propagation, from, backend, errors]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: hook
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, error-code-mapping-pattern]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -47,7 +52,8 @@ Partner view/edit hook maps `data.partnerErrors` array to field-level validation
 - **Cons**: Requires backend to provide structured error arrays; validation is only updated on refresh (not real-time); tight coupling to error array structure
 - **When to use**: When backend validation rules are too complex for frontend-only validation (cross-entity checks, database lookups, etc.)
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [error-code-mapping-pattern](error-code-mapping-pattern.md)
+- [[pandino-action-hook-override]]
+- [[error-code-mapping-pattern]]
+

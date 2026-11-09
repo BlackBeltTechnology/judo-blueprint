@@ -1,12 +1,19 @@
 ---
 id: custom-post-detail-views
-title: "Custom Post Detail View Components"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
+title: Custom Post Detail View Components
+description: "A set of custom view components that replace generated container layouts for post detail pages (News, Offer, Request, Announcement) and related entities (Organization, ProfilePanel)."
+aliases: []
+keywords: [custom, post, detail, view, components, views]
+tags: ["domain:model", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

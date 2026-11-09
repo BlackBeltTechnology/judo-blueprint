@@ -1,17 +1,19 @@
 ---
-id: "error-code-enum"
-title: "Error Code Enumeration with Business Error Transfer Object"
-score: 71.3
-usage_count: 6
-first_seen: "2026-03-05"
-last_updated: "2026-03-09"
-projects:
-  - indamedia-adtrack
-  - park-here
-  - ubives
-  - workflow-poc
-  - trivia
-  - mlszksz-platform
+id: error-code-enum
+title: Error Code Enumeration with Business Error Transfer Object
+description: An ErrorCode enumeration that catalogs all domain-specific error conditions the system can produce.
+aliases: []
+keywords: [error, code, enumeration, business, transfer, object, enum]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:indamedia-adtrack", "project:park-here", "project:ubives", "project:workflow-poc", "project:trivia", "project:mlszksz-platform", "status:established"]
+category: pattern
+status: established
+projects: [indamedia-adtrack, park-here, ubives, workflow-poc, trivia, mlszksz-platform]
+evidence: ["indamedia-adtrack:unrecorded", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "trivia:unrecorded", "mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-09
+format: legacy
 ---
 ## Description
 

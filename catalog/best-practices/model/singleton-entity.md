@@ -1,22 +1,20 @@
 ---
-id: "singleton-entity"
-title: "Singleton Entity Pattern"
-domain: "model"
-category: "entity"
-score: 67.0
-usage_count: 8
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
-  - mlszksz-platform
-  - viterra_demo
-  - mjsz
-  - park-here
-  - InterfaceRegister
-  - judo-partner
+id: singleton-entity
+title: Singleton Entity Pattern
+description: "An entity with no attributes or relations that serves as a singleton application-level container for static operations (initialization, registration, bulk actions)."
+aliases: []
+keywords: [singleton]
+tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:park-here", "project:InterfaceRegister", "project:judo-partner", "status:established"]
+category: entity
+status: established
+projects: [trivia, itracker, mlszksz-platform, viterra_demo, mjsz, park-here, InterfaceRegister, judo-partner]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [custom-implementation-placeholder, derived-access-filtering]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -62,7 +60,8 @@ Two singletons: **Initializer** (no attributes, hosts `init` static operation wi
 - Cons: Slightly unusual entity pattern (no data), may confuse developers expecting data-carrying entities
 - Prefer when: Application needs a global entry point for static operations or initialization
 
-## Related Patterns
+## Related
 
-- [custom-implementation-placeholder](custom-implementation-placeholder.md)
-- [derived-access-filtering](derived-access-filtering.md)
+- [[custom-implementation-placeholder]]
+- [[derived-access-filtering]]
+

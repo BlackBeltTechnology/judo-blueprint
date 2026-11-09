@@ -1,22 +1,20 @@
 ---
-id: "derived-relation-navigation"
-title: "Derived Relation via Navigation Expression"
-domain: "model"
-category: "relation"
-score: 73.2
-usage_count: 8
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - alba
-  - skillmatrix-model
-  - sanctuary-backend
-  - park-here
-  - judo-partner
-  - workflow-poc
+id: derived-relation-navigation
+title: Derived Relation via Navigation Expression
+description: "Entity or transfer relations use derived getter expressions to compute their contents by navigating through other relations, applying filters, or combining multiple sources."
+aliases: []
+keywords: [derived, relation, navigation, expression]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:alba", "project:skillmatrix-model", "project:sanctuary-backend", "project:park-here", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: relation
+status: established
+projects: [trivia, rackinspect, alba, skillmatrix-model, sanctuary-backend, park-here, judo-partner, workflow-poc]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [derived-attribute-flattening, self-referencing-derived-relation, container-back-reference]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -76,8 +74,9 @@ Filtered event collections on `Bejelentes`: `megjegyzesek` filters `esemenyek` f
 - Cons: Derived relations are read-only, may have performance implications for deep/complex navigation
 - Prefer when: Collection data can be computed from existing relations using navigation or filtering
 
-## Related Patterns
+## Related
 
-- [derived-attribute-flattening](derived-attribute-flattening.md)
-- [self-referencing-derived-relation](self-referencing-derived-relation.md)
-- [container-back-reference](container-back-reference.md)
+- [[derived-attribute-flattening]]
+- [[self-referencing-derived-relation]]
+- [[container-back-reference]]
+

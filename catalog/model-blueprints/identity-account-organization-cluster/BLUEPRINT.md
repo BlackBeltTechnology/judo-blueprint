@@ -1,12 +1,19 @@
 ---
-id: "identity-account-organization-cluster"
-title: "Identity-Account-Organization Multi-Tenant Cluster"
-score: 44.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - ubives
+id: identity-account-organization-cluster
+title: Identity-Account-Organization Multi-Tenant Cluster
+description: A multi-tier entity cluster for identity and multi-tenant organization management.
+aliases: []
+keywords: [identity, account, organization, multi, tenant, cluster]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:ubives", "status:single-project"]
+category: pattern
+status: single-project
+projects: [ubives]
+evidence: ["ubives:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

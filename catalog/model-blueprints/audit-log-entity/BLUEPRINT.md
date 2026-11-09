@@ -1,12 +1,19 @@
 ---
-id: "audit-log-entity"
-title: "Audit Log Entity"
-score: 68.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
+id: audit-log-entity
+title: Audit Log Entity
+description: "An AuditLog entity that records system events with a timestamp, action type (typically an enum), the entity type and ID being acted upon, a details text field, and an optional association to the User who performed the action."
+aliases: []
+keywords: [audit, log]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

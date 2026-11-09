@@ -1,32 +1,20 @@
 ---
-id: "standard-type-library"
-title: "Standard Primitive Type and Measures Library"
-domain: "model"
-category: "type"
-score: 82.7
-usage_count: 18
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - mlszksz-platform
-  - viterra_demo
-  - bhs-global-operation
-  - mjsz
-  - judo-demo-miniworkflow
-  - ams-model
-  - sanctuary-backend
-  - park-here
-  - InterfaceRegister
-  - judo-partner
-  - workflow-poc
-  - reserve-app
+id: standard-type-library
+title: Standard Primitive Type and Measures Library
+description: "JUDO projects include a standard library of primitive types and physical measures in dedicated packages (`types` and `measures`)."
+aliases: []
+keywords: [standard, primitive, type, measures, library]
+tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:bhs-global-operation", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:park-here", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
+category: type
+status: established
+projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [naming-conventions]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -116,6 +104,7 @@ Standard types in `ReserveApp::types`: String, Phone, Text, URL, Email, Long, In
 - Cons: Measures package included even when unused, limited customization of standard types
 - Prefer when: Always -- this is the standard JUDO type library
 
-## Related Patterns
+## Related
 
-- [naming-conventions](naming-conventions.md)
+- [[naming-conventions]]
+

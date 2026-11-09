@@ -1,12 +1,19 @@
 ---
-id: "notification-entity"
-title: "Notification Entity with Status and Type Enums"
-score: 68.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
+id: notification-entity
+title: Notification Entity with Status and Type Enums
+description: A Notification entity for tracking push/email notifications sent to users.
+aliases: []
+keywords: [notification, status, type, enums]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+category: pattern
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

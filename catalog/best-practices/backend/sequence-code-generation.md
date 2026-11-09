@@ -1,15 +1,20 @@
 ---
-id: "sequence-code-generation"
-title: "Sequential Code Generation via VariableResolver SEQUENCE"
-domain: "backend"
-category: "operation"
-score: 47.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - judo-partner
+id: sequence-code-generation
+title: Sequential Code Generation via VariableResolver SEQUENCE
+description: "Auto-generating sequential human-readable codes for entities using the JUDO `VariableResolver` with the `SEQUENCE` category."
+aliases: []
+keywords: [sequential, code, generation, variableresolver, sequence]
+tags: ["domain:backend", "layer:backend", "project:judo-partner", "status:single-project"]
+category: operation
+status: single-project
+projects: [judo-partner]
+evidence: ["judo-partner:unrecorded"]
+alternatives: []
+related: [actor-resolution-variable-resolver, builder-pattern-entity-creation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,7 +56,8 @@ Two independent sequences: (1) `PartnerServices.createPartner()` generates partn
 - Cons: Not transactional (gaps possible if operation fails after sequence increment), centralized (potential bottleneck under high concurrency), format is application-specific
 - Alternative: Database sequences (more standard but less portable), UUID (no gaps but not human-readable), timestamp-based codes (no collisions but longer)
 
-## Related Patterns
+## Related
 
-- actor-resolution-variable-resolver
-- builder-pattern-entity-creation
+- [[actor-resolution-variable-resolver]]
+- [[builder-pattern-entity-creation]]
+

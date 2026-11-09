@@ -1,15 +1,20 @@
 ---
-id: "pin-code-auto-submit-input"
-title: "PIN Code Multi-Field Auto-Submit Input"
-domain: "frontend"
-category: "form"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: pin-code-auto-submit-input
+title: PIN Code Multi-Field Auto-Submit Input
+description: "A multi-field PIN code input component where each digit gets its own `TextField`."
+aliases: []
+keywords: [pin, code, multi, field, auto, submit, input]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
+category: form
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [timed-quiz-auto-advance, dialog-based-navigation]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -54,7 +59,8 @@ useEffect(() => {
 - **Cons**: Fixed to a specific digit count; custom implementation (not a library); accessibility may require additional ARIA attributes
 - **When to use**: Activation codes, OTP verification, PIN entry, any short numeric code input
 
-## Related Patterns
+## Related
 
-- [timed-quiz-auto-advance](timed-quiz-auto-advance.md)
-- [dialog-based-navigation](dialog-based-navigation.md)
+- [[timed-quiz-auto-advance]]
+- [[dialog-based-navigation]]
+

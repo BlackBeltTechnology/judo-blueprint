@@ -1,12 +1,19 @@
 ---
-id: "document-registry-sequence"
-title: "Document Registry Sequence Number Generator"
-score: 73.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - rackinspect
+id: document-registry-sequence
+title: Document Registry Sequence Number Generator
+description: A DocumentRegistry entity that manages sequential document numbering for different document types.
+aliases: []
+keywords: [document, registry, sequence, number, generator]
+tags: ["domain:model", "layer:model", "layer:backend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

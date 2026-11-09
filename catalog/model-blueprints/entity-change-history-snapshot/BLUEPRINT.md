@@ -1,12 +1,19 @@
 ---
-id: "entity-change-history-snapshot"
-title: "Entity Change History Snapshot"
-score: 63.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - indamedia-adtrack
+id: entity-change-history-snapshot
+title: Entity Change History Snapshot
+description: "A companion History entity that stores snapshots of a parent entity's key attributes each time significant changes occur."
+aliases: []
+keywords: [change, history, snapshot]
+tags: ["domain:model", "layer:model", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
+category: pattern
+status: single-project
+projects: [indamedia-adtrack]
+evidence: ["indamedia-adtrack:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

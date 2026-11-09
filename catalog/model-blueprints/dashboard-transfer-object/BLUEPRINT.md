@@ -1,13 +1,19 @@
 ---
-id: "dashboard-transfer-object"
-title: "Dashboard Transfer Object with Statistics"
-score: 62.7
-usage_count: 2
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
-  - InterfaceRegister
+id: dashboard-transfer-object
+title: Dashboard Transfer Object with Statistics
+description: "A dashboard transfer object that serves as the main access point for an actor, aggregating multiple entity collections via relations and providing summary attributes or operations for common actions."
+aliases: []
+keywords: [dashboard, transfer, object, statistics]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "project:InterfaceRegister", "status:emerging"]
+category: pattern
+status: emerging
+projects: [mlszksz-platform, InterfaceRegister]
+evidence: ["mlszksz-platform:unrecorded", "InterfaceRegister:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

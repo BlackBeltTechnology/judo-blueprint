@@ -1,12 +1,19 @@
 ---
 id: address-field-auto-composition
-title: "Address Field Auto-Composition from Components"
-impl_only: true
-usage_count: 1
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
+title: Address Field Auto-Composition from Components
+description: "A frontend-only pattern for automatically composing a summary address text field from individual address component fields (street name, public place category, number, building, staircase, floor, door, lot number) via blur event hooks."
+aliases: []
+keywords: [address, field, auto, composition, from, components]
+tags: ["domain:model", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

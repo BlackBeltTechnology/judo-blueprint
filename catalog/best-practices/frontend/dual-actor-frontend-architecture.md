@@ -1,20 +1,20 @@
 ---
-id: "dual-actor-frontend-architecture"
-title: "Dual-Actor Frontend Architecture (Custom + Generated)"
-domain: "frontend"
-category: "framework"
-score: 42.0
-usage_count: 4
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
-  - reserve-app
-  - doors-model
-alternatives:
-  - single-actor-heavy-customization
+id: dual-actor-frontend-architecture
+title: Dual-Actor Frontend Architecture (Custom + Generated)
+description: "A JUDO project can generate separate frontend applications for different actors (roles), each with its own customization level."
+aliases: []
+keywords: [dual, actor, frontend, architecture, custom, generated]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:reserve-app", "project:doors-model", "status:established"]
+category: framework
+status: established
+projects: [trivia, itracker, reserve-app, doors-model]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
+alternatives: [single-actor-heavy-customization]
+related: [complete-frontend-replacement, admin-default-generated-ui, single-actor-heavy-customization]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -68,8 +68,9 @@ Two Flutter actor frontends: **Admin** (250 Dart files, manages applications/cam
 - **Cons**: Maintaining two frontend approaches increases complexity; custom frontend does not benefit from generator updates
 - **When to use**: When different user roles have fundamentally different UX needs (e.g., admin CRUD vs. public-facing experience), or when the domain naturally separates into end-user vs. admin workflows
 
-## Related Patterns
+## Related
 
-- [complete-frontend-replacement](complete-frontend-replacement.md)
-- [admin-default-generated-ui](admin-default-generated-ui.md)
-- [single-actor-heavy-customization](single-actor-heavy-customization.md)
+- [[complete-frontend-replacement]]
+- [[admin-default-generated-ui]]
+- [[single-actor-heavy-customization]]
+

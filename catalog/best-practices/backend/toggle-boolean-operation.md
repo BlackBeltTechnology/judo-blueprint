@@ -1,17 +1,20 @@
 ---
-id: "toggle-boolean-operation"
-title: "Toggle Boolean Flag Operation Pattern"
-domain: "backend"
-category: "operation"
-score: 74.3
-usage_count: 3
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - mlszksz-platform
-  - ubives
+id: toggle-boolean-operation
+title: Toggle Boolean Flag Operation Pattern
+description: A highly reusable custom operation pattern for toggling boolean flags on entities.
+aliases: []
+keywords: [toggle, boolean, flag, operation]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "project:ubives", "status:emerging"]
+category: operation
+status: emerging
+projects: [rackinspect, mlszksz-platform, ubives]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded"]
+alternatives: []
+related: [entity-re-fetch-pattern, mutable-entity-update-pattern, mask-field-projection]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,8 +59,9 @@ Common toggle variants: `ToggleActive`, `TogglePrimary`, `ToggleBilling`, `Toggl
 - Cons: Each toggle is a separate class (could be generalized), mask with no fields causes full update
 - Alternative: Single generic toggle service parameterized by entity type and field name
 
-## Related Patterns
+## Related
 
-- entity-re-fetch-pattern
-- mutable-entity-update-pattern
-- mask-field-projection
+- [[entity-re-fetch-pattern]]
+- [[mutable-entity-update-pattern]]
+- [[mask-field-projection]]
+

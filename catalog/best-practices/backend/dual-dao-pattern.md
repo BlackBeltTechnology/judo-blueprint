@@ -1,15 +1,20 @@
 ---
-id: "dual-dao-pattern"
-title: "Dual DAO Injection (Entity-Level + Actor-Level)"
-domain: "backend"
-category: "di"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: dual-dao-pattern
+title: Dual DAO Injection (Entity-Level + Actor-Level)
+description: Some custom operations inject both entity-level DAOs (full entity representation with all fields/relations) and actor-level DAOs (restricted view with only actor-visible fields).
+aliases: []
+keywords: [dual, dao, injection, level, actor]
+tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
+category: di
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [custom-operation-osgi-component, identifier-adaptation-pattern]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -39,7 +44,8 @@ Actor-level DAOs reside in `api.[app].actors.[actor].[entity]` package.
 - Cons: Can be confusing with same class name from different packages, unused injection adds noise
 - Alternative: Use only entity-level DAO and manually filter/restrict fields before returning
 
-## Related Patterns
+## Related
 
-- custom-operation-osgi-component
-- identifier-adaptation-pattern
+- [[custom-operation-osgi-component]]
+- [[identifier-adaptation-pattern]]
+

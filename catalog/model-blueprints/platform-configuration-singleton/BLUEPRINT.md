@@ -1,14 +1,19 @@
 ---
-id: "platform-configuration-singleton"
-title: "Platform Configuration Singleton Entity"
-score: 75.7
-usage_count: 3
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - mlszksz-platform
-  - rackinspect
-  - park-here
+id: platform-configuration-singleton
+title: Platform Configuration Singleton Entity
+description: A singleton Configuration entity that stores platform-wide settings.
+aliases: []
+keywords: [platform, configuration, singleton]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:mlszksz-platform", "project:rackinspect", "project:park-here", "status:emerging"]
+category: pattern
+status: emerging
+projects: [mlszksz-platform, rackinspect, park-here]
+evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

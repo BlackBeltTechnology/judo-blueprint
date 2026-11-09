@@ -1,13 +1,19 @@
 ---
 id: operation-call-logging-interceptor
-title: "Operation Call Logging Interceptor (Cross-Cutting Debug Logger)"
-impl_only: true
-usage_count: 2
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
-  - park-here
+title: Operation Call Logging Interceptor (Cross-Cutting Debug Logger)
+description: "A cross-cutting `OperationCallInterceptor` that logs every operation invocation for debugging and monitoring purposes."
+aliases: []
+keywords: [operation, call, logging, interceptor, cross, cutting, debug, logger]
+tags: ["domain:model", "layer:backend", "project:rackinspect", "project:park-here", "status:emerging"]
+category: pattern
+status: emerging
+projects: [rackinspect, park-here]
+evidence: ["rackinspect:unrecorded", "park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

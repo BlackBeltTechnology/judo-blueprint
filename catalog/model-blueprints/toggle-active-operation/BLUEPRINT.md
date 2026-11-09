@@ -1,13 +1,19 @@
 ---
-id: "toggle-active-operation"
-title: "Toggle Active Boolean Operation Pattern"
-score: 75.2
-usage_count: 2
-first_seen: "2026-03-05"
-last_updated: "2026-03-09"
-projects:
-  - rackinspect
-  - mlszksz-platform
+id: toggle-active-operation
+title: Toggle Active Boolean Operation Pattern
+description: "A pervasive pattern where entities carry an `active` or `isActive` boolean attribute (default: true) and a toggle operation (named `toggleActive`, `activateToggle`, or similar) that flips the flag."
+aliases: []
+keywords: [toggle, active, boolean, operation]
+tags: ["domain:model", "layer:model", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "status:emerging"]
+category: pattern
+status: emerging
+projects: [rackinspect, mlszksz-platform]
+evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-09
+format: legacy
 ---
 ## Description
 

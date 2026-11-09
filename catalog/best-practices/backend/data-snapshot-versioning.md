@@ -1,19 +1,20 @@
 ---
-id: "data-snapshot-versioning"
-title: "Data Snapshot Versioning (Immutable History Records)"
-domain: "backend"
-category: "operation"
-score: 54.4
-usage_count: 3
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - itracker
-  - indamedia-adtrack
-  - workflow-poc
-alternatives:
-  - product-versioning-container
+id: data-snapshot-versioning
+title: Data Snapshot Versioning (Immutable History Records)
+description: An audit/versioning pattern where the current state of a collection of child entities is copied into immutable snapshot records before a significant state transition.
+aliases: []
+keywords: [data, snapshot, versioning, immutable, history, records]
+tags: ["domain:backend", "layer:backend", "project:itracker", "project:indamedia-adtrack", "project:workflow-poc", "status:emerging"]
+category: operation
+status: emerging
+projects: [itracker, indamedia-adtrack, workflow-poc]
+evidence: ["itracker:unrecorded", "indamedia-adtrack:unrecorded", "workflow-poc:unrecorded"]
+alternatives: [product-versioning-container]
+related: [state-lifecycle-operation, builder-pattern-entity-creation, product-versioning-container]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -63,8 +64,9 @@ Entity structure:
 - Cons: Data duplication grows with each snapshot, no delta/diff storage (full copies), aggregation must be recalculated or stored redundantly
 - Alternative: Version container pattern with full entity cloning (see `product-versioning-container`), event sourcing, temporal database tables
 
-## Related Patterns
+## Related
 
-- state-lifecycle-operation
-- builder-pattern-entity-creation
-- product-versioning-container
+- [[state-lifecycle-operation]]
+- [[builder-pattern-entity-creation]]
+- [[product-versioning-container]]
+

@@ -1,18 +1,20 @@
 ---
-id: "error-code-enum-pattern"
-title: "Error Code Enumeration for Operation Faults"
-domain: "model"
-category: "enum"
-score: 63.7
-usage_count: 4
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
+id: error-code-enum-pattern
+title: Error Code Enumeration for Operation Faults
+description: Operations that can fail use a dedicated Error transfer object (unmapped) containing a message string and a typed error code enumeration.
+aliases: []
+keywords: [error, code, enumeration, operation, faults, enum]
+tags: ["domain:model", "layer:model", "project:trivia", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "status:established"]
+category: enum
+status: established
+projects: [trivia, park-here, indamedia-adtrack, judo-partner]
+evidence: ["trivia:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [unmapped-transfer-dto, enum-state-machine]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -47,7 +49,8 @@ Operations that can fail use a dedicated Error transfer object (unmapped) contai
 - Cons: Adding new error conditions requires enum changes, error codes must be kept in sync with operation logic
 - Prefer when: Operations need to communicate specific failure reasons to clients
 
-## Related Patterns
+## Related
 
-- [unmapped-transfer-dto](unmapped-transfer-dto.md)
-- [enum-state-machine](enum-state-machine.md)
+- [[unmapped-transfer-dto]]
+- [[enum-state-machine]]
+

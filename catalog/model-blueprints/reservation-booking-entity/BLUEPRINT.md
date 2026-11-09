@@ -1,13 +1,19 @@
 ---
-id: "reservation-booking-entity"
-title: "Reservation/Booking Entity with Time Slots and Status"
-score: 62.2
-usage_count: 2
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - park-here
-  - reserve-app
+id: reservation-booking-entity
+title: Reservation/Booking Entity with Time Slots and Status
+description: A Reservation (or Booking) entity that models time-bounded resource reservations.
+aliases: []
+keywords: [reservation, booking, time, slots, status]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:park-here", "project:reserve-app", "status:emerging"]
+category: pattern
+status: emerging
+projects: [park-here, reserve-app]
+evidence: ["park-here:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

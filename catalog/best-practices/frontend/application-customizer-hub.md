@@ -1,17 +1,20 @@
 ---
-id: "application-customizer-hub"
-title: "Application Customizer as Central Hook Registration Hub"
-domain: "frontend"
-category: "hook"
-score: 72.3
-usage_count: 3
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - workflow-poc
-  - reserve-app
+id: application-customizer-hub
+title: Application Customizer as Central Hook Registration Hub
+description: "The `src/custom/application-customizer.tsx` file serves as the central hub for all Pandino service registrations in a JUDO frontend."
+aliases: []
+keywords: [application, customizer, as, central, hook, registration, hub]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "project:reserve-app", "status:emerging"]
+category: hook
+status: emerging
+projects: [rackinspect, workflow-poc, reserve-app]
+evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+alternatives: []
+related: [pandino-action-hook-override, hook-scaffold-default-pattern, generator-ignore-app-theme]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -63,8 +66,9 @@ src/custom/application-customizer.tsx
 - **Cons**: File grows large in heavily customized projects; must be manually maintained; merge conflicts if multiple developers add hooks simultaneously
 - **When to use**: Every JUDO frontend that activates hook scaffolds needs to register them here
 
-## Related Patterns
+## Related
 
-- [pandino-action-hook-override](pandino-action-hook-override.md)
-- [hook-scaffold-default-pattern](hook-scaffold-default-pattern.md)
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
+- [[pandino-action-hook-override]]
+- [[hook-scaffold-default-pattern]]
+- [[generator-ignore-app-theme]]
+

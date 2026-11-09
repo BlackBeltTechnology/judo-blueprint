@@ -1,25 +1,20 @@
 ---
-id: "builder-pattern-entity-creation"
-title: "Builder Pattern for Entity Creation (ForCreate Types)"
-domain: "backend"
-category: "data-access"
-score: 79.5
-usage_count: 11
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - rackinspect
-  - itracker
-  - alba
-  - mlszksz-platform
-  - judo-demo-miniworkflow
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - workflow-poc
+id: builder-pattern-entity-creation
+title: Builder Pattern for Entity Creation (ForCreate Types)
+description: "All entity creation in JUDO uses generated `EntityForCreate` builder types that separate the creation contract from the read/update contract."
+aliases: []
+keywords: [builder, creation, forcreate, types]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "status:established"]
+category: data-access
+status: established
+projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc]
+evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+alternatives: []
+related: [dao-fluent-query-filter, relation-based-entity-creation]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -86,7 +81,8 @@ Builders used extensively for workflow entities: `ContextForCreate.builder().wit
 - Cons: Different type from the read/update entity type (cannot reuse), no partial creation support
 - Alternative: None within JUDO -- this is the only supported creation pattern
 
-## Related Patterns
+## Related
 
-- dao-fluent-query-filter
-- relation-based-entity-creation
+- [[dao-fluent-query-filter]]
+- [[relation-based-entity-creation]]
+

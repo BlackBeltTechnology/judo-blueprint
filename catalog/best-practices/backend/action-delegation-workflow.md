@@ -1,15 +1,20 @@
 ---
-id: "action-delegation-workflow"
-title: "Action Delegation via Entity-Bound Operations"
-domain: "backend"
-category: "service"
-score: 43.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - workflow-poc
+id: action-delegation-workflow
+title: Action Delegation via Entity-Bound Operations
+description: "A pattern where workflow actions (side effects that execute on state entry, exit, or transition) are modeled as entities with a `run` operation rather than hardcoded in the engine."
+aliases: []
+keywords: [action, delegation, bound, operations, workflow]
+tags: ["domain:backend", "layer:backend", "project:workflow-poc", "status:single-project"]
+category: service
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+related: [custom-operation-osgi-component, token-based-workflow-execution, correlation-based-event-chaining, service-delegation-pattern]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -78,9 +83,10 @@ Key elements:
 - Cons: Indirect dispatch (entity -> operation -> custom implementation), debugging requires tracing through multiple layers, action input is limited to tokenID and correlationID
 - Alternative: Direct method calls in engine (simpler but tightly coupled), event listeners (more decoupled), scripting engine for inline actions (more flexible)
 
-## Related Patterns
+## Related
 
-- custom-operation-osgi-component
-- token-based-workflow-execution
-- correlation-based-event-chaining
-- service-delegation-pattern
+- [[custom-operation-osgi-component]]
+- [[token-based-workflow-execution]]
+- [[correlation-based-event-chaining]]
+- [[service-delegation-pattern]]
+

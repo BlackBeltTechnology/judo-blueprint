@@ -1,17 +1,19 @@
 ---
-id: "multi-actor-role-based-projections"
-title: "Multi-Actor Role-Based Transfer Object Projections"
-score: 63.8
-usage_count: 6
-first_seen: "2026-03-05"
-last_updated: "2026-03-09"
-projects:
-  - reserve-app
-  - viterra_demo
-  - doors-model
-  - ams-model
-  - skillmatrix-model
-  - mlszksz-platform
+id: multi-actor-role-based-projections
+title: Multi-Actor Role-Based Transfer Object Projections
+description: "A pattern where the same underlying entity types are exposed through multiple role-specific transfer object projections, one per actor type."
+aliases: []
+keywords: [multi, actor, role, based, transfer, object, projections]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:reserve-app", "project:viterra_demo", "project:doors-model", "project:ams-model", "project:skillmatrix-model", "project:mlszksz-platform", "status:established"]
+category: pattern
+status: established
+projects: [reserve-app, viterra_demo, doors-model, ams-model, skillmatrix-model, mlszksz-platform]
+evidence: ["reserve-app:unrecorded", "viterra_demo:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-09
+format: legacy
 ---
 ## Description
 

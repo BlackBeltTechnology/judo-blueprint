@@ -1,18 +1,20 @@
 ---
-id: "complete-frontend-replacement"
-title: "Complete Frontend Replacement with Custom SPA"
-domain: "frontend"
-category: "page"
-score: 37.8
-usage_count: 2
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - actiongroup-test-react
-alternatives:
-  - zero-customization-generated-frontend
+id: complete-frontend-replacement
+title: Complete Frontend Replacement with Custom SPA
+description: Replace the entire generated JUDO UI with a hand-built single-page application while retaining the generated TypeScript service layer.
+aliases: []
+keywords: [complete, frontend, replacement, custom, spa]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:actiongroup-test-react", "status:emerging"]
+category: page
+status: emerging
+projects: [trivia, actiongroup-test-react]
+evidence: ["trivia:unrecorded", "actiongroup-test-react:unrecorded"]
+alternatives: [zero-customization-generated-frontend]
+related: [generated-service-layer-reuse, generator-ignore-app-theme, custom-component-directory, dialog-based-navigation, zero-customization-generated-frontend]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -56,10 +58,11 @@ Entirely hand-built React app (no JUDO generator, no Pandino, no `.generator-ign
 - **Cons**: No benefit from generated pages, tables, or forms; all UI must be maintained manually; framework upgrades may require manual migration
 - **When to use**: When the application UX is fundamentally different from CRUD (games, dashboards, wizards, real-time apps), or for reference/test applications
 
-## Related Patterns
+## Related
 
-- [generated-service-layer-reuse](generated-service-layer-reuse.md)
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
-- [custom-component-directory](custom-component-directory.md)
-- [dialog-based-navigation](dialog-based-navigation.md)
-- [zero-customization-generated-frontend](zero-customization-generated-frontend.md)
+- [[generated-service-layer-reuse]]
+- [[generator-ignore-app-theme]]
+- [[custom-component-directory]]
+- [[dialog-based-navigation]]
+- [[zero-customization-generated-frontend]]
+

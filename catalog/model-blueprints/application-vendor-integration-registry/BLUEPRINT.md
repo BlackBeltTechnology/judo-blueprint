@@ -1,12 +1,19 @@
 ---
-id: "application-vendor-integration-registry"
-title: "Application-Vendor Integration Registry (Enterprise Architecture)"
-score: 36.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - InterfaceRegister
+id: application-vendor-integration-registry
+title: Application-Vendor Integration Registry (Enterprise Architecture)
+description: "An enterprise integration registry entity cluster for tracking applications, their vendors, connections between applications, and deployment instances."
+aliases: []
+keywords: [application, vendor, integration, registry, enterprise, architecture]
+tags: ["domain:model", "layer:model", "project:InterfaceRegister", "status:single-project"]
+category: pattern
+status: single-project
+projects: [InterfaceRegister]
+evidence: ["InterfaceRegister:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

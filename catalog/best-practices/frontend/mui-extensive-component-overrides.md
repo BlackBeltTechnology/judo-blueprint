@@ -1,17 +1,20 @@
 ---
-id: "mui-extensive-component-overrides"
-title: "Extensive MUI Component Theme Overrides"
-domain: "frontend"
-category: "theme"
-score: 34.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
-alternatives:
-  - dark-theme-override
+id: mui-extensive-component-overrides
+title: Extensive MUI Component Theme Overrides
+description: "Customize the MUI theme with extensive `components` overrides covering 15+ component types."
+aliases: []
+keywords: [extensive, mui, component, theme, overrides]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: theme
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: [dark-theme-override]
+related: [dark-theme-override, generator-ignore-app-theme, model-defined-color-palette]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -51,8 +54,9 @@ Theme at `src/theme/index.tsx` overrides 16 MUI components. Key customizations: 
 - **Cons**: Large theme file (280+ lines); must track MUI version changes; overrides can conflict with component-level sx props; hard to maintain
 - **When to use**: Projects requiring a distinctive visual identity beyond simple palette changes
 
-## Related Patterns
+## Related
 
-- [dark-theme-override](dark-theme-override.md)
-- [generator-ignore-app-theme](generator-ignore-app-theme.md)
-- [model-defined-color-palette](model-defined-color-palette.md)
+- [[dark-theme-override]]
+- [[generator-ignore-app-theme]]
+- [[model-defined-color-palette]]
+

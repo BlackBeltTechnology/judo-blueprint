@@ -1,15 +1,20 @@
 ---
-id: "integration-test-reflection-injection"
-title: "Integration Test Service Wiring via Reflection Injection"
-domain: "backend"
-category: "testing"
-score: 68.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - mlszksz-platform
+id: integration-test-reflection-injection
+title: Integration Test Service Wiring via Reflection Injection
+description: "An integration test pattern where service implementations are instantiated manually and their OSGi `@Reference` dependencies are injected via Java reflection."
+aliases: []
+keywords: [integration, test, service, wiring, reflection, injection]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+category: testing
+status: single-project
+projects: [mlszksz-platform]
+evidence: ["mlszksz-platform:unrecorded"]
+alternatives: []
+related: [test-data-builder-factory, service-delegation-pattern, actor-resolution-variable-resolver]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -66,8 +71,9 @@ class ServiceTest {
 - Cons: Reflection is fragile (field name changes break tests silently), manual service wiring is tedious for complex dependency chains, mocks must be maintained when service interfaces change
 - Alternative: Test-specific Guice modules for cleaner DI, Mockito for mock creation, or full OSGi container tests (slower but more realistic)
 
-## Related Patterns
+## Related
 
-- test-data-builder-factory
-- service-delegation-pattern
-- actor-resolution-variable-resolver
+- [[test-data-builder-factory]]
+- [[service-delegation-pattern]]
+- [[actor-resolution-variable-resolver]]
+

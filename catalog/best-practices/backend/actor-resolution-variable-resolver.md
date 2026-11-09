@@ -1,23 +1,20 @@
 ---
-id: "actor-resolution-variable-resolver"
-title: "Actor Resolution via VariableResolver Pattern"
-domain: "backend"
-category: "auth"
-score: 70.9
-usage_count: 9
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - alba
-  - mlszksz-platform
-  - judo-demo-miniworkflow
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
-  - reserve-app
-  - doors-model
+id: actor-resolution-variable-resolver
+title: Actor Resolution via VariableResolver Pattern
+description: A standard pattern for resolving the current authenticated user in custom operations.
+aliases: []
+keywords: [actor, resolution, variableresolver, variable, resolver]
+tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:reserve-app", "project:doors-model", "status:established"]
+category: auth
+status: established
+projects: [alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, judo-partner, reserve-app, doors-model]
+evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
+alternatives: []
+related: [keycloak-jit-user-provisioning, custom-operation-osgi-component, dao-fluent-query-filter]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -81,8 +78,9 @@ Model-level actor resolution using JUDO expression language: `doors::types::Emai
 - Cons: Boilerplate code duplicated across every operation, extra DB query per operation, null result not always handled safely, `.orElse(null)` can lead to NPE
 - Alternative: Centralized actor service that caches the resolved user per request, or framework-level actor injection (not currently available)
 
-## Related Patterns
+## Related
 
-- keycloak-jit-user-provisioning
-- custom-operation-osgi-component
-- dao-fluent-query-filter
+- [[keycloak-jit-user-provisioning]]
+- [[custom-operation-osgi-component]]
+- [[dao-fluent-query-filter]]
+

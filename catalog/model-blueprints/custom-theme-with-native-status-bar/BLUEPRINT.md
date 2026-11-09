@@ -1,13 +1,19 @@
 ---
 id: custom-theme-with-native-status-bar
-title: "Custom MUI Theme with Capacitor Status Bar Sync"
-impl_only: true
-usage_count: 2
-first_seen: "2026-03-09"
-last_updated: "2026-03-09"
-projects:
-  - mlszksz-platform
-  - park-here
+title: Custom MUI Theme with Capacitor Status Bar Sync
+description: "A custom Material UI theme system that overrides the generated theme with project-specific branding (custom palette colors, dark mode support, locale bundles) and optionally synchronizes the Android status bar color with the theme mode v..."
+aliases: []
+keywords: [custom, mui, theme, capacitor, status, bar, sync, native]
+tags: ["domain:model", "layer:frontend", "project:mlszksz-platform", "project:park-here", "status:emerging"]
+category: pattern
+status: emerging
+projects: [mlszksz-platform, park-here]
+evidence: ["mlszksz-platform:unrecorded", "park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-09
+last_updated: 2026-03-09
+format: legacy
 ---
 
 ## Description

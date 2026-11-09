@@ -1,12 +1,19 @@
 ---
-id: "partner-with-contact-details"
-title: "Partner/Customer Entity with Contact Details Cluster"
-score: 73.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - rackinspect
+id: partner-with-contact-details
+title: Partner/Customer Entity with Contact Details Cluster
+description: A Partner (or Customer) entity representing an external business entity with comprehensive contact information.
+aliases: []
+keywords: [partner, customer, contact, details, cluster]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: pattern
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

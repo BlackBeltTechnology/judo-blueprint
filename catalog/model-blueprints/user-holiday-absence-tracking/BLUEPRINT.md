@@ -1,12 +1,19 @@
 ---
-id: "user-holiday-absence-tracking"
-title: "User Holiday/Absence Tracking Entity"
-score: 61.0
-usage_count: 1
-first_seen: "2026-03-05"
-last_updated: "2026-03-05"
-projects:
-  - park-here
+id: user-holiday-absence-tracking
+title: User Holiday/Absence Tracking Entity
+description: A Holiday (or Absence) entity composed by a User that tracks date ranges when the user is unavailable.
+aliases: []
+keywords: [user, holiday, absence, tracking]
+tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:park-here", "status:single-project"]
+category: pattern
+status: single-project
+projects: [park-here]
+evidence: ["park-here:unrecorded"]
+alternatives: []
+fragment: pending
+first_seen: 2026-03-05
+last_updated: 2026-03-05
+format: legacy
 ---
 ## Description
 

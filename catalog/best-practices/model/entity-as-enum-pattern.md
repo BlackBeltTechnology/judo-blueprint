@@ -1,15 +1,20 @@
 ---
-id: "entity-as-enum-pattern"
-title: "Entity Instances as Runtime-Extensible Enum Alternative"
-domain: "model"
-category: "entity"
-score: 30.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - skillmatrix-model
+id: entity-as-enum-pattern
+title: Entity Instances as Runtime-Extensible Enum Alternative
+description: "Instead of using an enumeration type for a fixed set of classification values, the model uses a regular entity with instances created at runtime (typically via the initializer operation)."
+aliases: []
+keywords: [instances, as, runtime, extensible, enum, alternative]
+tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
+category: entity
+status: single-project
+projects: [skillmatrix-model]
+evidence: ["skillmatrix-model:unrecorded"]
+alternatives: []
+related: [category-enum-pattern, initializer-operation, range-expression-filtering]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -38,8 +43,9 @@ Model source confirms `SkillLevel` entity with `name` and `score` attributes. Us
 - Cons: No compile-time safety (unlike enums), requires initializer for seed data, reference by relation instead of literal enum value
 - Prefer when: Classification values may need to change or expand after deployment; prefer regular enums when values are truly fixed and known at design time
 
-## Related Patterns
+## Related
 
-- [category-enum-pattern](category-enum-pattern.md) (alternative: fixed enum for stable classifications)
-- [initializer-operation](initializer-operation.md)
-- [range-expression-filtering](range-expression-filtering.md)
+- [[category-enum-pattern]] (alternative: fixed enum for stable classifications)
+- [[initializer-operation]]
+- [[range-expression-filtering]]
+

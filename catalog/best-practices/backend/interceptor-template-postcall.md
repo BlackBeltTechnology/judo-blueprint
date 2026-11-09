@@ -1,16 +1,20 @@
 ---
-id: "interceptor-template-postcall"
-title: "Post-Call Interceptor for Data Stripping/Modification"
-domain: "backend"
-category: "interceptor"
-score: 59.0
-usage_count: 2
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - park-here
+id: interceptor-template-postcall
+title: Post-Call Interceptor for Data Stripping/Modification
+description: A post-call interceptor that modifies the return payload of an operation to strip sensitive data or modify fields before the response reaches the client.
+aliases: []
+keywords: [post, call, interceptor, data, stripping, modification, template, postcall]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:park-here", "status:emerging"]
+category: interceptor
+status: emerging
+projects: [trivia, park-here]
+evidence: ["trivia:unrecorded", "park-here:unrecorded"]
+alternatives: []
+related: [interceptor-global-logging, interceptor-security-filter-validation, interceptor-crud-lifecycle]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -60,8 +64,9 @@ public class TemplateInterceptor implements OperationCallInterceptor {
 - Cons: Payload manipulation is not type-safe, field names are hardcoded strings, removed data cannot be recovered downstream
 - Alternative: Model-level field exclusion, separate transfer objects with restricted fields, mask-based projection
 
-## Related Patterns
+## Related
 
-- interceptor-global-logging
-- interceptor-security-filter-validation
-- interceptor-crud-lifecycle
+- [[interceptor-global-logging]]
+- [[interceptor-security-filter-validation]]
+- [[interceptor-crud-lifecycle]]
+

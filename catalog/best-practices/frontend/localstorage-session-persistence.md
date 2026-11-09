@@ -1,15 +1,20 @@
 ---
-id: "localstorage-session-persistence"
-title: "LocalStorage-Based Session Persistence"
-domain: "frontend"
-category: "state"
-score: 39.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
+id: localstorage-session-persistence
+title: LocalStorage-Based Session Persistence
+description: "Use `localStorage` to persist session state (user identity, current context, in-progress data) instead of OAuth/OIDC tokens or server-side sessions."
+aliases: []
+keywords: [localstorage, based, session, persistence]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
+category: state
+status: single-project
+projects: [trivia]
+evidence: ["trivia:unrecorded"]
+alternatives: []
+related: [dialog-based-navigation, error-code-mapping-pattern]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -50,7 +55,8 @@ Player frontend persists 8 keys: `trivia-user-id` (email), `trivia-nickname-id`,
 - **Cons**: Not secure for sensitive data; limited to single browser; no cross-device sessions; no server-side session validation
 - **When to use**: Public-facing apps, event kiosks, games, demos where full authentication is overkill
 
-## Related Patterns
+## Related
 
-- [dialog-based-navigation](dialog-based-navigation.md)
-- [error-code-mapping-pattern](error-code-mapping-pattern.md)
+- [[dialog-based-navigation]]
+- [[error-code-mapping-pattern]]
+

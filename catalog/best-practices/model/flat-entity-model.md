@@ -1,28 +1,20 @@
 ---
-id: "flat-entity-model"
-title: "Flat Entity Model (No Generalization)"
-domain: "model"
-category: "entity"
-score: 66.0
-usage_count: 12
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - trivia
-  - itracker
-  - actiongroup-test-react
-  - alba
-  - skillmatrix-model
-  - viterra_demo
-  - mjsz
-  - judo-demo-miniworkflow
-  - sanctuary-backend
-  - park-here
-  - judo-partner
-  - reserve-app
-alternatives:
-  - generalization-base-entity
+id: flat-entity-model
+title: Flat Entity Model (No Generalization)
+description: All entity types are concrete with no abstract parents or inheritance hierarchies.
+aliases: []
+keywords: [flat, model, no, generalization]
+tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:sanctuary-backend", "project:park-here", "project:judo-partner", "project:reserve-app", "status:established"]
+category: entity
+status: established
+projects: [trivia, itracker, actiongroup-test-react, alba, skillmatrix-model, viterra_demo, mjsz, judo-demo-miniworkflow, sanctuary-backend, park-here, judo-partner, reserve-app]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+alternatives: [generalization-base-entity]
+related: [enum-state-machine, actor-based-transfer-projection, generalization-base-entity]
+fragment: pending
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -85,8 +77,9 @@ All 15 entity types are concrete with no abstract parents or inheritance relatio
 - Cons: Potential attribute duplication across similar entities, no polymorphic queries
 - Prefer when: Domain is small or entities are sufficiently distinct that inheritance would add unnecessary complexity
 
-## Related Patterns
+## Related
 
-- [enum-state-machine](enum-state-machine.md) (alternative to inheritance for variation)
-- [actor-based-transfer-projection](actor-based-transfer-projection.md) (alternative to inheritance for different views)
-- [generalization-base-entity](generalization-base-entity.md) (alternative: use inheritance for shared infrastructure)
+- [[enum-state-machine]] (alternative to inheritance for variation)
+- [[actor-based-transfer-projection]] (alternative to inheritance for different views)
+- [[generalization-base-entity]] (alternative: use inheritance for shared infrastructure)
+

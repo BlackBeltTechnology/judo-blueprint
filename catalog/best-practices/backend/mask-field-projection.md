@@ -1,21 +1,20 @@
 ---
-id: "mask-field-projection"
-title: "Mask Pattern for Field Projection"
-domain: "backend"
-category: "data-access"
-score: 77.5
-usage_count: 7
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - rackinspect
-  - alba
-  - mlszksz-platform
-  - ubives
-  - park-here
-  - indamedia-adtrack
-  - judo-partner
+id: mask-field-projection
+title: Mask Pattern for Field Projection
+description: The Mask pattern controls which fields and nested relations are loaded from the database when querying or updating entities.
+aliases: []
+keywords: [mask, field, projection]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "status:established"]
+category: data-access
+status: established
+projects: [rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner]
+evidence: ["rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
+alternatives: []
+related: [dao-fluent-query-filter, mutable-entity-update-pattern]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -76,7 +75,8 @@ Masks used for performance optimization in every operation. `ProductMask.product
 - Cons: Must explicitly include every needed field (easy to miss), empty mask behavior may be unintuitive, deeply nested masks are verbose
 - Alternative: Load full entity without mask (simpler but less performant), GraphQL-style automatic field selection
 
-## Related Patterns
+## Related
 
-- dao-fluent-query-filter
-- mutable-entity-update-pattern
+- [[dao-fluent-query-filter]]
+- [[mutable-entity-update-pattern]]
+

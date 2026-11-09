@@ -1,15 +1,20 @@
 ---
-id: "correlation-based-event-chaining"
-title: "Correlation-Based Event Chaining with ThreadLocal"
-domain: "backend"
-category: "operation"
-score: 43.4
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - workflow-poc
+id: correlation-based-event-chaining
+title: Correlation-Based Event Chaining with ThreadLocal
+description: A pattern for chaining multiple events within a single logical operation using a correlation ID stored in a ThreadLocal.
+aliases: []
+keywords: [correlation, based, event, chaining, threadlocal]
+tags: ["domain:backend", "layer:backend", "project:workflow-poc", "status:single-project"]
+category: operation
+status: single-project
+projects: [workflow-poc]
+evidence: ["workflow-poc:unrecorded"]
+alternatives: []
+related: [state-lifecycle-operation, audit-event-trail, dao-fluent-query-filter]
+fragment: "none: backend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -69,8 +74,9 @@ Key elements:
 - Cons: ThreadLocal can leak in thread-pool scenarios, recursive processing may cause deep stacks, no built-in cycle detection, correlation chain is tied to a single thread
 - Alternative: Message queue-based event processing (async, scalable), saga pattern (distributed), in-memory state machine (no persistence overhead)
 
-## Related Patterns
+## Related
 
-- state-lifecycle-operation
-- audit-event-trail
-- dao-fluent-query-filter
+- [[state-lifecycle-operation]]
+- [[audit-event-trail]]
+- [[dao-fluent-query-filter]]
+

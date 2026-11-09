@@ -1,17 +1,20 @@
 ---
-id: "centralized-error-handling-validation-map"
-title: "Centralized Error Handler with Validation Map"
-domain: "frontend"
-category: "component"
-score: 34.2
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-03-04"
-last_updated: "2026-03-06"
-projects:
-  - actiongroup-test-react
-alternatives:
-  - http-error-interceptor
+id: centralized-error-handling-validation-map
+title: Centralized Error Handler with Validation Map
+description: "A centralized `errorHandling()` utility function that processes Axios errors and maps them to either field-level validation errors (displayed inline on form fields) or toast notifications."
+aliases: []
+keywords: [centralized, error, handler, validation, map, handling]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+category: component
+status: single-project
+projects: [actiongroup-test-react]
+evidence: ["actiongroup-test-react:unrecorded"]
+alternatives: [http-error-interceptor]
+related: [http-error-interceptor, error-code-mapping-pattern, view-edit-mode-toggle]
+fragment: "none: frontend-only"
+first_seen: 2026-03-04
+last_updated: 2026-03-06
+format: legacy
 ---
 ## Description
 
@@ -57,8 +60,9 @@ try {
 - **Cons**: Error response parsing is tightly coupled to backend error format; no support for nested field errors; per-call try/catch still required
 - **When to use**: Any JUDO React frontend needing consistent error handling with inline field validation
 
-## Related Patterns
+## Related
 
-- [http-error-interceptor](http-error-interceptor.md)
-- [error-code-mapping-pattern](error-code-mapping-pattern.md)
-- [view-edit-mode-toggle](view-edit-mode-toggle.md)
+- [[http-error-interceptor]]
+- [[error-code-mapping-pattern]]
+- [[view-edit-mode-toggle]]
+
