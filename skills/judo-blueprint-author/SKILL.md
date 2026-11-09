@@ -27,7 +27,8 @@ holding `catalog/`, `skills/`, `fragments/`).
    `git show archive/pre-kb-restructure:model-blueprints/<id>/model.md`
    (or `best-practices/<domain>/<id>.md`). It contains the old GraphQL
    that describes the shape; use it only as input.
-2. **Search before writing.** `kb_search` (or `kb search "<terms>"`) for the
+2. **Search before writing.** Use the `kb_search` / `kb_get` tools (never the
+   `kb` CLI from an agent: parallel CLI processes lock the index) for the
    topic: related entries, agent-docs facts, and known problems in
    `openspec/changes/restructure-blueprints-for-kb/judo-doc-problems.md`.
    Never copy a platform claim the docs mark as wrong.
