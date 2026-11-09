@@ -12,9 +12,13 @@ never stored in the repository; only the saved `.model` file is.
 
 - Start from a fresh copy of `tests/fixtures/Sandbox.model` in a scratch
   directory (never inside `catalog/`). The model is named `Sandbox`; its
-  primitive types live in `Sandbox::types` (`String`, `Integer`, `Decimal`,
-  `Boolean`, `Date`, `Timestamp`, `Time`, `Text`, …: list them with
-  `query esm Primitive --select name`).
+  primitive types live in `Sandbox::types`. List them per type family, one
+  type per query: `query esm StringType --select fqn`, then `NumericType`,
+  `BooleanType`, `DateType`, `TimestampType`, `TimeType`, `BinaryType`,
+  `EnumerationType` (e.g. `Sandbox::types::String`, `Text`, `Integer`,
+  `Boolean`, `Date`, `Timestamp`).
+- An attribute's `dataType` is a primitive or an enumeration FQN.
+- Remove a wrong element with `delete <fqn>`; re-check with `status`.
 - Create package `bp` in `Sandbox`, then `Sandbox::bp::<pkg>` (`<pkg>` = entry
   id with `-` replaced by `_`). Put every element of the shape inside it.
 - Neutral names only (`Order`, `OrderLine`, `Customer`, `Status`).

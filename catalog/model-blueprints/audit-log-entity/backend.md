@@ -1,20 +1,34 @@
-## Overview
+## Backend guidance
 
-The AuditLog entity is managed entirely through a centralized `AuditLogService` OSGi service. Every custom operation in the platform calls `auditLogService.log(...)` after performing its action, creating an immutable audit trail. The service auto-resolves the current user and organization from the JUDO security context. An `exportAuditLog` custom operation generates a CSV file from audit entries using `FileStoreService`.
+### Write audit rows from custom operations
 
-## Implementation Pattern
+Interceptors run only for built-in operations (create, update, delete, list and similar). Custom operations and script operations get no interceptor around them. So an audit row for a custom operation has to be written by that operation. Put the call last, after the business action, inside the operation's transaction.
 
-- A shared `AuditLogService` interface with two methods: `log()` (auto-resolves user context via `VariableResolver`) and `logSystem()` (no user context, for automated actions)
-- The implementation (`AuditLogServiceImpl`) is an OSGi `@Component` that uses `AuditLogDao` to create entries, `VariableResolver` to resolve the current user's email, and `UserDao` to look up the user's organization name for denormalization
-- Every custom operation class injects `@Reference AuditLogService` and calls `auditLogService.log(AuditActionType.XXX, entityType, entityId, detailsMap)` as the last step
-- Details are serialized to JSON via a `JsonUtils` utility
-- The export operation queries `AuditLogDao` with optional date filtering, builds CSV with UTF-8 BOM, and stores via `FileStoreService`
-- All audit log methods are exception-safe: failures are logged but never propagated to the caller
+- Keep one shared audit service with two methods: one that resolves the current user and organization from the security context, and one for automated actions that have no user.
+- Each custom operation calls the service once with the action type, entity type, entity id and a details map.
+- Serialize the details map to JSON in the service, not in each operation.
+- The service looks up the organization name and writes it with the user name.
+
+### Keep audit failures from breaking the business action
+
+Wrap the audit write in a try/catch that logs the error and returns. A failure to write the audit row must not roll back a business change. See [[safe-failure-pattern]].
+
+### Built-in operations: audit with an interceptor
+
+If every built-in create, update and delete must be audited, a post-call interceptor can write the row. It runs inside the operation's transaction, so it must not throw a checked fault. Interceptor faults use `InterceptorCallBusinessException` (the business wrapper used by interceptors), not a generated fault class. An interceptor cannot cover custom operations, so keep the explicit calls too.
+
+### Export as a file
+
+A custom operation can export the log as CSV for the admin dashboard. It queries the entries with an optional date filter, writes the CSV with a UTF-8 byte-order mark, and stores the file with the platform file store service. The file store service is a platform service, so inject it with a reference.
+
+### Project code, not platform API
+
+The example project uses its own service classes around the audit log (an audit service, a DAO, a user lookup). These are project code. Copy the pattern, not the names.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `common/services/AuditLogService.java`, `common/services/impl/AuditLogServiceImpl.java`, `custom/.../admindashboard/ExportAuditLogCustomImplementation.java`
-- Pattern: Centralized service with `@Reference AuditLogDao`, `@Reference VariableResolver`, `@Reference UserDao`; auto-resolves user email from JUDO `ACTOR` context for denormalized `userName` and `organizationName` fields
-- Notable: Export operation uses `FileStoreService` to persist CSV files; 32 `AuditActionType` enum members cover every domain event (USER_LOGIN, POST_PUBLISHED, ORGANIZATION_CREATED, etc.)
-- Every custom operation (59 total) injects `AuditLogService` and logs its action with structured detail maps
+
+- Shared audit service in `common/services`, used by every custom operation of the project (59 at the time of writing).
+- The enumeration covers 32 domain events, for example user login, post published and organization created.
+- The export operation stores its CSV through the file store service.
