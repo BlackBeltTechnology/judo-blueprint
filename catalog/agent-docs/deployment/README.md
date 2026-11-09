@@ -10,9 +10,9 @@ agent: general-purpose
 
 ## Overview
 
-The {{ lowerCase model.name \}} project uses a sophisticated build system orchestrated by `judo.sh` script and Maven. This documentation provides comprehensive guidance for building, deploying, and troubleshooting the application.
+The \myapp project uses a sophisticated build system orchestrated by `judo.sh` script and Maven. This documentation provides comprehensive guidance for building, deploying, and troubleshooting the application.
 
-**Note**: Throughout this documentation, `{{ lowerCase model.name \}}` refers to the application name from `judo.properties` (app_name property). This value is used in artifact names, bundle names, and deployment configurations.
+**Note**: Throughout this documentation, `\myapp` refers to the application name from `judo.properties` (app_name property). This value is used in artifact names, bundle names, and deployment configurations.
 
 ## Quick Reference
 
@@ -136,25 +136,25 @@ Maven (build tool)
 When services are running locally:
 
 - **Application**: http://localhost:8181/apps/
-- **API Spec**: http://localhost:8181/api-spec/{{ lowerCase model.name \}}
-- **Health Check**: http://localhost:8181/system/health?tags={{ lowerCase model.name \}}
+- **API Spec**: http://localhost:8181/api-spec/\myapp
+- **Health Check**: http://localhost:8181/system/health?tags=\myapp
 - **Keycloak Admin**: http://localhost:8080
 - **Karaf SSH**: `ssh -p 8101 karaf@localhost` (password: karaf)
 
 ## Health Check Endpoint
 
-Check backend health at: `http://localhost:8181/system/health?tags={{ lowerCase model.name \}}`
+Check backend health at: `http://localhost:8181/system/health?tags=\myapp`
 
 ### Response Format
 
 **HTML format** (default):
 ```
-http://localhost:8181/system/health?tags={{ lowerCase model.name \}}
+http://localhost:8181/system/health?tags=\myapp
 ```
 
 **JSON format** (recommended for automation):
 ```
-http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json
+http://localhost:8181/system/health?tags=\myapp&format=json
 ```
 
 ### JSON Response Structure
@@ -168,7 +168,7 @@ http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json
             "status": "OK",
             "timeInMs": 0,
             "finishedAt": "2025-12-02T20:45:21.339",
-            "tags": ["{{ lowerCase model.name \}}"],
+            "tags": ["\myapp"],
             "messages": [
                 {
                     "status": "OK",
@@ -181,7 +181,7 @@ http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json
             "status": "OK",
             "timeInMs": 0,
             "finishedAt": "2025-12-02T20:45:21.339",
-            "tags": ["{{ lowerCase model.name \}}"],
+            "tags": ["\myapp"],
             "messages": [
                 {
                     "status": "OK",
@@ -194,7 +194,7 @@ http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json
             "status": "OK",
             "timeInMs": 10,
             "finishedAt": "2025-12-02T20:45:21.349",
-            "tags": ["{{ lowerCase model.name \}}"],
+            "tags": ["\myapp"],
             "messages": [
                 {
                     "status": "OK",
@@ -226,7 +226,7 @@ http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json
 
 | Parameter | Description |
 |-----------|-------------|
-| `tags` | Comma-separated list of health check tags (e.g., `{{ lowerCase model.name \}}`) |
+| `tags` | Comma-separated list of health check tags (e.g., `\myapp`) |
 | `names` | Comma-separated list of specific health check names |
 | `format` | Output format: `html`, `json`, `jsonp`, `txt`, `verbose.txt` |
 | `httpStatus` | Custom HTTP status mapping (e.g., `CRITICAL:503`) |
@@ -237,13 +237,13 @@ http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json
 
 ```bash
 # HTML format (human-readable)
-curl "http://localhost:8181/system/health?tags={{ lowerCase model.name \}}"
+curl "http://localhost:8181/system/health?tags=\myapp"
 
 # JSON format (for scripts/automation)
-curl -s "http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json" | jq .
+curl -s "http://localhost:8181/system/health?tags=\myapp&format=json" | jq .
 
 # Check overall status only
-curl -s "http://localhost:8181/system/health?tags={{ lowerCase model.name \}}&format=json" | jq -r '.overallResult'
+curl -s "http://localhost:8181/system/health?tags=\myapp&format=json" | jq -r '.overallResult'
 ```
 
 ## Next Steps

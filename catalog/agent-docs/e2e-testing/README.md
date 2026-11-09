@@ -13,7 +13,7 @@ agent: general-purpose
 This guide covers end-to-end (E2E) testing for JUDO-generated React frontends using Playwright. E2E tests verify the complete user workflow by automating browser interactions against the running application.
 
 **Note**: Throughout this document:
-- `{{ lowerCase model.name \}}` refers to the application name from `judo.properties` (app_name property)
+- `\myapp` refers to the application name from `judo.properties` (app_name property)
 - `[actor_fqn]` represents the modeled actor's fully qualified name (e.g., `service__actor`)
 
 ## Key Concepts
@@ -67,7 +67,7 @@ This will generate an E2E test module in your application structure. The E2E tes
 ## Project Structure
 
 ```
-application/e2e/{{ lowerCase model.name \}}__[actor_fqn]/
+application/e2e/\myapp__[actor_fqn]/
 ├── playwright/
 │   ├── tests/                      # ✏️ TEST FILES HERE
 │   │   └── *.spec.ts               # Playwright test files
@@ -117,7 +117,7 @@ See **[Language-Independent Testing](language-independent-testing.md)** for comp
 ### Install Dependencies
 
 ```bash
-cd application/e2e/{{ lowerCase model.name \}}__[actor_fqn]/playwright
+cd application/e2e/\myapp__[actor_fqn]/playwright
 pnpm install
 ```
 

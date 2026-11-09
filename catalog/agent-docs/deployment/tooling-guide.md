@@ -30,7 +30,7 @@ The `diagram_generator.py` script can be used to generate visual diagrams of the
     ```bash
     python agent-docs/domain/diagram_generator.py \
       representations.aird \
-      application/model/target/generated-resources/model/webshop-esm.model \
+      application/model/target/generated-resources/model/myapp-esm.model \
       agent-docs/domain/generated-diagrams.md
     ```
 
@@ -40,7 +40,7 @@ The `diagram_generator.py` script can be used to generate visual diagrams of the
     # To generate Mermaid diagrams
     python agent-docs/domain/diagram_generator.py \
       representations.aird \
-      application/model/target/generated-resources/model/webshop-esm.model \
+      application/model/target/generated-resources/model/myapp-esm.model \
       agent-docs/domain/generated-diagrams.md \
       --format mermaid
     ```
@@ -51,5 +51,5 @@ The generated file, `generated-diagrams.md`, will be placed in the specified out
 
 ## See Also
 
-- Domain Model Guide (see `judo-domain-docs` skill) - For an overview of the application's domain model.
-- Model Development Guide (see `judo-model-docs` skill) - For information on editing the ESM model.
+- [Domain Model Guide](../domain/README.md) - For an overview of the application's domain model.
+- [Model Development Guide](../model/README.md) - For information on editing the ESM model.

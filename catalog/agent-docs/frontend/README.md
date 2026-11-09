@@ -10,17 +10,17 @@ agent: general-purpose
 
 ## Overview
 
-The React frontend in webshop is generated from the ESM and UI models using JUDO generators. Customization is achieved through a hook system rather than direct code modification.
+The React frontend in myapp is generated from the ESM and UI models using JUDO generators. Customization is achieved through a hook system rather than direct code modification.
 
 **Note**: Throughout this documentation:
-- `webshop` refers to the application name from `judo.properties` (app_name property)
+- `myapp` refers to the application name from `judo.properties` (app_name property)
 - `[actor_fqn]` represents the modeled actor's fully qualified name (without the model name prefix)
   - Generated from ESM model: `[model_name]::[namespace]::[ActorName]` → `[namespace]__[actor_name]` (lowercased, `::` replaced with `_`)
   - Example: Model name `MyApp` (lowercased: `myapp`), Actor FQN `myapp::service::Admin` → actor path becomes `service__admin`
-- Frontend module naming pattern: `webshop__[actor_fqn]`
+- Frontend module naming pattern: `myapp__[actor_fqn]`
   - Double underscore (`__`) separates app name from actor path
   - Single underscores (`_`) replace namespace separators (`::`) within the actor path
-  - Full example: `application/frontend-react/webshop__[actor_fqn]/` (e.g., `myapp__service__admin/`)
+  - Full example: `application/frontend-react/myapp__[actor_fqn]/` (e.g., `myapp__service__admin/`)
 
 ## Key Concepts
 
@@ -71,7 +71,7 @@ If you get checksum errors due to code formatting changes (e.g., after `git chec
 
 ```bash
 # Ignore checksum errors and force regeneration (frontend module)
-cd application/frontend-react/webshop__[actor_fqn]
+cd application/frontend-react/myapp__[actor_fqn]
 mvn clean install -Dignore-checksums
 
 # Or from root with judo.sh
@@ -87,11 +87,11 @@ mvn clean install -Dignore-checksums
 ## Project Structure
 
 ```
-application/frontend-react/webshop__[actor_fqn]/
+application/frontend-react/myapp__[actor_fqn]/
 ├── model/                              # UI model generation
 │   ├── pom.xml                         # UI model generator config
 │   └── target/generated-resources/
-│       └── model/webshop-ui.model
+│       └── model/myapp-ui.model
 ├── src/
 │   ├── generated/                      # ⚠️ GENERATED - DO NOT EDIT
 │   │   ├── components/
@@ -123,13 +123,13 @@ application/frontend-react/webshop__[actor_fqn]/
 ### Build Flow
 
 ```
-ESM Model (webshop.model) ⚠️ Edit with Judo Designer only
+ESM Model (myapp.model) ⚠️ Edit with Judo Designer only
     ↓
 [UI Model Generation] (application/frontend-react/model/pom.xml)
     ↓
-UI Model (webshop-ui.model)
+UI Model (myapp-ui.model)
     ↓
-[React Code Generation] (application/frontend-react/webshop__[actor_fqn]/pom.xml)
+[React Code Generation] (application/frontend-react/myapp__[actor_fqn]/pom.xml)
     ↓
 Generated React Code (src/generated/)
     ↓
@@ -153,7 +153,7 @@ Frontend JAR
 </plugin>
 ```
 
-**React Code Generation** (`application/frontend-react/webshop__[actor_fqn]/pom.xml`):
+**React Code Generation** (`application/frontend-react/myapp__[actor_fqn]/pom.xml`):
 ```xml
 <plugin>
     <groupId>hu.blackbelt.judo</groupId>
@@ -172,7 +172,7 @@ Frontend JAR
 
 The `.generator-ignore` file works exactly like `.gitignore` but for the code generator.
 
-**Location:** `application/frontend-react/webshop__[actor_fqn]/.generator-ignore`
+**Location:** `application/frontend-react/myapp__[actor_fqn]/.generator-ignore`
 
 **Syntax:**
 ```
@@ -372,6 +372,8 @@ export interface {{pascalCase entity.name}} {
 
 ## Related Documentation
 
+**Authoring vs customizing.** This skill covers **customizing the generated React frontend** (hooks, theming, i18n, overrides). The UI layout itself — Form / Table / View scaffolds on each `TransferObjectType`, the menu on each `ActorType` — is **authored in the ESM model**. For that, see the model skill's [UI Authoring Guide](../model/ui-authoring-guide.md).
+
 ### Core Topics
 - [Development Workflow](./development-workflow.md) - Dev server, build, testing
 - [Theming](./theming.md) - MUI theme customization
@@ -379,7 +381,7 @@ export interface {{pascalCase entity.name}} {
 - [Advanced Patterns](./advanced-patterns.md) - Production patterns for complex requirements
 
 ### Hook System
-- [Hook System Overview](./hooks/SKILL.md) - Understanding the hook system
+- [Hook System Overview](./hooks/README.md) - Understanding the hook system
 - [Data Hooks](./hooks/data-hooks.md) - usePrincipal, useViewData
 - [UI Hooks](./hooks/ui-hooks.md) - AppBar, Hero, Logo, Footer
 - [Table Hooks](./hooks/table-hooks.md) - Row highlighting, custom columns, sidekicks
@@ -437,8 +439,8 @@ mvn clean install -Dignore-checksums
 
 ## File Locations Reference
 
-- UI Model: `application/frontend-react/model/target/generated-resources/model/webshop-ui.model`
-- Generated React: `application/frontend-react/webshop__[actor_fqn]/src/generated/`
-- Custom hooks: `application/frontend-react/webshop__[actor_fqn]/src/custom/`
-- Build output: `application/frontend-react/webshop__[actor_fqn]/target/*.jar`
-- Vite config: `application/frontend-react/webshop__[actor_fqn]/vite.config.ts`
+- UI Model: `application/frontend-react/model/target/generated-resources/model/myapp-ui.model`
+- Generated React: `application/frontend-react/myapp__[actor_fqn]/src/generated/`
+- Custom hooks: `application/frontend-react/myapp__[actor_fqn]/src/custom/`
+- Build output: `application/frontend-react/myapp__[actor_fqn]/target/*.jar`
+- Vite config: `application/frontend-react/myapp__[actor_fqn]/vite.config.ts`

@@ -1,6 +1,6 @@
 # Integration Testing - Advanced Patterns and Workarounds
 
-**Part of**: [Integration Testing Documentation](./SKILL.md)
+**Part of**: [Integration Testing Documentation](./README.md)
 
 **Target Audience**: All levels - reference when encountering specific challenges
 
@@ -10,7 +10,7 @@
 
 ## Quick Navigation
 
-- [Back to Main Hub](./SKILL.md)
+- [Back to Main Hub](./README.md)
 - [Query Filters](#pattern-query-filters)
 - [Mocking VariableResolver](#pattern-mocking-variableresolver-for-authentication)
 - [Handling Optional Fields](#pattern-handling-optional-fields-that-return-null)
@@ -814,7 +814,7 @@ public void customCall(CreateAddressInput input) {
 
 ## Next Steps
 
-**If you're done here**, return to the [Main Hub](./SKILL.md)
+**If you're done here**, return to the [Main Hub](./README.md)
 
 **If you need help with**:
 - [Getting started with tests](./getting-started.md)

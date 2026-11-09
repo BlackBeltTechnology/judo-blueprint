@@ -639,8 +639,8 @@ const handleSave = async () => {
 
 ## Related Documentation
 
-- [Hook System Overview](./SKILL.md)
+- [Hook System Overview](./README.md)
 - [UI Hooks](./ui-hooks.md)
 - [Table Hooks](./table-hooks.md)
 - [Action Hooks](./action-hooks.md)
-- Development Workflow (see `judo-development-workflow.md-docs` skill)
+- [Development Workflow](../development-workflow.md)

@@ -52,7 +52,7 @@ ESM Source Model → UI Model (transformation) → React Frontend (code generati
 | `MenuItemOperation` | `MenuItem` → `VisualElement` | Trigger static operation | Menu item with action |
 | `MenuItemGroup` | `MenuItem` → `VisualElement` | Submenu container | Collapsible menu group |
 
-**Note:** Supertypes determine inherited attributes and behaviour rules. See ui-behaviour.md (see `judo-model-docs` skill) for detailed rules.
+**Note:** Supertypes determine inherited attributes and behaviour rules. See [ui-behaviour.md](../../model/esm_metamodel/ui-behaviour.md) for detailed rules.
 
 ---
 

@@ -402,6 +402,51 @@ throw ExceptionUtils.createBusinessException(
 );
 ```
 
+### Anti-pattern — do not blanket-classify generic 5xx as a specific subsystem fault
+
+A **common bug** in custom interceptors: catching every HTTP 5xx and showing a domain-specific dialog (e.g. "Document converter is unavailable", "AI service is down"). This **masks unrelated server errors** and blames the wrong subsystem to the user.
+
+**Wrong** — 5xx fall-through to a specific dialog:
+
+```typescript
+const isConverterUnavailable = (err: any, errors: ServerError[]): boolean => {
+  const status = err?.response?.status;
+  return (
+    !!errors.find((e) => e.code === 'ConverterUnavailable') ||
+    (typeof status === 'number' && status >= 500 && status < 600) // ← catch-all
+  );
+};
+
+// Result: a NullPointerException in any unrelated operation → user sees
+// "Document converter is unavailable".
+```
+
+**Right** — only attribute a subsystem dialog when the explicit backend code is present; let generic 5xx fall through to the framework default:
+
+```typescript
+const isExplicitConverterUnavailable = (errors: ServerError[]): boolean =>
+  !!errors.find((e) => e.code === 'ConverterUnavailable');
+
+shouldInterceptError: (error, opts) => {
+  const errors = extractServerErrors(error);
+  if (isKnownBusinessCode(errors)) return true;
+  if (isHttpStatus(error, 403)) return true;
+  if (isExplicitConverterUnavailable(errors)) return true;
+  return false; // unrecognized 5xx → framework default handles it
+},
+
+interceptError: (error, opts) => {
+  const errors = extractServerErrors(error);
+  if (isExplicitConverterUnavailable(errors)) {
+    openFaultDialog('converter', { title: '…', message: '…' });
+    return;
+  }
+  // …other known codes…
+},
+```
+
+**Rule of thumb**: each subsystem-specific dialog must be triggered ONLY by an explicit backend `code` value. HTTP status alone is not enough — a 500 can come from anywhere in the stack. If you want to show a generic "server error" dialog for unknown 5xx, add an `isGenericServerError` predicate and a separate `compsych.error.server.title` / `.message` i18n pair; do not reuse the converter dialog.
+
 ---
 
 ## Pure State Transformation Functions
@@ -2136,11 +2181,11 @@ These patterns work together to create a context-aware frontend, which is essent
 -   **API Request Header Enrichment:** Uses an `axios` request interceptor to enrich every outgoing API request with the current context (e.g., a `tenantId` read from the URL). The interceptor injects a custom `X-Judo-RequestParameters` HTTP header, which the backend then uses for model-driven filtering.
 -   **Navigation State Preservation:** Uses a `NavigationInterceptor` to automatically preserve URL query parameters (like `tenantId`) across all page navigations, ensuring the user's context is never lost.
 
-_For a complete picture of how these frontend patterns enable secure, backend data filtering, see Architectural Patterns (see `judo-backend-docs` skill)._
+_For a complete picture of how these frontend patterns enable secure, backend data filtering, see [Architectural Patterns](../backend/architectural-patterns.md)._
 
 ## Related Documentation
 
-- [Frontend Hooks Overview](./hooks/SKILL.md)
+- [Frontend Hooks Overview](./hooks/README.md)
 - [Data Hooks](./hooks/data-hooks.md)
 - [Table Hooks](./hooks/table-hooks.md)
 - [Action Hooks](./hooks/action-hooks.md)

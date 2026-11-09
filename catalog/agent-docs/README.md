@@ -35,6 +35,9 @@ agent-docs/model/README.md       → Model development guide
 agent-docs/deployment/README.md  → Deployment guide
 ```
 
-## CLI Documentation
+## Platform CLI
 
-For JUDO Model CLI commands (queries, mutations, tracing), see the `judo-model-cli` skill in `.claude/skills/judo-model-cli/`.
+For the JUDO Model CLI tool and the model transformation pipeline, see:
+
+- [model/judo-cli.md](./model/judo-cli.md) — what the CLI is, why it is mandatory, and the platform invariants every assistant must follow.
+- [model/transformation-pipeline.md](./model/transformation-pipeline.md) — ESM → PSM → ASM → RDBMS → Liquibase, server-side vs client-side regeneration, and in-memory state.

@@ -1,6 +1,6 @@
 # Integration Testing - Best Practices and Anti-Patterns
 
-**Part of**: [Integration Testing Documentation](./SKILL.md)
+**Part of**: [Integration Testing Documentation](./README.md)
 
 **Target Audience**: All levels - reference for ongoing work
 
@@ -10,7 +10,7 @@
 
 ## Quick Navigation
 
-- [Back to Main Hub](./SKILL.md)
+- [Back to Main Hub](./README.md)
 - [Best Practices](#best-practices)
 - [Common Anti-Patterns](#common-anti-patterns)
 - [Custom Operation Patterns](#common-pitfalls-in-custom-operations)
@@ -806,7 +806,7 @@ void testCreateAddress(JudoTestFixture fixture) {
 
 ## Next Steps
 
-**If you're done here**, return to the [Main Hub](./SKILL.md)
+**If you're done here**, return to the [Main Hub](./README.md)
 
 **If you need help with**:
 - [Getting started with tests](./getting-started.md)

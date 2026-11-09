@@ -14,7 +14,7 @@ This document covers widget components that display and edit data within contain
 
 | ESM Element | ESM Attribute | UI Model | Frontend Effect |
 |-------------|---------------|----------|-----------------|
-| `ui:DataField` | `name` | Field name | Input name |
+| `ui:DataField` | `name` *(generated, read-only)* | Field name | Input name — runtime value derived from `dataFeature.member.name` by a `getName()` EOperation override; XMI `name="…"` is stored but ignored on read and FQN computation |
 | `ui:DataField` | `label` | Label text | Input label (i18n) |
 | `ui:DataField` | `iconName` | Icon | Input adornment |
 | `ui:DataField` | `col` | Grid column (1-12) | Grid md prop (default: 12) |
@@ -151,7 +151,7 @@ Widget that triggers an action, bound to a specific operation. Typically renders
 
 | ESM Element | ESM Attribute | UI Model | Frontend Effect |
 |-------------|---------------|----------|-----------------|
-| `ui:OperationForm` | `name` | Form name | Component name |
+| `ui:OperationForm` | `name` *(generated, read-only)* | Form name | Component name — runtime value derived from `operation.name` (fallback to stored `name` when blank) by a `getName()` EOperation override |
 | `ui:OperationForm` | `label` | Form/button text | Button label (i18n) |
 | `ui:OperationForm` | `iconName` | Icon | Button icon |
 | `ui:OperationForm` | `operation` | Target operation | Operation binding |

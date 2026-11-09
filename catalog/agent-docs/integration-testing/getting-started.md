@@ -4,7 +4,7 @@
 
 **Prerequisites**: Basic understanding of Java, JUnit, and the JUDO framework
 
-For other topics, see the [Integration Testing Documentation Hub](./SKILL.md).
+For other topics, see the [Integration Testing Documentation Hub](./README.md).
 
 ---
 
@@ -631,4 +631,4 @@ Now that you understand the basics, explore more advanced topics:
 - **[Advanced Patterns](./advanced-patterns.md)**: VariableResolver mocking, Optional field handling, entity reference validation
 - **[Best Practices](./best-practices.md)**: Patterns, anti-patterns, and maintainable test design
 
-Return to the [Integration Testing Documentation Hub](./SKILL.md) for the complete overview.
+Return to the [Integration Testing Documentation Hub](./README.md) for the complete overview.

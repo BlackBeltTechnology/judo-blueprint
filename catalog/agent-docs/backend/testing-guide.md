@@ -4,7 +4,7 @@
 
 This guide provides an overview of testing strategies for custom backend code in a JUDO application. It covers both unit testing with mocks and the execution of integration tests.
 
-For a comprehensive guide on writing integration tests, including detailed examples and advanced patterns, please refer to the main Integration Testing Guide (see `judo-integration-testing-docs` skill).
+For a comprehensive guide on writing integration tests, including detailed examples and advanced patterns, please refer to the main [Integration Testing Guide](../integration-testing/README.md).
 
 ## Table of Contents
 
@@ -76,7 +76,7 @@ class ToggleStatusCustomImplementationTest {
 
 Integration tests provide a way to test your custom operations against a real (in-memory) database, ensuring that your logic, DAO interactions, and the JUDO runtime all work together correctly.
 
-For a complete guide on how to set up, write, and run integration tests, please see the **Integration Testing Guide (see `judo-integration-testing-docs` skill)**.
+For a complete guide on how to set up, write, and run integration tests, please see the **[Integration Testing Guide](../integration-testing/README.md)**.
 
 ### Running Integration Tests
 
@@ -91,6 +91,6 @@ mvn clean install -Pintegration-tests
 
 ## See Also
 
-- Integration Testing Guide (see `judo-integration-testing-docs` skill) - The main, comprehensive guide for integration testing.
+- [Integration Testing Guide](../integration-testing/README.md) - The main, comprehensive guide for integration testing.
 - [Debugging and Monitoring Guide](debugging-and-monitoring-guide.md) - For debugging and monitoring your application.
 - [Custom Operations](custom-operations.md) - For the business logic you will be testing.

@@ -12,11 +12,11 @@ agent: general-purpose
 
 ## Overview
 
-This guide covers integration testing for custom business logic in webshop. It focuses on using the `judo-runtime-core-testkit` to test custom operations, interceptors, and validators.
+This guide covers integration testing for custom business logic in myapp. It focuses on using the `judo-runtime-core-testkit` to test custom operations, interceptors, and validators.
 
-For a complete understanding of the backend architecture, code generation, and custom implementation patterns, please refer to the main Backend Development Guide (see `judo-backend-docs` skill).
+For a complete understanding of the backend architecture, code generation, and custom implementation patterns, please refer to the main [Backend Development Guide](../backend/README.md).
 
-**Note**: Throughout this document, `webshop` refers to the application name from `judo.properties` (app_name property). Package names, file paths, and generated artifacts use this value.
+**Note**: Throughout this document, `myapp` refers to the application name from `judo.properties` (app_name property). Package names, file paths, and generated artifacts use this value.
 
 ## Prerequisites
 
@@ -61,10 +61,12 @@ mvnd clean install
 
 ## Related Documentation
 
-For comprehensive information on backend development, please see the Backend Development Guide (see `judo-backend-docs` skill).
+For comprehensive information on backend development, please see the [Backend Development Guide](../backend/README.md).
 
 - **[Getting Started with Integration Testing](getting-started.md)** - An introduction to the testkit and writing your first test.
 - **[Best Practices for Integration Testing](best-practices.md)** - Guidelines for writing effective and maintainable tests.
 - **[Advanced Integration Testing Patterns](advanced-patterns.md)** - Advanced techniques for complex testing scenarios.
+- **[Testing Access Rules and DERIVED Attributes](access-and-derived-testing.md)** - Pattern A (DAO-projected derived attributes), Pattern B (`Access.getterExpression` per actor via Dispatcher), Pattern C (DERIVED getters that read `ACTOR.*`). Closes the gap between entity-level DAO tests and full E2E.
 - **[Supplementary Testing Patterns](supplementary-patterns.md)** - Additional patterns and examples.
 - **[Type Safety in Integration Tests](type-safety.md)** - Ensuring type safety in your tests.
+- **[OSGi DS Descriptor Contract Tests](osgi-ds-descriptor-tests.md)** - Verify `@Reference` target filters, cardinality, policy, and service properties by asserting against the SCR component XML descriptors emitted by `maven-bundle-plugin`. Needed because OSGi's `@Reference` annotation has CLASS retention and is invisible to reflection / the Guice testkit.

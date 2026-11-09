@@ -694,8 +694,8 @@ export const MySidekick: FC<{ data: any[] }> = ({ data }) => {
 
 ## Related Documentation
 
-- [Hook System Overview](./SKILL.md)
+- [Hook System Overview](./README.md)
 - [Data Hooks](./data-hooks.md)
 - [UI Hooks](./ui-hooks.md)
 - [Action Hooks](./action-hooks.md)
-- Development Workflow (see `judo-development-workflow.md-docs` skill)
+- [Development Workflow](../development-workflow.md)

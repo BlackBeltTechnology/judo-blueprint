@@ -747,7 +747,7 @@ throw new Error('Error message');
 
 ## Related Documentation
 
-- [Hook System Overview](./SKILL.md)
+- [Hook System Overview](./README.md)
 - [Action Hooks](./action-hooks.md)
 - [Data Hooks](./data-hooks.md)
-- Development Workflow (see `judo-development-workflow.md-docs` skill)
+- [Development Workflow](../development-workflow.md)

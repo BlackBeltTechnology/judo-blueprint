@@ -2,9 +2,9 @@
 
 ## Overview
 
-The `application/schema` module provides database schema migration capabilities for webshop. It uses Liquibase under the hood to perform incremental schema updates when the model evolves.
+The `application/schema` module provides database schema migration capabilities for myapp. It uses Liquibase under the hood to perform incremental schema updates when the model evolves.
 
-**Note**: Throughout this document, `webshop` refers to the application name from `judo.properties` (app_name property).
+**Note**: Throughout this document, `myapp` refers to the application name from `judo.properties` (app_name property).
 
 ## Table of Contents
 
@@ -43,8 +43,8 @@ This section provides a condensed workflow for the most common migration task: g
     mvn judo-rdbms-schema:execute \
       -DbaseModelVersion=<base_version> \
       -DupdateModelVersion=<update_version> \
-      -DjdbcUrl=jdbc:postgresql://localhost:5432/webshop \
-      -DdbUser=webshop \
+      -DjdbcUrl=jdbc:postgresql://localhost:5432/myapp \
+      -DdbUser=myapp \
       -DdbPassword=[password]
     ```
 
@@ -108,7 +108,7 @@ application/schema/
 │   └── [manual-scripts].sql        # Custom SQL migrations
 ├── README.adoc                      # Original migration instructions
 └── target/
-    └── webshop-application-schema-[version].jar   # Executable JAR
+    └── myapp-application-schema-[version].jar   # Executable JAR
 ```
 
 ## Schema Migration Workflow
@@ -185,16 +185,16 @@ mvn clean install
 ./judo.sh stop
 
 # 3. Backup database
-pg_dump -h localhost -U webshop webshop > backup_v1.1.0.sql
+pg_dump -h localhost -U myapp myapp > backup_v1.1.0.sql
 
 # 4. Execute migration
 cd application/schema
 mvn judo-rdbms-schema:execute \
   -DbaseModelVersion=1.1.0 \
   -DupdateModelVersion=1.2.0 \
-  -DjdbcUrl=jdbc:postgresql://localhost:5432/webshop \
+  -DjdbcUrl=jdbc:postgresql://localhost:5432/myapp \
   -DdbType=postgresql \
-  -DdbUser=webshop \
+  -DdbUser=myapp \
   -DdbPassword=[password]
 
 # 5. Upgrade application
@@ -211,18 +211,18 @@ If something goes wrong:
 
 ```bash
 # 1. Stop database
-docker stop webshop-postgres
+docker stop myapp-postgres
 # or: sudo systemctl stop postgresql
 
 # 2. Remove database content
-docker rm webshop-postgres
-# or: dropdb webshop
+docker rm myapp-postgres
+# or: dropdb myapp
 
 # 3. Start fresh database
-docker run -d --name webshop-postgres -e POSTGRES_DB=webshop -e POSTGRES_USER=webshop -e POSTGRES_PASSWORD=[password] -p 5432:5432 postgres:15
+docker run -d --name myapp-postgres -e POSTGRES_DB=myapp -e POSTGRES_USER=myapp -e POSTGRES_PASSWORD=[password] -p 5432:5432 postgres:15
 
 # 4. Restore from backup
-psql -h localhost -U webshop -d webshop < backup_v1.1.0.sql
+psql -h localhost -U myapp -d myapp < backup_v1.1.0.sql
 
 # 5. Start application with old version
 git checkout v1.1.0
@@ -241,9 +241,9 @@ Create schema from scratch (development):
 cd application/schema
 
 mvn judo-rdbms-schema:apply \
-  -DjdbcUrl=jdbc:postgresql://localhost:5432/webshop \
+  -DjdbcUrl=jdbc:postgresql://localhost:5432/myapp \
   -DdbType=postgresql \
-  -DdbUser=webshop \
+  -DdbUser=myapp \
   -DdbPassword=[password]
 ```
 
@@ -270,9 +270,9 @@ Run migration from one version to another:
 mvn judo-rdbms-schema:execute \
   -DbaseModelVersion=1.1.0.20210929_004050 \
   -DupdateModelVersion=1.2.0.20211021_085156 \
-  -DjdbcUrl=jdbc:postgresql://localhost:5432/webshop \
+  -DjdbcUrl=jdbc:postgresql://localhost:5432/myapp \
   -DdbType=postgresql \
-  -DdbUser=webshop \
+  -DdbUser=myapp \
   -DdbPassword=[password]
 ```
 
@@ -288,22 +288,22 @@ cd application/schema
 # Build with Docker profile
 mvn clean install -Pdocker
 
-# Image created: webshop-application-schema:[version]
+# Image created: myapp-application-schema:[version]
 ```
 
 #### Run Migration with Docker
 
 ```bash
 docker run --rm \
-  webshop-application-schema:latest \
+  myapp-application-schema:latest \
   execute \
   --baseModelVersion=1.1.0.20210929_004050_9602796_develop \
   --updateModelVersion=1.2.0.20211021_085156_21efaed_develop \
-  --modelName=webshop \
+  --modelName=myapp \
   --incrementalDirectory=/ \
-  --jdbcUrl=jdbc:postgresql://host.docker.internal:5432/webshop \
+  --jdbcUrl=jdbc:postgresql://host.docker.internal:5432/myapp \
   --dbType=postgresql \
-  --dbUser=webshop \
+  --dbUser=myapp \
   --dbPassword=[password]
 ```
 
@@ -316,15 +316,15 @@ version: '3.8'
 
 services:
   db-migration:
-    image: webshop-application-schema:${VERSION}
+    image: myapp-application-schema:${VERSION}
     command:
       - execute
       - --baseModelVersion=${BASE_VERSION}
       - --updateModelVersion=${UPDATE_VERSION}
-      - --modelName=webshop
-      - --jdbcUrl=jdbc:postgresql://postgres:5432/webshop
+      - --modelName=myapp
+      - --jdbcUrl=jdbc:postgresql://postgres:5432/myapp
       - --dbType=postgresql
-      - --dbUser=webshop
+      - --dbUser=myapp
       - --dbPassword=${DB_PASSWORD}
     depends_on:
       - postgres
@@ -334,8 +334,8 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_DB: webshop
-      POSTGRES_USER: webshop
+      POSTGRES_DB: myapp
+      POSTGRES_USER: myapp
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -374,7 +374,7 @@ volumes:
 3. **Backup Production**
    ```bash
    # Full database backup
-   pg_dump -h prod-db -U webshop webshop > prod_backup_$(date +%Y%m%d_%H%M%S).sql
+   pg_dump -h prod-db -U myapp myapp > prod_backup_$(date +%Y%m%d_%H%M%S).sql
    ```
 
 4. **Maintenance Window**
@@ -418,7 +418,7 @@ In `application/schema/pom.xml`:
 
 ```xml
 <properties>
-    <modelName>webshop</modelName>
+    <modelName>myapp</modelName>
     <incrementalDirectory>${basedir}/migration</incrementalDirectory>
     <updateModelArtifactVersion>${project.version}</updateModelArtifactVersion>
 </properties>
@@ -437,7 +437,7 @@ cd application/model
 mvn clean install
 
 # Check version matches exactly
-mvn dependency:tree | grep webshop-model
+mvn dependency:tree | grep myapp-model
 ```
 
 ### Migration Scripts Not Generated
@@ -518,24 +518,24 @@ migration-test:
   services:
     - postgres:15
   variables:
-    POSTGRES_DB: webshop_test
-    POSTGRES_USER: webshop
+    POSTGRES_DB: myapp_test
+    POSTGRES_USER: myapp
     POSTGRES_PASSWORD: test
   script:
     # Apply base schema
     - cd application/schema
-    - mvn judo-rdbms-schema:apply -DjdbcUrl=jdbc:postgresql://postgres/webshop_test -DdbUser=webshop -DdbPassword=test
+    - mvn judo-rdbms-schema:apply -DjdbcUrl=jdbc:postgresql://postgres/myapp_test -DdbUser=myapp -DdbPassword=test
     # Generate migration
     - mvn judo-rdbms-schema:generate -DbaseModelVersion=${BASE_VERSION} -DupdateModelVersion=${CI_COMMIT_TAG}
     # Execute migration
-    - mvn judo-rdbms-schema:execute -DbaseModelVersion=${BASE_VERSION} -DupdateModelVersion=${CI_COMMIT_TAG} -DjdbcUrl=jdbc:postgresql://postgres/webshop_test -DdbUser=webshop -DdbPassword=test
+    - mvn judo-rdbms-schema:execute -DbaseModelVersion=${BASE_VERSION} -DupdateModelVersion=${CI_COMMIT_TAG} -DjdbcUrl=jdbc:postgresql://postgres/myapp_test -DdbUser=myapp -DdbPassword=test
 ```
 
 ## See Also
 
 - **Liquibase Documentation**: https://docs.liquibase.com/
-- **Model Development**: Model Guide (see `judo-model-docs` skill) - For information on editing the ESM model.
-- **Deployment Guides**: [Deployment Overview](./SKILL.md) - For the full build and deployment process.
+- **Model Development**: [Model Guide](../model/README.md) - For information on editing the ESM model.
+- **Deployment Guides**: [Deployment Overview](./README.md) - For the full build and deployment process.
 - **Application Configuration**: [Application Config](./application-config.md) - For database connection settings.
 
 ## File Locations
@@ -543,5 +543,5 @@ migration-test:
 - Schema module: `application/schema/`
 - Migration scripts: `application/schema/migration/`
 - Generated models: `application/model/target/generated-resources/model/`
-- Liquibase changelogs: `application/model/target/generated-resources/model/webshop-liquibase_[db].changelog.xml`
-- Schema JAR: `application/schema/target/webshop-application-schema-[version].jar`
+- Liquibase changelogs: `application/model/target/generated-resources/model/myapp-liquibase_[db].changelog.xml`
+- Schema JAR: `application/schema/target/myapp-application-schema-[version].jar`

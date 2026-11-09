@@ -1,6 +1,6 @@
 # Integration Testing - Supplementary Patterns
 
-**Part of**: [Integration Testing Documentation](./SKILL.md)
+**Part of**: [Integration Testing Documentation](./README.md)
 
 **Target Audience**: All levels - additional patterns discovered from real-world implementations
 
@@ -10,7 +10,7 @@
 
 ## Quick Navigation
 
-- [Back to Main Hub](./SKILL.md)
+- [Back to Main Hub](./README.md)
 - [Test Fixture Pattern](#pattern-test-fixtures-for-complex-hierarchies)
 - [ValidationUtils Pattern](#pattern-common-validation-utilities)
 - [Idempotent Operations](#pattern-idempotent-operations)
@@ -1065,7 +1065,7 @@ public static void validatePattern(String value, Pattern pattern, String fieldNa
 
 ## Next Steps
 
-**If you're done here**, return to the [Main Hub](./SKILL.md)
+**If you're done here**, return to the [Main Hub](./README.md)
 
 **If you need help with**:
 - [Getting started with tests](./getting-started.md)

@@ -3,6 +3,45 @@
 > [!IMPORTANT]
 > This guide covers `OperationCallInterceptor` for intercepting business logic operations. For handling user authentication events, please see the [Authentication Guide](authentication-guide.md).
 
+## Pattern: Backend-Computed TO Attribute (JQL Escape Hatch)
+
+Certain derived values cannot be expressed as an entity-level `DERIVED` `DataMember`:
+
+- **Bipartite quantifiers** such as "for every supported language ∧ for every paragraph, an approved translation exists" — JQL lambda scopes do not nest, so the outer variable (and `self`) is invisible inside an inner `!forall` / `!filter`.
+- **Collection-valued context variables** — `!getVariable(...)` only returns a scalar `String`; `Sequence<String>!getVariable(...)` is not valid JQL grammar.
+- **External lookups** — anything that requires I/O at read-time.
+
+The canonical escape hatch keeps the value on the TO (so the UI and consumers see it) without forcing it through JQL:
+
+1. **Remove** the `DERIVED` `DataMember` from the `EntityType`.
+2. On each `TransferObjectType` that exposes the value, declare it as `memberType="TRANSIENT"` with **no `binding`**:
+
+    ```xml
+    <attributes xsi:type="structure:DataMember"
+                name="readyForAllLanguages"
+                dataType="_boolTypeId"
+                memberType="TRANSIENT"
+                identifier="false"/>
+    ```
+
+3. Register an `OperationCallInterceptor` that fires **after** the mapped read operations (`_getById`, list queries, etc.), enriching the outgoing payload in place.
+
+```java
+@Component(property = { "judo.model.name=<model>" })
+public class MyTransientEnricher implements OperationCallInterceptor {
+    @Override public List<String> getOperations() {
+        return List.of("<model>.services.MyTO._getById",
+                       "<model>.services.MyTO._query");
+    }
+    @Override public Payload postCall(Payload result, ...) {
+        result.put("readyForAllLanguages", compute(result));
+        return result;
+    }
+}
+```
+
+**Why not a view / union?** A transient TO member is the narrowest, least invasive choice: the entity model stays pure, the TO surface matches the spec, and the value is re-computed per request with no cache-invalidation surface. Use an entity-level denormalisation only when the value must also be filterable/sortable at the DAO layer.
+
 ## Advanced Interceptor Patterns
 
 The JUDO framework provides two types of interceptors, `OperationCallInterceptor` and `AuthenticationInterceptor`, which can be used to implement a variety of powerful, cross-cutting patterns.
@@ -108,13 +147,13 @@ public interface OperationCallInterceptor {
 **Required annotation properties:**
 
 ```java
-@Component(property = { "judo.model.name=webshop" })
+@Component(property = { "judo.model.name=myapp" })
 public class MyInterceptor implements OperationCallInterceptor {
     // Implementation
 }
 ```
 
-**Why `property = { "judo.model.name=webshop" }`?**
+**Why `property = { "judo.model.name=myapp" }`?**
 - Binds interceptor to specific JUDO model
 - Runtime uses this to match interceptors to operations
 - Multiple models can coexist with different interceptors
@@ -124,7 +163,7 @@ public class MyInterceptor implements OperationCallInterceptor {
 **Pattern**: Log all intercepted operations
 
 ```java
-@Component(property = { "judo.model.name=webshop" })
+@Component(property = { "judo.model.name=myapp" })
 public class LogOperationCallInterceptor implements OperationCallInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(LogOperationCallInterceptor.class);
@@ -149,7 +188,7 @@ public class LogOperationCallInterceptor implements OperationCallInterceptor {
 ```
 
 **Key patterns:**
-- `@Component(property = { "judo.model.name=webshop" })` - Required for operation interceptors
+- `@Component(property = { "judo.model.name=myapp" })` - Required for operation interceptors
 - No `getOperations()` implementation = intercept ALL operations
 - `AsmUtils.getOperationFQName()` - Get fully qualified operation name
 - `preCall()` - Executed before operation logic
@@ -159,7 +198,7 @@ public class LogOperationCallInterceptor implements OperationCallInterceptor {
 **Pattern**: Intercept specific operation and execute post-operation logic
 
 ```java
-@Component(property = { "judo.model.name=webshop" })
+@Component(property = { "judo.model.name=myapp" })
 public class EntityCreateInterceptor implements OperationCallInterceptor {
 
     @Reference EntityDao entityDao;
@@ -182,7 +221,7 @@ public class EntityCreateInterceptor implements OperationCallInterceptor {
 
             // Specify exact operation to intercept by FQN
             EOperation createOperation =
-                    asmUtils.resolveOperation("webshop.services.ServiceContext#_createInstanceEntities")
+                    asmUtils.resolveOperation("myapp.services.ServiceContext#_createInstanceEntities")
                             .orElseThrow();
 
             interceptedOperations = List.of(createOperation);
@@ -254,7 +293,7 @@ public class EntityCreateInterceptor implements OperationCallInterceptor {
 **Pattern**: Intercept update and process multiple related entities
 
 ```java
-@Component(property = { "judo.model.name=webshop" })
+@Component(property = { "judo.model.name=myapp" })
 public class AccessRoleUpdateInterceptor implements OperationCallInterceptor {
 
     @Reference EntityDao entityDao;
@@ -277,7 +316,7 @@ public class AccessRoleUpdateInterceptor implements OperationCallInterceptor {
 
             // Intercept update operation
             interceptedOperations = Stream.of(
-                    "webshop.services.entity_service.AccessRole#_updateInstancewebshop_services_entity_service_AccessRole"
+                    "myapp.services.entity_service.AccessRole#_updateInstancemyapp_services_entity_service_AccessRole"
             ).map(asmUtils::resolveOperation).map(Optional::orElseThrow).toList();
         }
         return interceptedOperations;
@@ -313,7 +352,7 @@ public class AccessRoleUpdateInterceptor implements OperationCallInterceptor {
 **Pattern**: Modify input payload before operation execution
 
 ```java
-@Component(property = { "judo.model.name=webshop" })
+@Component(property = { "judo.model.name=myapp" })
 public class ParentEntityCreateInterceptor implements OperationCallInterceptor {
 
     @Reference ChildEntityDao childEntityDao;
@@ -336,7 +375,7 @@ public class ParentEntityCreateInterceptor implements OperationCallInterceptor {
             }
 
             EOperation parentEntityCreateOperation =
-                    asmUtils.resolveOperation("webshop.services.ServiceContext#_createInstanceParentEntities")
+                    asmUtils.resolveOperation("myapp.services.ServiceContext#_createInstanceParentEntities")
                             .orElseThrow();
 
             interceptedOperations = List.of(parentEntityCreateOperation);
@@ -425,7 +464,7 @@ public class ParentEntityCreateInterceptor implements OperationCallInterceptor {
 **Pattern**: Intercept add/remove/set/delete reference operations
 
 ```java
-@Component(property = { "judo.model.name=webshop" })
+@Component(property = { "judo.model.name=myapp" })
 public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCallInterceptor {
 
     @Reference EntityDao entityDao;
@@ -449,10 +488,10 @@ public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCall
 
             // Intercept multiple reference operations
             interceptedOperations = Stream.of(
-                    "webshop.services.entity_service.AccessRole#_addReferenceAccessPermissions",
-                    "webshop.services.entity_service.AccessRole#_removeReferenceAccessPermissions",
-                    "webshop.services.entity_service.AccessRole#_setReferenceAccessPermissions",
-                    "webshop.services.entity_service.AccessRole#_deleteInstancewebshop_services_entity_service_AccessRole"
+                    "myapp.services.entity_service.AccessRole#_addReferenceAccessPermissions",
+                    "myapp.services.entity_service.AccessRole#_removeReferenceAccessPermissions",
+                    "myapp.services.entity_service.AccessRole#_setReferenceAccessPermissions",
+                    "myapp.services.entity_service.AccessRole#_deleteInstancemyapp_services_entity_service_AccessRole"
             ).map(asmUtils::resolveOperation).map(Optional::orElseThrow).toList();
         }
         return interceptedOperations;
@@ -497,7 +536,7 @@ public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCall
 **Pattern**: Single interceptor for create and update with pattern matching
 
 ```java
-@Component(property = { "judo.model.name=webshop" })
+@Component(property = { "judo.model.name=myapp" })
 public class ChildEntityCreateAndUpdateInterceptor implements OperationCallInterceptor {
 
     @Reference ParentEntityDao parentEntityDao;
@@ -523,8 +562,8 @@ public class ChildEntityCreateAndUpdateInterceptor implements OperationCallInter
 
             // Intercept both create and update
             interceptedOperations = Stream.of(
-                    "webshop.services.parent_service.ParentEntity#_createInstanceChildEntities",
-                    "webshop.services.parent_service.ChildEntity#_updateInstancewebshop_services_parent_service_ChildEntity"
+                    "myapp.services.parent_service.ParentEntity#_createInstanceChildEntities",
+                    "myapp.services.parent_service.ChildEntity#_updateInstancemyapp_services_parent_service_ChildEntity"
             ).map(asmUtils::resolveOperation).map(Optional::orElseThrow).toList();
         }
         return interceptedOperations;

@@ -688,8 +688,8 @@ context.registerService<MenuItemsCustomizerHook>(
 
 ## Related Documentation
 
-- [Hook System Overview](./SKILL.md)
+- [Hook System Overview](./README.md)
 - [Data Hooks](./data-hooks.md)
 - [Table Hooks](./table-hooks.md)
-- Theming (see `judo-theming.md-docs` skill)
-- Development Workflow (see `judo-development-workflow.md-docs` skill)
+- [Theming](../theming.md)
+- [Development Workflow](../development-workflow.md)

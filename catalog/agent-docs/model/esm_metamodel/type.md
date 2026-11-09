@@ -101,6 +101,12 @@ These rules define how type elements behave based on their context and attribute
 
 **MimeType Candidates:** Selected from `Model.mimeTypes` collection.
 
+**`MimeType` attribute rules:** only `type` and `subType` — no `name`, no `label`. Adding `name="image/png"` fails ESM transform with `Feature 'name' not found`.
+
+**Declaration site:** `<mimeTypes>` is a direct child of the root `<namespace:Model>`; `BinaryType.mimeTypes` references them as a space-separated id list (`mimeTypes="_id1 _id2"`).
+
+Omitting `mimeTypes` on a `BinaryType` fails EMF validation: *"The feature 'mimeTypes' … with 0 values must have at least 1 values"*.
+
 ### EnumerationType Attribute Rules
 
 | Attribute | Required | Description |

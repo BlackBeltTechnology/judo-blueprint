@@ -280,7 +280,7 @@ EOF
 echo "src/custom/hooks/tableRowHighlighting.tsx" >> .generator-ignore
 
 # Step 6: Test
-cd application/frontend-react/webshop__[actor_fqn]
+cd application/frontend-react/myapp__[actor_fqn]
 pnpm run dev
 ```
 
@@ -517,4 +517,4 @@ import { TableRowHighlightingHook } from '~/generated/hooks';
 - [Action Hooks](./action-hooks.md) - Container actions, operations
 - [Navigation and Access](./navigation-and-access.md) - Redirects, access control
 - [Validation Hooks](./validation-hooks.md) - Date/DateTime validation
-- Main README (see `judo-README.md-docs` skill) - Overview and architecture
+- [Main README](../README.md) - Overview and architecture

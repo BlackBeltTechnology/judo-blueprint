@@ -1,6 +1,6 @@
 # Integration Testing - Entity vs Service Layer Type Safety
 
-**Part of**: [Integration Testing Documentation](./SKILL.md)
+**Part of**: [Integration Testing Documentation](./README.md)
 
 **Target Audience**: Intermediate developers facing compilation errors with type mismatches
 
@@ -10,7 +10,7 @@
 
 ## Quick Navigation
 
-- [Back to Main Hub](./SKILL.md)
+- [Back to Main Hub](./README.md)
 - [The Two Type Layers](#the-two-type-layers)
 - [adaptTo() Pattern](#the-solution-adaptto-pattern)
 - [Advanced Mapping Scenarios](#advanced-mapping-scenarios)
@@ -566,7 +566,7 @@ Do you need to pass entity data to a service operation?
 
 ## Next Steps
 
-**If you're done here**, return to the [Main Hub](./SKILL.md)
+**If you're done here**, return to the [Main Hub](./README.md)
 
 **If you need help with**:
 - [Getting started with tests](./getting-started.md)

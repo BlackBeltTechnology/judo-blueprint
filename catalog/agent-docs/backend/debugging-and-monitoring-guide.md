@@ -36,7 +36,7 @@ Hot deployment allows you to apply backend code changes to a running server with
     ```bash
     tail -f application/.karaf/data/log/karaf.log
     ```
-    You should see a message like `Bundle updated: webshop-app`.
+    You should see a message like `Bundle updated: myapp-app`.
 
 5.  **Test your changes immediately** in the running application.
 
@@ -162,7 +162,7 @@ You can measure the execution time of specific blocks of your custom code to ide
 - **Cause**: Your custom OSGi component did not start correctly.
 - **Solution**:
     - Check for `@Component` and that it implements a `@Service` interface.
-    - Verify the bundle is `ACTIVE` in the Karaf console: `bundle:list | grep webshop-app`
+    - Verify the bundle is `ACTIVE` in the Karaf console: `bundle:list | grep myapp-app`
     - Check the Karaf logs (`log:tail`) for OSGi errors related to your bundle.
 
 ### "ClassNotFoundException"
@@ -175,7 +175,7 @@ You can measure the execution time of specific blocks of your custom code to ide
 ### Changes not applied after Hot Deployment
 - **Cause**: Karaf did not correctly pick up the changes to your bundle.
 - **Solution**:
-    - Confirm the bundle's timestamp was updated in the Karaf console: `bundle:list -t 0 | grep webshop-app`
+    - Confirm the bundle's timestamp was updated in the Karaf console: `bundle:list -t 0 | grep myapp-app`
     - Check the JAR timestamp in your local Maven repository (`~/.m2/repository/...`).
     - If needed, force a refresh or restart the bundle manually in the Karaf console: `bundle:refresh [id]` or `bundle:restart [id]`.
 

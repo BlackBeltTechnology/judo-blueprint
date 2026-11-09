@@ -318,5 +318,5 @@ function_under_development:Ez a funkció jelenleg fejlesztés alatt áll
 ## See Also
 
 - [Error Handling Guide](error-handling-guide.md) - For details on how to throw exceptions using these i18n messages.
-- Frontend i18n (see `judo-frontend-docs` skill) - For how these backend messages are consumed by the frontend.
+- [Frontend i18n](../frontend/i18n.md) - For how these backend messages are consumed by the frontend.
 - [Custom Operations](custom-operations.md) - For examples of using i18n in business logic.

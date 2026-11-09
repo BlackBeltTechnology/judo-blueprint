@@ -18,7 +18,7 @@ A column within a table displaying a single attribute for each row.
 
 | ESM Element | ESM Attribute | UI Model | Frontend Effect |
 |-------------|---------------|----------|-----------------|
-| `ui:DataColumn` | `name` | Column name | Column identifier |
+| `ui:DataColumn` | `name` *(generated, read-only)* | Column name | Column identifier — runtime value derived from `dataFeature.member.name` by a `getName()` EOperation override; XMI `name="…"` is stored but ignored on read and FQN computation |
 | `ui:DataColumn` | `label` | Header text | Column header (i18n) |
 | `ui:DataColumn` | `iconName` | Column icon | Header icon |
 | `ui:DataColumn` | `dataFeature` | Bound attribute | Data binding |
@@ -62,7 +62,7 @@ Filter control for a table, allowing users to search or narrow down results.
 
 | ESM Element | ESM Attribute | UI Model | Frontend Effect |
 |-------------|---------------|----------|-----------------|
-| `ui:DataFilter` | `name` | Filter name | Filter identifier |
+| `ui:DataFilter` | `name` *(generated, read-only)* | Filter name | Filter identifier — runtime value derived from `dataFeature.member.name + "Filter"` by a `getName()` EOperation override |
 | `ui:DataFilter` | `label` | Filter label | Filter label (i18n) |
 | `ui:DataFilter` | `iconName` | Filter icon | Input icon |
 | `ui:DataFilter` | `dataFeature` | Bound attribute | Filter target |
@@ -152,7 +152,7 @@ A column within a table displaying a relation (link to related entity).
 
 | ESM Element | ESM Attribute | UI Model | Frontend Effect |
 |-------------|---------------|----------|-----------------|
-| `ui:RelationColumn` | `name` | Column name | Column identifier |
+| `ui:RelationColumn` | `name` *(generated, read-only)* | Column name | Column identifier — runtime value derived from `relationFeature` by a `getName()` EOperation override; identity for the GraphQL surface is `dataFeatureOfRelationFeature` |
 | `ui:RelationColumn` | `label` | Header text | Column header (i18n) |
 | `ui:RelationColumn` | `iconName` | Column icon | Header icon |
 | `ui:RelationColumn` | `relationFeature` | Bound relation | Relation binding |
@@ -174,6 +174,13 @@ A column within a table displaying a relation (link to related entity).
   attributePath="name"
   width="200"/>
 ```
+
+**When not to use `RelationColumn`.** Avoid `RelationColumn` on **top-level** `TransferObjectTable`s — the tables that back an `Access` / `MenuItemAccess` and render as a primary list screen. At this level `RelationColumn` triggers a **frontend codegen bug**: the generated list screen references a non-existent sibling (observed symptom: dangling `View<RelatedType>Stored`-style refs, e.g. `ViewGalaxyStored`), and sorting / filtering / row-action wiring on relation-typed columns is unreliable. Instead:
+
+1. **Prefer `TabularReferenceField`** in the owning `<view>` or `<form>` when the user needs to navigate or manage the related collection — this is the canonical widget for relation display inside a detail screen.
+2. **Prefer a plain `DataColumn`** bound to a mapped `DataMember` (either a bound string attribute or a `DERIVED` attribute whose `getterExpression` flattens the related value, e.g. `self.owner.fullName`) when you only need to *display* a label from the related entity in the list.
+
+Reserve `RelationColumn` for embedded relation tables inside detail screens where relation-navigation semantics are explicitly expected. See also [UI Authoring Guide — Pitfalls](../../model/ui-authoring-guide.md#14-pitfalls-and-validation-rules).
 
 ---
 
@@ -292,7 +299,7 @@ UI Element ID: Actor/(esm/_ZeK4oLK0EfCC_efogf7jJg)/AttributeType
 
 **Goal:** Trace `code` attribute from ESM to frontend
 
-1. **ESM Source** (`model/{{ lowerCase model.name \}}.model`):
+1. **ESM Source** (`model/\myapp.model`):
 ```xml
 <elements xsi:type="structure:EntityType" name="Campaign">
   <attributes xsi:type="structure:DataMember"
@@ -302,7 +309,7 @@ UI Element ID: Actor/(esm/_ZeK4oLK0EfCC_efogf7jJg)/AttributeType
 </elements>
 ```
 
-2. **UI Model** (`application/frontend-react/model/{{ lowerCase model.name \}}-ui.model`):
+2. **UI Model** (`application/frontend-react/model/\myapp-ui.model`):
 ```xml
 <attributes xmi:id="Actor/(esm/_ZeK4oLK0EfCC_efogf7jJg)/AttributeType"
   name="code"
@@ -317,7 +324,7 @@ ESM supports annotations that can be applied to Access elements. Annotations are
 
 ### Annotation Definition (ESM)
 
-Annotations are defined at the model root level in `model/{{ lowerCase model.name \}}.model`:
+Annotations are defined at the model root level in `model/\myapp.model`:
 
 ```xml
 <annotations xmi:id="_08mnIGStEeuRaM6aPF_6_w"
@@ -335,7 +342,7 @@ Annotations are defined at the model root level in `model/{{ lowerCase model.nam
 | `dashboard` | `hu.blackbelt.judo.meta.esm.accesspoint.Access` | Marks access as dashboard entry point |
 | `profile` | `hu.blackbelt.judo.meta.esm.accesspoint.Access` | Marks access as user profile entry |
 
-**Note:** These annotations are defined in the model but are currently **not applied to any elements** in the {{ lowerCase model.name \}} project.
+**Note:** These annotations are defined in the model but are currently **not applied to any elements** in the \myapp project.
 
 ### How Annotations Would Be Used
 
@@ -464,14 +471,13 @@ DataField behaviour varies based on the bound attribute's data type:
 - **BooleanType**: `booleanWidget` (CHECKBOX/COMBO), `valueLabelPlacement`
 - **DateType/TimestampType/TimeType**: `minValueBy`, `maxValueBy`
 
-See UI Element Behaviour Rules (see `judo-model-docs` skill) for complete conditional rules.
+See [UI Element Behaviour Rules](../../model/esm_metamodel/ui-behaviour.md) for complete conditional rules.
 
 ---
 
 ## Related Documentation
 
-- UI Element Behaviour Rules (see `judo-model-docs` skill) - Conditional attribute rules and validation
-- ESM UI Package Reference (see `judo-model-docs` skill) - Complete UI element definitions
-- Transformation Pipeline (see `judo-model-docs` skill) - Model transformation flow
-- ESM Concepts (see `judo-model-docs` skill) - ESM metamodel concepts
+- [UI Element Behaviour Rules](../../model/esm_metamodel/ui-behaviour.md) - Conditional attribute rules and validation
+- [ESM UI Package Reference](../../model/esm_metamodel/ui.md) - Complete UI element definitions
+- [UI Authoring Guide](../../model/ui-authoring-guide.md) - Authoring playbook for ESM UI scaffolds
 - Use `judo-model-cli` skill for model queries and tracing

@@ -1,6 +1,6 @@
 # Production Deployment
 
-This guide covers production deployment, Docker deployment, environment configuration, and production best practices for the webshop project.
+This guide covers production deployment, Docker deployment, environment configuration, and production best practices for the myapp project.
 
 ## Table of Contents
 
@@ -88,11 +88,11 @@ The Docker image includes:
 **Basic deployment:**
 ```bash
 docker run -d \
-  --name webshop-app \
+  --name myapp-app \
   -p 8080:8080 \
   -e DB_HOST=postgres \
   -e DB_PORT=5432 \
-  -e DB_NAME=webshop \
+  -e DB_NAME=myapp \
   -e DB_USER=postgres \
   -e DB_PASSWORD=yourpassword \
   [project-name]:latest
@@ -137,14 +137,14 @@ This uses Docker Compose to orchestrate:
 # Database
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=webshop
+DB_NAME=myapp
 DB_USER=postgres
 DB_PASSWORD=yourpassword
 
 # Keycloak
 KEYCLOAK_URL=http://localhost:8080/auth
-KEYCLOAK_REALM=webshop
-KEYCLOAK_CLIENT_ID=webshop-client
+KEYCLOAK_REALM=myapp
+KEYCLOAK_CLIENT_ID=myapp-client
 
 # Application
 APP_PORT=8080
@@ -158,7 +158,7 @@ LOG_LEVEL=INFO
 ```bash
 VITE_API_DEFAULT_BASE_URL=https://api.yourdomain.com
 VITE_KEYCLOAK_URL=https://auth.yourdomain.com/auth
-VITE_KEYCLOAK_REALM=webshop
+VITE_KEYCLOAK_REALM=myapp
 ```
 
 ### Karaf Configuration
@@ -167,7 +167,7 @@ Production Karaf configurations are located in:
 - `application/karaf-offline/target/assembly/etc/`
 
 **Important files:**
-- `org.ops4j.datasource-webshop.cfg` - Database configuration
+- `org.ops4j.datasource-myapp.cfg` - Database configuration
 - `org.ops4j.pax.web.cfg` - Web server configuration
 - `judo-runtime.cfg` - Application runtime configuration
 
@@ -177,7 +177,7 @@ Production Karaf configurations are located in:
 
 **Locations:**
 - Karaf: `application/.karaf/data/log/karaf.log`
-- Docker: `docker logs webshop-app`
+- Docker: `docker logs myapp-app`
 
 **Tail logs:**
 ```bash
@@ -185,10 +185,10 @@ Production Karaf configurations are located in:
 tail -f application/.karaf/data/log/karaf.log
 
 # Docker container
-docker logs -f webshop-app
+docker logs -f myapp-app
 
 # Filter errors
-docker logs webshop-app | grep ERROR
+docker logs myapp-app | grep ERROR
 ```
 
 ### Karaf Console
@@ -200,14 +200,14 @@ docker logs webshop-app | grep ERROR
 ssh -p 8101 karaf@localhost
 
 # Docker
-docker exec -it webshop-app /opt/karaf/bin/client
+docker exec -it myapp-app /opt/karaf/bin/client
 ```
 
 **Production monitoring commands:**
 
 ```bash
 # Check bundle status
-bundle:list | grep webshop
+bundle:list | grep myapp
 
 # Check for failed bundles
 bundle:list | grep -i fail
@@ -310,7 +310,7 @@ ssh -p 8101 karaf@localhost "jdbc:datasources"
 
 1. **Backup current version**
    ```bash
-   docker tag webshop-manager:latest webshop-manager:backup-$(date +%Y%m%d)
+   docker tag myapp-manager:latest myapp-manager:backup-$(date +%Y%m%d)
    ```
 
 2. **Build new version**
@@ -390,4 +390,4 @@ ssh -p 8101 karaf@localhost "jdbc:datasources"
 
 - [Build Process](./build-process.md) - Detailed build system documentation
 - [Local Development](./local-development.md) - Development environment setup
-- [Deployment Overview](./SKILL.md) - Main deployment documentation
+- [Deployment Overview](./README.md) - Main deployment documentation

@@ -1014,7 +1014,7 @@ When deciding how to customize UI behavior, consider the ESM source:
 
 ## See Also
 
-- [Frontend Development Guide](./SKILL.md) - Overview and project structure
-- [Hook System](./hooks/SKILL.md) - Customization via hooks
-- E2E Testing (see `judo-e2e-testing-docs` skill) - Testing with element IDs
-- Model Development (see `judo-model-docs` skill) - ESM model changes
+- [Frontend Development Guide](./README.md) - Overview and project structure
+- [Hook System](./hooks/README.md) - Customization via hooks
+- [E2E Testing](../e2e-testing/model-screen-layout.md) - Testing with element IDs
+- [Model Development](../model/README.md) - ESM model changes

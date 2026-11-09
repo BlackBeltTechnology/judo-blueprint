@@ -61,7 +61,7 @@ setup("authenticate", async ({ page }) => {
   await page.locator("#kc-login").click();
 
   // Wait for redirect back to app
-  await expect(page).toHaveTitle(/{{ lowerCase model.name \}}/i, { timeout: 30000 });
+  await expect(page).toHaveTitle(/\myapp/i, { timeout: 30000 });
 
   // Save authentication state for other tests
   await page.context().storageState({ path: authFile });
