@@ -2,9 +2,9 @@
 
 ## Overview
 
-The myapp application is configured through **environment variables** defined in the `judo-karaf.env` file. This approach ensures configuration is externalized and can be easily changed without modifying code or configuration files.
+The <app> application is configured through **environment variables** defined in the `judo-karaf.env` file. This approach ensures configuration is externalized and can be easily changed without modifying code or configuration files.
 
-**Note**: Throughout this document, `myapp` refers to the application name from `judo.properties` (app_name property). Use this value in database names, Keycloak realms, and other application-specific settings.
+**Note**: Throughout this document, `<app>` refers to the application name from `judo.properties` (app_name property). Use this value in database names, Keycloak realms, and other application-specific settings.
 
 **Important**: Do NOT edit `.cfg` files in `application/karaf-offline/etc/` directly. Always use environment variables via `judo-karaf.env`.
 
@@ -23,12 +23,12 @@ The myapp application is configured through **environment variables** defined in
 
 | Parameter | Example Value | Purpose |
 | :--- | :--- | :--- |
-| `JUDO_PLATFORM_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/myapp` | Database connection URL |
-| `JUDO_PLAT-FORM_DATASOURCE_USERNAME`| `myapp` | Database username |
+| `JUDO_PLATFORM_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/<app>` | Database connection URL |
+| `JUDO_PLAT-FORM_DATASOURCE_USERNAME`| `<app>` | Database username |
 | `JUDO_PLAT-FORM_DATASOURCE_PASSWORD`| `secret` | Database password |
 | `JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL`| `http://localhost:8080/auth` | Keycloak server URL |
-| `JUDO_PLATFORM_KEYCLOAK_REALM` | `myapp` | Keycloak realm name |
-| `JUDO_PLATFORM_KEYCLOAK_RESOURCE` | `myapp-client` | Keycloak client ID |
+| `JUDO_PLATFORM_KEYCLOAK_REALM` | `<app>` | Keycloak realm name |
+| `JUDO_PLATFORM_KEYCLOAK_RESOURCE` | `<app>-client` | Keycloak client ID |
 | `JUDO_PLATFORM_LOG_LEVEL` | `DEBUG` | Global log level |
 
 ---
@@ -53,14 +53,14 @@ JUDO_PLATFORM_PARAMETER_NAME=value
 ```bash
 # Database configuration
 JUDO_PLATFORM_RDBMS_DIALECT=postgresql
-JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myapp
-JUDO_PLATFORM_DATASOURCE_USERNAME=myapp
+JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://localhost:5432/<app>
+JUDO_PLATFORM_DATASOURCE_USERNAME=<app>
 JUDO_PLATFORM_DATASOURCE_PASSWORD=secret
 
 # Keycloak configuration
 JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/auth
-JUDO_PLATFORM_KEYCLOAK_REALM=myapp
-JUDO_PLATFORM_KEYCLOAK_RESOURCE=myapp-client
+JUDO_PLATFORM_KEYCLOAK_REALM=<app>
+JUDO_PLATFORM_KEYCLOAK_RESOURCE=<app>-client
 ```
 
 ### Alternative Methods (Not Recommended)
@@ -106,13 +106,13 @@ JUDO_PLATFORM_KEYCLOAK_REALM → keycloakRealm
 - **Description**: JDBC connection URL
 - **Format**: `jdbc:<dialect>://<host>:<port>/<database>`
 - **Example**: 
-  - PostgreSQL: `jdbc:postgresql://localhost:5432/myapp`
-  - HSQLDB: `jdbc:hsqldb:mem:myapp`
+  - PostgreSQL: `jdbc:postgresql://localhost:5432/<app>`
+  - HSQLDB: `jdbc:hsqldb:mem:<app>`
 
 **JUDO_PLATFORM_DATASOURCE_USERNAME**
 - **Description**: Database username
 - **Default**: None (required)
-- **Example**: `myapp`
+- **Example**: `<app>`
 
 **JUDO_PLATFORM_DATASOURCE_PASSWORD**
 - **Description**: Database password
@@ -163,12 +163,12 @@ JUDO_PLATFORM_KEYCLOAK_REALM → keycloakRealm
 
 **JUDO_PLATFORM_KEYCLOAK_REALM**
 - **Description**: Keycloak realm name
-- **Example**: `myapp`
+- **Example**: `<app>`
 - **Required**: Yes
 
 **JUDO_PLATFORM_KEYCLOAK_RESOURCE**
 - **Description**: Client ID in Keycloak
-- **Example**: `myapp-client`
+- **Example**: `<app>-client`
 - **Required**: Yes
 
 **JUDO_PLATFORM_KEYCLOAK_CREDENTIALS_SECRET**
@@ -243,11 +243,11 @@ JUDO_PLATFORM_KEYCLOAK_REALM → keycloakRealm
 
 **JUDO_PLATFORM_FILESTORE_PATH**
 - **Description**: Filesystem path for files (if `filestore=filesystem`)
-- **Example**: `/var/lib/myapp/files`
+- **Example**: `/var/lib/<app>/files`
 
 **JUDO_PLATFORM_FILESTORE_S3_BUCKET**
 - **Description**: S3 bucket name (if `filestore=s3`)
-- **Example**: `myapp-files`
+- **Example**: `<app>-files`
 
 ### 5. Identifier Generation
 
@@ -303,7 +303,7 @@ JUDO_PLATFORM_KEYCLOAK_REALM → keycloakRealm
 
 **JUDO_PLATFORM_MAIL_FROM**
 - **Description**: Default "from" email address
-- **Example**: `noreply@myapp.example.com`
+- **Example**: `noreply@<app>.example.com`
 
 ### 7. Model and DAO
 
@@ -316,7 +316,7 @@ JUDO_PLATFORM_KEYCLOAK_REALM → keycloakRealm
 **JUDO_PLATFORM_MODEL_NAME**
 - **Description**: Model identifier
 - **Default**: Detected from deployed model
-- **Example**: `myapp`
+- **Example**: `<app>`
 
 ### 8. Logging
 
@@ -385,14 +385,14 @@ JUDO_PLATFORM_FILESTORE=rdbms
 ```bash
 # Database - HSQLDB (in-memory)
 JUDO_PLATFORM_RDBMS_DIALECT=hsqldb
-JUDO_PLATFORM_DATASOURCE_URL=jdbc:hsqldb:mem:myapp
+JUDO_PLATFORM_DATASOURCE_URL=jdbc:hsqldb:mem:<app>
 JUDO_PLATFORM_DATASOURCE_USERNAME=sa
 JUDO_PLATFORM_DATASOURCE_PASSWORD=
 
 # Keycloak - Local
 JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/auth
-JUDO_PLATFORM_KEYCLOAK_REALM=myapp
-JUDO_PLATFORM_KEYCLOAK_RESOURCE=myapp-client
+JUDO_PLATFORM_KEYCLOAK_REALM=<app>
+JUDO_PLATFORM_KEYCLOAK_RESOURCE=<app>-client
 
 # Development settings
 JUDO_PLATFORM_SWAGGER_UI=true
@@ -406,15 +406,15 @@ JUDO_PLATFORM_LOG_SQL=true
 ```bash
 # Database - PostgreSQL
 JUDO_PLATFORM_RDBMS_DIALECT=postgresql
-JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://db.example.com:5432/myapp
-JUDO_PLATFORM_DATASOURCE_USERNAME=myapp_prod
+JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://db.example.com:5432/<app>
+JUDO_PLATFORM_DATASOURCE_USERNAME=<app>_prod
 JUDO_PLATFORM_DATASOURCE_PASSWORD=${DB_PASSWORD}  # From secrets management
 JUDO_PLATFORM_DATASOURCE_MAX_POOL_SIZE=30
 
 # Keycloak - Production
 JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=https://auth.example.com/auth
-JUDO_PLATFORM_KEYCLOAK_REALM=myapp-prod
-JUDO_PLATFORM_KEYCLOAK_RESOURCE=myapp-prod-client
+JUDO_PLATFORM_KEYCLOAK_REALM=<app>-prod
+JUDO_PLATFORM_KEYCLOAK_RESOURCE=<app>-prod-client
 JUDO_PLATFORM_KEYCLOAK_CREDENTIALS_SECRET=${KEYCLOAK_SECRET}
 JUDO_PLATFORM_KEYCLOAK_SSL_REQUIRED=all
 
@@ -435,7 +435,7 @@ JUDO_PLATFORM_MAIL_SMTP_USERNAME=notifications@example.com
 JUDO_PLATFORM_MAIL_SMTP_PASSWORD=${SMTP_PASSWORD}
 JUDO_PLATFORM_MAIL_SMTP_AUTH=true
 JUDO_PLATFORM_MAIL_SMTP_STARTTLS_ENABLE=true
-JUDO_PLATFORM_MAIL_FROM=noreply@myapp.example.com
+JUDO_PLATFORM_MAIL_FROM=noreply@<app>.example.com
 ```
 
 ## Applying Configuration Changes
@@ -554,15 +554,15 @@ config:list "(service.pid=hu.blackbelt.judo.runtime)"
 
 **Check these parameters:**
 ```bash
-JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myapp
-JUDO_PLATFORM_DATASOURCE_USERNAME=myapp
+JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://localhost:5432/<app>
+JUDO_PLATFORM_DATASOURCE_USERNAME=<app>
 JUDO_PLATFORM_DATASOURCE_PASSWORD=secret
 JUDO_PLATFORM_RDBMS_DIALECT=postgresql
 ```
 
 **Test connection:**
 ```bash
-psql -h localhost -U myapp -d myapp
+psql -h localhost -U <app> -d <app>
 ```
 
 ### Keycloak Authentication Failed
@@ -570,13 +570,13 @@ psql -h localhost -U myapp -d myapp
 **Check these parameters:**
 ```bash
 JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/auth
-JUDO_PLATFORM_KEYCLOAK_REALM=myapp
-JUDO_PLATFORM_KEYCLOAK_RESOURCE=myapp-client
+JUDO_PLATFORM_KEYCLOAK_REALM=<app>
+JUDO_PLATFORM_KEYCLOAK_RESOURCE=<app>-client
 ```
 
 **Verify Keycloak running:**
 ```bash
-curl http://localhost:8080/auth/realms/myapp
+curl http://localhost:8080/auth/realms/<app>
 ```
 
 ## Reference Documentation

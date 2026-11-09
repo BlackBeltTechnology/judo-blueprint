@@ -129,7 +129,7 @@ public class OperationNameCustomImplementation implements OperationInterface {
 
 **Generic Pattern:**
 ```java
-@Component(property = { "judo.model.name=myapp" })
+@Component(property = { "judo.model.name=<app>" })
 public class EntityCreateInterceptor implements OperationCallInterceptor {
     @Reference EntityDao entityDao;
     

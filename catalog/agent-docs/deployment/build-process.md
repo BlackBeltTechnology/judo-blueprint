@@ -1,6 +1,6 @@
 # Build Process
 
-This guide covers the build system, Maven configuration, and build workflows for the myapp project.
+This guide covers the build system, Maven configuration, and build workflows for the <app> project.
 
 ## Table of Contents
 
@@ -134,7 +134,7 @@ By default the fragment resolves to an empty stub from the template jar. You ove
    ```
 3. Run `./judo.sh generate` (or `./judo.sh build`). The dependency now appears in the regenerated `application/app/pom.xml`, and its checksum in `.generated-files` stays stable because the content is produced by the template, not by a manual edit.
 
-Fragments are Handlebars templates, so you can use `{{ }}` expressions and generator parameters (for example `\myapp`) inside them.
+Fragments are Handlebars templates, so you can use `{{ }}` expressions and generator parameters (for example `\<app>`) inside them.
 
 **Available fragment extension points (from `judo-esm-fullstack-project-template`):**
 
@@ -311,7 +311,7 @@ mvn clean install -DskipDocker
 **Steps Executed:**
 1. **Environment Check** - Verify Docker, Java, Maven
 2. **Model Transformation**
-   - Load `/model/myapp.model`
+   - Load `/model/<app>.model`
    - Generate ESM, PSM, ASM models
    - Create database schemas (see `docs/schema-evolution.md` for schema migration)
    - Generate expression models
@@ -355,7 +355,7 @@ cd application/app
 mvn install
 
 # Frontend changed
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 mvn install
 ```
 
@@ -416,7 +416,7 @@ export MAVEN_OPTS="-Xmx4g"
 #### "Model validation failed"
 
 **Solution:**
-- Check model file: `/model/myapp.model`
+- Check model file: `/model/<app>.model`
 - Run: `mvn clean install -X` for detailed errors
 
 #### "Could not resolve dependencies"

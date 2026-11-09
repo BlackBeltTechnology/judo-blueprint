@@ -280,7 +280,7 @@ EOF
 echo "src/custom/hooks/tableRowHighlighting.tsx" >> .generator-ignore
 
 # Step 6: Test
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 pnpm run dev
 ```
 

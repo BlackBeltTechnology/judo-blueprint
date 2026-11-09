@@ -30,7 +30,7 @@ The `diagram_generator.py` script can be used to generate visual diagrams of the
     ```bash
     python agent-docs/domain/diagram_generator.py \
       representations.aird \
-      application/model/target/generated-resources/model/myapp-esm.model \
+      application/model/target/generated-resources/model/<app>-esm.model \
       agent-docs/domain/generated-diagrams.md
     ```
 
@@ -40,7 +40,7 @@ The `diagram_generator.py` script can be used to generate visual diagrams of the
     # To generate Mermaid diagrams
     python agent-docs/domain/diagram_generator.py \
       representations.aird \
-      application/model/target/generated-resources/model/myapp-esm.model \
+      application/model/target/generated-resources/model/<app>-esm.model \
       agent-docs/domain/generated-diagrams.md \
       --format mermaid
     ```

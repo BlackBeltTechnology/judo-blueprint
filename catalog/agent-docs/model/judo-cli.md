@@ -8,12 +8,12 @@ The `judo-cli.jar` is the JUDO platform's command-line interface to the model. E
 |---|---|
 | **Artifact** | `judo-cli.jar` |
 | **Location** | `target/judo-cli.jar` (produced by `./judo.sh build`) |
-| **Source ESM** | `model/myapp.model` |
+| **Source ESM** | `model/<app>.model` |
 | **Interface** | GraphQL over the ESM (and over the derived models, when loaded) |
 
 ## Why a CLI is mandatory
 
-The ESM is stored as a single XMI file (`model/myapp.model`). Three properties of that file make it unsafe to read or edit by hand:
+The ESM is stored as a single XMI file (`model/<app>.model`). Three properties of that file make it unsafe to read or edit by hand:
 
 - **Size.** A typical project's ESM contains tens of thousands of XMI elements. Reading the file is expensive in token budget and dangerous in attention — patterns spread across thousands of lines are easily missed.
 - **Internal cross-references.** Elements reference each other by `xmi:id`. A single hand edit in one part of the file can silently dangle a reference somewhere else, with no immediate error.

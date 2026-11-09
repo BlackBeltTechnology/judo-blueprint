@@ -96,7 +96,7 @@ export const paletteThemeDark = createTheme({
 ### Step 1: Modify Palette File
 
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # Edit theme file
 vim src/theme/palette.ts

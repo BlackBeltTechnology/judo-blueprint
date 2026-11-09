@@ -49,10 +49,10 @@ See [Prune (Destructive)](../deployment/build-process.md) for the full reference
 **Important**: Commands must be run from the correct frontend module directory:
 
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 ```
 
-Replace `myapp__[actor_fqn]` with your actual module name (e.g., `myapp__service__admin`).
+Replace `<app>__[actor_fqn]` with your actual module name (e.g., `myapp__service__admin`).
 
 ### Starting Development Server
 
@@ -62,7 +62,7 @@ Replace `myapp__[actor_fqn]` with your actual module name (e.g., `myapp__service
 mvn clean install
 
 # 2. Navigate to frontend module
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # 3. Install dependencies
 pnpm install
@@ -102,7 +102,7 @@ Vite provides instant hot module replacement:
 ### Development Build
 
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # Build only (no code generation)
 pnpm run build
@@ -126,7 +126,7 @@ mvn clean install
 
 ```bash
 # From frontend module
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # Production build
 pnpm run build
@@ -140,7 +140,7 @@ pnpm run build
 
 **Frontend JAR Location:**
 ```
-application/frontend-react/myapp__[actor_fqn]/target/myapp__[actor_fqn]-*.jar
+application/frontend-react/<app>__[actor_fqn]/target/<app>__[actor_fqn]-*.jar
 ```
 
 **What's included in JAR:**
@@ -169,7 +169,7 @@ tail -f application/.karaf/data/log/karaf.log
 
 **ESLint** - Enforces code quality rules:
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # Check for lint errors
 pnpm run lint
@@ -184,7 +184,7 @@ pnpm run lint:fix
 
 **Prettier** - Ensures consistent code formatting:
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # Format code
 pnpm run format
@@ -198,7 +198,7 @@ pnpm run format:check
 ### TypeScript Type Checking
 
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # Run type checker
 pnpm run type-check
@@ -214,7 +214,7 @@ pnpm run type-check:watch
 Before committing code:
 
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # 1. Run linter
 pnpm run lint
@@ -254,7 +254,7 @@ pnpm run build
 ### Vite Debug Mode
 
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 
 # Start dev server with debugging
 pnpm run dev --debug
@@ -424,7 +424,7 @@ echo "src/custom/components/MyComponent.tsx" >> .generator-ignore
 mvn clean install
 
 # 2. Verify customizations not overwritten
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 git diff src/custom/
 
 # 3. Reinstall dependencies if needed
@@ -460,7 +460,7 @@ kill -9 <PID>
 
 **Delete node_modules and reinstall:**
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 rm -rf node_modules pnpm-lock.yaml
 pnpm install
 ```
@@ -500,7 +500,7 @@ mvn clean install
 
 **Update type definitions:**
 ```bash
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 pnpm install
 ```
 

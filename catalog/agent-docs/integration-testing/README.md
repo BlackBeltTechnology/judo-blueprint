@@ -12,11 +12,11 @@ agent: general-purpose
 
 ## Overview
 
-This guide covers integration testing for custom business logic in myapp. It focuses on using the `judo-runtime-core-testkit` to test custom operations, interceptors, and validators.
+This guide covers integration testing for custom business logic in <app>. It focuses on using the `judo-runtime-core-testkit` to test custom operations, interceptors, and validators.
 
 For a complete understanding of the backend architecture, code generation, and custom implementation patterns, please refer to the main [Backend Development Guide](../backend/README.md).
 
-**Note**: Throughout this document, `myapp` refers to the application name from `judo.properties` (app_name property). Package names, file paths, and generated artifacts use this value.
+**Note**: Throughout this document, `<app>` refers to the application name from `judo.properties` (app_name property). Package names, file paths, and generated artifacts use this value.
 
 ## Prerequisites
 

@@ -59,7 +59,7 @@ Use JudoTest + `ReferenceInjector` (see [Getting Started](getting-started.md)) f
 During `mvn package` on the `…-application-app` module, `maven-bundle-plugin` (configured with `extensions=true` in the parent POM) runs bnd, scans every `@Component` class, and writes one XML file per component under `OSGI-INF/` in the produced jar:
 
 ```
-application/app/target/myapp{{ projectPostfix }}-app-<version>.jar
+application/app/target/<app>{{ projectPostfix }}-app-<version>.jar
 └── OSGI-INF/
     ├── com.<group>.<model>.custom.….MyCustomImplementation.xml
     ├── com.<group>.<model>.services.…OtherImplementation.xml
@@ -75,7 +75,7 @@ The `application/integration-test` module already declares `…-application-app`
 Below is a self-contained descriptor contract test that asserts four `@Reference` fields across four custom-operation classes all declare `target="(profile=${app.profile})"`. Adapt the resource paths, reference names, and expected filter to your project's invariants.
 
 ```java
-package com.example.myapp.integration.dscomponent;
+package com.example.<app>.integration.dscomponent;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -103,9 +103,9 @@ class ProfileTargetFilterDescriptorTest {
     private static final String EXPECTED_FILTER = "(profile=${app.profile})";
 
     private static final String OP_A =
-            "OSGI-INF/com.example.myapp.custom.….OperationACustomImplementation.xml";
+            "OSGI-INF/com.example.<app>.custom.….OperationACustomImplementation.xml";
     private static final String OP_B =
-            "OSGI-INF/com.example.myapp.custom.….OperationBCustomImplementation.xml";
+            "OSGI-INF/com.example.<app>.custom.….OperationBCustomImplementation.xml";
 
     @Test
     @DisplayName("OperationA#myService carries the profile filter")

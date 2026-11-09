@@ -369,7 +369,7 @@ JQL's `QualifiedName` rule requires either a bare lambda variable (`p`, `self`, 
 String!getVariable('PRINCIPAL', 'claim_name')
 
 // ✅ correct for a project whose primitives live under `<Model>::types`
-myapp::types::String!getVariable('PRINCIPAL', 'claim_name')
+<app>::types::String!getVariable('PRINCIPAL', 'claim_name')
 ```
 
 ### 5.3 `!getVariable` returns a scalar String only
@@ -392,11 +392,11 @@ Multi-value claims (e.g. an array `partner_scope` claim) are therefore **not con
 self.code!memberOf(…)
 
 // ✅ entity-first pattern
-myapp::entities::Partner!filter(p |
-  p.code == myapp::types::String!getVariable('PRINCIPAL', 'partner_code'))
+<app>::entities::Partner!filter(p |
+  p.code == <app>::types::String!getVariable('PRINCIPAL', 'partner_code'))
 
 // ❌ fails ASM ReferenceExpressionMatchesBinding
-myapp::services::PartnerTO!filter(…)
+<app>::services::PartnerTO!filter(…)
 ```
 
 Additionally, `accessType="DERIVED"` requires a **reference-returning** expression; a boolean literal (`getterExpression="true"`) is rejected by `ReferenceBindingExpressionIsValid`. For an unrestricted access, use `accessType="ALL"` with **no** getter.
@@ -409,7 +409,7 @@ See [Architectural Patterns](../backend/architectural-patterns.md), *Rules for `
 
 ### ⚠️ CRITICAL: Prefer the CLI; document every hand-edit
 
-The ESM model file (`/model/myapp.model`) is complex XML (XMI). **The primary authoring tool is `judo-model-cli`** (or the Judo Designer GUI). Direct edits should be avoided because they are easy to get wrong and bypass schema validation.
+The ESM model file (`/model/<app>.model`) is complex XML (XMI). **The primary authoring tool is `judo-model-cli`** (or the Judo Designer GUI). Direct edits should be avoided because they are easy to get wrong and bypass schema validation.
 
 In practice, a narrow class of edits cannot be performed through the CLI and must be applied directly to the XMI:
 
@@ -434,7 +434,7 @@ JUDO auto-generates factory methods per createable TO; a member named identicall
 
 When writing `getterExpression` on an `ActorType.accesses` element:
 
-- **Filter base = entity FQN**, not TO FQN: `myapp::entities::<Entity>!filter(x | …)`.
+- **Filter base = entity FQN**, not TO FQN: `<app>::entities::<Entity>!filter(x | …)`.
 - **No `self`** (unbound at actor scope; see §5.4).
 - **No boolean literals** — `getterExpression="true"` on a `DERIVED` access fails ASM `ReferenceBindingExpressionIsValid`. For an unfiltered access, use `accessType="ALL"` with no getter.
 - **Fully-qualified primitives** in any `!getVariable(…)` call (see §5.2).

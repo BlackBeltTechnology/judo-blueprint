@@ -10,9 +10,9 @@ agent: general-purpose
 
 ## Overview
 
-Backend development in myapp involves implementing custom business logic in Java while leveraging the JUDO-generated SDK and runtime infrastructure.
+Backend development in <app> involves implementing custom business logic in Java while leveraging the JUDO-generated SDK and runtime infrastructure.
 
-**Note**: Throughout this document, `myapp` refers to the application name from `judo.properties` (app_name property). Package names, file paths, and generated artifacts use this value.
+**Note**: Throughout this document, `<app>` refers to the application name from `judo.properties` (app_name property). Package names, file paths, and generated artifacts use this value.
 
 ## Key Concepts
 
@@ -142,7 +142,7 @@ application/
     └── resources/
 ```
 
-**Note**: Package structure is generated from the model and typically follows patterns like `hu.blackbelt.model.myapp` or `party.mkkp.myapp`.
+**Note**: Package structure is generated from the model and typically follows patterns like `hu.blackbelt.model.<app>` or `party.mkkp.<app>`.
 
 ## See Also
 

@@ -62,7 +62,7 @@ class IsNotAdminDerivedTest {
 
     @Test
     @JudoTest(
-        modelName = "myapp",
+        modelName = "<app>",
         dialect = "hsqldb",
         transaction = TransactionHandling.AUTO_ROLLBACK
     )
@@ -136,7 +136,7 @@ class OrderAccessScopingTest {
 
     @Test
     @JudoTest(
-        modelName = "myapp",
+        modelName = "<app>",
         dialect = "hsqldb",
         transaction = TransactionHandling.AUTO_ROLLBACK
     )
@@ -172,7 +172,7 @@ class OrderAccessScopingTest {
         // 5. Call the auto-generated access-point query. Replace the FQN with
         //    the one your generator emits for the GenericUser actor's `orders` access.
         String operationFqn =
-            "myapp::accesspoint::GenericUser::orders::__get";
+            "<app>::accesspoint::GenericUser::orders::__get";
         Map<String, Object> response = dispatcher.callOperation(operationFqn, exchange);
 
         // 6. Assert: alice sees only her own rows.
@@ -230,7 +230,7 @@ class OwnedByMeDerivedTest {
 
     @Test
     @JudoTest(
-        modelName = "myapp",
+        modelName = "<app>",
         dialect = "hsqldb",
         transaction = TransactionHandling.AUTO_ROLLBACK
     )
@@ -257,7 +257,7 @@ class OwnedByMeDerivedTest {
         exchange.put(Dispatcher.PRINCIPAL_KEY, alicePrincipal);
 
         Map<String, Object> response = dispatcher.callOperation(
-            "myapp::accesspoint::GenericUser::orders::__get",
+            "<app>::accesspoint::GenericUser::orders::__get",
             exchange);
 
         @SuppressWarnings("unchecked")

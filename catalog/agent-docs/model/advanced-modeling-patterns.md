@@ -241,7 +241,7 @@ These patterns capture rules the JUDO ESM EVL validator enforces but that neithe
 *   **Pattern**: Create a dedicated `StringType` per constrained identifier, with both `maxLength` and `regExp`. The `DataMember` then points at this dedicated type instead of the generic `StringType{N}`.
 
     ```
-    myapp::types::PartnerCodeType
+    <app>::types::PartnerCodeType
       maxLength = 32
       regExp    = '^[A-Z0-9][A-Z0-9_-]{1,31}$'
     Partner.code : PartnerCodeType   // not StringType32

@@ -38,15 +38,15 @@ Server-side derived models are written to:
 
 ```
 application/model/target/cli-generated/
-  ├── myapp-esm.model
-  ├── myapp-psm.model
-  ├── myapp-asm.model
-  ├── myapp-rdbms_postgresql.model
-  ├── myapp-measure.model
-  ├── myapp-expression.model
-  ├── myapp-esm2psm.model         (trace)
-  ├── myapp-psm2asm.model         (trace)
-  └── myapp-asm2rdbms_*.model     (trace)
+  ├── <app>-esm.model
+  ├── <app>-psm.model
+  ├── <app>-asm.model
+  ├── <app>-rdbms_postgresql.model
+  ├── <app>-measure.model
+  ├── <app>-expression.model
+  ├── <app>-esm2psm.model         (trace)
+  ├── <app>-psm2asm.model         (trace)
+  └── <app>-asm2rdbms_*.model     (trace)
 ```
 
 The `*2*.model` files are **trace models** — they record which derived element came from which source element. The platform's traceability mechanism uses these. See [xmi-id-traceability.md](xmi-id-traceability.md).
@@ -60,7 +60,7 @@ The pipeline is split across two execution contexts:
 | **Trigger** | CLI `transform` command | `./judo.sh build -f` (frontend full build) |
 | **Maven plugin** | `judo-tatami-workflow-maven-plugin` | `judo-tatami-client-workflow-maven-plugin` |
 | **Defined in** | `application/model/pom.xml` | `application/frontend-react/model/pom.xml` |
-| **Reads** | `model/myapp.model` | `model/myapp.model` |
+| **Reads** | `model/<app>.model` | `model/<app>.model` |
 | **Produces** | PSM, ASM, RDBMS, Measure, Expression, Script, Operation, Keycloak, Liquibase | UI model + regenerated React code |
 | **Includes UI?** | **No** | **Yes** |
 
@@ -107,7 +107,7 @@ A `.model.dirty` marker file alongside the ESM signals pending in-memory edits. 
 
 ## The git-restore hazard
 
-A CLI `save` writes the `.model` file to disk but does **not** make a git commit. Any subsequent `git restore model/myapp.model` (or `git checkout HEAD -- model/...`, or `git stash` touching the model path) silently overwrites the saved file with the last committed version, destroying every prior `save`.
+A CLI `save` writes the `.model` file to disk but does **not** make a git commit. Any subsequent `git restore model/<app>.model` (or `git checkout HEAD -- model/...`, or `git stash` touching the model path) silently overwrites the saved file with the last committed version, destroying every prior `save`.
 
 Two safe disciplines:
 

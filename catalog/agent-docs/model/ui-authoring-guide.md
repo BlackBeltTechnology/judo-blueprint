@@ -543,7 +543,7 @@ flowchart TD
 Keep each stage to one tier or one logical TO group. Two reasons:
 
 1. **Faster failure isolation** — if the build fails on stage N, the bug is in stage N's mutations.
-2. **Cheap rollback** — `git restore model/myapp.model` reverts cleanly when the stage was small.
+2. **Cheap rollback** — `git restore model/<app>.model` reverts cleanly when the stage was small.
 
 A stage of ~80 mutations against 4 TOs is workable; a stage of 200+ mutations across 15 TOs is not.
 
@@ -554,7 +554,7 @@ If the audit shows multiple TOs sharing `TransferObjectView::View`, `TransferObj
 ### Save discipline
 
 - `judo_cli save` writes the .model file to disk but does NOT git commit. **`git restore` will silently discard the file.**
-- Either `git add && git commit` after each `save` (a "checkpoint commit" per stage), or copy `model/myapp.model` to a `.bak` before any git operation.
+- Either `git add && git commit` after each `save` (a "checkpoint commit" per stage), or copy `model/<app>.model` to a `.bak` before any git operation.
 - Do NOT trust `judo_cli discard` as a rollback for prior `save`s — `discard` only reverts the in-memory dirty state since the last save.
 
 ### Verification loop per stage
@@ -565,7 +565,7 @@ If the audit shows multiple TOs sharing `TransferObjectView::View`, `TransferObj
 judo_cli save
 
 # 3. (Recommended) Checkpoint commit
-git add model/myapp.model
+git add model/<app>.model
 git commit -m "layout debt: stage N — tier P0 — <TOs>"
 
 # 4. Run client-side workflow (delegate to judo-frontend-developer)
@@ -579,7 +579,7 @@ judo_cli -q graphql '{ ui { pagedefinitions(where:{fqn:{contains:"actors::<Actor
   | jq '.data.ui.pagedefinitions.items[].fqn' | sort
 
 # 7. If the build failed: rollback
-#    git restore model/myapp.model
+#    git restore model/<app>.model
 #    judo_cli discard --force
 ```
 

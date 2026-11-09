@@ -92,7 +92,7 @@ When asking an AI agent to help customize an operation:
 
 ```mermaid
 graph LR
-    Model["ESM Model<br/>myapp.model"] --> Generator[JUDO Generator]
+    Model["ESM Model<br/><app>.model"] --> Generator[JUDO Generator]
     Generator --> Default[".default Files<br/>(generated)"]
     Generator --> Interface["Operation Interfaces<br/>(generated)"]
 
@@ -128,13 +128,13 @@ graph LR
 The generator emits both the `.default` blueprint and the expected custom-impl location under a **fixed, model-derived package** of the form:
 
 ```
-<generated-root-package>.myapp.custom
+<generated-root-package>.<app>.custom
 ```
 
 For this project that resolves to a path like:
 
 ```
-application/app/src/main/java/<generated-root-package>/myapp/custom/
+application/app/src/main/java/<generated-root-package>/<app>/custom/
   ├── CreateUserOperation.java.default        ← generated, read-only
   └── CreateUserOperation.java                ← your custom impl (same package!)
 ```
@@ -198,7 +198,7 @@ Implement custom operations for:
 
 ## Implementation Steps
 
-1. **Define operation in ESM model** (`/model/myapp.model`)
+1. **Define operation in ESM model** (`/model/<app>.model`)
    - ⚠️ **Use Judo Designer tool** - DO NOT edit the XML file directly
    - Mark operation as custom/script-based
    - Define input/output parameters

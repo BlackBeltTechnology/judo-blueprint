@@ -54,7 +54,7 @@ For model design specifications (entities, attributes, relations, operations), s
 
 ```yaml
 name: Customer
-namespace: myapp::entities
+namespace: <app>::entities
 extends: AbstractEntity
 crud:
   createable: true

@@ -1,6 +1,6 @@
 # Local Development
 
-This guide covers local development setup, hot deployment, and development workflows for the myapp project.
+This guide covers local development setup, hot deployment, and development workflows for the <app> project.
 
 ## Table of Contents
 
@@ -92,7 +92,7 @@ mvn install
 tail -f application/.karaf/data/log/karaf.log
 
 # Output:
-# Bundle updated: myapp-app
+# Bundle updated: <app>-app
 # Service registered: CustomAddressService
 
 # 5. Test immediately - no restart needed
@@ -129,7 +129,7 @@ cd application/app
 mvn install
 
 # Frontend changed
-cd application/frontend-react/myapp__[actor_fqn]
+cd application/frontend-react/<app>__[actor_fqn]
 mvn install
 
 # Multiple modules
@@ -150,10 +150,10 @@ ssh -p 8101 karaf@localhost
 **Useful commands:**
 ```bash
 # List bundles
-bundle:list | grep myapp
+bundle:list | grep <app>
 
 # View bundle details
-bundle:info myapp-app
+bundle:info <app>-app
 
 # View services
 service:list
@@ -162,7 +162,7 @@ service:list
 log:tail
 
 # Restart bundle
-bundle:restart myapp-app
+bundle:restart <app>-app
 
 # View configuration
 config:list
@@ -172,7 +172,7 @@ config:list
 
 **Locations:**
 - Karaf: `application/.karaf/data/log/karaf.log`
-- Docker: `docker logs myapp-app`
+- Docker: `docker logs <app>-app`
 
 **Tail logs:**
 ```bash
@@ -220,13 +220,13 @@ tail -f karaf.log | grep "Bundle"
 
 **Solution:**
 - Verify bundle updated: `bundle:list -t 0`
-- Check JAR timestamp: `ls -l ~/.m2/repository/.../myapp-app/`
+- Check JAR timestamp: `ls -l ~/.m2/repository/.../<app>-app/`
 - Force refresh: `bundle:update [bundle-id]`
 
 #### "Service not registered"
 
 **Solution:**
-- Check bundle status: `bundle:list | grep myapp`
+- Check bundle status: `bundle:list | grep <app>`
 - Restart bundle: `bundle:restart [bundle-id]`
 - Check for errors: `log:tail`
 
@@ -260,7 +260,7 @@ tail -f karaf.log | grep "Bundle"
 ```bash
 VITE_API_DEFAULT_BASE_URL=http://localhost:8080
 VITE_KEYCLOAK_URL=http://localhost:8080/auth
-VITE_KEYCLOAK_REALM=myapp
+VITE_KEYCLOAK_REALM=<app>
 ```
 
 ## Related Documentation

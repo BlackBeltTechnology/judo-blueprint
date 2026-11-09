@@ -299,7 +299,7 @@ UI Element ID: Actor/(esm/_ZeK4oLK0EfCC_efogf7jJg)/AttributeType
 
 **Goal:** Trace `code` attribute from ESM to frontend
 
-1. **ESM Source** (`model/\myapp.model`):
+1. **ESM Source** (`model/\<app>.model`):
 ```xml
 <elements xsi:type="structure:EntityType" name="Campaign">
   <attributes xsi:type="structure:DataMember"
@@ -309,7 +309,7 @@ UI Element ID: Actor/(esm/_ZeK4oLK0EfCC_efogf7jJg)/AttributeType
 </elements>
 ```
 
-2. **UI Model** (`application/frontend-react/model/\myapp-ui.model`):
+2. **UI Model** (`application/frontend-react/model/\<app>-ui.model`):
 ```xml
 <attributes xmi:id="Actor/(esm/_ZeK4oLK0EfCC_efogf7jJg)/AttributeType"
   name="code"
@@ -324,7 +324,7 @@ ESM supports annotations that can be applied to Access elements. Annotations are
 
 ### Annotation Definition (ESM)
 
-Annotations are defined at the model root level in `model/\myapp.model`:
+Annotations are defined at the model root level in `model/\<app>.model`:
 
 ```xml
 <annotations xmi:id="_08mnIGStEeuRaM6aPF_6_w"
@@ -342,7 +342,7 @@ Annotations are defined at the model root level in `model/\myapp.model`:
 | `dashboard` | `hu.blackbelt.judo.meta.esm.accesspoint.Access` | Marks access as dashboard entry point |
 | `profile` | `hu.blackbelt.judo.meta.esm.accesspoint.Access` | Marks access as user profile entry |
 
-**Note:** These annotations are defined in the model but are currently **not applied to any elements** in the \myapp project.
+**Note:** These annotations are defined in the model but are currently **not applied to any elements** in the \<app> project.
 
 ### How Annotations Would Be Used
 
