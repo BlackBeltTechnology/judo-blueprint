@@ -1,0 +1,19 @@
+{
+  "sources": [
+    {
+      "kind": "filesystem",
+      "ref": ".",
+      "priority": 0
+    }
+  ],
+  "include": [
+    "**/*.md",
+    "**/*.adoc",
+    "**/*.asciidoc"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "**/archive/**"
+  ],
+  "dbPath": ".pi/dashboard/kb/index.db"
+}

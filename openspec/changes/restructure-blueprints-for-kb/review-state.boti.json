@@ -1,0 +1,600 @@
+{
+ "items": {
+  "gaps:1-summary:bab6242e44:1e44a57b4b": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:30:58"
+  },
+  "gaps:1-summary:bab6242e44:97e7685f88": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:30:59"
+  },
+  "gaps:1-summary:bab6242e44:6781496712": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:00"
+  },
+  "gaps:1-summary:bab6242e44:cc1ba4fc83": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:01"
+  },
+  "gaps:1-summary:bab6242e44:ddcef757be": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:02"
+  },
+  "gaps:1-summary:bab6242e44:5d603740d1": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:03"
+  },
+  "gaps:1-summary:bab6242e44:3143954a87": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:04"
+  },
+  "gaps:1-summary:bab6242e44:57f6e22d19": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:05"
+  },
+  "gaps:1-summary:bab6242e44:e6f1abf97e": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:06"
+  },
+  "gaps:1-summary:bab6242e44:cd83a6695d": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:09"
+  },
+  "gaps:1-summary:bab6242e44:39017827f9": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:10"
+  },
+  "gaps:1-summary:bab6242e44:1f1fbcb563": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:11"
+  },
+  "gaps:1-summary:bab6242e44:a55f206203": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:12"
+  },
+  "gaps:1-summary:bab6242e44:7fc927a596": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:12"
+  },
+  "gaps:scope-decisions-needed:8356761d90:781dee0708": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:17"
+  },
+  "gaps:scope-decisions-needed:8356761d90:b62650f6e3": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:18"
+  },
+  "gaps:how-to-read-an-item:45792fbda6": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:20"
+  },
+  "gaps:how-to-read-an-item:45792fbda6:6f0c5b43f7": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:21"
+  },
+  "gaps:how-to-read-an-item:45792fbda6:8c2f6a8e03": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:22"
+  },
+  "gaps:how-to-read-an-item:45792fbda6:6acca1770b": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:23"
+  },
+  "gaps:how-to-read-an-item:45792fbda6:974742c04f": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:23"
+  },
+  "gaps:method:88306943fe": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:25"
+  },
+  "gaps:method:88306943fe:e9315545cf": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:26"
+  },
+  "gaps:method:88306943fe:26258de6dd": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:28"
+  },
+  "gaps:method:88306943fe:0440539909": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:42"
+  },
+  "gaps:limits:61a0ae3b84": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:43"
+  },
+  "gaps:limits:61a0ae3b84:c9bf6dd0bd": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:45"
+  },
+  "gaps:limits:61a0ae3b84:88992baa4d": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:45"
+  },
+  "gaps:limits:61a0ae3b84:ffa9b6c7f6": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:46"
+  },
+  "gaps:limits:61a0ae3b84:35d124b634": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:47"
+  },
+  "gaps:scope-decisions-needed:8356761d90": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:31:56"
+  },
+  "gaps:scope-decisions-needed:8356761d90:b1cc92da0f": {
+   "decision": "accept",
+   "updated": "2026-11-06T14:42:12"
+  },
+  "gap:P13-01": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:51"
+  },
+  "gap:P13-06": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:51"
+  },
+  "gap:P13-07": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:52"
+  },
+  "gap:P13-08": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:52"
+  },
+  "gap:P13-03": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:52"
+  },
+  "gap:P13-02": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:52"
+  },
+  "gap:S12-02": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:52"
+  },
+  "gap:S11-02": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:52"
+  },
+  "gap:S11-01": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:53"
+  },
+  "gap:S13-05": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:53"
+  },
+  "gap:S10-01": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:53"
+  },
+  "gap:S25-01": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:53"
+  },
+  "gap:S22-03": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:53"
+  },
+  "gap:S01-08": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:53"
+  },
+  "gap:S11-03": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:54"
+  },
+  "updates:1-summary:bab6242e44:9e39fe17d7": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:54"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:6c3e06efdc": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:54"
+  },
+  "updates:3-3-model-mo-001-008:005f0cc33a:5b460e0651": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:54"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:e2d23508a6": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:54"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:7c343dfd30": {
+   "decision": "accept",
+   "note": "Clear CLI syntax/usage update: owned by the CLI judo-cli skill (pinned 9f6a4bd); catalog links, no copied syntax.",
+   "updated": "2026-11-06T15:12:54"
+  },
+  "gap:S17-06": {
+   "decision": "accept",
+   "note": "Accept: best practice for agent-docs/model — query the model through the CLI, never hand-parse .model XMI.",
+   "updated": "2026-11-06T15:19:45"
+  },
+  "gap:S03-05": {
+   "decision": "accept",
+   "note": "Accept: keep 'EVL validation runs on build' in catalog; drop the outdated manual-XML-edit framing; discard-reverts-all goes upstream to judo-cli skill.",
+   "updated": "2026-11-06T15:19:45"
+  },
+  "gap:S22-02": {
+   "decision": "accept",
+   "note": "Accept: CLI/ESM version pins in root pom; read upstream docs at pinned commit (matches proposal pin/download rule).",
+   "updated": "2026-11-06T15:19:45"
+  },
+  "gap:P23-04": {
+   "decision": "accept",
+   "note": "Accept: validateModels gate is Maven build config — agent-docs/model, not CLI skill.",
+   "updated": "2026-11-06T15:19:45"
+  },
+  "gap:P22-04": {
+   "decision": "accept",
+   "note": "Accept: Tatami default-model-workflow plugin config — misfiled under CLI, put in agent-docs/deployment.",
+   "updated": "2026-11-06T15:19:45"
+  },
+  "updates:6-what-real-development-sessions-add:146a31d4b0:d693bceaf9": {
+   "decision": "accept",
+   "note": "Clear CLI usage update: read the model with query/status --json/mermaid via the pinned CLI; footguns go upstream to judo-cli skill.",
+   "updated": "2026-11-06T15:19:45"
+  },
+  "updates:6-what-real-development-sessions-add:146a31d4b0:ccd496e510": {
+   "decision": "accept",
+   "note": "Clear CLI usage update: read the model with query/status --json/mermaid via the pinned CLI; footguns go upstream to judo-cli skill. Scripts must check exit code before parsing --json (finding 0028).",
+   "updated": "2026-11-06T15:19:46"
+  },
+  "updates:6-what-real-development-sessions-add:146a31d4b0:7e415c81d2": {
+   "decision": "accept",
+   "note": "Clear CLI invocation update: one resolution order ($JUDO_CLI_JAR, then target/), reuse task 2.3 script contract.",
+   "updated": "2026-11-06T15:19:46"
+  },
+  "updates:1-summary:bab6242e44:c4244ecf61": {
+   "decision": "accept",
+   "note": "Clear CLI usage update: read the model with query/status --json/mermaid via the pinned CLI; footguns go upstream to judo-cli skill.",
+   "updated": "2026-11-06T15:19:46"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:013493126c": {
+   "decision": "accept",
+   "note": "Clear CLI usage update: read the model with query/status --json/mermaid via the pinned CLI; footguns go upstream to judo-cli skill. Use query esm --select --where for sweep inspection.",
+   "updated": "2026-11-06T15:19:46"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:b7f05e7cd0": {
+   "decision": "accept",
+   "note": "Clear CLI usage update: read the model with query/status --json/mermaid via the pinned CLI; footguns go upstream to judo-cli skill.",
+   "updated": "2026-11-06T15:19:46"
+  },
+  "gaps:6-excluded-candidates:8be0a87e22:whole": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:29:26"
+  },
+  "gaps:6-excluded-candidates:8be0a87e22": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:29:27"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:8ebc36f4d6": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:29:54"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:29:55"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:4cbd710655": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:29:58"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:2ca5abb11e": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:00"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:e1c1b3a140": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:02"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:0eb7e27254": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:03"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:f7c3cc6505": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:04"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:d3a4cc30e7": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:06"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:148e0a97c6": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:07"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:c9568ddffc": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:08"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:b537144fbc": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:09"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:f95d8ac0fc": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:30:11"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:410549b77c": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:32:47"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:77c74cba9a": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:32:49"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:b667c2cf73": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:32:52"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:90252006ee": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:33:05"
+  },
+  "gaps:already-covered-findability-not-missing:f2be461378:45380f8d39": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:33:06"
+  },
+  "gaps:not-needed-by-application-developers:52935771ea:whole": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:36:34"
+  },
+  "gaps:not-verifiable:9546060e11:8b33cd1651": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:36:38"
+  },
+  "updates:1-summary:bab6242e44:5acbd45673": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:36:55"
+  },
+  "updates:1-summary:bab6242e44:9daa65a274": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:36:57"
+  },
+  "updates:1-summary:bab6242e44:2e7636dd30": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:37:00"
+  },
+  "updates:1-summary:bab6242e44:0284674119": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:37:12"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:fb33ccfb59": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:37:21"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:2d0ba8f30e": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:37:22"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:4a3d02adc5": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:34"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:44a75c5f25": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:35"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:4c69b7d433": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:36"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:9bdd2c2fcf": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:38"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:28a50aa73e": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:39"
+  },
+  "updates:2-evidence-base:04ae8a3c8a:35cbafafc6": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:40"
+  },
+  "updates:3-agent-docs-what-to-update:d1c20a6e73:759a107a6b": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:42"
+  },
+  "updates:3-agent-docs-what-to-update:d1c20a6e73:cfbbb86f5f": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:43"
+  },
+  "updates:3-6-coverage-gap:c18b2e7a99:2f91ab43f8": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:44"
+  },
+  "updates:3-6-coverage-gap:c18b2e7a99:f33cb55d33": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:45"
+  },
+  "updates:7-models-what-generated-the-catalog-and-what-to-use-now:4221762d43:b0ec8e55cb": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:45"
+  },
+  "updates:7-models-what-generated-the-catalog-and-what-to-use-now:4221762d43:b8a7428703": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:46"
+  },
+  "updates:7-models-what-generated-the-catalog-and-what-to-use-now:4221762d43:f70e705b7d": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:47"
+  },
+  "updates:7-models-what-generated-the-catalog-and-what-to-use-now:4221762d43:a4ffc0f883": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:48"
+  },
+  "updates:7-models-what-generated-the-catalog-and-what-to-use-now:4221762d43:f2a0113f26": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:49"
+  },
+  "updates:7-models-what-generated-the-catalog-and-what-to-use-now:4221762d43:b70818b45b": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:50"
+  },
+  "updates:7-models-what-generated-the-catalog-and-what-to-use-now:4221762d43:3755d526fb": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:50"
+  },
+  "updates:7-models-what-generated-the-catalog-and-what-to-use-now:4221762d43:cdf6dd478a": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:51"
+  },
+  "updates:6-what-real-development-sessions-add:146a31d4b0:e31e6518a0": {
+   "decision": "accept",
+   "note": "Process record (how the exploration ran / what it found): accepted as documented.",
+   "updated": "2026-11-06T15:38:51"
+  },
+  "updates:10-open-questions-for-the-operator:9ad798fef9:d3a49c82c3": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:46:17",
+   "note": "Yes for mercury-3 reader+validator, but suspected-bug verdicts stay validated on Opus (133/186 wrong verdicts came from them)."
+  },
+  "updates:10-open-questions-for-the-operator:9ad798fef9:782aac4e8d": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:46:17",
+   "note": "Both: short known-issue note in agent-docs that links the judo-ng issue."
+  },
+  "updates:10-open-questions-for-the-operator:9ad798fef9:6bd908aef8": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:48:28",
+   "note": "Import base = feature/JNG-6349_AddZetaValidatiob@6273a87 (not 5bddd8b^). Resolve the 58 conflicts found there during import. Follow-up: proposal.md, design.md (line 153) and tasks.md 3.2 still name 5bddd8b^ and must be updated."
+  },
+  "updates:10-open-questions-for-the-operator:9ad798fef9": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:42:48"
+  },
+  "updates:9-recommended-order:3a73b62312:whole": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:42:52"
+  },
+  "updates:9-recommended-order:3a73b62312": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:42:52"
+  },
+  "updates:proposed-new-tasks:91b49c0d6f:fbafb60e77": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:42:54"
+  },
+  "updates:proposed-new-tasks:91b49c0d6f": {
+   "decision": "accept",
+   "updated": "2026-11-06T15:42:55"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:c73d663393": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:16"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:e4cc384716": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:17"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:2de6fdea65": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:17"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:cd903566a3": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:18"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:6f676d5d0d": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:18"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:3986072d4f": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:19"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:c727a8baf0": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:19"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:60cd73b47b": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:20"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:bfc10d657a": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:20"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:7d24023534": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:20"
+  },
+  "updates:8-effect-on-the-open-tasks-of-restructure-blueprints-for-kb:ac30f162e3:3e0ceaad79": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:21"
+  },
+  "updates:proposed-new-tasks:91b49c0d6f:91ba313018": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:22"
+  },
+  "updates:proposed-new-tasks:91b49c0d6f:7918bc87a0": {
+   "decision": "accept",
+   "note": "Next-step / task-plan item: accepted.",
+   "updated": "2026-11-06T15:43:22"
+  },
+  "gap:P28-07": {
+   "decision": "defer",
+   "note": "IDE (Eclipse) tooling, not CLI; revisit later.",
+   "updated": "2026-11-06T15:46:23"
+  },
+  "gap:P34-03": {
+   "decision": "reject",
+   "note": "JSL is out of scope (scope decision).",
+   "updated": "2026-11-06T15:46:23"
+  }
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "items": {
+  "gaps:scope-decisions-needed:8356761d90:b1cc92da0f": {
+   "decision": "accept",
+   "by": "boti",
+   "at": "2026-11-06T14:42:21"
+  },
+  "gaps:scope-decisions-needed:8356761d90:b62650f6e3": {
+   "decision": "accept",
+   "by": "boti",
+   "at": "2026-11-06T14:42:17"
+  }
+ },
+ "history": [
+  {
+   "id": "gaps:scope-decisions-needed:8356761d90:b1cc92da0f",
+   "action": "settle",
+   "decision": "accept",
+   "by": "gabor",
+   "at": "2026-11-06T14:39:35"
+  },
+  {
+   "id": "gaps:scope-decisions-needed:8356761d90:b62650f6e3",
+   "action": "settle",
+   "decision": "accept",
+   "by": "boti",
+   "at": "2026-11-06T14:42:17"
+  },
+  {
+   "id": "gaps:scope-decisions-needed:8356761d90:b1cc92da0f",
+   "action": "settle",
+   "decision": "accept",
+   "by": "boti",
+   "at": "2026-11-06T14:42:21"
+  }
+ ]
+}

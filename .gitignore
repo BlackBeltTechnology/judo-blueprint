@@ -1,2 +1,4 @@
 .obsidian
 .claude/judo-cli.jar
+target/
+.pi/dashboard/kb/
