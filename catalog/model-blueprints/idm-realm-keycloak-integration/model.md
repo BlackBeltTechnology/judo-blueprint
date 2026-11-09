@@ -23,3 +23,34 @@
   - `Application` TO -- name, applicationId, applicationToken; operations: newApplication (STATIC), deleteApplication (MAPPED)
   - `FaceIdentifier` TO -- recognitionId
 - Organization.realmName derived attribute provides quick display of the associated realm's name
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=idm-realm-keycloak-integration cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class ApplicationEntity {
+    <<Entity>>
+    +String name [1]
+    +String applicationId [1]
+    +String applicationToken [1]
+  }
+  class IdmEntity {
+    <<Entity>>
+    +String url [1]
+    +String name
+  }
+  class OrganizationEntity {
+    <<Entity>>
+    +String name [1]
+  }
+  class RealmEntity {
+    <<Entity>>
+    +String name [1]
+  }
+  IdmEntity --> "*" RealmEntity : realm
+  OrganizationEntity *-- "*" ApplicationEntity : applications
+  OrganizationEntity *-- "0..1" RealmEntity : realm
+  RealmEntity --> "0..1" IdmEntity : idm
+```
+<!-- /mermaid:generated -->

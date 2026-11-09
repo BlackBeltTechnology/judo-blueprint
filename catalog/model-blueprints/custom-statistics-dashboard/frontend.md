@@ -1,25 +1,50 @@
 ## Overview
 
-A custom admin statistics dashboard that replaces generated form layouts with KPI cards, content breakdowns, and a sortable organization table. Registered via Pandino custom visual element hooks. Framework: React.
+A custom admin statistics visual replaces the generated statistics panel with KPI cards, pending-action counters, a content breakdown and a sortable organization table. The visual is registered as a custom implementation of the generated component. Framework in the reference project: React with MUI.
 
-## Implementation Pattern
+## Presentation component
 
-The dashboard is implemented through two components registered in `application-customizer.tsx`:
+### Pure presentation of the statistics
 
-- **StatisticsDashboardView** (`custom/custom_views/StatisticsDashboardView.tsx`) -- Pure presentation component that renders:
-  - KPI Cards (Grid row): Total Users, Active Users (30d), Active Organizations, Total Content -- using MUI Card with icon, value, and label
-  - Pending Actions: Pending Organization Requests and Pending User Invitations -- highlighted with warning color when non-zero
-  - Content Breakdown: News, Offers, Requests, Announcements -- each showing all-time total and 30-day recent count
-  - User Visibility: Hidden vs Visible users with percentage
-  - Organization Statistics Table: Sortable MUI Table with columns (Organization, Total Users, Active Users, Hidden, Visible). Client-side sorting via React state.
-- **InlineStatisticsDashboard** (`custom/custom_views/InlineStatisticsDashboard.tsx`) -- Wrapper that auto-fetches statistics data via `MLSZKSZServiceForAdminDashboardImpl.getStatistics()` and renders `StatisticsDashboardView` inline in the AdminDashboard's analytics tab. Uses a detailed `_mask` that includes `organizationStatistics{...}`.
-- **Registration**: `registerServicesAdminAdminDashboardAdminDashboard_View_EditStatisticsComponentCustomImplementation(context)` replaces the default statistics visual element. `registerServicesAdminAdminDashboardStatisticsRelationViewPageActionsHook(context)` overrides the mask to include `organizationStatistics`.
-- **CSS override**: `src/theme/index.css` contains `[data-name="analitics"] { box-shadow: none !important; background: transparent !important; }` to remove the generated Card frame from the analytics section.
+The presentation component takes the statistics object as props and renders:
+
+- **KPI cards** in a grid row: total users, active users (30 days), active organizations and total content. Each card has an icon, a value and a label.
+- **Pending actions**: counters for pending organization requests and pending user invitations, shown with a warning colour when the value is non-zero.
+- **Content breakdown**: one row per content type with the all-time total and the 30-day count.
+- **User visibility**: hidden against visible users, with percentages.
+- **Organization table**: a sortable table (organization, total users, active users, hidden, visible). Sorting is client-side, held in component state.
+
+Keep this component free of data fetching so that it can be reused by every host.
+
+## Hosts
+
+### Standalone page and dashboard tab
+
+Two hosts render the same presentation:
+
+- The standalone view page passes the data it already has from the page context.
+- An inline host fetches the statistics itself, so it works in a dashboard tab that has no page data. In the reference project the fetch is done by a project service class (`MLSZKSZServiceForAdminDashboardImpl.getStatistics()`), which is example project code, not platform API. Its data mask must include the nested organization statistics.
+
+## Registration
+
+### Custom implementation hooks
+
+The custom visual is attached through the generated customization hooks. The hook key for the statistics component is generated per page and per container; take the exact name from the generated hook file of the page, do not copy it from another project. Two registrations are involved:
+
+- a custom implementation that replaces the default statistics visual element;
+- a data-mask hook for the relation view page that adds the nested organization statistics to the fetch.
+
+## Styling
+
+### Removing the generated card frame
+
+The generated analytics section is wrapped in a card. A style override on that section's data-name attribute removes the box shadow and the background so the custom visual sits on the page directly. Select on the generated attribute, not on a class name, because class names change between generator runs.
 
 ## Examples
 
-### mlszksz-platform
-- Framework: React
-- Key files: `custom/custom_views/StatisticsDashboardView.tsx`, `custom/custom_views/InlineStatisticsDashboard.tsx`, `custom/hooks/custom-implementations/registerServicesAdminAdminDashboardAdminDashboard_View_EditCustomImplementations.tsx`, `src/theme/index.css`
-- Pattern: Custom visual element replaces generated statistics component; InlineStatisticsDashboard fetches data independently for tab-embedded display
-- Notable: CSS hack removes generated card frame via `[data-name="analitics"]` selector; client-side sortable table for organization breakdown
+### Reference project
+
+- Framework: React with MUI.
+- Key files: a presentation component, an inline host, the generated customization hook file of the admin dashboard and the theme stylesheet.
+- Pattern: the custom visual replaces the generated statistics component; the inline host fetches its data separately for the tab.
+- Notable: the card frame is removed with a selector on the generated section attribute; the organization table is sorted on the client.

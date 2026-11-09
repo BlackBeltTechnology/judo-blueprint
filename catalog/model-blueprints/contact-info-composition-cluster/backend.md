@@ -1,20 +1,29 @@
-## Overview
+## Backend guidance
 
-The contact info entities (EmailAddress, PhoneNumber, Address, BankAccount) are managed through toggle custom operations and create interceptors that handle primary designation and parent validation after changes.
+### Toggle operations keep the parent valid
 
-## Implementation Pattern
+Each toggle operation is a custom instance operation. Interceptors do not run for it, so the operation itself must check the rules that matter after a change.
 
-- Each contact entity has `ToggleActiveCustomImplementation` and `TogglePrimaryCustomImplementation` (or similar) as OSGi `@Component` classes that flip the corresponding boolean and update via DAO
-- Toggle operations on child entities query the parent (Partner, CompanyData, User) via `dao.queryContainer()` and call `validate.accept(parent)` to re-run business rules after the flag change
-- Create interceptors (`EmailAddressCreateInterceptor`, `CreatePhoneInterceptor`, `UserAddressCreateInterceptor`, etc.) run as `postCall` hooks on the parent's `_createInstance*` operations
-- The create interceptor pattern: (1) extract the newly created child entity from the return payload, (2) check input flags like `isPrimaryContact` or `isPrimary`, (3) if true, set the primary association on the parent via `parentDao.setPrimary*(parent, child)`
-- Three parallel sets of contact entities exist for different parent types (Partner, CompanyData, User), each with their own interceptors and toggle operations but following the same structural pattern
+- Toggling a contact off must not leave the parent without an active primary. If the contact is the primary, either refuse the change with a business fault or move the primary to another active contact in the same operation.
+- Toggling a contact on does not change the primary.
+- Re-read the parent after the change and run its validation again, so the parent's rules see the new flag.
+
+### Set the primary in the same transaction as the create
+
+When a contact is created with a flag that says it is primary, the operation that creates it should also set the parent's primary association. Do both in one transaction so a failure leaves neither change.
+
+### Keep one primary per parent
+
+The primary association has an upper bound of one. Setting a new primary replaces the old one; the old contact stays in the list with its active flag unchanged.
+
+### Project code, not platform API
+
+The example project implements these rules in its own toggle classes and create interceptors, with its own data-access classes. Those names are project code. Copy the pattern, not the names.
 
 ## Examples
 
 ### rackinspect
-- Key files: `custom/.../emailaddress/ToggleActiveCustomImplementation.java`, `custom/.../phonenumber/ToggleActiveCustomImplementation.java`, `interceptors/partner/emailaddress/EmailAddressCreateInterceptor.java`, `interceptors/partner/phonenumber/CreatePhoneInterceptor.java`, `interceptors/user/useremail/UserEmailCreateInterceptor.java`, `interceptors/user/useraddress/UserAddressCreateInterceptor.java`, `interceptors/companydata/companyaddress/CompanyAddressCreateInterceptor.java`
-- Pattern: Toggle operations reload by ID, flip boolean, update, then call `validate.accept(partner)` on the parent; create interceptors extract input flags and set primary associations in `postCall`
-- Notable: `EmailAddressCreateInterceptor` handles two primary designations: `isPrimaryContact` and `isEszamla` (electronic invoice email), each setting a different association on Partner
-- For User contact entities, the `UserCreateInterceptor` creates the initial primary address, phone, and email in a single `postCall`, then calls `recalculatePermissions`
-- `CompanyAddressCreateInterceptor` handles four designations: primary, headquarters, billing, postal -- each setting a different association on CompanyData
+
+- Three parallel sets of contact entities exist, one for each parent type, with the same structure.
+- Create interceptors run after the parent's create operations and set the primary when the new contact is flagged as primary.
+- Toggle operations re-run the parent's validation after the flag changes.

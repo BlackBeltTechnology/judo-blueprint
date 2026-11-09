@@ -1,54 +1,51 @@
-## Overview
+## Backend guidance
 
-Implements a pluggable external API adapter pattern using separate Maven modules for the API interface, platform-specific implementations, and a factory/provider OSGi service. The provider service resolves the correct adapter at runtime based on entity state (e.g., platform enum) and supplies it with credentials loaded from the database.
+### Module layout
 
-## Implementation Pattern
+Keep the three layers in separate modules, so the API module has no dependency on any platform SDK:
 
-**Module structure:**
-```
-application/
-  adapters/
-    ads-business-api/   -- API interface + DTOs (standalone OSGi bundle, no JUDO dependencies)
-    google-ads/         -- Google Ads adapter implementation (depends on API module + Google SDK)
-    meta-ads/           -- (future) Meta Ads adapter implementation
-  common/
-    XxxProviderService.java       -- Provider interface
-    impl/XxxProviderServiceImpl.java  -- Factory that resolves adapter by platform
-  app/custom/           -- Custom operations that @Reference the provider service
-```
+- An API module: the interface and its data objects, packaged as a standalone bundle with no model dependency.
+- One adapter module per platform: it depends on the API module and on that platform's SDK. Its implementation is a plain object.
+- The common module: the provider interface and its factory implementation, which is the only component.
+- The application's custom operations and services, which reference the provider.
 
-**API interface module:**
-- A plain Java interface (e.g., `AdsBusinessApi`) with business-oriented methods returning DTOs
-- DTO classes use the builder pattern (hand-written or Lombok) -- they are decoupled from JUDO transfer objects
-- No OSGi annotations, no JUDO SDK dependencies -- this bundle is a pure API contract
-- Packaged as an OSGi `bundle` with `maven-bundle-plugin`
+### The API interface
 
-**Adapter implementation module(s):**
-- Each module implements the API interface using a specific external SDK (e.g., `GoogleAdsApiImpl implements GoogleAdsApi extends AdsBusinessApi`)
-- The implementation class is a plain POJO (not an OSGi component) -- it is instantiated by the provider service with runtime credentials
-- Constructor accepts credential parameters (tokens, keys, customer IDs) and initializes the SDK client
-- Methods translate between external SDK types and the shared DTO types
+- Define a plain interface with business-oriented methods that return the module's own data objects.
+- Build the data objects with a builder. They are not the model's transfer objects, so the API module stays free of the model.
+- Do not add component annotations or SDK types to the interface.
 
-**Provider service (factory):**
-- An OSGi `@Component(service=XxxProviderService.class)` in the `common` module
-- `@Reference` injects DAOs to load entity data (account, credentials) and `FileStoreService` for binary credentials (e.g., JSON key files)
-- The `getApi(entityInstance)` method: (1) loads the entity, (2) reads the platform enum, (3) fetches platform-specific credentials, (4) constructs and returns the appropriate adapter instance
-- Uses a `switch`/`if-else` on the platform enum to dispatch to the correct adapter constructor
-- Throws `BusinessErrorException` with i18n error messages for unsupported or not-yet-implemented platforms
+### The adapter
 
-**Consumption pattern:**
-- Custom operations and shared services `@Reference` the provider service (never the adapter directly)
-- Typical usage: `AdsBusinessApi api = providerService.getApi(account); api.doSomething(customerId);`
-- The provider service also provides helper methods (e.g., `getCustomerId()`) that extract platform-specific identifiers
+- The adapter is a plain object constructed by the provider with the runtime credentials (tokens, keys, account ids). It is not a component.
+- Its methods translate between the platform SDK's types and the module's data objects. The SDK types do not leak out of the adapter.
 
-**Error handling:**
-- Connection failures are caught and wrapped in `BusinessErrorException` with i18n messages
-- The API interface methods may throw platform-specific exceptions; callers wrap them in business errors
+### The factory
+
+- The provider is a component in the common module. It injects the data-access services it needs and the file store service for credential files.
+- The lookup method does three things: load the entity, read its platform, load the platform's credentials. Then it constructs the adapter and returns it.
+- Dispatch on the platform with one branch per platform. An unknown or not-yet-implemented platform fails with a business error that carries a code and a localized message.
+
+### Business errors, not raw exceptions
+
+- A connection failure to the external platform is not a 500 for the user. Catch it in the factory or the calling operation, log the cause, and rethrow it as the business fault declared on the operation, with a code and a message.
+- An error that the platform's API returns is translated to a business error at the adapter boundary or in the calling operation, not passed through as a raw exception.
+- Use the fault's type as the business error's type, so the client's fault dialog can find its translations.
+
+### Consumption
+
+- Custom operations and services reference the provider service, never an adapter.
+- A call looks like: obtain the client from the provider with the entity, then call the method with the platform's identifier. The provider can supply helpers that return that identifier.
+
+### Project code, not platform API
+
+The example project's names for the provider, the adapter and the data objects, and its error helper, are project code. Copy the pattern, not the names.
 
 ## Examples
 
 ### indamedia-adtrack
-- Key files: `adapters/ads-business-api/AdsBusinessApi.java` (interface), `adapters/ads-business-api/dto/CampaignInfo.java`, `CampaignCostInfo.java`, `CampaignDailyInfo.java` (DTOs), `adapters/google-ads/GoogleAdsApiImpl.java` (Google Ads adapter), `common/AdsBusinessApiProviderService.java` (provider interface), `common/impl/AdsBusinessApiProviderServiceImpl.java` (provider factory)
-- Pattern: `AdsBusinessApi` defines 7 methods (getAccountInformation, isConnected, getAllCampaignForCustomer, getCampaignBudgetAndUsage, getCampaignHistory, getCampaignCostToDate, getCampaignDetails). `GoogleAdsApiImpl` is a POJO constructed with developer token, delegated account, optional login customer ID, and JSON key. `AdsBusinessApiProviderServiceImpl` is an OSGi `@Component` that switches on `Platform` enum (GOOGLE/META) to construct the correct adapter.
-- Notable: The Google Ads adapter uses `GoogleAdsClient` from the Google Ads Java SDK v20 with service account OAuth2 credentials. The provider loads the JSON key file via `FileStoreService` and converts it to a string for the adapter constructor. Meta platform is declared but throws a "not implemented" error -- demonstrating the extensibility point. A `GoogleAdServiceManagerTestActivator` component exists for manual API testing during development (disabled by default via `-1L` customer ID sentinel).
-- DI wiring: `AdsBusinessApiProviderServiceImpl` `@Reference AccountDao`, `GoogleCredentialDao`, `AdTrackI18n`, `FileStoreService`. Custom operations and services `@Reference AdsBusinessApiProviderService` (never the adapter directly). `TrackedCampaignServiceImpl` and `AccountServiceImpl` both consume the provider service for API calls.
+
+- The API interface has seven methods, covering account information, connection status, the campaign list, budget and usage, campaign history, cost to date, and campaign details.
+- The Google Ads adapter is a plain object built from a developer token, a delegated account, an optional login customer id, and a service-account key. It uses the Google Ads Java SDK.
+- The provider switches on the platform enumeration (Google or Meta). The Google branch loads the key file through the file store service and passes it to the adapter as a string. The Meta branch is declared but throws a not-implemented business error, which marks the extension point.
+- Two campaign services consume the provider for their API calls.

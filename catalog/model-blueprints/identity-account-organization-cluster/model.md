@@ -33,3 +33,74 @@
 - `DashboardOrganization` TO -- simplified Organization view for dashboard; all operations mapped
 - `OrganizationAccount` TO -- mapped to OrganizationAccessEntity; attributes: type, email, userName, isAdministrator, isOwner, enabled; operations: cancelAccess, changeAccessToAdmin, changeAccessToOwner, disableAccess, enableAccess
 - `PartnerDashboard` TO -- empty access point TO with static operations: createOrganization, createApplication, inviteAccount, inviteUser, etc.
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=identity-account-organization-cluster cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AccountEntity {
+    <<Entity>>
+    +String userName [1]
+    +String email [1]
+    +Boolean isSuperAdmin [1]
+    +Boolean isSingleOrganizationForAccount [1]
+  }
+  class ApplicationEntity {
+    <<Entity>>
+    +String name [1]
+    +String applicationId [1]
+    +String applicationToken [1]
+  }
+  class FaceIdentifierEntity {
+    <<Entity>>
+    +String recognitionId
+  }
+  class IdentityEntity {
+    <<Entity>>
+    +String email [1]
+  }
+  class InvitationEntity {
+    <<Entity>>
+  }
+  class OrganizationAccessEntity {
+    <<Entity>>
+    +Boolean enabled [1]
+    +OrganizationAccessType type [1]
+  }
+  class OrganizationAccessType {
+    <<Enumeration>>
+    OWNER
+    ADMIN
+  }
+  class OrganizationEntity {
+    <<Entity>>
+    +String name [1]
+    +Boolean isRegistrationFeatureSupported [1]
+    +String realmName
+  }
+  class RealmEntity {
+    <<Entity>>
+    +String name [1]
+  }
+  class UserEntity {
+    <<Entity>>
+    +String userName [1]
+    +String email [1]
+    +Boolean enabled [1]
+  }
+  AccountEntity *-- "*" OrganizationAccessEntity : organizationAccesses
+  AccountEntity --> "1" IdentityEntity : identity
+  IdentityEntity --> "*" AccountEntity : account
+  IdentityEntity --> "*" FaceIdentifierEntity : faceIdentifier
+  IdentityEntity --> "*" UserEntity : user
+  OrganizationAccessEntity --> "1" OrganizationEntity : organization
+  OrganizationAccessEntity ..> OrganizationAccessType : type
+  OrganizationEntity *-- "*" ApplicationEntity : applications
+  OrganizationEntity *-- "*" InvitationEntity : invitations
+  OrganizationEntity *-- "*" UserEntity : users
+  OrganizationEntity *-- "0..1" RealmEntity : realm
+  OrganizationEntity --> "*" OrganizationAccessEntity : organizationAccesses
+  UserEntity --> "1" IdentityEntity : identity
+```
+<!-- /mermaid:generated -->

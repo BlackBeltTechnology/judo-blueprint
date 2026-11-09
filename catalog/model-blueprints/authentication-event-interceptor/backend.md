@@ -1,34 +1,37 @@
-## Overview
+## Backend guidance
 
-Implements an `AuthenticationInterceptor` that hooks into the JUDO authentication pipeline to perform side effects on login -- updating timestamps, creating audit log entries, or auto-provisioning User entities from JWT claims. Intercepts the `_principal` resolution operation.
+### Use the authentication interceptor, not the operation interceptor
 
-## Implementation Pattern
+The platform has two interceptor types. The authentication interceptor runs in the authentication pipeline and sees the principal lookup. The operation call interceptor runs around built-in operations only. Custom operations never get an operation interceptor, so login work must use the authentication interceptor.
 
-**Interceptor structure:**
-- `@Component(property = { "judo.model.name=<ModelName>" })` implementing `AuthenticationInterceptor` (not `OperationCallInterceptor`)
-- `isSuitableForOperation()` returns `true` for all operations (the filtering happens inside `authenticate()`)
-- `authenticate()` checks if `operationFQName.endsWith("#_principal")` to only trigger on principal resolution (login)
+- Implement the authentication interceptor interface in a component registered with the model name.
+- Accept every operation in the suitability check and filter inside the authenticate method, so the login work is decided in one place.
+- Compare the operation name with the principal operation name. Return the token unchanged for every other operation.
 
-**Common authentication behaviors:**
-1. **Login tracking:** Extract `email` from JWT `attributes`, query User by email, update `lastLogin` timestamp
-2. **Audit logging:** Log `USER_LOGIN` event via an `AuditLogService` with the user's entity ID and email
-3. **Auto-provisioning:** If the user does not exist in the local database, create a new User entity from JWT claims (`email`, `given_name`, `family_name`), optionally assigning roles based on configuration (e.g., admin email list)
+### Read the claims defensively
 
-**Key design decisions:**
-- Uses `AuthenticationInterceptor` (not `OperationCallInterceptor`) because login tracking must happen during authentication, before the operation dispatches
-- The `_principal` filter ensures the interceptor only fires once per request (on session establishment), not on every operation call
-- Failures are caught and logged (never propagated) to avoid blocking the user's login
+Token claims can be missing. Read the email first, and skip the work when it is absent. Build the display name from the given and family name only when present.
+
+### Create the row once
+
+On first login, check for an existing row by email and create one only if none exists. Guard the check and the insert with one lock or one unique constraint, so two concurrent first logins do not create two rows.
+
+### Keep login from failing
+
+Wrap each side effect in a try and catch block. Log the error with the email and the operation name, and return the token. Do not rethrow: a failed audit write or a failed timestamp update must not stop the user from signing in.
+
+- Use a short field mask when reading the user, so only the needed columns are loaded.
+- Assign roles only from a configured list, read when the component is activated.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `interceptors/LogAuthenticationInterceptor.java`
-- Pattern: Implements `AuthenticationInterceptor`, filters for `#_principal` operations in `authenticate()`. Queries User by email, updates `lastLogin` timestamp, and logs `USER_LOGIN` via `AuditLogService`.
-- Notable: Uses `UserMask.userMask().withEmail()` for minimal data projection. Wraps all logic in try-catch to prevent login failures from authentication side effects.
-- DI wiring: `@Reference UserDao`, `@Reference AuditLogService`
+
+- One login interceptor filters for the principal operation. It finds the user by email, updates the last-login time and writes a login entry through the project's audit service.
+- The interceptor uses a short field mask when it reads the user. Its whole body is in a try and catch block, so a failure does not stop the login.
 
 ### indamedia-adtrack
-- Key files: `interceptors/LogAuthenticationInterceptor.java`
-- Pattern: Implements `AuthenticationInterceptor`, filters for `#_principal` operations. Extracts `email`, `given_name`, `family_name` from JWT attributes. If no User exists with that email, auto-provisions one via `userDao.create(UserForCreate)` with name and admin flag.
-- Notable: Auto-provisioning variant -- creates users on first login rather than just tracking existing users. Admin role assignment is config-driven: `@Activate` reads an `admins` comma-separated email list from component properties. Uses `synchronized (createLock)` to prevent duplicate user creation under concurrent login. Name assembly logic handles missing first/last name fields gracefully.
-- DI wiring: `@Reference UserDao`. No `AuditLogService` in this variant -- focused purely on user provisioning.
+
+- A login interceptor creates the user on first login from the email and name claims. It assigns the admin flag from a comma-separated list of administrator emails in the component properties.
+- A lock around the check and the insert prevents duplicate rows under concurrent logins. This variant has no audit service.
+- The service and class names are example project code. Copy the pattern, not the names.

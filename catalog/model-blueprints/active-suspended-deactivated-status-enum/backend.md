@@ -1,16 +1,30 @@
-## Overview
+## Backend guidance
 
-The Active/Suspended/Deactivated tri-state lifecycle is enforced through custom operation classes on CompanyUser and OrganizationAdminPanel transfer objects, each delegating to UserService or OrganizationService for status validation and state transitions.
+### Check the current status in each transition
 
-## Implementation Pattern
+Each transition is a custom operation. Interceptors do not run for custom operations, so no interceptor enforces the state rules. Each operation must read the current status, refuse the transition when the status is not the expected one, and then set the new value.
 
-Each status transition (activate, suspend, deactivate) is a separate `@Component` custom operation class that injects a domain service via `@Reference`. The service layer re-queries the entity from the database, validates the current status is the expected precondition (e.g., must be SUSPENDED to activate), performs guard checks (cannot suspend the last PLATFORM_ADMIN, cannot deactivate the last COMPANY_ADMIN in an organization, cannot suspend admin organizations), sets the new status, and persists the update. All operations throw `BusinessErrorException` with i18n-sourced messages for invalid transitions. Each custom operation also logs an audit event with the previous status and user/organization context.
+- Suspend requires ACTIVE. Reactivate requires SUSPENDED. Deactivate may be allowed from ACTIVE or SUSPENDED, depending on the domain rule.
+- Refuse an invalid transition with a modeled business fault that the operation declares. Platform errors are not used for business rules.
+- Write the status and any related change in one operation, so the transaction covers both.
+
+### Guard the last administrator in the service
+
+Rules such as "the last platform administrator cannot be suspended" depend on other rows. Put them in a domain service that the operations call, and count the remaining administrators inside the same transaction.
+
+- The service class is project code. Its name belongs to the example project, not to the platform.
+- Re-read the entity from the database inside the service before the check, so a concurrent change is seen.
+
+### Audit each transition
+
+Log one audit record per transition, with the previous status, the new status and the acting user. See [[audit-log-entity]] for the record shape. The audit call goes inside the operation, not in an interceptor.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `custom/.../companyuser/ActivateCustomImplementation.java`, `DeactivateCustomImplementation.java`, `SuspendCustomImplementation.java`, `custom/.../organizationadminpanel/ActivateCustomImplementation.java`, `SuspendCustomImplementation.java`
-- Pattern: CompanyUser operations delegate to `userService.activate()`/`suspend()`/`deactivate()`; OrganizationAdminPanel operations delegate to `organizationService.reactivate()`/`suspend()`
-- Service layer: `UserServiceImpl` enforces SUSPENDED->ACTIVE (activate), ACTIVE->SUSPENDED (suspend), any->DEACTIVATED (deactivate) with "last admin" guards; `OrganizationServiceImpl` enforces ACTIVE->SUSPENDED and SUSPENDED->ACTIVE with admin-org protection
-- Audit: Each operation logs via `auditLogService.log()` with action types like USER_REACTIVATED, USER_SUSPENDED, USER_DEACTIVATED, ORGANIZATION_SUSPENDED, ORGANIZATION_REACTIVATED
-- Notable: Guard checks prevent platform lockout (last PLATFORM_ADMIN) and organization lockout (last COMPANY_ADMIN within an org)
+
+- Users and organizations each have a status with these three values. Both share the same member names and ordinals.
+- Each transition on the user and on the organization admin panel is a separate custom operation class. Each class delegates to a user service or an organization service.
+- The user service enforces the transitions and the last-administrator guards. The organization service enforces suspension and reactivation with a protection for administrator organizations.
+- Each operation writes an audit record with a transition-specific action type.
+- The service and class names are example project code. Copy the pattern, not the names.

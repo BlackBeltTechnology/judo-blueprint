@@ -1,32 +1,65 @@
 ---
 id: external-api-adapter-provider-pattern
 title: External API Adapter with Provider Service Pattern
-description: "A multi-module adapter pattern for integrating with external platform APIs (e.g., Google Ads, Meta Ads) through a pluggable provider architecture."
-aliases: []
-keywords: [external, api, adapter, provider, service]
+description: "Isolates each external platform API behind one interface and a factory service that picks the right adapter at runtime, so a new platform is added without changing the callers."
+aliases: [adapter provider, external api factory]
+keywords: [external, api, adapter, provider, factory, platform, credentials, interface]
 tags: ["domain:model", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
 category: pattern
 status: single-project
 projects: [indamedia-adtrack]
 evidence: ["indamedia-adtrack:unrecorded"]
 alternatives: []
-fragment: pending
+fragment: none: backend-only
 first_seen: 2026-03-09
-last_updated: 2026-03-09
-format: legacy
+last_updated: 2026-11-09
 ---
+## Intent
 
-## Description
+Let the business code call one API interface, whatever external platform sits behind it. Each platform is an adapter behind that interface. A factory service picks the adapter for an entity and supplies its credentials, so adding a platform does not change the callers.
 
-A multi-module adapter pattern for integrating with external platform APIs (e.g., Google Ads, Meta Ads) through a pluggable provider architecture. This is an implementation-only blueprint -- it describes a pure backend architectural pattern for abstracting multiple external API implementations behind a single interface, with a factory/provider OSGi service that resolves the correct adapter at runtime based on configuration or entity state.
+### One interface, many adapters
 
-The pattern uses three layers:
-1. **API interface module** -- a standalone OSGi bundle containing a platform-agnostic Java interface and DTO classes, with no dependencies on the JUDO model or any specific external SDK
-2. **Adapter implementation module(s)** -- one module per external platform (e.g., `google-ads`), each implementing the API interface using the platform's SDK
-3. **Provider service** -- an OSGi service in the `common` module that acts as a factory, resolving the correct adapter implementation at runtime based on entity state (e.g., a `Platform` enum on an Account entity), loading credentials from the database, and returning a ready-to-use API client
+The API interface is a plain contract with business-oriented methods and its own data objects. Each platform adapter implements it with that platform's SDK. Callers see only the interface.
 
-This pattern enables adding new external platform integrations (e.g., Meta Ads, TikTok Ads) without modifying existing code -- only a new adapter module and a new branch in the provider service are needed.
+### The factory decides, the caller does not
 
-## Backend Implementation
+The provider service reads the platform of an entity, loads its credentials, and returns a ready client. Callers never construct an adapter or read a credential.
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+## Structure
+
+Three layers. The API module is a standalone bundle with the interface and its data objects, with no dependency on the model or on any platform SDK. Each adapter module depends on the API module and on one platform SDK. The provider service is a component in the common module. It loads the entity and its credentials, dispatches on the platform, and returns the adapter. Custom operations and services reference the provider service, never an adapter.
+
+## Constraints
+
+- The API module has no dependency on the model or on any platform SDK.
+- Adapters are plain objects built by the provider with runtime credentials, not components of their own.
+- Callers reference the provider service, never an adapter class.
+- A platform with no adapter yet fails with a business error, not with a runtime exception.
+- Credentials that are files (for example a key file) are read through the file store service, not from a path.
+
+## Variations
+
+- **Dispatch on an enumeration.** The provider switches on the platform enumeration of the entity. A new platform adds one enum member and one branch.
+- **Declared but not implemented.** Declare a platform in the enumeration before its adapter exists. The provider returns a clear "not implemented" business error, which marks the extension point.
+- **Lookup by configuration.** Choose the adapter from a configuration entry instead of an enumeration. This suits tenants that use different providers for the same platform.
+- **Helper methods on the provider.** The provider exposes helpers that extract platform-specific identifiers from the entity, so callers do not know the platform's id format.
+
+## When to use
+
+- The application integrates with two or more external platforms that offer the same kind of data.
+- The platform is chosen per entity, and each entity holds its own credentials.
+- Adding a platform later should touch only a new module and one branch.
+
+## When to avoid
+
+- There is one external service and no plan for another. A direct client is simpler.
+- The platforms differ so much that a shared interface would hide the important differences. Keep them as separate services.
+- The external calls are simple HTTP calls with no SDK. A small client class is enough.
+
+## Related
+
+- [[exchange-rate-entity]] — an entity whose automatic fetch calls an external rate source
+- [[external-api-adapter-pattern]] — the best-practice version of this pattern, without the bundle layout
+- [[osgi-service-layer-delegation]] — how the provider and other services are wired together
+- [[safe-failure-pattern]] — when a failing external call must not break the business operation

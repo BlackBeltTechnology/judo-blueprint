@@ -1,19 +1,26 @@
-## Overview
+## Frontend guidance
 
-Form action hooks that auto-compose a summary `addressInformation` field by concatenating individual address component fields (street, number, building, floor, etc.) on blur events. A `manualAddressInformation` flag lets users override the auto-composition. Framework: React.
+### Recompute the summary on blur of each part
 
-## Implementation Pattern
+Give every address part a blur handler. Each handler calls one shared function that joins the non-empty parts into the summary. Register the handlers on each form and view-edit section that edits the address, so the summary stays current in every context.
 
-- **Hook types**: Form action hooks (`*FormActionsHook`) and view/edit action hooks (`*ViewEditActionsHook`) registered directly via `context.registerService` in `application-customizer.tsx`
-- **Blur handlers**: Each address component field has a corresponding `onFieldBlurAction` (e.g., `onStreetNameBlurAction`, `onNumberBlurAction`, `onBuildingBlurAction`, `onFloorBlurAction`, etc.)
-- **Composition logic**: `extractAddressInformation(data)` concatenates non-empty fields: `streetName + publicPlaceCategory + number + building + staircase + floor + door + ", " + lotNumber`
-- **Manual override**: Checks `data.manualAddressInformation` boolean -- if true, skips auto-composition and preserves user's manual entry
-- **Reuse across contexts**: The same pattern is applied to both Partner address forms/views and CompanyData address forms/views by registering separate hook instances for each page's interface key
+- Join the non-empty parts with the separators the address format uses. Do not add a separator for an empty part.
+- Write the summary through the form's own store-diff call, so the change is part of the normal save.
+
+### Respect the manual override flag
+
+Before recomputing, check the manual override flag on the address. When it is set, return without writing the summary. Show the flag as a toggle next to the summary, so the user can turn it on or off.
+
+- When the flag is turned off, recompute the summary once so it matches the parts again.
+
+### Register the hooks per page
+
+Generated hook keys are per page or container (names end with the actions hook interface key). Register one set of blur handlers for each page that edits the address. Do not copy a fixed key from another page.
 
 ## Examples
 
 ### rackinspect
-- Framework: React
-- Key files: `custom/hooks/FormActionsHooks/customServicesPartnerServiceAddressAddressFormActionsHook.tsx`, `custom/hooks/ViewEditActionHooks/customServicesPartnerServiceAddressAddressViewEditActionsHook.tsx`, `custom/hooks/FormActionsHooks/customServicesCompanyDataServiceCompanyAddressCompanyAddressFormActionsHook.tsx`, `custom/hooks/ViewEditActionHooks/customServicesCompanyDataServiceCompanyAddressCompanyAddressViewEditActionsHook.tsx`
-- Pattern: Eight blur handlers (streetName, publicPlaceCategory, number, building, staircase, floor, door, lotNumber) plus a manualAddressInformation toggle handler, all calling a shared `updateAddressInformation` function that concatenates non-empty fields with spaces and commas
-- Notable: Applied to four separate Pandino hook registrations (Partner form + view, CompanyData form + view) to cover all address editing contexts; the `manualAddressInformation` flag allows per-address override of auto-composition
+
+- Framework: React.
+- Blur handlers for the street name, public place category, number, building, staircase, floor, door and lot number, plus a handler for the manual override toggle. All of them call one shared update function.
+- The same handlers are registered for the partner address and the company address, in both the form and the view-edit section.

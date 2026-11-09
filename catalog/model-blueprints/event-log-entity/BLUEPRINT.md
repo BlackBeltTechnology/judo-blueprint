@@ -1,36 +1,67 @@
 ---
 id: event-log-entity
 title: Event Log Entity with Type Enum and Actor Reference
-description: An Event entity that records domain-level events as a chronological log.
-aliases: []
-keywords: [event, log, type, enum, actor, reference]
+description: "A non-CRUD Event entity that records domain events in a chronological log, typed by an enumeration and linked by associations to the affected entity and the acting user."
+aliases: [event entity, domain event log]
+keywords: [event, log, type, enum, actor, reference, timeline, association]
 tags: ["domain:model", "layer:model", "layer:backend", "project:alba", "status:single-project"]
 category: pattern
 status: single-project
 projects: [alba]
 evidence: ["alba:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [audit-event-trail]
+fragment: event-log-entity
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-09
 ---
-## Description
+## Intent
 
-An Event entity that records domain-level events as a chronological log. Each event has a type attribute (typed to an EventType enum defining specific event kinds), a message string for human-readable details, a createdAt timestamp, a reference to the entity the event is about (e.g., product 0..1 ASSOC), and a reference to the user who performed the action (performedBy 0..1 ASSOC). The entity is non-CRUD, created by backend operations when significant state changes occur.
+Keep a chronological record of domain events, so that an entity can show its own timeline and an administrator can see what happened. Events are written by backend operations when a state changes. Users do not create, edit or delete them through generated actions.
 
-Unlike the full AuditLog pattern (which includes entityType/entityId string fields and denormalized userName), this is a lightweight, relation-based approach where the event directly links to the domain entity and actor via associations. The EventType enum defines the vocabulary of possible events (e.g., PRODUCT_CREATED, PRODUCT_FINALIZED, PRODUCT_APPROVED, PRODUCT_APPROVAL_REVOKED).
+### Events are typed by an enumeration
 
-This pattern is suitable when events need to be displayed on a specific entity's timeline (via the entity's events relation) rather than in a platform-wide audit dashboard.
+Each event has one value of an event-type enumeration. The enumeration is the vocabulary of events the domain can emit.
 
-Some variants (e.g., kozut-eugyfel-client) denormalize the actor information into string attributes on the event (kezdemenyezoNev/initiatorName, celFelhasznaloNev/targetUserName) rather than using a relation to the User entity, and add a subsidiary Ertesites (Notification) entity composed by each event for user notification delivery.
+### Actor and subject are associations
 
-Some variants use a **generalization-based event hierarchy** instead of a type enum: an abstract base event entity with concrete subtypes (e.g., Forward, Close, Comment, Create) that each extend the base entity via generalization. In this variant, the event type is determined by the concrete subtype rather than an enum attribute, and subtypes can carry additional type-specific attributes and relations. The base entity provides shared attributes (text, timestamp) and a relation to the initiating user. This approach is used with static email-sending operations on the abstract base entity.
+The event links to the affected entity and to the acting user with optional associations. The links keep the relation to the live record, so the event can be followed to the entity and user.
 
-## Model Definition
+## Structure
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+The Event entity is not createable, updateable or deleteable through generated actions. It has a required type (an enumeration value), an optional text message and a required timestamp. It has two optional associations: one to the affected entity (0..1) and one to the acting user (0..1). The affected entity has the inverse relation, a list of its events (0..*). The enumeration lists one value per event kind.
 
-## Backend Implementation
+## Constraints
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+- Createable, updateable and deleteable are all false on the Event entity.
+- The type and the timestamp are required. The type must be a value of the enumeration.
+- Events are written inside the operation that changes the state. The event shares that operation's transaction, so a rollback removes it.
+- Interceptors do not run for custom operations. A custom operation must write its own event.
+- Associations store the id, not the name. If the user or the entity is removed, the reference is cleared, and the event text should therefore carry any name that must stay readable.
+
+## Variations
+
+- **Denormalized actor names.** Store the user name and the organization name as strings on the event, instead of a user association. The record then stays readable after the user is renamed or removed. See [[audit-log-entity]].
+- **Notification child entities.** Each event composes child notification entities for delivery to affected users. Use this when events must be delivered, not only listed.
+- **Generalization-based event hierarchy.** Replace the type enumeration with an abstract base event and concrete subtypes. The subtype carries the kind, and each subtype can add its own attributes. See [[audit-event-trail]] for the event-as-entity pattern.
+- **Filtered views on the parent.** The parent entity exposes derived lists of its events, for example only comments or only forwardings. The derived lists filter the event collection by type.
+
+## When to use
+
+- A single entity needs a visible timeline of its lifecycle events.
+- Events are a small, fixed vocabulary that the domain controls.
+- The acting user and the affected entity must stay linked for navigation.
+
+## When to avoid
+
+- Administrators need a platform-wide audit trail with names that survive user changes. Use [[audit-log-entity]].
+- The need is the value history of one entity. Use a history entry instead.
+- Users must edit or delete events. Events are append-only by design.
+
+## Related
+
+- [[audit-log-entity]] — the audit trail with denormalized actor names, for platform-wide review
+- [[audit-event-trail]] — the same need as an event entity written inside the business transaction
+- [[history-audit-trail-entity]] — a per-entity history instead of one shared event table
+- [[operation-call-logging-interceptor]] — logs built-in operation calls from an interceptor
+- [[safe-failure-pattern]] — when a failure to write an event must not break the business operation

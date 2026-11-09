@@ -22,3 +22,37 @@
   - `itracker::actors::user::MonthlyForecast` (mapped): exposes month, savingPotential, saving, date
   - `itracker::actors::user::MonthlyForecastVersion` (mapped): exposes date, savingPotential, saving
   - `itracker::actors::user::Initiative` (mapped): exposes forecastVersions (0..* AGGREGATION) and monthlyForecasts (0..* AGGREGATION), plus archiveForecast (MAPPED) operation
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=forecast-versioning-snapshot cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class ForecastVersion {
+    <<Entity>>
+    +Timestamp timestamp [1]
+    +Integer sumOfSavingPotential [1]
+    +Integer sumOfSaving [1]
+  }
+  class Initiative {
+    <<Entity>>
+    +Integer version
+  }
+  class MonthlyForecast {
+    <<Entity>>
+    +String month [1]
+    +Integer savingPotential [1]
+    +Integer saving
+    +Date date
+  }
+  class MonthlyForecastVersion {
+    <<Entity>>
+    +Date date [1]
+    +Integer savingPotential [1]
+    +Integer saving
+  }
+  ForecastVersion *-- "*" MonthlyForecastVersion : monthlyForecasts
+  Initiative *-- "*" ForecastVersion : forecastVersions
+  Initiative *-- "*" MonthlyForecast : monthlyForecasts
+```
+<!-- /mermaid:generated -->

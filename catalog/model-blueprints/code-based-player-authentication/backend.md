@@ -1,20 +1,30 @@
-## Overview
+## Backend guidance
 
-The code-based player authentication flow is implemented as two custom operation classes: Register generates a temporary code and sends it via email, while Activate validates the code and promotes it to the active access credential.
+### Register and activate are custom operations
 
-## Implementation Pattern
+Register and activate are custom static operations on the Application transfer object. Interceptors do not run for them, so every rule must sit in the operation implementation itself.
 
-- `RegisterCustomImplementation` implements the generated `Register` operation interface as an OSGi `@Component`
-- It injects `UserDao` (for user lookup/creation) and `EmailService` (for sending verification codes) via `@Reference`
-- The register operation queries for an existing user by email using `StringFilter.equalTo()`, creates a new User if not found (or updates the existing one), generates a random 4-digit code stored in `tmpCode`, and sends the code via `EmailService.sendMessage()` with a plain-text template
-- `ActivateCustomImplementation` implements the `Activate` operation interface as an OSGi `@Component`
-- It injects only `UserDao` and validates the email+code combination by querying with both `filterByEmail()` and `filterByTmpCode()` simultaneously
-- On successful match, it clears `tmpCode` and sets the permanent `code` attribute; on failure, it throws an `ErrorException` with `ErrorCode.INVALID_CODE`
-- The error handling uses the actor-scoped Error TO and ErrorCode enum directly via builder pattern: `ErrorException(Error.builder().withCode(ErrorCode.INVALID_CODE).withMessage(...).build())`
+- Register looks up the User by e-mail. If none exists it creates one; if one exists it updates the name when one is given. Either way it writes a new pending code, never a second user.
+- Register generates the pending code with a secure random source, stores it on the User, and sends it by e-mail through a platform mail service inside the same operation.
+- Activate looks up the User by e-mail and checks the pending code in the same query. On a match it clears the pending code and sets the active code.
+- On any mismatch activate returns one generic fault, so the caller cannot tell an unknown e-mail from a wrong code.
+
+### Keep the e-mail send out of the business change
+
+A failed e-mail should not leave a half-registered user. Either send the e-mail after the transaction commits, or use a safe-failure wrapper so a send error is logged and the user row is still valid. See [[safe-failure-pattern]].
+
+### Reset issues a new active code
+
+The reset operation regenerates the active code on the User. It is an instance operation, so it can be called from the admin side as well as the player side. It must check that the caller may reset this user.
+
+### Project code, not platform API
+
+The example project implements these operations with its own user data-access class and mail service. Those names are project code. Copy the pattern, not the names.
 
 ## Examples
 
 ### trivia
-- Key files: `custom/.../actors/player/application/RegisterCustomImplementation.java`, `custom/.../actors/player/application/ActivateCustomImplementation.java`
-- Pattern: Register injects `UserDao` + `EmailService`, generates 4-digit code via `Random.nextInt(10000)`, stores in `tmpCode`, sends email with code and privacy notice; Activate injects `UserDao`, validates email+tmpCode combination, promotes to permanent `code`, throws `ErrorException(ErrorCode.INVALID_CODE)` on mismatch
-- Notable: Registration is idempotent -- if a user with the given email already exists, it updates the name and regenerates the tmpCode rather than failing; the email template includes a full GDPR privacy notice as a static final string constant; the permanent `code` is set to the same value as the validated `tmpCode`
+
+- Register and activate are implemented as custom operation classes with injected user access and mail services.
+- The e-mail body includes a privacy notice held in a constant.
+- Register is idempotent per e-mail. Activate compares e-mail and pending code together.

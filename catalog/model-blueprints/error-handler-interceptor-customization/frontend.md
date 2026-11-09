@@ -1,28 +1,33 @@
-## Overview
+## Frontend guidance
 
-A Pandino hook that intercepts specific HTTP error responses (e.g., 422 business validation errors) and shows user-friendly snackbar notifications instead of the default fault dialog. Framework: React.
+### Register one error handler hook
 
-## Implementation Pattern
+Create the hook in the customizer's registration function, and register it under the platform's error-handler interceptor key. The hook exposes two callbacks: a predicate that says whether it handles an error, and a handler that shows the message.
 
-- **Hook type**: `ErrorHandlerInterceptorHook` from `~/utilities/error-handling`
-- **Registration key**: `ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY`
-- **Registration**: A `registerErrorHandlerInterceptorHook(context: BundleContext)` function called from `application-customizer.tsx`
-- **Hook shape**: Returns an object with `shouldInterceptError(error, options)` (boolean predicate) and `interceptError(error, options, payload, dataPath)` (handling logic)
-- **Internal hooks**: Uses `useTranslation()` for i18n, `useSnacks()` for `showErrorSnack`, and `useFaultDialog()` as a fallback
-- **Error matching**: Typically checks `error.response?.status === 422` for business validation errors; can be extended with additional checks on response body structure
-- **Message extraction**: Reads the first key from `error.response.data` and displays its `.message` property via snackbar with auto-hide
-- **Extensibility**: Multiple error scenarios can be handled by adding more predicate functions (extracted via `useCallback` for reuse between `shouldInterceptError` and `interceptError`)
+### Match the business error by status
+
+The predicate checks for HTTP 422, the status of a business error. Other statuses are not handled here. Use one shared detection callback for the predicate and the handler, so the two cannot disagree.
+
+### Read the message from the body
+
+The response body is keyed by the fault's type name, and each entry carries a message. Take the first key's message and show it. If there is no message, let the generated fault dialog handle the error.
+
+### Show a short snackbar
+
+Show the message as an error snackbar with an automatic hide (about three seconds). Use the translation hook for any fixed text around it.
+
+### Log for debugging
+
+Log the intercepted error to the console during development, so a missing message is easy to trace.
 
 ## Examples
 
 ### rackinspect
-- Framework: React
-- Key files: `custom/hooks/register-error-handler-interceptor.ts`
-- Pattern: Intercepts HTTP 422 errors and shows the first validation error message as a snackbar notification with 3-second auto-hide, replacing the default fault dialog for business rule violations
-- Notable: Uses a shared `isSomethingError` callback for both `shouldInterceptError` and `interceptError` to ensure consistent error detection; logs all errors to console for debugging
+
+- The hook intercepts every 422 and shows the first error's message as a three-second snackbar, instead of the generated fault dialog.
+- Its predicate and handler share the same detection callback.
+- The backend's business error type is a guard name rather than the business fault's full name. The generated fault dialog therefore finds no translation for it, and the snackbar shows the message from the body instead. Using the fault's full name would let the generated dialog work.
 
 ### park-here
-- Framework: React
-- Key files: `custom/hooks/register-error-handler-interceptor.ts`
-- Pattern: Intercepts HTTP 422 errors and displays the first validation error message as a snackbar with 3-second auto-hide, identical structure to the rackinspect implementation
-- Notable: Same `isSomethingError` useCallback pattern; confirms this is a stable, project-independent pattern that follows the generated template with minimal customization needed
+
+- The same hook structure, with the same shared detection callback, confirming the pattern is stable across projects.

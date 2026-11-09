@@ -1,20 +1,33 @@
-## Overview
+## Backend guidance
 
-The content lifecycle status enums (PostStatus, AnnouncementStatus) drive status transitions implemented in custom backend operations. Each transition (publish, delete, expire, moderationDelete) is a separate custom operation class that delegates to a shared `PostService` or `AnnouncementService`, which handle the actual status field updates and side effects (feed entry creation/deletion, notifications).
+### Status changes are custom operations
 
-## Implementation Pattern
+A change of status is a custom operation on the content entity: publish, delete, and optionally expire or moderate. Each operation sets the status and runs its side effects in one place. Interceptors do not run for these operations, so the status rules must sit in the operation.
 
-- Each content type (News, Offer, Request, Announcement) has a set of custom operation classes: `PublishCustomImplementation`, `DeleteCustomImplementation`, `EditXxxCustomImplementation`, and optionally `ExpiredCustomImplementation` and `ModerationDeleteCustomImplementation`
-- These classes are OSGi `@Component` instances implementing generated operation interfaces (e.g., `Publish`, `Delete`, `Expired`)
-- All delegate to either `PostService` (for News/Offer/Request subtypes) or `AnnouncementService` (for Announcements)
-- The service layer performs the actual status transition: setting status to PUBLISHED/DELETED/EXPIRED, updating `publishedAt` timestamp, and triggering feed entry creation/removal via `FeedService`
-- Every status transition also logs an audit entry via `AuditLogService`
-- ModerationDelete operations add authorization checks (validates PLATFORM_ADMIN role) and send push/email notifications to affected company admins
+- Publish sets the status to PUBLISHED and records the publication time, then runs the publish side effects, such as creating feed entries or notifications.
+- Delete sets the status to DELETED. It is a soft delete: the row stays, so the content can be listed as deleted and audited.
+- Each operation checks the current status first. A transition from DELETED back to PUBLISHED is a rule the operation must enforce, not something the enumeration prevents.
+
+### Put the transition in a shared service
+
+Operations on different content types should call one shared service that owns the status field, the timestamps and the side effects. The operations stay thin: they check permission, call the service, and return.
+
+### Log each transition
+
+Write one audit entry per status change, inside the same transaction as the change. An audit failure should follow the rule in [[safe-failure-pattern]]: log it and keep the business change, unless the audit is a legal requirement.
+
+### Moderation needs its own role check
+
+A moderation delete is a status change made by a platform administrator, not by the content owner. Check the role inside that operation before the change, and send any notifications only after the change succeeds.
+
+### Project code, not platform API
+
+The example project implements these transitions with its own service classes, operation classes and audit service. Those names are project code. Copy the pattern, not the names.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `custom/.../companyadmin/offer/PublishCustomImplementation.java`, `custom/.../companyadmin/offer/DeleteCustomImplementation.java`, `custom/.../companyadmin/offer/ExpiredCustomImplementation.java`, `custom/.../companyadmin/offer/ModerationDeleteCustomImplementation.java`, `custom/.../admin/announcement/PublishCustomImplementation.java`
-- Pattern: Thin operation classes delegate to `PostService`/`AnnouncementService` for status transitions, then call `AuditLogService.log()` with the appropriate `AuditActionType`
-- Notable: ModerationDelete validates `UserRole.PLATFORM_ADMIN` via `ActorService`, sends push notifications via `PushNotificationService`, and emails via `PlatformEmailService` before deleting
-- The same publish/delete/edit/expire pattern is repeated identically across News, Offer, and Request in the `companyadmin` package
+
+- Two enumerations: one for posts with the extra EXPIRED and PENDING_REVIEW values, and one for announcements with the three core values.
+- Thin operation classes for publish, delete, edit and expire delegate to a shared post service or announcement service.
+- Each transition writes one audit entry. Moderation delete checks the platform-admin role first.

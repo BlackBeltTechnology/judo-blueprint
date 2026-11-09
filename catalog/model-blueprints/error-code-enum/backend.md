@@ -1,49 +1,62 @@
-## Overview
+## Backend guidance
 
-The ErrorCode enum and BusinessError transfer object provide structured error handling across all custom operations. An `ExceptionUtils` utility class provides factory methods to create `BusinessErrorException` instances from an error code and message. Every custom operation's method signature declares `throws BusinessErrorException`, and operations throw these structured errors for entity-not-found checks, authorization failures, integration errors, and business rule violations.
+### Declare the business error on each operation that can raise it
 
-## Implementation Pattern
+A business failure is a modeled fault. The operation declares the general business error as its fault parameter. Without that declaration the generated operation interface has no checked exception for it, and throwing it does not compile. Declare it on every operation that can fail for a business reason.
 
-- An `ExceptionUtils` utility (interface with static methods or class) provides `createBusinessErrorException(...)` to build `BusinessError` instances and wrap them in `BusinessErrorException`
-- **Enum variant**: `createBusinessErrorException(ErrorCode errorCode, String message)` uses the model-defined `ErrorCode` enum for type-safe error identification. The `BusinessError` is built with `.withErrorCode(errorCode).withMessage(message)`
-- **String variant**: `createBusinessErrorException(String code, String message)` uses free-form string codes without a companion enum. The `BusinessError` is built with `setCode(code)` and `setMessage(message)`
-- **Direct builder variant**: Service layer classes construct `BusinessError` directly via `BusinessError.builder().withCode(ErrorCode.SOME_CODE).build()` and throw `new BusinessErrorException(...)` without a utility class
-- **Domain-scoped variant**: The error code enum and error TO are scoped to a specific domain (e.g., `DeclarationErrorCode` for workflow validation) rather than application-wide, with a domain-specific exception class (e.g., `DeclarationErrorException`)
-- **Actor-scoped inline variant**: The error code enum and error TO live in a specific actor namespace (e.g., `actors.player`), and custom operations throw the actor-scoped `ErrorException` directly via `Error.builder().withCode(ErrorCode.SOME_CODE).withMessage(...).build()` without a utility class
-- All custom operation method signatures declare `throws BusinessErrorException`
-- The same `ExceptionUtils` often also provides `createValidationException()` for field-level validation errors using JUDO's `ValidationResult` API
-- Service layer classes (OSGi `@Component`) use `@Reference` to inject DAO classes and an i18n service, then call `ExceptionUtils.createBusinessErrorException(...)` in orElseThrow lambdas for entity lookups
-- Error codes typically cover: entity lookup failures (*_NOT_FOUND), authorization (PERMISSION_DENIED), external integration issues (CONNECTION_FAILED, CREDENTIAL_NOT_SET), and platform support (PLATFORM_NOT_SUPPORTED)
+### Throw through one factory, never inline
+
+Build the business error and wrap it in the business exception in one factory of the application. Operations call the factory, and do not construct the error object themselves. This keeps the codes and the translation keys in one place.
+
+- The factory takes the code and a message key or text, and builds the error object and the exception.
+- Overloads can take the enumeration member or a string code, depending on the variant chosen.
+- The factory is project code, not platform API. Copy the pattern, not the class name.
+
+### Keep the failure a business error, not a 500
+
+- A business rule (not found, not allowed, already exists, wrong state) is thrown as the business error with its code. The client then gets the business answer.
+- An external failure (a connection to another system is down, credentials are missing, a result is unavailable) is wrapped in the same business error with a code, and the cause is logged. Do not let a raw runtime exception escape: the client would see a server error.
+- A business invariant is never an illegal-state runtime exception. It is a business error with a code.
+- A typed business error caught and re-thrown as a generic runtime exception turns into a 500. Let it pass unchanged.
+
+### Interceptors wrap, they do not invent
+
+An interceptor runs only for built-in operations. When a rule must stop a built-in operation, the interceptor throws the interceptor wrapper, not a generated fault class (which is checked and cannot be thrown there). The wrapper carries the fault type, the error code, and the details. Use the fault's full name as the type, so the client's fault dialog finds its translations.
+
+### Field errors are not business errors
+
+A problem with one field is a field validation error with the attribute name as its location. Put a business error on the operation only for failures that are not about one field.
+
+### Readiness checks return a list
+
+For a check that the user runs before submitting (is this ready to close), return the list of every missing item in one result. Reserve the business error for a real rule violation.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `common/utils/ExceptionUtils.java`, `custom/.../offer/ModerationDeleteCustomImplementation.java` (authorization check), `custom/.../feedpanel/RegisterDeviceCustomImplementation.java` (validation)
-- Pattern: `ExceptionUtils.createBusinessErrorException("CODE", message)` used in custom operations for both authorization and validation failures
-- Notable: This project uses string-typed error codes without a companion ErrorCode enum -- the simplest variant of the pattern; errors are raised in custom operations like ModerationDelete (role check) and RegisterDevice (empty token check)
+
+- The project uses plain string codes with a general business error object, and no enumeration. Codes are constants in application code.
+- Authorization checks and validation checks in custom operations raise the business error with a code.
 
 ### indamedia-adtrack
-- Key files: `common/utils/ExceptionUtils.java`, `common/impl/AccountServiceImpl.java`, `common/impl/AggregatedCampaignServiceImpl.java`, `common/impl/AdsBusinessApiProviderServiceImpl.java`
-- Pattern: `ExceptionUtils.createBusinessErrorException(ErrorCode.CAMPAIGN_NOT_FOUND, i18n.campaign_not_found())` -- uses the model-defined `ErrorCode` enum with an i18n service for localized messages
-- Notable: Enum variant with 12 error codes covering entity lookups (CLIENT_NOT_FOUND, ACCOUNT_NOT_FOUND), credential issues (CREDENTIAL_NOT_SET, CREDENTIAL_NOT_FOUND), integration failures (CONNECTION_FAILD), and platform support (PLATFORM_NOT_SUPPORTED, PLATFORM_NOT_IMPLEMENTED). The `AdsBusinessApiProviderService` dispatches on `Platform` enum and raises platform-specific errors.
+
+- The project uses an enumeration of twelve codes (lookups, credentials, integration, platform support) in the model.
+- The factory takes the enumeration member and a localized message from the translation service.
+- The platform provider raises the platform-not-supported and not-implemented codes when it dispatches on the platform enumeration.
 
 ### park-here
-- Key files: `common/utils/ExceptionUtils.java`, `common/impl/ReservationServiceImpl.java`, `common/impl/HolidayServiceImpl.java`, `common/impl/ActorServiceImpl.java`, `common/impl/ConfigurationServiceImpl.java`
-- Pattern: `ExceptionUtils.createBusinessErrorException(ErrorCode.USER_NOT_FOUND, parkHereI18n.user_not_found())` -- uses the model-defined `ErrorCode` enum with an i18n service (`ParkHereI18n`) for localized messages
-- Notable: Enum variant with 8 error codes. The `ExceptionUtils` interface also provides `createValidationException()` for field-level validation using JUDO's `ValidationResult` API. Error codes are used extensively across all services: `ReservationServiceImpl` alone uses 6 different error codes (MISSING_REQUIRED_DATA, USER_NOT_FOUND, PERMISSION_DENIED, NOT_VALID_DATA, RESERVATION_NOT_FOUND, TOO_MANY_RESERVATION) for comprehensive reservation validation covering time checks, slot availability, permission checks, and per-type quota enforcement.
+
+- The project uses an enumeration of eight codes and a business error object where code and message are both required.
 
 ### ubives
-- Key files: `services/AccountService.java`, `services/InviteService.java`, `services/ApplicationService.java`, `services/AccessService.java`, `services/OrganizationService.java`
-- Pattern: Direct builder variant -- no `ExceptionUtils` utility class. Service layer classes construct errors inline via `new BusinessErrorException(BusinessError.builder().withCode(ErrorCode.SOME_CODE).build())` in `orElseThrow` lambdas and guard clauses
-- Notable: 20 error codes covering identity management: uniqueness violations (ORGANIZATION_ALREADY_EXISTS_WITH_THIS_NAME, KEYCLOAK_USER_ALREADY_EXISTS_WITH_THIS_NAME), entity lookups (ACCOUNT_DOES_NOT_EXISTS, ORGANIZATION_DOES_NOT_EXISTS, INVITATION_DOES_NOT_EXISTS), Keycloak integration failures (KEYCLOAK_COULD_NOT_CREATE_USER, IDM_DOES_NOT_EXISTS), authentication (PASSWORD_DOES_NOT_MATCH), and validation (MISSING_REQUIRED_ATTRIBUTE at ordinal 10000)
-- The BusinessError TO uses `code` field (not `errorCode`) and lives in the `entities` package; messages are not set in most cases -- the error code alone identifies the failure, making this a code-only variant without i18n
+
+- The project uses an enumeration of about twenty codes for identity management, and the business error object uses `code` rather than `errorCode`.
+- External identity-provider failures have their own codes, separate from the domain codes.
 
 ### workflow-poc
-- Key files: `custom/.../entities/workflow/UploadCustomImplementation.java`
-- Pattern: Domain-scoped direct builder variant -- `DeclarationError.builder().withCode(DeclarationErrorCode.INVALID_REFERENCE).withMessage(...)` constructed inline and thrown as `DeclarationErrorException` during workflow YAML upload validation
-- Notable: Minimal single-member enum (`INVALID_REFERENCE`) scoped to workflow declaration validation. No `ExceptionUtils` utility; errors are built directly in validation guard methods (`checkWorkflowName`, `checkCrossReferences`, `checkStateExist`, `checkRoleExist`, `checkEventExist`). The upload operation performs 5 distinct cross-reference validations: workflow name match, initial state existence, transition from/to state existence, role existence, and event existence -- all raising the same INVALID_REFERENCE code with context-specific messages.
+
+- The project uses a domain-scoped enumeration with one code for workflow declaration validation, which grows as rules are added.
 
 ### trivia
-- Key files: `custom/.../actors/player/application/RegisterCustomImplementation.java`, `custom/.../actors/player/application/ActivateCustomImplementation.java`, `custom/.../_default_transferobjecttypes/entities/test/SubmitCustomImplementation.java`, `custom/.../_default_transferobjecttypes/entities/test/StartCustomImplementation.java`, `custom/.../_default_transferobjecttypes/entities/contest/EnterCustomImplementation.java`
-- Pattern: Actor-scoped inline variant -- `ErrorException(Error.builder().withCode(ErrorCode.INVALID_CODE).withMessage(...).build())` constructed directly in custom operations without a utility class. The ErrorCode enum and Error TO live in the `trivia.actors.player` namespace rather than shared entities.
-- Notable: 5 error codes all related to quiz workflow state preconditions (INVALID_CODE, CONTEST_NOT_OPEN, TEST_NOT_STARTED, TEST_ALREADY_STARTED, TEST_CLOSED). Used across 5 custom operation classes -- every player-facing operation validates preconditions and throws structured errors. No ExceptionUtils utility and no i18n; messages are hardcoded English strings.
+
+- The project uses an actor-scoped enumeration of five codes in the player namespace, for quiz state preconditions.

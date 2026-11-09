@@ -1,37 +1,66 @@
 ---
 id: application-vendor-integration-registry
-title: Application-Vendor Integration Registry (Enterprise Architecture)
-description: "An enterprise integration registry entity cluster for tracking applications, their vendors, connections between applications, and deployment instances."
-aliases: []
-keywords: [application, vendor, integration, registry, enterprise, architecture]
-tags: ["domain:model", "layer:model", "project:InterfaceRegister", "status:single-project"]
+title: Application-Vendor Integration Registry
+description: "An enterprise registry of applications and the vendors that provide them, with a category per application, for tracking the integration landscape."
+aliases: [application registry, vendor registry, integration landscape]
+keywords: [application, vendor, registry, integration, enterprise architecture, category]
+tags: [domain:model, layer:model, project:InterfaceRegister, status:single-project]
 category: pattern
 status: single-project
 projects: [InterfaceRegister]
 evidence: ["InterfaceRegister:unrecorded"]
 alternatives: []
-fragment: pending
+fragment: application-vendor-integration-registry
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-09
 ---
-## Description
+## Intent
 
-An enterprise integration registry entity cluster for tracking applications, their vendors, connections between applications, and deployment instances. The core entities are:
+Keep one record per application and one record per vendor, so that an architect can see what software is in use, who provides it and what category it belongs to. Connections between applications, and where they run, can be modelled on top of this core.
 
-- **Application** -- a software application with id, name, version, category (enum: CRM, DMS, IMS, etc.), and a required association to its Vendor
-- **Vendor** -- the company that provides/develops the application, with id, name, and address
-- **HighLevelConnection** -- a business-level connection between two applications (sender and receiver), describing data flow with a name, description, periodicity (enum: ADHOC, HOURLY, DAILY, etc.), and associations to BusinessDataType and Brand entities for classification
-- **ConnectionDefinition** -- a technical-level connection specification linking a HighLevelConnection to an InterfaceSpecification, with direction of data transmission, periodicity details, and optional client/server Application references
-- **ApplicationInstance** -- a deployed instance of an Application in a specific Environment (DEV, TEST, PROD)
-- **DeploymentItem** -- a deployment artifact associated with an ApplicationInstance
-- **Server** -- a server hosting applications, with composed IP addresses (IPV4Address, IPV6Address)
-- **ProvidedInterface** -- links an InterfaceSpecification to network addressing (port, IPv4/IPv6 address)
-- **ClientInterface** -- links an InterfaceSpecification to a client-side endpoint
-- **ConcreteConnection** -- connects a ClientInterface to a ProvidedInterface through a ConnectionDefinition, with an optional connect string
+### Each application has one vendor
 
-This cluster models the full enterprise integration landscape: what applications exist, who provides them, how they connect at both business and technical levels, and where they are deployed. The HighLevelConnection provides business stakeholders with an overview, while ConnectionDefinition, ProvidedInterface, ClientInterface, and ConcreteConnection provide technical details.
+An application is provided by exactly one vendor. The vendor is a shared record, so several applications from the same vendor point to one entry.
 
-## Model Definition
+### Category is an enumeration
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+The application category is a fixed set of values. A new category is a model change, which keeps reports consistent.
+
+## Structure
+
+The Application entity has a required name (an identifier), a required version and a required category, which is an enumeration. It has a required association to one Vendor. The Vendor entity has a required name (an identifier) and a required address. The category enumeration has one value per application type, plus a catch-all value.
+
+Connections between applications, deployment instances and network interfaces are separate entities that refer back to Application. They are not part of this core shape.
+
+## Constraints
+
+- An application has exactly one vendor.
+- Name is an identifier for both the application and the vendor. The names are unique within their entity.
+- The category must be one of the enumeration values. A catch-all value is used when no other value fits.
+- The version is required. An unknown version is recorded with an explicit placeholder, not left empty.
+
+## Variations
+
+- **Vendor as a text field.** The vendor is a text attribute on the application. Simpler, but the vendor cannot be shared or renamed in one place.
+- **Connections between applications.** A connection entity refers to a sender and a receiver application. Use this for interface tracking.
+- **Deployment instances.** Each application is deployed as instances in environments. Each instance refers back to its application.
+- **Network interfaces.** Servers, provided interfaces and client interfaces refer to the connection specification. Use this for technical detail.
+
+## When to use
+
+- An architecture team must know which applications exist and who provides them.
+- Applications from the same vendor must be reported together.
+- The category is used in reports or filters.
+
+## When to avoid
+
+- Only a list of application names is needed. A text list is enough.
+- Connections and network details are the main need. Model them as a connection cluster first.
+- Vendors change often and the history of each change matters. Use a history entry instead.
+
+## Related
+
+- [[organization-entity]] — a similar entity that holds a name and an address
+- [[reference-data-lookup-entity]] — a lookup entity for shared reference values
+- [[partner-with-contact-details]] — a partner record that holds contact details

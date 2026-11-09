@@ -8,3 +8,23 @@
   - Either party can suspend a reservation (SUSPENDED), tracked via suspendedByPartner and suspendedByLogistician relations to User
   - Delay states (DELAYED_ARRIVAL, DELAYED_UNLOADING) track schedule deviations
 - Supports 5 actor roles (AdminActor, PartnerActor, LogisticianActor, DoormanActor, Readonly) that participate in different stages of the freight lifecycle
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=freight-logistics-state-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class FreightState {
+    <<Enumeration>>
+    NOT_SUBMITTED
+    SUBMITTED
+    REJECTED
+    APPROVED
+    SUSPENDED
+    ARRIVED
+    FINISHED
+    DELAYED_UNLOADING
+    DELAYED_ARRIVAL
+  }
+```
+<!-- /mermaid:generated -->

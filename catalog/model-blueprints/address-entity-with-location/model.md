@@ -1,38 +1,40 @@
-## Examples
+## Model shape
 
-### mlszksz-platform
-- **Address entity**: `MLSZKSZPlatform::entities::Address`
-  - Attributes: streetName (req), publicPlaceCategory, number, building, staircase, floor, door, lotNumber, fullAddress (req), addressInformation (req)
-  - Relations: location (0..1 COMPOSITION to Location), city (1..1 ASSOCIATION to City), postalCode (1..1 ASSOCIATION to PostalCode)
-- **Location entity**: `MLSZKSZPlatform::entities::Location`
-  - Attributes: latitude (req), longitude (req)
-- **City entity**: `MLSZKSZPlatform::entities::City` with name, isActive; composes PostalCode
-- **PostalCode entity**: `MLSZKSZPlatform::entities::PostalCode` with code attribute
-- Used by: Organization (composition), RegistrationRequest (composition)
+The shape has one address entity, one composed location, and two lookup entities that the address references.
 
-### rackinspect
-- **Address entity**: `rackinspect::entities::Address` (non-CRUD)
-  - Attributes (23): streetName (req), city (req), postalCode (req), building, floor, door, number, lotNumber, staircase, publicPlaceCategory, fullAddress (req, default: "-"), addressInformation (req), manualAddressInformation (req), region, notes, active (default: true), isBilling (default: false), isDelivery (default: false), isHeadquarters (default: false), isPostal (default: false), cityAndPostalCode, fullAddressMultiline, transportationDistance
-  - Relations: country (1..1 ASSOC), warehouses (0..* COMPOSITION), container (0..1 DERIVED)
-  - Operations: toggleActive, toggleBilling, toggleDelivery, toggleHeadquarters, togglePostal -- all custom INSTANCE
-- **CompanyAddress entity**: `rackinspect::entities::CompanyAddress` (non-CRUD)
-  - Same core address fields, plus toggleActive, toggleBilling, toggleHeadquarters, togglePostal, togglePrimary operations
-  - Relations: country (1..1 ASSOC), container (0..1 DERIVED)
-- **UserAddress entity**: `rackinspect::entities::UserAddress` (non-CRUD)
-  - Simplified: city (req), postalCode (req), addressInformation (req), fullAddress, active (default: true), notes
-  - Operations: toggleActive, togglePrimary
-- Used by: Partner (addresses 0..* COMPOSITION), CompanyData (companyAddresses 0..* COMPOSITION), User (userAddresses 0..* COMPOSITION)
+- **Address** holds the street name (required), building, floor and door, plus a derived full-address text. It is not createable, updateable or deleteable through the generated actions; its owner creates it.
+- **Location** holds latitude and longitude, both required decimal values. It is composed by the address (0..1), so it belongs to one address and is removed with it.
+- **City** holds a name. The address references one city (1..1, association).
+- **PostalCode** holds a code. The address references one postal code (1..1, association).
 
-### doors-model
-- **Address entity**: `doors::entities::Address` (non-CRUD: createable=false, updateable=false, deleteable=false)
-  - Attributes: street (req), city (req), country (req), zipCode (req), fullAddress (DERIVED: `self.country + ", " + self.zipCode + " " + self.city + ", " + self.street`)
-  - No relations -- no Location, City, or PostalCode references; all address fields are stored as direct string attributes
-- Simplified variant: stores city, country, street, and zipCode as flat string attributes rather than referencing lookup entities
-- The `fullAddress` attribute is a derived/computed field that concatenates the address components in the format "country, zipCode city, street"
-- Used by multiple Partner subtypes via COMPOSITION:
-  - Partner -> postalAddress [0..1]
-  - CompanylikePartner -> hqAddress [0..1] (headquarters address)
-  - OrganizationPartner -> siteAddresses [0..*] (multiple site addresses)
-  - PrivatePartner -> livingAddress [0..1]
-  - OtherPartner -> address [0..1]
-- The Address TO in the employee actor package exposes all stored fields plus the derived fullAddress, along with edit operations for managing addresses on partners
+Location and the lookup entities are not part of the generated address pages. The address form lets the user pick the city and postal code; the location is set from a map or a geocoding step, and the view shows the coordinates as read-only values.
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=address-entity-with-location cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Address {
+    <<Entity>>
+    +String streetName [1]
+    +String building
+    +String floor
+    +String door
+    +String /fullAddress
+  }
+  class City {
+    <<Entity>>
+    +String name
+  }
+  class Location {
+    <<Entity>>
+  }
+  class PostalCode {
+    <<Entity>>
+    +String code
+  }
+  Address *-- "0..1" Location : location
+  Address --> "1" City : city
+  Address --> "1" PostalCode : postalCode
+```
+<!-- /mermaid:generated -->

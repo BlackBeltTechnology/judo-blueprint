@@ -1,20 +1,34 @@
-## Overview
+## Backend guidance
 
-The ExchangeRate entity has two backend entry points: an automatic `updateExchangeRates` static operation that fetches rates from the Hungarian National Bank (MNB) API, and a manual `createExchangeRate` operation that validates and persists user-entered rates.
+### Two write paths, one rule set
 
-## Implementation Pattern
+A rate is written in one of two ways: a manual operation for a person's entry, and a static operation that fetches rates from an external source. Both write the same row, so both must enforce the same rules: no future date, source and target currencies differ, rate unit is a positive whole number.
 
-- `UpdateExchangeRatesCustomImplementation` is an OSGi `@Component` implementing the `UpdateExchangeRates` static operation interface
-- It injects `CurrencyDao`, `ExchangeRateDao`, and an `ExchangeRateService` (external API client for MNB web services)
-- The auto-fetch flow: (1) query all currencies except HUF, (2) check which currencies lack today's AUTO rate (or only have a MANUAL rate), (3) call `exchangeRateService.getCurrentCurrencyRates()` for absent currencies, (4) create `ExchangeRateForCreate` entries with `ExchangeRateRecordingMethod.AUTO` and source `"MNB"`
-- `CreateExchangeRateCustomImplementation` handles manual entry with validation: future dates are rejected, source and target currencies must differ, rateUnit must be a positive natural number, and rate/rateRepeat must match (double-entry confirmation)
-- A service-level delegate `UpdateExchangeRatesCustomImplementation` in the partner_service package simply injects and calls the entity-level implementation
-- Validation uses `ExceptionUtils.createValidationResult()` to build field-level error lists, thrown as a batch via `ExceptionUtils.createValidationException()`
+### Validate field errors with the attribute name
+
+A field problem (a future date, the same currency on both sides, a zero rate unit) is a validation error with the attribute as its location. This lets the form show it under the field. Anything that is not about one field is a business fault with a code and a message. See the Part B pattern in the problems doc.
+
+### External failures are business errors, not 500s
+
+The automatic fetch depends on an external service. When that service is down, or returns no rate for a currency, do not let a raw runtime exception escape: the user would see a 500. Wrap the failure in the business fault declared on the operation, with a code such as `EXCHANGE_RATE_SOURCE_UNAVAILABLE`, and log the cause. Then the user gets a clear message and the transaction rolls back cleanly.
+
+### Fetch only what is missing
+
+Before the fetch, query the currencies that lack an automatic rate for the day. A currency with only a manual rate for the day still needs an automatic one, because the automatic row is the source of record. Write one automatic row per missing currency.
+
+### Keep the fetch behind a service
+
+Call the external source through a service interface, not directly in the operation. The operation then depends on the interface, and the client can be replaced in tests. See [[external-api-adapter-provider-pattern]].
+
+### Project code, not platform API
+
+The example project uses its own helpers for building validation results and business errors, and its own date utility. These are project code. Copy the pattern, not the names.
 
 ## Examples
 
 ### rackinspect
-- Key files: `custom/.../_default_transferobjecttypes/entities/exchangerate/UpdateExchangeRatesCustomImplementation.java`, `custom/.../_default_transferobjecttypes/entities/user/CreateExchangeRateCustomImplementation.java`, `custom/.../partner_service/exchangerate/UpdateExchangeRatesCustomImplementation.java`
-- Pattern: Auto-fetch via MNB `ExchangeRateService` OSGi service; manual creation with multi-field validation (future date check, currency equality check, rate unit check, double-entry rate confirmation)
-- Notable: Uses `TemporalUtils.dateNow()` for consistent date handling; the partner_service version is a thin delegate to the entity-level implementation to expose the same operation from a different service context
-- Currency and initial exchange rate data are seeded by the `ExcelDataImporter` during initialization
+
+- The automatic fetch is a static operation with a custom implementation. It queries the currencies except the base currency, finds the ones without a current automatic rate, asks the external rate service for those, and writes the rates as automatic.
+- The manual entry operation validates the date, the currency pair and the rate unit before it writes the row.
+- A second operation delegates to the same implementation, so the same rule is reachable from another service context.
+- Currencies and the initial rates are seeded during initialization.

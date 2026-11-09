@@ -1,21 +1,34 @@
-## Overview
+## Backend guidance
 
-FeedEntry entities are created and managed by a `FeedService` OSGi service that synchronizes denormalized feed entries with post lifecycle transitions. When a post is published, a FeedEntry is created with denormalized fields (title, summary, organizationName, etc.). When a post is deleted or expired, the corresponding FeedEntry is removed. A `syncAllFeed` operation allows bulk re-synchronization of feed entries across all active organizations.
+### One service owns the feed rows
 
-## Implementation Pattern
+A single feed service creates and removes the rows. Publishing a source item creates its rows. Deleting or expiring the item removes them. Operations do not write feed rows directly.
 
-- A `FeedService` interface defines overloaded `createFeedEntry()` methods for each post subtype (Announcement, News, Offer, Request) and corresponding `deleteFeedEntry()` methods
-- Feed entry creation denormalizes post data into flat attributes (title, summary, organizationName, capabilities, authorName) and sets the `entryType` discriminator
-- Organization targeting: each FeedEntry links to `ownerOrganization` (1..1) and `targetOrganizations` (0..*) using targeting strategies
-- Two targeting strategies via `FeedTargetingStrategy` interface: `AllActiveOrganizationsTargetingStrategy` (for News, Offers, Announcements) and `RequestTargetingStrategy` (for Requests -- only organizations with matching capabilities)
-- `syncAllFeed()` iterates all feed entries and adds organizations created after the entry's publish date, respecting targeting rules
-- `syncFeedForOrganization()` syncs a single new organization into all applicable existing feed entries
-- The `SyncFeedCustomImplementation` custom operation on AdminDashboard triggers `feedService.syncAllFeed()`
-- The Initializer creates initial FeedEntry records during data seeding for test data
+- Provide one create method per content kind, and one delete method per content kind.
+- Each create method copies the display fields from the source and sets the type discriminator.
+- Targeting is a strategy chosen by the content kind: one strategy for items shown to all active organizations, another for items shown only to organizations with matching capabilities.
+
+### Write the rows in the publishing transaction
+
+Interceptors run only for built-in operations, so the publish and unpublish custom operations call the feed service themselves. Call it after the source item is saved, inside the same transaction, so the feed and the source commit or roll back together.
+
+### Keep targets in step with new organizations
+
+When a new organization is created, add it as a target to the existing rows that it may see. Do this for that one organization only; a full pass is for repair.
+
+### Bulk re-sync is a repair tool
+
+Provide one custom operation that re-syncs every row against the current targeting rules, for example after a rule change. Run it on demand. It is not the normal write path.
+
+### Errors
+
+A failed feed write is a platform failure. Fail the publishing operation so the source and the feed stay consistent. Do not throw a business fault for it.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `common/services/FeedService.java`, `common/services/feed/FeedTargetingStrategy.java`, `common/services/feed/AllActiveOrganizationsTargetingStrategy.java`, `common/services/feed/RequestTargetingStrategy.java`, `custom/.../admindashboard/SyncFeedCustomImplementation.java`
-- Pattern: Lifecycle-driven denormalization -- feed entries are created when posts are published and removed when posts are deleted/expired, keeping the feed always in sync
-- Notable: Strategy pattern for organization targeting; Request entries only target organizations with matching capabilities while other post types target all active organizations
+
+- A feed service has create and delete methods for each content kind (announcement, news, offer, request) and a targeting strategy per kind.
+- Requests reach only organizations with matching capabilities. The other kinds reach all active organizations.
+- The admin dashboard triggers the bulk re-sync operation.
+- The project's own service and strategy classes are project code. Copy the pattern, not the names.

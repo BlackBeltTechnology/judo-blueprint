@@ -1,39 +1,73 @@
 ---
 id: competence-skill-matrix-cluster
-title: Competence/Skill Matrix Entity Cluster with Levels and Approval
-description: An entity cluster for managing employee competences and skill assessments.
-aliases: []
-keywords: [competence, skill, matrix, cluster, levels, approval]
+title: Competence and Skill Matrix Cluster with Levels and Approval
+description: An entity cluster for recording what each person can do, at which level, with a self-assessed level, a manager-approved level and training targets.
+aliases: [skill matrix, competence matrix, competency model]
+keywords: [competence, skill, matrix, levels, approval, training target, junction entity]
 tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
 category: pattern
 status: single-project
 projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [approval-workflow-pattern]
+fragment: competence-skill-matrix-cluster
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-09
 ---
-## Description
+## Intent
 
-An entity cluster for managing employee competences and skill assessments. The core pattern consists of:
+Keep one record per person and competence, holding the level the person claims and the level a manager confirms. Training targets then say which level a person should reach by when. The cluster supports skill gap analysis and training planning.
 
-- **Competence** -- a named capability area (e.g., "Java Programming", "Project Management") with a `strategic` boolean flag indicating organizational importance, an `active` flag for soft-disable, and many-to-many associations to Tags for classification.
-- **SkillLevel** -- a reference data entity defining proficiency tiers (e.g., Beginner, Intermediate, Advanced, Expert) with a `name` and numeric `score` for quantitative comparison.
-- **Skill** -- a junction entity linking a User to a Competence with two SkillLevel references: `requestedLevel` (self-assessed by the professional) and `approvedLevel` (confirmed by a manager). A derived `approved` boolean computes whether the two levels match. An `approve` operation copies the requested level to the approved level.
-- **SkillTarget** -- a goal entity within a TrainingPlan, linking a Competence to a target SkillLevel with a `deadline` date and `completed` boolean. Represents what skill level an employee should achieve by a given date.
-- **User** -- the employee entity, carrying skills (0..* ASSOC), trainingPlans (0..* COMPOSITION), and operations for bulk approval and training plan creation.
+### A skill links a person to a competence with two levels
 
-The pattern supports a three-actor workflow:
-1. **Professional** (employee) -- requests skill levels via self-assessment
-2. **Manager** -- reviews and approves requested levels, creates training plans with skill targets
-3. **HR Employee** -- administers competences, tags, skill levels, and organizational units
+Each Skill is a junction between a User and a Competence. It holds a requested level (self-assessed) and an approved level (confirmed by a manager). The two level references are separate, so a change request and its approval are both visible.
 
-Derived attributes flatten navigation for display: `competenceName`, `approvedLevelName`, `requestedLevelName`, `userFullName`, `unitName`, `competenceScore` on the Skill entity.
+### Approval copies the requested level
 
-This pattern is characteristic of HR/talent management systems where skill gap analysis, training planning, and competency mapping are core business processes.
+The approve operation copies the requested level to the approved level. A skill counts as approved when both levels are set and equal. Until then, the manager sees a pending request.
 
-## Model Definition
+## Structure
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+The Competence entity has a name (required), a strategic flag (required, default false) and an active flag (required, default true). It is the catalog item that people are assessed on. Its skills and skill targets are its related elements.
+
+The SkillLevel entity is reference data: a name (required) and a numeric score (required). A Skill refers to two SkillLevel entries, requested and approved, each optional. A SkillTarget refers to one SkillLevel (required).
+
+The Skill entity holds no stored data. It is a junction with a required association to Competence (1..1), an optional association to User (0..1), and two optional associations to SkillLevel. Its approve operation is an instance operation.
+
+The SkillTarget entity is a goal: a completed flag and a deadline date. It refers to a SkillLevel (1..1) and to a Competence (1..1). It is owned by a User through a composition on the User's training plans.
+
+The User entity is the employee. It holds a full name, a many-association to its skills, and the composition of its skill targets. Its operations are a bulk approval of its skills and the creation of a training plan.
+
+## Constraints
+
+- A Skill refers to exactly one Competence. A Competence can have many skills.
+- The requested and approved levels are optional and independent. Approval is a separate action, not a side effect of setting the requested level.
+- A SkillTarget belongs to exactly one User. Deleting the User deletes its targets, because they are a composition.
+- Reference data (SkillLevel and Competence) is not created or changed through the people-facing actors.
+- Derived names and scores for display are computed on read. They are not stored on the Skill.
+
+## Variations
+
+- **Enumeration instead of reference entity.** When the scale is fixed and small, use an enumeration for the levels. A reference entity is better when the levels are managed by HR and can change. See [[risk-level-enum]] for the enumeration form.
+- **Manager approval from a hierarchy.** Approval can be limited to the manager of the person. Use a derived relation to find subordinates, as in [[approval-workflow-pattern]].
+- **Language proficiency as a separate scale.** A language skill with its own enumerated level can sit beside this cluster rather than inside it.
+
+## When to use
+
+- People must record their own level and have it confirmed by someone else.
+- Training goals must be tracked per person, with a level and a deadline.
+- Skill gap reports need the requested and approved level side by side.
+
+## When to avoid
+
+- There is no approval step. A single level per person is simpler.
+- The scale is a free text description, not an ordered level. Use a plain text note instead.
+- The need is a history of changes to one skill. Use a history entry instead.
+
+## Related
+
+- [[approval-workflow-pattern]] — the general pattern for a request that someone approves
+- [[product-with-approval-workflow]] — an approval workflow on a product, for comparison
+- [[risk-level-enum]] — an ordered enumeration, the alternative to a reference entity for levels
+- [[derived-attribute-flattening]] — how the display names are computed on read instead of stored

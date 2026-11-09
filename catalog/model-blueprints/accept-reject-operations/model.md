@@ -1,117 +1,37 @@
-## Examples
+## Model shape
 
-### mlszksz-platform
-- **RegistrationRequest TO** (`MLSZKSZPlatform::services::admin::RegistrationRequest`):
-  - Operations: accept, reject
-  - Transitions RegistrationRequestStatus from VERIFIED -> APPROVED or REJECTED
-- **UserInvitationRequestTO** (`MLSZKSZPlatform::services::companyadmin::UserInvitationRequestTO`):
-  - Operations: accept, reject
-  - Transitions InvitationStatus from VERIFIED -> APPROVED or REJECTED
-  - Guard attribute: operationAvailable (boolean)
-- **ModerationInput** (`MLSZKSZPlatform::services::admin::ModerationInput`):
-  - Unmapped transfer object with single `reason` attribute
-  - Used as input parameter for reject operations
+The shape has one request entity with two instance operations, one status enumeration with three values, one association to a user, and one input transfer object for the rejection reason.
 
-### judo-demo-miniworkflow
-- **Document entity** (`MiniWorkflow::Document`):
-  - Operations: accept, reject (plus requestReview, close)
-  - Transitions DocumentState: REVIEW_REQUESTED -> ACCEPTED or REJECTED
-  - Guard attributes: isAcceptable, isRejectable (with negations isNotAcceptable, isNotRejectable on DocumentTransfer)
-- **DocumentTransfer** (`MiniWorkflow::DocumentTransfer`):
-  - Operations: accept (MAPPED), reject (MAPPED), requestReview (MAPPED), close (MAPPED), createDocument (STATIC)
-  - Guard attributes: isAcceptable, isRejectable, isReviewable, isClosable plus their negations (isNotAcceptable, isNotRejectable, isNotReviewable, isNotClosable)
-- **Message** (`MiniWorkflow::Message`):
-  - Unmapped transfer object with single `message` attribute
-  - Used as input parameter for reject operation (equivalent to ModerationInput in mlszksz-platform)
-- This variant extends the accept/reject pair with requestReview and close operations, forming a full four-step document review workflow
+- **Request** is the entity that needs a decision. It is not createable, updateable or deleteable through the generated actions; the status changes only through accept and reject. Its attributes are title (required string), status (required, enumeration), and decisionTime (timestamp).
+- **RequestStatus** is the enumeration: PENDING, APPROVED and REJECTED. Values are stored as ordinals.
+- **Request.accept** and **Request.reject** are instance operations with custom implementations. Reject takes a RejectInput.
+- **RejectInput** is an unmapped transfer object with one text attribute, reason. It is only the input of reject.
+- **RequestTO** is a transfer object that maps Request and exposes accept and reject to the UI. Its operations are shown only when the guard attributes allow them.
+- **User** is the target of the optional association requester (0..1, association kind). Deleting the user does not remove the request.
 
-### trivia
-- **Question entity** (`trivia::entities::Question`):
-  - Operations: approve (INSTANCE), reject (INSTANCE), review (INSTANCE)
-  - Transitions QuestionStatus: REVIEW -> APPROVED or REJECTED; also APPROVED/REJECTED -> REVIEW via the review operation
-  - QuestionStatus enum members: REVIEW(1), APPROVED(2), REJECTED(3)
-  - Default status: REVIEW (questions start in review state)
-- **Admin Question TO** (`trivia::actors::admin::Question`):
-  - Operations: approve (MAPPED), reject (MAPPED), review (MAPPED), upload (STATIC), download (STATIC)
-  - Additional admin operations for bulk question management (upload JSON, download JSON)
-- This variant uses `approve`/`reject` naming (instead of `accept`/`reject`) and adds a `review` operation for cycling questions back to the review state
-- Three-way cycling: REVIEW <-> APPROVED and REVIEW <-> REJECTED, allowing questions to be re-reviewed after approval or rejection
-- No separate rejection reason input -- the reject operation takes no parameters in this variant
+Generated UI pages follow from the entity. The Request table and view pages stay for the admin dashboard. The accept and reject buttons use the generated operation UI, with the guard attributes controlling visibility. Only the pending status should show them.
 
-### itracker
-- **Initiative entity** (`itracker::entities::Initiative`):
-  - Operations: sendForApproval (INSTANCE), approve (INSTANCE), reject (INSTANCE), archiveForecast (INSTANCE)
-  - Transitions InitiativeStatus: NEW -> REVIEW (via sendForApproval) -> APPROVED or REJECTED (via approve/reject)
-  - InitiativeStatus enum members: APPROVED(1), COMPLETE(3), NEW(4), REVIEW(5), REJECTED(6)
-  - Default status: NEW (initiatives start in new state)
-- **User Initiative TO** (`itracker::actors::user::Initiative`):
-  - Operations: createInitiative (STATIC), sendForApproval (MAPPED), approve (MAPPED), reject (MAPPED), archiveForecast (MAPPED)
-  - Guard attributes: hideSendForApproval, hideApproval, hideReject, hideArchive, editable -- control operation visibility based on current status
-- This variant uses a three-step flow: create (NEW) -> sendForApproval (REVIEW) -> approve/reject (APPROVED/REJECTED)
-- The `sendForApproval` operation acts as a gating step before approval/rejection is possible
-- No separate rejection reason input -- the reject operation takes no parameters
-- Guard attributes use "hide*" naming convention (hideSendForApproval, hideApproval, hideReject) instead of "isNot*" or "is*Disabled"
+## Structure diagram
 
-### doors-model
-- **Contract entity** (`doors::entities::Contract`):
-  - Operations: startApproval (INSTANCE), approve (INSTANCE), reject (INSTANCE), sign (INSTANCE), close (INSTANCE), setNextStage (INSTANCE), setResponsible (INSTANCE), addSignee (INSTANCE), validate (INSTANCE, custom), addLog (INSTANCE), uploadFile (INSTANCE, custom), uploadSignedContract (INSTANCE, custom), generateDocument (INSTANCE, custom), updateDocument (INSTANCE)
-  - Transitions DocumentStatus: CREATED -> PENDING (via startApproval) -> APPROVED (via multi-stage approve) or REJECTED (via reject) -> SIGNED (via sign) -> CLOSED (via close)
-  - Reject can return to PENDING when restarted via startApproval
-  - DocumentStatus enum: CREATED(1), PENDING(2), APPROVED(3), SIGNED(4), REJECTED(5), CLOSED(6)
-- **RejectInput TO** (`doors::entities::RejectInput`):
-  - Unmapped transfer object with single `text` attribute
-  - Used as input parameter for the reject operation
-- **StartApprovalResult / ValidateContractResult / ContractValidationError TOs**: output transfer objects for the startApproval and validate operations, providing success/failure status and error messages
-- This is the most complex approval variant: it combines approve/reject with a dynamic multi-stage workflow engine where ContractStage entities are created from WorkflowStage templates, each stage has condition-based routing (conditionNetValueUpperLimit/LowerLimit, conditionTemplateBased, conditionSpecial), and stages can be auto-approved when conditions are not met
-- The workflow progresses through stages sequentially (by order), with each stage requiring approval from responsible Position holders based on the contract's division
-- Additional operations beyond approve/reject: sign (for physical document signing after approval), close (for archiving after signing), uploadFile/uploadSignedContract (for document management)
-
-### ams-model
-- **Request entity** (`ams::entities::Request`, abstract base):
-  - Operations: approve (INSTANCE), reject (INSTANCE), reset (INSTANCE)
-  - Transitions Status: PENDING -> APPROVED (via approve) or REJECTED (via reject); reset returns to PENDING
-  - Status enum members: PENDING(1), APPROVED(2), REJECTED(3)
-  - The approve operation sets `this.status = Status#APPROVED` and records `this.decisionTime = Timestamp!now()`
-  - The reject operation sets `this.status = Status#REJECTED` and records `this.decisionTime = Timestamp!now()`
-  - The reset operation sets `this.status = Status#PENDING` and unsets decisionTime
-  - Guard attribute: isPending (DERIVED: `self.status == Status#PENDING`) controls when approve/reject are available
-- **ConfirmationRequest entity** (`ams::entities::ConfirmationRequest`, extends Request):
-  - Inherits approve/reject/reset from Request
-  - Adds: approver [1..1] ASSOC User, campaignStatus (DERIVED from container Campaign)
-- **Manager Request TO** (`ams::actors::manager::Request`, maps ConfirmationRequest):
-  - Operations: approve (MAPPED), reject (MAPPED)
-  - Attributes: applicationName, userName, userEmail, responsibleName, status, type, loginName, effectiveDate, isPending, roles, campaignStatus
-  - Guard: isPending controls operation availability in UI; approve/reject buttons use `enabledBy` pointing to isPending with confirmationType: MANDATORY
-- **User.approveAll** (`ams::entities::User`):
-  - INSTANCE operation that iterates over `this.approvals!filter(r | r.status == Status#PENDING)` and calls `request.approve()` on each
-  - Enables bulk approval of all pending confirmation requests assigned to a manager
-- **ManagerApprovalList TO** (`ams::actors::manager::ManagerApprovalList`, maps User):
-  - Aggregates pending approvals via DERIVED relation filtered by `status == PENDING and campaignStatus == CampaignStatus#OPEN`
-  - Operations: approveAll (MAPPED) for one-click bulk approval
-- This variant uses an abstract Request base entity with approve/reject defined once and inherited by ConfirmationRequest and AccessRequest subtypes
-- No separate rejection reason input -- reject takes no parameters
-- Adds a `reset` operation for returning decided requests back to PENDING state
-- Includes a bulk `approveAll` operation on the User entity for batch processing
-- Guard attributes use `isPending` derived boolean with UI `enabledBy` binding
-
-### skillmatrix-model
-- **Skill entity** (`SkillMatrix::Skill`):
-  - Operations: approve (INSTANCE)
-  - The approve operation sets the `approvedLevel` to match the `requestedLevel`, confirming the skill assessment
-  - Derived boolean: `approved` (DERIVED: `self.approvedLevel!isDefined() and self.requestedLevel!isDefined() and self.approvedLevel == self.requestedLevel`) -- true when levels match
-  - No explicit status enum; approval state is computed by comparing the approvedLevel and requestedLevel relations
-  - Relations: competence (1..1 TwoWay ASSOC Competence), approvedLevel (0..1 OneWay ASSOC SkillLevel), requestedLevel (0..1 OneWay ASSOC SkillLevel), user (0..1 TwoWay ASSOC User)
-  - Derived display attributes: approvedLevelName, requestedLevelName, competenceName, userFullName, unitName, competenceScore
-- **Manager Skill TO** (`actor::manager::Skill`):
-  - Operations: approve (MAPPED)
-  - Attributes: competenceName (DERIVED), approvedLevel (DERIVED), requestedLevel (DERIVED), approved (DERIVED), professionalName (DERIVED), professionalIndexName (DERIVED), unapproved (DERIVED)
-  - The `unapproved` attribute serves as a guard for showing the approve button
-- **User bulk operations**:
-  - User.approveAllSkills -- INSTANCE operation that bulk-approves all pending skills for a user
-  - User.approveAllSubordinatesSkills -- INSTANCE operation that bulk-approves all pending skills across all subordinates
-- **Manager TOs for bulk approval**:
-  - manager::Subordinate -- operations: approveAllSkills, createTrainingPlan, completeAllTargets
-  - manager::UnapprovedSkillsView -- relation: skillsToApprove (0..* AGGREGATION Skill); operations: approveAllSubordinatesSkills
-- This variant is unique in that it does not use a status enum or reject operation; instead, approval state is computed by comparing two relation fields (approvedLevel vs requestedLevel)
-- The professional (self-assessment) sets the requestedLevel, and the manager sets the approvedLevel via the approve operation
-- Bulk approval operates at both the individual user level (approveAllSkills) and across all subordinates (approveAllSubordinatesSkills)
+<!-- mermaid:generated fragment=accept-reject-operations cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Request {
+    <<Entity>>
+    +String title [1]
+    +RequestStatus status [1]
+    +Timestamp decisionTime
+  }
+  class RequestStatus {
+    <<Enumeration>>
+    PENDING
+    APPROVED
+    REJECTED
+  }
+  class User {
+    <<Entity>>
+  }
+  Request --> "0..1" User : requester
+  Request ..> RequestStatus : status
+```
+<!-- /mermaid:generated -->

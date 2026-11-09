@@ -1,31 +1,70 @@
 ---
 id: firebase-push-notification-pipeline
 title: Firebase Push Notification Delivery Pipeline
-description: A complete push notification delivery pipeline built on Firebase Cloud Messaging (FCM).
+description: "A push notification delivery pipeline on Firebase Cloud Messaging: notifications are created as pending records, then delivered per device on a schedule with retry, token cleanup and email fallback."
 aliases: []
 keywords: [firebase, push, notification, delivery, pipeline]
-tags: ["domain:model", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+tags: [domain:model, layer:backend, project:mlszksz-platform, status:single-project]
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:unrecorded"]
 alternatives: []
-fragment: pending
+fragment: "none: backend-only"
 first_seen: 2026-03-09
-last_updated: 2026-03-09
-format: legacy
+last_updated: 2026-11-09
 ---
+## Intent
 
-## Description
+Deliver a notification to every eligible device of a user, reliably and without blocking the business operation that triggered it. Creating a notification and sending it are two separate steps, so a slow or failing push service does not hold up the request that caused the event.
 
-A complete push notification delivery pipeline built on Firebase Cloud Messaging (FCM). This is an implementation-only blueprint -- it does not correspond to a single model entity but orchestrates several model entities (Device, Notification, User) through a multi-stage delivery process with retry logic, device management, deduplication, and deep link routing.
+### Create first, deliver later
 
-The pipeline includes:
-- A `firebase` Maven module wrapping the Firebase Admin SDK as an OSGi service with credential management and ClassLoader bridging
-- A `PushNotificationService` (common module) implementing the full notification lifecycle: creation with deduplication, batch delivery with per-device FCM sending, exponential backoff retry, invalid token cleanup, and email fallback
-- Device registration/deactivation/token refresh operations with global deduplication
-- Integration with a scheduler job (`NotificationDeliveryJob`) that processes PENDING and retries FAILED notifications on a 30-second cycle
+The business operation records a pending notification and returns. A scheduled job later sends each pending notification to the user's devices. A failed send stays in the queue for a later retry.
 
-## Backend Implementation
+### Permanent and transient failures are separate
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+A send to an invalid device token deactivates that device at once. A transient failure is retried with growing delays up to a fixed limit.
+
+## Structure
+
+The pipeline has three parts:
+
+- **Push gateway.** A thin wrapper around the push service's SDK. It sends one message to one device token and reports one of three outcomes: success, a retryable failure, or an invalid token.
+- **Notification service.** Creates pending notifications for eligible users, honouring their opt-in preferences, and delivers them. It also registers devices and refreshes their tokens.
+- **Scheduled jobs.** One job delivers pending and retriable notifications on a short cycle. A daily job deactivates devices whose token has not been refreshed for a set number of days.
+
+The entities involved are the notification, the device (one per user and device token) and the user. A notification has a type that maps to a deep-link route in the app.
+
+## Constraints
+
+- A notification is created in the pending state and is delivered only by the delivery job.
+- Duplicate notifications are suppressed when they are created in a batch.
+- Retry delay doubles with each retry, is capped at one hour, and stops after five retries.
+- A device token belongs to one user at a time. Registering a token that another user holds moves it.
+- Messages to Android devices carry data only, with no visible notification payload, so the app handles both foreground and background taps.
+- Email is a best-effort fallback sent only to users who opted in. Its failure does not fail the push.
+
+## Variations
+
+- **Synchronous send.** Send inside the business operation. This is simpler but ties the request's latency to the push service.
+- **Dedicated queue.** Move pending notifications to a message queue instead of a table polled by a job. This scales better but adds an infrastructure component.
+- **Email only.** Skip the push gateway and send email alone. This fits products without a mobile app.
+
+## When to use
+
+- Users receive event notifications on mobile devices through a push service.
+- A user may have several devices, and each needs its own token.
+- Delivery must survive transient failures and must not block the triggering operation.
+
+## When to avoid
+
+- Notifications are only shown inside the app and never pushed.
+- Each event must reach the user exactly once with no retry. Use a stronger delivery guarantee.
+- The volume is so low that a synchronous send is simpler.
+
+## Related
+
+- [[safe-failure-pattern]] — when a side-effect failure must not break the business operation
+- [[operation-call-logging-interceptor]] — logging around operations that trigger notifications
+- [[external-api-adapter-provider-pattern]] — wrapping a third-party SDK behind an adapter

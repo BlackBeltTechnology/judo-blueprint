@@ -1,62 +1,38 @@
-## Examples
+## Model shape
 
-### InterfaceRegister
-**Core entities:**
-- **Application**: `InterfaceRegister::entities::Application` (non-CRUD)
-  - Attributes: id (String, req, identifier), name (String, req, identifier), category (ApplicationCategory, req), version (String, req)
-  - Relations: vendor [1..1] ASSOC -> Vendor
+The core shape has two entities and one enumeration.
 
-- **Vendor**: `InterfaceRegister::entities::Vendor` (non-CRUD)
-  - Attributes: id (String, req, identifier), name (String, req, identifier), address (String, req)
+- **Application** holds a required name (identifier), a required version, and a required category. It is not createable, updateable or deleteable through the generated actions; its owners create it.
+- **Vendor** holds a required name (identifier) and a required address. It is not createable, updateable or deleteable through the generated actions.
+- **ApplicationCategory** is the enumeration of application types. Values are stored as ordinals.
+- Each application has one vendor (1..1, association). Several applications can share one vendor.
 
-- **HighLevelConnection**: `InterfaceRegister::entities::HighLevelConnection` (non-CRUD)
-  - Attributes: id (String, req, identifier), name (String, req, identifier), description (Text, req), periodicity (HighLevelPeriodicity, req)
-  - Relations: senderApplication [1..1] ASSOC -> Application, receiverApplication [1..1] ASSOC -> Application, businessDataTypes [0..*] ASSOC -> BusinessDataType, brands [0..*] ASSOC -> Brand
+The generated pages for Application and Vendor are read-only views and tables for the architecture dashboard. The category filter uses the enumeration values.
 
-- **ConnectionDefinition**: `InterfaceRegister::entities::ConnectionDefinition` (non-CRUD)
-  - Attributes: id (String, req, identifier), directionOfDataTransmission (DirectionOfDataTransmission), peroiodicity (String, req), connectionDescription (Text, req)
-  - Relations: interfaceSpecification [1..1] ASSOC -> InterfaceSpecification, clientApplication [0..1] ASSOC -> Application, serverApplication [0..1] ASSOC -> Application, highLevelConnection [1..1] ASSOC -> HighLevelConnection
+## Structure diagram
 
-**Deployment entities:**
-- **ApplicationInstance**: `InterfaceRegister::entities::ApplicationInstance` (non-CRUD)
-  - Attributes: id (String, req, identifier), environment (Environment, req)
-  - Relations: application [1..1] ASSOC -> Application
-
-- **DeploymentItem**: `InterfaceRegister::entities::DeploymentItem` (non-CRUD)
-  - Attributes: id (String, req, identifier)
-  - Relations: applicationInstance [1..1] ASSOC -> ApplicationInstance
-
-**Network entities:**
-- **Server**: `InterfaceRegister::entities::Server` (non-CRUD)
-  - Attributes: id (String, req, identifier), name (String, req, identifier)
-  - Relations: ipv4Addresses [0..*] COMPOSITION -> IPV4Address, ipv6Addresses [0..*] COMPOSITION -> IPV6Address
-
-- **IPV4Address**: address (IPV4Address type, maxLength: 32)
-- **IPV6Address**: address (IPV6Address type, maxLength: 200)
-
-- **ProvidedInterface**: `InterfaceRegister::entities::ProvidedInterface` (non-CRUD)
-  - Attributes: id (String, req, identifier), port (Integer, req)
-  - Relations: interfaceSpecification [1..1] ASSOC -> InterfaceSpecification, ipv4Address [0..1] ASSOC -> IPV4Address, ipv6Address [0..1] ASSOC -> IPV6Address
-
-- **ClientInterface**: `InterfaceRegister::entities::ClientInterface` (non-CRUD)
-  - Attributes: id (String, req, identifier)
-  - Relations: interfaceSpecification [1..1] ASSOC -> InterfaceSpecification
-
-- **ConcreteConnection**: `InterfaceRegister::entities::ConcreteConnection` (non-CRUD)
-  - Attributes: id (String, req, identifier), connectString (String)
-  - Relations: clientInterface [1..1] ASSOC -> ClientInterface, providedInterface [1..1] ASSOC -> ProvidedInterface, connectionDefinition [1..1] ASSOC -> ConnectionDefinition
-
-**Supporting enums:**
-- `ApplicationCategory`: CRM(1), DMS(2), IMS(3), FINANCE_AND_ACCOUNTING_SYSTEM(4), DOCUMENT_MANAGEMENT_SYSTEM(5), WORKFLOW_MANAGEMENT_SYSTEM(6), FLEET_MANAGEMENT_SYSTEM(7), OTHER(8), EXTERNAL(9)
-- `HighLevelPeriodicity`: ADHOC(1), HOURLY(2), DAILY(3), WEEKLY(4), MONTHLY(5), YEARLY(6), SOME_MINUTES(7), SOME_DAYS(8), SOME_WEEKS(9), SOME_MONTHS(10)
-
-**Transfer objects:**
-- `ApplicationTransfer` [maps Application] -- category, id, name, version + vendorTransfer [1..1] AGGREGATION
-- `VendorTransfer` [maps Vendor] -- address, id, name
-- `HighLevelConnectionTransfer` [maps HighLevelConnection] -- description, id, name, periodicity + brands/businessDataTypes [0..*] AGGREGATION, senderApplication/receiverApplication [1..1] AGGREGATION
-- `ConnectionDefinition` TO [maps ConnectionDefinition] -- id, directionOfDataTransmission, peroiodicity, connectionDescription + relations to ApplicationTransfer, HighLevelConnectionTransfer, InterfaceSpecification TO
-- `CreateApplicationInput` (unmapped) -- category, version, name, id + vendor [1..1] AGGREGATION to CreateApplicationVendorInput
-- `CreateHighLevelConnectionInput` (unmapped) -- description, periodicity, name, id + denormalized sender/receiver fields + relations to CreateHighLevelConnectionApplicationInput, CreateHighLevelConnectionBrandInput, CreateHighLevelConnectionBusinessDataTypeInput, CreateHighLevelConnectionVendorInput
-
-**Actor access:**
-- EnterpriseArchitect actor accesses: applications (C, U), vendors (C, U), highLevelConnections (C, U), connectionDefinitions (C, U), dashboard (read-only)
+<!-- mermaid:generated fragment=application-vendor-integration-registry cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Application {
+    <<Entity>>
+    +String name [1]
+    +String version [1]
+    +ApplicationCategory category [1]
+  }
+  class ApplicationCategory {
+    <<Enumeration>>
+    CRM
+    FINANCE
+    DOCUMENT_MANAGEMENT
+    OTHER
+  }
+  class Vendor {
+    <<Entity>>
+    +String name [1]
+    +String address [1]
+  }
+  Application --> "1" Vendor : vendor
+  Application ..> ApplicationCategory : category
+```
+<!-- /mermaid:generated -->

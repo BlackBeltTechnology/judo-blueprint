@@ -1,16 +1,36 @@
-## Overview
+## Backend guidance
 
-The accept/reject operations are implemented as thin custom operation classes that delegate to shared service layers (RegistrationService, InvitationService), each logging an audit event after the state transition completes.
+### Put the status check in the custom operation
 
-## Implementation Pattern
+Accept and reject are custom operations. Interceptors run only for built-in operations (create, update, delete, list and similar), so no interceptor checks the transition or guards the status. The custom implementation must read the current status, refuse any value other than pending, and then change the status.
 
-Each accept/reject operation is a separate `@Component` class implementing the generated operation interface (e.g., `Accept`, `Reject`). The class injects a domain-specific service (`RegistrationService` or `InvitationService`) via `@Reference` and an `AuditLogService` for cross-cutting audit logging. The service layer performs status validation (must be VERIFIED), authorization checks (organization-scoped access for CompanyAdmin), entity creation (User + Keycloak account on accept), email dispatch (magic link on accept), and status update (APPROVED or REJECTED). Reject operations validate the same preconditions but only update the status. Both throw `BusinessErrorException` for invalid state transitions.
+- Read the current status first. If it is not pending, throw the modeled business fault for an invalid transition.
+- Change the status and the decision time in the same operation, so both are saved in one transaction.
+- Reject takes the RejectInput. Pass the reason to the service or the audit call; do not store it on the status enumeration.
+
+### Declare the fault on the operation
+
+A business fault is a transfer object declared as a fault parameter of the operation. The generated interface then throws the matching checked exception only for that operation. Without the declaration, throwing the exception does not compile.
+
+- Use a modeled fault for an invalid transition. The client receives a 422 with the fault type in the header.
+- Platform errors such as ValidationException (400) and NotFoundException (404) are not modeled faults. They come from the platform, not from the model.
+
+### Keep the logic in a service
+
+Put the transition and its checks in a service class, and let the two operations call it. The operations stay thin. Reject validates the same preconditions as accept and changes only the status.
+
+- The service is project code. Its name and layout belong to the example project, not to the platform.
+- Log an audit record after the transition, inside the same transaction. See [[audit-log-entity]] for the record shape.
+
+### Interceptors cannot guard these operations
+
+An interceptor does not run for accept or reject, because they are custom operations. If the rule must hold for every path that can decide a request, enforce it in the operation and in the service. An interceptor can still guard the built-in update of the status, if the model exposes one.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `custom/.../registrationrequest/AcceptCustomImplementation.java`, `custom/.../registrationrequest/RejectCustomImplementation.java`, `custom/.../userinvitationrequestto/AcceptCustomImplementation.java`, `custom/.../userinvitationrequestto/RejectCustomImplementation.java`
-- Pattern: Two parallel accept/reject pairs -- one for RegistrationRequest (delegating to `registrationService.approve()`/`reject()`) and one for UserInvitationRequestTO (delegating to `invitationService.accept()`/`reject()`)
-- Service layer: `RegistrationServiceImpl` validates VERIFIED status, checks duplicate org names, creates Organization + User + Keycloak user, sends approval email with magic link; `InvitationServiceImpl` validates VERIFIED status, checks organization access (PlatformAdmin can manage all, CompanyAdmin only own org), creates User + Keycloak user
-- Audit: Every accept/reject logs via `auditLogService.log()` with action type (REGISTRATION_APPROVED, INVITATION_ACCEPTED, etc.) and contextual details (email, organizationName)
-- Notable: Accept operations create Keycloak users and generate magic links for one-click login; reject is a status-only update
+
+- Two pairs of accept and reject operations: one for the registration request and one for the user invitation request. Each pair is a thin custom operation class that calls a shared service.
+- The registration service checks that the request is verified, creates the organization and user, and sends an approval email. The invitation service checks the organization access rule and then creates the user.
+- Each accept and reject writes an audit record with the action type and the email.
+- The service and class names are example project code. Copy the pattern, not the names.

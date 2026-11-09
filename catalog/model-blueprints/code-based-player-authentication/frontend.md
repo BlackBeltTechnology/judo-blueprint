@@ -1,20 +1,25 @@
-## Overview
+## Frontend guidance
 
-The code-based player authentication pattern manifests in the React frontend as a fully custom registration and activation dialog flow that bypasses the JUDO-generated UI entirely. The player frontend overrides `App.tsx` to implement a custom single-page application with localStorage-based session management, where registration and activation are handled through purpose-built dialog components that call the generated service layer directly.
+### Replace the generated sign-in with a two-step dialog
 
-## Implementation Pattern
+The generated pages do not fit this flow. Build a two-step dialog: first collect the e-mail and name and call register; then show a code input and call activate. The generated Form for User stays hidden.
 
-- **Complete App override**: The player frontend overrides `App.tsx` (listed in `.generator-ignore`) to replace the generated page-based navigation with a custom SPA. The app manages authentication state via `localStorage` keys for user ID, nickname, and code.
-- **Two-step dialog flow**: Registration and activation are separate dialog components. `RegistrationDialog` collects email and nickname, calls `PlayerServiceForApplicationImpl.register()`. On success, it opens `ActivationDialog` which presents a 4-digit code input using a `NumberInputAutoFocus` custom component (individual digit fields with auto-advance).
-- **Auto-submit on code completion**: The activation dialog auto-submits when all 4 digits are entered (checking `value.length === 4`), providing a streamlined UX without requiring a button click.
-- **Error handling with ErrorCode enum**: The `Contest` component intercepts errors from the `enter` operation, parses the response for `ErrorCode.INVALID_CODE`, and re-opens the registration dialog when the stored code is no longer valid.
-- **Session persistence**: User credentials (email, nickname, code) are stored in `localStorage` and restored on page load, enabling session continuity across browser refreshes. A "Reset" bottom navigation action clears all stored data.
-- **Custom styled components**: `BlurDialog`, `BlurCard`, `ThreeDGlossyButton`, and `NumberInputAutoFocus` are shared across the registration flow, providing a glassmorphism design with frosted-glass backgrounds and glossy buttons.
+- The code input is a row of single-digit fields that move focus forward on each entry.
+- Submit the activation automatically when the last digit is entered. A button is not needed.
+- After activation, store the e-mail and an identifier locally so the session survives a page reload. Clear it on reset.
+
+### Handle an invalid code by re-opening the registration
+
+When the activate call returns the generic invalid-code fault, show the registration dialog again. The stored session is no longer valid.
+
+### Custom styling is optional
+
+Shared dialog, card and button components can give the flow a consistent look. This is a presentation choice, not part of the pattern.
 
 ## Examples
 
 ### trivia
-- Framework: React
-- Key files: `src/trivia/RegistrationDialog.tsx`, `src/trivia/ActivationDialog.tsx`, `src/trivia/CustomComponents.tsx`, `src/App.tsx`
-- Pattern: Custom two-step registration flow using `PlayerServiceForApplicationImpl.register()` and `.activate()`. Email + nickname collected first, then a 4-digit activation code with auto-submit. Session state persisted in localStorage with keys `trivia-user-id`, `trivia-nickname-id`, `trivia-user-code-id`.
-- Notable: The entire player frontend is a custom SPA -- no JUDO generated pages are used. The `NumberInputAutoFocus` component implements a PIN-entry UX with individual digit fields that auto-focus the next field on input.
+
+- Framework: React.
+- The player frontend replaces the generated navigation with a custom single-page layout, because the flow must run before any generated page is available.
+- The code input auto-submits on the fourth digit.
