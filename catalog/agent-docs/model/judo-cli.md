@@ -43,11 +43,19 @@ These rules are **platform invariants**, not preferences. Violating them produce
 
 3. **Always paginate query results.** Use `limit`, `offset`, and `totalCount` together. Without explicit pagination, large result sets are silently truncated and the assistant operates on a partial view of the model.
 
-4. **Never `save` blindly.** Always run the transformation pipeline (`transform --load`) and verify the derived models query correctly **before** persisting an ESM mutation. A `save` without prior validation can leave the model in a state that the next build will reject.
+4. **One writer per model file.** A model file is changed by exactly one CLI session at a time. Never point two agents, two terminals or a CLI and the Designer at the same `.model` file: each holds its own in-memory copy and the last `save` silently overwrites the other's edits.
 
-5. **The `transform` command is server-side only.** It regenerates PSM, ASM, RDBMS, Liquibase — but it does **not** regenerate the UI model. After any UI-affecting ESM mutation (forms, tables, views, menu items, actor scaffolding), the client-side build (`./judo.sh build -f`) must run before UI queries reflect reality. See [transformation-pipeline.md](transformation-pipeline.md).
+5. **Parallel model work happens in separate worktrees, joined with `merge`.** Give every parallel task its own git worktree (or its own copy of the model file), all started from the same commit. Each task edits and saves only its own copy. Then, in the target worktree, run `merge <theirs.model> --base <base.model>` once per copy, where `<base.model>` is the file all copies started from (for example `git show <start-commit>:model/<app>.model > /tmp/base.model`). Without `--base`, elements both copies added are reported as add-add conflicts.
+   - Use `merge --dry-run` first. It lists every conflict with a key and the fix commands (`--take <key>`, `--prefer mine|theirs`, or a follow-up `delete` / `update`).
+   - After the merges: `validate --strict`, `save`, `status` (expect `state clean`, `unsaved changes none`), then commit.
+   - `merge` never runs git. Committing and removing the worktrees stays with the caller.
+   - `--aird` also merges the Designer diagram files of the copies.
 
-6. **`save` writes to disk; it does not commit.** A CLI `save` overwrites the on-disk `.model` file but does not make a git commit. Running `git restore` or `git checkout` on the model file at any later point silently destroys every uncommitted save. Either commit immediately after each `save`, or copy the model file to a backup before any git operation that could touch it.
+6. **Never `save` blindly.** Always run the transformation pipeline (`transform --load`) and verify the derived models query correctly **before** persisting an ESM mutation. A `save` without prior validation can leave the model in a state that the next build will reject.
+
+7. **The `transform` command is server-side only.** It regenerates PSM, ASM, RDBMS, Liquibase — but it does **not** regenerate the UI model. After any UI-affecting ESM mutation (forms, tables, views, menu items, actor scaffolding), the client-side build (`./judo.sh build -f`) must run before UI queries reflect reality. See [transformation-pipeline.md](transformation-pipeline.md).
+
+8. **`save` writes to disk; it does not commit.** A CLI `save` overwrites the on-disk `.model` file but does not make a git commit. Running `git restore` or `git checkout` on the model file at any later point silently destroys every uncommitted save. Either commit immediately after each `save`, or copy the model file to a backup before any git operation that could touch it.
 
 ## Reach for the CLI when…
 

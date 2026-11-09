@@ -118,3 +118,9 @@ High 40 · Medium 25 · Low 6.
    `retries: 4`): a short "known issue" note in agent-docs *and* a linked
    judo-ng issue, or issue-tracker only? (Review leaned: do both.)
 2. **Scope confirmation.** Keep JSL and Flutter out, Spring Boot in?
+
+## Parallel model edits: one writer per file, join with CLI merge (2026-11-09)
+
+Operator rule: a model file is never edited by two sessions at once, and never by hand. Parallel model work runs in separate worktrees (or separate copies from the same base) and is joined with `judo-cli merge <theirs> --base <base>`.
+
+Verified with the pinned CLI: two copies from the same base, each adding its own package, merge with 0 conflicts; without `--base` the shared parent package is reported as an add-add conflict with fix commands. Recorded in `catalog/agent-docs/model/judo-cli.md` (rules 4 and 5) and `skills/judo-model-mermaid/references/fragments.md`.

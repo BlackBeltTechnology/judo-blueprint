@@ -37,6 +37,16 @@ never stored in the repository; only the saved `.model` file is.
 `./mvnw -q validate -P download-model-cli`). Run each scratch Sandbox in its
 own directory: the CLI keeps one server session per model file.
 
+One writer per model file: never let two agents edit the same `.model` copy.
+Parallel agents each get their own copy (own worktree or own scratch dir)
+started from the same base file. When their work must end up in one model,
+join the copies with `<cli> merge <theirs.model> --base <base.model>`
+(`--dry-run` first), then `validate --strict` and `save`. See
+`catalog/agent-docs/model/judo-cli.md`, rules 4 and 5.
+
+Stop the server when you are done with a copy:
+`<cli> server stop` (with the same `-m`).
+
 ## Diagram options
 
 `render` draws `mermaid model --scope Sandbox::bp::<pkg> --split none` plus the
