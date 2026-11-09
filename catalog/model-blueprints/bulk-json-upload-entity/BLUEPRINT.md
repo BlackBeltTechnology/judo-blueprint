@@ -1,37 +1,66 @@
 ---
 id: bulk-json-upload-entity
 title: Bulk JSON Upload Entity with Question/Data Import
-description: An Upload entity that records bulk data imports via JSON.
-aliases: []
-keywords: [bulk, json, upload, question, data, import]
-tags: ["domain:model", "layer:model", "layer:backend", "project:trivia", "status:single-project"]
+description: An Upload entity that records one bulk JSON import batch and links the items it created back to that batch.
+aliases: [bulk import, json import, upload batch]
+keywords: [bulk, json, upload, import, export, traceability, batch]
+tags: [domain:model, layer:model, layer:backend, project:trivia, status:single-project]
 category: pattern
 status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
-fragment: pending
+fragment: bulk-json-upload-entity
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-09
 ---
-## Description
+## Intent
 
-An Upload entity that records bulk data imports via JSON. The entity captures the raw JSON payload, a timestamp of when the upload occurred, and a count of how many items were imported. It maintains an association (0..*) to the entities that were created from the upload, providing traceability from imported items back to their source batch.
+Ingest a batch of records from an external JSON file in one operation, and keep a record of which batch produced each imported item. The batch row holds the raw input, the time, and the count of created items. Items refer back to their batch.
 
-The transfer object layer provides:
-- A **JsonData** unmapped TO with a single `json` attribute, used as the input parameter for the upload operation
-- An **Upload** mapped TO showing the upload metadata and the imported items via an aggregation relation
-- The upload operation is a STATIC operation on the target entity's transfer object (e.g., Question.upload)
+### Each import leaves a batch row
 
-A companion **download** STATIC operation exports the same data back as JSON, completing a round-trip import/export cycle.
+The import operation writes an Upload row before it creates items. The row is the audit trail: it keeps the raw JSON, the time of the upload, and how many items were created. Upload is not created through a generated create action.
 
-This pattern is suitable for applications that need batch data ingestion from external sources (e.g., importing quiz questions, product catalogs, reference data) while maintaining audit trail of which import batch produced each record.
+### Imported items point back to their batch
 
-## Model Definition
+Each created item holds a reference to its Upload. Tracing an item to its source batch is a single navigation. Items that already exist are skipped, so a batch can be re-run without duplicating records.
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+## Structure
 
-## Backend Implementation
+The Upload entity has three required attributes: json (text), timestampOfUpload (timestamp) and nrOfUploadedQuestions (integer). Upload has a 0..* association to Question. Question has a required text identifier, an optional back-reference to Upload (0..1) and an optional Category (0..1). Category has a required name identifier.
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+The import and download operations are not part of the entity shape. They are static operations that take the JSON as an unmapped transfer object input and return a file reference or the export payload.
+
+## Constraints
+
+- Upload rows are created only by the import operation. Generated create, update and delete are turned off.
+- The import writes the Upload row and its items in the same transaction. If an item fails, the whole batch rolls back, including the Upload row.
+- Items that match an existing identifier are skipped, not updated.
+- The JSON text is stored whole. Its size is bounded by the database text column, so large files need the file-store path.
+
+## Variations
+
+- **Whole-file import through the file store.** The JSON is uploaded as a binary file, read back by the operation, and parsed there. This is the example project's approach for larger files.
+- **Inline JSON input.** The JSON arrives as a text input on an unmapped transfer object. Simpler, but limited by request size.
+- **Batch without a Category.** Drop the Category entity when items carry no classification. The Upload and item relations stay the same.
+- **Export as a round trip.** A static download operation writes the same item shape back out as JSON. The CSV counterpart is described in the bulk import best practices.
+
+## When to use
+
+- A reference list or catalog of records is loaded from an external file in batches.
+- Auditors need to know which batch created an item and when.
+- The same record shape must be imported and exported in a round trip.
+
+## When to avoid
+
+- Items must be edited individually after import and the batch link is not needed. A plain entity with a generated create form is simpler.
+- Imports are continuous streams rather than batches. Use an event or queue instead of a batch row.
+- The file is too large for a single transaction. Split it or use a staged import.
+
+## Related
+
+- [[event-log-entity]] — an append-only log of events, used when every change must be recorded rather than one batch
+- [[document-file-attachment]] — how the uploaded file itself is stored and attached
+- [[reference-data-lookup-entity]] — the Category reference list that imported items point to

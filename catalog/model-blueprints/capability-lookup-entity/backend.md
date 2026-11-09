@@ -1,17 +1,33 @@
-## Overview
+## Backend guidance
 
-The Capability entity is managed through a `MasterDataService` OSGi service that handles creation, update, and toggle operations. Custom operations on the admin Capability transfer object delegate to this shared service. The Initializer seeds initial capabilities at application startup.
+The capability operations are custom operations on the administrator's view of Capability. Interceptors do not run for them, so their rules live in the operation or in the service behind it.
 
-## Implementation Pattern
+### Operations are thin wrappers over one service
 
-- A `MasterDataService` interface defines `createCapability()`, `updateCapability()`, and `toggleCapabilityActive()` methods
-- Custom operation classes (`ActivateToggleCustomImplementation`, `UpdateCapabilityCustomImplementation`, `CreateCapabilityCustomImplementation`) are thin OSGi `@Component` wrappers that inject `@Reference MasterDataService` and delegate
-- The `CreateCapabilityCustomImplementation` lives in the `admindashboard` package (dashboard-level operation), while toggle and update live in the `capability` package (instance-level operations)
-- The Initializer's `init()` method seeds capabilities using `CapabilityDao.create(CapabilityForCreate.builder()...)`
+Create, update and toggle each call one master-data service. The operation class is a small component that receives the service by injection and delegates. Both the service and the operation classes are project code, not platform API.
 
-## Examples
+```java
+public class ActivateToggleCustomImplementation implements ActivateToggleOperation {
+    private final MasterDataService masterData;  // project service
 
-### mlszksz-platform
-- Key files: `custom/.../admindashboard/CreateCapabilityCustomImplementation.java`, `custom/.../capability/ActivateToggleCustomImplementation.java`, `custom/.../capability/UpdateCapabilityCustomImplementation.java`, `common/services/MasterDataService.java`
-- Pattern: Dashboard-level create operation + instance-level toggle/update operations, all delegating to `MasterDataService`
-- Notable: The same `MasterDataService` manages both City and Capability entities, providing a unified master data management layer
+    public Capability activateToggle(Capability capability) {
+        return masterData.toggleCapabilityActive(capability);
+    }
+}
+```
+
+### Create at the dashboard, toggle on the instance
+
+A creation operation belongs to the dashboard, because it has no instance yet. Toggle and update belong to the instance, because they act on one capability. Both groups call the same service, so the rules for a name stay in one place.
+
+### Keep seed data in the initializer
+
+Initial capabilities are created once at startup with the generated DAO. The initializer is project code; it is not a platform hook.
+
+### Toggle changes visibility, not references
+
+Setting isActive to false does not remove the association rows that point to the capability. Read paths that offer choices should filter on isActive; read paths that show existing tags should not.
+
+### Name uniqueness is a service rule
+
+The identifier is required, but the uniqueness check is project logic in the service. Check it before create and update, and return a field error when it fails.

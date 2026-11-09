@@ -1,17 +1,27 @@
-## Overview
+## Frontend guidance
 
-The capability lookup entity manifests in the React frontend through autocomplete-based capability filtering in the feed and discovery components, and through dialog action hooks that autofill capability data in update forms.
+Capabilities appear in three places: as tags on cards, as a filter on lists, and as a field on the administrator's forms. Hook keys in the frontend are generated per page or per container, so the names below are examples of the pattern, not fixed identifiers.
 
-## Implementation Pattern
+### Filter with type-ahead
 
-- **Autocomplete filtering**: A custom `useCapabilitiesAutocomplete` hook provides type-ahead capability selection for feed and discovery filters. The hook queries the capabilities list from the FeedPanel and populates an MUI `Autocomplete` component.
-- **Update dialog hooks**: Dialog-level action hooks for the Capability update form use `postGetTemplateAction` to pre-fill the form with existing capability data (name, description) when editing.
-- **Feed integration**: Capabilities are displayed as `Chip` components on `FeedEntryCard` and `DiscoveryOrganizationCard`, parsed from a semicolon-delimited string (`entry.capabilities?.split(';')`).
+A list filter lets a user pick capabilities by typing. The filter hook loads the active capabilities and filters the options, using the list's own data source. Hide inactive capabilities here.
 
-## Examples
+```tsx
+export function useCapabilityOptions(capabilities: Capability[]) {
+  return capabilities.filter((c) => c.isActive);
+}
+```
 
-### mlszksz-platform
-- Framework: React
-- Key files: `custom/feedComponent/hooks/useCapabilitiesAutocomplete.ts`, `custom/hooks/dialogs/registerServicesAdminCapabilityCapability_View_EditUpdateCapabilityInputFormActionsHook.ts`, `custom/hooks/dialogs/registerServicesAdminAdminDashboardAdminDashboard_View_EditCapabilitiesUpdateCapabilityInputFormActionsHook.ts`
-- Pattern: The capabilities autocomplete hook is shared between the feed and discovery filter components. The admin update dialog hooks pre-populate the form with existing name and description from the current capability.
-- Notable: Capabilities appear in three distinct UI contexts: feed entry cards (as chips), discovery organization cards (as chips), and feed filter bar (as autocomplete).
+The hook is project code. Register it for the page that shows the filter, using the key the framework generates for that page.
+
+### Show tags on cards
+
+Cards show each capability as a chip. Show the existing tags even when a capability is inactive, so the record still reads correctly.
+
+### Pre-fill the update form
+
+The update dialog for a capability loads the current name and description before the user edits them. Use the framework's template action hook for that dialog, and register it under the key the framework generates for the dialog's page and container.
+
+### Toggle as a switch
+
+Show isActive as a switch in the administrator's table. The switch calls the toggle operation and refreshes the row.

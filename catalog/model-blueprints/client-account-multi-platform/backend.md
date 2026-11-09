@@ -1,19 +1,37 @@
-## Overview
+## Backend guidance
 
-The Client-Account-Campaign entity cluster is implemented through a layered service architecture: thin custom operation classes delegate to service interfaces (`ClientService`, `AccountService`, `AggregatedCampaignService`, `TrackedCampaignService`), which in turn use DAO classes for persistence and an `AdsBusinessApiProviderService` for external platform integration. Scheduler jobs automate recurring data synchronization and lifecycle management.
+The cluster is a set of operations that call a service layer. Interceptors do not run on the custom operations, so the rules for credentials, budgets and synchronisation sit in the services. Services, DAOs and the external adapter are project code, not platform API.
 
-## Implementation Pattern
+### Operations are thin
 
-- **Thin custom operations**: Each `*CustomImplementation` class is an OSGi `@Component` that injects a domain service via `@Reference` and delegates to it in a single line (e.g., `accountService.setGoogleCredential(_this, input)`)
-- **Service layer**: Domain services (`ClientService`, `AccountService`, `AggregatedCampaignService`, `TrackedCampaignService`) are interfaces with OSGi `@Component` implementations. They encapsulate business logic, entity creation, and cross-entity orchestration
-- **Platform adapter abstraction**: An `AdsBusinessApi` interface defines platform-agnostic operations (isConnected, getAllCampaignForCustomer, getCampaignCostToDate). `AdsBusinessApiProviderService` acts as a factory, dispatching on the `Platform` enum to instantiate the correct adapter (e.g., `GoogleAdsApiImpl`)
-- **DAO pattern**: Operations use both entity DAOs (for direct entity manipulation) and transfer DAOs (for mapped transfer objects). Entity lookup failures throw `BusinessErrorException` with specific `ErrorCode` values
-- **Scheduler integration**: Three `Runnable` OSGi components handle automated tasks: fetching campaign costs, resetting daily attributes, and archiving expired campaigns. They inject the same service interfaces used by custom operations
-- **Cascade operations**: Delete and untrack operations cascade through related entities (history, costs, fetched data) before removing the parent
+A custom operation receives its input, calls one service method, and returns. It holds no business rule of its own. The services are injected components, and the operation class is a small wrapper around them.
 
-## Examples
+```java
+public class SetCredentialCustomImplementation implements SetCredentialOperation {
+    private final AccountService accountService;   // project service
 
-### indamedia-adtrack
-- Key files: `custom/.../accounttransfer/SetGoogleCredentialCustomImplementation.java`, `custom/.../aggregatedcampaigntransfer/CreateTrackedCampaignCustomImplementation.java`, `common/impl/AccountServiceImpl.java`, `common/impl/TrackedCampaignServiceImpl.java`, `common/impl/AggregatedCampaignServiceImpl.java`, `common/AdsBusinessApiProviderService.java`
-- Pattern: Custom operations delegate to service layer; `AccountServiceImpl` handles credential CRUD and campaign discovery via `AdsBusinessApiProviderService`; `TrackedCampaignServiceImpl` syncs costs from external APIs and manages Cost/FetchedData entities; `AggregatedCampaignServiceImpl` orchestrates budget recalculation across tracked campaigns
-- Notable: The `syncAvailableCampaigns` operation discovers campaigns from the external platform and creates `AvailableCampaign` entities for campaigns not yet tracked. Budget recalculation aggregates `totalSpend` and `todaySumSpend` across all tracked campaigns within an aggregated campaign. Cascade delete removes history, costs, fetched data, and unlinks available campaigns before deleting the parent entity.
+    public Account setCredential(Account account, CredentialInput input) {
+        return accountService.setCredential(account, input);
+    }
+}
+```
+
+### Put platform differences behind an adapter
+
+Each ad platform differs in its API. Put them behind one adapter interface with the calls the cluster needs (check the connection, list campaigns, read cost to date). A factory picks the adapter from the platform enumeration. The rest of the code never mentions a specific platform.
+
+### Budgets are recalculated from the children
+
+The aggregated campaign's spend is the sum of its tracked campaigns' spend. Recalculate it inside the service after a sync, not in the operation, so every path that changes a child updates the budget.
+
+### Deleting a parent removes the owned children
+
+Client owns its accounts and its budget groups through compositions, so deleting a client deletes those children. Tracked campaigns are associations, so they must be handled explicitly: decide whether to unlink or delete them before the parent goes.
+
+### Scheduled sync uses the same services
+
+Background jobs fetch costs, reset daily figures and archive expired budget groups. They call the same services as the operations. A sync that fails for one account should log the failure and continue with the next account, rather than stop the whole job.
+
+### Map external errors to business faults
+
+A failed call to an external platform is a business fault in the operation's contract, not a raw exception. Translate it in the service, and declare the fault on each operation that can raise it.

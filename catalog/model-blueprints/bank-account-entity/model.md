@@ -1,36 +1,34 @@
-## Examples
+## Model shape
 
-### doors-model
-**Entity types (all in doors::entities package):**
+The shape has three entities. BankAccount holds the account number and an optional association to Bank. Bank is the reference entity with a name and a giro code, both identifiers. The owner, shown as Partner, holds its accounts as a composition and designates one as its main account with an optional association.
 
-- **Bank**: `doors::entities::Bank` (non-CRUD)
-  - Attributes: name (req, identifier), giroCode (req, identifier)
-  - Seeded via init data with Hungarian bank names and codes (e.g., "Raiffeisen Bank Zrt." with giroCode "120")
-  - Managed by admin actor via Banks access point (full CRUD on admin::Bank TO)
+- **BankAccount** has one required identifier, accountNumber. Its bank is a 0..1 association to Bank, so a bank can be missing and deleting the bank leaves the account in place.
+- **Bank** has the identifiers name and giroCode. Both are required.
+- **Partner** owns BankAccount through bankAccounts (0..*, composition). Its mainBankAccount (0..1, association) points to one of those accounts. The owner side is one-way: the composition does not have a reverse member.
 
-- **BankAccount**: `doors::entities::BankAccount` (non-CRUD)
-  - Attributes: accountNumber (req, identifier)
-  - Relations:
-    - bank [0..1] ASSOC Bank (one-way)
-    - partner [0..1] ASSOC Partner (bidirectional, tracks partner ownership)
-    - ownerCompany [0..1] ASSOC Company (bidirectional, tracks company ownership)
-  - Operations: validateBankAccount (INSTANCE, model-defined) -- resolves bank from account number prefix: `this.bank = Bank!filter(b | b.giroCode == this.accountNumber!first(3))!any()`
+Other owner types, such as Company, can hold accounts the same way. Each account still has a single owner.
 
-- **Owned by Partner** (`doors::entities::Partner`):
-  - bankAccounts [0..*] COMPOSITION BankAccount
-  - mainBankAccount [0..1] ASSOCIATION BankAccount (bidirectional, rangeExpression: self.bankAccounts)
+Generated UI pages follow from the entities: a View, Form and Table page for BankAccount and Bank, and the owner's detail page shows its accounts. Bank is usually a reference list managed by an administrator, so its Form page stays and its Table page is the main view.
 
-- **Owned by Company** (`doors::entities::Company`):
-  - bankAccounts [0..*] COMPOSITION BankAccount
-  - mainBankAccount [0..1] ASSOCIATION BankAccount (bidirectional, rangeExpression: self.bankAccounts)
+## Structure diagram
 
-- **Derived on Contract** (derived bank account access):
-  - contractorBankAccount [0..1] DERIVED (getterExpression: self.contractor.mainBankAccount)
-  - partnerBankAccount [0..1] DERIVED (getterExpression: self.partner.mainBankAccount)
-
-**Transfer objects:**
-- admin::BankAccount -- accountNumber + bank/partner/ownerCompany AGGREGATION relations
-- admin::Bank -- name, giroCode
-- employee::BankAccount -- accountNumber, bankName (DERIVED: self.bank.name) + bank AGGREGATION
-- employee::Bank -- name, giroCode
-- The admin actor manages Banks directly via a dedicated access point, while bank accounts are managed through Company and Partner detail views
+<!-- mermaid:generated fragment=bank-account-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Bank {
+    <<Entity>>
+    +String name [1]
+    +String giroCode [1]
+  }
+  class BankAccount {
+    <<Entity>>
+    +String accountNumber [1]
+  }
+  class Partner {
+    <<Entity>>
+  }
+  BankAccount --> "0..1" Bank : bank
+  Partner *-- "*" BankAccount : bankAccounts
+  Partner --> "0..1" BankAccount : mainBankAccount
+```
+<!-- /mermaid:generated -->

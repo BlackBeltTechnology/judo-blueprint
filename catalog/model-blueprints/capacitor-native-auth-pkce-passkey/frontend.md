@@ -1,30 +1,40 @@
-## Overview
+## Frontend guidance
 
-A platform-aware authentication system for JUDO React frontends that run inside Capacitor (Android). On native, it bypasses the standard OIDC redirect and provides a custom login screen with username/password (ROPC) and WebAuthn passkey (PKCE + Chrome Custom Tab) flows. On web, the standard `react-oidc-context` AuthProvider is used unchanged. Framework: React.
+This entry is a frontend pattern for a React app that runs inside Capacitor on Android. The auth modules described below are project code. The platform does not provide them, so copy the design and not the names.
 
-## Implementation Pattern
+### Use a native login path only on native
 
-The pattern involves several coordinated modules:
+Check the platform at startup. On the web, keep the standard OIDC redirect flow unchanged. On native, wrap the app in a provider that handles token restore, refresh and the login screen. The web path stays the default and is not touched.
 
-- **NativeAuthProvider** (`custom/auth/NativeAuthProvider.tsx`) -- A React component that wraps the entire app on native platforms. It manages cold-start token restoration from `capacitor-secure-storage-plugin`, automatic token refresh scheduling, PKCE callback handling via `App.addListener('appUrlOpen')`, and renders either a loading spinner, the `NativeLoginScreen`, or the authenticated app.
-- **NativeLoginScreen** (`custom/auth/NativeLoginScreen.tsx`) -- MUI-based login form with username/password fields, "Forgot password" link (opens Keycloak reset in Chrome Custom Tab), and "Sign in with Passkey" button. Error messages are i18n-aware (`custom.login.error.*` keys).
-- **auth-service** (`custom/auth/auth-service.ts`) -- Low-level Keycloak token endpoint calls: `login()` (ROPC), `refreshTokens()`, `exchangeCode()` (authorization code exchange after passkey flow), `logout()`, plus URL builders for passkey auth, passkey registration, password update, and browser logout.
-- **pkce-utils** (`custom/auth/pkce-utils.ts`) -- PKCE code verifier/challenge generation using Web Crypto API, state management in SecureStorage with double-tap guard and 5-minute auto-expiry. Tracks flow type (`passkey-login`, `passkey-register`, `password-update`).
-- **token-storage** (`custom/auth/token-storage.ts`) -- Dual-layer storage: `capacitor-secure-storage-plugin` for encrypted persistence, `sessionStorage` as write-through cache. Syncs to OIDC format (`oidc.user:{realm}:{clientId}`) so existing axios interceptors work without modification. Also syncs auth state to Capacitor Preferences for native Firebase messaging service.
-- **useLogout** (`custom/auth/useLogout.ts`) -- Platform-aware logout hook: native path deactivates push device, clears tokens, revokes Keycloak session; web path uses standard `signoutRedirect`.
-- **auth-constants** (`custom/auth/auth-constants.ts`) -- Native redirect URI (`hu.mlszksz.platform://auth/callback`) and Keycloak client ID.
+### Two login methods on native
 
-**Registration in application-customizer.tsx**: The auth system is not registered via Pandino hooks -- it is integrated at the app bootstrap level by overriding `src/main.tsx`, `src/AuthenticatedApp.tsx`, and `src/auth/Auth.tsx` (listed in `.generator-ignore`). The NativeAuthProvider conditionally wraps the app tree when `Capacitor.isNativePlatform()` is true.
+- **Username and password** is a direct token request to the identity provider. The project chooses this grant for the native login screen. It is not a platform feature; the platform does not generate it for native clients.
+- **Passkey** runs as an authorization-code flow with PKCE, opened in a Chrome Custom Tab. The app generates the verifier and challenge, keeps the state, and exchanges the returned code for tokens when the app receives the callback URL.
 
-**Key design decisions**:
-- Offline tokens (30-day) survive network errors -- `TokenRejectedError` (HTTP 400/401) clears tokens; generic errors retry
-- Passkey preferences (`passkey.owner`, `passkey.email`) persist across logout so users can "Sign in with Passkey" without re-registering
-- Keyboard blur delay (400ms) before React re-render prevents Android WebView touch dispatch corruption
+### Store tokens in two layers
 
-## Examples
+Keep tokens in encrypted storage for persistence, and mirror them in session storage. Shape the mirror in the format the OIDC client expects, so existing HTTP interceptors keep working without change.
 
-### mlszksz-platform
-- Framework: React (Capacitor Android)
-- Key files: `custom/auth/NativeAuthProvider.tsx`, `custom/auth/auth-service.ts`, `custom/auth/pkce-utils.ts`, `custom/auth/token-storage.ts`, `custom/auth/NativeLoginScreen.tsx`, `custom/auth/useLogout.ts`
-- Pattern: Full Keycloak ROPC + PKCE passkey auth for native Android, synced to OIDC sessionStorage for axios compatibility
-- Notable: Chrome Custom Tab deep link handling with WebView kill recovery; passkey registration via `kc_action=webauthn-register-passwordless`; `TokenRejectedError` class distinguishes server rejection from network failure
+### Handle the callback after a WebView restart
+
+The Custom Tab can return after the WebView was killed. The app must read the pending flow state from storage and finish the exchange on cold start. Store the flow type (login, registration, password update) so the callback knows what to do.
+
+### Expire pending flows
+
+Pending PKCE state should expire after a few minutes and should reject a second start while one is still running. This prevents a stale state from completing a later login.
+
+### Distinguish rejection from network failure
+
+A server rejection (for example HTTP 400 or 401 on refresh) clears the stored tokens. A network error keeps them and retries later. This keeps an offline user signed in for the refresh-token lifetime.
+
+### Logout clears both sides
+
+On native, logout unregisters the push device, clears the tokens, and ends the Keycloak session. On the web it uses the standard OIDC sign-out. Keep the two paths separate.
+
+### Keep passkey preferences across logout
+
+Store the user's passkey hint (owner and e-mail) outside the token store, so the sign-in screen can offer the passkey option again without a new registration.
+
+### Keyboard focus on Android
+
+Delay the re-render after the keyboard closes. Without the delay, the Android WebView can misroute a touch and drop the next input event.

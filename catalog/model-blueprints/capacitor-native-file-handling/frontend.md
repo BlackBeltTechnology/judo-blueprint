@@ -1,25 +1,36 @@
-## Overview
+## Frontend guidance
 
-A platform-aware file handling override for JUDO React + Capacitor apps that routes file downloads through native filesystem and local notification APIs on Android, while using standard browser downloads on web. Framework: React (Capacitor Android).
+The platform's file utility resolves a download token to a URL and lets the browser open or save it. In a Capacitor app the browser path does not give the user a visible file, so this pattern replaces the save step on native platforms only. The helper modules are project code; their names are examples.
 
-## Implementation Pattern
+### Replace only the file utility module
 
-The pattern overrides the generated `src/utilities/file-handling.tsx` via `.generator-ignore` and provides a custom implementation:
+The generated file utility is overridden by listing it in the generator-ignore file. The override keeps the same exports, so screens that import the utility keep working. A second module can re-export the override under a project path for custom views.
 
-- **native-file-handler** (`custom/utilities/native-file-handler.ts`) -- Core native utilities:
-  - `saveFile(blob, fileName)`: Converts blob to base64, writes to `Download/{fileName}` via `@capacitor/filesystem` (ExternalStorage directory, scoped storage on Android 10+)
-  - `showDownloadNotification(fileName, fileUri, contentType)`: Schedules a local notification via `@capacitor/local-notifications`, with a listener that opens the file via `@capacitor-community/file-opener` when the notification is tapped
-  - `blobToBase64(blob)`: ArrayBuffer-to-base64 conversion using `Uint8Array` + `btoa`
-  - MIME type mapping for common file extensions (PDF, DOCX, XLSX, images, CSV, etc.)
-- **custom-file-handling** (`custom/utilities/custom-file-handling.tsx`) -- Re-exports from the overridden `file-handling.tsx` so custom views that imported from this path continue to work.
-- **StatusBarTheme** (`custom/utilities/status-bar-theme.ts`) -- Capacitor plugin registration for native status bar color control.
+### Branch on the platform
 
-**Generator ignore**: `src/utilities/file-handling.tsx` is listed in `.generator-ignore`, meaning the generated file is replaced with a custom version that delegates to `native-file-handler.ts` when `Capacitor.isNativePlatform()` is true.
+When the app runs as a native platform, save the file to the device's download folder through the filesystem plugin. On the web, the generated browser download runs unchanged.
 
-## Examples
+### Save as base64
 
-### mlszksz-platform
-- Framework: React (Capacitor Android)
-- Key files: `custom/utilities/native-file-handler.ts`, `custom/utilities/custom-file-handling.tsx`, `.generator-ignore` (entry: `src/utilities/file-handling.tsx`)
-- Pattern: Generator-ignore override of file-handling.tsx; native path uses Filesystem + LocalNotifications + FileOpener Capacitor plugins
-- Notable: Scoped storage on Android 10+ (no permissions needed); local notification with tap-to-open file; base64 conversion for Capacitor Filesystem write
+The filesystem plugin writes base64 text, so convert the downloaded blob first. Use an array buffer and a byte loop, then the base64 encoder, rather than a string conversion that corrupts binary data.
+
+```ts
+export async function blobToBase64(blob: Blob): Promise<string> {
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  let binary = "";
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
+}
+```
+
+### Notify and open
+
+After the save succeeds, show a local notification with the file name. When the user taps it, open the file with the file-opener plugin. Map the file extension to a MIME type for the opener, and fall back to a generic type for unknown extensions.
+
+### Scoped storage
+
+On Android 10 and later, writing to the download folder through scoped storage needs no extra permission. Check the target Android version before adding a storage permission.
+
+### Inline preview is separate
+
+A PDF preview that uses the inline mode of the platform utility is not a native save. Keep the inline preview on the web and in native apps alike, and use the save path only for a download action.

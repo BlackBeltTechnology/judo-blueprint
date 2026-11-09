@@ -1,29 +1,46 @@
-## Overview
+## Frontend guidance
 
-A Pandino hook pattern that configures the `CardsContainer` component to render relation/table data as custom MUI Card components instead of the default data grid rows. The hook replaces the `CardElement` while preserving the container's built-in pagination, filtering, and data fetching. Framework: React.
+A cards container shows relation data as rows in a grid by default. This pattern swaps the row rendering for custom cards and keeps the container's paging, filtering and data loading. The framework generates the hook interface and its key for each container, so the names below follow the pattern rather than being fixed constants.
 
-## Implementation Pattern
+### Register the hook under the generated key
 
-- **Hook type**: `*CardsContainerConfigHook` -- each table/relation component generates its own typed hook interface (e.g., `ServicesUserReservationPanelUserReservationPanel_View_EditUserReservationsComponentCardsContainerConfigHook`)
-- **Registration key**: `*_CARDS_CONTAINER_CONFIG_HOOK_INTERFACE_KEY` -- imported from the component's `customization` module (e.g., `~/containers/Services/UserReservationPanel/.../customization`)
-- **Registration**: A `register*ComponentCardsContainerConfig(context)` function registered in `application-customizer.tsx`
-- **Hook return shape**: Object with optional properties:
-  - `CardElement` (required in practice) -- a React FC receiving `CardProps<TStored, TRowActionDefinitions>` with `{ row, columns, onRowClick, actions }`
-  - `ToolbarElement` (optional) -- custom toolbar FC for filters/search
-  - `ActionbarElement` (optional) -- custom action bar FC
-  - `layout` (optional) -- `'horizontal'` or default vertical
-  - `showPagination` (optional) -- boolean
-- **Card component pattern**: The custom `CardElement` delegates to a separate reusable card component (e.g., `UserActiveReservationsCard`), wrapping it in a `<Grid item>` with responsive breakpoints
-- **Grid wrapping**: Every custom card MUST be wrapped in `<Grid item xs={12} sm={12} md={6} lg={4} xl={4}>` (or similar) to ensure proper responsive layout across devices
-- **Card content**: Typically uses MUI `Card`, `CardContent`, `CardActions`, `List`/`ListItem` with `MdiIcon`, `Typography`, and optionally `Timeline` from `@mui/lab` for temporal data
-- **Actions**: Card action buttons call `actions.*Action?.(row)` with optional `openConfirmDialog` for destructive operations
-- **Hooks inside cards**: Custom card components can use `useTranslation`, `useTheme`, `useL10N`, `useConfirmDialog`, and `useViewData`
-- **Multiple instances**: A single project may have multiple `CardsContainerConfigHook` registrations for different views/relations, each with its own custom card component
+Each container generates a typed hook interface and a key for it. The key is named after the page and container, so take it from the generated customization module of that container. Register the hook through the project's customizer, and do not hard-code the key string.
 
-## Examples
+### Return only the card element
 
-### park-here
-- Framework: React
-- Key files: `custom/hooks/components/cards/registerServicesUserReservationPanelUserReservationPanel_View_EditUserReservationsComponentConfigurationHook.tsx`, `custom/hooks/components/cards/registerServicesHolidayPanelHolidayPanel_View_EditHolidaysComponentConfigurationHook.tsx`, `custom/hooks/components/cards/registerServicesUserReservationPanelUserReservationPanel_View_EditPreviousReservationComponentConfigurationHook.tsx`, `custom/hooks/components/UserActiveReservationsCard.tsx`, `custom/hooks/components/UserPreviousReservationsCard.tsx`, `custom/hooks/components/HolidayCard.tsx`
-- Pattern: Three separate `CardsContainerConfigHook` registrations replace table views with card layouts for active reservations (timeline-based cards with start/end time visualization), previous reservations (horizontal list-based summary cards), and holidays (cards with decorative image and colored bottom bar)
-- Notable: `UserActiveReservationsCard` uses `@mui/lab` Timeline component for time range visualization; cards conditionally render action buttons (delete, cancel, modify) based on row state flags (`isNotDeletable`, `isNotCancelable`); `HolidayCard` includes an `ImageDisplay` component with fallback SVG; responsive Grid breakpoints vary per card type (4-column grid for active, full-width for previous)
+The hook returns an object. The card element is the required part. Toolbar, action bar, layout and pagination overrides are optional and are used only when the default is wrong for the data. Leaving them out keeps the container's own behaviour.
+
+### The card receives the row
+
+The card element receives the row, the column definitions, a row-click handler and the container's actions. It reads what it needs and calls an action by name with the row. Destructive actions should open a confirmation first.
+
+```tsx
+const ActiveCard: React.FC<CardProps<Row, Actions>> = ({ row, actions }) => (
+  <Grid item xs={12} md={6} lg={4}>
+    <Card>
+      <CardContent>{row.title}</CardContent>
+      <CardActions>
+        <Button onClick={() => actions.cancelAction?.(row)}>Cancel</Button>
+      </CardActions>
+    </Card>
+  </Grid>
+);
+```
+
+The sketch is illustrative; `Row`, `Actions` and the action name come from the generated types of the container.
+
+### Wrap each card in a grid item
+
+Each card must sit in a responsive grid item, otherwise the container lays cards out as a single column. Choose the breakpoints by card density: a dense card can take a narrower column than a wide one.
+
+### Hide actions the row does not allow
+
+Rows carry state flags for what can be deleted or cancelled. The card reads those flags and renders only the buttons that are allowed, so the user never sees an action the server would refuse.
+
+### Several views can use the same card
+
+One project may register several cards for different containers. Keep each card in its own module, so a card can be reused where the same data appears in another view.
+
+### Use the native timeline for time ranges
+
+For time-bounded rows, a timeline component shows the start and end. Keep the timeline inside the card, not in the container, so the container's paging still works.

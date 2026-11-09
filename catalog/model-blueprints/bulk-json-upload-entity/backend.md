@@ -1,20 +1,51 @@
-## Overview
+## Backend guidance
 
-The bulk JSON upload and download operations are implemented as custom Java classes that parse/generate JSON files via Jackson, interact with the JUDO FileStoreService for binary storage, and create/query entity records through injected DAOs.
+The import and export are custom operations. The platform does not generate them, so their logic lives in project code.
 
-## Implementation Pattern
+### Import is a custom operation
 
-- The `UploadCustomImplementation` class implements the generated `Upload` operation interface and is registered as an OSGi `@Component`
-- It injects `FileStoreService` (for reading the uploaded JSON blob), `QuestionDao`, `CategoryDao`, and `UploadDao` via `@Reference`
-- The upload operation creates an `Upload` audit record first, reads the JSON input stream from the file store, deserializes it into a list of POJOs using Jackson `ObjectMapper`, then iterates and creates entity records (with deduplication checks via DAO query filters)
-- A companion `DownloadCustomImplementation` reverses the process: queries all entities via DAO, serializes to JSON via Jackson, stores the result in `FileStoreService`, and returns a `JsonData` TO with the file reference
-- An inner POJO class (e.g., `Q`) with `@JsonProperty` annotations defines the JSON schema for import/export, shared between upload and download implementations
-- The upload records the count of newly created items on the Upload entity for audit purposes
-- Category/classification entities referenced in the JSON are resolved by name via DAO query (`.filterByName(StringFilter.equalTo(...))`) and created on-the-fly if not found (get-or-create pattern)
+A custom operation implements the generated operation interface and gets its collaborators by injection. Interceptors do not run for it, so a rule that must hold on import belongs in the operation itself.
 
-## Examples
+```java
+public class UploadCustomImplementation implements UploadOperation {
+    private final FileStoreService fileStore;   // project service, reads the uploaded file
+    private final UploadDao uploadDao;          // generated DAO
+    private final QuestionDao questionDao;      // generated DAO
 
-### trivia
-- Key files: `custom/.../actors/admin/question/UploadCustomImplementation.java`, `custom/.../actors/admin/question/DownloadCustomImplementation.java`
-- Pattern: OSGi `@Component` injecting `FileStoreService`, `QuestionDao`, `CategoryDao`, `UploadDao`; inner `Q` POJO with `@JsonProperty` for JSON serialization; Upload creates an Upload audit record, reads JSON from file store, creates Question entities with shuffled answer positions; Download queries all questions and writes a pretty-printed JSON file back to file store
-- Notable: Answer choice positions are shuffled during import using `Collections.shuffle()` to randomize the display order while preserving the correct solution mapping; categories are auto-created if they do not already exist; duplicate questions (matched by question text) are skipped
+    public JsonData upload(JsonData input) {
+        Upload batch = uploadDao.create(/* json, timestamp, count set later */);
+        List<Q> records = parse(fileStore.read(input));
+        int created = 0;
+        for (Q record : records) {
+            if (questionDao.findByText(record.text()).isEmpty()) {
+                questionDao.create(record.toQuestion(batch));
+                created++;
+            }
+        }
+        batch.setNrOfUploadedQuestions(created);
+        return input;
+    }
+}
+```
+
+The sketch is illustrative. `FileStoreService`, the `Q` record and the DAO names are project code, not platform API.
+
+### Write the batch row first
+
+The Upload row is written before the items, so each item can refer to it. The count is set at the end. Because the operation runs in one transaction, a failure rolls back the batch row and the items together.
+
+### Skip duplicates, do not fail
+
+Items that match an existing identifier are skipped. Validation failures on a record are reported as field errors (validation exceptions, 400) rather than business faults, since they come from input data, not business rules.
+
+### Reference data is resolved by name
+
+Categories named in the JSON are looked up by name. A category that does not exist is created at import time. This get-or-create step is project logic.
+
+### Export mirrors import
+
+A static download operation reads the items through the DAO, serializes them with the same record class, stores the result in the file store, and returns a file reference. Keeping one record class for both directions keeps the round trip consistent.
+
+### Binary input
+
+When the JSON is uploaded as a binary file, the client first requests an upload token for the attribute and then posts the file with it. Only the operation's input type changes; the record handling is the same.

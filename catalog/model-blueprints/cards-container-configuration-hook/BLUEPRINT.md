@@ -1,25 +1,62 @@
 ---
 id: cards-container-configuration-hook
 title: Cards Container Configuration Hook (Custom Card Layout)
-description: "A frontend-only pattern for replacing the default data grid table rendering with a responsive card-based layout using the `CardsContainerConfigHook` Pandino hook."
-aliases: []
-keywords: [cards, container, configuration, hook, custom, card, layout]
-tags: ["domain:model", "layer:frontend", "project:park-here", "status:single-project"]
+description: A frontend pattern for replacing a cards container's row rendering with custom card components through the container's generated configuration hook, keeping paging and data loading.
+aliases: [custom card layout, cards container hook]
+keywords: [cards, container, configuration, hook, custom, card, layout, responsive]
+tags: [domain:model, layer:frontend, project:park-here, status:single-project]
 category: pattern
 status: single-project
 projects: [park-here]
 evidence: ["park-here:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [address-field-auto-composition]
+fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-03-09
-format: legacy
+last_updated: 2026-11-09
 ---
+## Intent
 
-## Description
+Show relation data as visually rich cards instead of table rows, with icons, timelines, images and action buttons. The container keeps its paging, filtering and data loading, so only the look of each item changes.
 
-A frontend-only pattern for replacing the default data grid table rendering with a responsive card-based layout using the `CardsContainerConfigHook` Pandino hook. Each table/relation component in JUDO generates a `*_CARDS_CONTAINER_CONFIG_HOOK_INTERFACE_KEY` that allows registering a hook returning a custom `CardElement` FC component (and optionally `ToolbarElement`, `ActionbarElement`, `layout`, and `showPagination` overrides). The custom `CardElement` receives `row`, `columns`, `onRowClick`, and `actions` props, and must be wrapped in a `<Grid item>` with responsive breakpoints (`xs`, `sm`, `md`, `lg`, `xl`) to control card sizing. This pattern is distinct from full custom component replacement (`CUSTOM_COMPONENT_HOOK_INTERFACE_KEY`) -- it works within the existing `CardsContainer` infrastructure, only swapping the card rendering while preserving pagination, filtering, and data fetching. It is commonly used to display relation data as visually rich cards with icons, timelines, images, and action buttons instead of flat table rows.
+### Only the row rendering changes
 
-## Frontend Implementation
+The hook replaces the card element and leaves the rest of the container alone. Paging and filtering keep working because the data still comes from the same container.
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+### Each container has its own generated hook
+
+The hook interface and its key are generated for each container. A project registers its hook under that key, so the registration follows the container it customises.
+
+## Structure
+
+The pattern is a frontend layer. A customizer registers a configuration hook for one container. The hook returns a required card element and optional toolbar, action bar, layout and pagination overrides. The card element receives a row, the column definitions, a row-click handler and the container's actions. Each card sits in a responsive grid item and calls the actions it needs.
+
+## Constraints
+
+- The hook key is generated per container. Take it from the generated customization module, not from a typed-in string.
+- The card element is required in practice. Without it the container falls back to its default row rendering.
+- Each card must sit in a responsive grid item, or the container lays cards out in a single column.
+- Actions a row does not allow must not be rendered. The server still enforces the rule.
+
+## Variations
+
+- **Different card per relation.** Each container gets its own card for the same entity, when the active and past views need different layouts.
+- **Toolbar for filters.** A toolbar element adds a search or filter control above the cards.
+- **No pagination.** Turn off the container's pagination when a short list is shown as a fixed set of cards.
+
+## When to use
+
+- A relation's rows need a richer presentation than a grid can give.
+- Each row has an action set that depends on the row's state.
+- Time-bounded or image-based data reads better as cards.
+
+## When to avoid
+
+- The data is a dense list that users scan and sort. A table is better.
+- The whole view must be custom, not just the rows. Use a full custom component hook instead.
+- The card needs data the container does not load. Load it in the container's query instead.
+
+## Related
+
+- [[address-field-auto-composition]] — another per-page hook registration pattern in the frontend
+- [[inline-pdf-preview-post-action]] — a post-action hook that opens a file from a container action
+- [[capability-lookup-entity]] — shows the generated hook-key rule for a lookup entity's frontend

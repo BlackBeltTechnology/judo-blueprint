@@ -1,25 +1,68 @@
 ---
 id: capacitor-native-auth-pkce-passkey
 title: Capacitor Native Auth with PKCE and Passkey Support
-description: "A comprehensive native authentication system for Capacitor (Android) apps that replaces the standard OIDC redirect flow with a dual-mode login: Direct Access Grants (ROPC) for username/password and PKCE-secured Chrome Custom Tab flows fo..."
-aliases: []
-keywords: [capacitor, native, auth, pkce, passkey, support]
-tags: ["domain:model", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
+description: A native login for a Capacitor Android app that uses a direct username and password grant plus a PKCE passkey flow in a Chrome Custom Tab, while the web keeps the standard OIDC redirect.
+aliases: [native passkey login, capacitor auth]
+keywords: [capacitor, native, auth, pkce, passkey, webauthn, token, offline]
+tags: [domain:model, layer:frontend, project:mlszksz-platform, status:single-project]
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [keycloak-magic-link-passkey-authentication]
+fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-03-09
-format: legacy
+last_updated: 2026-11-09
 ---
+## Intent
 
-## Description
+Let a Capacitor Android app sign users in without the web redirect that a WebView cannot complete well. The app offers a username and password form and a passkey option, keeps tokens across restarts, and keeps working offline for the refresh-token lifetime.
 
-A comprehensive native authentication system for Capacitor (Android) apps that replaces the standard OIDC redirect flow with a dual-mode login: Direct Access Grants (ROPC) for username/password and PKCE-secured Chrome Custom Tab flows for WebAuthn passkey login/registration. The system manages token lifecycle (SecureStorage-backed persistence, automatic refresh, offline resilience), syncs auth state to OIDC sessionStorage format for axios compatibility, and handles edge cases like WebView kill recovery, required password updates, and browser logout cookie cleanup. Web users continue to use the standard OIDC redirect flow unmodified.
+### Native and web use different login paths
 
-## Frontend Implementation
+The native path replaces the redirect with a login screen. The web keeps the standard redirect unchanged, so the same code base serves both.
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+### Passkey login is an authorization-code flow with PKCE
+
+The passkey flow opens in a Chrome Custom Tab and returns through a deep link. PKCE protects the code exchange. The app must finish the exchange even when the WebView was restarted in between.
+
+### Offline use depends on error type
+
+A rejected token clears the session. A network failure does not. This keeps a user signed in while offline, within the refresh-token lifetime.
+
+## Structure
+
+The pattern is a frontend layer. It has a native auth provider that wraps the app on native platforms, a login screen with two methods, an auth service that calls the identity provider's token and URL endpoints, a PKCE helper that holds the flow state, a token store with a mirror in the OIDC format, and a logout hook that takes the native or web path. None of these modules is a platform API; they are project code, and their names are examples only.
+
+## Constraints
+
+- The native path runs only when the app is on a native platform. The web path must not change.
+- A password grant is a project choice for the native login. Do not expose it on the web.
+- PKCE state expires after a few minutes and blocks a second start while one is pending.
+- A server rejection clears tokens; a network failure keeps them.
+- The deep-link redirect URI is registered with the identity provider for the native client. A different redirect URI fails the exchange.
+
+## Variations
+
+- **Password only.** Drop the passkey option when the identity provider has no WebAuthn support for the realm.
+- **Passkey only.** Drop the password form for users who must register a passkey first; keep the password update flow for required resets.
+- **Shared store for web and native.** Use one token store on both platforms when the web also needs offline support. The native-only pieces stay behind the platform check.
+
+## When to use
+
+- A Capacitor Android app must sign users in with a passkey or a password.
+- Users must stay signed in offline for a bounded period.
+- The web app already uses the standard OIDC redirect and must not change.
+
+## When to avoid
+
+- The app runs only in a browser. The standard redirect flow is enough.
+- The identity provider cannot issue a token for the native client. Use a server-side session instead.
+- Passkeys are not required and the passwordless magic link is preferred. See [[keycloak-magic-link-passkey-authentication]].
+
+## Related
+
+- [[keycloak-magic-link-passkey-authentication]] — the server-side passwordless integration this native flow can pair with
+- [[capacitor-native-file-handling]] — the other native Capacitor concern, file download and open
+- [[custom-theme-with-native-status-bar]] — native-only UI behaviour in the same Capacitor app
+- [[user-with-organization-and-role]] — the user model that holds the signed-in principal

@@ -1,19 +1,39 @@
-## Overview
+## Backend guidance
 
-The CampaignStatus enum (ONGOING/FINISHED/DELETED) drives campaign lifecycle logic in both custom operations and scheduled jobs. Backend code uses the status to filter active campaigns, transition expired campaigns to FINISHED, and soft-delete campaigns by setting status to DELETED.
+The status drives behaviour in custom operations and in scheduled jobs. Both live in project code, and neither is covered by an interceptor.
 
-## Implementation Pattern
+### Put transitions in one service
 
-- A service layer class (e.g., `AggregatedCampaignService`) encapsulates all status transition logic, injected into both custom operations and scheduler jobs via OSGi `@Reference`
-- **Soft-delete**: The `deleteAggregatedCampaign` operation performs a hard delete (cascading to history and tracked campaigns), but the `TrackedCampaignUpdateInput` allows setting status to DELETED for soft-delete at the tracked campaign level
-- **Scheduled archival**: A `Runnable` OSGi component (e.g., `UpdateExpiredAggregatedCampaignStatus`) queries for ONGOING campaigns whose end date has passed, then sets their tracked campaigns' status to FINISHED
-- **DAO filtering**: Uses `EnumerationFilter.equalTo(CampaignStatus.ONGOING)` combined with `DateFilter` to query only active, running campaigns
-- **Daily reset**: Another scheduler resets daily spend attributes for ONGOING campaigns within their date range, using the same filter pattern
-- Status is set on creation (defaults to ONGOING in model) and transitioned programmatically -- no explicit state machine, but status transitions are performed in service methods
+Keep every status change in one service class. Custom operations and scheduled jobs both call it, so the rules are written once. The service is project code (an example name is `CampaignService`), not a platform class.
 
-## Examples
+```java
+public class CampaignService {
+    public void finishExpired(LocalDate today) {
+        // find ONGOING campaigns whose end date has passed, then set FINISHED
+    }
 
-### indamedia-adtrack
-- Key files: `common/impl/AggregatedCampaignServiceImpl.java`, `scheduler/UpdateExpiredAggregatedCampaignStatus.java`, `scheduler/ResetDailyAttributes.java`, `scheduler/FetchCampaignCost.java`
-- Pattern: Service methods `dailyArchiveAggregatedCampaigns(date)` and `dailyResetAggregatedCampaigns(date)` filter by `CampaignStatus.ONGOING` and date ranges, then transition expired campaigns to FINISHED
-- Notable: Three scheduler jobs operate on the status -- archival (ONGOING->FINISHED for expired), daily reset (recalculate spend for ONGOING), and fetch (sync external data for ONGOING). The `TrackedCampaign` inherits its initial status from its parent `AggregatedCampaign` on creation.
+    public void softDelete(Campaign campaign) {
+        campaign.setStatus(CampaignStatus.DELETED);
+    }
+}
+```
+
+### Check the current status inside the transition
+
+Custom operations do not run through interceptors, so a transition must check the current status itself before it changes it. A guard written as an interceptor would not protect a custom operation.
+
+### Built-in updates can be guarded
+
+Built-in create and update operations do run interceptors. If a rule must hold for every write to the status, an interceptor can enforce it, but it may throw only `InterceptorCallBusinessException` and it should not be the only check.
+
+### Filter by status and date in the query
+
+Scheduled work selects campaigns by status and by a date range, for example ONGOING campaigns whose end date is before today. Filtering in the query keeps the job from loading finished campaigns.
+
+### Scheduled jobs use the same service
+
+A background job is an OSGi component that runs on a schedule. It calls the same transition service as the operations, so a campaign finished by the job follows the same rules as one finished by a user.
+
+### Children follow the owner
+
+A tracked campaign takes its initial status from its owner when it is created. When the owner changes status, the children must be updated in the same service call, not left to a later job.

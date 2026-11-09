@@ -1,31 +1,63 @@
 ---
 id: bank-account-entity
 title: Bank Account Entity with Bank Reference
-description: A BankAccount entity representing a financial bank account with an accountNumber attribute and a reference to a Bank entity.
-aliases: []
-keywords: [bank, account, reference]
-tags: ["domain:model", "layer:model", "project:doors-model", "status:single-project"]
+description: A BankAccount entity with an account number, an optional association to a reference Bank, and owned by a Partner through a composition with a main-account association.
+aliases: [bank account, bank reference]
+keywords: [bank, account, reference, composition, association]
+tags: [domain:model, layer:model, project:doors-model, status:single-project]
 category: pattern
 status: single-project
 projects: [doors-model]
 evidence: ["doors-model:unrecorded"]
 alternatives: []
-fragment: pending
+fragment: bank-account-entity
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-09
 ---
-## Description
+## Intent
 
-A BankAccount entity representing a financial bank account with an accountNumber attribute and a reference to a Bank entity. The Bank entity serves as a lookup/reference data table with name and giroCode (bank identifier code). BankAccounts are composed by both Company and Partner entities, with a designated mainBankAccount association pointing to the primary account. The BankAccount has a validateBankAccount operation that auto-resolves the bank reference by matching the first 3 digits of the account number against the bank's giroCode.
+Hold a financial account identified by its number, link it to a bank taken from a reference table, and let an owning party keep several accounts with one marked as main. The reference bank is shared; each account belongs to exactly one owner.
 
-Key structural patterns:
-- BankAccount is owned via COMPOSITION by both Partner and Company entities (dual ownership)
-- A mainBankAccount [0..1] ASSOCIATION with rangeExpression "self.bankAccounts" constrains selection to owned accounts
-- The partner/ownerCompany bidirectional relations on BankAccount track which entity owns each account
-- Bank is a simple lookup entity (name + giroCode) referenced by BankAccount via [0..1] ASSOCIATION
-- The validateBankAccount operation provides auto-lookup of the Bank from the account number prefix
+### Bank accounts have one owner
 
-## Model Definition
+A BankAccount is held by a single owning entity through a composition. Only that owner can create and delete it. Several owner types can exist, but each account has one parent, so a composition never has two owners at once.
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+### The bank comes from a reference table
+
+Bank is a reference entity with a name and a giro code. A BankAccount points to at most one Bank through an association. The association does not own the bank, so removing an account never removes a bank.
+
+## Structure
+
+The BankAccount entity has a required account number, which is its identifier. Bank has a required name and a required giro code, both identifiers. BankAccount has one optional association to Bank (0..1, association kind).
+
+The owning entity, Partner in the fragment, holds the accounts as a composition (0..*) and designates one of them as its main account with an optional association (0..1). Other owner types (for example Company) follow the same pattern.
+
+## Constraints
+
+- A composition has exactly one owner. A bidirectional relation cannot be a composition on both sides.
+- The main-account association should reference only the owner's own accounts. This is enforced by a range expression on the owner side, where the platform allows it. Otherwise it is checked by the operation that sets the main account.
+- Account number, bank name and giro code are required.
+
+## Variations
+
+- **Owner-side main account.** The owner holds the main account as a single association. This is the form in the fragment.
+- **Bank lookup by number prefix.** An operation on BankAccount sets the bank by matching the first digits of the account number against the bank's giro code. This is project logic inside a model-defined instance operation, not a platform feature.
+- **Derived bank access.** A derived member on a related entity reads the owner's main account, for example a contract that exposes its contractor's main account. The derived member is read-only.
+
+## When to use
+
+- A party (person or organization) keeps one or more bank accounts, and one is the default.
+- Bank names and giro codes are maintained once and reused by many accounts.
+
+## When to avoid
+
+- An account must belong to several owners at once. A composition has one owner, so model a shared account with an association instead.
+- The bank must be kept as a text value on the account. Use the reference-data pattern if bank data is managed as a list.
+
+## Related
+
+- [[reference-data-lookup-entity]] — the reference table pattern used for Bank
+- [[contact-info-composition-cluster]] — other owned contact data held by the same owners
+- [[partner-generalization-hierarchy]] — the partner hierarchy that owns bank accounts
+- [[identity-account-organization-cluster]] — the organization side that also owns accounts
