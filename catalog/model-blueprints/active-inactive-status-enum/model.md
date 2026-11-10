@@ -2,10 +2,10 @@
 
 The shape has one enumeration with two members.
 
-- **Status** is the enumeration. It has two members: ACTIVE (ordinal 1) and INACTIVE (ordinal 2). Values are stored as ordinals.
+- **Status** is the enumeration. It has two members: ACTIVE (ordinal 1) and INACTIVE (ordinal 2). Each member carries a unique integer ordinal (0 to 9999 in JSL models) that stays fixed once data exists.
 - An entity that needs an on or off lifecycle holds one required attribute of type Status. The enumeration does not own operations or relations.
 
-The enumeration is used as the status attribute of the owning entity. The UI shows the status as a filter or a chip in tables; the generated enumeration input shows both values.
+The enumeration is used as the status attribute of the owning entity. The generated UI shows the status as a column and as an enumeration input listing both values; which filter or visual form the table uses is a UI model choice.
 
 ## Structure diagram
 

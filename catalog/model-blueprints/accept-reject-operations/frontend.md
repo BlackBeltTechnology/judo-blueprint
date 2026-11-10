@@ -9,10 +9,11 @@ The generated operation buttons use the guard attributes of the transfer object.
 
 ### Pre-filter the approval table
 
-Approval tables should list only the requests that still need a decision. A page action hook can add a status filter to the refresh action of the table, so the table shows pending requests by default.
+Approval tables should list only the requests that still need a decision. Prefer to solve this in the model: expose a pending-only relation (a derived relation filtered by status) on the transfer object and bind the approval table to it. That works on every page that shows the table.
 
+- A page action hook is the fallback. The agent-docs describe an optional post-refresh handler on the page actions hook (it runs after the refresh, so it reacts to the loaded data); they do not document a pre-refresh filter, so check the generated customization files of the page before relying on it.
 - Generated hook keys are per page or container (names ending in the actions hook interface key). Look up the key for the page you extend; do not copy a fixed constant.
-- If the same table appears on two pages, register the same filter in both hooks.
+- If the same table appears on two pages, register the same hook in both.
 
 ### Ask for a reason on reject
 
@@ -23,5 +24,5 @@ The reject operation takes a RejectInput. Its dialog should show one text field 
 ### mlszksz-platform
 
 - Framework: React.
-- Both the embedded admin table and the standalone registration-request table add a status filter in their refresh action, so admins only see verified requests.
+- Both the embedded admin table and the standalone registration-request table add a status filter in their refresh action hook (project customization), so admins only see verified requests.
 - The accept and reject buttons use the generated UI, with the guard attributes controlling visibility.

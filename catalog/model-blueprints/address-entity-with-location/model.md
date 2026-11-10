@@ -7,7 +7,7 @@ The shape has one address entity, one composed location, and two lookup entities
 - **City** holds a name. The address references one city (1..1, association).
 - **PostalCode** holds a code. The address references one postal code (1..1, association).
 
-Location and the lookup entities are not part of the generated address pages. The address form lets the user pick the city and postal code; the location is set from a map or a geocoding step, and the view shows the coordinates as read-only values.
+Generated UI: the address form lets the user pick the city and postal code through the association relations. The location is not typed by hand in the reference shape: it is set from a map or a geocoding step, and the view shows the coordinates as read-only values (hide the location fields from the generated edit form, or mark them non-editable in the UI model). The full-address attribute is derived, so it is shown read-only.
 
 ## Structure diagram
 

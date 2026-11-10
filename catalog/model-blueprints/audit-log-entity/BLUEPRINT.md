@@ -13,7 +13,7 @@ alternatives: [audit-event-trail]
 fragment: audit-log-entity
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -36,13 +36,14 @@ The AuditLog entity has a required timestamp, a required action type (an enumera
 - Createable, updateable and deleteable are all false on the entity.
 - Timestamp, action type and entity type are required. The action type must be a value of the enumeration.
 - The denormalized names are written once, when the row is created, and are not refreshed later.
-- A row written inside a custom operation belongs to that operation's transaction, so a rollback removes it too.
-- Interceptors do not run for custom operations. A custom operation must write its own audit row. An audit interceptor covers only the built-in create, update and delete operations.
+- Interceptors run only for the built-in operations (create, update, delete, list and similar); they never run for custom or script operations. A custom operation must therefore write its own audit row. An audit interceptor is an optional variation for the built-in operations only and cannot replace explicit writes in custom operations.
+- The audit service, the user lookup and the audit data access class used to write rows are project code, not platform API.
+- An audit row written by an interceptor is part of the operation's transaction (synchronous interceptors run inside it), so an exception from the interceptor rolls the operation back. Decide per case whether an audit failure may break the business action.
 
 ## Variations
 
 - **Explicit calls from custom operations.** Each custom operation calls one shared audit service after its action. This is the example project's approach and it covers custom operations.
-- **Interceptor for built-in operations.** A post-call interceptor writes the row for built-in create, update and delete. It does not cover custom operations, so combine it with explicit calls.
+- **Interceptor for built-in operations only.** A post-call interceptor writes the row for built-in create, update and delete. It never sees custom operations, so combine it with explicit calls from them.
 - **Event entity inside the transaction.** Model each event as an entity with a reference to the affected entity. See [[audit-event-trail]].
 
 ## When to use

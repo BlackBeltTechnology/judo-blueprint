@@ -9,7 +9,7 @@ The shape has one request entity with two instance operations, one status enumer
 - **RequestTO** is a transfer object that maps Request and exposes accept and reject to the UI. Its operations are shown only when the guard attributes allow them.
 - **User** is the target of the optional association requester (0..1, association kind). Deleting the user does not remove the request.
 
-Generated UI pages follow from the entity. The Request table and view pages stay for the admin dashboard. The accept and reject buttons use the generated operation UI, with the guard attributes controlling visibility. Only the pending status should show them.
+Generated UI pages follow from the entity. The Request table and view pages stay for the admin dashboard. The accept and reject buttons use the generated operation UI. A guard attribute is a boolean derived attribute on the owner transfer object (for example "is pending"); the operation button is bound to it through its enabled or hidden condition, so only the pending status shows the buttons. The guard references only attributes of its own transfer object.
 
 ## Structure diagram
 

@@ -13,7 +13,7 @@ alternatives: [active-inactive-status-enum]
 fragment: active-suspended-deactivated-status-enum
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -29,7 +29,7 @@ DEACTIVATED is meant as the final value. The model does not enforce that on its 
 
 ## Structure
 
-The enumeration has three members with ordinals: ACTIVE (0), SUSPENDED (1) and DEACTIVATED (2). An owning entity, such as a user or an organization, holds one required attribute of this enumeration type. The enumeration has no operations. The transitions are operations on the owning entity or on a transfer object that exposes it.
+The enumeration has three members with unique integer ordinals: ACTIVE (0), SUSPENDED (1) and DEACTIVATED (2). An owning entity, such as a user or an organization, holds one required attribute of this enumeration type. The enumeration has no operations. The transitions are operations on the owning entity or on a transfer object that exposes it.
 
 ## Constraints
 

@@ -2,7 +2,7 @@
 
 ### Recompute the summary on blur of each part
 
-Give every address part a blur handler. Each handler calls one shared function that joins the non-empty parts into the summary. Register the handlers on each form and view-edit section that edits the address, so the summary stays current in every context.
+Give every address part a blur handler. The generated container hook offers an on-blur handler only for fields whose blur option is enabled in the UI model, so enable it on each address part field first. Each handler calls one shared function that joins the non-empty parts into the summary. Register the handlers on each form and view-edit section that edits the address, so the summary stays current in every context.
 
 - Join the non-empty parts with the separators the address format uses. Do not add a separator for an empty part.
 - Write the summary through the form's own store-diff call, so the change is part of the normal save.
@@ -15,7 +15,7 @@ Before recomputing, check the manual override flag on the address. When it is se
 
 ### Register the hooks per page
 
-Generated hook keys are per page or container (names end with the actions hook interface key). Register one set of blur handlers for each page that edits the address. Do not copy a fixed key from another page.
+Generated hook keys are per page or container (names end with the actions hook interface key), and the handler names and parameters come from the generated hook type of that container. Register one set of blur handlers for each container that edits the address. Do not copy a fixed key from another page.
 
 ## Examples
 

@@ -2,18 +2,18 @@
 
 ### Check the current status in each transition
 
-Each transition is a custom operation. Interceptors do not run for custom operations, so no interceptor enforces the state rules. Each operation must read the current status, refuse the transition when the status is not the expected one, and then set the new value.
+Each transition is a custom operation. Interceptors run only for built-in operations (create, update, delete, list and similar), not for custom operations, so no interceptor enforces the state rules. Each operation must read the current status, refuse the transition when the status is not the expected one, and then set the new value.
 
 - Suspend requires ACTIVE. Reactivate requires SUSPENDED. Deactivate may be allowed from ACTIVE or SUSPENDED, depending on the domain rule.
-- Refuse an invalid transition with a modeled business fault that the operation declares. Platform errors are not used for business rules.
-- Write the status and any related change in one operation, so the transaction covers both.
+- Refuse an invalid transition with a modeled business fault that the operation declares (a checked generated exception, answered as HTTP 422). A ValidationException (400) is for wrong input values, not for a refused state transition. An interceptor on the built-in update of the status could not throw the generated fault; it would have to raise InterceptorCallBusinessException.
+- Write the status and any related change in the same operation call, so both are written together.
 
 ### Guard the last administrator in the service
 
-Rules such as "the last platform administrator cannot be suspended" depend on other rows. Put them in a domain service that the operations call, and count the remaining administrators inside the same transaction.
+Rules such as "the last platform administrator cannot be suspended" depend on other rows. Put them in a domain service that the operations call, and count the remaining administrators there (project practice).
 
 - The service class is project code. Its name belongs to the example project, not to the platform.
-- Re-read the entity from the database inside the service before the check, so a concurrent change is seen.
+- Re-read the entity through the data access layer inside the service before the check, so the decision uses the current value.
 
 ### Audit each transition
 

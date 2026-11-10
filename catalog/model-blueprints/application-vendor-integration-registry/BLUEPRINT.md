@@ -13,7 +13,7 @@ alternatives: []
 fragment: application-vendor-integration-registry
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -36,7 +36,7 @@ Connections between applications, deployment instances and network interfaces ar
 ## Constraints
 
 - An application has exactly one vendor.
-- Name is an identifier for both the application and the vendor. The names are unique within their entity.
+- Name is an identifier for both the application and the vendor. The identifier flag marks the name as the natural key of a stored attribute on an entity. Uniqueness of names within the entity is intended; the agent-docs describe the flag only as a natural key field, so enforce the check in project logic if duplicates must be refused.
 - The category must be one of the enumeration values. A catch-all value is used when no other value fits.
 - The version is required. An unknown version is recorded with an explicit placeholder, not left empty.
 

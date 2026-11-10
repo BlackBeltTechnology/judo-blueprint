@@ -13,7 +13,7 @@ alternatives: [address-field-auto-composition]
 fragment: address-entity-with-location
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -29,14 +29,14 @@ The location with latitude and longitude is a composed entity. It is owned by th
 
 ## Structure
 
-The Address entity has a required street name and optional building, floor and door attributes, a derived full-address text, and required associations to a City and a PostalCode, both of which are lookup entities. It has one optional composed Location (0..1). The Location has a required latitude and a required longitude, both decimal values. City has a name. PostalCode has a code. The Address entity is not createable, updateable or deleteable through the generated actions in the reference shape; the owning entity creates it.
+The Address entity has a required street name and optional building, floor and door attributes, a derived full-address text, and required associations to a City and a PostalCode, both of which are lookup entities. It has one optional composed Location (0..1). The Location has a required latitude and a required longitude, both decimal values. City has a name. PostalCode has a code. The Address entity is flagged not createable, updateable or deleteable, so the generated actions do not offer those operations on it in the reference shape; the owning entity creates it.
 
 ## Constraints
 
 - The street name is required. The location is optional, and its latitude and longitude are both required when it exists.
 - The city and the postal code are required lookup associations. They are references to existing entities, not text.
 - The full-address text is derived. It is not stored and must not be edited by hand.
-- A location belongs to one address. Removing the address removes its location.
+- A location belongs to one address. The location relation is a composition, so deleting the address deletes its location (composition cascades; an aggregation or association would not).
 - A city and a postal code are checked against each other by the service that writes the address. The model does not enforce that pairing.
 
 ## Variations

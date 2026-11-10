@@ -13,7 +13,7 @@ alternatives: [active-suspended-deactivated-status-enum, toggle-active-operation
 fragment: active-inactive-status-enum
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -34,7 +34,7 @@ The enumeration has two members. ACTIVE has ordinal 1 and INACTIVE has ordinal 2
 ## Constraints
 
 - The enumeration has exactly two members. Adding a member changes the pattern and needs its own entry.
-- Each value has a fixed ordinal. Ordinals must not be reused after a value is removed.
+- Each value has a fixed ordinal, unique within the enumeration (0 to 9999 in JSL models). Ordinals must not be reused after a value is removed.
 - The status attribute on an entity that uses the enumeration is required, so every entity has a value.
 - Operations that switch the status are written on the owning entity, not on the enumeration.
 

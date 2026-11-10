@@ -13,7 +13,7 @@ alternatives: [state-lifecycle-operation]
 fragment: accept-reject-operations
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -37,7 +37,8 @@ A Request entity has a required title, a required status (an enumeration with th
 - The accept and reject operations change the status only from the pending value. Any other current status is an invalid transition and must be refused by the custom implementation.
 - Accept and reject are custom operations. The status check and the state change are written in the operation's own implementation.
 - The rejection reason is required input for reject when the domain needs one. Make it a required attribute on RejectInput in that case.
-- Guard attributes on the transfer object decide when each operation is shown. They are derived from the status and do not replace the check in the implementation.
+- Guard attributes on the transfer object decide when each operation is shown. They are boolean derived attributes computed from the status, bound to the operation button as enabled or hidden conditions, and they do not replace the check in the implementation.
+- A refused transition is reported as a business fault declared on the operation (HTTP 422 with the fault type in the response header), not as a generic error.
 
 ## Variations
 

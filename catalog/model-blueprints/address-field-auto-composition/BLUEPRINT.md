@@ -12,7 +12,7 @@ evidence: ["rackinspect:unrecorded"]
 alternatives: [address-entity-with-location]
 fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -35,7 +35,7 @@ This is a frontend pattern with no model shape. The address entity holds the par
 - The summary is computed in the UI. It is not a derived attribute on the model, so the backend does not recompute it unless its own code does.
 - When the manual override flag is set, the summary is not recomputed.
 - Empty parts are skipped, so the summary has no doubled separators.
-- The computation runs on blur, not on each keystroke.
+- The computation runs on blur, not on each keystroke. A blur handler exists on the generated container hook only for a UI field whose blur option is switched on in the UI model, so each address part field needs that option.
 
 ## Variations
 
