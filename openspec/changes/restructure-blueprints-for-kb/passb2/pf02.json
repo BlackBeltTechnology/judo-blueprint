@@ -1,0 +1,256 @@
+{
+ "batch": "pf02",
+ "entries": {
+  "conditional-field-validation-hook": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "frontend action hook isFieldRequired customization",
+    "isFieldRequired validation hook",
+    "dialog actions hook scaffold registration application-customizer",
+    "generateVisualPropertiesHook is<Field>Required requiredBy"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Action Hooks > Container Actions",
+    "catalog/agent-docs/frontend/hooks/validation-hooks.md#Validation Hooks > Overview",
+    "catalog/agent-docs/frontend/hooks/README.md#Hook System Overview > Using .default Scaffold Files"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "isFieldRequired not in agent-docs: labeled project-observed",
+    "hook key names/page vs container types per docs",
+    "src/custom gitignored, no generator-ignore",
+    "agent-docs name is<Field>Required handlers via generateVisualPropertiesHook and requiredBy; isFieldRequired labelled project shape"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-component-directory": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "src/custom gitignored generator-ignore custom components directory",
+    "hook scaffold default registration application-customizer",
+    "custom visual element implementations extension points"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/README.md#Hook System Overview > Using .default Scaffold Files",
+    "catalog/agent-docs/frontend/README.md#Frontend Development Guide > Key Concepts > Understanding .generator-ignore"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "replaced 'generator manifest' claim with gitignored src/custom + checksum/generator-ignore facts",
+    "src/trivia labelled project practice",
+    "tree layout labelled convention"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-public-assets": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "public logo.svg favicon manifest.json assets frontend",
+    "flutter.yaml copy overwriteExpression assets",
+    "CustomLogoPropsHook applicationLogo logo customization"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/ui-hooks.md#Hero and Logo Customization",
+    "catalog/agent-docs/frontend/build-and-deployment.md#Checksum Handling",
+    "catalog/agent-docs/frontend/README.md#Understanding .generator-ignore"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "added applicationLogo model source and CustomLogoPropsHook",
+    "removed claim that logo.svg is a recognized customization point needing no ignore",
+    "added checksum/generator-ignore semantics",
+    "Flutter copy rule labelled project-specific, doc gap"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-visual-element-override": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "custom visual element implementation Pandino component",
+    "componentImplementation boundAttributeName custom implementation model",
+    "CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY scaffold custom-implementations"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Advanced Frontend Patterns > Custom Component Replacement",
+    "catalog/agent-docs/frontend/hooks/table-hooks.md",
+    "catalog/agent-docs/frontend/hooks/ui-hooks.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "not arbitrary generated groups: must be modeled custom implementation element",
+    "key imported from ~/custom not ~/theme",
+    "scaffold custom-implementations and proxy props types",
+    "component key from customization.ts, not hand-built name"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "dark-theme-override": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "dark theme palette mode theming",
+    "theme override fragments generator-ignore palette.ts",
+    "actor palette applicationLogo sub-theme"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/theming.md#Theming and Styling > Overview",
+    "catalog/agent-docs/frontend/theming.md#Theming and Styling > Theme Override Fragments",
+    "catalog/agent-docs/frontend/theming.md#Theming and Styling > Customizing Theme"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "added model-driven actor palette as first choice",
+    "added theme override fragments as alternative to full generator-ignore",
+    "hex values replaced with constants",
+    "dark mode toggle mentioned"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "derived-access-status-filtering": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "derived access getterExpression filter actor access",
+    "menu entries access table page navigation elements",
+    "getterExpression self boolean literal DERIVED ALL"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/architectural-patterns.md#Architectural Patterns > Rules for accesses[*].getterExpression",
+    "catalog/agent-docs/model/model-development.md#JQL cheatsheet for access-getter authoring",
+    "catalog/agent-docs/frontend/model-screen-layout.md#UI Model to Frontend Mapping > Navigation Controller and Actor Accesses"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "old example used self.initiatives in getter: no self at actor scope, filter base is entity FQN",
+    "removed XML pseudo-model and fake menuItem syntax",
+    "removed generated folder tree",
+    "added ALL vs DERIVED and getter rules",
+    "enum literal JQL syntax not found in docs, left out"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "dialog-based-navigation": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "dialog create edit form page inline dialogs navigation",
+    "React Router routes extra routes deep link URL generated navigation",
+    "useNavigationConfirmation unsaved changes"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/extension-points.md#Frontend Extension Points > Extra Routes",
+    "catalog/agent-docs/frontend/model-screen-layout.md#UI Model to Frontend Mapping > Navigation Controller and Actor Accesses",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Advanced Frontend Patterns > Custom Component Replacement"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "clarified that state-machine navigation is not a platform feature and only applies to replaced frontend",
+    "added platform routing/extra routes/useNavigationConfirmation as base",
+    "trivia-domain names neutralised"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "dual-actor-frontend-architecture": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "multiple actors separate frontend per actor realm principal",
+    "azp claim acceptable clients keycloak actor",
+    "frontend module naming actor fqn generator-ignore"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/README.md#Frontend Development Guide > Overview",
+    "catalog/agent-docs/backend/authentication-guide.md#Authentication Guide > Principal-to-Actor Resolution and Multi-Client Mapping > Several Keycloak clients in one realm",
+    "catalog/agent-docs/frontend/model-screen-layout.md#UI Model to Frontend Mapping > Navigation Controller and Actor Accesses"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "removed claim of context path /{model}/{actor} (not in docs)",
+    "module naming <app>__<actor path> per docs",
+    "added azp-to-actor resolution and acceptable-clients whitelist",
+    "customization levels per module",
+    "neutral wording"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "error-code-mapping-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "frontend error handling location code message error interceptor",
+    "validation error codes response body PATTERN_VALIDATION_FAILED uniqueness violation",
+    "422 fault X-Fault response body keyed"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/error-handling.md#Frontend Error Handling > Generated Error Handling Matrix",
+    "catalog/agent-docs/backend/error-handling-guide.md#Backend Error Handling Guide > How the Runtime Maps Exceptions to HTTP",
+    "catalog/agent-docs/backend/error-handling-guide.md#Backend Error Handling Guide > API Error Code Reference > HTTP 400 - Bad Request"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "old code assumed data[firstKey].code for all errors: 400 is a list, 422 keyed by fault",
+    "added generated status-only handling and X-Fault unread",
+    "IDENTIFIER_ATTRIBUTE_UNIQUENESS_VIOLATION/INVALID_CODE not in docs: labelled project-defined, neutralised",
+    "global interceptor vs per-call"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "event-bus-refresh-coordination": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "refresh event bus postRefresh table refresh after action",
+    "publish subscribe event bus agent docs",
+    "page actions hook refresh submit arguments"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Advanced Frontend Patterns > PostRefresh Action Hook",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Action Hooks > Page Actions"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "event bus not documented in agent-docs: marked as project observation, removed key format and publish/subscribe code",
+    "added documented postRefresh handler and page hook args as the recommended route",
+    "advised against hard-coding event keys"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "form-blur-action-hook": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "onBlur form field action hook page actions",
+    "BlurAction handler container hook types.ts",
+    "storeDiff cascade loading blur"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Advanced Frontend Patterns > Cascade Loading Pattern",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md#ESM to UI Mapping: Tables & Navigation > Hook Generation",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Action Hooks > Container Actions"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "added model switch onBlur needed to generate handler",
+    "no BlurActionHook service; handler returned from scaffold actions hook",
+    "address names neutralised",
+    "server-side recompute advice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

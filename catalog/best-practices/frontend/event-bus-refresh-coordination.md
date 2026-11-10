@@ -1,9 +1,9 @@
 ---
 id: event-bus-refresh-coordination
 title: Event Bus for Cross-Page Refresh Coordination
-description: Generated JUDO pages use a publish/subscribe event bus to coordinate data refreshes across related pages.
-aliases: []
-keywords: [event, bus, cross, page, refresh, coordination]
+description: How generated pages are observed to publish refresh events to a publish/subscribe bus, and when to use post-refresh handlers or table refresh actions instead of depending on it.
+aliases: [cross-page refresh, publish subscribe refresh, refresh events]
+keywords: [event bus, refresh, publish, subscribe, post refresh, page actions hook, refreshTable, cross-page]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "status:emerging"]
 category: state
 status: emerging
@@ -13,50 +13,42 @@ alternatives: []
 related: [viewmodel-context-pattern, pandino-action-hook-override]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Generated JUDO pages use a publish/subscribe event bus to coordinate data refreshes across related pages. When one page performs a CRUD operation, it publishes a "refreshed" event. Other pages subscribing to that event can trigger their own refresh, keeping data consistent across open views. Event keys are derived from the page's UI model FQN.
+When one page changes data, other open views of related data must refresh. This entry records what projects observed about the event bus in generated pages and states which documented mechanisms to build on.
 
-## Structure
+## Practice
 
-```typescript
-// Publishing after a refresh
-publish(
-  'Admin/(esm/_xxxxx)/AccessViewPageDefinition:refreshed',
-  refreshedData
-);
+### Platform base
 
-// Subscribing in another page
-useEffect(() => {
-  const unsubscribe = subscribe(
-    'refresh:Admin/(esm/_xxxxx)/AccessViewPageDefinition',
-    async () => { await refresh(); }
-  );
-  return unsubscribe;
-}, []);
-```
+- The agent-docs do not document the event bus: no publish or subscribe API and no event key format are specified there. Treat the bus as an internal detail of the generated frontend; do not rely on its key strings in custom code.
+- Documented refresh mechanisms: page and dialog hooks (`<Container>PageActionsExtended`) have an optional `post<RefreshAction>` handler (for example `postRefreshAction`) that runs after a data refresh. Return it from the page actions hook created from the `register<Page>ActionsHook` scaffold; its parameters are generated per page ([PostRefresh action hook](../../agent-docs/frontend/advanced-patterns.md)). The `context.actions.refreshTable` style helpers in the docs are illustrative, so check the generated types.
+- Page actions hooks receive `(data, editMode, storeDiff, refresh, submit)` depending on the page kind, so a custom handler can call `refresh` itself ([action hooks: page actions](../../agent-docs/frontend/hooks/action-hooks.md)). Operation flows can request a refresh after an operation completes.
 
-Event key format: `{Actor}/(esm/{model-id})/{PageDefinition}:{event-type}`
+### Project practice: observations and guidance
 
-## Examples
+- Projects observed that a generated page publishes a "refreshed" event after a successful refresh, keyed by its UI model page definition, and that related generated pages (a relation page of the same data, an embedded tab and its parent view, a dashboard table after approve or reject operations) stay in sync through it. The keys contain opaque model identifiers.
+- Do not hard-code those keys: they change when the model changes. If a custom page must react to another page's data change, use the documented post-refresh handler of the page that owns the data, or refresh on navigation.
+- When debugging stale data across pages, first check whether the operation triggers a refresh at all, then whether the second page was mounted during the change.
+- Event delivery order is not guaranteed; do not chain logic on it.
 
-### Trivia
-Admin frontend's Categories AccessViewPage publishes a `refreshed` event after each successful data refresh. Other pages displaying category data (e.g., Contest Categories RelationViewPage) can subscribe to this event to stay in sync. The event bus keys use ESM model IDs like `esm/_k9l8kGt-Ee-Yh8kDEDkPWA`.
+## Rationale
 
-### itracker
-Event bus coordinates refreshes across the initiative workflow. When the Initiative AccessViewPage refreshes after an approve/reject/sendForApproval operation, the event propagates to the Initiatives AccessTablePage (dashboard) to update status columns. Also coordinates between embedded tab content (MonthlyForecasts, ForecastVersions) and the parent view.
+The bus gives generated pages loose coupling, so no page needs a direct reference to another. The cost is opaque keys, hard-to-trace event flows and no guaranteed order, which is why custom code should use documented hooks.
 
-## Trade-offs
+## Example
 
-- **Pros**: Loose coupling between pages; no direct page-to-page dependencies; consistent data across views; standard JUDO framework pattern
-- **Cons**: Event key strings are opaque (model IDs); hard to debug event flows; no guaranteed delivery order
-- **When to use**: Automatically used in generated JUDO pages -- understanding this helps when debugging data synchronization issues
+- trivia: the admin categories page publishes a refresh event after each successful refresh, and pages showing category data can stay in sync through it.
+- itracker: after approve, reject or send-for-approval operations on an initiative view, the event reaches the initiatives dashboard table, and coordinates embedded tabs with their parent view.
+
+## When to avoid
+
+- Writing custom code against event keys: use the post-refresh handler or the page's `refresh` instead.
+- Data that changes outside the UI (other users, backend jobs): the bus does not cover it; refresh on a timer or on demand.
 
 ## Related
 
-- [[viewmodel-context-pattern]]
-- [[pandino-action-hook-override]]
-
+- [[viewmodel-context-pattern]] — sharing state across pages
+- [[pandino-action-hook-override]] — the documented hook route for refresh handling

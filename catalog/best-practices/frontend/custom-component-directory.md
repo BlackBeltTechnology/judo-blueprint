@@ -1,9 +1,9 @@
 ---
 id: custom-component-directory
 title: Custom Component Directory Outside Generator Scope
-description: "Place all hand-written custom components in a dedicated directory (e.g., `src/trivia/`, `src/custom/`) that the JUDO code generator does not know about."
-aliases: []
-keywords: [custom, component, directory, outside, generator, scope]
+description: Keep hand-written React components in a dedicated directory such as src/custom, away from generated files, so regeneration never touches them.
+aliases: [custom code folder, src/custom components]
+keywords: [custom component, directory, src/custom, generator-ignore, gitignore, pandino component]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: component
 status: established
@@ -13,54 +13,54 @@ alternatives: []
 related: [complete-frontend-replacement, glassmorphic-styled-components, application-customizer-hub]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Place all hand-written custom components in a dedicated directory (e.g., `src/trivia/`, `src/custom/`) that the JUDO code generator does not know about. Since the generator only manages files listed in its manifest, any directory outside the manifest is safe from overwriting. This is a best practice for organizing custom UI code alongside generated code.
+Hand-written components (pages, dialogs, shared widgets) need a home that regeneration never overwrites and that is easy to tell apart from generated code.
 
-## Structure
+## Practice
+
+### Platform base
+
+- `src/custom/` in the frontend module is gitignored and never regenerated; files there need no `.generator-ignore` entry ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md), [frontend guide](../../agent-docs/frontend/README.md)).
+- The generator creates hook scaffolds as `.default` files under `src/custom/hooks/` (`pages/`, `dialogs/`, `containers/`, `custom-implementations/`, `components/cards/`, `sub-themes/`). Custom components registered through Pandino (custom visual element implementations) live next to them ([extension points](../../agent-docs/frontend/extension-points.md)).
+- Files outside `src/custom/` that the generator owns carry a generated header and are checksum-protected: editing them fails the build unless they are listed in `.generator-ignore`, which also stops generator updates for that file. Keeping hand-written code in a separate directory avoids that trade-off.
+- `src/custom/application-customizer.tsx` is a plain generated file with an empty `customize(context)` method; register custom hooks and components from there.
+
+### Project practice: one custom root, subfolders by role
+
+The layout below is project convention, not generated output:
 
 ```
-src/
-  trivia/                    # Custom directory (generator-unaware)
-    CustomComponents.tsx     # Reusable styled components
-    Contest.tsx              # Custom page component
-    Contests.tsx             # Custom list component
-    RegistrationDialog.tsx   # Custom dialog
-    utils.ts                 # Utility functions
-    commons.ts               # Shared types/styles
-  pages/                     # Generated pages (managed by generator)
-  containers/                # Generated containers
-  services/                  # Generated services
+src/custom/
+  application-customizer.tsx     # registrations
+  components/                    # reusable custom components and their register... files
+  hooks/                         # scaffold copies: pages/, dialogs/, containers/, custom-implementations/
 ```
 
-The key insight is that any directory not in the generator's file manifest is inherently safe. No `.generator-ignore` entry is needed for files in these directories.
+- Put every hand-written file under one root and import generated code through the `~/` alias; never put custom files into generated folders such as `pages/`, `containers/` or `services/`.
+- Mirror the generator's subfolders (`hooks/dialogs`, `hooks/pages`) so scaffold copies stay discoverable.
+- Trivia used a different root, `src/trivia/`, for custom pages and dialogs. This also works because the generator does not produce files there, but unlike `src/custom/` it is not gitignored by the platform, so check version control state yourself.
 
-## Examples
+## Rationale
 
-### Trivia
-Player frontend uses `src/trivia/` containing 11 custom files: `ActivationDialog.tsx`, `CheckboxList.tsx`, `commons.ts`, `Contest.tsx`, `Contests.tsx`, `CustomComponents.tsx`, `PromptListDialog.tsx`, `RegistrationDialog.tsx`, `ResultsDialog.tsx`, `ScoreboardDialog.tsx`, and `utils.ts`.
+A single custom root makes the boundary between generated and hand-written code obvious, keeps upgrades free of merge work and keeps `.generator-ignore` short. Custom components cannot reuse generated page scaffolding and import across the boundary.
 
-### RackInspect
-Uses `src/custom/` with 87 files organized into subdirectories: `hooks/custom-implementations/` (13 files), `hooks/dialogs/` (48 files), `hooks/pages/` (10 files), `hooks/FormActionsHooks/` (3 files), `hooks/ViewEditActionHooks/` (3 files), `hooks/TableRowHighlightingHooks/` (2 files), `hooks/utils/` (5 files), plus `application-customizer.tsx` and `register-error-handler-interceptor.ts`.
+## Example
 
-### workflow-poc
-Uses `src/custom/components/` with 4 files: `Mermaid.tsx` (interactive diagram renderer using `mermaid` + `svg-pan-zoom`), `CodeViewer.tsx` (YAML syntax highlighter using `react-syntax-highlighter`), plus their Pandino registration files `registerMermaidComponent.tsx` and `registerCodeViewerComponent.tsx`.
+- trivia: player frontend with eleven custom files in `src/trivia/` (dialogs, contest pages, shared styled components, utilities).
+- rackinspect: `src/custom/` with about 87 files in `hooks/custom-implementations/`, `hooks/dialogs/`, `hooks/pages/`, form and view-edit action hook folders, table row highlighting hooks, plus `application-customizer.tsx` and an error handler registration.
+- workflow-poc: `src/custom/components/` with a diagram renderer and a code viewer, each with its Pandino registration file.
+- reserve-app: a single hook file in `src/custom/hooks/dialogs/` for one actor; the other four actor frontends have no custom files.
 
-### reserve-app
-AdminActor uses `src/custom/hooks/dialogs/` with a single file: `registerServicesAdminActorStorageTypesAccessViewPageActionsHook.ts`. The other 4 actor frontends have no custom files at all. Demonstrates the minimal usage of `src/custom/` -- a single hook override file in the standard subdirectory structure.
+## When to avoid
 
-## Trade-offs
-
-- **Pros**: Zero risk of generator overwriting; clean separation of custom vs. generated code; no `.generator-ignore` entries needed
-- **Cons**: Custom components cannot leverage generated page scaffolding; import paths cross between custom and generated directories
-- **When to use**: Whenever adding custom React components that are not page overrides or hook overrides
+- The whole frontend is replaced: see [[complete-frontend-replacement]].
+- The frontend is fully generated and needs no custom code.
 
 ## Related
 
-- [[complete-frontend-replacement]]
-- [[glassmorphic-styled-components]]
-- [[application-customizer-hub]]
-
+- [[complete-frontend-replacement]] — replacing the generated frontend instead of extending it
+- [[glassmorphic-styled-components]] — styled components typically placed in such a directory
+- [[application-customizer-hub]] — where custom components and hooks are registered

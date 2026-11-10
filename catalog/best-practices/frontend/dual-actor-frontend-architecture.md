@@ -1,9 +1,9 @@
 ---
 id: dual-actor-frontend-architecture
 title: Dual-Actor Frontend Architecture (Custom + Generated)
-description: "A JUDO project can generate separate frontend applications for different actors (roles), each with its own customization level."
-aliases: []
-keywords: [dual, actor, frontend, architecture, custom, generated]
+description: Give each actor its own generated frontend module with its own customization level, so a customer-facing actor can be custom-built while an admin actor stays fully generated.
+aliases: [one frontend per actor, multi-actor frontend, mixed customization frontends]
+keywords: [actor, frontend, multi-actor, customization level, generator-ignore, role-based UI, keycloak client]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:reserve-app", "project:doors-model", "status:established"]
 category: framework
 status: established
@@ -13,64 +13,48 @@ alternatives: [single-actor-heavy-customization]
 related: [complete-frontend-replacement, admin-default-generated-ui, single-actor-heavy-customization]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A JUDO project can generate separate frontend applications for different actors (roles), each with its own customization level. One actor frontend may be completely custom-built while another uses the standard generated JUDO UI. Both share the same backend model and services but present entirely different user experiences. Each actor frontend is deployed at its own context path (`/{model}/{actor}`). In some projects, both actors use the generated UI with no customizations. The pattern extends to three or more actors when the domain requires distinct role-based interfaces.
+Different roles need different experiences: back-office users want fast generated CRUD, customers or players want a tailored UI. The platform generates one frontend module per actor, so each can be customized to a different degree on top of one shared backend.
 
-## Structure
+## Practice
 
-```
-application/frontend-react/
-  model/                          # Shared UI model artifacts
-  {model}__{actor1}/              # Actor 1 frontend (custom or generated)
-    .generator-ignore             # Extensive or minimal ignore list
-    src/App.tsx                   # Custom or generated root
-    src/custom-app/               # Hand-built components (if custom)
-  {model}__{actor2}/              # Actor 2 frontend (generated)
-    .generator-ignore             # Minimal ignore list
-    src/custom/hooks/             # Hook scaffolds (.ts.default)
-    src/pages/                    # Generated pages
-```
+### Platform base
 
-Deployment paths:
-- Actor 1: `/{model-name}/{actor1-name}` (e.g., `/trivia/Player`)
-- Actor 2: `/{model-name}/{actor2-name}` (e.g., `/trivia/Admin`)
+- A frontend module is generated per modeled actor, named `<app>__<actor path>` (for example `<app>__service__admin`) under `application/frontend-react/`, next to a shared `model/` folder that holds the generated UI model. Each module has its own `.generator-ignore`, `src/custom/` folder and hook scaffolds ([frontend guide](../../agent-docs/frontend/README.md)).
+- What an actor sees is defined by its accesses and menu in the model; each access becomes a navigation entry and page of that actor's frontend ([navigation controller and actor accesses](../../agent-docs/frontend/model-screen-layout.md)).
+- The backend resolves the actor from the token's `azp` claim (dashes become dots, the result must equal an actor FQN). A frontend client with another name needs the `JUDO_PLATFORM_ACCEPTABLE_CLIENTS` whitelist; each actor exposes `~meta` and `~principal` endpoints that a custom frontend uses to obtain a token ([authentication guide: several Keycloak clients in one realm](../../agent-docs/backend/authentication-guide.md)).
+- Customization options per module, from least to most: leave scaffolds inactive; activate hooks from `src/custom/`; sub-themes and custom visual elements; extra routes ([hooks overview](../../agent-docs/frontend/hooks/README.md), [extension points](../../agent-docs/frontend/extension-points.md)).
 
-## Examples
+### Project practice: pick a customization level per actor
 
-### Trivia
-Two actor frontends: **Player** (`trivia__actors__player__player`) is a completely custom quiz game SPA with glassmorphic design, dialog-based navigation, and localStorage sessions. **Admin** (`trivia__actors__admin__admin`) is a standard generated JUDO CRUD app with default theme and 24 inactive hook scaffolds. Same backend, completely different UX.
+- Admin or reference-data actors: keep fully generated ([[admin-default-generated-ui]]) and improve the experience in the model.
+- Customer-facing actors: customize deliberately: hooks first ([[single-actor-heavy-customization]]), full replacement only when the generated layout cannot serve ([[complete-frontend-replacement]]). A replaced frontend gets no generator updates.
+- Restrict what each actor sees with its own accesses and, where fields must differ, separate transfer objects per role rather than frontend hiding.
+- The pattern extends to three or more actors; some can be dashboard-only placeholders. Actors can differ in authentication (for example an anonymous public actor next to authenticated staff actors).
+- Keep `.generator-ignore` minimal for the generated actors and larger only for the customized one.
 
-### itracker
-Two actor frontends: **UserActor** (initiative tracking with approval workflow, 9 pages, 8 dialogs, 42 hook scaffolds) and **Admin** (reference data CRUD with 6 pages, 3 dialogs, 18 hook scaffolds). Both are 100% generated with zero code customizations. Shared Howmet Aerospace branding via model-defined colors and `logo.svg`.
+## Rationale
 
-### SkillMatrix (Flutter)
-Three actor frontends: **Admin** (5 pages, user management), **HR Employee** (65 pages, full skill matrix management with reports and search), **Professional** (28 pages, self-service profile + manager subordinate/training management). All 100% generated Flutter/Dart with identical theming. Extends the pattern to 3 actors with a dual-namespace Professional actor (self-service + manager).
+Each audience gets the fitting tool: generated CRUD costs nothing to maintain, a custom UI is built only where it pays. The cost is maintaining two approaches, and customized modules do not benefit from generator updates.
 
-### kozut-eugyfel-client (Flutter)
-Three actor frontends: **Munkatars** (~75 pages, employee task and report management), **Admin** (~40 pages, user/org/county management), **E-Ugyfel Alkalmazas** (~3 pages, public citizen portal with anonymous access). Extends to 3 actors with different authentication levels -- OAuth required for workers/admin, anonymous access for citizens. All generated with shared template overrides.
+## Example
 
-### reserve-app
-Five actor frontends: **AdminActor** (13 access points, full CRUD management with 1 custom hook), **PartnerActor** (2 access points, reservation management), **LogisticianActor** (dashboard only), **DoormanActor** (dashboard only), **Readonly** (dashboard only). Extends the multi-actor pattern to 5 roles with 3 dashboard-only placeholder actors. Partner uses restricted "ForPartner" transfer objects with fewer attributes.
+- trivia: a completely custom player SPA next to an admin actor that is a generated CRUD app with inactive scaffolds.
+- itracker: two actors (initiative tracking with approval workflow, reference data CRUD), both fully generated, with shared branding from model colors and the logo.
+- reserve-app: five actors, one with full CRUD and a single hook, one for reservation management with restricted transfer objects, three dashboard-only.
+- kozut-eugyfel-client and skillmatrix (Flutter): three actors each; the first mixes authenticated staff actors with an anonymous public portal.
+- doors-model: model-only; two actors (simple master-data admin, complex contract lifecycle employee) with no frontend generated yet.
 
-### doors-model
-ESM model defines 2 actors: **Admin** (simple CRUD for 5 master data entities -- companies, employees, divisions, positions, banks) and **Employee** (complex contract lifecycle management with 19 access points, 4 menu groups, and workflow-driven approval/signing/close operations). No frontend generated yet -- model-only project using older ESM XML format.
+## When to avoid
 
-### ams-frontend
-Two Flutter actor frontends: **Admin** (250 Dart files, manages applications/campaigns/users with Open/Close/Load campaign operations and custom Excel download) and **Manager** (411 Dart files, approval workflow with bulk approve-all and subordinate management). Both fully generated with shared Handlebars template overrides. Distinct navigation menus per role.
-
-## Trade-offs
-
-- **Pros**: Right tool for each user role; admin gets fast generated CRUD; public users get polished custom UX; shared backend
-- **Cons**: Maintaining two frontend approaches increases complexity; custom frontend does not benefit from generator updates
-- **When to use**: When different user roles have fundamentally different UX needs (e.g., admin CRUD vs. public-facing experience), or when the domain naturally separates into end-user vs. admin workflows
+- All users share the same experience: one actor is enough.
+- The actors differ only in permissions: use access and transfer object differences in the model, not separate frontends.
 
 ## Related
 
-- [[complete-frontend-replacement]]
-- [[admin-default-generated-ui]]
-- [[single-actor-heavy-customization]]
-
+- [[complete-frontend-replacement]] — replacing one actor's frontend entirely
+- [[admin-default-generated-ui]] — the fully generated side
+- [[single-actor-heavy-customization]] — heavy hook customization of one actor

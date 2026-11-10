@@ -1,9 +1,9 @@
 ---
 id: custom-public-assets
 title: "Custom Public Assets (Logos, Images, Icons)"
-description: "Add custom static assets (images, logos, icons, QR codes) to the `public/` directory of a JUDO frontend."
-aliases: []
-keywords: [custom, public, assets, logos, images, icons]
+description: Add custom static assets (logos, backgrounds, QR codes) to the frontend public directory under unique names, and protect only the generator-owned files you override.
+aliases: [branding assets, custom logo, static images]
+keywords: [public, assets, logo, images, favicon, generator-ignore, applicationLogo, flutter assets]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:workflow-poc", "status:emerging"]
 category: customization
 status: emerging
@@ -13,53 +13,46 @@ alternatives: []
 related: [pwa-manifest-customization, generator-ignore-app-theme]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Add custom static assets (images, logos, icons, QR codes) to the `public/` directory of a JUDO frontend. These files are served as-is by the web server. If the generator also produces files in `public/`, list custom files in `.generator-ignore` or use unique filenames the generator does not produce. Common use cases include custom logos, background images, branded favicons, and sharing assets. The `logo.svg` file is a standard customization point referenced by the drawer header and login page. In Flutter frontends, custom assets can be deployed via Handlebars template copy rules in `flutter.yaml`.
+Branding and static media (logos, background images, QR codes, icons) belong in the frontend `public/` directory. This entry says how to add them without fighting the generator.
 
-## Structure
+## Practice
 
-```
-public/
-  logo.svg                  # Custom branding logo (replaces default JUDO logo)
-  custom-logo.svg           # Additional custom branding
-  background.png            # Full-screen background image
-  qr-code.png              # Sharing QR code
-  manifest.json             # Customized PWA manifest (generator-ignored)
-  judo-color-logo.png       # Generated (default JUDO branding)
-  favicon.ico               # Generated or customized
-```
+### Platform base
 
-Files with unique names (not produced by the generator) need no `.generator-ignore` entry. Files that override generator defaults must be ignored.
+- `public/` of the React frontend holds static files served as-is; it also holds `i18n/` and `manifest.json` ([frontend guide: project layout](../../agent-docs/frontend/README.md)).
+- Logo and icon defaults come from the actor's `applicationLogo` in the model; prefer changing the model for a permanent change. A `CustomLogoPropsHook` can instead map the default logo props (`subTitle`, `imgSrc`, `iconSrc`) to custom values, with image paths relative to `public/` ([UI hooks: logo customization](../../agent-docs/frontend/hooks/ui-hooks.md)).
+- A generated file you edit by hand fails the checksum check on the next build unless it is listed in `.generator-ignore`, which stops the generator from writing it at all. `.generator-checksum-ignore` is the alternative: such files skip validation but are always regenerated ([build and deployment: checksum handling](../../agent-docs/frontend/build-and-deployment.md), [.generator-ignore](../../agent-docs/frontend/README.md)).
+- `src/custom/` is gitignored; `public/` is not, so `public/` additions are normal tracked files.
 
-## Examples
+### Project practice: unique names, ignore only overrides
 
-### Trivia
-Player frontend adds 3 custom public assets: `bit-ly_judo-trivia.png` (QR code for sharing), `img.png` (full-screen dark background), `judo-logo-white.svg` (white logo variant for dark theme). The `manifest.json` is also customized and generator-ignored.
+- Add new assets under file names the generator does not produce (for example a background image or a QR code); these need no `.generator-ignore` entry.
+- When an asset replaces a generator-produced file (a customized `manifest.json`, a replaced `logo.svg`), list that file in `.generator-ignore`. Whether a given file is generator-produced is not stated in the agent-docs: check the generated header (`G E N E R A T E D   S O U R C E`) of the file.
+- Reference assets with root-relative paths (`/background.png`) from custom components or the logo hook.
+- Keep image weight low; assets in `public/` are not bundled but still cost load time.
+- Flutter frontends are a project-specific variant: projects copied assets into each actor app through a copy rule in the generator override configuration (`flutter.yaml`) with overwrite disabled, and declared them in the Flutter asset list. The agent-docs do not cover this.
 
-### itracker
-Both UserActor and Admin frontends use a custom `public/logo.svg` -- the Howmet Aerospace horizontal logo (teal "H" mark + black text, viewBox 542x225). The logo replaces the default JUDO branding in the drawer header. No `.generator-ignore` entry needed since `logo.svg` is a recognized customization point.
+## Rationale
 
-### kozut-eugyfel-client (Flutter)
-Custom `mk_logo.png` (organization logo) deployed to all 3 actor apps via Handlebars template copy rule in `flutter.yaml` (`copy: true`, `overwriteExpression: false`). The user widget template (`user.dart.hbs`) is overridden to display this logo in the navigation drawer instead of default branding. Each actor also includes the default `judo-color-logo.png` and `ninja.png` assets.
+Unique names make the assets invisible to the generator, so nothing needs protecting; the few overridden files are explicit in `.generator-ignore`. The cost is manual management and, for overridden files, the loss of generator updates for them.
 
-### workflow-poc
-Single custom asset `public/background.webp` -- a custom background image for the application. Uses `.webp` format (not generated by default). No `.generator-ignore` entry needed since the filename is unique and not produced by the generator.
+## Example
 
-### ams-frontend
-Invitech company branding logo (`invitech_logo.png`) deployed via flutter.yaml copy rule with `overwriteExpression: false`. The asset is placed in `generator-overrides/templates/flutter/assets/` and copied to all actor app `assets/` directories. Referenced in `pubspec.flutter.yaml.hbs` for Flutter asset declaration.
+- trivia: three custom assets (a sharing QR code, a full-screen dark background, a white logo variant) plus a customized, generator-ignored `manifest.json`.
+- itracker: both actor frontends use a custom `public/logo.svg` for the drawer header.
+- workflow-poc: one background image in a format the generator does not produce, so no ignore entry.
+- Flutter projects (kozut-eugyfel-client, ams-frontend): organization logos copied to every actor app via a generator-override copy rule.
 
-## Trade-offs
+## When to avoid
 
-- **Pros**: Simple static file serving; no build step needed; easily replaceable
-- **Cons**: Manual management; generator may add conflicting files; large images increase bundle size
-- **When to use**: Any project needing custom branding, background images, or sharing assets
+- A logo change that can live in the model (`applicationLogo`): change the model instead.
+- Assets that must be versioned with content hashes: import them from `src/custom/` so the bundler fingerprints them.
 
 ## Related
 
-- [[pwa-manifest-customization]]
-- [[generator-ignore-app-theme]]
-
+- [[pwa-manifest-customization]] — the one `public/` file usually generator-ignored
+- [[generator-ignore-app-theme]] — which generated files to protect

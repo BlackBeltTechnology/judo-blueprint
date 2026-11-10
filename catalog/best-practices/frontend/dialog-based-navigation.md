@@ -1,9 +1,9 @@
 ---
 id: dialog-based-navigation
 title: Dialog-Based Navigation with State Machine
-description: Replace React Router-based navigation with a state machine that controls which page/dialog is visible.
-aliases: []
-keywords: [dialog, based, navigation, state, machine]
+description: Drive a single-screen custom frontend by a page-state variable and dialog-open flags instead of URL routes, for games, wizards and kiosks.
+aliases: [state machine navigation, routeless navigation, page state navigation]
+keywords: [navigation, state machine, dialog, page state, routing, kiosk, wizard, extra routes]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
 category: navigation
 status: single-project
@@ -13,49 +13,56 @@ alternatives: []
 related: [complete-frontend-replacement, localstorage-session-persistence]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Replace React Router-based navigation with a state machine that controls which page/dialog is visible. Navigation is driven by a `PageType` state variable and boolean dialog-open flags rather than URL routes. This pattern is suited for single-page experiences like games, wizards, or kiosk-mode applications where URL-based routing adds no value.
+Some UIs (games, wizards, kiosks) are one continuous experience where URLs add nothing. A page-state variable plus dialog flags replaces routing for such a hand-written frontend.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The generated frontend is route-based: each actor access becomes a navigation entry and a page, and create and edit forms open as dialogs over those pages ([navigation controller and actor accesses](../../agent-docs/frontend/model-screen-layout.md)). Routing is part of that generation.
+- Supported ways to add screens inside the generated app are extra React Router routes (`src/extra-routes.tsx`, prepended to the generated routes), the menu actions hook and custom visual elements ([extension points](../../agent-docs/frontend/extension-points.md), [custom component replacement](../../agent-docs/frontend/advanced-patterns.md)). Generated forms use the unsaved-changes confirmation hook `useNavigationConfirmation`; reuse it in custom editing components.
+- The state-machine navigation below is not a platform feature. It only applies where the generated routing and pages are not used at all (a replaced frontend, see [[complete-frontend-replacement]]).
+
+### Project practice: page state plus dialog flags
 
 ```typescript
-// State machine type
-type PageType = 'contests' | 'contest' | 'prompt' | 'scoreboard' | 'none';
+type PageType = 'list' | 'detail' | 'result' | 'none';
 
-// In App.tsx
-const [activePage, setActivePage] = useState<PageType>('contests');
+const [activePage, setActivePage] = useState<PageType>('list');
 const [isRegistrationOpen, setRegistrationOpen] = useState(false);
-const [isActivationOpen, setActivationOpen] = useState(false);
-// ... more dialog states
 
 return (
   <>
-    {activePage === 'contests' && <Contests />}
-    {activePage === 'contest' && <Contest />}
+    {activePage === 'list' && <ItemList />}
+    {activePage === 'detail' && <ItemDetail />}
     <RegistrationDialog open={isRegistrationOpen} />
-    <ActivationDialog open={isActivationOpen} />
-    <BottomNavigation /> {/* Fixed nav for page switching */}
+    <BottomNavigation /> {/* fixed navigation for page switching */}
   </>
 );
 ```
 
-## Examples
+- One union type names every page; one boolean per dialog. Keep transitions in a small number of handlers so the flow stays readable.
+- Persist the state the user would otherwise lose on reload, for example in local storage ([[localstorage-session-persistence]]).
+- Accept the loss of deep links, browser back and URL sharing; if any of these matter, use routes (generated or extra routes) instead.
 
-### Trivia
-Player frontend uses a 5-value `PageType` state machine (`contests`, `contest`, `prompt`, `scoreboard`, `none`) with 5 dialog-open boolean flags. Flow: Contests list -> Registration -> Activation -> Contest detail -> Quiz (PromptListDialog) -> Results -> Scoreboard. Bottom navigation bar provides "Contests" and "Reset" actions.
+## Rationale
 
-## Trade-offs
+State transitions are explicit and dialogs give a natural modal flow without URL management. The cost: no deep linking, a non-functional back button, no sharing of states by URL and harder testing of a given state.
 
-- **Pros**: No URL management overhead; clean state transitions; dialogs provide natural modal flow; works well for kiosk/embedded apps
-- **Cons**: No deep linking; browser back button does not work; no URL-based state sharing; harder to test specific states
-- **When to use**: Games, wizards, kiosk applications, or any UI where URL routing is unnecessary
+## Example
+
+trivia, player frontend: a five-value page state and five dialog flags drive the flow contest list, registration, activation, contest detail, quiz, results and scoreboard, with a bottom navigation bar offering the list and a reset action.
+
+## When to avoid
+
+- The application uses the generated pages and menu: extend with extra routes or hooks instead.
+- Users need bookmarks, back-button navigation or links from outside (e-mail, push notifications).
 
 ## Related
 
-- [[complete-frontend-replacement]]
-- [[localstorage-session-persistence]]
-
+- [[complete-frontend-replacement]] — the setting where this navigation applies
+- [[localstorage-session-persistence]] — keeping state across reloads
