@@ -1,9 +1,9 @@
 ---
 id: admin-default-generated-ui
 title: Admin Frontend with Default Generated JUDO UI
-description: "Use the JUDO-generated frontend as-is for administrative CRUD operations, with minimal or zero customizations."
-aliases: []
-keywords: [admin, frontend, default, generated, judo, ui]
+description: Use the generated frontend unchanged for administrative CRUD actors, leaving hook scaffolds inactive, when the admin experience needs no special UX.
+aliases: [default generated admin UI, zero-customization frontend]
+keywords: [admin, frontend, default, generated, access table, access view, hook scaffold, generator-ignore]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:reserve-app", "project:doors-model", "status:established"]
 category: page
 status: established
@@ -13,61 +13,46 @@ alternatives: []
 related: [dual-actor-frontend-architecture, hook-scaffold-default-pattern]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Use the JUDO-generated frontend as-is for administrative CRUD operations, with minimal or zero customizations. The generated UI provides access table pages (list views), access view pages (detail views), relation table/view pages (sub-entity navigation), standard forms, and a complete routing/navigation system. Hook scaffolds are generated but left as `.ts.default` (inactive) in React, or have no hook mechanism in Flutter. This approach is viable when the admin experience does not require special UX.
+For back-office actors that only need CRUD over master data, the generated frontend is enough. The model decides what the UI contains, so the admin frontend stays free of hand-written code.
 
-## Structure
+## Practice
 
-```
-src/
-  pages/Actors/Admin/
-    Entity1/AccessTablePage/     # Generated list view
-    Entity1/AccessViewPage/      # Generated detail view
-    Entity2/AccessTablePage/
-    Entity2/AccessViewPage/
-    Entity1/Entity2/RelationTablePage/   # Sub-entity list
-    Entity1/Entity2/RelationViewPage/    # Sub-entity detail
-  custom/hooks/
-    pages/*.ts.default           # Inactive page hook scaffolds
-    containers/*.ts.default      # Inactive container hook scaffolds
-    dialogs/*.ts.default         # Inactive dialog hook scaffolds
-  theme/                         # Default generated theme
-```
+### Platform base
 
-`.generator-ignore` contains only `.generator-ignore` and `.gitignore`.
+- Each access of the actor determines a generated page: a table access becomes a table page, a view access a view page, with create and edit forms as dialogs; relations get their own table and view pages ([UI model to frontend mapping](../../agent-docs/frontend/model-screen-layout.md)). Menu items come from the actor's menu entries ([navigation elements](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md)).
+- Layout gaps are model problems: an access whose target has no table or view cannot get a page from the generator, so complete the UI in the model first ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md)).
+- Hook scaffolds are generated as `.default` files under `src/custom/hooks/`. A `.default` file is not compiled; it only takes effect when copied to a name without `.default` and registered from `application-customizer.tsx` ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md)).
+- `src/custom/` is gitignored in the frontend module, so nothing there needs a `.generator-ignore` entry ([frontend guide](../../agent-docs/frontend/README.md)).
 
-## Examples
+### Project practice: leave the admin UI alone
 
-### Trivia
-Admin frontend manages 10+ entity types (Categories, Contests, Questions, Tasks, Standings, Tests, Users, Uploads, Admins, PersonalBests) with 100% generated pages, tables, and forms. 24 hook scaffolds remain inactive (`.ts.default`). Only 2 page overrides exist (Categories AccessViewPage, Contest Categories RelationViewPage) but contain no custom logic beyond generated patterns.
+This layer is project practice, not a platform feature:
 
-### itracker
-Admin frontend manages 3 entity types (Users, Categories, Regions) with 6 pages, 3 dialog forms, and 18 inactive hook scaffolds (9 container + 3 dialog + 6 page). Full CRUD for all entities. `.generator-ignore` protects only itself and `.gitignore`. Dashboard lands on Users table.
+- Do not activate scaffolds, override pages or theme for the admin actor; keep customization out of its pages entirely. The `.generator-ignore` then protects only itself and `.gitignore`.
+- Improve the admin UX in the model (labels, table columns, layout, menu order), not in the frontend.
+- When a single hook is needed (for example conditional validation on one form), activate just that scaffold and keep the rest inactive.
 
-### SkillMatrix (Flutter)
-Admin actor manages user accounts with 5 pages (Dashboard, Users Table/Create/View/Update) plus 3 generic pages (Settings, Error, Blank). Single menu item ("Users"). Special features: "Delete User" with conditional confirmation ("The user has skills. Are you sure?"), "Create Test Data" unbound operation, and role assignment switches conditionally enabled via `actorIsAdmin` flag. Zero customizations beyond model definition.
+## Rationale
 
-### reserve-app
-AdminActor manages 13 entity types (Companies, Gates, LoadingTimes, LoadingTypes, ManagedUsers, Partners, ProductCategories, Projects, Spots, StorageTypes, Units, VehicleTypes, Profile) with 13 access points, 18 dialogs, and 10 relation pages. Nearly all generated -- only 1 hook activated (StorageTypes conditional validation). Most entities follow an identical `name`+`active` pattern with Table + Form + View_Edit containers.
+No custom code means nothing to maintain across generator upgrades, and every entity looks and behaves the same. The cost is limited UX flexibility and no frontend-only business logic.
 
-### doors-model
-Admin actor model defines simple CRUD for 5 master data entities: Companies (5 columns), Employees (5 columns), Divisions (2 columns), Positions (2 columns), and Banks. Each entity has a table, create form, and detail view with consistent layout. Flat 5-item menu using Material Design icons (domain, account_group_outline, family_tree, arrow_decision, bank). Model-only -- would generate standard Admin CRUD frontend.
+## Example
 
-### ams-frontend
-Admin Flutter actor manages 3 entity types (Applications, Campaigns, Users) with 3 navigation menu items. All page structure is 100% generated. The only customizations are cross-cutting Handlebars template overrides (Excel download function, widget rendering tweaks) -- no per-page hooks or code modifications. `.generator-ignore` protects only the REST client file, not pages or theme.
+- trivia: ten-plus entity types with fully generated tables and forms; dozens of scaffolds stay inactive.
+- itracker: three entity types (users, categories, regions), full CRUD, landing on the users table.
+- reserve-app: thirteen master-data entities with a uniform name-plus-active shape; one hook activated for conditional validation on one entity.
+- doors-model: five master-data entities with a flat menu and consistent table, create form and detail layout.
 
-## Trade-offs
+## When to avoid
 
-- **Pros**: Zero custom code to maintain; automatic updates from generator; consistent UX across all entities; rapid development
-- **Cons**: Limited UX flexibility; all entities look and behave the same; no custom business logic in frontend
-- **When to use**: Internal admin dashboards, back-office tools, or when admin UX is not a priority
+- Users need a tailored experience, custom navigation or frontend-side business logic.
+- The actor is customer-facing rather than internal; see [[dual-actor-frontend-architecture]].
 
 ## Related
 
-- [[dual-actor-frontend-architecture]]
-- [[hook-scaffold-default-pattern]]
-
+- [[dual-actor-frontend-architecture]] — an admin actor kept generated next to a customized actor
+- [[hook-scaffold-default-pattern]] — how the inactive scaffolds work

@@ -1,9 +1,9 @@
 ---
 id: column-filter-provider-pattern
-title: Column and Filter Definition Provider Pattern
-description: "Extract table column definitions and filter option definitions into separate provider functions or custom hooks, keeping table page components focused on layout and data fetching."
-aliases: []
-keywords: [column, filter, definition, provider]
+title: Column and Filter Provider Pattern
+description: In a hand-written table page, column definitions and filter options are extracted into provider functions or page hooks that take the localization object, so the page keeps only layout and data fetching.
+aliases: [column definitions provider, filter options provider]
+keywords: [table, column, filter, provider, GridColDef, FilterOption, i18n, hook, data grid]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
 category: table
 status: single-project
@@ -13,61 +13,56 @@ alternatives: []
 related: [table-row-actions-utility, session-storage-table-state]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Extract table column definitions and filter option definitions into separate provider functions or custom hooks, keeping table page components focused on layout and data fetching. Column providers return `GridColDef[]` with i18n-aware header names, and filter providers return `FilterOption[]` with attribute names, labels, and filter types. Both accept `IntlShape` for localization. Providers can be standalone functions (in separate files) or returned from page-specific hooks.
+Table pages with many columns and filter types get cluttered when definitions sit next to layout and fetching code. Moving them into small providers keeps pages short and lets definitions be reused and tested alone.
 
-## Structure
+## Practice
+
+### Platform base
+
+- In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filterable, hidden, default sort and alignment, and its filters (`DataFilter`) carry label, bound attribute and filter operation type ([tables and navigation mapping](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md)). Change them in the model first.
+- Per-column adjustments that the model cannot express go through column customizer hooks, which receive the original column definition and return a changed one (width, hidden, not sortable) ([column width and order](../../agent-docs/frontend/hooks/table-hooks.md)); see also [table column customization](../../agent-docs/frontend/advanced-patterns.md).
+- Provider functions are only needed in a hand-written table page. With the generated tables, hooks and the model already do this job.
+
+### Project practice: providers for columns and filters
+
+This layer is project practice (actiongroup-test-react), not a platform feature:
+
+- A column provider takes the localization object and returns the column definitions with translated header names; a filter provider returns filter options with attribute name, translated label and filter type.
+- Two forms coexist in the project: standalone provider files for a simple table, and a page-specific hook that returns columns, filter options and the row click handler (the view page hook also returns nested columns and query customizers).
+- Choose one form per project to avoid inconsistency.
 
 ```typescript
-// columnDefsProvider.ts
+// Example project code: types and ids are the project's own
 type ColumnDefsProvider = (intl: IntlShape) => GridColDef[];
 
 export const getColumns: ColumnDefsProvider = (intl) => [
-  {
-    field: 'type',
-    headerName: intl.formatMessage({ id: 'pages.galaxy.matter.table.type' }),
-    sortable: false,
-    width: 170,
-  },
+  { field: 'type', headerName: intl.formatMessage({ id: 'pages.item.table.type' }), sortable: false, width: 170 },
 ];
 
-// filterOptionsProvider.ts
-type FilterOptionsProvider = (intl: IntlShape) => FilterOption[];
-
-export const getFilterOptions: FilterOptionsProvider = (intl) => [
-  {
-    attributeName: 'type',
-    label: intl.formatMessage({ id: 'pages.galaxy.matter.table.type' }),
-    filterType: FilterType.enumeration,
-  },
-];
-
-// Page-specific hooks alternative
-export const useGalaxiesTable = () => {
+export const useItemsTable = () => {
   const intl = useIntl();
-  const columns: GridColDef[] = [/* ... */];
-  const filterOptions: FilterOption[] = [/* ... */];
-  return { columns, filterOptions, rowClickHandler };
+  return { columns: getColumns(intl), filterOptions: getFilterOptions(intl), rowClickHandler };
 };
 ```
 
-## Examples
+## Rationale
 
-### ActionGroupTestReact
-Galaxy Matter table uses standalone `columnDefsProvider.ts` and `filterOptionsProvider.ts` files. Galaxies table uses `useGalaxiesTable()` hook returning columns, filterOptions, and rowClickHandler. Galaxy View uses `useGalaxiesView()` hook returning nested columns (stars, astronomer) and query customizers. Both patterns co-exist in the same project.
+Definitions are separated from page logic, reusable across table instances, testable and localization-aware. The cost: extra files per table, some indirection, and inconsistency when both forms are mixed.
 
-## Trade-offs
+## Example
 
-- **Pros**: Separation of column/filter definitions from page logic; reusable across different table instances; testable in isolation; i18n-aware
-- **Cons**: Extra files per table; provider pattern adds indirection; two approaches (files vs hooks) can be inconsistent
-- **When to use**: Table pages with complex column definitions, multiple filter types, or shared column configurations
+actiongroup-test-react uses standalone column and filter provider files for the matter table of a galaxy, a table hook for the galaxies list, and a view hook for the galaxy view with nested star and astronomer columns plus query customizers. Both forms live side by side.
+
+## When to avoid
+
+- You use the generated tables: configure columns and filters in the model and adjust single columns with a column customizer hook.
+- A table has only a few simple columns and no filters.
 
 ## Related
 
-- [[table-row-actions-utility]]
-- [[session-storage-table-state]]
-
+- [[table-row-actions-utility]] — row actions for the same tables
+- [[session-storage-table-state]] — persisting sort and filter state

@@ -1,11 +1,11 @@
 ---
 id: application-customizer-hub
 title: Application Customizer as Central Hook Registration Hub
-description: "The `src/custom/application-customizer.tsx` file serves as the central hub for all Pandino service registrations in a JUDO frontend."
-aliases: []
-keywords: [application, customizer, as, central, hook, registration, hub]
+description: All Pandino service registrations of a frontend (hooks, visual elements, interceptors, flow managers) are made from the single customizer file, with one register function per hook file.
+aliases: [customizer hub, central hook registration]
+keywords: [application customizer, pandino, registerService, BundleContext, hook registration, custom folder]
 tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "project:reserve-app", "status:emerging"]
-category: hook
+category: config
 status: emerging
 projects: [rackinspect, workflow-poc, reserve-app]
 evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
@@ -13,62 +13,57 @@ alternatives: []
 related: [pandino-action-hook-override, hook-scaffold-default-pattern, generator-ignore-app-theme]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-The `src/custom/application-customizer.tsx` file serves as the central hub for all Pandino service registrations in a JUDO frontend. It uses the `BundleContext` to register action hooks, custom visual element implementations, table row highlighting hooks, and error interceptors. This file is listed in `.generator-ignore` because the generator produces a skeleton version, but the developer extends it with all custom registrations.
+A JUDO frontend has many customization points. Calling every registration from one file makes it easy to audit what is customized, and keeps the individual hook files free of wiring.
 
-## Structure
+## Practice
+
+### Platform base
+
+- All hooks register as Pandino services through `context.registerService<T>(INTERFACE_KEY, implementation, properties)`. Properties such as `{ component }` limit a hook to one page or container ([Pandino service registration](../../agent-docs/frontend/hooks/README.md)).
+- `src/custom/application-customizer.tsx` is a plain generated file with an empty `customize(context)` method inside a class implementing `ApplicationCustomizer`. It is not a `.default` scaffold and is the place that calls your `register...Hook(context)` functions ([using .default scaffolds](../../agent-docs/frontend/hooks/README.md)).
+- `src/custom/` is gitignored in the frontend module, so the file and the hook files beside it survive regeneration and need no `.generator-ignore` entry ([frontend guide](../../agent-docs/frontend/README.md), [hook files and the custom folder](../../agent-docs/frontend/extension-points.md)).
+- The same file registers non-hook services too, for example an `OperationFlowManager` ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 
 ```typescript
-// src/custom/application-customizer.tsx
-import { BundleContext } from '@anthropic/pandino';
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
 
-export function registerCustomizations(context: BundleContext) {
-  // Action hooks for pages
-  context.registerService(PAGE_ACTIONS_HOOK_KEY, pageHookImpl, { component: COMP_KEY });
-
-  // Action hooks for dialogs
-  context.registerService(DIALOG_ACTIONS_HOOK_KEY, dialogHookImpl, { component: COMP_KEY });
-
-  // Custom visual element overrides
-  context.registerService(CUSTOM_VISUAL_ELEMENT_KEY, customComponent, { component: COMP_KEY });
-
-  // Table row highlighting
-  context.registerService(TABLE_ROW_HIGHLIGHTING_KEY, highlightHookImpl, { component: COMP_KEY });
-
-  // Error handler interceptor
-  context.registerService(ERROR_HANDLER_KEY, errorInterceptor);
+export class DefaultApplicationCustomizer implements ApplicationCustomizer {
+  async customize(context: BundleContext): Promise<void> {
+    registerMyPageActionsHook(context);           // one function per hook file
+    registerMyTableRowHighlightingHook(context);
+  }
 }
 ```
 
-Must be in `.generator-ignore` to prevent overwriting:
-```
-src/custom/application-customizer.tsx
-```
+### Project practice: one customizer, one register function per hook
 
-## Examples
+This layer is project practice, not a platform feature:
 
-### RackInspect
-`application-customizer.tsx` (~270 lines) registers 100+ hooks: 48 dialog hooks, 13 custom visual element implementations, 10 page hooks, 3 form action hooks, 3 view/edit hooks, 2 table row highlighting hooks, 1 form page action hook, and 1 error handler interceptor. Each import and registration follows a consistent pattern.
+- Keep the customizer a flat list of calls: dialog, page and container hooks, custom visual elements, row highlighting, the error interceptor, flow managers.
+- Put each registration in its own `register...` function in a hook file, so the customizer stays readable even with many entries.
+- Heavily customized projects have a long customizer; light projects have one call. Both use the same structure.
 
-### workflow-poc
-`application-customizer.tsx` (~47 lines) registers 3 services: an `OperationFlowManager` (custom redirect handler for workflow operation results), a Mermaid diagram visual element, and a CodeViewer syntax highlighting visual element. Demonstrates a lightweight customizer focused on domain visualization rather than hook overrides.
+## Rationale
 
-### reserve-app
-`application-customizer.tsx` in AdminActor registers a single hook: `registerServicesAdminActorStorageTypesAccessViewPageActionsHook` for conditional field validation on StorageTypes. The other 4 actor frontends use unmodified generated customizer skeletons. Demonstrates the simplest possible customizer with just one registration call.
+A single entry point makes customization auditable and the registration pattern uniform. The cost: the file grows with the project, is maintained by hand, and can cause merge conflicts when several developers add hooks.
 
-## Trade-offs
+## Example
 
-- **Pros**: Single entry point for all customizations; easy to audit what is customized; clear registration pattern
-- **Cons**: File grows large in heavily customized projects; must be manually maintained; merge conflicts if multiple developers add hooks simultaneously
-- **When to use**: Every JUDO frontend that activates hook scaffolds needs to register them here
+- rackinspect: a customizer of about 270 lines registers over a hundred services: dialog hooks, custom visual elements, page hooks, form and view/edit hooks, row highlighting and an error interceptor.
+- workflow-poc: about 47 lines, three services: an operation flow manager for workflow results and two visual elements (a diagram and a code viewer).
+- reserve-app: one registration, a page hook for conditional field validation on one view; other actors keep the generated empty customizer.
+
+## When to avoid
+
+- No hook, interceptor or custom element is activated: leave the generated empty customizer as it is.
 
 ## Related
 
-- [[pandino-action-hook-override]]
-- [[hook-scaffold-default-pattern]]
-- [[generator-ignore-app-theme]]
-
+- [[pandino-action-hook-override]] — an action hook registered from this hub
+- [[hook-scaffold-default-pattern]] — how scaffolds are activated before registering them
+- [[generator-ignore-app-theme]] — other files that need `.generator-ignore` protection

@@ -1,9 +1,9 @@
 ---
 id: centralized-error-handling-validation-map
-title: Centralized Error Handler with Validation Map
-description: "A centralized `errorHandling()` utility function that processes Axios errors and maps them to either field-level validation errors (displayed inline on form fields) or toast notifications."
-aliases: []
-keywords: [centralized, error, handler, validation, map, handling]
+title: Centralized Error Handling with Validation Map
+description: One error-handling function turns failed service calls into a field-to-message validation map for inline form errors, or into toasts, so every call site uses the same catch block.
+aliases: [errorHandling utility, validation map]
+keywords: [error handling, validation map, 400, 422, snackbar, toast, field errors, helperText, location]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
 category: component
 status: single-project
@@ -13,56 +13,62 @@ alternatives: [http-error-interceptor]
 related: [http-error-interceptor, error-code-mapping-pattern, view-edit-mode-toggle]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A centralized `errorHandling()` utility function that processes Axios errors and maps them to either field-level validation errors (displayed inline on form fields) or toast notifications. HTTP 400 responses are parsed into a `Map<string, string>` (field name to error message) and passed to `setValidation`. HTTP 422 responses show form-level error toasts. Other errors show generic toast notifications. Every service call wraps its catch block with this single function.
+Every service call can fail with validation errors that belong to form fields or with errors that need a toast. Handling this once, in a shared function, gives uniform inline feedback and keeps call sites short.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The backend returns a failed request as JSON results with `code`, an optional `location` (for validation errors usually the attribute or relation name) and a `details` map. HTTP 400 is used for model-constraint violations such as missing required values or a value outside the range ([error response structure](../../agent-docs/backend/error-handling-guide.md)).
+- The generated frontend already maps statuses: 400 shows a validation toast and inline field errors **only when the first error has a `location`**; 422 is a modeled operation fault shown in a fault dialog; 401 clears the session; 403 and 404 give toasts; 500 gives an internal-error toast. Detection is by status code only ([generated error handling matrix](../../agent-docs/frontend/error-handling.md)).
+- Errors without `location` are grouped under an empty key and no field shows them; only three validation codes have default translations, others show the raw code ([validation errors without location](../../agent-docs/frontend/error-handling.md)).
+- A custom error handler interceptor runs before the default handling and can take a response over ([customizing the 422 handling](../../agent-docs/frontend/error-handling.md)).
+
+### Project practice: one function with a validation map
+
+This layer is project practice (actiongroup-test-react), a hand-written frontend that does not use the generated handler:
+
+- A single `errorHandling(error, enqueueSnackbar, { setValidation })` function wraps every catch block of every service call.
+- For 400 it parses the response list into a `Map<fieldName, message>` keyed by `location` and passes it to `setValidation`; the form turns the map into `error` and `helperText` of each field. Errors without a `location` still need a toast, because no field can show them.
+- For 422 it shows a form-level toast; for other errors a generic toast.
+- Clear the map on edit-mode toggle and on a successful save.
 
 ```typescript
-// error_handling.ts
-export const errorHandling = (
-  error: any,
-  enqueueSnackbar: EnqueueSnackbar,
-  options?: { setValidation?: (v: Map<string, string>) => void }
-) => {
-  if (error?.response?.status === 400) {
-    // Map field errors to validation state
-    const validationMap = new Map<string, string>();
-    // ... parse error.response.data into field -> message pairs
-    options?.setValidation?.(validationMap);
-  } else if (error?.response?.status === 422) {
-    enqueueSnackbar('Validation error', { variant: 'error' });
+// Example project code
+export const errorHandling = (error: any, enqueueSnackbar: EnqueueSnackbar,
+    options?: { setValidation?: (v: Map<string, string>) => void }) => {
+  const status = error?.response?.status;
+  if (status === 400) {
+    const map = new Map<string, string>();
+    // parse the response list into location -> message pairs
+    options?.setValidation?.(map);
+  } else if (status === 422) {
+    enqueueSnackbar('Business fault', { variant: 'error' });
   } else {
     enqueueSnackbar('Something went wrong', { variant: 'error' });
   }
 };
-
-// Usage in every service call
-try {
-  await service.update(data);
-} catch (error) {
-  errorHandling(error, enqueueSnackbar, { setValidation });
-}
 ```
 
-## Examples
+## Rationale
 
-### ActionGroupTestReact
-`errorHandling()` in `src/utilities/error_handling.ts` is used in every CRUD operation across 20+ pages. 400 errors populate `validation` Map state which drives `error` and `helperText` props on TextFields. 422 errors show form-level toasts. Validation is cleared on edit mode toggle or successful save.
+One function gives consistent toasts and inline field feedback. The cost: parsing is coupled to the backend error shape, nested field errors are not supported, and every call still needs its own try/catch. With the generated frontend, prefer an error handler interceptor over a parallel utility ([[http-error-interceptor]]).
 
-## Trade-offs
+## Example
 
-- **Pros**: Single error handling function for all service calls; field-level validation feedback; consistent toast behavior; simple to use
-- **Cons**: Error response parsing is tightly coupled to backend error format; no support for nested field errors; per-call try/catch still required
-- **When to use**: Any JUDO React frontend needing consistent error handling with inline field validation
+actiongroup-test-react uses the function in every create, update and delete call across more than twenty pages. 400 responses fill a validation map held in page state that drives the fields; 422 responses show a toast. The map is cleared when edit mode toggles or the save succeeds.
+
+## When to avoid
+
+- You use the generated frontend: its handler already covers these statuses, customize it through an interceptor instead.
+- Errors rely on translated modeled faults, which the generated fault dialog shows; see [[error-code-mapping-pattern]].
 
 ## Related
 
-- [[http-error-interceptor]]
-- [[error-code-mapping-pattern]]
-- [[view-edit-mode-toggle]]
-
+- [[http-error-interceptor]] — central handling at the HTTP layer instead of per call
+- [[error-code-mapping-pattern]] — mapping error codes to messages
+- [[view-edit-mode-toggle]] — the toggle that clears the validation map

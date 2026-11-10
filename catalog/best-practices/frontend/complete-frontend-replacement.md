@@ -1,9 +1,9 @@
 ---
 id: complete-frontend-replacement
-title: Complete Frontend Replacement with Custom SPA
-description: Replace the entire generated JUDO UI with a hand-built single-page application while retaining the generated TypeScript service layer.
-aliases: []
-keywords: [complete, frontend, replacement, custom, spa]
+title: Complete Frontend Replacement with Generated Service Layer
+description: Replace all generated pages, routing, layout and theme with a hand-built app while still consuming the generated service layer and transfer object types, for UX that diverges from CRUD or for reference apps.
+aliases: [custom SPA over generated services, hand-built frontend]
+keywords: [frontend replacement, generator-ignore, App.tsx, service layer, custom app, generated services, SPA]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:actiongroup-test-react", "status:emerging"]
 category: page
 status: emerging
@@ -13,56 +13,48 @@ alternatives: [zero-customization-generated-frontend]
 related: [generated-service-layer-reuse, generator-ignore-app-theme, custom-component-directory, dialog-based-navigation, zero-customization-generated-frontend]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Replace the entire generated JUDO UI with a hand-built single-page application while retaining the generated TypeScript service layer. This is used when the UX requirements fundamentally diverge from the standard CRUD page model (e.g., gamified experiences, mobile-first immersive UIs, real-time interactions), or when the project serves as a reference/test application demonstrating specific JUDO patterns. The generated services, transfer object types, and Axios client implementations are still consumed, but all pages, routing, layout, and components are custom.
+Some UX requirements fundamentally diverge from the generated CRUD pages: games, immersive mobile apps, real-time views. This practice builds the whole UI by hand and keeps only what the generator does well: the typed service layer that talks to the backend.
 
-## Structure
+## Practice
 
-1. Add `src/App.tsx` and `src/theme/index.tsx` to `.generator-ignore` so the generator never overwrites them.
-2. Create a custom component directory (e.g., `src/trivia/`, `src/custom-app/`) that the generator does not know about.
-3. In the custom `App.tsx`, import generated service implementations directly (e.g., `new PlayerServiceForContestsImpl(judoAxiosProvider)`).
-4. Implement all navigation, state management, and UI components from scratch.
-5. Generated files (services, containers, routes, etc.) are still produced but effectively unused.
+### Platform base
 
-```
-.generator-ignore:
-  src/App.tsx
-  src/theme/index.tsx
-  public/manifest.json
+- The generator produces data-access services (`data-axios` templates, one service implementation per page and relation, with `refresh`, `update`, `delete` and operation calls) and transfer object types ([service generation](../../agent-docs/frontend/model-screen-layout.md)). These are independent of the generated pages.
+- Generated files are tracked by checksum. A manually edited generated file fails the build unless it is listed in `.generator-ignore`, which works like `.gitignore` ([code generation and checksum protection](../../agent-docs/frontend/README.md)).
+- Code under `src/custom/` is gitignored in the frontend module and survives regeneration without `.generator-ignore` entries. Extra routes can be added in `src/extra-routes.tsx` ([extension points](../../agent-docs/frontend/extension-points.md)). Prefer these supported extension points and hooks when they are enough.
+- The generated frontend authenticates, applies access control and registers hooks; a replacement must handle sign-in and the signed identifiers of instances itself (they change after every update of an entity, see [signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
 
-src/
-  App.tsx                  # Custom app root (hand-written)
-  theme/index.tsx          # Custom theme (hand-written)
-  custom-app/              # All custom components (generator-unaware)
-    Component1.tsx
-    Component2.tsx
-    ...
-  services/                # Generated (kept and used)
-```
+### Project practice: hand-built app over generated services
 
-## Examples
+This layer is project practice (trivia, actiongroup-test-react), not a platform feature. Two variants exist:
 
-### Trivia
-Player frontend replaces the entire generated JUDO UI with a custom quiz game SPA. `App.tsx` acts as a single state-machine controller, rendering custom `Contests`, `Contest`, and dialog components while importing `PlayerServiceForContestsImpl`, `PlayerServiceForTestsImpl`, etc. from the generated service layer.
+- Partial replacement (trivia): protect the app root and theme files in `.generator-ignore`, put the custom components in a directory the generator does not know, and construct generated service classes directly in the custom root. Generated pages, routes and containers are still produced but unused.
+- Full replacement (actiongroup-test-react): no generator-managed UI at all; all pages, layout, theme, dialogs and utilities are hand-written, and generated Axios services and types are imported from a generated folder.
+- Implement navigation, state, error handling and localization yourself; none of the generated hook mechanisms apply to custom pages.
 
-### ActionGroupTestReact
-Entirely hand-built React app (no JUDO generator, no Pandino, no `.generator-ignore`). All 20+ pages, layout, theme, dialogs, and utilities are hand-written in `src/`. Imports generated Axios services and types from `src/generated/`. Demonstrates JUDO action group patterns (input/output routes), CRUD, many-aggregation, and single-access entity patterns as a reference application.
+## Rationale
 
-## Trade-offs
+You get full UI freedom and no constraint from generated page patterns. The cost: no generated pages, tables or forms, all UI maintained by hand, and manual migration when the frontend framework or generator changes.
 
-- **Pros**: Maximum UI flexibility; no constraints from generated page patterns; can implement any UX paradigm
-- **Cons**: No benefit from generated pages, tables, or forms; all UI must be maintained manually; framework upgrades may require manual migration
-- **When to use**: When the application UX is fundamentally different from CRUD (games, dashboards, wizards, real-time apps), or for reference/test applications
+## Example
+
+- trivia: the player frontend is a quiz-game single-page app. The root component acts as a state-machine controller that renders custom contest and dialog components and calls generated player services directly.
+- actiongroup-test-react: a hand-built reference app with more than twenty pages that demonstrates action group routes, CRUD, many-aggregation and single-access entity patterns.
+
+## When to avoid
+
+- The UX is CRUD-like: use the generated frontend, see [[zero-customization-generated-frontend]].
+- Hooks, sub-themes and extra routes can cover the differences.
+- The team cannot maintain a full UI.
 
 ## Related
 
-- [[generated-service-layer-reuse]]
-- [[generator-ignore-app-theme]]
-- [[custom-component-directory]]
-- [[dialog-based-navigation]]
-- [[zero-customization-generated-frontend]]
-
+- [[generated-service-layer-reuse]] — consuming the generated services
+- [[generator-ignore-app-theme]] — protecting the app root and theme
+- [[custom-component-directory]] — where custom components live
+- [[dialog-based-navigation]] — navigation without generated routes
+- [[zero-customization-generated-frontend]] — the opposite approach

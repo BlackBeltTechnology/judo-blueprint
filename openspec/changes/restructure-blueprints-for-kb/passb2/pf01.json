@@ -1,0 +1,247 @@
+{
+ "batch": "pf01",
+ "entries": {
+  "action-group-input-output-routing": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "action group input output routing",
+    "operation input output page route dialog",
+    "action group template getTemplate",
+    "extra-routes custom routes React Router",
+    "signed identifier",
+    "bound operation input transfer object template default values"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/model-screen-layout.md#ESM Operations to UI Actions",
+    "catalog/agent-docs/frontend/extension-points.md#Extra Routes",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#GET_RANGE and GET_TEMPLATE behaviours"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "added platform base: generated operation UI, GET_TEMPLATE, signed identifier lifecycle, extra-routes",
+    "labelled routes/pages as project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "admin-default-generated-ui": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "generated UI default pages view table form access menu",
+    "hook .default scaffolds generator-ignore",
+    "MenuItemAccess navigation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/model-screen-layout.md#Navigation Controller and Actor Accesses",
+    "catalog/agent-docs/frontend/hooks/README.md#Using .default Scaffold Files",
+    "catalog/agent-docs/frontend/README.md#Key Concepts"
+   ],
+   "fixes": [
+    "full rewrite",
+    "added platform base on access->page mapping, .default scaffolds not compiled, src/custom gitignored",
+    "labelled project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "aggregation-input-widget": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "GET_RANGE range query reference selector",
+    "single relation autocomplete widget",
+    "CRUD flags on relations createable"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/model-screen-layout.md#Single Relation (Link)",
+    "catalog/agent-docs/frontend/model-screen-layout.md#ESM CRUD Flags on Relations",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#GET_RANGE and GET_TEMPLATE behaviours"
+   ],
+   "fixes": [
+    "full rewrite",
+    "added platform base: generated single-relation selector, CRUD flags, GET_RANGE",
+    "neutral example names, labelled project component"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "application-customizer-hub": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "application-customizer registerService BundleContext Pandino",
+    "customizer .default scaffold generator-ignore",
+    "OperationFlowManager registration"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/README.md#Pandino Service Registration",
+    "catalog/agent-docs/frontend/hooks/README.md#Using .default Scaffold Files",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#OperationFlowManager"
+   ],
+   "fixes": [
+    "legacy claimed customizer is in .generator-ignore: wrong, src/custom is gitignored and customizer is plain generated file",
+    "wrong import @anthropic/pandino replaced by BundleContext from pandino-api and ApplicationCustomizer class",
+    "full rewrite"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "approval-workflow-conditional-visibility": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "hiddenBy enabledBy derived boolean operation confirmation",
+    "derived attribute getter expression principal computed on read",
+    "access control via boolean attributes"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/ui-authoring-guide.md#9. hiddenBy / enabledBy / requiredBy",
+    "catalog/agent-docs/frontend/hooks/navigation-and-access.md#Access Control via Boolean Attributes",
+    "catalog/agent-docs/integration-testing/access-and-derived-testing.md#Pattern C"
+   ],
+   "fixes": [
+    "full rewrite",
+    "legacy pseudo-DSL replaced by prose; booleans must be on the same TO",
+    "added confirmationType values and server-side guard note",
+    "added related model practices"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "auto-scrolling-scoreboard": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "scoreboard leaderboard auto-scroll refresh",
+    "queryCustomizer orderBy sort list service table refresh",
+    "MUI theme palette actor colors"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Service Generation",
+    "catalog/agent-docs/frontend/theming.md#Color Palette"
+   ],
+   "fixes": [
+    "full rewrite",
+    "removed hard-coded medal hex colours (theme-driven), added sort-order is client-requested note",
+    "linked scoreboard-personal-best-pattern blueprint"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "autocomplete-range-override": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "typeahead autocomplete range hook queryCustomizer filter",
+    "autocompleteRange RangeAction hook name",
+    "GET_RANGE range query reference selector"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Typeahead/Autocomplete",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Container Actions",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#GET_RANGE and GET_TEMPLATE behaviours"
+   ],
+   "fixes": [
+    "full rewrite",
+    "added GET_RANGE platform base, getRangeAction context API",
+    "added server-side boundary warning and alternative interceptor-range-override",
+    "noted that docs do not list the exact range-override member name"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "breadcrumb-navigation-context": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "useJudoNavigation navigateBackTo breadcrumb navigation",
+    "navigation interceptor decorateNavigation",
+    "extra routes unsaved changes navigation confirmation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/navigation-and-access.md#Type-Safe Navigation",
+    "catalog/agent-docs/frontend/hooks/navigation-and-access.md#Navigation Interceptor",
+    "catalog/agent-docs/frontend/extension-points.md#Unsaved-Changes Navigation Confirmation"
+   ],
+   "fixes": [
+    "full rewrite",
+    "platform already exports useJudoNavigation with same API: stated, so the provider is project practice in replacement frontend",
+    "interceptor cannot veto navigation: stated",
+    "added alternative dialog-based-navigation"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "centralized-error-handling-validation-map": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "fault response 400 validation errors field details error handling",
+    "generated frontend error handling matrix 422 fault dialog",
+    "validation errors without location"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/error-handling.md#Generated Error Handling Matrix",
+    "catalog/agent-docs/frontend/error-handling.md#Validation Errors Without Location",
+    "catalog/agent-docs/backend/error-handling-guide.md#Error Response Structure"
+   ],
+   "fixes": [
+    "full rewrite",
+    "422 is a modeled operation fault not form validation: corrected label",
+    "added platform matrix, location requirement, interceptor alternative",
+    "map keyed by location; no-location errors need toast"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "column-filter-provider-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "table column filter options FilterType GridColDef table hooks",
+    "DataColumn DataFilter table column definition",
+    "column customizer hook width hidden sortable"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md#DataColumn",
+    "catalog/agent-docs/frontend/hooks/table-hooks.md#Column Width and Order",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Table Column Customization"
+   ],
+   "fixes": [
+    "full rewrite",
+    "added platform base: columns/filters from UI model + column customizer hooks",
+    "stated providers only apply to hand-written tables"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "complete-frontend-replacement": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "generator-ignore checksum protection generated files override App.tsx",
+    "service generation data-axios ServiceImpl",
+    "signed identifier lifecycle",
+    "extra routes custom folder"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/README.md#Code Generation and Checksum Protection",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Service Generation",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers",
+    "catalog/agent-docs/frontend/extension-points.md#Extra Routes"
+   ],
+   "fixes": [
+    "full rewrite",
+    "added checksum/.generator-ignore semantics, src/custom gitignored",
+    "separated partial (trivia) vs full (actiongroup) replacement",
+    "noted replacement must handle auth and signed ids"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

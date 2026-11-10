@@ -1,71 +1,60 @@
 ---
 id: approval-workflow-conditional-visibility
 title: Approval Workflow with Conditional Button Visibility
-description: Implement a multi-step approval workflow UI entirely through model-level configuration using derived boolean attributes for conditional visibility.
-aliases: []
-keywords: [approval, workflow, conditional, button, visibility]
+description: An approval workflow UI driven entirely by the model: per-operation derived booleans decide which action buttons and fields are hidden or enabled for the current status and user, with no frontend code.
+aliases: [state-driven buttons, workflow button visibility]
+keywords: [approval, workflow, hiddenBy, enabledBy, derived boolean, confirmation, status, operation, role]
 tags: ["domain:frontend", "layer:frontend", "project:itracker", "project:doors-model", "status:emerging"]
 category: form
 status: emerging
 projects: [itracker, doors-model]
 evidence: ["itracker:unrecorded", "doors-model:unrecorded"]
 alternatives: []
-related: [zero-customization-generated-frontend, model-defined-color-palette]
+related: [zero-customization-generated-frontend, model-defined-color-palette, ui-control-transfer-fields, action-group-conditional-enabling]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Implement a multi-step approval workflow UI entirely through model-level configuration using derived boolean attributes for conditional visibility. Each action button (approve, reject, send for approval, archive) has a corresponding `hide*` or `*Enabled` derived boolean on the transfer object. The backend computes these booleans based on the entity status and the current user's role. The generated UI automatically hides/shows or enables/disables buttons based on these flags, creating a state-machine-driven UX with no frontend code.
+In a status-driven process (new, review, approved, rejected) each action button is valid only in some statuses and for some roles. The practice keeps those rules in the model as derived booleans, and the generated UI shows, hides, enables or disables buttons and fields from them.
 
-## Structure
+## Practice
 
-ESM model pattern:
-```
-TransferObject Initiative {
-  // Status enum
-  status: InitiativeStatus
+### Platform base
 
-  // Derived visibility flags (computed by backend)
-  hideSendForApproval: Boolean  // true when status != NEW/REJECTED or not owner
-  hideApproval: Boolean         // true when status != REVIEW or not finance user
-  hideReject: Boolean           // true when status != REVIEW or not finance user
-  hideArchive: Boolean          // true when status != APPROVED
+- `hiddenBy`, `enabledBy` and `requiredBy` each reference a **boolean data member on the same transfer object** that owns the page; no cross-object reference exists. `hiddenBy` hides the element when the boolean is true; `enabledBy` enables it when true and disables it otherwise ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md)). The generated React binds them to form state ([access control via boolean attributes](../../agent-docs/frontend/hooks/navigation-and-access.md)).
+- An operation button can ask for confirmation: `confirmationType` is `NONE`, `CONDITIONAL` (decided by a boolean member through `confirmationCondition`) or `MANDATORY` (always, with a `confirmationMessage`) ([UI authoring guide: operations wiring](../../agent-docs/model/ui-authoring-guide.md)).
+- A derived member is computed on read from a getter expression, so it can combine the entity's status with data about the calling actor. The getter may read actor variables ([derived getters that depend on the actor](../../agent-docs/integration-testing/access-and-derived-testing.md)).
+- The booleans only control the generated UI. An API client can still call the operation, so the operation implementation (or a before-interceptor) must reject calls that are invalid for the current status or role ([interceptors](../../agent-docs/backend/interceptors.md)).
 
-  // Derived editability flag
-  editable: Boolean             // true when owner AND (status == NEW or REJECTED)
+### Project practice: one flag per button, status and role inside the flag
 
-  // Operations with visibility and confirmation
-  operation sendForApproval { hiddenBy: hideSendForApproval, confirmation: MANDATORY }
-  operation approve { hiddenBy: hideApproval, confirmation: MANDATORY }
-  operation reject { hiddenBy: hideReject, confirmation: MANDATORY }
-  operation archiveForecast { hiddenBy: hideArchive, confirmation: MANDATORY }
-}
-```
+This layer is project practice, not a platform feature:
 
-Generated UI renders action buttons with `hidden={data.hideApproval}` and confirmation dialogs with custom messages. Field editability is controlled by `enabledBy="editable"`.
+- Add one derived boolean per action on the transfer object (hide-send-for-approval, hide-approve, hide-reject, hide-archive) and one editability flag for the form fields. Combine status and role inside the derived expression, not in the UI model.
+- Wire each operation form with `hiddenBy` (or `enabledBy`) to its flag and set mandatory confirmation on state-changing operations.
+- Wire the form fields with `enabledBy` to the editability flag; a field that depends on a different role gets its own flag (dual control).
+- After an operation succeeds, refresh the page data, because the flags change with the status.
 
-## Examples
+## Rationale
 
-### itracker
-Initiative workflow has 4 states (NEW, REVIEW, APPROVED, REJECTED) with role-based transitions. Owner sees "Send For Approval" on NEW/REJECTED. Finance user sees "Approve"/"Reject" on REVIEW. All users see "Archive Forecast" on APPROVED. All buttons use mandatory confirmation dialogs. 12 form fields are controlled by an `editable` derived boolean. MonthlyForecast has dual-control: `savingPotential` editable by owners, `saving` editable only by finance users on APPROVED initiatives.
+The workflow rules live in the model next to the data they read, so every client and page shows the same buttons and no frontend code exists for visibility. The cost: many flags for complex workflows, rules invisible in frontend code, and the need to guard the operations themselves on the server.
 
-### doors-model
-Contract lifecycle has 6 states (CREATED, PENDING, APPROVED, REJECTED, SIGNED, CLOSED) with `enabledBy` attributes on `OperationForm` elements. Five derived booleans control UI: `closeEnabled` (status == SIGNED), `uploadEnabled` (status != CLOSED), `uploadSignedEnabled` (file exists AND status != CLOSED), `readyForApproval` (file exists AND status in CREATED/REJECTED), `readyForUpload` (not template-based AND status in CREATED/PENDING/REJECTED). Operations include approve, reject, sign, uploadSignedContract, and close.
+## Example
 
-### ams-frontend
-Campaign management has 2 states (OPEN, CLOSED) with derived booleans `isOpen`, `isClosed`, and `isEmpty` controlling 3 operations: **Close** (enabled when `isOpen == true`, confirmation "Are you sure to close the campaign?"), **Open** (enabled when `isClosed == true`, confirmation "Are you sure to re-open the campaign?"), and **Load** (enabled when `isEmpty == true`). The Download button for campaign status Excel is always available.
+- itracker: an initiative with four statuses (new, review, approved, rejected). The owner sees send-for-approval on new or rejected; a finance user sees approve and reject on review; everyone sees archive on approved. All use mandatory confirmation. Twelve form fields follow one editability flag; a forecast has dual control, with one value editable by owners and another only by finance users on approved initiatives.
+- doors-model: a contract with six statuses (created, pending, approved, rejected, signed, closed). Five derived booleans (close, upload, upload-signed, ready-for-approval, ready-for-upload) combine status with file presence and drive `enabledBy` on the operation forms.
 
-## Trade-offs
+## When to avoid
 
-- **Pros**: Entire workflow logic stays on backend; no frontend code for visibility rules; consistent across all clients; secure (backend enforces, frontend only hides)
-- **Cons**: Requires careful backend design of derived booleans; visibility logic not visible in frontend code; complex workflows need many derived flags; UI refresh required after state changes
-- **When to use**: State machine workflows (approval, review, publishing) where button visibility depends on entity status and user role
+- Visibility depends on data that cannot be computed on the owning transfer object.
+- Rules need client-only context such as unsaved form state.
+- Only one or two buttons are conditional; see [[action-group-conditional-enabling]] for grouping them.
 
 ## Related
 
-- [[zero-customization-generated-frontend]]
-- [[model-defined-color-palette]]
-
+- [[ui-control-transfer-fields]] — transfer fields that carry UI-control booleans
+- [[action-group-conditional-enabling]] — one boolean enabling a group of operations
+- [[zero-customization-generated-frontend]] — the generated frontend this relies on
+- [[model-defined-color-palette]] — other UI behavior defined in the model
