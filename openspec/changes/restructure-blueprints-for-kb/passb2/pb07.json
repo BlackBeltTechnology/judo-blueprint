@@ -1,0 +1,175 @@
+{
+ "batch": "pb07",
+ "entries": {
+  "test-data-builder-factory": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "JudoTest integration test fixture test data builder",
+    "ReferenceInjector createAndInject OSGi Reference service test",
+    "JudoTest transaction AUTO_ROLLBACK HSQLDB JudoRuntimeFixture"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/integration-testing/getting-started.md#Pattern 2: Testing Custom Operations with ReferenceInjector",
+    "catalog/agent-docs/integration-testing/getting-started.md#@JudoTest Parameters",
+    "catalog/agent-docs/integration-testing/best-practices.md#Test Data Management"
+   ],
+   "fixes": [
+    "legacy full rewrite; platform base (JudoTest, AUTO_ROLLBACK, ReferenceInjector by type) separated from project builder/helper layer"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "toggle-boolean-operation": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "custom operation bound operation _this identifier getById update mask",
+    "Boolean attribute Optional getter required not required DTO",
+    "queryContainer opposite relation DAO container",
+    "which operations are intercepted built-in custom operation call interceptor"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Absent, Null and Empty Are Different",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Optimistic Locking and __version",
+    "catalog/agent-docs/backend/custom-operations.md"
+   ],
+   "fixes": [
+    "legacy full rewrite; added interceptors-not-fired, Optional/required getter, __version bump, empty-mask caveats; mask in example; project layer labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "token-based-workflow-execution": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "DAO set relation unset relation clearing a relation",
+    "DAO fluent query filter selectList filterBy BooleanFilter",
+    "transaction operation rollback exception runtime concurrency",
+    "which operations are intercepted built-in custom operation call interceptor"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Clearing a Relation: unset, Not set(null)",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Optimistic Locking and __version",
+    "catalog/agent-docs/backend/error-handling-guide.md#How the Runtime Maps Exceptions to HTTP"
+   ],
+   "fixes": [
+    "legacy full rewrite; unset for assignee, interceptors not around custom ops, optimistic lock, 500 mapping; engine labelled project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "two-phase-registration": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "authentication actor principal registration unauthenticated access public operation",
+    "filterBy StringFilter equalTo selectOne",
+    "unauthenticated guest actor public access login not required"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/authentication-guide.md",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#How the Runtime Maps Exceptions to HTTP",
+    "catalog/agent-docs/backend/data-access-guide.md#Absent, Null and Empty Are Different"
+   ],
+   "fixes": [
+    "legacy full rewrite; labelled as project practice vs platform IdP authentication; custom ops not intercepted; weaknesses (expiry, brute force) explicit; removed Phase 3 unverified setTmpCode(null)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "typed-exception-error-handling": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "fault transfer object error declaration throws operation JSL model",
+    "InterceptorCallBusinessException throwing a business error from an interceptor",
+    "faults translation X-Fault frontend dialog error",
+    "Rackinspect BusinessError fault ExceptionUtils project helper"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/error-handling-guide.md#How the Runtime Maps Exceptions to HTTP",
+    "catalog/agent-docs/backend/error-handling-guide.md#Example Project Helpers (Not Platform API)",
+    "catalog/agent-docs/backend/interceptors.md#Throwing a Business Error from an Interceptor",
+    "catalog/agent-docs/frontend/error-handling.md#Operation Fault Dialog (HTTP 422)"
+   ],
+   "fixes": [
+    "legacy full rewrite; platform base separated from project convention",
+    "ErrorException/BusinessErrorException labelled generated-per-project not platform",
+    "ExceptionUtils labelled example project code",
+    "interceptors cannot throw generated fault"
+   ],
+   "inventory": {
+    "Rackinspect error model: one general BusinessError fault": "applied",
+    "ExceptionUtils factory pattern (project code)": "applied",
+    "Non-attribute errors: code+message BusinessError not location-less ValidationResult": "applied",
+    "anti-patterns downgrade to 500, swallowed causes": "applied",
+    "Document as best practice, project code not platform": "applied"
+   },
+   "lint": "pass"
+  },
+  "validation-exception-hierarchy": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "ValidationException location attribute field-level error form field",
+    "frontend validation error 400 field location displayed on input",
+    "interceptor preCall validation ValidationException before create update rollback"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Platform Exceptions",
+    "catalog/agent-docs/backend/error-handling-guide.md#Validation Strategy",
+    "catalog/agent-docs/frontend/error-handling.md#Validation Errors Without Location",
+    "catalog/agent-docs/backend/interceptors.md#Throwing a Business Error from an Interceptor"
+   ],
+   "fixes": [
+    "legacy full rewrite; ValidationException is platform (no string ctor), location optional; ExceptionUtils labelled project helper; interceptors cannot throw generated fault; catch-all caveat"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "upsert-create-or-update": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "singleton entity unique constraint create duplicate query selectOne",
+    "DAO update with mask payload set fields update after setter"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Pattern 4: Partial Updates",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Optimistic Locking and __version",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md#Absent, Null and Empty Are Different"
+   ],
+   "fixes": [
+    "legacy full rewrite; update with mask (old example had none); non-atomic race vs optimistic lock; custom ops not intercepted; project code labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "yaml-configuration-upload": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "file upload token binary attribute FileStore upload",
+    "create child relation DAO createX relation add related entity parent"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/error-handling-guide.md#How the Runtime Maps Exceptions to HTTP",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "legacy full rewrite; two-phase upload token flow; FileStore API undocumented noted; fault must be declared; Jackson checked exceptions; transaction atomicity"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

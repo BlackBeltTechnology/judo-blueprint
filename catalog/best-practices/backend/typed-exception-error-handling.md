@@ -1,74 +1,109 @@
 ---
 id: typed-exception-error-handling
 title: Typed Exception with Error Code Enumeration
-description: "Custom operations throw typed exceptions using JUDO's modeled fault mechanism."
-aliases: []
-keywords: [typed, exception, error, code, enumeration, handling]
+description: Business failures in custom operations are raised as a modeled fault, typically one general fault object carrying a code and a message, declared on every operation that can fail and created through a project factory.
+aliases: [business error fault, modeled fault error handling, BusinessError fault, typed business exception, error code fault]
+keywords: [modeled fault, fault, BusinessError, error code, exception, 422, X-Fault, custom operation, declared fault, ExceptionUtils, interceptor, InterceptorCallBusinessException]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:workflow-poc", "status:established"]
 category: error
 status: established
 projects: [trivia, rackinspect, mlszksz-platform, ubives, park-here, indamedia-adtrack, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "workflow-poc:unrecorded"]
 alternatives: [validation-exception-hierarchy]
-related: [state-lifecycle-operation, validation-exception-hierarchy]
+related: [state-lifecycle-operation, validation-exception-hierarchy, error-code-enum, safe-failure-pattern, interceptor-security-filter-validation, accept-reject-operations]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Custom operations throw typed exceptions using JUDO's modeled fault mechanism. An `ErrorException` wraps a structured `Error` transfer object containing an enumerated error code and human-readable message. This provides a structured, model-driven error contract between backend and frontend.
+A business rule that refuses an operation (wrong state, missing permission, an external system that failed) needs a structured answer the client can show or branch on. In JUDO that answer is a modeled fault: a transfer object declared on the operation. Across projects the practice is to model one general fault with a code and a message, declare it on every operation that can fail, and raise it through one factory.
 
-## Structure
+## Practice
+
+### Platform base: modeled faults
+
+(Platform facts, see the [Error Handling Guide](../../agent-docs/backend/error-handling-guide.md#modeled-faults).)
+
+- A fault is a transfer object attached to an operation as a fault. The generator produces a checked `<Fault>Exception` with typed details and the constructors `(details)`, `(errorCode, details)` and `(errorCode, details, cause)`.
+- The operation must declare the fault. Without it the generated interface has no `throws` clause and the build fails when you throw one.
+- The client receives HTTP 422 with the header `X-Fault: <fault FQN>` and the details plus `code` in the body. The frontend fault dialog translates the attributes with keys `faults.<fault FQN>.<attribute>` ([fault dialog](../../agent-docs/frontend/error-handling.md#operation-fault-dialog-http-422)).
+- The exception class is generated per project. `BusinessErrorException` or `GenericOperationErrorException` exist only because a project modeled faults of those names; they are not platform API.
+- Interceptors cannot throw a generated fault. They throw `InterceptorCallBusinessException` with the fault FQN as `type` ([Throwing a Business Error from an Interceptor](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)).
+- Field and input problems are `ValidationException` (400), not faults. A bare `RuntimeException` becomes a 500 ([How the Runtime Maps Exceptions to HTTP](../../agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http)).
+
+### Project layer: one general fault
+
+The projects converged on this shape. It is a modelling convention, not something the platform requires:
+
+- One fault transfer object with a required `code` (a String) and a `message`. In the largest project (RackInspect) this fault is declared on over a hundred operations (deletes, workflow steps, AI and PDF operations). Two more faults exist for special needs: a generic operation error with an operation name and details (mostly on toggle operations), and a bulk-upload error that also carries row locations so a bulk upload can report per-row problems.
+- Codes are plain strings held as constants in application code, or an enumeration in the model (see [[error-code-enum]] for the trade-off). An enumeration gives the client a closed list; strings avoid a model change for each new code. Either way the code is the key for the frontend translation and for client branching.
+- A factory (an `ExceptionUtils` class in the project's common module, example project code) creates every exception: `createBusinessErrorException(code, message)` for the general fault, plus helpers for `ValidationResult` and `ValidationException`. The rule is to never `new` an exception inline. The code is a named constant and the message comes from the project i18n service ([[i18n-osgi-service]]).
 
 ```java
-// Define error codes as model enumeration
-// ErrorCode: INVALID_CODE, CONTEST_NOT_OPEN, TEST_CLOSED, TEST_ALREADY_STARTED, TEST_NOT_STARTED
-
-// Throw typed exception
-throw new ErrorException(
-    Error.builder()
-        .withCode(ErrorCode.INVALID_CODE)
-        .withMessage("Invalid activation code.")
-        .build()
-);
-
-// Operation signature declares the exception
-public TestId apply(Contest _this, Credential input) throws ErrorException {
+// project factory, example code; the exception type is generated from the project's own fault
+public Entity accept(Entity _this) throws BusinessErrorException {
+    Entity entity = dao.getById(_this.identifier(), EntityMask.entityMask()).orElseThrow();
+    if (entity.getStatus() != Status.OPEN) {
+        throw ExceptionUtils.createBusinessErrorException(
+            Codes.ENTITY_NOT_OPEN, i18n.entity_not_open());
+    }
+    // ...
+}
 ```
 
-## Examples
+### Choosing the error type
 
-### Trivia
-5 error codes used across 4 operations: `INVALID_CODE` (Activate, Enter), `CONTEST_NOT_OPEN` (Enter, Start, Submit), `TEST_CLOSED` (Start, Submit), `TEST_ALREADY_STARTED` (Start), `TEST_NOT_STARTED` (Submit). Each builds an Error with code + message string.
+| Situation | Use |
+| :--- | :--- |
+| A value of an input is wrong, tied to an attribute | `ValidationException` with the attribute as `location` |
+| A permission, state, cross-entity or external-system failure | the general business fault (code + message), not a location-less validation result |
+| Failure raised in an interceptor | `InterceptorCallBusinessException`, fault FQN as `type` |
+| Readiness or completeness checks that should not abort | return the results as data instead of throwing |
 
-### RackInspect
-Uses `BusinessErrorException` (modeled fault) instead of `ErrorException`. Operations declare `throws BusinessErrorException`. Error creation is centralized via `ExceptionUtils.createBusinessErrorException(code, message)` with i18n messages from `RackInspectI18n`.
+The platform allows a validation result without location. The project rule keeps validation results for attributes, so every location in a result is a model attribute name and the form can show it. Everything else becomes a business fault.
 
-### mlszksz-platform
-Uses `BusinessErrorException` via centralized `ExceptionUtils.createBusinessErrorException(code, message)`. Error codes like "FORBIDDEN_ROLE_INVITATION", "USER_NOT_FOUND", "POST_NOT_DRAFT". Messages sourced from `MLSZKSZPlatformI18n` interface. Services re-throw BusinessErrorExceptions but wrap unexpected errors.
+### Fail loudly, wrap on purpose
 
-### Ubives
-Uses `BusinessErrorException` with `ErrorCode` enum and `BusinessError.builder()`. 12+ error codes: `PASSWORD_DOES_NOT_MATCH`, `ORGANIZATION_DOES_NOT_EXISTS`, `ACCOUNT_IS_ALREADY_IN_ORGANIZATION`, `APPLICATION_ALREADY_EXISTS_IN_ORGANIZATION_WITH_THIS_NAME`, `KEYCLOAK_USER_ALREADY_EXISTS_WITH_THIS_NAME`, `IDM_DOES_NOT_EXISTS`. Validation in custom operations (e.g., password match) and service layer (e.g., uniqueness checks).
+- Do not turn a missing precondition into a silent no-op. Raise a business fault with its own code (for example an "AI processing switched off" code) so the user sees why nothing happened.
+- A known failure mode of an external system (connection refused, quota) is wrapped into the business fault and the cause is logged.
+- Unexpected exceptions are real bugs and should stay 500. A catch-all that rewrites every exception to a generic business error hides them, as some projects do; avoid it ([Error Handling Best Practices](../../agent-docs/backend/error-handling-guide.md#error-handling-best-practices)).
 
-### ParkHere
-Uses `BusinessErrorException` with `ErrorCode` enum (USER_NOT_FOUND, CAR_NOT_FOUND, PERMISSION_DENIED, NOT_VALID_DATA, TOO_MANY_RESERVATION, MISSING_REQUIRED_DATA, RESERVATION_NOT_FOUND). All creation centralized via `ExceptionUtils.createBusinessErrorException(code, message)` with i18n messages from `ParkHereI18n`. Comprehensive validation in `ReservationService.validateInput()` (280+ lines) covering 9 validation categories.
+### Anti-patterns seen in practice
 
-### Indamedia-AdTrack
-Uses `BusinessErrorException` with 10 error codes: `USER_NOT_FOUND`, `CLIENT_NOT_FOUND`, `ACCOUNT_NOT_FOUND`, `CAMPAIGN_NOT_FOUND`, `CREDENTIAL_NOT_FOUND`, `CONNECTION_FAILD`, `PLATFORM_NOT_SUPPORTED`, `PLATFORM_NOT_IMPLEMENTED`, `TRACKED_CAMPAIGN_NOT_FOUND`, `TRACKED_CAMPAIGN_UNFETCHABLE`. Centralized via `ExceptionUtils.createBusinessErrorException(code, message)` with i18n from `AdTrackI18n`. Covers entity-not-found, external API failures, and platform support validation.
+- Catching the generated fault and rethrowing a `RuntimeException`: the client then sees a 500 instead of the 422 fault. This happened in interceptors and a user-management service.
+- Letting a database failure surface as "forbidden", or catching `Exception` and silently returning `allowed = false` without a log.
+- Using `IllegalStateException` for business invariants: it becomes a 500.
+- Passing a translated message as the `code` argument for not-found cases: the code should be a stable constant and the message separate.
 
-### workflow-poc
-Uses `DeclarationErrorException` with `DeclarationErrorCode` enum and `DeclarationError.builder()`. `UploadCustomImplementation` validates YAML workflow definitions with 6 validation categories: workflow name mismatch, missing state/role/event references, empty transition targets, missing database roles. Each throws `DeclarationErrorException(DeclarationError.builder().withCode(DeclarationErrorCode.INVALID_REFERENCE).withMessage("Role does not exist:" + name).build())`.
+## Rationale
 
-## Trade-offs
+- Structured, model-driven contract: a typed fault with a stable code lets the frontend translate and branch.
+- One general fault keeps the model small and the factory simple; the cost is that the type does not tell the client which rule failed, only the code does.
+- Hardcoded message strings in some projects bypass i18n; use the translation service.
+- Alternative: `ValidationException` only, simpler but with no typed fault handling in the UI ([[validation-exception-hierarchy]]).
 
-- Pros: Structured error contract, enumerated codes enable frontend-specific handling, model-driven, type-safe
-- Cons: Requires modeled fault type in ESM, error messages are hardcoded strings (not i18n), some operations use RuntimeException instead (gap)
-- Alternative: `ValidationException` for field-level errors, `RuntimeException` for unrecoverable errors (less structured)
+## Example
+
+- Trivia: five codes (invalid code, contest not open, test closed, test already started, test not started) in a model enumeration, built into an error object with code and message and thrown from four operations.
+- RackInspect: a general business error fault with string codes, created through the project factory with messages from the project i18n interface. It is declared on over a hundred operations; the two special faults cover generic operation errors and bulk upload.
+- mlszksz-platform: the same fault and factory, codes such as forbidden role invitation, user not found and post not draft. Services re-throw the fault and wrap unexpected errors, a catch-all that this entry advises against.
+- Ubives: the fault with an error-code enumeration of a dozen codes (password mismatch, organization missing, name already used, identity user exists), checked in custom operations and in the service layer.
+- ParkHere and Indamedia-AdTrack: the fault with an enumeration (not found, permission denied, too many reservations, external connection failed, platform unsupported), created through the common factory. ParkHere has a long input validation service that raises these.
+- workflow-poc: a domain-scoped declaration error with its own code enumeration for the YAML workflow validation, one code per category of reference problem.
+
+## When to avoid
+
+- The failure is a wrong input value: use `ValidationException` ([[validation-exception-hierarchy]]).
+- The failure is a bug or an unexpected infrastructure error: let it be a 500.
+- You are in an interceptor: use `InterceptorCallBusinessException`.
+- The client never reacts to the failure other than showing a generic error.
 
 ## Related
 
-- [[state-lifecycle-operation]]
-- [[validation-exception-hierarchy]]
-
+- [[validation-exception-hierarchy]] — field-level counterpart and the factory
+- [[error-code-enum]] — model blueprint for the code vocabulary and fault object
+- [[state-lifecycle-operation]] — state checks that raise the fault
+- [[safe-failure-pattern]] — where failures are deliberately swallowed
+- [[interceptor-security-filter-validation]] — raising errors from interceptors
+- [[accept-reject-operations]] — operations that declare the fault
