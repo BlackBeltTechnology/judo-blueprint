@@ -1,0 +1,5 @@
+{
+  "baseline": {"date": "2026-11-10", "index": "catalog/ only", "n": 62, "P@1": 0.629, "P@5": 0.839, "Recall@K": 0.871, "MRR": 0.695},
+  "min": {"P@5": 0.80, "MRR": 0.65},
+  "note": "Floor sits just under the baseline. Raise it when search improves; never lower it to make a change pass."
+}

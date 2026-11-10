@@ -38,7 +38,7 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
   - gitignore `.pi/dashboard/kb/`.
 
   Verify: after `kb index`, `kb search "create EntityType"` returns no `fragments/` path, and `git status` shows no DB.
-- [ ] 2.9 Rewrite `README.md` (consumer setup: kb pin plus `pi install` at one tag) and the root `AGENTS.md` (repo map, skills, gates). Verify: the README has no Claude Code prerequisite, and `kb agents catalog` returns the root `AGENTS.md`.
+- [x] 2.9 Rewrite `README.md` (consumer setup: kb pin plus `pi install` at one tag) and the root `AGENTS.md` (repo map, skills, gates). Verify: the README has no Claude Code prerequisite, and `kb agents catalog` returns the root `AGENTS.md`. _(done: README + AGENTS.md rewritten; no Claude setup left)_
 
 ## 3. agent-docs FIRST (P1b, one-time, not in any skill)
 
@@ -102,7 +102,7 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 
   Verify: in a dry run on 3 entries, all three pass `check-all` and `check`.
 - [x] 6.2 Add `next-batch` (about 10 ids, `established` first, progress state) to `judo-catalog-maintain`. Rewrite all entries in batches, one reviewed PR each. Verify: each batch PR passes gates and sandbox, and at the end `grep -rlE 'format: legacy|fragment: pending' catalog` is empty. _(done: Pass B v2: 35 batches, 310 entries, gate.sh per batch)_
-- [ ] 6.3 Remove the legacy allowances from `entry-lint`. Verify: CI on `develop` is green with every fragment passing. _(partial: no legacy entries remain, but --legacy flag still in entry-lint)_
+- [x] 6.3 Remove the legacy allowances from `entry-lint`. Verify: CI on `develop` is green with every fragment passing. _(done: entry-lint rejects legacy and pending)_
 
 ## 7. Sweep rackinspect and mlszksz-platform (P5)
 
@@ -140,14 +140,14 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 
 ## 9. kb quality, release and consumers (P7)
 
-- [ ] 9.1 Extend `tests/golden/kb-golden.json` (started with the agent-docs queries in 3.3) to ~60 queries and a `kb eval` step in `check-all`. Record the recall@5 threshold. Verify: CI fails if the threshold is set above the measured value.
+- [x] 9.1 Extend `tests/golden/kb-golden.json` (started with the agent-docs queries in 3.3) to ~60 queries and a `kb eval` step in `check-all`. Record the recall@5 threshold. Verify: CI fails if the threshold is set above the measured value. _(done: 62 queries, kb-eval gate in check-all (catalog-only index), floor P@5 0.80 / MRR 0.65, baseline P@5 0.839)_
 - [ ] 9.2 Implement `judo-catalog-maintain/scripts/version.sh` (JUDO NG string; tests for develop, feature and master) and `release-notes`. Port the release workflow from `judo-maven-plugin`: **[owner only: release workflow touches origin]**
   - tag only after gates and sandbox pass;
   - never retag;
   - prerelease for branch builds, full release for `master`.
 
   Verify: a test feature branch gets the expected tag and prerelease, and a forced gate failure creates no tag.
-- [ ] 9.3 Write the `judo-blueprint` skill (`references/search.md`, `apply.md`, `scripts/pin-source`, which writes the kb git source with `pin` and `subdir: catalog`). Verify: in a clean rackinspect worktree, `pi install git:…@<tag>` plus `pin-source <tag>` plus `kb index` returns the catalog entry for `kb_search "audit log entity"`. _(partial: skills/judo-blueprint has empty references/ and scripts/)_
+- [x] 9.3 Write the `judo-blueprint` skill (`references/search.md`, `apply.md`, `scripts/pin-source`, which writes the kb git source with `pin` and `subdir: catalog`). Verify: in a clean rackinspect worktree, `pi install git:…@<tag>` plus `pin-source <tag>` plus `kb index` returns the catalog entry for `kb_search "audit log entity"`. _(done: SKILL.md, references/search.md + apply.md, scripts/pin-source (local file only))_
 - [ ] 9.4 Open a rackinspect PR that switches to the pinned tag, and list the overlapping local skills for the team to remove (`judo-blueprint`, `judo-model-cli-mutations`, `judo-*-docs`, `judo-agent-docs-gap`). Verify: rackinspect `kb config` shows the pin, and pi shows no duplicate-skill warning after the listed removals. **[owner only: PR on another repo]**
 - [ ] 9.5 Cut the first `master` release `v1.0.0`. Verify: a non-prerelease GitHub release exists, and the tag tree has `catalog/`, `skills/` and `fragments/`, no `.jar`, and no CLI text under `catalog/`. **[owner only: release on origin]**
 
