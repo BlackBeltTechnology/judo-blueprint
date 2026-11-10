@@ -1,47 +1,78 @@
 ---
 id: attribute-renaming-in-transfer
 title: Attribute Renaming in Transfer Projection
-description: "Transfer objects map entity attributes to differently-named transfer attributes, providing more meaningful or context-appropriate names for the API/UI layer."
-aliases: []
-keywords: [attribute, renaming, transfer, projection]
+description: "Present an entity attribute under a different name in a transfer object, either as a MAPPED member bound to the attribute or as a DERIVED member computed from it."
+aliases: [attribute alias, renamed attribute, mapped binding]
+keywords: [transfer object, rename, mapped member, binding, derived, naming]
 tags: ["domain:model", "layer:model", "project:trivia", "status:single-project"]
 category: transfer
 status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
-related: [derived-attribute-flattening, actor-based-transfer-projection]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: attribute-renaming-in-transfer
+diagram: { kinds: [entity, transfer], members: types }
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Transfer objects map entity attributes to differently-named transfer attributes, providing more meaningful or context-appropriate names for the API/UI layer. This includes renaming stored attributes (via mapped binding) and renaming derived attributes (via getter expressions that reference the original field).
+The names that fit storage are not always the names that fit a client. A transfer object can present an entity attribute under a different, context-appropriate name without touching the entity.
 
-## Structure
+## Practice
 
-- Mapped attribute with a different name than the entity attribute it binds to
-- Derived attribute whose getter references the entity attribute under a new name
-- Examples: `result -> score`, `timestampOfCreation -> timestampOfUpload`
+### Rename with a mapped member
 
-## Examples
+A MAPPED member of a mapped transfer object has its own name and a `binding` to the entity attribute. The member `result` can bind to `Quiz.score`. Client code sees `result`; storage keeps `score`. A MAPPED member is allowed only on a transfer object that has a mapping to an entity, and it projects the bound feature (see the structure reference in the agent-docs).
 
-### Trivia
-`admin::Test.result` maps to entity `Test.score` (renamed for the admin UI context). `admin::Upload.timestampOfCreation` maps to `self.timestampOfUpload` (unified naming in the transfer layer). Both provide more intuitive names for the consumer.
+- The binding makes the member editable or read-only according to the transfer object's rules. The member's type follows the bound attribute.
+- Keep the rename consistent: if two transfer objects of the same entity expose the attribute, use the same new name in both, or the generated client types diverge.
 
-### AMS-Frontend
-`manager::Subordinate.identifier` maps to `User.email` -- the email attribute is renamed to `identifier` in the subordinate context, providing a more semantically appropriate name. The Manager actor sees subordinate users with their email displayed as an identifier field rather than an email field.
+### Rename a derived value with a getter
 
-## Trade-offs
+When the transfer must present a value that is read-only and under a new name, a DERIVED member whose getter expression reads the entity attribute (for example `uploadedAt` computed from the stored creation timestamp) does the same job. It cannot be written back. Choose MAPPED when clients must edit the value, DERIVED when they only read it.
 
-- Pros: API/UI names can differ from storage names, enables consistent naming across transfers
-- Cons: Mapping indirection can make debugging harder, must document the name mapping
-- Prefer when: Entity attribute names are technical/internal and a more user-friendly name is needed at the API level
+### Make the rename visible
+
+The mapping is the only place that says `result` is the entity's `score`. Name the transfer members for the client's vocabulary and record the mapping in the entity documentation, otherwise debugging a query or a filter on the stored column is harder. Generated UI labels come from the transfer member names (see [[naming-conventions]]).
+
+## Rationale
+
+- API and UI names can differ from storage names and stay stable when the stored name changes.
+- Each actor can use its own vocabulary: see [[actor-based-transfer-projection]].
+- Cost: one more indirection to remember. Project practice, not platform: the original project renamed only a few members, where the entity name was technical.
+
+## Example
+
+A Quiz entity has a stored integer `score` and a stored timestamp `createdTs`. QuizView maps Quiz, exposes `result` as a MAPPED member bound to `score`, and `uploadedAt` as a DERIVED member computed from `createdTs`. Names are neutral stand-ins.
+
+## When to avoid
+
+- The entity name is already the right name: map it unchanged.
+- Several transfers rename the same attribute differently: agree one client vocabulary first.
+- The value must be written back under the new name and a derived member would be read-only: use MAPPED.
 
 ## Related
 
-- [[derived-attribute-flattening]]
-- [[actor-based-transfer-projection]]
+- [[derived-attribute-flattening]] — derived members in transfer objects
+- [[actor-based-transfer-projection]] — per-actor vocabularies
+- [[naming-conventions]] — naming rules for model elements
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=attribute-renaming-in-transfer cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Quiz {
+    <<Entity>>
+    +Integer score
+    +Timestamp createdTs
+  }
+  class QuizView {
+    <<Transfer>>
+    +Integer result
+    +Timestamp /uploadedAt
+  }
+  QuizView ..> Quiz : maps
+```
+<!-- /mermaid:generated -->

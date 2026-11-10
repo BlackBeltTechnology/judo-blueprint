@@ -1,87 +1,97 @@
 ---
 id: actor-based-transfer-projection
 title: Actor-Based Transfer Object Projection
-description: Each actor (user role) in the system gets its own dedicated set of transfer objects that project different views of the same underlying entities.
-aliases: []
-keywords: [actor, based, transfer, object, projection]
+description: "Give each actor role its own mapped transfer objects over the shared entities, with a per-role member selection, derived display fields and permission flags."
+aliases: [role projection, per-role transfer, actor view]
+keywords: [actor, transfer object, projection, access, role, mapped, derived]
 tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:reserve-app", "status:established"]
 category: transfer
 status: established
 projects: [trivia, itracker, alba, skillmatrix-model, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, reserve-app]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "reserve-app:unrecorded"]
 alternatives: [service-based-transfer-organization]
-related: [derived-attribute-flattening, unmapped-transfer-dto, derived-access-filtering, service-based-transfer-organization]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: actor-based-transfer-projection
+diagram: { kinds: [entity, transfer, actor], members: types }
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Each actor (user role) in the system gets its own dedicated set of transfer objects that project different views of the same underlying entities. Admin actors see full data with management capabilities, while restricted actors see curated, read-only views optimized for their use case. Transfer objects are organized into actor-specific packages (e.g., `actors::admin::`, `actors::player::`) or role-prefixed names.
+Different actors (roles) need different views of the same entity. Give each actor its own transfer objects over the shared entity, with its own member selection, derived display fields and permissions, instead of one transfer object that serves everybody.
 
-## Structure
+## Practice
 
-- Entity types live in a shared `entities` package
-- Each actor gets its own sub-package under `actors::` or `services::`
-- Actor-specific transfer objects reuse entity names but provide different attribute selections, derived fields, and permission settings
-- Admin projections tend to expose more attributes and CRUD operations
-- Restricted actor projections tend to use heavily derived (read-only) attributes
+### One entity, one transfer object per actor role
 
-## Examples
+- Entities stay in one shared package. A transfer object is a mapped projection of an entity (it has a `mapping` to the entity) and selects which entity attributes and relations the actor can see.
+- Each ActorType gets its Access entries pointing at that actor's own transfer objects. An Access carries the permissions (`createable`, `updateable`, `deleteable`) and an optional `getterExpression` that narrows the visible rows (see the platform's accesspoint reference). Entities and transfer objects are separate layers: the transfer object's own `createable`, `updateable` and `deleteable` flags say what the transfer type allows, the Access says what this actor may do through it.
+- A full-access projection (admin) exposes many members and the CRUD flags. A restricted projection exposes few members, usually MAPPED read-only or DERIVED ones, with the flags off.
+- A member that exists only for one actor (a display label, a flag for the UI) is a DERIVED member of that actor's transfer object, not a new entity attribute. A transfer-object member cannot reference another transfer object's members: `hiddenBy`, `enabledBy` and `requiredBy` must name a boolean on the same transfer object.
 
-### Trivia
-Entity `Contest` has two projections: `admin::Contest` (full CRUD, status management, open/close operations) and `player::Contest` (read-only with only `title` and `description`, plus an `enter` operation). The admin sees 6+ attributes; the player sees 2 derived attributes.
+### Name and package by actor
 
-### itracker
-Entity `Initiative` (18 attributes) has actor transfer `user::Initiative` (21 attributes): adds 7 UI-control fields (`label`, `editable`, `hideSendForApproval`, `hideApproval`, `hideReject`, `hideArchive`, `initiator`), omits 4 internal fields (`id`, `riskLevel`, `actionDueMonth`, `version`), and relaxes `status` from required to optional. Admin actor manages only reference data (Users, Categories, Regions) with full CRUD, not Initiatives.
+Prefix or package the transfer objects by actor (for example an admin package and a customer package, or `AdminOrder`, `CustomerOrder`). Neutral per-actor names keep generated UI names and operation URLs unambiguous. Every mapped transfer object that takes part in the UI needs its View, Form and Table pages in the UI model; the generator-side rules are in the [UI authoring guide](../../agent-docs/model/ui-authoring-guide.md).
 
-### SkillMatrix
-4 actors with 37 transfer objects. `Competence` entity has 5 projections: `hrEmployee::Competence` (full CRUD with tags, delete guard), `hrEmployee::SelectedCompetence` (picker, name-only), `professional::Competence` (read-only name), `manager::Competence` (read-only name + required), `report::Competence` (transient denormalized row). `User` entity has 7+ views across actors.
+### Pair each Access with a menu entry
 
-### Alba
-4 role projections for `Product`: `AuthorProduct` (teacher's own products, create/finalize/version), `AdminProduct` (full access including impersonation and approval assignment), `GuestProduct` (public read-only), `ApproverProduct` (approval workflow). 4 role projections for `User`: `UserTransfer` (self-view), `AuthorTransfer`, `AdminAuthorProfile`, `PublicAuthorProfile`. Task views per role: `AuthorTask`, `ApproverTask`, `AdminTask`. Total: 44 transfer objects from 11 entities.
+An Access grants data permission only. For a page to be reachable it needs a MenuItemAccess under the same actor's menu items, otherwise the target is API-only. See the accesspoint reference in the agent-docs for the pairing rule.
 
-### SkillMatrix-Model
-4 ActorTypes confirmed in source: `AdminActor`, `HREmployeeActor`, `ProfessionalActor`, `UserActor`. Each actor uses `isActiveExpression` for role gating (e.g., `self.isActiveHREmployee`). 37 transfer objects across actors project 21 entities with varying CRUD permissions and attribute selections. Same entity operation exposed to different actors: e.g., `User.approveAllSkills` mapped to both Subordinate and UnapprovedSkillsView transfers.
+### Row scoping is separate from the projection
 
-### Viterra Demo
-2 actors (Admin, Partner) with 10 transfer objects from 7 entities. `Report` entity has 3 projections: `ReportTransfer` (admin: full CRUD, accept/review operations), `PartnerOpenReportTransfer` (partner: PENDING reports only, update stocks, submit operation), `PartnerClosedReportTransfer` (partner: non-PENDING reports, read-only). `Client` has 2: `ClientTransfer` (admin) and `PartnerClientTransfer` (partner self-view). Partner transfers use actor-prefixed naming (e.g., `PartnerOpen*`, `PartnerClosed*`).
+The projection decides which fields an actor sees; the Access `getterExpression` decides which rows. Do both: a restricted projection over an unfiltered Access still lists every row. See [[derived-access-filtering]].
 
-### KozutEugyfelClient
-3 actors (Admin, Munkatars, EUgyfelAlkalmazas) with 20 transfer objects from 13 entities. `Felhasznalo` entity has 2 principal projections: `AdminPrincipal` (email + name only) and `MunkatarsPrincipal` (9 attributes including role/organizational data). `Bejelentes` has 3 projections: `BejelentesAzonosito` (minimal 4-field identifier), `Bejelentes` (5-field summary), `BejelentesMegtekinto` (23 fields with 7 permission booleans for full viewer).
+## Rationale
 
-### MJSZ
-Single actor `Munkatars` with 7 TOs in `actors::munkatars::` namespace, one per entity. Each TO mirrors the entity name (Club, Player, Season, Tournament, Match, Team, Transfer). All TOs use AGGREGATION for relations and have `createable=false, updateable=false, deleteable=false` -- CRUD is granted at the access level. Simple 1:1 entity-to-TO mapping since there is only one actor role.
+- Each client receives exactly the data it needs and cannot read fields that were never exposed.
+- Entity changes stay in one place; each projection adapts independently.
+- Cost: more transfer objects and some repeated mappings across actors. Project practice (not platform behaviour): many projects accept the duplication, and keep one transfer object per actor and entity rather than inheritance between them. [[service-based-transfer-organization]] is the alternative organisation.
 
-### judo-demo-miniworkflow
-Single actor `GenericActor` with `GenericUser` as its principal, mapping to `User` entity with additional derived attributes (`isNotAdmin`, `isNotApprover`) for UI hiding. `DocumentTransfer` provides the enhanced API projection of `Document` with negative permission attributes and mixed operations (static factory + mapped workflow ops). Self-mapped transfers coexist alongside actor-specific transfers.
+## Example
 
-### AMS-Model
-2 actors (Manager, Admin) with actor-specific transfer projections. `User` entity has 3 TOs: `manager::Subordinate` (4 attributes for displaying subordinates), `manager::ManagerApprovalList` (empty TO for bulk approval context), and `admin::User` (3 attributes). `ConfirmationRequest` entity has `manager::Request` (11 attributes with MAPPED approve/reject operations). Manager access uses `self.subordinates` and campaign status filtering; Admin manages campaigns and data loading.
+An Order entity has a number, a total and an internal note. AdminOrder maps all three and is createable, updateable and deleteable. CustomerOrder maps the number and adds a DERIVED summary, with the CRUD flags off, and leaves the internal note out. AdminActor has an Access to AdminOrder with all permissions. CustomerActor has a read Access to CustomerOrder. Names are neutral; the shape is the one drawn below.
 
-### Sanctuary Backend
-Single `Admin` actor with 6 transfer objects (one per entity) using "TO" suffix naming: `UserTO`, `RoleTO`, `RoleGroupTO`, `PositionTitleTO`, `UserPrivacySettingsTO`, `UserSettingsTO`. All TOs are 1:1 mappings of their entities with MAPPED attributes. Admin has full CRUD access to all 4 primary access points (users, roles, roleGroups, positionTitles). This represents the simplest form of actor-based projection: single actor, direct entity mapping.
+## When to avoid
 
-### KozutEugyfelModelTest
-3 KOZUT-realm actors (UgyfelszolgalatiMunkatars, SzervezetiEgysegMunkatars, SzervezetiEgysegVezeto) each with near-identical but separately defined transfer packages. Each actor gets `Bejelentes`, `Esemeny`, `BejelentesTipus` TOs plus `IntezendoBejelentes` extending `Bejelentes` with bound operations. A shared `KozosTransferObjectek` package provides common TOs (`Felhasznalo`, operation inputs) reused across actors.
-
-### ReserveApp
-5 actors (Admin, Partner, Logistician, Doorman, Readonly) with 40 TOs from 15 entities. AdminActor sees full admin TOs (e.g., `services::Partner` with all fields including `externalIdentifier` and `active`). PartnerActor sees restricted `*ForPartner` TOs (e.g., `PartnerForPartner` exposes only name, phone, address, contact). `ReservationForPartner` adds derived display attributes (`duration`, `projectAsString`, `gateAsString`) not on the entity.
-
-### AMS-Frontend
-2 actors (Manager, Admin) with 7 TOs from 7 entities. `User` entity projected 3 ways: `manager::Subordinate` (email renamed to `identifier`, plus name fields), `manager::ManagerApprovalList` (relation-only TO with filtered `approvals` and `approveAll` operation), and `admin::User` (3 basic attributes). Manager sees only open-campaign confirmation requests; Admin has full CRUD on campaigns and applications.
-
-## Trade-offs
-
-- Pros: Strong separation of concerns per actor, fine-grained data exposure control, each UI gets exactly the data it needs
-- Cons: More transfer objects to maintain, potential duplication of mapping logic across actors
-- Prefer when: Multiple user roles need different views of the same data
+- One role only, or all roles see the same data: map one transfer object per entity.
+- The difference between roles is only the row set: use one transfer object and different Access getter expressions.
+- Needs that cut across entities (dashboards): use an unmapped transfer object, see [[unmapped-transfer-dto]].
 
 ## Related
 
-- [[derived-attribute-flattening]]
-- [[unmapped-transfer-dto]]
-- [[derived-access-filtering]]
-- [[service-based-transfer-organization]] (alternative: per-service domain organization)
+- [[derived-attribute-flattening]] — derived members used in restricted projections
+- [[unmapped-transfer-dto]] — transfer objects without an entity mapping
+- [[derived-access-filtering]] — row scoping on the Access
+- [[service-based-transfer-organization]] — alternative: organise by service instead of by actor
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=actor-based-transfer-projection cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AdminActor {
+    <<Actor>>
+  }
+  class AdminOrder {
+    <<Transfer>>
+    +String orderNumber
+    +Text internalNote
+    +Double total
+  }
+  class CustomerActor {
+    <<Actor>>
+  }
+  class CustomerOrder {
+    <<Transfer>>
+    +String orderNumber
+    +String /summary
+  }
+  class Order {
+    <<Entity>>
+    +String orderNumber
+    +Text internalNote
+    +Double total
+  }
+  AdminOrder ..> Order : maps
+  CustomerOrder ..> Order : maps
+```
+<!-- /mermaid:generated -->

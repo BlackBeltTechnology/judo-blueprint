@@ -1,0 +1,226 @@
+{
+ "batch": "pm01",
+ "entries": {
+  "action-group-conditional-enabling": {
+   "status": "rewritten",
+   "fragment": "action-group-conditional-enabling",
+   "kb": [
+    "ActorGroup enabledBy featuredActions",
+    "derived attribute boolean enabled button page",
+    "OperationForm button operation bound transfer object"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/ui-authoring-guide.md#9. hiddenBy / enabledBy / requiredBy",
+    "catalog/agent-docs/model/esm_metamodel/ui.md#ActionGroup",
+    "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md#ActionGroup Attributes"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "enabledBy must be a boolean on the same transfer object",
+    "featuredActions = standalone buttons, rest in pop-up menu",
+    "removed disabled/isReadOnly/fit properties not in agent-docs",
+    "enabledBy only on widgets (hiddenBy also on ActionGroup)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "actor-based-transfer-projection": {
+   "status": "rewritten",
+   "fragment": "actor-based-transfer-projection",
+   "kb": [
+    "actor access transfer object projection principal",
+    "ActorType access TransferObjectType mapping createable updateable deleteable"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Access",
+    "catalog/agent-docs/model/ui-authoring-guide.md#TL;DR",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "Access carries permissions and row getter; TO flags separate",
+    "Access needs MenuItemAccess",
+    "projection vs row scoping"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "actor-context-variable-lookup": {
+   "status": "rewritten",
+   "fragment": "actor-context-variable-lookup",
+   "kb": [
+    "getVariable ACTOR PRINCIPAL USER JQL",
+    "default value expression getVariable SYSTEM category"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#!getVariable(category, name)",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#ACTOR vs PRINCIPAL vs USER",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Three actor shapes"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "category chosen by actor shape; USER for token-only",
+    "ACTOR needs mapped managed principal + claim to identifier",
+    "managed first-login insert gap noted",
+    "claim fields must map to identifier/derived (validator)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "aggregated-stored-field": {
+   "status": "rewritten",
+   "fragment": "aggregated-stored-field",
+   "kb": [
+    "interceptor after update stored attribute recompute DAO",
+    "derived attribute stored attribute computed on read getterExpression"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Data Denormalization and Aggregation",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#MemberType"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "refresh via OperationCallInterceptor postCall, bypass risk by other writers",
+    "stored vs derived tradeoff",
+    "Aggregated suffix labelled as project naming"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "approval-workflow-pattern": {
+   "status": "rewritten",
+   "fragment": "approval-workflow-pattern",
+   "kb": [
+    "JCL operation script this.relation assignment iterate collection call operation",
+    "isDefined empty filter collection function JQL",
+    "operation call interceptor guard state before update reject business exception"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jcl-operation-scripts.md#Statements and syntax",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "JCL body uses this, not self (build error verified)",
+    "isEmpty not a JQL function; use count",
+    "button guard vs API guard"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "attribute-renaming-in-transfer": {
+   "status": "rewritten",
+   "fragment": "attribute-renaming-in-transfer",
+   "kb": [
+    "mapped data member binding transfer object attribute name differs read-only editable"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#DataMember / MemberType Context Constraints"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "MAPPED needs mapped TO; DERIVED is read-only alternative",
+    "rename consistency across transfers"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "audit-event-entity": {
+   "status": "rewritten",
+   "fragment": "audit-event-entity",
+   "kb": [
+    "DAO create entity from custom operation Java createable false generated"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "interceptors only built-in ops; custom ops must write event themselves",
+    "createable=false only removes generated actions",
+    "interceptor exceptions roll back",
+    "helper labelled project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "bidirectional-relation": {
+   "status": "rewritten",
+   "fragment": "bidirectional-relation",
+   "kb": [
+    "bidirectional relation TwoWayRelationMember partner composition aggregation validator"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Asymmetric bidirectional relations",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#TwoWayRelationMember"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "two-way cannot be COMPOSITION; AGGREGATION end needs ASSOCIATION partner",
+    "one end must have lower 0",
+    "TwoWay only on entities",
+    "primary resolves ownership"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "binary-document-with-link-pattern": {
+   "status": "rewritten",
+   "fragment": "binary-document-with-link-pattern",
+   "kb": [
+    "BinaryType file upload mime type max size token file store attribute",
+    "upload token file store binary attribute download"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md#BinaryType Attribute Rules",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "BinaryType needs >=1 mimeType, default 50MB",
+    "upload is two-phase token flow",
+    "no one-of constraint in model"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "category-enum-pattern": {
+   "status": "rewritten",
+   "fragment": "category-enum-pattern",
+   "kb": [
+    "enumeration type members ordinal enum attribute default expression"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md#EnumerationMember Attribute Rules",
+    "catalog/agent-docs/backend/data-access-guide.md#Known Issues of the Generated DAO"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "ordinal unique, 0..9999 in JSL, never reuse",
+    "default via Type#MEMBER literal on attribute, not input DTO",
+    "query<Attribute>() enum DAO issue noted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "collection-holder-entity": {
+   "status": "rewritten",
+   "fragment": "collection-holder-entity",
+   "kb": [
+    "head tail collection function order desc derived relation cardinality required relation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Collection Functions"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "sort needed before head (order deterministic only after !sort)",
+    "holder creation must be done in code",
+    "composition vs association choice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}
