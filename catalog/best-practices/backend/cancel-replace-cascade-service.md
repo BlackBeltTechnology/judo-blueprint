@@ -4,10 +4,10 @@ title: Cancel-and-Replace Async Cascade Service (OSGi)
 description: "An OSGi component keeps one background cascade per entity and cancels the in-flight one when a newer trigger arrives, so only the latest state is processed."
 aliases: [latest-wins background work, cancel and replace, async cascade]
 keywords: [cascade, Future.cancel, ConcurrentHashMap, executor, OSGi component, Activate, Deactivate, latest wins]
-tags: ["domain:backend", "layer:backend", "project:compsychletter", "status:single-project"]
+tags: ["domain:backend", "layer:backend", "project:compsych-letter-demo", "status:single-project"]
 category: async
 status: single-project
-projects: [compsychletter]
+projects: [compsych-letter-demo]
 evidence: ["compsychletter:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"

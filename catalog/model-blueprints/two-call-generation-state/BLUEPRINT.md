@@ -4,10 +4,10 @@ title: Two-Call Generation State (Handle + Document)
 description: A pair of non-CRUD entities for a two-step API flow, where a short-lived Handle holds the generated result between the start call and the confirm call, and a permanent Document is written only on confirm.
 aliases: [handle and document, start confirm flow, two-phase generation, generation ticket]
 keywords: [handle, document, two-call, confirm, expiry, state, generation, archive, ticket]
-tags: [domain:model, layer:model, layer:backend, project:compsychletter, status:single-project]
+tags: [domain:model, layer:model, layer:backend, project:compsych-letter-demo, status:single-project]
 category: pattern
 status: single-project
-projects: [compsychletter]
+projects: [compsych-letter-demo]
 evidence: ["compsychletter:unrecorded"]
 alternatives: []
 fragment: two-call-generation-state

@@ -18,7 +18,7 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 - [x] 2.1 `git mv` `best-practices/`, `model-blueprints/` and `agent-docs/` under `catalog/`. Verify: `git log --follow catalog/model-blueprints/audit-log-entity/BLUEPRINT.md` shows the earlier history. _(done: catalog/{agent-docs,best-practices,model-blueprints})_
 - [x] 2.2 Add `package.json` as a pi package (`keywords: ["pi-package"]`, `pi.skills: ["./skills"]`). Create skeletons for the 4 exported skills under `skills/` and `.pi/skills/judo-catalog-maintain/`. Each gets a `SKILL.md` with a single-job description, plus `scripts/` and `references/`. Verify: `pi install ./` in a scratch project lists exactly the 4 exported skills, and this repo also lists `judo-catalog-maintain`. _(done: package.json pi-package)_
 - [x] 2.3 Write the shared script contract (path self-resolution, `--help`, `--json`, exit codes, CLI resolution `$JUDO_CLI_JAR` then `target/`) as a small helper used by every script. Verify: a test runs each skeleton script with `--help` from `/tmp` and gets exit 0. _(done: skills/_lib/judo_common.py)_
-- [ ] 2.4 Move `.claude/scripts/{add-project.sh,check-project-versions.sh,_projects.py}` into `judo-catalog-maintain/scripts/` (as `projects.py` plus the shell helpers), replacing `$CLAUDE_PROJECT_DIR`. Verify: the scripts run from any cwd, and `grep -r CLAUDE_PROJECT_DIR .` is empty. _(partial: .claude/scripts removed; judo-catalog-maintain has only check-all — projects.py not ported)_
+- [x] 2.4 Move `.claude/scripts/{add-project.sh,check-project-versions.sh,_projects.py}` into `judo-catalog-maintain/scripts/` (as `projects.py` plus the shell helpers), replacing `$CLAUDE_PROJECT_DIR`. Verify: the scripts run from any cwd, and `grep -r CLAUDE_PROJECT_DIR .` is empty. _(done: projects.py (list/check/usage) in judo-catalog-maintain; the old shell helpers were clone/score tools tied to .claude and are not ported)_
 - [ ] 2.5 Move the useful knowledge of the 6 `.claude/agents` and 4 `.claude/commands` into skill `references/`:
   - layer analysis goes to `judo-blueprint-author/references/{model,backend,frontend,specs}.md`;
   - sweep procedure goes to `judo-catalog-maintain/references/sweep.md`.
@@ -31,8 +31,8 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
   - both `PROGRESS.md`, `query-catalog.py`, `.obsidian/`, and `catalog/agent-docs/domain/` (the template no longer ships it).
 
   Verify: none of these paths exist, `git ls-files '*.jar'` lists only the Maven wrapper, and each is still readable at `archive/pre-kb-restructure`.
-- [ ] 2.7 Update `PROJECTS.md` with `Kind`, `Branch` and `Swept SHA` columns (rackinspect unreachable, mlszksz `f2b7101`). Verify: a `projects.py` unit test parses every row.
-- [ ] 2.8 kb config:
+- [x] 2.7 Update `PROJECTS.md` with `Kind`, `Branch` and `Swept SHA` columns (rackinspect unreachable, mlszksz `f2b7101`). Verify: a `projects.py` unit test parses every row. _(done: Kind, Branch, Swept SHA columns; 4 projects added from entries; tests/scripts/test_projects.py; projects check in check-all)_
+- [x] 2.8 kb config: _(done: single source "." with catalog-only consumers via pin-source subdir; excludes in place; kb DB gitignored; "create EntityType" returns no fragments/ path)_
   - sources: `catalog/` (priority 10) and `.` (priority 0);
   - excludes: `fragments/**`, `skills/*/scripts/**`, `.pi/skills/*/scripts/**`, `tests/**`, `openspec/changes/archive/**`;
   - gitignore `.pi/dashboard/kb/`.
@@ -42,10 +42,10 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 
 ## 3. agent-docs FIRST (P1b, one-time, not in any skill)
 
-- [ ] 3.1 Write `oneoff/agent-docs-import` in this change folder (D8 step 1): Handlebars shim, skill-wording rewrites, `domain/` dropped, three-way merge with the current docs and the cciu additions. Verify: unit tests for `docLink`, `localHubLink`, `lowerCase model.name` and `#if`, and a catalog-only section kept. _(partial: oneoff/agent-docs-import/render.py exists; three-way merge not done)_
-- [ ] 3.2 Import from the template at `5bddd8b^` into `catalog/agent-docs/`. Verify: every non-domain template doc has a counterpart, no `domain/`, and the agent-docs profile of `entry-lint` is clean.
+- [x] 3.1 Write `oneoff/agent-docs-import` in this change folder (D8 step 1): Handlebars shim, skill-wording rewrites, `domain/` dropped, three-way merge with the current docs and the cciu additions. Verify: unit tests for `docLink`, `localHubLink`, `lowerCase model.name` and `#if`, and a catalog-only section kept. _(done: render.py + test_render.py (5 tests: docLink, localHubLink, lowerCase, no helpers left))_
+- [x] 3.2 Import from the template at `5bddd8b^` into `catalog/agent-docs/`. Verify: every non-domain template doc has a counterpart, no `domain/`, and the agent-docs profile of `entry-lint` is clean. _(done: all 70 non-domain template docs present, no domain/, 13 catalog-only docs; agent-docs lint clean)_
 - [x] 3.3 kb-ify agent-docs (D8 step 2): frontmatter, chunk-sized headings, wikilinks, DOX `AGENTS.md` per directory, ~20 golden queries. Verify: `kb dox lint` is clean, and `kb eval` puts each expected doc in the top 5. _(done: frontmatter + DOX AGENTS.md (kb dox lint clean); golden queries still pending → 9.1)_
-- [ ] 3.4 Write the one-time judo-ng explorer prompts in `oneoff/agents/` (D8 step 3; `@research`, read-only). Record the judo-ng SHAs in `oneoff/judo-ng.lock`. Run the 6 areas in parallel and generate `review.md` from `target/agent-docs-review/*.json`. Verify: every finding has a verdict and `repo@sha:path:line` evidence.
+- [ ] 3.4 Write the one-time judo-ng explorer prompts in `oneoff/agents/` (D8 step 3; `@research`, read-only). Record the judo-ng SHAs in `oneoff/judo-ng.lock`. Run the 6 areas in parallel and generate `review.md` from `target/agent-docs-review/*.json`. Verify: every finding has a verdict and `repo@sha:path:line` evidence. _(partial: oneoff/judo-ng.lock written (19 repos); the sweep ran via target/mining prompts, not oneoff/agents)_
 - [ ] 3.5 **Operator review** of every finding (accept / reject / edit), then apply only the accepted ones with an `@coding` author subagent, one PR per area. Verify: each changed heading maps to an accepted finding, and the gates are green. _(partial: sweep findings applied per area (agent-docs-update/); 9 contradictions from Pass B v2 applied)_
 
 ## 4. Entry lint and Pass A (P2)

@@ -1,0 +1,21 @@
+# judo-ng clones read (read-only) for the agent-docs sweep and the cciu merge review. Format: repo sha origin
+# Recorded 2026-11-10 from target/agent-docs-review/judo-ng/
+judo-dao-api 7e7131d1222f9539b8891d7f871a7bda176cbea7 git@github.com:BlackBeltTechnology/judo-dao-api.git
+judo-dispatcher-api ef26bd5347730b7b76fed8a99a3f2962c2b11e27 git@github.com:BlackBeltTechnology/judo-dispatcher-api.git
+judo-esm-fullstack-project-template c31224324e17855d1b05a5383e6a49dbc7913d71 git@github.com:BlackBeltTechnology/judo-esm-fullstack-project-template.git
+judo-meta-esm b78cc70328cf248afffdb5d3269746f9ec85bae4 git@github.com:BlackBeltTechnology/judo-meta-esm.git
+judo-meta-expression 8c879fe1ebfe960d7fffc5a85d61e847d979e5e7 git@github.com:BlackBeltTechnology/judo-meta-expression.git
+judo-meta-keycloak 84dcf30cc1ab46862a294c3a68cac4f8c4306497 git@github.com:BlackBeltTechnology/judo-meta-keycloak.git
+judo-meta-liquibase 55632be1572308288a7f576441a845fcbe6f8368 git@github.com:BlackBeltTechnology/judo-meta-liquibase.git
+judo-meta-measure df1ac44d39bf2ac7c2bee682acd79215c1060048 git@github.com:BlackBeltTechnology/judo-meta-measure.git
+judo-meta-ui a5caf0e1cb7ef1c7174026f0ed5da340050740ad git@github.com:BlackBeltTechnology/judo-meta-ui.git
+judo-model-cli 9f6a4bde9d52fc3f4d9c7074a52a0ff084a9e245 git@github.com:BlackBeltTechnology/judo-model-cli.git
+judo-psm-generator-restassured ad3e643a0734439ef30c813789b7401c937bd98b git@github.com:BlackBeltTechnology/judo-psm-generator-restassured.git
+judo-psm-generator-sdk-core e4dd3440c8fd6040e5f79b4fb87886853b27df9b git@github.com:BlackBeltTechnology/judo-psm-generator-sdk-core.git
+judo-rdbms-schema 1901b90a3b522172421bdee1e17df9c6f27e74ac git@github.com:BlackBeltTechnology/judo-rdbms-schema.git
+judo-runtime-core-esm-itest 7b86b96e17c9d0e6b97c0ad7d63e537384f7f29c git@github.com:BlackBeltTechnology/judo-runtime-core-esm-itest.git
+judo-runtime-core b9bd93e8d232576a1f9806ed09731de1d7e89d82 git@github.com:BlackBeltTechnology/judo-runtime-core.git
+judo-ui-e2e-template 2b3e9b3c2c9d537c6fedfba50a3e98ee82183c3f git@github.com:BlackBeltTechnology/judo-ui-e2e-template.git
+judo-ui-react-template ad0848bc2d1bd398501be1b0bfec2247adf8f459 git@github.com:BlackBeltTechnology/judo-ui-react-template.git
+judo-ui-typescript-rest-template b4912dfcfcda8b6359dcc1defc0d63016e4b43a7 git@github.com:BlackBeltTechnology/judo-ui-typescript-rest-template.git
+osgi-liquibase 54cddcd4658cb99073d07faa410174041a46cabd git@github.com:BlackBeltTechnology/osgi-liquibase.git

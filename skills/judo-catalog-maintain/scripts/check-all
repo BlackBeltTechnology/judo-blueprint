@@ -35,6 +35,8 @@ gate entry-lint  "$A/entry-lint" --profile all
 gate spec-check  "$A/spec-check"
 gate claim-check "$A/claim-check" 3
 gate dox-agents  "$A/dox-agents" --check
+gate projects  skills/judo-catalog-maintain/scripts/projects.py check
+gate unit     python3 -m unittest discover -s tests/scripts -q
 gate no-jars     bash -c '! git ls-files "*.jar" | grep -v "^\.mvn/wrapper/"'
 gate no-legacy   bash -c '! grep -rl "^format: legacy" catalog'
 

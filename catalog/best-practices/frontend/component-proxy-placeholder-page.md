@@ -4,10 +4,10 @@ title: ComponentProxy Placeholder Page for Custom Dashboard Entry Points
 description: "A dashboard page component that renders a ComponentProxy with a minimal fallback heading, so a menu route works at once and the real dashboard UI is delivered later as a Pandino service."
 aliases: [dashboard placeholder page, custom dashboard route]
 keywords: [ComponentProxy, Pandino, dashboard, placeholder, routes.tsx, menu-items.tsx, MenuItemAccess, custom visual element]
-tags: ["domain:frontend", "layer:frontend", "project:compsychletter", "status:single-project"]
+tags: ["domain:frontend", "layer:frontend", "project:compsych-letter-demo", "status:single-project"]
 category: page
 status: single-project
-projects: [compsychletter]
+projects: [compsych-letter-demo]
 evidence: ["compsychletter:unrecorded"]
 alternatives: [custom-visual-element-override]
 fragment: "none: frontend-only"

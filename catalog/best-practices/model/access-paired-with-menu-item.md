@@ -4,10 +4,10 @@ title: Pair Every UI-Reachable Access with a MenuItemAccess
 description: "An actor Access only defines the data surface; the navigation menu is built from the actor's menu items, so every access meant for end users needs its own MenuItemAccess."
 aliases: [menu item access, access without menu item, empty sidebar, blank menu]
 keywords: [Access, MenuItemAccess, MenuItemGroup, menuItems, navigation, actor, hiddenBy, iconName]
-tags: ["domain:model", "layer:model", "project:judo-demo-miniworkflow", "project:mlszksz-platform", "project:rackinspect", "project:park-here", "project:reserveapp", "project:ams-frontend", "project:indamedia-adtrack", "project:compsychletter", "status:established"]
+tags: ["domain:model", "layer:model", "project:judo-demo-miniworkflow", "project:mlszksz-platform", "project:rackinspect", "project:park-here", "project:reserve-app", "project:ams-frontend", "project:indamedia-adtrack", "project:compsych-letter-demo", "status:established"]
 category: access
 status: established
-projects: [judo-demo-miniworkflow, mlszksz-platform, rackinspect, park-here, reserveapp, ams-frontend, indamedia-adtrack, compsychletter]
+projects: [judo-demo-miniworkflow, mlszksz-platform, rackinspect, park-here, reserve-app, ams-frontend, indamedia-adtrack, compsych-letter-demo]
 evidence: ["judo-demo-miniworkflow:unrecorded", "mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded", "reserveapp:unrecorded", "ams-frontend:unrecorded", "indamedia-adtrack:unrecorded", "compsychletter:unrecorded"]
 alternatives: []
 first_seen: 2026-05-13
