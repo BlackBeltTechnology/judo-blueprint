@@ -38,7 +38,7 @@ All of this runs in the transaction of the operation, so an exception in step 4 
 
 ### Use one clock for the timestamp
 
-`Timestamp!now()` in model expressions follows the platform parameter `defaultZoneId`, while `LocalDateTime.now()` in custom Java follows the JVM time zone. Take the snapshot timestamp from the same clock that later queries compare it with (see [Time and Time Zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)).
+`Timestamp!now()` in model expressions follows the platform parameter `defaultZoneId`, while `LocalDateTime.now()` in custom Java follows the JVM time zone. Take the snapshot timestamp from the same clock that later queries compare it with (see [Time and Time Zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones) and [[injectable-business-clock]]).
 
 ### Decide how summaries are stored
 

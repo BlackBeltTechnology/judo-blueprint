@@ -4,10 +4,10 @@ title: Generator Override for Extra NPM Dependencies
 description: "Add extra npm dependencies to the generated frontend `package.json` through a Handlebars fragment override instead of editing or ignoring the generated file."
 aliases: [extra npm dependencies, package.json fragment]
 keywords: [generator-overrides, fragment, package.json, npm dependencies, handlebars, ui-react, regeneration]
-tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "status:emerging"]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "project:park-here", "status:emerging"]
 category: build
 status: emerging
-projects: [rackinspect, workflow-poc]
+projects: [rackinspect, workflow-poc, park-here]
 evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 related: [pdf-preview-inline-display, generator-ignore-app-theme]

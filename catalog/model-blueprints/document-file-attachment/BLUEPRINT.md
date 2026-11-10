@@ -4,10 +4,10 @@ title: Document/File Attachment Entity
 description: A non-CRUD document entity that holds one binary file with metadata, attached to a parent entity and uploaded through a parent operation.
 aliases: [file attachment, document attachment, binary attachment]
 keywords: [document, file, attachment, binary, upload, download, filestore, parent]
-tags: [domain:model, layer:model, layer:backend, project:mlszksz-platform, project:rackinspect, project:reserve-app, project:alba, project:judo-demo-miniworkflow, project:doors-model, status:established]
+tags: [domain:model, layer:model, layer:backend, project:mlszksz-platform, project:rackinspect, project:reserve-app, project:alba, project:judo-demo-miniworkflow, project:doors-model, project:park-here, status:established]
 category: pattern
 status: established
-projects: [mlszksz-platform, rackinspect, reserve-app, alba, judo-demo-miniworkflow, doors-model]
+projects: [mlszksz-platform, rackinspect, reserve-app, alba, judo-demo-miniworkflow, doors-model, park-here]
 evidence: [mlszksz-platform:unrecorded, rackinspect:unrecorded, reserve-app:unrecorded, alba:unrecorded, judo-demo-miniworkflow:unrecorded, doors-model:unrecorded]
 alternatives: [binary-document-with-link-pattern]
 fragment: document-file-attachment

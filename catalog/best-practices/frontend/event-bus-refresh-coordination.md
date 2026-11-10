@@ -4,10 +4,10 @@ title: Event Bus for Cross-Page Refresh Coordination
 description: How generated pages are observed to publish refresh events to a publish/subscribe bus, and when to use post-refresh handlers or table refresh actions instead of depending on it.
 aliases: [cross-page refresh, publish subscribe refresh, refresh events]
 keywords: [event bus, refresh, publish, subscribe, post refresh, page actions hook, refreshTable, cross-page]
-tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "status:emerging"]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:park-here", "status:emerging"]
 category: state
 status: emerging
-projects: [trivia, itracker]
+projects: [trivia, itracker, park-here]
 evidence: ["trivia:unrecorded", "itracker:unrecorded"]
 alternatives: []
 related: [viewmodel-context-pattern, pandino-action-hook-override]

@@ -4,11 +4,11 @@ title: Hand-Written Migration Backfill for New Columns
 description: "A hand-written data-migration changeset runs after the generated schema step to give existing rows the default, or a value derived from a related row, that the generated diff leaves NULL."
 aliases: [backfill new column, default where null migration, updateDataAfter backfill]
 keywords: [migration, backfill, schema evolution, changeset, nullable column, default, updateDataAfterIncremental, liquibase]
-tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:park-here", "status:emerging"]
 category: data-migration
-status: single-project
-projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+status: emerging
+projects: [rackinspect, park-here]
+evidence: ["rackinspect:unrecorded", "park-here:application/schema/migration/1_0_0_20260713_124306_SNAPSHOT_to_1_0_0_20260727_155508_SNAPSHOT/06_updateDataAfterIncremental_postgresql.changeset.xml"]
 alternatives: []
 related: [init-data-seeding, excel-data-seed-import]
 fragment: "none: backend-only"
@@ -71,6 +71,8 @@ This layer is project practice (rackinspect), not a platform feature:
 - Filtering on `IS NULL` makes the step safe to read and to re-run, and a two-step derived backfill keeps the best available value while still leaving no row NULL.
 
 ## Example
+
+A second project (park-here) backfills a newly added required text attribute of a configuration entity with its default in the "after" changeset, using the `WHERE <col> IS NULL` form; its changeset has no explanatory comment, which the practice recommends. The same project also met the variant of backfilling a file-store reference in SQL together with seeding the file; this is the counter-example for the "cannot be produced in SQL" rule below, so keep that advice and fill such references from application code ([[init-data-seeding]]).
 
 In rackinspect two migration steps carry this. One adds a Boolean attribute to a registry entity and sets it to false for every existing row. The other adds a "converted at" timestamp to a state-machine entity: rows already in the converted state take the creation time of the header row that holds the entity they were converted into, and any row still NULL gets the current time so that the retention job can age it. Both changesets say in their comment that the generator emits the file empty.
 

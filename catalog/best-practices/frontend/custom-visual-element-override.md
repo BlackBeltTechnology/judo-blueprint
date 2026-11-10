@@ -4,10 +4,10 @@ title: Custom Visual Element Override via Pandino
 description: Render a model-designated custom implementation element with your own React component, registered as a Pandino service under the custom visual element key.
 aliases: [custom implementation component, component replacement, visual element override]
 keywords: [custom implementation, visual element, pandino, component, scaffold, proxy props, ESM UI model]
-tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "status:emerging"]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "project:park-here", "status:emerging"]
 category: component
 status: emerging
-projects: [rackinspect, workflow-poc]
+projects: [rackinspect, workflow-poc, park-here]
 evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, application-customizer-hub]

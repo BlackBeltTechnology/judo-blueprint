@@ -4,10 +4,10 @@ title: i18n Generator Override Extra Fragment for Custom Keys
 description: "Inject custom translation keys into the generated default English translation file (`application_default.json`) using a Handlebars template fragment."
 aliases: []
 keywords: [i18n, generator, override, extra, fragment, custom keys, application_default.json, translation]
-tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:park-here", "status:emerging"]
 category: i18n
-status: single-project
-projects: [rackinspect]
+status: emerging
+projects: [rackinspect, park-here]
 evidence: ["rackinspect:unrecorded"]
 alternatives: []
 related: [i18n-custom-translation-keys, generator-override-extra-dependencies, generator-ignore-i18n-layout]

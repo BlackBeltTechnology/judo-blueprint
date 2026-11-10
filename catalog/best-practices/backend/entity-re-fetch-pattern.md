@@ -29,6 +29,10 @@ Call `dao.getById(_this.identifier(), mask)` first. The identifier of `_this` is
 
 `getById` without a mask loads all fields. List only what the logic reads and writes. Fields outside the mask come back `null` or empty, so read only masked fields (see [Using Masks](../../agent-docs/backend/data-access-guide.md#using-masks-projections)). An empty mask is the cheapest existence check.
 
+### Fetch only what you need
+
+When the operation needs only the identity of the entity, for example to pass it on to another call, re-fetch with an empty or minimal mask. One project does this because an unmasked `getById` of a transfer object with aggregating derived members over sub-collections failed at runtime with "Not supported yet". The platform cause is not verified in the agent-docs (*verify*); treat the narrow mask as a workaround and a cheaper read, not as a documented rule.
+
 ### Treat the Optional properly
 
 `getById` returns an `Optional`. A bare `.get()` throws `NoSuchElementException`, which the dispatcher wraps as a generic 500 (see [How the Runtime Maps Exceptions to HTTP](../../agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http)). Choose the outcome on purpose:

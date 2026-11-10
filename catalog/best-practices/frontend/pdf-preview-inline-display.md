@@ -4,10 +4,10 @@ title: Inline PDF Preview via downloadFile with Inline Mode
 description: "After a backend operation generates a PDF, use the dialog's post-operation action hook to take the file token from the operation output and open it with the generated downloadFile helper in inline mode instead of saving it."
 aliases: [inline PDF preview, PDF preview after operation]
 keywords: [inline, pdf, preview, downloadfile, disposition, file token, post operation hook, dialog hook, react-pdf-viewer]
-tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:park-here", "status:emerging"]
 category: component
-status: single-project
-projects: [rackinspect]
+status: emerging
+projects: [rackinspect, park-here]
 evidence: ["rackinspect:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, generator-override-extra-dependencies]

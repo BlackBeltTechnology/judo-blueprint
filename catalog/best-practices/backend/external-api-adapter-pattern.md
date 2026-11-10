@@ -73,3 +73,4 @@ Indamedia-AdTrack: an ads interface with seven methods covers campaign discovery
 - [[service-delegation-pattern]] — thin operations calling services
 - [[filestore-mediated-file-transfer]] — stored credential files
 - [[facade-service-pattern]] — a single facade over several services
+- [[cloud-drive-uploader-adapter]] — single-provider upload case with an unconfigured outcome

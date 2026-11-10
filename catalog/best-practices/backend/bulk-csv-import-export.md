@@ -1,14 +1,14 @@
 ---
 id: bulk-csv-import-export
 title: Bulk CSV Import/Export via FileStore
-description: "Custom operations export data as a CSV file (UTF-8 BOM for Excel) stored in the file store and return a FileType, and import operations read an uploaded CSV from the file store and create one entity per row."
+description: "Custom operations export data as a CSV file (UTF-8 BOM for Excel) stored in the file store and return a FileType, and import operations read an uploaded CSV from the file store (or, as a variation, take the rows in the operation input) and create one entity per row."
 aliases: [CSV export, CSV import, bulk invite]
 keywords: [csv, import, export, filestore, bulk, bom, file token]
-tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
+tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "project:park-here", "status:emerging"]
 category: operation
-status: single-project
-projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+status: emerging
+projects: [mlszksz-platform, park-here]
+evidence: ["mlszksz-platform:unrecorded", "park-here:application/app/src/main/java/hu/blackbelt/park/here/parkhere/custom/parkhere/services/travelpanel/ImportReservationsCustomImplementation.java"]
 alternatives: [bulk-json-import-export]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -61,6 +61,17 @@ for (String email : parseCsvEmails(csvStream)) {
 - Per-row side effects such as sending e-mails multiply with the file size; move them to a background job for large imports ([[email-service-integration]]).
 - Creation uses the generated builder ([[builder-pattern-entity-creation]]).
 
+### Variation: Rows in the operation input instead of a file
+
+Not every bulk import needs a file. When the rows already exist in the system (for example records the user picks from a list and turns into another kind of record), the import operation takes the rows in its input and no file or file-store token is involved. The client parses a file, if there is one, and sends rows.
+
+- The input transfer object has a collection of a row transfer object. The row type maps to the same entity as the source records, so the rows can be built from the already read entity without a second read.
+- A reference-range interceptor on the input's generated `_getRangeReference<Relation>` operation fills the selectable rows and limits the row range, for example by excluding rows already imported and by honouring the seek limit of the query. Range interceptors fire only on reference-range operations ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). How the chosen rows travel back in the operation input is *verify*.
+- The custom operation stays a thin adapter that hands the generated input to a service, which checks permissions and creates the missing records ([[service-delegation-pattern]]).
+- No CSV parsing, BOM or file-store handling exists on the server side, and the row count is bounded by the range and the page size, not by a file size.
+
+Use it when the rows are modeled data the user selects. Use the file-store variant above when the source is an external file.
+
 ## Rationale
 
 - The file store keeps file content out of the REST operation payload and gives clients the standard token download.
@@ -68,6 +79,8 @@ for (String email : parseCsvEmails(csvStream)) {
 - Cost: no streaming, manual escaping unless a library is added, no format validation by default, and one side effect per row.
 
 ## Example
+
+park-here uses the input-rows variation: an operation that imports a user's parking reservations as travel records takes a generated input with a selection grid of row objects, filled by a range interceptor that hides reservations already imported and honours the seek limit; the operation implementation only delegates to a service.
 
 mlszksz-platform has two operations. An audit-log export builds a CSV with an optional date filter, quoted and escaped fields and a BOM and returns file metadata. A bulk invite reads an uploaded CSV, extracts e-mail addresses, creates an invitation with one recipient per address and sends a verification e-mail to each.
 
@@ -84,3 +97,4 @@ mlszksz-platform has two operations. An audit-log export builds a CSV with an op
 - [[email-service-integration]] — per-recipient e-mails sent by the bulk invite
 - [[staged-import-pipeline]] — staging large imports
 - [[builder-pattern-entity-creation]] — creating the row entities
+- [[service-delegation-pattern]] — thin operation, logic in a service

@@ -23,7 +23,7 @@ If the count fails, throw `InterceptorCallBusinessException`, the only business 
 
 ### Compute the threshold from an injected clock
 
-Project practice: build the date threshold once per call from a clock that the interceptor receives (the `clock` and the count helper in the sample are example project code). Tests can then fix the time.
+Project practice: build the date threshold once per call from a clock that the interceptor receives (the `clock` and the count helper in the sample are example project code). Tests can then fix the time; one shared clock with a test override is described in [[injectable-business-clock]].
 
 ```java
 LocalDateTime threshold = LocalDateTime.now(clock).minusDays(ACTIVE_DAYS);

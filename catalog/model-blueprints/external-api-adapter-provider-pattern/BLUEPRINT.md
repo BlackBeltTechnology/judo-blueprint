@@ -4,10 +4,10 @@ title: External API Adapter with Provider Service Pattern
 description: "Isolates each external platform API behind one interface and a factory service that picks the right adapter at runtime, so a new platform is added without changing the callers."
 aliases: [adapter provider, external api factory]
 keywords: [external, api, adapter, provider, factory, platform, credentials, interface]
-tags: ["domain:model", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
+tags: ["domain:model", "layer:backend", "project:indamedia-adtrack", "project:park-here", "status:emerging"]
 category: pattern
-status: single-project
-projects: [indamedia-adtrack]
+status: emerging
+projects: [indamedia-adtrack, park-here]
 evidence: ["indamedia-adtrack:unrecorded"]
 alternatives: []
 fragment: none: backend-only

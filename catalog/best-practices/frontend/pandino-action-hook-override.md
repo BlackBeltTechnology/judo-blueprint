@@ -4,10 +4,10 @@ title: Pandino Service Registry for Action Hook Overrides
 description: The JUDO framework uses Pandino (an OSGi-like service registry for JavaScript) to enable runtime action hook injection in generated pages.
 aliases: []
 keywords: [Pandino, action hook, registerService, useTrackService, hook override, page actions, scaffold]
-tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "project:itracker", "project:reserve-app", "status:established"]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "project:itracker", "project:reserve-app", "project:park-here", "status:established"]
 category: hook
 status: established
-projects: [trivia, rackinspect, itracker, reserve-app]
+projects: [trivia, rackinspect, itracker, reserve-app, park-here]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [hook-scaffold-default-pattern, application-customizer-hub, custom-visual-element-override]
