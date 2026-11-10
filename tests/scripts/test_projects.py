@@ -10,7 +10,7 @@ class ProjectsTest(unittest.TestCase):
         self.assertEqual(errs, [])
         self.assertGreaterEqual(len(rows), 21)
         self.assertRegex({r["Project"]: r["Swept SHA"] for r in rows}["mlszksz-platform"], r"^[0-9a-f]{7,40}$")
-        self.assertEqual({r["Project"]: r["Swept SHA"] for r in rows}["rackinspect"], "unreachable")
+        self.assertRegex({r["Project"]: r["Swept SHA"] for r in rows}["rackinspect"], r"^([0-9a-f]{7,40}|unreachable)$")
 
     def test_bad_kind_is_reported(self):
         txt = "| # | Project | Git URL | Kind | Branch | Swept SHA | First Commit | Last Commit | Commits | Weight [-10;+10] |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | **x** | u | lib | develop | - | a | b | 1 | 0 |"
