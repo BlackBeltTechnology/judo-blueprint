@@ -1,68 +1,91 @@
 ---
 id: range-expression-filtering
 title: Range Expression Filtering for Relation Selection
-description: Transfer object relations use range expressions to restrict the set of selectable target entities.
-aliases: []
-keywords: [range, expression, filtering, relation, selection]
+description: "A mapped or transient relation on a transfer object restricts which instances can be picked by giving it a derived range: a JQL expression filtering (and sorting) the target entity."
+aliases: [range filter, picker filter, derived range, selectable values]
+keywords: [rangeExpression, rangeType, DERIVED, picker, filter, sort, relation, selector, GET_RANGE]
 tags: ["domain:model", "layer:model", "project:trivia", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:park-here", "project:reserve-app", "status:established"]
 category: relation
 status: established
 projects: [trivia, alba, skillmatrix-model, viterra_demo, park-here, reserve-app]
 evidence: ["trivia:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "park-here:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [enum-state-machine, derived-access-filtering]
-fragment: pending
+related: [enum-state-machine, derived-access-filtering, soft-delete-active-flag]
+fragment: range-expression-filtering
+diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Transfer object relations use range expressions to restrict the set of selectable target entities. This limits which entities can be linked through the relation, enforcing business rules at the model level (e.g., only approved items can be selected).
+When a user picks the target of a relation (a client for a report, approvers for a task), only valid candidates should be offered: active clients, approved questions, eligible users. State that rule on the relation in the model.
 
-## Structure
+## Practice
 
-- A mapped relation on a transfer object includes a `rangeExpression`
-- The expression uses `EntityType!filter(...)` to restrict selectable values
-- Typically filters by status enum to ensure only valid entities are linkable
-- Often combined with `!sort()` for ordered picker lists
+### Set a derived range on the transfer relation
 
-```
-fixedQuestions: Question[] 0..*
-  range: trivia::entities::Question!filter(q | q.status == QuestionStatus#APPROVED)
-```
+On a transfer object relation that can be edited (a mapped relation that is not read-only, or a transient relation) the model has two range attributes: `rangeType` (`ANY` or `DERIVED`) and `rangeExpression`, a JQL expression used when the type is `DERIVED`. The same pair exists on operation inputs, where a `DERIVED` range requires a non-blank expression ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)). The generated reference selector (the `GET_RANGE` operation) takes its options from that range.
 
-## Examples
+- Write the expression as a filter over the target entity: `Client!filter(c | c.active)`. Typical filters are an active flag ([[soft-delete-active-flag]]) or a status enumeration literal ([[enum-state-machine]]).
+- Add `!sort(c | c.name ASC)` for ordered pickers. The collection-function syntax is in [model development](../../agent-docs/model/model-development.md).
+- Dependent pickers: the project observations (ParkHere, ReserveApp) start the expression from `self`, for example "the spots of the selected project". The agent-docs do not describe `self` in range expressions, so verify each such expression in your model.
 
-### Trivia
-`admin::Contest.fixedQuestions` has a range expression `trivia::entities::Question!filter(q | q.status == QuestionStatus#APPROVED)` -- admin users can only link APPROVED questions to a contest, preventing use of unapproved or rejected questions.
+### A range is not a security boundary
 
-### SkillMatrix
-8+ range expressions for pickers. `hrEmployee::Skill.competence` uses `Competence!filter(c | c.active)!sort(c | c.name ASC)` to show only active competences. `professional::Skill.requestedLevel` uses `SkillLevel!sort(l | l.score ASC)` for ordered skill level selection. `report::Definition.selectedUsers` uses `User!filter(u | u.isActiveProfessional)` to restrict to active professionals.
+With `rangeType = ANY` every instance is exposed, and the platform notes that a range *interceptor* (firing on the `_getRangeReference*` operations) is the security boundary for such relations ([interceptors](../../agent-docs/backend/interceptors.md)). A `DERIVED` range narrows the picker; whether the server also rejects a value outside the range when the relation is set is not stated in the agent-docs. Validate selected targets in an operation or interceptor when the rule matters.
 
-### Alba
-`ApprovalTaskInput.users` uses range expression `User!filter(u | u.isActive and (u.role == UserRole#TEACHER or u.role == UserRole#APPROVER))` to restrict approver selection to active teachers and approvers only. This ensures approval tasks can only be assigned to eligible users.
+### Keep it a filter
 
-### SkillMatrix-Model
-Model source confirms 8+ range expressions with `rangeType="DERIVED"`. Key patterns: `SkillLevel!sort(l | l.score ASC)` (entity-as-enum ordered picker, used 3+ times), `Competence!filter(c | c.active)!sort(c | c.name ASC)` (active-flag filter + sort), `Tag!sort(t | t.name ASC)` (alphabetical sort), `User!filter(u | u.isActiveProfessional)` (role-based filter for report user selection).
+The range is a plain expression. Put complex rules into a derived boolean on the target entity (`isActiveProfessional`) and filter on that.
 
-### Viterra Demo
-`ReportTransfer.client` uses `rangeExpression="viterra::Client!filter(c | c.active)"` to restrict client selection to active clients only, preventing deactivated partners from being assigned to new reports. This integrates with the soft-delete active flag pattern.
+## Rationale
 
-### ParkHere
-2 range expressions on User entity: `accessedParkingGarages` uses `ParkHere::entities::ParkingGarage!filter(g | g.isActive)` to restrict garage selection to active garages only. `preferredParkingSlot` uses `self.accessedParkingGarages.parkingSlots` to cascade the filter -- preferred slot must be in an accessible (active) garage. This chain of range expressions demonstrates filtering based on navigation through previously-filtered relations.
+- The business rule sits next to the relation, and the generated UI shows only valid options without custom code.
+- Pickers can be sorted without frontend work.
+- Cost: only filter and sort logic; rules that need other state must be derived onto the target first.
 
-### ReserveApp
-9 range expressions on transfer relations, all filtering by `active` flag: `ManagedUser.company` uses `Company!filter(c | c.active)`, `ReservationForPartner.recipient` uses `Company!filter(c | c.active)`, `ReservationForPartner.project` uses `Project!filter(p | p.active)`, etc. Contextual range: `ReservationForPartner.spot` uses `self.project.spots` to cascade spots based on the selected project, creating a dynamic dependent picker.
+## Example
 
-## Trade-offs
+A neutral Report entity has an association `client` to Client. The `ReportView` transfer object maps Report and exposes `client` (type `ClientRef`, mapping Client) with a derived range: `Client!filter(c | c.active)!sort(c | c.name ASC)`. The picker shows only active clients, sorted by name. The projects used the same shape: Trivia offered only approved questions, Alba only active teachers and approvers as approvers, SkillMatrix active competences and ordered skill levels, Viterra and ReserveApp active clients and companies.
 
-- Pros: Business rules enforced at model level, no custom code needed, UI automatically shows only valid options
-- Cons: Only supports filter-based restrictions (no complex logic), expression must be JQL-compatible
-- Prefer when: A relation should only allow linking to a subset of target entities based on status or other criteria
+## When to avoid
+
+- Every instance is a valid choice: leave the range at `ANY`.
+- The rule depends on large computation per candidate: derive a flag on the target instead.
+- The restriction is a security rule: enforce it with access getters or a range interceptor.
 
 ## Related
 
-- [[enum-state-machine]]
-- [[derived-access-filtering]]
+- [[enum-state-machine]] — status enumerations used as filter criteria
+- [[derived-access-filtering]] — the same filter idea applied to accesses
+- [[soft-delete-active-flag]] — the active flag most ranges test
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=range-expression-filtering cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Client {
+    <<Entity>>
+    +Boolean active
+    +String name
+  }
+  class ClientRef {
+    <<Transfer>>
+    +Boolean active
+    +String name
+  }
+  class Report {
+    <<Entity>>
+    +String title
+  }
+  class ReportView {
+    <<Transfer>>
+    +String title
+  }
+  ClientRef ..> Client : maps
+  Report --> "0..1" Client : client
+  ReportView ..> Report : maps
+  ReportView o-- "0..1" ClientRef : client
+```
+<!-- /mermaid:generated -->

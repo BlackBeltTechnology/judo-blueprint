@@ -1,59 +1,82 @@
 ---
 id: null-safe-collection-aggregation
 title: Null-Safe Collection Aggregation Pattern
-description: "When aggregating collection values with `!sum()`, optional (nullable) fields are first filtered using `!filter(x | x.field!isDefined())` before the sum is applied."
-aliases: []
-keywords: [null, safe, collection, aggregation]
+description: "Derived aggregates over a collection filter out items whose optional field is undefined before !sum, and guard empty collections with a ternary."
+aliases: [null-safe sum, isDefined filter before sum, empty collection guard]
+keywords: [null, isDefined, sum, filter, aggregation, derived, empty collection, ternary]
 tags: ["domain:model", "layer:model", "project:itracker", "project:mjsz", "status:emerging"]
 category: operation
 status: emerging
 projects: [itracker, mjsz]
 evidence: ["itracker:unrecorded", "mjsz:unrecorded"]
 alternatives: []
-related: [derived-attribute-flattening, derived-relation-navigation]
-fragment: pending
+related: [derived-attribute-flattening, derived-relation-navigation, integer-boolean-for-aggregation]
+fragment: null-safe-collection-aggregation
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-When aggregating collection values with `!sum()`, optional (nullable) fields are first filtered using `!filter(x | x.field!isDefined())` before the sum is applied. This prevents null values from breaking the aggregation. Required fields can be summed directly without the guard. A variant uses `!count() > 0 ? !sum(...) : 0` to guard against empty collections returning null.
+A derived attribute that adds up a field over a collection must behave well when some items have no value in that field, or when the collection is empty. Make the null handling explicit in the expression.
 
-## Structure
+## Practice
 
-- **Required field aggregation** (no guard needed):
-  ```
-  self.collection!sum(x | x.requiredField)
-  ```
-- **Optional field aggregation** (null-safe):
-  ```
-  self.collection!filter(x | x.optionalField!isDefined())!sum(x | x.optionalField)
-  ```
-- **Empty collection guard** (null-safe):
-  ```
-  self.collection!count() > 0 ? self.collection!sum(x | x.field) : 0
-  ```
-- The `!isDefined()` check filters out items where the field is null
-- The `!count() > 0` check prevents sum on empty collections
-- This pattern applies to any collection aggregate: `!sum()`, `!avg()`, `!min()`, `!max()`
+### Choose the guard by the field's cardinality
 
-## Examples
+This is project practice on top of the platform's collection functions. The platform (see [model development, collection functions](../../agent-docs/model/model-development.md)) provides `!filter`, `!isDefined()`, `!count()`, `!sum`, `!avg`, `!min`, `!max` and the ternary `cond ? a : b`. It does not document how an undefined selector value or an empty collection is treated by `!sum`, so the practice does not rely on either.
 
-### itracker
-In `archiveForecast`, `sumOfSavingPotential` directly sums the required field: `this.monthlyForecasts!sum(f | f.savingPotential)`. But `sumOfSaving` uses the null-safe pattern because `saving` is optional: `this.monthlyForecasts!filter(f | f.saving!isDefined())!sum(f | f.saving)`. This handles months where actual savings have not yet been entered.
+- **Required field**: sum it directly, `self.lines!sum(l | l.amount)`.
+- **Optional field**: filter first, `self.lines!filter(l | l.discount!isDefined())!sum(l | l.discount)`.
+- **Possibly empty collection**: guard with the ternary, `self.lines!count() > 0 ? self.lines!sum(l | l.amount) : 0`. Both branches must have the same kind (the platform requires the same kind for then and else).
 
-### MJSZ
-`Team.points` uses the empty-collection guard variant: `self.homeMatches!count() > 0 ? 3 * self.homeMatches!sum(m | m.homeWin) + self.homeMatches!sum(m | m.draw) : 0`. Same pattern on `Team.goalsFor` and `Team.goalsAgainst`, guarding against teams with no home or visitor matches. The `Team.matches` attribute uses filter+count: `self.homeMatches!filter(hm | hm.homeScore!isDefined())!count()`.
+### Know the limits of the aggregates
 
-## Trade-offs
+`!sum` accepts integer and decimal selectors only; other types fail with `Invalid expression for aggregation`. `!avg`, `!min` and `!max` take the same selector form, so the same filter-first shape applies to them. Keep each lambda to one iteration variable: lambdas do not nest and cannot see `self`.
 
-- Pros: Prevents runtime errors from null values, explicit about null handling, composable with other collection operations
-- Cons: Verbose compared to a built-in null-coalescing aggregate, easy to forget the guard on optional fields
-- Prefer when: Aggregating over collections where some items may have null values in the aggregated field
+### Put the aggregate where it is read
+
+Declare the expression as a derived member of the entity (or of a transfer object) and let pages and operations read it. See [[derived-attribute-flattening]] for derived members and [[integer-boolean-for-aggregation]] for counting flags with `!sum`.
+
+## Rationale
+
+- The null handling is visible in the model expression, not hidden in a service.
+- Filtering by `!isDefined()` is composable: any further collection function can follow it.
+- Cost: verbose compared to a null-coalescing aggregate, and easy to forget on optional fields.
+
+## Example
+
+### Order total with optional discounts
+
+A neutral Order owns a composition collection of OrderLine items. OrderLine has a required `amount` and an optional `discount`. Order carries three derived members: `total` sums `amount` directly; `totalDiscount` filters on `discount!isDefined()` before summing; `guardedTotal` returns 0 when there are no lines.
+
+The original projects used the same three forms. itracker summed a required saving-potential field directly and used the filter form for an optional "actual saving" that is empty until entered. MJSZ guarded team points and goal totals with the count ternary, and counted played matches with filter plus `!count()`.
+
+<!-- mermaid:generated fragment=null-safe-collection-aggregation cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Order {
+    <<Entity>>
+    +Integer /total
+    +Integer /totalDiscount
+    +Integer /guardedTotal
+  }
+  class OrderLine {
+    <<Entity>>
+    +Integer amount [1]
+    +Integer discount
+  }
+  Order *-- "*" OrderLine : lines
+```
+<!-- /mermaid:generated -->
+
+## When to avoid
+
+- The field is required everywhere: the plain sum is enough.
+- The aggregated value is needed in a stored column: use a stored value maintained by an operation instead, see [[aggregated-stored-field]].
 
 ## Related
 
-- [[derived-attribute-flattening]]
-- [[derived-relation-navigation]]
-
+- [[derived-attribute-flattening]] — derived members that hold the aggregate
+- [[derived-relation-navigation]] — navigating to the collection being aggregated
+- [[integer-boolean-for-aggregation]] — summing 0/1 flags
+- [[aggregated-stored-field]] — stored alternative to a derived aggregate

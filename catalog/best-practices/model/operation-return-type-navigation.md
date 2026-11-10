@@ -1,60 +1,93 @@
 ---
 id: operation-return-type-navigation
 title: Operation Return Type for View Navigation
-description: "A state-transition operation returns a transfer object of a different type than the current view, causing the UI framework to automatically navigate to the appropriate view for the returned type."
-aliases: []
-keywords: [operation, return, type, view, navigation]
+description: "A state-transition operation returns a transfer object of a different type than the current view, so the UI can navigate to the access that shows the returned type."
+aliases: [post-call navigation, redirect by return type, return other transfer type]
+keywords: [operation, output, return type, navigation, postCallAccessNavigation, state transition, redirect]
 tags: ["domain:model", "layer:model", "project:viterra_demo", "project:workflow-poc", "status:emerging"]
 category: operation
 status: emerging
 projects: [viterra_demo, workflow-poc]
 evidence: ["viterra_demo:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-related: [state-based-transfer-partitioning, mapped-operation-delegation, enum-state-machine]
-fragment: pending
+related: [state-based-transfer-partitioning, mapped-operation-delegation, enum-state-machine, operation-output-with-behaviors]
+fragment: operation-return-type-navigation
+diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A state-transition operation returns a transfer object of a different type than the current view, causing the UI framework to automatically navigate to the appropriate view for the returned type. This is used when an entity's state change means it should no longer appear in the current list/view and should instead appear in a different partition.
+A state change moves an instance out of the list the user is looking at and into another one (an open report becomes a closed report). Let the operation return the transfer object type of the destination, and point the UI's post-call navigation at the access that shows that type.
 
-## Structure
+## Practice
 
-- Entity operation changes status and returns `this` (the entity itself)
-- The operation's output parameter targets a different transfer object type than the caller's type
-- The framework automatically maps the returned entity to the output transfer type
-- The UI navigates from the current view to the output view
-- Example flow: Partner editing an open report -> submits -> status changes -> returns closed report transfer -> UI redirects to closed reports view
+### Return the destination's transfer type
 
-```
-// Entity operation
-Report.submit():
-  this.status = ReportStatus#SUBMITTED
-  return this
+The entity operation changes the state and returns `this`. The operation's `output` parameter targets a transfer object type other than the caller's one (for example the closed-report view instead of the open-report view). A mapped operation on the source view binds to the entity operation and declares the destination type as its output. Operation scripts are described in [Operation script language](../../agent-docs/model/jcl-operation-scripts.md); the operation must be `stateful` because it writes.
 
-// Output type is PartnerClosedReportTransfer (not PartnerOpenReportTransfer)
-output: PartnerClosedReportTransfer [1..1]
-```
+### Navigate through the operation form's post-call access
 
-## Examples
+What the platform documents (see [UI behaviour rules, OperationForm](../../agent-docs/model/esm_metamodel/ui-behaviour.md)): the UI OperationForm has a `postCallAccessNavigation` attribute, "navigate to access of same type of operation output instance after successful call"; its candidates are accesses whose target type matches the operation output type. So the output type decides which accesses can be chosen, and the navigation is a model setting on the operation form, not an implicit effect of any differing return type. Do not assume the UI redirects by itself: check the generated page, and see [[operation-output-with-behaviors]] for the result display.
 
-### Viterra Demo
-`Report.submit()` sets status to SUBMITTED and returns `this`. The output type is `PartnerClosedReportTransfer` (not `PartnerOpenReportTransfer`). When the partner submits from the open report view, the framework converts the returned entity to a closed report transfer, and the UI redirects to the closed reports view. The report disappears from "Open reports" and appears in "Closed reports".
+### When the destination is not a fixed access
 
-### workflow-poc
-The workflow engine uses a redirect pattern for post-operation navigation. `Token.navigate()` returns a `UpdateRedirect` transfer (mapped from Context) containing `actor`, `access`, `idValue`, `idName` attributes that instruct the UI where to navigate. `User.startWorkflow()` returns a `CreateRedirect` transfer (mapped from ContextType) with `actor`, `access`, `operation` attributes. These redirect TOs encapsulate navigation metadata rather than returning the entity itself, enabling the workflow engine to dynamically direct users to arbitrary views.
+If the target depends on runtime data, return a redirect transfer object (target actor, access, id) and let a frontend `OperationFlowManager` hook turn it into navigation. The hook interface is in [action hooks](../../agent-docs/frontend/hooks/action-hooks.md). The workflow-engine project used this, with redirect objects mapped from its context entities.
 
-## Trade-offs
+## Rationale
 
-- Pros: Seamless post-transition navigation, no client-side routing logic needed, declarative view routing through return types
-- Cons: Return type must be carefully chosen to match the target view, only works for single-entity returns
-- Prefer when: A state transition moves an entity from one logical partition to another and the user should see the new view immediately
+- The routing rule stays declarative in the model: the output type names the destination.
+- No client routing code for the common case.
+- Limits: it fits single-instance returns; the destination must be an access of the output's type; the old list refreshes without the moved instance only when the partitioning follows the state ([[state-based-transfer-partitioning]]).
+
+## Example
+
+A neutral Report entity has a `status` (Open, Submitted). `OpenReportView` and `ClosedReportView` both map Report. The `submit` operation sets the status to Submitted and returns `this`; on the open view it is a mapped operation whose output is `ClosedReportView`. After a successful call the form navigates to the closed-reports access, where the instance now appears. In the original project the same shape routed partners from "open" to "closed" reports.
+
+## When to avoid
+
+- The state change does not move the instance between views: return nothing or the same view type.
+- The operation returns a collection or non-entity data.
+- The destination cannot be an access of the returned type: use the redirect-object approach.
 
 ## Related
 
-- [[state-based-transfer-partitioning]]
-- [[mapped-operation-delegation]]
-- [[enum-state-machine]]
+- [[state-based-transfer-partitioning]] — the views the instance moves between
+- [[mapped-operation-delegation]] — mapped operations bound to entity operations
+- [[enum-state-machine]] — the status being changed
+- [[operation-output-with-behaviors]] — result handling on the output parameter
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=operation-return-type-navigation cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class ClosedReportView {
+    <<Transfer>>
+    +Status status
+    +String title
+  }
+  class OpenReportView {
+    <<Transfer>>
+    +Status status
+    +String title
+    +submit() ClosedReportView
+  }
+  class Report {
+    <<Entity>>
+    +String title
+    +Status status
+    +submit() ClosedReportView
+  }
+  class Status {
+    <<Enumeration>>
+    OPEN
+    SUBMITTED
+  }
+  ClosedReportView ..> Report : maps
+  ClosedReportView ..> Status : status
+  OpenReportView ..> Report : maps
+  OpenReportView ..> Status : status
+  Report ..> Status : status
+```
+<!-- /mermaid:generated -->

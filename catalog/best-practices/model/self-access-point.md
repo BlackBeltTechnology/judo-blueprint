@@ -1,60 +1,98 @@
 ---
 id: self-access-point
 title: Self-Referencing Access Point for Own Profile
-description: "An actor's access point uses `self` as the getter expression to expose the logged-in user's own entity record."
-aliases: []
-keywords: [self, referencing, access, point, own, profile]
+description: "An actor gets a 0..1 derived access that resolves to the actor's own entity row, giving a 'my profile' or personal dashboard entry point; the getter finds the row through the ACTOR variable, not through self."
+aliases: [own profile access, my profile, personal dashboard access, self access]
+keywords: [access, actor, getterExpression, self, own record, profile, 0..1, getVariable, ACTOR, principal]
 tags: ["domain:model", "layer:model", "project:alba", "project:skillmatrix-model", "project:judo-partner", "status:emerging"]
 category: access
 status: emerging
 projects: [alba, skillmatrix-model, judo-partner]
 evidence: ["alba:unrecorded", "skillmatrix-model:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-related: [derived-access-filtering, actor-based-transfer-projection, transfer-generalization]
-fragment: pending
+related: [derived-access-filtering, actor-based-transfer-projection, transfer-generalization, panel-dashboard-transfer]
+fragment: self-access-point
+diagram: { kinds: [entity, transfer, actor], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An actor's access point uses `self` as the getter expression to expose the logged-in user's own entity record. This provides a "my profile" or "my dashboard" entry point where the actor accesses their own data with cardinality `0..1`. The target transfer object is typically a specialized view of the principal entity that includes editable relations and self-service operations.
+A signed-in user needs an entry point to their own record: a profile to edit, or a personal dashboard of their data and actions. Model it as an access of cardinality 0..1 on the actor that resolves to the user's own entity row.
 
-## Structure
+## Practice
 
-- Access point with cardinality `0..1`
-- Getter expression: `self`
-- Target is a transfer object that maps to the same entity as the actor's principal
-- The transfer may extend the principal transfer via generalization (adding relations/operations)
-- CRUD is typically update-only (the user can edit their own profile but not create/delete)
-- Multiple `self`-based access points can coexist on the same actor, each targeting a different transfer projection
+### Resolve the actor's row in the getter
 
-## Examples
+The old project notes describe the getter as `self`. The agent-docs correct this: an `ActorType` access getter **has no `self`** (it runs at actor scope) and must start from the **entity** FQN, not from a transfer object ([model development, section 5.4](../../agent-docs/model/model-development.md) and [architectural patterns, rules for access getters](../../agent-docs/backend/architectural-patterns.md)). The access is `DERIVED` and returns a reference. To reach the actor's row, filter the principal entity by the identifying claim value:
 
-### SkillMatrix
-ProfessionalActor has 3 access points, 2 using `self`: `myProfession -> MyProfessional [0..1]` with getter `self` (own profile with skills management, CRUD: update), `allForApproval -> UnapprovedSkillsView [0..1]` with getter `self` (consolidated view of all unapproved skills across subordinates). The third access `subordinates` navigates from self: `self.subordinates!sort(u | u.indexName ASC)`.
+- `Member!filter(m | m.email == <String>!getVariable('ACTOR', 'email'))!any()`, with the primitive type fully qualified. `!getVariable` returns a scalar, so compare with `==`.
+- `ACTOR` values are populated only for the *managed mapped principal* shape: a mapped principal transfer object, `managed = true`, and a claim attribute that maps to an identifying entity attribute ([accesspoint reference, three actor shapes](../../agent-docs/model/esm_metamodel/accesspoint.md)). Other shapes use `USER` or `PRINCIPAL` and see [advanced modeling patterns, ACTOR vs PRINCIPAL vs USER](../../agent-docs/model/advanced-modeling-patterns.md).
+- `!any()` collapses the filtered collection to one instance, as an access of cardinality 0..1 requires; use it once and at the end of the chain.
 
-### Alba
-`userProfile` access point (0..1) targets `UserTransfer` with a derived getter resolving to the current user's own record. This provides a "my profile" entry point where users can view their data and invoke `finalizeAccount()` for teacher account setup. The profile includes `isTeacherAndNeedsToBeFInalized` derived attribute to prompt profile completion.
+The "fully user-scoped" pattern in the same agent-doc builds all other accesses from this root.
 
-### SkillMatrix-Model
-Model source confirms 2 `self`-based access points on `ProfessionalActor`: `myProfession` (target: MyProfessional, CRUD: update-only) and `allForApproval` (target: UnapprovedSkillsView, read-only). Both use `getterExpression="self"` with `accessType="DERIVED"`. The dual `self` access demonstrates using different transfer projections of the same user record for different UI views.
+### Target a profile transfer object
 
-### judo-partner
-`Actor.partnerList` access point (0..1) uses `self` as getter expression, targeting the `PartnerList` transfer object. `PartnerList` maps to the `User` entity and provides a personalized dashboard with derived `partners` and `partnerLogs` collections, plus `createPartner` operation. CRUD: update-only. Demonstrates the self-access pattern used as a dashboard entry point rather than a profile editor.
+The access targets a transfer object mapped to the same entity as the principal (the principal transfer object itself is not publicly creatable or editable, so use a second projection). Put editable relations and self-service operations on it, and allow only update on the access: the user edits their profile, but cannot create or delete it. See [[actor-based-transfer-projection]] and [[transfer-generalization]] (inheritance between transfer objects is limited; check there).
 
-### AMS-Frontend
-Manager actor's `approvalAll [0..1]` uses `self` getter targeting `ManagerApprovalList` transfer. This maps the logged-in manager's own User entity into a bulk approval view with a filtered `approvals` relation (pending + open campaign) and an `approveAll` operation. Demonstrates `self` access used for a workflow aggregation view rather than a profile.
+### Several self accesses, one per purpose
 
-## Trade-offs
+Different accesses may each resolve to the same row with a different target: a profile editor, an approval overview, a bulk-action dashboard ([[panel-dashboard-transfer]]). Each access needs a matching menu item to be reachable in the UI ([accesspoint reference, pairing rule](../../agent-docs/model/esm_metamodel/accesspoint.md)).
 
-- Pros: Simple and declarative "my data" access, no filtering logic needed, framework resolves the current user automatically
-- Cons: Limited to single-record access (0..1), the transfer must map to the actor's principal entity
-- Prefer when: An actor needs to access and manage their own profile or dashboard data
+## Rationale
+
+- Data isolation: the user works on a graph rooted in their own row; other accesses navigate from it.
+- Simple and declarative: no per-request code.
+- Cost: single-row only, and the lookup needs the managed principal shape; with other shapes the row is found through a claim lookup with extra cost per evaluation.
+
+## Example
+
+A neutral Member entity has a required, identifying `email` and owns Skills. The actor `User` is a managed actor whose principal transfer object maps Member and carries an email claim. A second transfer object, `MyProfile`, maps Member too. The actor has one derived access `profile` (cardinality 0..1, update allowed) that returns the Member whose email equals the actor's email, targeting `MyProfile`. Alba, SkillMatrix and judo-partner used this shape for profile and dashboard entry points.
+
+## When to avoid
+
+- The actor has no persisted principal row (token-only or transient principal): there is no row to return.
+- The user needs a list of several records: use a filtered derived access ([[derived-access-filtering]]).
+- Anonymous actors.
 
 ## Related
 
-- [[derived-access-filtering]]
-- [[actor-based-transfer-projection]]
-- [[transfer-generalization]]
+- [[derived-access-filtering]] — other derived access getter forms
+- [[actor-based-transfer-projection]] — one transfer object per actor role
+- [[transfer-generalization]] — extending the principal projection
+- [[panel-dashboard-transfer]] — dashboards reached through such an access
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=self-access-point cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Member {
+    <<Entity>>
+    +String email [1]
+    +String name
+  }
+  class MemberPrincipal {
+    <<Transfer>>
+    +String name
+    +String email [1]
+  }
+  class MyProfile {
+    <<Transfer>>
+    +String email [1]
+    +String name
+  }
+  class Skill {
+    <<Entity>>
+    +String label
+  }
+  class User {
+    <<Actor>>
+  }
+  Member *-- "*" Skill : skills
+  MemberPrincipal ..> Member : maps
+  MyProfile ..> Member : maps
+  User ..> MemberPrincipal : principal
+```
+<!-- /mermaid:generated -->

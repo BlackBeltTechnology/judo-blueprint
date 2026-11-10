@@ -1,0 +1,234 @@
+{
+ "batch": "pm05",
+ "entries": {
+  "null-safe-collection-aggregation": {
+   "status": "rewritten",
+   "fragment": "null-safe-collection-aggregation",
+   "kb": [
+    "derived attribute !sum !filter isDefined null aggregation JSL",
+    "sum empty collection null isDefined count derived expression"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Collection Functions",
+    "catalog/agent-docs/model/jsl-language-notes.md#Identifiers and reserved words"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "removed claim that sum on empty returns null (docs silent)",
+    "added sum type limit (integer/decimal only)",
+    "added lambda scope rule",
+    "labeled as project practice",
+    "related ids added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "operation-output-with-behaviors": {
+   "status": "rewritten",
+   "fragment": "operation-output-with-behaviors",
+   "kb": [
+    "operation output behaviours REFRESH UPDATE DELETE OPERATION_OUTPUT_UPDATE",
+    "operation output parameter mapped transfer object result page",
+    "postCallAccessNavigation OperationForm output view dialog after call"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Output CRUD Settings",
+    "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md#OperationForm Navigation",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Operation Input/Output"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "docs have updateable/deleteable flags not a behaviours list; flagged behaviours/OPERATION_OUTPUT_UPDATE as undocumented project observation",
+    "removed XML sample",
+    "added postCallAccessNavigation"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "operation-result-caching": {
+   "status": "rewritten",
+   "fragment": "operation-result-caching",
+   "kb": [
+    "JCL operation script collection += -= relation assignment Timestamp now stateful operation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jcl-operation-scripts.md#Statements and syntax",
+    "catalog/agent-docs/model/model-development.md#Temporal functions",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Statefulness derived from behaviour"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "added stateful requirement",
+    "labelled as project practice, no platform invalidation",
+    "fixed script operators (+=/-= on reference sets)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "operation-return-type-navigation": {
+   "status": "rewritten",
+   "fragment": "operation-return-type-navigation",
+   "kb": [
+    "navigate after operation success access same type as output hook OperationFlowManager",
+    "operation output parameter mapped transfer object result page"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md#OperationForm Navigation",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#OperationFlowManager",
+    "catalog/agent-docs/model/jcl-operation-scripts.md"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "old claim that framework navigates automatically by return type replaced by postCallAccessNavigation setting",
+    "redirect-object variant via OperationFlowManager",
+    "stateful requirement"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "panel-dashboard-transfer": {
+   "status": "rewritten",
+   "fragment": "panel-dashboard-transfer",
+   "kb": [
+    "unmapped transfer object access actor menu entry static operation",
+    "access getterExpression singleton self actor page dashboard menu",
+    "Access target have to be mapped unmapped transfer object access"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: The View Model (Dashboard)",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: Static operations container TO",
+    "catalog/agent-docs/model/ui-authoring-guide.md#hiddenBy/enabledBy"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "docs say panel is unmapped but validator rejected access to unmapped TO in sandbox: documented mapped-panel shape and flagged doc conflict",
+    "derived relations from self",
+    "labelled naming suffix as project convention"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "permission-flag-enum": {
+   "status": "rewritten",
+   "fragment": "permission-flag-enum",
+   "kb": [
+    "role permission hiddenBy boolean attribute menu item visibility access control"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Hiding menu items by role",
+    "catalog/agent-docs/model/ui-authoring-guide.md",
+    "catalog/agent-docs/model/model-development.md"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "derived booleans instead of stored recalc (noted original)",
+    "hiddenBy semantics (true hides, principal TO boolean)",
+    "backend must still enforce"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "primary-selection-pattern": {
+   "status": "rewritten",
+   "fragment": "primary-selection-pattern",
+   "kb": [
+    "!container navigation instance operation this self update reference unset derived relation any"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Collection Functions (!container)",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Statefulness"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "added stateful requirement",
+    "!container back-reference",
+    "flag variant weakness noted",
+    "delete behaviour undocumented"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "range-expression-filtering": {
+   "status": "rewritten",
+   "fragment": "range-expression-filtering",
+   "kb": [
+    "rangeExpression rangeType DERIVED range of reference selector relation",
+    "Access target have to be mapped"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#GET_RANGE and GET_TEMPLATE behaviours",
+    "catalog/agent-docs/backend/interceptors.md (range interceptors)",
+    "catalog/agent-docs/model/model-development.md#Collection Functions"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "added rangeType ANY/DERIVED",
+    "range not a security boundary; range interceptor",
+    "self in range expressions undocumented -> flagged",
+    "removed XML-ish sample"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "responsive-multi-device-layout": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "PageContainer layoutType mobile tablet desktop device breakpoint col columns"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/ui-authoring-guide.md#6. Layout model",
+    "catalog/agent-docs/model/esm_metamodel/ui.md#Group",
+    "catalog/agent-docs/frontend/theming.md#Spacing and Breakpoints"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "removed XML sample and per-device column claims as undocumented: flagged as project observation",
+    "col range 1..12 and layout rules added",
+    "frontend breakpoints in theme"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "self-access-point": {
+   "status": "rewritten",
+   "fragment": "self-access-point",
+   "kb": [
+    "access getterExpression self principal derived access cardinality 0..1 actor own record"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#5.4 self is not in scope on access getters",
+    "catalog/agent-docs/backend/architectural-patterns.md#Rules for accesses getterExpression",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Three actor shapes",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Fully User-Scoped Data Access"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "getter self is invalid on actor access: replaced by entity filter on ACTOR variable + !any()",
+    "ACTOR only for managed mapped principal; claim must map to identifier",
+    "menu item pairing",
+    "principal TO not editable -> second projection"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "self-referencing-derived-relation": {
+   "status": "rewritten",
+   "fragment": "self-referencing-derived-relation",
+   "kb": [
+    "derived relation getter self transfer object different projection same entity"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#Rules for accesses getterExpression"
+   ],
+   "fixes": [
+    "legacy rewrite",
+    "contrasted TO getter self with access getter (no self)",
+    "nesting/update behaviour undocumented, treated read-only"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

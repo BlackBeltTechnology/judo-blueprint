@@ -1,49 +1,83 @@
 ---
 id: operation-result-caching
-title: Operation Result Caching in Entity Relations
-description: "An entity stores operation results in a stored relation, effectively caching the output of an expensive or user-triggered computation."
-aliases: []
-keywords: [operation, result, caching, relations]
+title: Operation Result Caching on the Entity
+description: "A stateful operation stores its computed result in a stored relation on the entity together with a last-run timestamp, so the result can be shown later without re-running the operation."
+aliases: [cached operation result, stored search results, last run timestamp]
+keywords: [operation, result, cache, stored relation, timestamp, stateful, clear and refill]
 tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
 category: operation
 status: single-project
 projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
 alternatives: []
-related: [mapped-operation-delegation, derived-relation-navigation]
-fragment: pending
+related: [mapped-operation-delegation, derived-relation-navigation, operation-output-with-behaviors]
+fragment: operation-result-caching
+diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An entity stores operation results in a stored relation, effectively caching the output of an expensive or user-triggered computation. The operation clears previous results, computes new ones, and stores them back on the entity along with a timestamp. This allows the results to be viewed later without re-executing the operation.
+An expensive or user-triggered computation (a search, a report run) should leave its result behind. The entity keeps the result in a stored relation plus the time of the last run, so pages can show the result later without computing it again.
 
-## Structure
+## Practice
 
-- Entity has a stored collection relation for results (e.g., `results -> TargetType [0..*]`)
-- Entity has a timestamp attribute tracking last execution (e.g., `lastRun: Timestamp`)
-- Operation body follows a clear-compute-store pattern:
-  1. Clear previous results: `this.results -= this.results`
-  2. Compute new results: `this.results += source.navigation`
-  3. Update timestamp: `this.lastRun = Timestamp!now()`
-- Results are persisted and available for subsequent reads without re-execution
-- UI displays both the cached results and the last-run timestamp
+### Clear, compute, store, stamp
 
-## Examples
+The entity has a stored collection relation for the results and a Timestamp attribute for the last run. A stateful instance operation with a JCL body ([Operation script language](../../agent-docs/model/jcl-operation-scripts.md)) does four things in order:
 
-### SkillMatrix-Model
-`Search` entity caches user search results. `Search.run()` operation: `this.results -= this.results; this.results += this.competences.users; this.results += this.tags.users; this.lastRun = Timestamp!now()`. Results are stored in `results -> User [0..*]` and displayed in a table. `Search.lastRun` tracks when the search was last executed. Similarly, `Definition.run()` (mapped) generates report results stored in `results -> Result [0..*]` with execution timestamp and Excel download URL.
+1. Clear: remove the previous results from the relation with `-=`.
+2. Compute: add the new results with `+=`.
+3. Stamp: assign the current timestamp using the temporal function `Timestamp!now()` (a `SYSTEM` environment value, see [model development, JQL reference](../../agent-docs/model/model-development.md)).
+4. Return nothing, or return the entity or a view; pages read the stored relation.
 
-## Trade-offs
+Reference sets are changed only with `+=` and `-=` in scripts; a bare navigation as a statement is an error.
 
-- Pros: Avoids re-executing expensive queries, results available for pagination and display, timestamp provides audit context
-- Cons: Cached results may become stale, clearing and re-populating may be costly for large result sets, consumes storage
-- Prefer when: Operation results need to be persisted for later viewing, or the computation is expensive and should not run on every page load
+### The operation must be stateful
+
+The operation writes, so it must be modelled `stateful = true`; a write in a stateless operation throws `IllegalStateException` at runtime (see [operation reference](../../agent-docs/model/esm_metamodel/operation.md), statefulness section).
+
+### This is project practice
+
+The platform has no result-cache concept and no invalidation: nothing refreshes the stored results when the source data changes. Re-running the operation is the only refresh, and the timestamp tells users how old the result is.
+
+## Rationale
+
+- Results are ordinary stored data, so pages can list, sort and page them like any relation.
+- The timestamp gives users and auditors the age of the result.
+- Costs: results can be stale; clear and refill of large result sets is expensive; the results consume storage.
+
+## Example
+
+A neutral Search entity has a `term`, a stored relation `results` to Product (0..*) and a `lastRun` Timestamp. Its `run` operation clears `results`, adds the products matching the term and sets `lastRun` to now. The original project did the same with a search entity that combined users from several navigation paths, and with a report definition whose run stored result rows together with an execution time and a download link.
+
+## When to avoid
+
+- The result is cheap and always current: use a derived relation ([[derived-relation-navigation]]) instead of storing it.
+- The result must follow source changes live.
+- Result sets are large and rarely read again.
 
 ## Related
 
-- [[mapped-operation-delegation]]
-- [[derived-relation-navigation]]
+- [[mapped-operation-delegation]] — mapped operations that start the run
+- [[derived-relation-navigation]] — computed instead of cached
+- [[operation-output-with-behaviors]] — returning the result of an operation
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=operation-result-caching cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Product {
+    <<Entity>>
+    +String name
+  }
+  class Search {
+    <<Entity>>
+    +String term
+    +Timestamp lastRun
+    +run()
+  }
+  Search --> "*" Product : results
+```
+<!-- /mermaid:generated -->
