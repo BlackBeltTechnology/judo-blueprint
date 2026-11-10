@@ -1,58 +1,80 @@
 ---
 id: soft-delete-archive-pattern
-title: Soft Delete via Archive Flag Pattern
-description: "Instead of physically deleting entities, a boolean `isArchived` flag is set to true, preserving the data for historical reference and potential recovery."
-aliases: []
-keywords: [soft, delete, archive, flag]
+title: Soft Delete via Archive Flag in a Custom Operation
+description: "A delete operation sets a boolean archive flag instead of removing the row, clears related flags, and every query and range filters archived rows out."
+aliases: [archive instead of delete, isArchived flag, logical delete operation]
+keywords: [soft delete, archive, isArchived, custom operation, BooleanFilter, range interceptor, historical reference]
 tags: ["domain:backend", "layer:backend", "project:park-here", "project:judo-partner", "status:emerging"]
-category: operation
+category: data
 status: emerging
 projects: [park-here, judo-partner]
 evidence: ["park-here:unrecorded", "judo-partner:unrecorded"]
-alternatives: []
-related: [mutable-entity-update-pattern, dao-fluent-query-filter]
+alternatives: [soft-delete-active-flag]
+related: [mutable-entity-update-pattern, dao-fluent-query-filter, soft-delete-active-flag, interceptor-range-override, toggle-boolean-operation]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Instead of physically deleting entities, a boolean `isArchived` flag is set to true, preserving the data for historical reference and potential recovery. Related flags (e.g., `isFavorite`) are cleared during archival. Queries throughout the application filter by `isArchived = false` to exclude archived records from normal views. This pattern is especially useful for entities that participate in historical associations (e.g., a car used in past reservations).
+Some entities must stay in the database because older records point to them (a car used in past reservations, a partner with history). Deleting the row would break those links. The delete action sets an archive flag and tidies related state, and all readers hide archived rows. This entry is the backend side; the model side (flag, defaults, hiding in the UI) is in [[soft-delete-active-flag]].
 
-## Structure
+## Practice
+
+### Platform base
+
+- A custom operation loads the entity through its DAO, sets the flag and persists it with `update`. The entity from the DAO carries its version, so the optimistic-locking check applies ([platform behaviour](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)).
+- Queries exclude archived rows with `BooleanFilter.isFalse()` on the generated `filterBy<Attribute>` method; the boolean filter has only `isTrue()` and `isFalse()`. A row where an optional boolean is unset needs the raw JQL filter ([data access guide](../../agent-docs/backend/data-access-guide.md#booleanfilter)).
+- The platform delete stays available unless the model turns it off for the entity's transfer objects and accesses. Soft delete does not stop a direct physical delete by itself ([[soft-delete-active-flag]]).
+- Interceptors fire only for built-in operations. A custom delete operation is not intercepted, and a range interceptor fires only for reference-range operations, not for plain lists ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). A range interceptor is the boundary for pickers; lists need a filter in the model or in the DAO query.
+- Permission checks for the operation belong inside the implementation, since no interceptor protects it.
+
+### Project practice: archive, clear, filter everywhere
+
+This layer is project practice (ParkHere, judo-partner), not a platform feature:
+
+- The delete operation sets `isArchived = true` and clears flags that only make sense on live rows (a favourite flag). It can also free a unique value: judo-partner nulls the tax identifier so the number can be reused for a new partner.
+- Every query that feeds a normal view adds the archive filter. Forgetting it is the typical bug; put the filtered query in one service method so there is a single place.
+- Dropdown ranges exclude archived rows through a range interceptor ([[interceptor-range-override]]).
+- Derived computations such as duplicate flags are recalculated after archiving and exclude archived rows.
+- Archived rows are never physically removed; plan for the table growth.
 
 ```java
+// Example project code: service and entityDao are project/generated members
 @Override
 public void accept(Entity _this) throws BusinessErrorException {
     Entity entity = service.getEntity(_this);
-    entity.setIsFavorite(false);     // Clear related flags
-    entity.setIsArchived(true);       // Soft delete
+    entity.setIsFavorite(false);     // clear related flags
+    entity.setIsArchived(true);      // soft delete
     entityDao.update(entity);
 }
 
-// All queries filter out archived records
+// all normal queries filter out archived records
 dao.queryCars(userId)
     .filterByIsArchived(BooleanFilter.isFalse())
     .selectList();
 ```
 
-## Examples
+## Rationale
 
-### ParkHere
-`DeleteCarCustomImplementation` sets `isArchived=true` and `isFavorite=false` on the car entity rather than deleting it. Range interceptors (`ReservationInputCarRangeInterceptor`) filter `isArchived=false` to exclude archived cars from dropdown selections.
+- History and referential integrity stay intact, and an archived row can be restored.
+- The cost is that every reader must filter, the database grows, and nothing cleans it up.
 
-### judo-partner
-`PartnerServices.deletePartner()` sets `isArchived=true` and clears `taxIdentifier` to null (allowing the same tax number to be reused for a new partner). After archival, `setIsDuplicate()` recalculates duplicate name flags excluding archived partners via `filterByIsArchived(BooleanFilter.isFalse())`. Partners are never physically deleted.
+## Example
 
-## Trade-offs
+- ParkHere: the delete-car operation sets `isArchived` to true and `isFavorite` to false instead of deleting. The range interceptor for the car picker of a reservation input filters on `isArchived = false`.
+- judo-partner: the delete-partner service method sets `isArchived` and clears the tax identifier. It then recalculates the duplicate-name flags, excluding archived partners with the archive filter. Partners are never physically deleted.
 
-- Pros: Preserves data history, allows recovery, maintains referential integrity with past records
-- Cons: Database grows indefinitely, queries must always include archive filter (easy to forget), no automatic cleanup
-- Alternative: Hard delete with cascade, or move to archive table
+## When to avoid
+
+- Nothing references the entity and you have no recovery need: delete it, optionally with a cascade through composition.
+- Privacy rules require real erasure: an archive flag keeps personal data.
+- The record has more than two states: use a status enumeration ([[soft-delete-active-flag]]).
 
 ## Related
 
-- [[mutable-entity-update-pattern]]
-- [[dao-fluent-query-filter]]
-
+- [[soft-delete-active-flag]] — the model-level flag and how to hide rows in lists and pickers
+- [[mutable-entity-update-pattern]] — the update call used to set the flag
+- [[dao-fluent-query-filter]] — the filter API for excluding archived rows
+- [[interceptor-range-override]] — keeping archived rows out of dropdowns
+- [[toggle-boolean-operation]] — a generic flag-toggling operation

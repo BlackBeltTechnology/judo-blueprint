@@ -1,80 +1,92 @@
 ---
 id: service-delegation-pattern
-title: Service Delegation from Custom Operations
-description: Custom operations act as thin OSGi wrappers that delegate all business logic to shared service classes.
-aliases: []
-keywords: [service, delegation, from, custom, operations]
+title: Service Delegation from Thin Custom Operations
+description: "Custom operation implementations stay thin adapters that delegate to shared, plain-Java OSGi service classes holding the business logic, so logic is reused across operations and unit-testable."
+aliases: [thin operation, service layer, operation adapter]
+keywords: [service layer, delegation, thin operation, custom implementation, OSGi service, reuse, testability]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "status:established"]
 category: service
 status: established
 projects: [rackinspect, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner]
 evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
-alternatives: []
-related: [custom-operation-osgi-component, test-data-builder-factory]
+alternatives: [facade-service-pattern]
+related: [custom-operation-osgi-component, test-data-builder-factory, facade-service-pattern, action-delegation-workflow, role-based-invitation-guard]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Custom operations act as thin OSGi wrappers that delegate all business logic to shared service classes. The custom operation handles only the SDK interface contract (method signature, exceptions), while complex logic lives in reusable, testable service implementations. This separation enables: (1) sharing logic across multiple operations, (2) unit testing without OSGi, (3) clean layered architecture.
+The generated operation interface fixes the method signature and the declared faults. The logic behind it is often shared by several operations, several actor views of the same operation, or scheduled jobs. The custom implementation therefore only adapts the call and hands it to a service class; the service holds the logic and the DAOs.
 
-## Structure
+## Practice
+
+### Platform base
+
+- This is the platform's documented "custom service layer": the generated `Operation` implementation stays thin and delegates to a handwritten `Service` that contains the logic and injects DAOs ([architectural patterns](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)).
+- Both the operation implementation and the service are OSGi Declarative Services components. `@Component(service = ...)` registers them and `@Reference` injects DAOs and other services ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern), [component annotations](../../agent-docs/backend/patterns-and-best-practices.md)).
+- The operation must declare every fault it can throw. A fault that is thrown from a service must be declared on the operation or the SDK interface has no matching `throws` clause ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)). Fault classes are generated per project.
+- Interceptors do not fire for custom operations, and a service called from an operation is not intercepted either. Permission and state checks go into the service or the adapter ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- The agent-docs state that synchronous interceptors run inside the operation's transaction; they do not describe the transaction of a service called from an operation, so verify rollback behaviour of a delegated call in a test.
+
+### Project practice: how the projects shape it
+
+This layer is project practice (six projects), not a platform feature:
+
+- Group services by domain object (`OfferService`, `UserService`, `ReservationService`), not by operation. Several operations, including the same operation on several actor views, call one method.
+- The adapter body is one to three lines: call the service, then optionally write an audit entry or recalculate something. Typical sizes: a single call, or two calls such as validate then create.
+- Put code that must not depend on OSGi in plain service classes taking DAOs as collaborators, so it can be unit-tested; wire it with `@Reference` in the component.
+- A project helper such as `ActorService`, `EmailSenderService` or `AuditLogService` is itself such a service. Services may call other services.
+- Convert identifiers at the adapter: pass `_this.identifier().getIdentifier()` or the entity, whichever the service wants, and keep platform types out of the service API when it is shared with jobs.
 
 ```java
+// Example project code: OperationInterface, SharedService, Entity, Input are project/generated types
 @Component(immediate = true, service = OperationInterface.class)
 public class OperationCustomImplementation implements OperationInterface {
     @Reference SharedService sharedService;
 
     @Override
     public ReturnType method(Entity _this, Input input) throws BusinessErrorException {
+        // BusinessErrorException is a fault modeled by the project, not a platform class
         return sharedService.doBusinessLogic(_this, input);
     }
 }
-```
 
-Service implementation (in `common/` module):
-```java
 @Component(immediate = true, service = SharedService.class)
 public class SharedServiceImpl implements SharedService {
     @Reference EntityDao entityDao;
     @Reference OtherService otherService;
 
-    public ReturnType doBusinessLogic(Entity entity, Input input) {
-        // Complex business logic here
-    }
+    public ReturnType doBusinessLogic(Entity entity, Input input) { /* logic */ }
 }
 ```
 
-## Examples
+## Rationale
 
-### RackInspect
-~80% of custom operations delegate to 12 shared services: `OfferService` (offer lifecycle), `FaultRegistryService` (registry CRUD), `ItemService` (item management), `PriceModifierService` (pricing), `JobTaskService` (job tasks), `ReportService` (document generation), `EmailSenderService` (emails), `WarehouseService` (racks). Example: `CloseOfferCustomImplementation` is one line: `offerService.closeOffer(_this);`.
+- One implementation of a rule, however many operations, actors or jobs reach it.
+- The adapter is trivial, so the logic can be tested without the operation plumbing.
+- The cost is one more layer and one more interface per service, and a call chain that is longer to trace.
 
-### mlszksz-platform
-65+ operations delegate to 15+ services: PostService (facade for creation+lifecycle), FeedService (feed management), UserService, InvitationService, RegistrationService, MasterDataService, AuditLogService, etc. Each operation is 5-10 lines: delegate to service, then log audit trail. Example: `postService.publishOffer(_this); auditLogService.log(...)`.
+## Example
 
-### Ubives
-42 custom operations delegate to 7 services: OrganizationService, ApplicationService, InviteService, AccessService, UserService, AccountService, MailServices. Operations are pure one-liners: `applicationService.createApplication((UUID) _this.identifier().getIdentifier(), input.getName())`. Same operation repeated across multiple actor views (dashboardorganization, organization, partnerdashboard, profile).
+- RackInspect: about 80% of custom operations delegate to twelve services (offers, fault registry, items, price modifiers, job tasks, reports, e-mail, warehouse). The close-offer operation is one line that calls the offer service.
+- mlszksz-platform: over sixty-five operations delegate to more than fifteen services; each operation delegates, then writes an audit entry.
+- Ubives: forty-two operations over seven services, mostly one-liners, repeated across several actor views.
+- ParkHere: twenty operations over seven services; the reservation operation validates input, then creates the reservation.
+- Indamedia-AdTrack: seventeen operations over six services; untracking calls the tracked-campaign service, then recalculates spendings.
+- judo-partner: fifteen operations over seven services; partner creation calls the partner service, then logs the action.
 
-### ParkHere
-20 custom operations delegate to 7 services: ReservationService (validation + creation + modification), CarService (favorite logic), HolidayService (validation + creation + cancellation), ActorService (permission checks), ConfigurationService, DateService, EmailSenderService. Example: `ReservationCustomImplementation` is two lines: `reservationService.validateInput(input); reservationService.createReservation(input);`.
+## When to avoid
 
-### Indamedia-AdTrack
-17 custom operations delegate to 6 services: `AccountService` (credential management, campaign sync, connection testing), `AggregatedCampaignService` (budget tracking, spending aggregation), `TrackedCampaignService` (data sync from Google Ads), `ClientService` (CRUD), `AdsBusinessApiProviderService` (API client factory). All operations are 1-3 line delegates. Example: `UntrackCustomImplementation` calls `trackedCampaignService.untrackCampaign(_this)` then `aggregatedCampaignService.recalculateSpendings()`.
-
-### judo-partner
-15 custom operations delegate to 7 services: `PartnerServices` (partner CRUD, tax validation, duplicate detection), `TaxpayerServices` (NAV API caching), `ImportPartnerServices` (migration pipeline), `AddressServices`/`ContactServices` (set-as-primary logic), `ConfigServices` (cache clearing), `CountryServices` (country import). Example: `CreatePartnerCustomImplementation` calls `partnerServices.createPartner(input)` then logs the action via `PartnerLog`.
-
-## Trade-offs
-
-- Pros: Reusable business logic, testable without OSGi, clean separation of concerns, reduces code duplication
-- Cons: Extra layer of indirection, service interfaces must be maintained, harder to trace call flow
-- Alternative: Put all logic directly in custom operations (simpler for small projects, but does not scale)
+- A tiny operation with one DAO call and no reuse: a service adds indirection without benefit.
+- The logic is a status change that the model can express itself ([[script-driven-operations]]).
+- Do not let the service become a god class: split by domain object, or use a facade deliberately ([[facade-service-pattern]]).
 
 ## Related
 
-- [[custom-operation-osgi-component]]
-- [[test-data-builder-factory]]
-
+- [[custom-operation-osgi-component]] — how the adapter component is registered
+- [[facade-service-pattern]] — one service in front of several others
+- [[action-delegation-workflow]] — delegation through entity-bound operations instead of services
+- [[test-data-builder-factory]] — testing services and operations
+- [[role-based-invitation-guard]] — a guard placed in the operation before delegating
+- [[script-driven-operations]] — the no-Java alternative

@@ -1,28 +1,45 @@
 ---
 id: soap-client-integration
-title: CXF SOAP Client Integration for External Services
-description: "Integration with external SOAP web services using Apache CXF `JaxWsProxyFactoryBean`."
-aliases: []
-keywords: [cxf, soap, client, integration, external, services]
+title: SOAP Client Integration with CXF in an OSGi Service
+description: "An external SOAP service is wrapped in an OSGi component that builds a CXF JAX-WS proxy, parses the XML reply and falls back from a database cache to the remote call."
+aliases: [CXF SOAP client, JaxWsProxyFactoryBean, JAX-WS client]
+keywords: [soap, cxf, jax-ws, wsdl, external service, exchange rate, locale decimal, database cache]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
 category: integration
 status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:unrecorded"]
 alternatives: [jaxb-external-api-client]
-related: [quartz-scheduled-job, custom-operation-osgi-component, jaxb-external-api-client]
+related: [quartz-scheduled-job, custom-operation-osgi-component, jaxb-external-api-client, soap-external-service-client]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Integration with external SOAP web services using Apache CXF `JaxWsProxyFactoryBean`. The client is created programmatically with CXF logging interceptors for debugging. Response XML is parsed manually. The service is wrapped in an OSGi component with a database-first/SOAP-fallback strategy for resilience. Handles locale-specific data formats (e.g., Hungarian decimal separator).
+An application must read data from a third-party SOAP web service (here: daily exchange rates of a national bank). The call is isolated in one OSGi service with a domain-shaped interface. The service hides the CXF proxy, parses the XML reply and prefers a locally stored copy over a remote call.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The agent-docs describe no SOAP or JAX-WS client support, so everything about the client is project practice built on plain CXF. The only platform rules used are: the implementation is an OSGi Declarative Services component, and other components inject it with `@Reference` ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)).
+- The platform itself ships a generator for REST clients (an OpenAPI client for OSGi, see [generator plugins](../../agent-docs/deployment/generator-plugins.md)); it does not cover WSDL. For XML over HTTP without a WSDL see [[jaxb-external-api-client]].
+- Interceptors do not fire for custom operations or for calls made by a service, so a permission check on the caller side belongs in the operation or the service ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- Failures of the remote call reach the caller as ordinary Java exceptions. A business-level refusal must be mapped to a modeled fault the operation declares ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)); a raw runtime exception becomes a generic server error.
+
+### Project practice: a cached SOAP service
+
+This layer is project practice (RackInspect), not a platform feature:
+
+- Put the client in its own module with a plain Java service interface and domain DTOs. Only the implementation carries `@Component`; the generated SOAP stubs stay internal.
+- Create the proxy with `JaxWsProxyFactoryBean` (service class, address) and add CXF logging in and out interceptors for debugging. Note these are CXF interceptors, unrelated to JUDO operation interceptors.
+- Parse the XML reply into DTOs yourself and normalise locale-specific formats, for example a decimal comma, with an explicit locale rather than the JVM default.
+- Look in the database first and call the remote service only when the data is missing. A scheduled job ([[quartz-scheduled-job]]) fills the table once a day, so user requests rarely reach SOAP.
+- Treat the external service as unreliable: time out, log, and surface a clear error when neither cache nor remote has the answer.
 
 ```java
+// Example project code: SoapServicePort is generated from the WSDL, ENDPOINT_URL and Rate are project types
 @Component(immediate = true, service = ExchangeRateService.class)
 public class ExchangeRateServiceImpl implements ExchangeRateService {
 
@@ -37,29 +54,33 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
     public Map<LocalDate, Collection<Rate>> getRates(String currency) {
         String xml = createClient().getExchangeRates(params);
-        // Parse XML response
-        // Handle Hungarian decimal format (comma separator)
         DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(new Locale("hu"));
         BigDecimal rate = new BigDecimal(df.parse(rateStr).toString());
+        // ... build the result from the parsed values
         return result;
     }
 }
 ```
 
-## Examples
+## Rationale
 
-### RackInspect
-MNB (Hungarian National Bank) SOAP client in dedicated `mnb-soap-client/` module. Fetches daily exchange rates. Uses `JaxWsProxyFactoryBean` with CXF logging interceptors. Parses XML response with Hungarian locale decimal handling (comma as decimal separator). Wrapped in `ExchangeRateService` with DB-first lookup fallback to SOAP. Called by scheduled job at 13:00 daily.
+- One service is the only code that knows about SOAP, so the rest of the application stays testable and replaceable.
+- The cache keeps the application working when the remote service is slow, down or rate-limited.
+- Costs: verbose SOAP and manual XML parsing, classloader friction between CXF and OSGi, and a hard dependency on a third party.
 
-## Trade-offs
+## Example
 
-- Pros: Standard JAX-WS/CXF approach, OSGi service abstraction, built-in logging, database caching reduces external calls
-- Cons: SOAP is verbose, XML parsing is manual, CXF classloader issues in OSGi, external service dependency
-- Alternative: JAXB-based HTTP client (see `jaxb-external-api-client`) for non-WSDL XML APIs, REST API client, or third-party exchange rate REST APIs
+RackInspect has a dedicated SOAP client module for the Hungarian National Bank's exchange-rate service. It fetches daily rates through `JaxWsProxyFactoryBean` with CXF logging, parses the XML with the Hungarian decimal comma, and exposes them through an exchange-rate service that reads the database first and falls back to SOAP. A scheduled job at 13:00 each day calls it.
+
+## When to avoid
+
+- A REST or JSON alternative exists: use a REST client, ideally one generated from the OpenAPI description.
+- The XML API has no WSDL: use a JAXB-based HTTP client ([[jaxb-external-api-client]]).
+- The data must be real-time: a cache that is filled once a day is stale by design.
 
 ## Related
 
-- [[quartz-scheduled-job]]
-- [[custom-operation-osgi-component]]
-- [[jaxb-external-api-client]]
-
+- [[soap-external-service-client]] — the blueprint with the WSDL-generated module layout
+- [[jaxb-external-api-client]] — XML over HTTP without a WSDL
+- [[quartz-scheduled-job]] — the job that fills the cache
+- [[custom-operation-osgi-component]] — component registration used by the service

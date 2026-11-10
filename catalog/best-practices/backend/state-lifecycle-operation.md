@@ -1,96 +1,103 @@
 ---
 id: state-lifecycle-operation
 title: State Lifecycle Management via Bound Operations
-description: Bound operations that manage entity state transitions through a defined lifecycle.
-aliases: []
-keywords: [state, lifecycle, management, bound, operations, operation]
+description: "Each state transition of an entity is a bound operation that re-fetches the entity, checks the current state, sets the new state, records metadata and persists, with optional side effects such as audit rows."
+aliases: [state transition operation, lifecycle operations, status change operation]
+keywords: [state, lifecycle, transition, bound operation, guard clause, status enum, audit, custom implementation]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:park-here", "project:indamedia-adtrack", "project:workflow-poc", "project:doors-model", "status:established"]
 category: operation
 status: established
 projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, park-here, indamedia-adtrack, workflow-poc, doors-model]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
-alternatives: []
-related: [entity-re-fetch-pattern, typed-exception-error-handling, data-snapshot-versioning, audit-event-trail]
+alternatives: [script-driven-operations]
+related: [entity-re-fetch-pattern, typed-exception-error-handling, data-snapshot-versioning, audit-event-trail, enum-state-machine, script-driven-operations, spel-guard-evaluation, role-based-invitation-guard]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Bound operations that manage entity state transitions through a defined lifecycle. Each operation validates the current state before performing the transition, records timestamps, and may trigger side effects. The pattern follows: (1) re-fetch entity, (2) validate state preconditions, (3) perform transition, (4) record metadata, (5) persist.
+An entity with a lifecycle (draft, finalized, approved, closed) must change state only along allowed paths. Each transition is its own bound operation. The operation checks the current state, performs the change, records when it happened and optionally triggers side effects. The model holds the status enumeration; the operations hold the rules.
 
-## Structure
+## Practice
+
+### Platform base
+
+- This is the documented state-machine workflow pattern: inject DAOs, guard on the current state, do the business logic, set the new state, call `update`, then create associated rows such as tasks or an immutable audit event ([architectural patterns](../../agent-docs/backend/architectural-patterns.md#3-state-machine-workflows)).
+- A transition is a custom operation implemented as an OSGi component ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)), or a JCL script operation (`customImplementation = false`, [[script-driven-operations]]).
+- Interceptors, write guards and range interceptors never fire for custom, mapped or script operations. The state guard and the permission check must be written in each operation, or in a service all transitions call ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). Hiding the button does not protect it.
+- A refused transition is a business error: throw a fault the operation declares. The generated `<Fault>Exception` is checked, and an undeclared fault breaks the build with a `throws` clause error ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)). Names such as `ErrorException` or `BusinessErrorException` exist only when the project models faults of that name.
+- An interceptor that guards against edits on a terminal state (built-in update on a finished record) can refuse only through `InterceptorCallBusinessException` ([throwing a business error from an interceptor](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)); it does not protect the transition operations themselves.
+- Optimistic locking applies to the update only when the payload carries `__version`, which an entity loaded from the DAO does ([optimistic locking](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)). Concurrent transitions on the same row are therefore detected only when you update the re-fetched entity.
+
+### Project practice: the five steps
+
+This layer is project practice (eleven projects), not a platform feature:
+
+1. **Re-fetch** the bound instance through the DAO for current state ([[entity-re-fetch-pattern]]).
+2. **Guard**: check the state precondition, optionally also with a model-level computed boolean such as `isAcceptable`, so the UI can enable the button from the same rule.
+3. **Transition**: set the new status.
+4. **Record**: set the timestamp, and write a history or audit row with from-state, to-state, time, user and message ([[audit-event-trail]]).
+5. **Persist** with `update`, then do side effects such as snapshots ([[data-snapshot-versioning]]) or notifications.
+
+- Keep the status enumeration and the allowed transitions in one place (a service or a table), not copied across operations; the cost of the per-operation style is logic spread over many classes ([[enum-state-machine]] for the model side).
+- Hard-delete drafts, soft-delete published records, and keep a last-admin style invariant check in the transition that would break it.
+- Terminal states are explicit; transitions out of them are refused.
 
 ```java
+// Example project code: Entity, EntityDao, EntityStatus and the fault are project/generated types
 @Override
 public ReturnType apply(Entity _this) throws ErrorException {
-    // 1. Re-fetch for fresh state
-    _this = entityDao.getById(_this.identifier()).get();
+    // 1. re-fetch for fresh state
+    _this = entityDao.getById(_this.identifier()).get();   // prefer orElseThrow with a chosen outcome
 
-    // 2. Validate state preconditions
+    // 2. validate state precondition
     if (_this.getStatus() == EntityStatus.TERMINAL) {
         throw new ErrorException(Error.builder()
             .withCode(ErrorCode.INVALID_STATE).withMessage("Already closed.").build());
     }
 
-    // 3. Perform transition
+    // 3. transition, 4. record metadata
     _this.setStatus(EntityStatus.NEXT_STATE);
-
-    // 4. Record metadata
     _this.setTimestampOfTransition(LocalDateTime.now());
 
-    // 5. Persist
+    // 5. persist
     entityDao.update(_this);
     return result;
 }
 ```
 
-## Examples
+## Rationale
 
-### Trivia
-Test entity lifecycle: CREATED -> STARTED -> FINISHED/FAILED/EXCLUDED. `StartCustomImplementation` validates contest is OPEN and test is not terminal, sets STARTED + timestamp. `SubmitCustomImplementation` validates STARTED state, calculates score/duration, sets FINISHED. `ExcludeCustomImplementation` sets EXCLUDED with PB recalculation.
+- The rules for a transition live next to the transition, so a reader sees what is allowed from where.
+- The same five steps in every operation make the code predictable and easy to review.
+- Cost: state logic spreads over many classes, and shared work (score recalculation) gets duplicated unless it moves into a service.
 
-### RackInspect
-FaultRegistry lifecycle: DRAFT -> DONE via `FinishFaultRegistry`. Offer lifecycle: DRAFT -> DONE via `CloseOffer`. Job sheet items: status transitions (ToDone, ToInProgress, ToWontFix, ToWontStart) delegated to `JobTaskService`. Interceptors guard against DONE-state modifications (e.g., `RegistryHeaderUpdateInterceptor` blocks edits on finished registries).
+## Example
 
-### itracker
-Initiative lifecycle: NEW -> REVIEW -> APPROVED/REJECTED. `SendForApproval` sets REVIEW, `Approve` calls `archiveForecast()` then sets APPROVED, `Reject` sets REJECTED. All defined as model scripts (no custom Java) but follow the same state-transition pattern. Approve triggers a side effect (forecast snapshot) before transition.
+- Trivia: test CREATED, STARTED, FINISHED, FAILED or EXCLUDED. Start checks the contest is open and the test not terminal; submit checks STARTED, computes score and duration; exclude recalculates the personal best.
+- RackInspect: fault registry and offer go DRAFT to DONE; job-task items change status through a task service; an interceptor blocks edits of a finished registry.
+- itracker and doors-model: lifecycles written as scripts (new, review, approved or rejected; created through signed and closed), with side effects before the transition.
+- ALBA: product DRAFT, FINALIZED, APPROVED with rollback by revoking approval; each operation checks state and writes an audit event.
+- mlszksz-platform: posts DRAFT, PUBLISHED, EXPIRED or DELETED (hard delete for drafts, soft for published), users with last-admin protection.
+- viterra_demo and judo-demo-miniworkflow: report and document lifecycles; the workflow demo writes a history entry per transition and uses computed booleans as guards.
+- ParkHere: reservation ACTIVE to EXPIRED or DELETED, by cancel, delete, a scheduled job, or a holiday that cascades deletion.
+- Indamedia-AdTrack: campaign ONGOING to FINISHED by a daily job; spendings recalculated on every change.
+- workflow-poc: a token-based state machine where transitions are event-driven and guarded by expressions ([[spel-guard-evaluation]]).
 
-### ALBA
-Product lifecycle: DRAFT -> FINALIZED -> APPROVED with bidirectional rollback (APPROVED -> FINALIZED via RevokeApproval). Five state operations: `Finalize`, `ApproveVersion`, `RevokeApproval`, `DraftNewVersion`, `AssignApproval`. Each validates state precondition (e.g., only FINALIZED can be approved) and creates an audit Event entity recording the transition.
+## When to avoid
 
-### mlszksz-platform
-Post lifecycle: DRAFT -> PUBLISHED -> EXPIRED/DELETED across 3 post types (News, Offer, Request). Publish sets publishedAt + creates feed entry. Delete does hard-delete for DRAFT, soft-delete (status=DELETED) for PUBLISHED. Expire validates validUntil date. User lifecycle: ACTIVE <-> SUSPENDED <-> DEACTIVATED with last-admin protection. Organization: ACTIVE <-> SUSPENDED.
-
-### viterra_demo
-Report lifecycle: PENDING -> SUBMITTED -> REVIEW -> ACCEPTED. Six state-transition stubs across entity-level and transfer-object-level: `Accept` (sets ACCEPTED), `Review` (sets REVIEW), `Submit` (sets SUBMITTED, returns `PartnerClosedReportTransfer`). Operations exist on both `Report` and `ReportTransfer`/`PartnerOpenReportTransfer` transfer objects.
-
-### judo-demo-miniworkflow
-Document approval workflow: IN_PROGRESS -> REVIEW_REQUESTED -> ACCEPTED/REJECTED/CLOSED. Four state operations (Accept, Reject, Close, RequestReview) each create a `DocumentHistoryEntry` recording fromState, toState, eventTime, user, and message. Validation via computed boolean attributes (`isAcceptable`, `isClosable`, `isReviewable`, `isRejectable`). CLOSED is the terminal state.
-
-### ParkHere
-Reservation lifecycle: ACTIVE -> EXPIRED (via cancel or scheduled job) or ACTIVE -> DELETED (via delete or holiday creation). `CancelReservation` validates reservation is active and within time window, sets endTime to now and status to EXPIRED. `DeleteReservation` validates reservation is future, sets status to DELETED, sends notification email. `SetPastActiveReservationToExpiredJob` batch-expires past reservations daily. Holiday creation cascades DELETED status to conflicting reservations.
-
-### Indamedia-AdTrack
-AggregatedCampaign lifecycle: ONGOING -> FINISHED. `dailyArchiveAggregatedCampaigns()` scheduled job finds campaigns with endDate < today, fetches final cost data for all tracked campaigns, and sets status to FINISHED. TrackedCampaign status managed via `UpdateCampaign` operation. Campaign spending recalculated on every state change via `recalculateSpendings()`.
-
-### workflow-poc
-Token-based state machine lifecycle managed by `WorkflowUtils.setCurrentState()` and `step()`. Tokens track current state via `tokenDao.setState(token, state)`. Transitions are event-driven: `TriggerCustomImplementation` processes events, finds matching transitions, and delegates to `WorkflowUtils.step()`. States support ON_ENTER/ON_LEAVE/ON_TRANSITION actions, auto-assignment, guard evaluation via SpEL, fork (one token to many), and join (many tokens to one). LogEntry entities record completion events.
-
-### doors-model
-Contract lifecycle: CREATED -> PENDING -> APPROVED/REJECTED -> SIGNED -> CLOSED. Multi-stage approval workflow with condition-based stage skipping (SKIP/EXECUTE), net value thresholds, and template-based approval paths. Operations `startApproval`, `setNextStage`, `approve`, `reject` are model-level expressions. `uploadSignedContract` transitions to SIGNED state.
-
-## Trade-offs
-
-- Pros: Clear state machine in code, validation prevents illegal transitions, timestamps provide audit trail
-- Cons: State machine logic spread across multiple operation classes, PB recalculation duplicated between Submit and Exclude
-- Alternative: Centralized state machine service, or model-level state machine definition
+- The lifecycle is data, not code (admin-defined states): use an entity-based state machine, see [[spel-guard-evaluation]] for runtime guards.
+- A single flag toggle: use a generic toggle operation.
+- The transition is plain assignment with no checks: a script operation in the model is enough ([[script-driven-operations]]).
 
 ## Related
 
-- [[entity-re-fetch-pattern]]
-- [[typed-exception-error-handling]]
-- [[data-snapshot-versioning]]
-- [[audit-event-trail]]
-
+- [[entity-re-fetch-pattern]] — step 1, loading fresh state
+- [[typed-exception-error-handling]] — the declared fault thrown for illegal transitions
+- [[audit-event-trail]] — recording who did what and when
+- [[data-snapshot-versioning]] — snapshot side effects on approval
+- [[enum-state-machine]] — the status enumeration on the model side
+- [[script-driven-operations]] — transitions written as model scripts
+- [[spel-guard-evaluation]] — runtime guard expressions for data-driven lifecycles
+- [[role-based-invitation-guard]] — a permission check inside an operation

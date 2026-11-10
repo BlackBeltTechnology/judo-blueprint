@@ -1,79 +1,92 @@
 ---
 id: safe-failure-pattern
 title: Safe Failure Pattern for Non-Critical Operations
-description: "A defensive error handling pattern where non-critical operations (audit logging, analytics, notifications) are wrapped in try-catch blocks that log failures but never propagate exceptions."
-aliases: []
-keywords: [safe, failure, non, critical, operations]
+description: "Secondary work such as audit rows, statistics or notifications is wrapped so that its failure is logged but never breaks the primary operation, and loops over items continue after a single failure."
+aliases: [swallow secondary errors, best-effort side effects]
+keywords: [try catch, non-critical, audit, interceptor, scheduler, resilience, log and continue]
 tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "project:workflow-poc", "status:emerging"]
 category: error
 status: emerging
 projects: [mlszksz-platform, workflow-poc]
 evidence: ["mlszksz-platform:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-related: [audit-event-trail, quartz-scheduled-job, interceptor-aggregation-postcall]
+related: [audit-event-trail, quartz-scheduled-job, interceptor-aggregation-postcall, spel-guard-evaluation]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A defensive error handling pattern where non-critical operations (audit logging, analytics, notifications) are wrapped in try-catch blocks that log failures but never propagate exceptions. This ensures that failures in secondary operations do not break the primary business operation. Applied consistently across audit log services, interceptors, and scheduled jobs.
+Some work is secondary: writing an audit row, updating statistics, sending a notification, cleaning up expired items. If it throws, the user should still get the result of the primary operation. The practice wraps such work in a narrow try/catch that logs and moves on, and does the same per item inside batch loops.
 
-## Structure
+## Practice
+
+### Platform base: what an exception costs you
+
+- Synchronous interceptors run inside the operation's transaction. An exception from `preCall` or `postCall` rolls back the DAO write of the operation, including writes of earlier interceptors ([ordering and combining interceptors](../../agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors)). A secondary interceptor that must not break the write has to catch its own failures.
+- A raw `RuntimeException` leaving an interceptor is wrapped by the dispatcher as `InternalServerException` and the client sees a generic 500. A business refusal must be an `InterceptorCallBusinessException` ([throwing a business error from an interceptor](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)).
+- An async interceptor runs outside the transaction and its exceptions are lost, so it needs no catch for the transaction's sake, but should still log ([interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)).
+- The agent-docs do not say what a failed DAO call inside a surrounding transaction does to that transaction. Do not assume a swallowed persistence error leaves the transaction usable; test it.
+
+### Project practice: log and continue
+
+This layer is project practice (mlszksz-platform, workflow-poc), not a platform feature:
+
+- Catch only around the secondary action, never around the primary write. Catch `Exception`, log at warn or error with the cause, and do not rethrow.
+- An interceptor `postCall` that does secondary work still returns the payload it received.
+- In a loop over items, catch per item and continue, so one bad row does not stop the rest. Count successes and failures.
+- Never swallow errors that mean the caller must know: business refusals, validation and authorisation failures stay exceptions.
+- Narrow the catch when the failure has a known, harmless meaning (see the guard example below); rethrow everything else.
 
 ```java
-// Audit logging - never throws
-public void log(ActionType type, String entityType, String entityId, Map details) {
+// Example project code: auditLogDao, log and service are project/generated members
+public void log(ActionType type, String entityType, String entityId, Map<String, Object> details) {
     try {
-        // Create audit log entry
         auditLogDao.create(auditLog);
     } catch (Exception e) {
-        log.warn("Failed to create audit log entry", e);
-        // Never propagate
+        log.warn("Failed to create audit log entry", e);   // never propagate
     }
 }
 
-// Interceptor - never breaks operation flow
 @Override
 public Object postCall(EOperation op, Object param, Object ret) {
     try {
-        // Interceptor logic (statistics, tracking)
+        // secondary logic: statistics, tracking
     } catch (Exception e) {
         log.warn("Interceptor failed", e);
     }
-    return ret;  // Always return payload
+    return ret;   // always return the payload
 }
 
-// Scheduler - continue processing remaining items
 for (Entity item : items) {
     try {
         service.process(item);
         count++;
     } catch (Exception e) {
-        log.error("Failed to process item", e);
-        // Continue with next item
+        log.error("Failed to process item", e);   // continue with the next item
     }
 }
 ```
 
-## Examples
+## Rationale
 
-### mlszksz-platform
-Applied in 3 contexts: (1) `AuditLogServiceImpl.log()` wraps all audit creation in try-catch, never propagates. (2) All 5 interceptors catch exceptions and log warnings, returning payload as-is. (3) `PostExpirationJob` processes each offer/request individually, catching per-item failures and continuing. Ensures business operations succeed even when audit/analytics/cleanup fails.
+- Secondary concerns do not take the business operation down, and a partial batch still makes progress.
+- Inside a synchronous interceptor the catch is the only thing that keeps a failing side effect from rolling back the user's write.
+- The price is silent failure: lost audit rows are not recovered, and a warn log line is easy to miss. Alert on the log message if the data matters.
 
-### workflow-poc
-`WorkflowUtils.evalBoolExpression()` catches `SpelEvaluationException` for guard evaluation. When `PROPERTY_OR_FIELD_NOT_READABLE` or `PROPERTY_OR_FIELD_NOT_READABLE_ON_NULL` errors occur (missing context attribute), returns `false` (guard fails safely) rather than propagating the exception. Other SpEL errors are re-thrown. This ensures workflow transitions fail gracefully when context attributes are not yet defined.
+## Example
 
-## Trade-offs
+In mlszksz-platform the audit service catches everything around its create call, all five interceptors catch and log and return the payload unchanged, and the post-expiration job handles each offer or request on its own and continues after a failure. In workflow-poc the guard evaluation catches the expression engine's missing-property errors and treats them as a false guard, while rethrowing all other expression errors (see [[spel-guard-evaluation]]).
 
-- Pros: Business operations never fail due to secondary concerns, resilient to partial failures, simple to implement
-- Cons: Silent failures can hide bugs, no retry mechanism, lost audit entries not recoverable, warn-level logging may be missed
-- Alternative: Dead letter queue for failed operations, async processing with retry, circuit breaker pattern
+## When to avoid
+
+- The side effect is part of the business rule: a mandatory audit trail that must commit with the change should fail the operation and roll back instead.
+- You need retries or recovery: use a queue or a retry job, not a log line.
+- Business and validation errors: they must reach the caller through the declared fault or `ValidationException`.
 
 ## Related
 
-- [[audit-event-trail]]
-- [[quartz-scheduled-job]]
-- [[interceptor-aggregation-postcall]]
-
+- [[audit-event-trail]] — the audit writes that are often wrapped this way
+- [[quartz-scheduled-job]] — per-item catch inside scheduled jobs
+- [[interceptor-aggregation-postcall]] — a postCall that does secondary work
+- [[spel-guard-evaluation]] — the narrow catch for a missing context attribute

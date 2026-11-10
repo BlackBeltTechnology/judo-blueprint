@@ -1,85 +1,74 @@
 ---
 id: script-driven-operations
-title: Script-Driven Operations (Zero Custom Java)
-description: "A JUDO architecture pattern where all business logic is defined as model scripts in the ESM model file and compiled to Java via the `script2operation.jar` artifact."
-aliases: []
-keywords: [script, driven, operations, zero, custom, java]
+title: Script-Driven Operations (No Custom Java)
+description: "Business logic is written as JCL scripts in the operation bodies of the model (customImplementation false), so the build generates the operations and no Java implementation classes are written."
+aliases: [JCL operations, model scripts, zero custom java]
+keywords: [script, JCL, operation body, customImplementation, no custom java, model-driven, init]
 tags: ["domain:backend", "layer:backend", "project:itracker", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:reserve-app", "project:doors-model", "status:established"]
 category: operation
 status: established
 projects: [itracker, viterra_demo, judo-demo-miniworkflow, reserve-app, doors-model]
 evidence: ["itracker:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
-alternatives: []
-related: [custom-operation-osgi-component, state-lifecycle-operation, init-data-seeding]
+alternatives: [custom-operation-osgi-component]
+related: [custom-operation-osgi-component, state-lifecycle-operation, init-data-seeding, interceptor-crud-lifecycle]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A JUDO architecture pattern where all business logic is defined as model scripts in the ESM model file and compiled to Java via the `script2operation.jar` artifact. No custom Java implementations are created -- all `.java.default` scaffolds remain uncustomized. The model script engine handles entity creation, status transitions, relation management, and data aggregation. This pattern is viable when the business logic is fully expressible in the JUDO model scripting language and no external integrations (email, file storage, SOAP/REST clients) are needed.
+Most operations of a business application only change a status, create a few related rows or aggregate a collection. The model can carry that logic itself: an operation with `customImplementation = false` has a JCL script as its body, and the build generates the runtime operation from it. No `*CustomImplementation` Java class exists for these operations, so the model stays the single source of truth.
 
-## Structure
+## Practice
 
-Model scripts are defined directly in the ESM model and compiled during the build:
+### Platform base
+
+- `customImplementation = false` means the body is a JCL script and the implementation may be generated; `true` switches to a Java implementation and the body is only documentation ([operation metamodel](../../agent-docs/model/esm_metamodel/operation.md), [JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). In the transformation pipeline the scripts go through `asm2script` and `script2operation` ([transformation pipeline](../../agent-docs/model/transformation-pipeline.md)).
+- Script syntax: optional `;`, typed `var` declarations inside blocks, `if`, `for (x in collection)`, `while`, `return`; `new Type(...)` with every required attribute and relation; `delete` and `unset`; `+=` and `-=` on reference sets. The operation input is called `input`, the return value `output`. The actor is available through the script functions `principal` and `iscurrentactor`. `typeOf`, `kindOf`, `asType`, `asCollection` and `container` are not supported in scripts ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)).
+- The editor validates every non-custom operation body (`ScriptValid`, error severity), so a broken script is caught at model validation, not at runtime. Operations with a Java implementation are skipped by that check.
+- Script operations never hit interceptors. Interceptors fire only for built-in behaviour operations, and custom, mapped and script operations bypass them. Permission checks that matter must be expressed in the script or in the model's access rules ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- The agent-docs describe no way for a script to call an OSGi service, a SOAP/REST client or a mail sender, nor to raise a modeled fault. Treat anything that needs them as a Java custom operation ([custom operations](../../agent-docs/backend/custom-operations.md)) and test before relying on a script for it.
+
+### Project practice: scripts as the only implementation
+
+This layer is project practice (five projects), not a platform feature:
+
+- Use scripts for status transitions, entity creation with child rows, versioning with collection aggregation, and seeding reference data in an init operation ([[state-lifecycle-operation]], [[init-data-seeding]]).
+- Keep a Java custom implementation only for operations that truly need Java: file handling, document templating, external services. Mark exactly those `customImplementation = true`.
+- Document the intended behaviour in the operation's doc comment; the stub generated beside an unused custom class then shows what the script does.
+- Make init scripts idempotent, for example with a stored migration counter that records which seed steps already ran.
+- Where the only Java needed is cross-cutting (statistics, tracking), use interceptors for built-in operations and keep the operations themselves scripts.
 
 ```
-ESM Model (.model)
-  |-- [judo-tatami] --> script2operation.jar (compiled scripts as Java)
-  |-- Deployed as separate OSGi bundle
-  |-- Registered as default implementation for all operations
+// Example JCL-style statements, shape only (see the JCL guide for exact syntax)
+this.status = Status#REVIEW                       // status transition
+var item = new Item(title = input.title)           // entity creation
+this.children += new Child(month = 0, value = input.value)   // add to a reference set
 ```
 
-The `.java.default` files in `custom/` remain as scaffolds:
-```java
-// .java.default file -- NOT customized
-throw new java.lang.UnsupportedOperationException(
-    "Operation not implemented: ...");
-```
+## Rationale
 
-Model script examples (from Javadoc in .default files):
-```
-// Status transition
-this.status = itracker::entities::InitiativeStatus#REVIEW
+- No Java to maintain for plain state changes, and a logic change is a model change.
+- The model validator checks the script, so errors surface early.
+- The cost is expressiveness: no external integration and little room for fine-grained error handling, and a compiled script is harder to debug than Java.
 
-// Entity creation with relations
-var initiative = new Initiative(title, source, location, ...)
-initiative.monthlyForecasts += new MonthlyForecast(month=0..11, savingPotential=input.monthlySavingPotential)
+## Example
 
-// Actor context resolution
-var user = User!filter(u | u.email == String!getVariable("ACTOR", "email"))!any()
+- itracker: all operations (create, send for approval, approve, reject, archive forecast at actor and entity level) plus init are scripts. They create an initiative with twelve monthly forecasts and version forecasts with collection aggregation.
+- viterra_demo: report lifecycle (accept, review, submit) and init data are scripts.
+- judo-demo-miniworkflow: document workflow transitions, creation with owner and first history entry, and idempotent user seeding are scripts.
+- ReserveApp: one script operation (user init, `customImplementation` false); all Java customization is interceptors.
+- doors-model: ten-plus operations in the expression language (approval start, next-stage state machine with skip/execute conditions by net value, approve/reject, init with a migration counter). Only eleven operations that need Java (file handling, document templating) are custom.
 
-// Collection aggregation
-var sum = this.monthlyForecasts!sum(f | f.savingPotential)
-```
+## When to avoid
 
-## Examples
-
-### itracker
-11 `.java.default` scaffolds, zero custom Java implementations. All 10 operations (CreateInitiative, SendForApproval, Approve, Reject, ArchiveForecast at both actor and entity levels) plus Init are model-script-driven. The `script2operation.jar` handles status transitions, entity creation with 12 monthly forecasts, forecast versioning with collection aggregation, and reference data seeding.
-
-### viterra_demo
-7 `.java.default` stubs, zero custom Java implementations. Operations for Report lifecycle (Accept, Review, Submit) and Init data seeding remain as unimplemented stubs. Model scripts in `script2operation.jar` bundle provide the actual runtime logic. Javadoc in stubs documents the expected model script behavior (e.g., `this.status = viterra::ReportStatus#ACCEPTED`).
-
-### judo-demo-miniworkflow
-10 `.java.default` stubs, zero custom Java implementations. Model scripts handle document workflow: state transitions (Accept, Reject, Close, RequestReview), entity creation (CreateDocument with owner + initial history), and user seeding (InitUsers with idempotency). Javadoc in stubs contains the full model script logic including actor resolution, `DocumentHistoryEntry` creation, and collection updates (`this.documentHistoryEntries += newEntry`).
-
-### ReserveApp
-Single `InitCustomImplementation.java.default` scaffold for the `User.init` operation. The model defines `customImplementation: false`, meaning the operation uses the model-defined script rather than custom Java. Zero custom Java operations activated. All backend customization is done via interceptors instead. Demonstrates the most minimal script-driven approach: one model-script operation with interceptor-only Java customization.
-
-### doors-model
-Extensive inline business logic in JUDO expression language across 10+ model-level operations. `startApproval` calls validate, sets PENDING status, creates ContractStage entries, and advances workflow. `setNextStage` implements a state machine with SKIP/EXECUTE conditions based on net value thresholds. `approve`/`reject` manage stage completion. `Initializer.init` uses versioned migration counter (`executedInitialization`) for incremental seed data. Only 11 operations requiring Java-specific capabilities (file handling, document templating) are marked `customImplementation="true"`.
-
-## Trade-offs
-
-- Pros: Zero custom Java code to maintain, model is the single source of truth, faster development cycle, no build/deploy needed for logic changes in model
-- Cons: Limited to what the model scripting language can express, no external service integration, no complex error handling, harder to debug compiled scripts
-- Alternative: Custom Java implementations via `CustomImplementation` classes for operations requiring external integrations, complex algorithms, or fine-grained error handling
+- The operation calls an external service (mail, file store, SOAP, REST, identity provider).
+- It needs fine-grained error handling or modeled faults whose script support you have not verified.
+- It needs a permission check that the model's access rules cannot express: interceptors will not help here, so use a Java operation with the check inside.
 
 ## Related
 
-- [[custom-operation-osgi-component]]
-- [[state-lifecycle-operation]]
-- [[init-data-seeding]]
-
+- [[custom-operation-osgi-component]] — the Java alternative with injected DAOs and services
+- [[state-lifecycle-operation]] — status transitions, often written as scripts
+- [[init-data-seeding]] — seeding in an init operation
+- [[interceptor-crud-lifecycle]] — Java customization for built-in operations beside script operations

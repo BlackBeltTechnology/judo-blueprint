@@ -1,0 +1,258 @@
+{
+ "batch": "pb06",
+ "entries": {
+  "role-based-invitation-guard": {
+   "kb": [
+    "BusinessException fault throw custom operation error",
+    "authorization permission check custom operation interceptors not fired",
+    "actor current user principal",
+    "Which Operations Are Intercepted"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/custom-operations.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "BusinessErrorException labelled project-modeled fault, not platform",
+    "interceptors do not fire for custom ops: guard inside implementation",
+    "project helpers labelled"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "safe-failure-pattern": {
+   "kb": [
+    "transaction rollback exception postCall",
+    "Ordering and Combining Several Interceptors",
+    "throwing business error from interceptor"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors",
+    "catalog/agent-docs/backend/interceptors.md#Throwing a Business Error from an Interceptor",
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "interceptor exceptions roll back the write (transaction) added",
+    "RuntimeException -> 500 InternalServerException; business refusal via InterceptorCallBusinessException",
+    "async interceptor exceptions lost"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "scheduled-data-sync-pipeline": {
+   "kb": [
+    "scheduled job Quartz OSGi scheduler",
+    "DAO query filter selectOne",
+    "DAO update create builder",
+    "scheduler cron agent-docs"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Query Result Methods",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Optimistic locking and __version",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "labelled scheduling as project infrastructure (no scheduler in agent-docs)",
+    "DAO writes by jobs bypass interceptors",
+    "optimistic lock/__version note for update"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "script-driven-operations": {
+   "kb": [
+    "script operation SCRIPT mapped operation",
+    "script2operation customImplementation",
+    "JCL operation scripts"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jcl-operation-scripts.md",
+    "catalog/agent-docs/model/esm_metamodel/operation.md",
+    "catalog/agent-docs/model/transformation-pipeline.md",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "old said model scripts compiled via script2operation.jar in ESM; now customImplementation=false JCL body, ScriptValid validation",
+    "script ops never hit interceptors",
+    "unsupported script functions listed",
+    "scripts+fault/external service flagged as doc gap"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "sequence-code-generation": {
+   "kb": [
+    "VariableResolver SEQUENCE category resolve",
+    "SEQUENCE sequence number next value",
+    "Custom Sequences"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Custom Sequences",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/best-practices/model/sequence-based-identifier.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "old said sequences not transactional/persistent vaguely; now: default rdbms, custom Sequence SPI, gaps on rollback",
+    "removed unsupported claim that model-name target filter is required (doc gap)",
+    "link to model-level default-expression alternative"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "service-delegation-pattern": {
+   "kb": [
+    "OSGi component injecting services @Reference custom operation component registration",
+    "custom service layer thin operation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/backend/custom-operations.md#OSGi Component Registration Pattern",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "BusinessErrorException labelled project-modeled fault; fault must be declared",
+    "platform custom service layer cited as base",
+    "interceptors do not fire for custom ops/services",
+    "transaction of delegated service not documented: flagged"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "soap-client-integration": {
+   "kb": [
+    "SOAP CXF client external service OSGi classloader JAX-WS"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#OSGi Component Registration Pattern",
+    "catalog/agent-docs/deployment/generator-plugins.md#OpenAPI Client for OSGi",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "agent-docs have no SOAP content: whole client labelled project practice (doc gap)",
+    "CXF interceptors distinguished from JUDO operation interceptors",
+    "errors from remote must map to declared fault"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "soft-delete-archive-pattern": {
+   "kb": [
+    "soft delete archived flag filter range interceptor",
+    "BooleanFilter"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#BooleanFilter",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Optimistic locking",
+    "catalog/best-practices/model/soft-delete-active-flag.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "platform delete stays available unless modeled off",
+    "range interceptor only on reference-range ops, not lists",
+    "BooleanFilter only isTrue/isFalse",
+    "custom op not intercepted: permission inside"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "spel-guard-evaluation": {
+   "kb": [
+    "SpEL Spring Expression Language expression evaluation",
+    "JCL operation scripts"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jcl-operation-scripts.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "agent-docs have no SpEL: labelled project practice",
+    "platform expression languages (JQL/JCL) are compile-time, motivation for runtime SpEL",
+    "security note: restricted evaluation context",
+    "custom ops not intercepted"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "staged-import-pipeline": {
+   "kb": [
+    "selectList limit offset seek pagination DAO batch",
+    "upload token file FileStore binary attribute",
+    "DAO query filter"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Pagination",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "pagination opt-in; selectList(from,to) slice API not in agent-docs, flagged",
+    "file arrives via upload-token flow",
+    "custom ops not intercepted",
+    "partial commit/transaction inside one call undocumented"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  },
+  "state-lifecycle-operation": {
+   "kb": [
+    "State Machine Workflows",
+    "interceptor throwing business error",
+    "optimistic locking __version",
+    "Which Operations Are Intercepted"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/architectural-patterns.md#3. State Machine Workflows",
+    "catalog/agent-docs/backend/interceptors.md#Throwing a Business Error from an Interceptor",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Optimistic locking",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "ErrorException/BusinessErrorException labelled project-modeled faults",
+    "interceptor guard on terminal state refuses via InterceptorCallBusinessException and does not cover custom ops",
+    "optimistic locking only with __version",
+    "documented state-machine pattern cited as platform base"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass",
+   "status": "rewritten"
+  }
+ }
+}
