@@ -3,7 +3,7 @@ id: lazy-vs-greedy-data-persistence
 title: Lazy vs Greedy Data Persistence Modes for Custom Components
 description: Custom components that manage their own data can implement two data persistence strategies.
 aliases: []
-keywords: [lazy, vs, greedy, data, persistence, modes, custom, components]
+keywords: [lazy persistence, greedy persistence, storeDiff, custom component, immediate save, batch save]
 tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
 category: state
 status: single-project
@@ -13,52 +13,64 @@ alternatives: []
 related: [custom-visual-element-override]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Custom components that manage their own data can implement two data persistence strategies. **Greedy mode**: all changes are batched in local state and submitted to the backend on form save (used in form/creation contexts). **Lazy mode**: each change is immediately persisted to the backend, with local state managed independently from the main page form to avoid triggering edit mode (used in view/edit contexts where the component should not block the page save flow).
+A custom component that edits its own data must decide when changes reach the backend. This practice offers two modes: greedy (batch the changes into the page form and save with it) and lazy (persist each change at once, independent of the page form).
 
-## Structure
+## Practice
+
+### Platform base
+
+- Generated pages keep edits as a diff in page state. Hooks receive `(data, editMode, storeDiff, ...)`; `storeDiff(attributeName, value)` records a change so validation and diff tracking stay consistent, and the page save sends the diff ([data hooks](../../agent-docs/frontend/hooks/data-hooks.md)).
+- Authorization and validation are enforced by the backend whatever the mode ([hooks overview](../../agent-docs/frontend/hooks/README.md)).
+- A bound call needs the instance's current signed identifier, which changes after every update of the entity. In lazy mode take it from the latest response and never cache it ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
+- A model-designated custom element renders your component ([[custom-visual-element-override]]).
+
+### Project practice: two modes in one component
+
+The two modes are project practice (rackinspect), not platform features. The component picks a mode from its context.
+
+- **Greedy** (creation forms): template data is fetched up front, every change goes through `storeDiff`, and everything is submitted with the form save.
+- **Lazy** (view/edit pages): every change calls a backend service immediately. Local state is kept apart from the page form so the page does not enter edit mode or block the page save. Show a spinner while syncing, and on error revert the value and show the message.
+- Rows can be added or deleted independently in lazy mode, and selectable enum values can be loaded when a dropdown opens.
 
 ```typescript
-// Greedy mode (forms) - batch changes
-const onValueChange = (paramId, newValue) => {
-  const updatedGroups = updateParameterValue(groups, paramId, newValue);
-  storeDiff('groups', updatedGroups); // Update parent form state
+// Example project code: greedy
+const onValueChange = (id: string, value: unknown) => {
+  storeDiff('groups', updateValue(groups, id, value)); // saved with the form
 };
-// All changes submitted when form saves
 
-// Lazy mode (view/edit) - immediate persistence
-const onValueChange = async (paramId, newValue) => {
-  setLoadingParam(paramId);
+// Example project code: lazy
+const onValueChange = async (id: string, value: unknown) => {
+  setLoading(id);
   try {
-    await backendService.updateParameter(paramId, newValue);
+    await itemService.updateParameter(id, value); // service name illustrative
     refreshLocalState();
-  } catch (error) {
-    revertToOriginalValue(paramId);
-    showError(error.message);
+  } catch (e) {
+    revertValue(id);
+    showError(e);
   } finally {
-    setLoadingParam(null);
+    setLoading(null);
   }
 };
 ```
 
-Lazy mode features: loading spinners during sync, error handling with automatic revert, independent state from page form.
+## Rationale
 
-## Examples
+Creation forms need all-or-nothing saves, so batching fits. On an existing record a field-by-field edit is natural and should not force the user through the page save. The cost is two code paths and the risk of local state drifting from the server.
 
-### RackInspect
-DimensionParametersViewComponent supports both modes. Greedy mode is used in fault element creation forms -- template parameters are fetched eagerly, changes batched via `storeDiff`, submitted on form save. Lazy mode is used in Rack_View_Edit -- each parameter change calls the backend immediately, rows can be added/deleted independently, selectable ENUM values are lazy-loaded on dropdown open, and loading spinners show during operations.
+## Example
 
-## Trade-offs
+In rackinspect a dimension-parameters component runs greedy in the fault element creation form and lazy in the rack view/edit page, where rows are added and deleted directly.
 
-- **Pros**: Right persistence strategy for each context; lazy mode avoids blocking page save; greedy mode batches for performance
-- **Cons**: Dual implementation adds complexity; lazy mode requires per-operation error handling; state synchronization between modes can be tricky
-- **When to use**: Complex custom components embedded in both form (creation) and view/edit (modification) contexts
+## When to avoid
+
+- The component sits in one context only: implement only that mode.
+- Immediate persistence would skip validation the page save performs.
+- The component is a plain field: use the generated input and `storeDiff`.
 
 ## Related
 
-- [[custom-visual-element-override]]
-
+- [[custom-visual-element-override]] — the component these modes live in

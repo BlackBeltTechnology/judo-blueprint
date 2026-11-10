@@ -3,33 +3,43 @@ id: pandino-action-hook-override
 title: Pandino Service Registry for Action Hook Overrides
 description: The JUDO framework uses Pandino (an OSGi-like service registry for JavaScript) to enable runtime action hook injection in generated pages.
 aliases: []
-keywords: [pandino, service, registry, action, hook, overrides, override]
+keywords: [Pandino, action hook, registerService, useTrackService, hook override, page actions, scaffold]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "project:itracker", "project:reserve-app", "status:established"]
 category: hook
 status: established
 projects: [trivia, rackinspect, itracker, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [hook-scaffold-default-pattern, application-customizer-hub]
+related: [hook-scaffold-default-pattern, application-customizer-hub, custom-visual-element-override]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-The JUDO framework uses Pandino (an OSGi-like service registry for JavaScript) to enable runtime action hook injection in generated pages. Each page component queries the Pandino registry for a hook service matching its interface key. If found, the hook's returned actions are spread over the default actions, allowing selective overrides. This decouples customization from the generated page code.
+Customize the behaviour of a generated page or dialog without editing generated code. The generated component asks the Pandino service registry for an actions hook and spreads whatever it returns over its default actions, so a registered hook overrides only the actions it names.
 
-## Structure
+## Practice
+
+### Platform base
+
+- Hooks register through Pandino in `src/custom/application-customizer.tsx`: `context.registerService<HookType>(INTERFACE_KEY, hook, { component: '<Component>' })`. The interface key is exported by the module that owns the hook or by the generated `~/containers/<path>/customization` module; the service properties (`component`, `column`, `page`) pick which component the hook applies to ([hook architecture](../../agent-docs/frontend/hooks/README.md)).
+- Hook scaffolds are generated only when the model sets `generateActionsHook` (or `generateVisualPropertiesHook`) on the element, as inactive `register<Name>ActionsHook.ts.default` files under `src/custom/hooks/{pages,dialogs,containers}/` ([hook generation](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md)). Copy the scaffold without `.default`, implement it and register it ([[hook-scaffold-default-pattern]]).
+- Page and dialog hooks have the signature `(data, editMode, storeDiff, refresh, submit)`, and the real type and key names are generated per page ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
+- `src/custom/` is not generated and needs no `.generator-ignore` entry. Hooks are the documented route; editing generated files fails the checksum check ([why hooks](../../agent-docs/frontend/hooks/README.md)).
+
+### Project practice: override only the actions that differ
+
+The generated page does the lookup, shown here as a simplified sketch (names are generated per page and are not a fixed API):
+
+- The page tracks the registered service for its hook key, calls it with the page data, edit mode, `storeDiff`, `refresh` and `submit`, and spreads the result last over the default actions (`getPageTitle`, `backAction`, `refreshAction`, `updateAction`, `deleteAction`, `getMask`, ...).
+- A hook therefore returns a partial object: only the actions to replace or add. Extended page types also allow `post<Action>` handlers such as `postRefreshAction`.
+- Return an empty object when the hook has nothing to say; the scaffold does this by default.
+- Registration is by interface key plus component name, so one hook serves exactly one page or dialog.
 
 ```typescript
-// In a generated page component
-const { service: customActionsHook } = useTrackService<ActionsHook>(
-  `(${OBJECTCLASS}=${ACTIONS_HOOK_INTERFACE_KEY})`
-);
-
+// Example project code (generated page, simplified)
 const customActions = customActionsHook?.(data, editMode, storeDiff, refresh, submit);
-
 const actions = {
   getPageTitle,
   backAction,
@@ -37,40 +47,29 @@ const actions = {
   updateAction,
   deleteAction,
   getMask,
-  ...(customActions ?? {}),  // Custom overrides spread on top
+  ...(customActions ?? {}), // custom overrides win
 };
 ```
 
-Pages also support extended action types like `postRefreshAction`:
+## Rationale
 
-```typescript
-type ActionsExtended = PageActions & {
-  postRefreshAction?: (data, storeDiff, setValidation) => Promise<void>;
-};
-```
+The generated code stays untouched and upgrade-safe, hooks resolve at runtime, and partial overrides keep each customization small. The cost is learning the registry, and debugging a missing registration is harder than reading a direct call: a wrong key or component name silently leaves the default behaviour.
 
-## Examples
+## Example
 
-### Trivia
-Admin frontend's 2 custom page overrides (Categories AccessViewPage, Contest Categories RelationViewPage) both use `useTrackService` to query Pandino for action hooks. The corresponding `.ts.default` scaffolds in `src/custom/hooks/pages/` are ready for activation but currently return empty objects.
+- rackinspect registers more than 100 hooks in its application customizer: 48 dialog hooks, 10 page hooks, form and view/edit hooks, table row highlighting hooks and 13 custom visual element implementations.
+- trivia has two page overrides whose scaffolds are in place but still return empty objects.
+- itracker is generated with the hook lookup in all 15 pages and 11 dialogs, yet registers none (all 60 scaffolds stay inactive): zero customization costs nothing at runtime.
+- reserve-app registers one page hook that makes a name field required depending on an `active` flag.
 
-### RackInspect
-Over 100 Pandino service registrations in `application-customizer.tsx` covering dialog hooks (48), page hooks (10), form action hooks (3), view/edit hooks (3), table row highlighting hooks (2), custom visual element implementations (13), and a form page action hook. All registered via `context.registerService<HookType>(INTERFACE_KEY, hookImpl, { component: COMPONENT_KEY })`.
+## When to avoid
 
-### itracker
-Pandino infrastructure is fully generated across all 15 pages and 11 dialogs. Each component uses `useTrackService` to query for hooks, but none are registered -- all 60 hook scaffolds remain as `.ts.default`. Demonstrates Pandino as a zero-overhead pattern when no customizations are needed.
-
-### reserve-app
-Single Pandino hook registration in AdminActor: `registerServicesAdminActorStorageTypesAccessViewPageActionsHook` registers against `SERVICES_ADMIN_ACTOR_STORAGE_TYPES_ACCESS_VIEW_PAGE_ACTIONS_HOOK_INTERFACE_KEY`. The hook overrides `isNameRequired` to make the name field conditionally required based on the `active` flag. Demonstrates the lightest possible Pandino usage -- one hook across 5 actor frontends.
-
-## Trade-offs
-
-- **Pros**: Non-invasive customization; generated page code remains untouched; hooks are resolved at runtime; supports partial overrides
-- **Cons**: Pandino adds runtime complexity; hook registration requires understanding the service registry; debugging can be harder
-- **When to use**: Standard JUDO pattern for customizing generated page actions without modifying generated code
+- The change is structural (layout, markup): use a template override or a custom visual element ([[custom-visual-element-override]]).
+- The page needs no custom behaviour: leave the scaffold inactive.
+- The model can express it: prefer model flags over hooks.
 
 ## Related
 
-- [[hook-scaffold-default-pattern]]
-- [[application-customizer-hub]]
-
+- [[hook-scaffold-default-pattern]] — activating the `.default` scaffolds
+- [[application-customizer-hub]] — where registrations are collected
+- [[custom-visual-element-override]] — replacing a rendered element, also via Pandino

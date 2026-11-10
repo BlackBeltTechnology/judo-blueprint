@@ -3,86 +3,73 @@ id: operation-flow-redirect-pattern
 title: Operation Flow Redirect via Generator Override and OperationFlowManager
 description: "Implement dynamic post-operation navigation by combining a Handlebars generator template override with a custom `OperationFlowManager` service."
 aliases: []
-keywords: [operation, flow, redirect, generator, override, operationflowmanager]
+keywords: [OperationFlowManager, redirect, processRedirect, workflow navigation, generator fragment, post-operation]
 tags: ["domain:frontend", "layer:frontend", "project:workflow-poc", "status:single-project"]
 category: navigation
 status: single-project
 projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
 alternatives: []
-related: [post-operation-navigation-hook, handlebars-generator-template-override, application-customizer-hub]
+related: [post-operation-navigation-hook, handlebars-generator-template-override, application-customizer-hub, operation-return-type-navigation]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Implement dynamic post-operation navigation by combining a Handlebars generator template override with a custom `OperationFlowManager` service. Operations annotated with `@redirect` in the ESM model return transfer objects containing navigation metadata (actor, access, record identifiers, or further operations). A generator override fragment intercepts these outputs and routes them through a `processRedirect()` call, while the `OperationFlowManager` (registered as a Pandino service) interprets the redirect payload to navigate the user to the appropriate page or trigger a subsequent operation. This enables multi-step workflow flows where each operation can dynamically determine the next screen.
+Let the backend decide where the user goes after an operation: to a record, to another operation, or to a page. Operations return a redirect transfer object, a generator fragment hands such results to `processRedirect`, and an `OperationFlowManager` service translates the payload into navigation. Used for multi-step workflows.
 
-## Structure
+## Practice
 
-Three coordinated pieces:
+### Platform base
 
-1. **Transfer objects** carry redirect metadata:
-```
-TransferObject UpdateRedirect { actor, access, idName, idValue }
-TransferObject CreateRedirect { actor, access, operation }
-```
+- Try the declarative route first: an operation form can navigate to an access whose target type matches the operation's output type ([[operation-return-type-navigation]]).
+- `OperationFlowManager` and `OPERATION_FLOW_MANAGER_INTERFACE_KEY` come from `~/utilities/application`. You register your implementation as a Pandino service from `application-customizer.tsx`. `handleResult(input)` receives the stored operation result, including `__entityType`, and returns `{ actor, access, filterRecords?, operation? }`. `shouldUseCustomFlow(input)` limits it to chosen result types ([OperationFlowManager](../../agent-docs/frontend/hooks/action-hooks.md)).
+- Per-page `post<Operation>Action` handlers cover one operation ([[post-operation-navigation-hook]]).
+- Fragment overrides work by placing a same-named file in the override directory. The docs prefer hooks over template overrides because you maintain them at every upgrade ([template override process](../../agent-docs/frontend/README.md), [[handlebars-generator-template-override]]).
 
-2. **Handlebars generator override** (`operation-primary-output-handler.fragment.hbs`):
-```handlebars
-{{# if operation.output }}
-    {{# if (elementHasAnnotation operation.output.target 'redirect') }}
-        if (result) {
-            setIsLoading(false);
-            await processRedirect(result
-            {{# unless action.actionDefinition.isParameterlessCallOperationAction }}
-                , async () => await onSubmit(result)
-            {{/ unless }}
-            );
-        } else
-    {{/ if }}
-{{/ if }}
-```
+### Project practice: redirect objects plus a fragment override
 
-3. **OperationFlowManager** in `application-customizer.tsx`:
+The `@redirect` annotation, the `processRedirect` call and the fragment path below are project practice (workflow-poc); they are not covered by the agent-docs. Confirm the fragment name and the template context on your generator version.
+
+- **Model**: operations that decide the next screen return a small redirect transfer object: target actor and access, plus either an id name and value (open a record) or an operation (start a follow-up). The output carries the `redirect` annotation.
+- **Fragment**: the project overrides the generated fragment that handles an operation's primary output, so that a result whose output type has the annotation goes to `processRedirect(result)` and any further code runs only when there is no redirect.
+- **Manager**: `handleResult` maps the payload: with an id name and value return `filterRecords` on that attribute, with an operation return `operation`, otherwise only actor and access.
+
 ```typescript
+// Example project code (application-customizer.tsx)
 const operationFlowManager: OperationFlowManager = {
   handleResult: (input) => {
     const { actor, access, idName, idValue, operation } = input as any;
     if (idName && idValue) {
       return { filterRecords: { [idName]: [{ operator: 'equal', value: idValue }] }, access, actor };
     }
-    if (operation) {
-      return { operation, access, actor };
-    }
+    if (operation) return { operation, access, actor };
     return { access, actor };
   },
 };
+context.registerService(OPERATION_FLOW_MANAGER_INTERFACE_KEY, operationFlowManager);
 ```
 
-File locations:
-```
-generator-overrides/ui-react/actor/src/fragments/operations/
-  operation-primary-output-handler.fragment.hbs
-src/custom/application-customizer.tsx  (.generator-ignore protected)
-```
+Keep the redirect payload in the model so backend and frontend agree on one contract.
 
-## Examples
+## Rationale
 
-### workflow-poc
-Workflow operations (`startWorkflow`, `navigate`, `execute`, `assign`) return `CreateRedirect` or `UpdateRedirect` objects annotated with `@redirect`. The HBS fragment intercepts these in generated code and calls `processRedirect()`. The OperationFlowManager routes to specific records (via `filterRecords` with `idName`/`idValue`) or triggers follow-up operations. This enables a multi-step task management flow without any individual hook overrides.
+One override and one manager serve every annotated operation, with no hook per page, and the backend drives the flow. The costs: Handlebars knowledge, a tight contract between backend and frontend, an override that breaks if the template structure changes, and a flow that is harder to debug than plain navigation.
 
-## Trade-offs
+## Example
 
-- **Pros**: Enables dynamic multi-step navigation from backend-driven operation results; single generator override applies to all annotated operations; no need to override hooks per-page; clean separation of redirect logic
-- **Cons**: Requires Handlebars template knowledge; tightly couples frontend to backend redirect contract; generator override is fragile if framework changes template structure; debugging redirect flow is harder than simple navigation
-- **When to use**: Workflow or multi-step operation systems where the backend determines the next UI step after an operation completes
+workflow-poc operations (start, navigate, execute, assign) return create or update redirect objects. The fragment routes them to `processRedirect`, and the manager opens the target record with a filter or triggers the next operation, giving a multi-step task flow without per-page hooks.
+
+## When to avoid
+
+- The destination is fixed: use the output type navigation ([[operation-return-type-navigation]]).
+- A few operations need navigation: use post-operation hooks ([[post-operation-navigation-hook]]).
+- You do not want to maintain a template override across upgrades.
 
 ## Related
 
-- [[post-operation-navigation-hook]]
-- [[handlebars-generator-template-override]]
-- [[application-customizer-hub]]
-
+- [[post-operation-navigation-hook]] — per-page alternative
+- [[handlebars-generator-template-override]] — the fragment override mechanism
+- [[application-customizer-hub]] — where the manager is registered
+- [[operation-return-type-navigation]] — declarative navigation by output type

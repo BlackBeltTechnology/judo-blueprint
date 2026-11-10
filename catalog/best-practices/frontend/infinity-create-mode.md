@@ -3,7 +3,7 @@ id: infinity-create-mode
 title: Infinity Create Mode with Template Copying
 description: Enable rapid sequential creation of similar entities by generating a template that copies most field values from the previously created entry while resetting specific fields.
 aliases: []
-keywords: [infinity, create, mode, template, copying]
+keywords: [infinity create, template, copy previous, dialog hook, storeDiff, rapid data entry]
 tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
 category: form
 status: single-project
@@ -13,51 +13,62 @@ alternatives: []
 related: [pandino-action-hook-override, post-operation-navigation-hook]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Enable rapid sequential creation of similar entities by generating a template that copies most field values from the previously created entry while resetting specific fields. After a create operation completes, instead of closing the form, the dialog reopens with pre-populated values from the last entry. This is particularly useful for data entry workflows where consecutive records share many common fields.
+Data entry often creates many similar records in a row (for example inspection findings that share most fields). This practice reopens the create dialog after each save, prefilled from the previous record, with only selected fields reset.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The create form is prepopulated from a template: the REST layer serves a blank prototype of the transfer object under `<TO>/~template` (operation `GET_TEMPLATE`, see [operation reference](../../agent-docs/model/esm_metamodel/operation.md)), and the generated dialogs call it when they open.
+- Dialog and page hooks receive `(data, editMode, storeDiff, ...)`; `storeDiff(attributeName, value)` updates page state so validation and diff tracking stay consistent ([data hooks](../../agent-docs/frontend/hooks/data-hooks.md)). Generated dialog hook types also accept optional `post<Action>` handlers, as documented for `postRefreshAction` ([advanced patterns](../../agent-docs/frontend/advanced-patterns.md)).
+- Hooks are registered from the `register<Dialog>ActionsHook` scaffolds under `src/custom/hooks/dialogs/` ([hooks overview](../../agent-docs/frontend/hooks/README.md)).
+
+### Project practice: copy the previous entry into the next template
+
+The agent-docs do not describe a `postGetTemplateAction` handler by name; this practice (rackinspect) assumes the generated dialog exposes it after the template is fetched, so confirm the handler exists in your generated dialog types before relying on it.
+
+- Keep the last saved record in a module-level variable.
+- A template function maps the fields to carry over and sets the fields that must always restart to defaults.
+- In the dialog hook, after the template loads, push each template field into the page with `storeDiff`.
+- After a successful create, reopen the dialog instead of closing it (see [[post-operation-navigation-hook]]).
 
 ```typescript
-// Template creation utility
-export function createTemplateForEntity(data) {
+// Example project code
+export function createTemplateForItem(previous: ItemStored) {
   return {
-    field1: data.field1,          // Carried over
-    field2: data.field2,          // Carried over
-    field3: data.field3,          // Carried over
-    resetField: defaultValue,     // Always reset to default
-    // ... more fields
+    row: previous.row,          // carried over
+    category: previous.category, // carried over
+    withMaterial: true,         // always reset
   };
 }
 
-// In dialog hook postGetTemplateAction
+// Dialog hook (names illustrative)
 async postGetTemplateAction(ownerData, data, storeDiff) {
   if (previousData) {
-    const template = createTemplateForEntity(previousData);
-    Object.entries(template).forEach(([key, value]) => {
-      storeDiff(key, value);
-    });
+    Object.entries(createTemplateForItem(previousData)).forEach(([k, v]) => storeDiff(k, v));
   }
 }
 ```
 
-## Examples
+## Rationale
 
-### RackInspect
-`createTemplateForFaultElement()` creates a fault element template that copies `row`, `level`, `position`, `errorPlacement`, `rackElement`, `errorCode`, `errorType`, `repairType`, `quantity`, `inputGroups`, `rack`, and `registryHeader` from the previous entry, but specifically resets `withMaterial` to `true`. This allows rapid sequential creation of fault elements during rack inspection.
+Consecutive records share most values, so carrying them over saves typing and avoids mistakes in the common fields. The cost is that stale values can slip through unnoticed, and entities with many relations need careful field selection.
 
-## Trade-offs
+## Example
 
-- **Pros**: Dramatically speeds up repetitive data entry; reduces user errors on common fields; natural workflow for inspection tasks
-- **Cons**: Carried-over values may not always be correct; users must check pre-populated fields; complex for entities with many relations
-- **When to use**: Inspection workflows, batch data entry, any scenario where consecutive records share common parent data
+rackinspect copies row, level, position, error placement, rack element, error code and type, repair type, quantity, input groups, rack and registry header from the previous fault element, and resets a material flag to true. Inspectors then create fault elements in quick succession.
+
+## When to avoid
+
+- Consecutive records rarely share values.
+- Carried-over values are risky if left unchecked (for example financial or safety data).
+- Server-side defaults from the template operation already cover the need.
 
 ## Related
 
-- [[pandino-action-hook-override]]
-- [[post-operation-navigation-hook]]
-
+- [[pandino-action-hook-override]] — how the dialog hook is registered
+- [[post-operation-navigation-hook]] — reopen or navigate after a create

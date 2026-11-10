@@ -1,0 +1,232 @@
+{
+ "batch": "pf04",
+ "entries": {
+  "i18n-generator-override-extra-fragment": {
+   "status": "rewritten",
+   "kb": [
+    "i18n generator override extra fragment application_default.json",
+    "i18n translation keys default locale json custom keys",
+    "generator-overrides fragment.hbs extension point extra",
+    "extra.localization.operation custom translation key"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/deployment/build-process.md#Extending Generated Files via Fragment Overrides",
+    "catalog/agent-docs/frontend/i18n.md#Key Naming Conventions",
+    "catalog/agent-docs/frontend/i18n.md#Best Practices"
+   ],
+   "fixes": [
+    "legacy full rewrite; platform base vs project practice split",
+    "noted i18n fragment slot not in agent-docs",
+    "neutralised client op name"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "infinity-create-mode": {
+   "status": "rewritten",
+   "kb": [
+    "postGetTemplateAction hook storeDiff create dialog template",
+    "GET_TEMPLATE template provider operation prototype create form",
+    "dialog hook storeDiff template create form"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#GET_RANGE and GET_TEMPLATE behaviours",
+    "catalog/agent-docs/frontend/hooks/data-hooks.md#Update Page State with storeDiff",
+    "catalog/agent-docs/frontend/advanced-patterns.md#PostRefresh Action Hook"
+   ],
+   "fixes": [
+    "legacy full rewrite; platform base vs project practice",
+    "flagged postGetTemplateAction as undocumented in agent-docs"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "input-masking-react-imask": {
+   "status": "rewritten",
+   "kb": [
+    "input masking react-imask text field custom visual element",
+    "regex attribute validation mask text input widget",
+    "textMask StringType widget INPUT"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md#Widget Type Attributes",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: Attribute-level regex realized as constrained StringType",
+    "catalog/agent-docs/frontend/advanced-patterns.md#IMaskInput Integration"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added platform textMask first-try and regex-on-type guidance"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "lazy-vs-greedy-data-persistence": {
+   "status": "rewritten",
+   "kb": [
+    "lazy greedy persistence form save update create operations pending changes",
+    "editMode storeDiff diff update page save signed identifier refresh",
+    "getLatestViewData useViewData custom component data validation Map"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/data-hooks.md#Update Page State with storeDiff",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers",
+    "catalog/agent-docs/frontend/hooks/README.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added signed-identifier caveat for lazy mode"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "localstorage-session-persistence": {
+   "status": "rewritten",
+   "kb": [
+    "localStorage sessionStorage table state persistence frontend",
+    "authentication Keycloak OIDC token principal realm guest page public access",
+    "anonymous public actor access without login unauthenticated"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/extension-points.md#Guest Page",
+    "catalog/agent-docs/frontend/extension-points.md#Table State Persistence",
+    "catalog/agent-docs/backend/authentication-guide.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "stated it is not authentication; backend access still decides",
+    "pointed at platform sessionStorage table persistence and guest page"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "many-aggregation-crud-pattern": {
+   "status": "rewritten",
+   "kb": [
+    "many aggregation relation table add remove range dialog set operation",
+    "TabularReferenceField aggregation add remove selector rules",
+    "REST verbs ~add ~remove ~set relation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/ui-authoring-guide.md#8. TabularReferenceField rules by relation shape",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Table Actions",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#REST Wire Contract"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added platform generated add/remove/clear actions and REST verbs",
+    "clear needs confirmation"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "model-defined-color-palette": {
+   "status": "rewritten",
+   "kb": [
+    "actor primaryColor secondaryColor palette theme model-defined colors",
+    "generator-ignore theme palette.ts regeneration",
+    "ActorType color attributes theme page HUMAN"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/theming.md#Overview",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#ActorType Attribute Rules",
+    "catalog/agent-docs/frontend/extension-points.md#Sub-Theme Hooks"
+   ],
+   "fixes": [
+    "legacy full rewrite; removed ESM pseudo-syntax and generated-file sample",
+    "platform two-layer theming stated"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "mui-extensive-component-overrides": {
+   "status": "rewritten",
+   "kb": [
+    "MUI component overrides styleOverrides theme createTheme components",
+    "theme override fragments mui-button index.ts fragment",
+    "sub-theme hook styleOverrides"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/theming.md#Theme Override Fragments",
+    "catalog/agent-docs/frontend/theming.md#Component Overrides",
+    "catalog/agent-docs/frontend/extension-points.md#Sub-Theme Hooks"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added per-component fragment overrides as the platform alternative"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "multi-provider-app-wrapper": {
+   "status": "rewritten",
+   "kb": [
+    "App.tsx providers ThemeProvider SnackbarProvider DialogProvider LocalizationProvider generated app root",
+    "react-i18next I18nextProvider generated frontend dialog provider useJudoNavigation",
+    "template override process generator-overrides hbs"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/README.md#Generated File Headers",
+    "catalog/agent-docs/frontend/i18n.md#Overview",
+    "catalog/agent-docs/frontend/theming.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "generated frontend has own root and react-i18next; pattern only for replaced root"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "operation-flow-redirect-pattern": {
+   "status": "rewritten",
+   "kb": [
+    "OperationFlowManager processRedirect handleResult redirect",
+    "redirect annotation operation output transfer object navigation",
+    "application customizer BundleContext registerService hook"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#OperationFlowManager",
+    "catalog/agent-docs/frontend/README.md#Template Override Process",
+    "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md#OperationForm postCallAccessNavigation"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "platform OperationFlowManager API stated (ProcessProps, shouldUseCustomFlow)",
+    "@redirect/processRedirect marked project practice not in docs",
+    "removed Handlebars block from body"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  },
+  "pandino-action-hook-override": {
+   "status": "rewritten",
+   "kb": [
+    "Pandino registerService useTrackService hook interface key component",
+    "page actions hook scaffold register ActionsHook generateActionsHook",
+    "hook scaffold .ts.default copy activate custom folder"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/README.md#Hook Architecture",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md#Hook Generation",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "scaffolds only when generateActionsHook set",
+    "partial override spread semantics, keys are per-page generated"
+   ],
+   "fragment": "none",
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}
