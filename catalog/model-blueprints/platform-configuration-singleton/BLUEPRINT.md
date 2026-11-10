@@ -44,6 +44,7 @@ The Configuration entity holds plain attributes: text for the sender address, ba
 - **Updateable singleton with generated update.** The entity is updateable and the generated update operation is exposed. Simple settings screens use this.
 - **Singleton with a custom update operation.** The entity is updateable, but updates go through a custom operation that takes an input transfer object with optional fields. Use this when the input shape differs from the entity or when only some fields may change.
 - **Fully non-CRUD singleton.** Createable, updateable and deleteable are all false. Settings are changed only by administrators through custom operations or outside the application.
+- **Extended e-mail template set.** The singleton holds one template attribute per outgoing e-mail kind. One project adds rejection and moderation templates next to invitation, verification, approval and post-published ones. The set is an example, not a fixed list: add a template per e-mail the application sends.
 - **Singleton with business parameters.** The same entity also carries margin, closing-time or document-template fields. Keep these on the singleton only when every consumer needs them.
 
 ## When to use

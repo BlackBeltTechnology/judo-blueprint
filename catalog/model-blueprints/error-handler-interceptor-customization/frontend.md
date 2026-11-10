@@ -35,3 +35,7 @@ Log the intercepted error to the console during development, so a missing messag
 ### park-here
 
 - The same hook structure, with the same shared detection callback, confirming the pattern is stable across projects.
+
+### mlszksz-platform
+
+- The same hook in a React frontend: a predicate matching HTTP 422, a handler that reads the first body key's `message` and shows a three-second error snackbar. The generated default hook already has this shape; the project keeps it.

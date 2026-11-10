@@ -24,7 +24,7 @@ Business events must reach users later, outside the request that caused them (pu
 
 ### Notification entity: system-written, read-only for clients
 
-- Attributes: `type` (category enum for the trigger event), `title`, `message`, `status` (enum PENDING, SENT, FAILED), `referenceEntityId` (optional plain string, not a relation), `retryCount`, `createdAt`.
+- Attributes: `type` (category enum for the trigger event; the members are per content kind), `title`, `message`, `status` (enum, for example PENDING, SENT, FAILED; the member set is an example, not fixed, see Variations), `referenceEntityId` (optional plain string, not a relation), `retryCount`, `createdAt`.
 - Relation `user` to the recipient, required (`1..1`), a plain association: the notification does not own the user. Make it two-way ([[bidirectional-relation]]) only if the recipient's view must list notifications.
 - Switch the entity's `createable`, `updateable` and `deleteable` flags off ([CRUD flags](../../agent-docs/model/README.md), "CRUD Flags"). That removes the generated create, edit and delete controls. These flags govern the generated API and UI only. They do not stop your own backend code, which writes rows through the generated DAO.
 - Notifications are created as a side effect of business operations (publish, approve, receive an inquiry). The creating operation is a stateful operation ([operation reference](../../agent-docs/model/esm_metamodel/operation.md), "Statefulness derived from behaviour") or Java using the DAO.
@@ -40,6 +40,11 @@ Stores one external token per user device: `token`, `platform` (category enum, [
 ### Reference, not relation
 
 `referenceEntityId` is a string, so a notification survives when the content is deleted. The cost is that the link to the content is not checked by the model.
+
+### Variations
+
+- **Inbox-only delivery state.** Add a status such as DELIVERED_INBOX_ONLY for a notification whose push failed but which the in-app inbox still shows. Whether such a row is retried is project logic. One project uses this next to PENDING, SENT and FAILED.
+- **Type per content kind.** The type enum lists one member per kind of content or event, so the set differs from project to project.
 
 ## Rationale
 

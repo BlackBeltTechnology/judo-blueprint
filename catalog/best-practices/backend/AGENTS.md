@@ -27,6 +27,7 @@
 | `dual-dao-pattern.md` | A custom operation may see two generated DAOs with the same simple name, one for the entity and one for an actor's transfer view. |
 | `dual-operation-layer.md` | The same business operation can exist on the entity and again on actor-facing transfer objects. |
 | `duplicate-detection-normalization.md` | Store a normalized copy of a name next to the display name, flag all non-archived entities that share it, and use a similarity score when checking names against an external source. |
+| `email-normalization-at-invite.md` | Trim and lowercase e-mail addresses with one shared helper at every boundary that creates or matches a user, so case variants cannot slip past duplicate checks or mismatch the identity server. |
 | `email-service-integration.md` | Send application e-mail from custom operations through an injected mail service, keep the SMTP settings in platform configuration, and keep sending out of the business transaction. |
 | `entity-re-fetch-pattern.md` | In a bound custom operation, load the entity again through its DAO with a mask before using it, and fail clearly when it is gone. |
 | `excel-data-seed-import.md` | Seed master data at startup from Excel files by keeping the OSGi component thin and moving the reading and creating into a plain Java importer. |
@@ -35,6 +36,7 @@
 | `feed-targeting-strategy.md` | A project-level strategy interface, registered as OSGi components, that decides which organizations or users see a piece of feed content. |
 | `filestore-mediated-file-transfer.md` | Custom operations that import or produce files exchange them through the platform FileStore service: upload operations read the stored file by id, download operations store the result and return a fil |
 | `form-field-flattening.md` | A create form for a parent with child records uses flat form_ fields on the parent transfer object; a create interceptor maps them into the nested child payload before the platform create runs. |
+| `gdpr-placeholder-user-on-delete.md` | A singleton, flagged placeholder user (and organization) is created on demand so that deleting a person can erase their personal data while records they authored stay valid. |
 | `generator-ignore-config-protection.md` | List hand-edited configuration files and custom code in .generator-ignore so that regeneration from the model neither overwrites them nor fails the build on a checksum mismatch. |
 | `guarded-delete-with-deactivate-fallback.md` | An entity offers a hard delete allowed only when nothing references it (otherwise a modeled business fault) and a separate active toggle to retire referenced records. |
 | `handlebars-email-template.md` | Render emails and other structured text from Handlebars templates compiled at runtime, with templates kept in the FileStore or inline in code, so wording changes need no code change. |
@@ -56,6 +58,7 @@
 | `magic-link-authentication.md` | A custom Keycloak authenticator deployed as a Keycloak extension that signs users in by a time-limited e-mailed link, with token handling in an application service and the Keycloak admin client wrappe |
 | `managed-actor-admin-pattern.md` | Admin user management on a managed actor uses a read-only users relation plus gated custom operations that write through the principal TO's DAO, so Keycloak realm sync fires. |
 | `mask-field-projection.md` | Use the generated Mask classes to say which attributes and relations a DAO read or update touches: minimal masks for existence checks, lists and loops, nested masks for detail views, and masks on upda |
+| `migration-backfill-default-where-null.md` | A hand-written data-migration changeset runs after the generated schema step to give existing rows the default, or a value derived from a related row, that the generated diff leaves NULL. |
 | `multi-tenant-keycloak-realm.md` | Project practice for multi-tenancy where each organization gets its own Keycloak realm, created at runtime through the Keycloak admin API behind a project RealmManager service. |
 | `mutable-entity-update-pattern.md` | Change a persisted entity by loading it from its DAO, calling setters on the returned object and passing it back to dao.update, optionally with a mask that limits the written fields. |
 | `osgi-karaf-bundle-architecture.md` | How a JUDO application is split into OSGi bundles deployed to Apache Karaf (generated model, sdk, internal, rest bundles plus custom app and interceptor bundles) and the extra modules projects add on  |
@@ -68,6 +71,7 @@
 | `relation-based-entity-creation.md` | Create a child entity through the generated create method of the parent DAO for the relation, instead of calling the child DAO, so the child is created and linked in one call. |
 | `relation-traversal-validation.md` | Validate an operation against the current state of related entities by navigating relations with DAO query methods (for example the status of the parent contest) instead of keeping a denormalized copy |
 | `role-based-invitation-guard.md` | A static matrix inside a custom operation restricts which roles an inviter may assign, so the invitation flow cannot be used for privilege escalation. |
+| `role-guarded-write.md` | Write interceptors grouped by verb and permitted roles list their operations by name, a coverage test derived from the model fails on any unguarded write, and a central guard service adds row-level ow |
 | `safe-failure-pattern.md` | Secondary work such as audit rows, statistics or notifications is wrapped so that its failure is logged but never breaks the primary operation, and loops over items continue after a single failure. |
 | `scheduled-data-sync-pipeline.md` | Several scheduled jobs (frequent fetch, daily reset, daily archive) delegate to one service that pulls external data, stores snapshots, upserts daily records and recalculates parent aggregates. |
 | `script-driven-operations.md` | Business logic is written as JCL scripts in the operation bodies of the model (customImplementation false), so the build generates the operations and no Java implementation classes are written. |

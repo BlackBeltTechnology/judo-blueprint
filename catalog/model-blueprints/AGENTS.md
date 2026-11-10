@@ -221,12 +221,16 @@
 | `publish-delete-edit-operations/frontend.md` | publish-delete-edit-operations: frontend guidance |
 | `push-notification-system/BLUEPRINT.md` | A frontend-only push notification system for Capacitor native apps that registers the device with the JUDO backend, shows foreground toasts, deep links notification taps to content and keeps an unread |
 | `push-notification-system/frontend.md` | push-notification-system: frontend guidance |
+| `quote-lines-with-price-modifiers/BLUEPRINT.md` | A quote header that owns priced item lines and price modifier instances, where a modifier applies either to one line or to the whole quote, and the totals are derived from the lines. |
+| `quote-lines-with-price-modifiers/model.md` | quote-lines-with-price-modifiers: model shape and generated structure diagram |
 | `recaptcha-waf-interceptor/BLUEPRINT.md` | An OperationCallInterceptor that refuses calls to public-facing built-in operations when the reCAPTCHA token in the input is missing, with a bypass for development and tests. |
 | `recaptcha-waf-interceptor/backend.md` | recaptcha-waf-interceptor: backend guidance |
 | `reference-data-lookup-entity/BLUEPRINT.md` | A minimal reference data entity with a `name` (required) attribute and optionally an `active` or `isEnabled` boolean attribute (default: true) for soft-enable/disable. |
 | `reference-data-lookup-entity/model.md` | reference-data-lookup-entity: model shape and generated structure diagram |
 | `reference-data-lookup-entity/backend.md` | reference-data-lookup-entity: backend guidance |
 | `reference-data-lookup-entity/frontend.md` | reference-data-lookup-entity: frontend guidance |
+| `registry-header-with-lines/BLUEPRINT.md` | A registry entity with a status enumeration that owns headers, where each header owns line items and each line owns its own qualification records, so a whole submission is stored and deleted as one ag |
+| `registry-header-with-lines/model.md` | registry-header-with-lines: model shape and generated structure diagram |
 | `report-definition-with-run-operation/BLUEPRINT.md` | A report definition entity that captures report parameters (selected entities, filters) and produces report results via a `run` instance operation. |
 | `report-definition-with-run-operation/model.md` | report-definition-with-run-operation: model shape and generated structure diagram |
 | `reservation-booking-entity/BLUEPRINT.md` | A Reservation (or Booking) entity that models time-bounded resource reservations. |

@@ -4,11 +4,11 @@ title: Invitation Entity with Key-Based Acceptance Flow
 description: An invitation entity that is accepted through a link carrying an unguessable key, so the invitee can accept without a prior account.
 aliases: [invite link, key invitation, anonymous invitation acceptance]
 keywords: [invitation, key, acceptance, invite link, expiration, anonymous, accept, cancel]
-tags: [domain:model, layer:model, layer:backend, layer:frontend, project:ubives, status:single-project]
+tags: [domain:model, layer:model, layer:backend, layer:frontend, project:ubives, project:mlszksz-platform, status:emerging]
 category: pattern
-status: single-project
-projects: [ubives]
-evidence: ["ubives:unrecorded"]
+status: emerging
+projects: [ubives, mlszksz-platform]
+evidence: ["ubives:unrecorded", "mlszksz-platform:unrecorded"]
 alternatives: [invitation-with-recipients]
 fragment: invitation-with-key-based-acceptance
 diagram: { kinds: [entity, enum, transfer, operation], members: types }
@@ -45,6 +45,7 @@ The Invitation entity is non-CRUD (not createable, updateable or deleteable thro
 
 - **Accept for a new user.** The invitation type is USER. Acceptance creates a user with the password from the accept parameter.
 - **Accept for an existing account.** The invitation type is ACCOUNT. Acceptance adds the existing account to the organization and needs no new password.
+- **Re-invite supersedes a pending invitation.** Inviting an address that already has a pending invitation deletes the old one and creates the new one, so the old key stops working. An invitation the invitee already verified is not superseded; the new invite is refused. See the backend guidance.
 - **Cancel.** The inviter or an administrator cancels a pending invitation. Cancel deletes it.
 
 ## When to use

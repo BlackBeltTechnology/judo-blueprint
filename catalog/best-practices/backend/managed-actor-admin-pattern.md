@@ -4,11 +4,11 @@ title: "Managed-Actor Admin Surface: Read-Only Relation + Custom-Op Delegation"
 description: "Admin user management on a managed actor uses a read-only users relation plus gated custom operations that write through the principal TO's DAO, so Keycloak realm sync fires."
 aliases: [admin user management, managed actor admin, invite user operation, Keycloak sync admin]
 keywords: [managed actor, Keycloak, realm sync, principal DAO, custom operation, enabledBy, read-only relation, invite user, OperationFlowManager]
-tags: ["domain:backend", "layer:backend", "project:compsych-letter-demo", "status:single-project"]
+tags: ["domain:backend", "layer:backend", "project:compsych-letter-demo", "project:rackinspect", "status:emerging"]
 category: auth
-status: single-project
-projects: [compsych-letter-demo]
-evidence: ["compsych-letter-demo:unrecorded"]
+status: emerging
+projects: [compsych-letter-demo, rackinspect]
+evidence: ["compsych-letter-demo:unrecorded", "rackinspect:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-05-11
@@ -63,6 +63,10 @@ public class AdminDashboardInviteUserCustomImpl implements AdminDashboardInviteU
 ```
 
 The DAO to call is the principal TO's one (`create`, `update`, `delete`): not the plain entity DAO (skips Keycloak) and not the admin TO's DAO (carries no sync trigger).
+
+### Variation: separate identity-server client module (rackinspect)
+
+A second project provisions users through an identity-server user service with invitations. Instead of writing through the principal TO's DAO, it calls a separate client module that talks to the identity server. Whether realm sync fires on this path is not confirmed by the agent-docs: *verify*.
 
 ## Rationale
 

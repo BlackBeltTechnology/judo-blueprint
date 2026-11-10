@@ -4,11 +4,11 @@ title: Actor Resolution via VariableResolver Pattern
 description: Resolve the current authenticated user in a custom operation by reading ACTOR variables through VariableResolver and loading the user entity, usually wrapped once in a project service.
 aliases: [current user resolution, getCurrentUser, actor lookup]
 keywords: [actor, variable resolver, getVariable, current user, authentication, ownership, audit]
-tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:reserve-app", "project:doors-model", "status:established"]
+tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:reserve-app", "project:doors-model", "project:rackinspect", "status:established"]
 category: auth
 status: established
-projects: [alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, judo-partner, reserve-app, doors-model]
-evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
+projects: [alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, judo-partner, reserve-app, doors-model, rackinspect]
+evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded", "rackinspect:unrecorded"]
 alternatives: [keycloak-jit-user-provisioning]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -46,6 +46,10 @@ User user = userDao.query()
 - Do not paste this block into every operation. Four projects (mlszksz-platform, park-here, indamedia-adtrack, ubives) wrap it in one project service (`ActorService` / `Variables`, example project helpers) with `getCurrentUser()`, which throws a business error when the user is missing; operations inject only that service.
 - Interceptors use the same lookup, for example to resolve the caller's partner for ownership on create or to check an admin flag. Remember that interceptors do not protect custom operations, so the check must also sit in the operation or its service ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - When a Keycloak user may exist without a database row, provisioning is a separate concern ([[keycloak-jit-user-provisioning]]).
+
+### Variation: shared actor service (rackinspect)
+
+One project wraps the ACTOR variable lookup in a shared `ActorService` that every operation injects, instead of repeating the lookup per operation.
 
 ## Rationale
 

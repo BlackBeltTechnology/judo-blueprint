@@ -13,6 +13,7 @@
 | `approval-workflow-conditional-visibility.md` | An approval workflow UI driven entirely by the model: per-operation derived booleans decide which action buttons and fields are hidden or enabled for the current status and user, with no frontend code |
 | `auto-scrolling-scoreboard.md` | A kiosk-style leaderboard component with a medal podium and a self-scrolling list that pauses on touch and refreshes its data at the bottom, for public display screens. |
 | `autocomplete-range-override.md` | A dialog or page hook replaces the data source of a relation autocomplete so the options are filtered by the owner's current context instead of the generic range query. |
+| `binary-blob-url-hook.md` | A React hook that downloads a binary attribute through the generated access service and returns an object URL for img, video or embed elements, revoking the previous URL on change and on unmount, with |
 | `breadcrumb-navigation-context.md` | Navigation goes through one context hook that keeps a breadcrumb stack, giving forward, back and reset semantics independent of browser history, plus a visual breadcrumb trail. |
 | `centralized-error-handling-validation-map.md` | One error-handling function turns failed service calls into a field-to-message validation map for inline form errors, or into toasts, so every call site uses the same catch block. |
 | `column-filter-provider-pattern.md` | In a hand-written table page, column definitions and filter options are extracted into provider functions or page hooks that take the localization object, so the page keeps only layout and data fetchi |
@@ -44,6 +45,7 @@
 | `infinity-create-mode.md` | Enable rapid sequential creation of similar entities by generating a template that copies most field values from the previously created entry while resetting specific fields. |
 | `input-masking-react-imask.md` | Use the `react-imask` library (IMaskInput) within custom visual element overrides to enforce specific input formats on text fields. |
 | `lazy-vs-greedy-data-persistence.md` | Custom components that manage their own data can implement two data persistence strategies. |
+| `linkified-text-component.md` | A small custom React component that renders plain text with http and https URLs as safe external links, used in custom views for long description fields while the stored text stays plain. |
 | `localstorage-session-persistence.md` | Use `localStorage` to persist session state (user identity, current context, in-progress data) instead of OAuth/OIDC tokens or server-side sessions. |
 | `many-aggregation-crud-pattern.md` | Manage many-to-many or one-to-many entity associations through a dedicated table page with Add, Remove, and Clear operations. |
 | `model-defined-color-palette.md` | Define the application color palette directly in the ESM model on actor types rather than overriding theme files in code. |
@@ -59,6 +61,7 @@
 | `promise-based-dialog-system.md` | In a hand-built JUDO frontend, expose filter, range selection, confirmation and page-in-dialog as React Context dialogs opened through hooks that return a Promise, so callers use await instead of call |
 | `pwa-manifest-customization.md` | Take over the generated public/manifest.json through .generator-ignore to set the installable web app name, display mode and colors; trivia uses it for a mobile-first player frontend. |
 | `react-intl-flat-key-pattern.md` | In a hand-built JUDO frontend, keep UI strings as flat dot-separated keys in one TypeScript locale file used with react-intl, with a defaultMessage on every lookup; the generated frontend uses react-i |
+| `role-landing-redirect-access-filter.md` | A registered AccessFilterComponent sends each signed-in role from the home route to its own first visible menu entry, derived from the generated menu tree instead of a role-to-URL map. |
 | `seek-based-table-pagination.md` | Page table data with the _seek keyset cursor (last or first visible row plus a reverse flag) instead of offsets; load limit+1 rows to know whether a next page exists. |
 | `session-storage-table-state.md` | Persist a table's sort model and filters in sessionStorage so they survive navigation within the tab. |
 | `single-access-entity-pattern.md` | For an actor access that holds at most one instance (settings, a single planet), fetch the instance first and send the user to a create page when it does not exist, then refresh the full view with a m |

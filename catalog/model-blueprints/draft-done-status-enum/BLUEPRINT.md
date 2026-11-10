@@ -34,6 +34,10 @@ One enumeration, `Status`, with two members: DRAFT (ordinal 0) and DONE (ordinal
 - **Separate enumeration per entity.** Each owning entity gets its own two-member enumeration, for example one for a registry and one for an offer. The values do not have to be shared.
 - **Three-state form.** When a suspended or rejected step is needed, use [[active-suspended-deactivated-status-enum]] or [[work-status-lifecycle-enum]] instead.
 
+## When to extend
+
+The source project's status enums grow beyond two states: DRAFT, DONE, SUBMITTED, RETURNED and DRAFT, DONE, ACCEPTED, REJECTED. Once a review or hand-back step appears, move to [[enum-state-machine]]; this entry stays a two-state shape.
+
 ## When to use
 
 - An item is assembled, then finalized, and no intermediate review step exists.
