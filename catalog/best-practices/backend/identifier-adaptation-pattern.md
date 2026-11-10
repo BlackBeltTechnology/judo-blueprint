@@ -1,56 +1,61 @@
 ---
 id: identifier-adaptation-pattern
 title: Identifier Adaptation for Mapped Transfer Objects
-description: "The JUDO SDK `adaptTo()` mechanism converts between identifier types for mapped transfer objects that share the same underlying entity."
-aliases: []
-keywords: [identifier, adaptation, mapped, transfer, objects]
+description: "Use the SDK identifier adaptTo() to turn the identifier of one mapped transfer object type into the identifier of another type mapped to the same entity, so another DAO can load the entity through a different view."
+aliases: [adaptTo, identifier conversion, transfer object view switch]
+keywords: [identifier, adaptTo, mapped transfer object, dao, view, type-specific identifier]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:alba", "status:emerging"]
 category: data-access
 status: emerging
 projects: [trivia, alba]
 evidence: ["trivia:unrecorded", "alba:unrecorded"]
 alternatives: []
-related: [dao-fluent-query-filter, dual-dao-pattern]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-The JUDO SDK `adaptTo()` mechanism converts between identifier types for mapped transfer objects that share the same underlying entity. When multiple transfer object types map to the same entity (e.g., `Test` and `PromptList` both map to the test entity), their identifiers can be adapted to access the same database row through different "views."
+Several transfer objects can be mapped to the same entity, each exposing different fields and relations (a view). An operation bound to one of them sometimes needs to load or return another view. The SDK identifier converts to the identifier type of the other view.
 
-## Structure
+## Practice
+
+### Platform base
+
+Identifiers are type specific: an identifier of one transfer object type cannot be used for another type ([signed identifiers and wire contract](../../agent-docs/backend/platform-behavior-reference.md)). In custom operations the typed identifier is read with `identifier()` ([data access guide](../../agent-docs/backend/data-access-guide.md)). The integration-testing guide marks `adaptTo()` as unnecessary when you only want the identifier of an instance that already has the right type: use `identifier()` there ([anti-pattern: adaptTo to get identifiers](../../agent-docs/integration-testing/best-practices.md)). The agent-docs do not describe `adaptTo()` for converting between different transfer object types. That use is project-observed.
+
+### Project practice: adapt across views of one entity
+
+Use `adaptTo(<TargetIdentifier>.class)` only when the source and target transfer objects map the same underlying entity and the target DAO is the one that exposes what you need.
 
 ```java
-// Convert Test identifier to PromptList identifier
+// Example project code: Test and PromptList are two transfer objects mapped to one entity
 PromptListIdentifier plId = _this.identifier().adaptTo(PromptListIdentifier.class);
-
-// Use the adapted identifier with a different DAO
-PromptList plist = promptListDao.getById(plId).get();
+PromptList plist = promptListDao.getById(plId).orElseThrow();
 ```
 
-This is used when:
-- Two transfer objects map to the same underlying entity
-- You need to access the entity through a different "view" (different fields/relations exposed)
-- The operation receives one TO type but needs to return another
+- Use it when an operation receives one view but must return or work on another.
+- Do not use it for the identifier of an instance that already has the target type: call `identifier()`.
+- Check that the result is a different view, not a different entity: adapting between unrelated types is not meaningful.
+- Prefer the single `getById` of the target DAO over querying and re-building the view by hand.
 
-## Examples
+## Rationale
 
-### Trivia
-`StartCustomImplementation` receives a `Test` but needs to return a `PromptList`. Uses `_this.identifier().adaptTo(PromptListIdentifier.class)` to convert the Test identifier to a PromptList identifier, then loads via `promptListDao.getById()`. Same pattern in SubmitCustomImplementation.
+- Typed identifiers stay type-safe and no raw ids are handled.
+- It relies on the model's mapped transfer object structure and works only for transfer objects mapped to the same entity, so it needs knowledge of that mapping.
+- Alternative: query the entity directly and build the needed view manually.
 
-### ALBA
-Operations use `_this.identifier().adaptTo(ProductIdentifier.class)` to convert the bound operation's `_this` identifier to the specific `ProductIdentifier` type needed by `productDao.getById()`. Used in Finalize, AssignApproval, ApproveVersion, DraftNewVersion, and RevokeApproval operations.
+## Example
 
-## Trade-offs
+- Trivia: a start operation bound to a test view returns a prompt-list view, adapting the identifier and loading it through the other DAO; a submit operation does the same.
+- ALBA: operations such as finalize, assign approval, approve version, draft new version and revoke approval adapt the bound `_this` identifier to the product identifier type required by the product DAO.
 
-- Pros: Type-safe identifier conversion, avoids raw ID manipulation, leverages JUDO's mapped TO architecture
-- Cons: Only works for TOs mapped to the same entity, requires understanding of the model's TO mapping structure
-- Alternative: Query the entity directly and manually construct the needed view
+## When to avoid
+
+- The identifier already has the type the DAO needs: use `identifier()`.
+- The two transfer objects map different entities: navigate with a relation query instead ([[dao-fluent-query-filter]]).
 
 ## Related
 
-- [[dao-fluent-query-filter]]
-- [[dual-dao-pattern]]
-
+- [[dao-fluent-query-filter]] — loading entities with the generated query API
+- [[dual-dao-pattern]] — accessing one entity through two DAOs

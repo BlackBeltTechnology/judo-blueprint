@@ -1,95 +1,68 @@
 ---
 id: generator-ignore-config-protection
 title: Generator-Ignore for Configuration Protection
-description: "The `.generator-ignore` file at the project root lists files that should be excluded from code generation overwrites."
-aliases: []
-keywords: [generator, ignore, configuration, protection, config]
+description: "List hand-edited configuration files and custom code in .generator-ignore so that regeneration from the model neither overwrites them nor fails the build on a checksum mismatch."
+aliases: [generator ignore, protect config from regeneration, generated file protection]
+keywords: [generator-ignore, regeneration, checksum, judo.properties, judo-karaf.env, config, default template]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:bhs-global-operation", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: config
 status: established
 projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, bhs-global-operation, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [osgi-karaf-bundle-architecture]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-The `.generator-ignore` file at the project root lists files that should be excluded from code generation overwrites. This protects developer-customized configuration files (especially those containing secrets) from being overwritten when regenerating code from the model. The file itself is also listed to prevent self-overwrite.
+Code generation from the model rewrites files in the project. Files that developers own (runtime configuration, secrets, hand-written operation classes) must be listed in `.generator-ignore`, or the next build either overwrites them or fails.
 
-## Structure
+## Practice
+
+### Platform behavior
+
+The platform docs describe the mechanism ([code generation and checksum protection](../../agent-docs/backend/README.md)): generated files are tracked by checksum in `.generated-files`; files not listed in `.generator-ignore` are regenerated on build or generate; if a tracked file was edited by hand the build fails on the checksum mismatch. Editing a generated file is the last resort: prefer generator parameters (`generator-parameter.properties`) and the fragment extension points (files under `application/generator-overrides/`), and only then edit and add the path to `.generator-ignore`.
+
+For custom operations the docs say: the generated `.default` file is a read-only blueprint that is regenerated on every build; create a new `.java` file with your logic and add the `.default` path to `.generator-ignore` ([understanding generated default implementations](../../agent-docs/backend/custom-operations.md)).
+
+### Project practice: the standard root list
+
+The root `.generator-ignore` of a freshly generated project is a short file, and the example projects keep this set:
 
 ```
-# .generator-ignore
 .generator-ignore
 judo.properties
 judo-karaf.env
 generator-parameter.properties
 ```
 
-Protected files typically include:
-- `.generator-ignore` itself
-- `judo.properties` -- runtime configuration (ports, DB type, admin settings)
-- `judo-karaf.env` -- environment secrets (SMTP credentials, signer secret, FileStore config)
-- `generator-parameter.properties` -- code generation parameters
+- The file lists itself so it is not overwritten.
+- `judo.properties` holds runtime configuration; `judo-karaf.env` holds environment values and secrets (SMTP credentials, identifier signer secret, filestore settings; see [application config](../../agent-docs/deployment/application-config.md)); `generator-parameter.properties` holds generation parameters.
+- Add further root files that the team edits (some projects add `judo.sh` or `.gitignore`).
+- Application-level `.generator-ignore` files list `.default` paths of implemented operations, or edited build files such as a `pom.xml`. Frontend submodules keep their own `.generator-ignore`.
+- Some projects keep custom operations in a separate `custom/` source directory instead, so no application-level entries are needed.
+- Some example projects list renamed `.java.default` files. That is project-observed; the platform docs advise a new `.java` file next to the untouched `.default` blueprint.
 
-## Examples
+## Rationale
 
-### Trivia
-Root `.generator-ignore` protects 4 files: itself, `judo.properties`, `judo-karaf.env` (contains Mailjet SMTP credentials and identity signer secret), and `generator-parameter.properties`. Frontend submodules also have their own `.generator-ignore` files.
+- Secrets and local configuration survive regeneration, and the build does not fail on a checksum mismatch for files you own.
+- The syntax is simple, similar to a gitignore.
+- Cost: the list is maintained by hand. A file that is edited but not listed fails the next build or is overwritten. External secret management (a vault, orchestrator secrets) reduces what has to be protected.
 
-### RackInspect
-Root `.generator-ignore` protects 5 files (adds `judo.sh`). Additionally, `application/app/.generator-ignore` protects `pom.xml` and 2 `.java.default` files. `application/app/src/main/java/.generator-ignore` lists 11 custom operation `.java.default` files to prevent regeneration of manually-implemented operations.
+## Example
 
-### itracker
-Root `.generator-ignore` protects the standard 4 files: itself, `judo.properties`, `judo-karaf.env`, and `generator-parameter.properties`. No application-level `.generator-ignore` exists since no custom operations have been implemented yet. Frontend submodules have their own `.generator-ignore` files.
+- Trivia, itracker, ALBA, viterra_demo, Indamedia-AdTrack, judo-partner, workflow-poc, ReserveApp, bhs-global-operation, judo-demo-miniworkflow: the standard four-entry root list. Frontend submodules have their own files. In bhs-global-operation, a project with no custom operations, the standard list is the minimal baseline.
+- RackInspect, Ubives: the standard list plus `judo.sh`. RackInspect also has application-level lists for 11 custom operation templates and a `pom.xml`.
+- mlszksz-platform: the standard list at the root and an application-level list of 44 operation templates, the largest observed, for 65+ custom operations.
+- ParkHere: standard list plus `.gitignore`, and a schema `pom.xml` entry.
+- InterfaceRegister: only `judo.properties`, an early-stage minimum.
 
-### ALBA
-Root `.generator-ignore` protects the standard 4 files: itself, `judo.properties`, `judo-karaf.env`, and `generator-parameter.properties`. Frontend submodule also has its own `.generator-ignore`. No application-level overrides needed since custom operations live in dedicated `custom/` directories.
+## When to avoid
 
-### mlszksz-platform
-Root `.generator-ignore` protects standard 4 files. `application/app/src/main/java/.generator-ignore` lists 44 `.java.default` files for all customized operations, preventing regeneration of hand-written implementations. Largest `.generator-ignore` observed, reflecting the 65+ custom operations in the project.
-
-### viterra_demo
-Root `.generator-ignore` protects the standard 4 files: itself, `judo.properties`, `judo-karaf.env`, and `generator-parameter.properties`. No application-level `.generator-ignore` since all operations remain as `.java.default` stubs. Frontend submodules (admin + partner) each have their own `.generator-ignore` files.
-
-### bhs-global-operation
-Root `.generator-ignore` protects the standard 4 files with the standard EPL-2.0 license header. No application-level `.generator-ignore` since the project has zero entities and zero custom operations. Represents the minimal baseline `.generator-ignore` in a freshly generated JUDO project.
-
-### judo-demo-miniworkflow
-Root `.generator-ignore` protects the standard 4 files (itself, `judo.properties`, `judo-karaf.env`, `generator-parameter.properties`) with standard EPL-2.0 license header. No application-level `.generator-ignore` since all 10 operations remain as `.java.default` stubs. Frontend submodule has its own `.generator-ignore`.
-
-### Ubives
-Root `.generator-ignore` protects 5 files: itself, `judo.properties`, `judo-karaf.env`, `generator-parameter.properties`, and `judo.sh`. No application-level `.generator-ignore` since custom operations live in dedicated `custom/` directories (not overwriting `.java.default` files). Frontend submodules and keycloak-theme have their own `.generator-ignore` files.
-
-### ParkHere
-Root `.generator-ignore` protects 5 files: itself, `.gitignore`, `judo.properties`, `judo-karaf.env`, and `generator-parameter.properties`. Application-level `.generator-ignore` protects `schema/pom.xml`. Custom operations live in `custom/` directories. Frontend submodules and theme directories each have their own `.generator-ignore` files.
-
-### Indamedia-AdTrack
-Root `.generator-ignore` protects the standard 4 files: itself, `judo.properties`, `judo-karaf.env`, and `generator-parameter.properties`. No application-level `.generator-ignore` since custom operations live in `custom/` directories. Frontend submodules have their own `.generator-ignore` files.
-
-### InterfaceRegister
-Minimal `.generator-ignore` protects only `judo.properties` (single entry, no self-reference or other files). No application-level `.generator-ignore` since all 10 operations remain as `.java.default` stubs. This is the most minimal `.generator-ignore` observed, suggesting an early-stage project with no customized files beyond the runtime configuration.
-
-### judo-partner
-Root `.generator-ignore` protects the standard 4 files: itself, `judo.properties`, `judo-karaf.env`, and `generator-parameter.properties`. No application-level `.generator-ignore` since all 15 custom operations live in dedicated `custom/` directories (renamed from `.java.default`). Frontend submodule has its own `.generator-ignore`.
-
-### workflow-poc
-Root `.generator-ignore` protects the standard 4 files: itself, `judo.properties`, `judo-karaf.env`, and `generator-parameter.properties`. Standard EPL-2.0 license header. No application-level `.generator-ignore` -- custom operations live in `custom/` directories. Frontend submodule has its own `.generator-ignore`.
-
-### ReserveApp
-Root `.generator-ignore` protects the standard 4 files: itself, `judo.properties`, `judo-karaf.env`, and `generator-parameter.properties`. Standard EPL-2.0 license header. No application-level `.generator-ignore` since no custom operations exist (app module is empty). Frontend submodules (5 actor-specific UIs) each have their own `.generator-ignore` files.
-
-## Trade-offs
-
-- Pros: Prevents accidental loss of secrets and custom config during regeneration, simple gitignore-like syntax
-- Cons: Must be manually maintained, forgetting to add a file means it gets overwritten on next build
-- Alternative: External configuration management (Vault, K8s secrets), environment-only config
+- Do not list a file only to avoid fixing a generator parameter or a fragment extension point that already covers the change.
+- Never list the `.default` blueprints in the expectation of editing them: write a new implementation file.
 
 ## Related
 
-- [[osgi-karaf-bundle-architecture]]
-
+- [[osgi-karaf-bundle-architecture]] — the runtime configuration these files feed

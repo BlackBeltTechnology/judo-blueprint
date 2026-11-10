@@ -1,95 +1,79 @@
 ---
 id: filestore-mediated-file-transfer
 title: FileStore-Mediated File Transfer Pattern
-description: File upload and download operations use the JUDO FileStore service as an intermediary rather than handling files directly in REST endpoints.
-aliases: []
-keywords: [filestore, mediated, file, transfer]
+description: "Custom operations that import or produce files exchange them through the platform FileStore service: upload operations read the stored file by id, download operations store the result and return a file reference."
+aliases: [file upload, file download, filestore service]
+keywords: [filestore, file, upload, download, transfer, binary, FileStoreService]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "project:doors-model", "status:established"]
 category: integration
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, viterra_demo, park-here, indamedia-adtrack, judo-partner, workflow-poc, doors-model]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
 alternatives: []
-related: [bulk-json-import-export, email-service-integration, document-generation-pipeline, handlebars-email-template]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-File upload and download operations use the JUDO FileStore service as an intermediary rather than handling files directly in REST endpoints. Files are stored via `fsService.put()` which returns an ID, and retrieved via `fsService.get(id)`. The client receives/sends file references (ID, fileName, mimeType) through transfer objects with `FileType` fields.
+Operations that accept an uploaded file or return a generated one (CSV, JSON, DOCX, templates, credentials) go through the FileStore instead of passing bytes through the operation signature. The client holds a file reference; the backend reads and writes content by id.
 
-## Structure
+## Practice
+
+### Platform base: binary members and the token flow
+
+In the model a file is a binary-typed member (binary types carry a MIME type and a maximum size; see [JSL language notes](../../agent-docs/model/jsl-language-notes.md)). An operation that returns a file wraps the binary in a transient member of an unmapped transfer object ([wrapper transfer object for binary outputs](../../agent-docs/model/advanced-modeling-patterns.md)). Over REST the client uses a two-phase token flow: it requests `<attributePath>/~upload-token`, posts the multipart data with the `X-Token` header, and downloads with `?disposition=inline|attachment` ([upload token flow](../../agent-docs/backend/platform-behavior-reference.md)). The generated frontend `fileHandling` helpers wrap this flow.
+
+The backend storage is selected by environment variables (`JUDO_PLATFORM_FILESTORE` with `filesystem`, plus `JUDO_PLATFORM_FILESTORE_DIRECTORY` for the directory; see [application config](../../agent-docs/deployment/application-config.md)). The agent-docs also describe an S3 backend whose access URL is an internal `<protocol>:<fileId>-<filename>` URL, so downloads flow through the Karaf servlet ([filestore S3 details](../../agent-docs/deployment/osgi-runtime-services.md)). Projects in the catalog also run an RDBMS-backed store (`rdbms`); the agent-docs do not list that value, so treat it as project-observed.
+
+### Project practice: read by id, write and return a reference
+
+The FileStore service is an OSGi service injected with `@Reference`. The calls below are what the example projects use; the agent-docs do not document the service API, so verify signatures against the SDK of your version.
 
 ```java
+// Example project code
 @Reference
 FileStoreService fsService;
 
-// Upload: read from FileStore
+// upload operation: read the stored file by the id the client sent
 InputStream stream = fsService.get(input.getFile().getId());
-// Process stream content...
 
-// Download: write to FileStore
-String fileId = fsService.put(
-    new ByteArrayInputStream(jsonBytes),
-    "filename.json",
-    "application/json"
-);
-// Return FileType reference with id, fileName, mimeType
+// download operation: store the content, return a file reference
+String fileId = fsService.put(new ByteArrayInputStream(bytes), "filename.json", "application/json");
 return OutputTO.builder()
-    .withFile(FileType.builder()
-        .withId(fileId)
-        .withFileName("filename.json")
-        .withMimeType("application/json")
-        .build())
+    .withFile(FileType.builder().withId(fileId).withFileName("filename.json")
+        .withMimeType("application/json").build())
     .build();
 ```
 
-Configuration: `JUDO_PLATFORM_FILESTORE=rdbms` (database-backed storage).
+- Keep parsing, validation and entity creation in a service and let the operation only fetch the stream (see [[service-delegation-pattern]]).
+- When several models run in one container, the example RackInspect project filters the injected service by model name with an OSGi target filter.
+- Where the file is attached to an entity, derived creation helpers on the DAO manage the file references (example: copying attachments to a new product version).
 
-## Examples
+## Rationale
 
-### Trivia
-Upload operation reads JSON from FileStore via `fsService.get(input.getJson().getId())`, parses questions, creates entities. Download operation serializes questions to JSON, stores via `fsService.put(stream, "questions.json", "application/json")`, returns `JsonData` with FileType reference.
+- File handling stays out of the REST layer: the platform owns tokens, transport and size limits, and the operation sees only an id.
+- The storage backend (filesystem, RDBMS, S3-compatible) is a deployment choice that needs no code change.
+- Cost: an extra indirection, no streaming for large files in the example code, and RDBMS-backed storage grows the database.
 
-### RackInspect
-FileStoreService used for document template storage (DOCX templates for assessment sheets, offers, etc.), generated document storage, and attachment management. Injected with target filter: `@Reference(target = "(&(judo.model.name=rackinspect))")`. Central to the document generation pipeline.
+## Example
 
-### ALBA
-Configured with filesystem backend: `JUDO_PLATFORM_FILESTORE=filesystem`, `JUDO_PLATFORM_FILESTORE_DIRECTORY=/filestore`. Uses OSGi Filestore API (`filestore-api:1.3.0`). Product attachments are copied during DraftNewVersion via `productDao.createAttachments(newProduct, attachments)` which internally manages file references.
+- Trivia, judo-partner, workflow-poc: upload operations read JSON or YAML by id, parse with Jackson and create entities; Trivia's download serializes questions to JSON and returns a file reference.
+- mlszksz-platform: audit-log CSV export (UTF-8 BOM) stored and returned; bulk invitation CSV upload read from the store; an in-memory FileStore mock in integration tests.
+- ParkHere: email templates (Handlebars files) and floor-plan images loaded into the store at init and read back when rendering emails ([[handlebars-email-template]]).
+- Indamedia-AdTrack: an uploaded credential JSON file stored and read back by a provider service.
+- RackInspect, doors-model: DOCX templates and generated documents ([[document-generation-pipeline]]).
+- ALBA (filesystem backend), viterra_demo (RDBMS backend, document-processing libraries configured): infrastructure examples.
 
-### mlszksz-platform
-Used for audit log CSV export (`ExportAuditLogCustomImplementation` builds CSV with UTF-8 BOM, stores via `fileStoreService.put()`) and bulk invitation CSV upload (`InviteBulkCustomImplementation` reads CSV from FileStore). In-memory FileStore mock used in integration tests. Production uses filesystem backend.
+## When to avoid
 
-### viterra_demo
-Configured with RDBMS-backed file storage: `JUDO_PLATFORM_FILESTORE=rdbms` in `judo-karaf.env`. Karaf feature includes Apache Tika bundles (tika-core, tika-parsers) and PDFBox for document processing support. No custom file operations implemented yet, but the infrastructure is configured and ready.
-
-### ParkHere
-FileStoreService used extensively in Init for storing email templates (4 Handlebars `.html.hbs` files), per-garage email templates (3 garage-specific templates), and floor plan images (4 PNG/JPG files). `EmailSenderServiceImpl` retrieves templates and floor plan images from FileStore by ID for email rendering, converting floor plans to base64 for inline embedding.
-
-### Indamedia-AdTrack
-FileStoreService used for secure storage of Google Ads JSON key files. `AccountService.setGoogleCredential()` stores uploaded JSON key file via FileStore. `AdsBusinessApiProviderServiceImpl` retrieves credential files from FileStore, converts to string via `StreamUtils.convertStreamToString()`, and passes to `GoogleAdsApiImpl` constructor. Enables secure credential management without filesystem access.
-
-### judo-partner
-FileStoreService used for partner import JSON file uploads. `PartnerImportCustomImplementation` reads uploaded JSON via `FileStoreService`, parses partner data with Jackson, and creates staged `ImportPartner` records. `ImportCountriesCustomImplementation` similarly reads country data from uploaded JSON. Configured as RDBMS-backed: `JUDO_PLATFORM_FILESTORE=rdbms`.
-
-### workflow-poc
-FileStoreService used for YAML workflow definition uploads. `UploadCustomImplementation` reads uploaded YAML via `fsService.get(input.getYaml().getId()).readAllBytes()`, deserializes with Jackson `ObjectMapper(YAMLFactory)` into Java record types (`YamlData`), then creates workflow version entities from the parsed data. RDBMS-backed: `JUDO_PLATFORM_FILESTORE=rdbms`.
-
-### doors-model
-Three file-handling custom operations on Contract entity: `uploadFile` (uploads contract file, generates DOCX values, prints registration number on PDF uploads, clears signed file and resets state to PENDING), `uploadSignedContract` (uploads signed version, sets `signedFile` attribute, creates SIGNED ContractLog), `generateDocument` (retrieves contract type template and applies DOCX templating). All implementations reside in external `doors-backend` repository.
-
-## Trade-offs
-
-- Pros: Decouples file handling from REST layer, supports RDBMS or filesystem backends, consistent API
-- Cons: Extra indirection, files in RDBMS can cause DB bloat, no streaming for large files
-- Alternative: Direct filesystem storage, S3-compatible object storage
+- Tiny payloads that fit a normal string or binary attribute of a transfer object.
+- Very large files that need streaming: the example usage loads content through streams or byte arrays.
 
 ## Related
 
-- [[bulk-json-import-export]]
-- [[email-service-integration]]
-- [[document-generation-pipeline]]
-- [[handlebars-email-template]]
-
+- [[bulk-json-import-export]] — JSON import and export through the store
+- [[email-service-integration]] — templates and images read from the store
+- [[document-generation-pipeline]] — templates and generated documents
+- [[handlebars-email-template]] — template files kept in the store
+- [[service-delegation-pattern]] — keep file parsing in a service
