@@ -1,9 +1,6 @@
 ---
-name: judo-backend-docs
+title: Backend Development Guide
 description: Backend development guide for JUDO applications. Covers custom operations, interceptors, validators, data access, and error handling.
-disable-model-invocation: false
-user-invocable: false
-agent: general-purpose
 ---
 
 # Backend Development Guide
@@ -153,7 +150,8 @@ application/
 - **[Interceptors](interceptors.md)** - For intercepting business logic operations.
 - **[Authentication Guide](authentication-guide.md)** - For handling user authentication events.
 - **[Internationalization Guide](internationalization-guide.md)** - A guide to localizing messages for a global audience.
-- **[Error Handling Guide](error-handling-guide.md)** - A guide to creating robust and user-friendly error responses.
+- **[Error Handling Guide](error-handling-guide.md)** - Platform exceptions (400/401/403/404) versus modeled faults (422), and what interceptors may throw.
+- **[Platform Behavior Reference](platform-behavior-reference.md)** - Signed identifiers, optimistic locking, reserved payload keys, REST wire contract, time zones, variable providers, sequences, custom REST resources.
 - **[Testing Guide](testing-guide.md)** - A guide to writing unit and integration tests.
 - **[Debugging and Monitoring Guide](debugging-and-monitoring-guide.md)** - A guide to debugging, monitoring, and performance profiling.
 - **[Integration Testing](../integration-testing/README.md)** - Testing custom operations with judo-runtime-core-testkit.

@@ -1,3 +1,8 @@
+---
+title: Operation Call Interceptors Guide
+description: OperationCallInterceptor contract, which operations are intercepted, ordering, throwing business errors and examples.
+---
+
 # Operation Call Interceptors Guide
 
 > [!IMPORTANT]
@@ -29,11 +34,25 @@ The canonical escape hatch keeps the value on the TO (so the UI and consumers se
 ```java
 @Component(property = { "judo.model.name=<model>" })
 public class MyTransientEnricher implements OperationCallInterceptor {
-    @Override public List<String> getOperations() {
-        return List.of("<model>.services.MyTO._getById",
-                       "<model>.services.MyTO._query");
+    private AsmUtils asmUtils;                     // built from asmModel.getResourceSet()
+    private List<EOperation> operations;
+
+    @Override public String getName() { return getClass().getSimpleName(); }
+
+    @Override public Collection<EOperation> getOperations(AsmModel asmModel) {
+        if (operations == null) {
+            asmUtils = new AsmUtils(asmModel.getResourceSet());
+            operations = Stream.of("<model>.services.MyTO#_getById",     // illustrative FQNs, see
+                                   "<model>.services.MyTO#_query")        // "Operation FQN Format Reference"
+                    .map(asmUtils::resolveOperation).map(Optional::orElseThrow).toList();
+        }
+        return operations;
     }
-    @Override public Payload postCall(Payload result, ...) {
+
+    @Override
+    public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload)
+            throws InterceptorCallBusinessException {
+        Payload result = (Payload) returnPayload;      // list operations return a Collection<Payload>
         result.put("readyForAllLanguages", compute(result));
         return result;
     }
@@ -136,11 +155,49 @@ JUDO provides the `OperationCallInterceptor` interface for intercepting model op
 ```java
 public interface OperationCallInterceptor {
     String getName();
-    Collection<EOperation> getOperations(AsmModel asmModel);
-    Object preCall(EOperation operation, Object parameterPayload);
-    Object postCall(EOperation operation, Object parameterPayload, Object returnPayload);
+    default Collection<EOperation> getOperations(AsmModel asmModel) { return Collections.emptyList(); }
+    default boolean async()                { return false; }
+    default boolean terminateOnException() { return true; }
+    default boolean ignoreDecoratedCall()  { return false; }
+    default Object preCall(EOperation operation, Object parameterPayload)
+            throws InterceptorCallBusinessException { return parameterPayload; }
+    default Object postCall(EOperation operation, Object parameterPayload, Object returnPayload)
+            throws InterceptorCallBusinessException { return returnPayload; }
 }
 ```
+
+### The Interceptor Contract
+
+| Method | Meaning |
+| :--- | :--- |
+| `getName()` | Name of the interceptor (used for logging). |
+| `getOperations(AsmModel)` | Operations the interceptor is registered for. The default is an empty collection, which means **all intercepted (built-in) operations**. |
+| `preCall` | Runs before the decorated call. The returned object replaces the input payload and must be assignable to the expected payload type (otherwise `IllegalArgumentException`). When `ignoreDecoratedCall()` is `true` it must return the payload of the decorated call's return type. |
+| `postCall` | Runs after the decorated call with the input and the call's return payload (a `Payload` or a collection of payloads). The returned object becomes the result. |
+| `ignoreDecoratedCall()` | `true` skips the platform's own DAO call, so the interceptor replaces the operation. The decorated call runs only if no interceptor for the operation returns `true`. |
+| `async()` | `true` runs the interceptor on a different thread, outside the transaction and without context variables. Its exceptions are lost and it cannot change the payload. |
+| `terminateOnException()` | Defaults to `true`: an exception terminates the call. Ignored for async interceptors. |
+
+Interceptors may throw only `InterceptorCallBusinessException` (see [Throwing a Business Error from an Interceptor](#throwing-a-business-error-from-an-interceptor)).
+
+### Which Operations Are Intercepted
+
+Interceptors fire **only for the built-in behaviour operations**: create, update, delete, list/query, refresh, set/unset/add/remove reference, reference range, input range, getTemplate, getMetadata, getPrincipal, upload token, export and the validate calls. These are the operations that the runtime implements itself (the `*Call` classes in `judo-runtime-core-dispatcher`'s `behaviours` package).
+
+**Custom (SDK-implemented), MAPPED and script operations never hit interceptors**, even if `getOperations` lists them or returns an empty collection. The Javadoc claim that an empty list intercepts "all operation calls" means all built-in calls only.
+
+Consequences:
+
+- Write guards and permission checks for custom operations (for example `User.toggleActive`, `createUser`, `resendInvitation`) must be written inside each `*CustomImplementation`, not in an interceptor.
+- Hiding a UI button does not protect an operation either.
+- Range interceptors fire only on the `_getRangeReference*` (reference range) operations, not on plain list or query operations such as `~list`. A range interceptor is the security boundary for relations with a range type that exposes every instance (`rangeType=ANY`) because read-only attributes do not stop enumeration. Model `min`/`max` bounds are UI-only and are not enforced on the server.
+- Input validation of exposed operations runs without interceptors.
+
+### Ordering and Combining Several Interceptors
+
+All interceptors registered for an operation are called in **registration order** for `preCall` **and** for `postCall` (`postCall` is not reversed). Each `preCall` receives the original input payload, so interceptors see each other's in-place mutations of that payload; the objects they return are accumulated and the last non-null result wins. `postCall` behaves the same with respect to the return payload.
+
+All synchronous interceptors run inside the transaction of the operation. An exception from `preCall` or `postCall` therefore rolls back the DAO write of the operation, including writes done by earlier interceptors.
 
 ## Interceptor Component Registration
 
@@ -173,7 +230,7 @@ public class LogOperationCallInterceptor implements OperationCallInterceptor {
         return this.getClass().getSimpleName();
     }
 
-    // Commented-out getOperations() means: intercept ALL operations
+    // No getOperations() override means: intercept ALL built-in operations (never custom/script operations)
     // Uncomment and implement to intercept specific operations only
 
     @Override
@@ -189,13 +246,15 @@ public class LogOperationCallInterceptor implements OperationCallInterceptor {
 
 **Key patterns:**
 - `@Component(property = { "judo.model.name=<app>" })` - Required for operation interceptors
-- No `getOperations()` implementation = intercept ALL operations
+- No `getOperations()` implementation = intercept ALL built-in operations (custom and script operations are never intercepted)
 - `AsmUtils.getOperationFQName()` - Get fully qualified operation name
 - `preCall()` - Executed before operation logic
 
 ## Example 2: Selective Operation Interception (Create)
 
 **Pattern**: Intercept specific operation and execute post-operation logic
+
+### Create Interceptor Code
 
 ```java
 @Component(property = { "judo.model.name=<app>" })
@@ -267,11 +326,13 @@ public class EntityCreateInterceptor implements OperationCallInterceptor {
                 EntityDetailMask.entityDetailMask());
         entityDao.setPrimaryEntityDetail(entity, newDetail);
 
-        // Execute other custom operations
+        // Execute other custom operations; a fault from a service is wrapped for the interceptor
         try {
             recalculateRelatedData.accept(entity);
-        } catch (GenericOperationErrorException e) {
-            throw new RuntimeException(e);
+        } catch (RecalculationFailedException e) {      // generated <Fault>Exception of the operation
+            throw new InterceptorCallBusinessException(
+                    "<app>.services.RecalculationFailed", "RECALCULATION_FAILED",
+                    Map.of("message", String.valueOf(e.getMessage())), e, null);
         }
 
         return OperationCallInterceptor.super.postCall(operation, parameterPayload, returnPayload);
@@ -279,7 +340,8 @@ public class EntityCreateInterceptor implements OperationCallInterceptor {
 }
 ```
 
-**Key patterns demonstrated:**
+#### Key patterns demonstrated
+
 - **Selective interception**: `getOperations()` returns specific operations
 - **Operation FQN format**: `[model_name].services.[ServiceName]#_createInstance[EntityName]` (for create operations)
 - **Lazy initialization**: Cache `interceptedOperations` and `asmUtils`
@@ -330,8 +392,10 @@ public class AccessRoleUpdateInterceptor implements OperationCallInterceptor {
             for (Entity entity : entities) {
                 try {
                     recalculateRelatedData.accept(entity);
-                } catch (GenericOperationErrorException e) {
-                    throw new RuntimeException(e);
+                } catch (RecalculationFailedException e) {      // generated <Fault>Exception
+                    throw new InterceptorCallBusinessException(
+                            "<app>.services.RecalculationFailed", "RECALCULATION_FAILED",
+                            Map.of("message", String.valueOf(e.getMessage())), e, null);
                 }
             }
         }
@@ -341,7 +405,8 @@ public class AccessRoleUpdateInterceptor implements OperationCallInterceptor {
 }
 ```
 
-**Key patterns demonstrated:**
+#### Key patterns demonstrated
+
 - **Update operation FQN**: `#_updateInstance[FullEntityFQN]`
 - **Payload type check**: `instanceof UpdateInstanceCallPayload`
 - **Batch processing**: Query and process all related entities
@@ -350,6 +415,8 @@ public class AccessRoleUpdateInterceptor implements OperationCallInterceptor {
 ## Example 4: Pre-Call Payload Manipulation
 
 **Pattern**: Modify input payload before operation execution
+
+### Pre-Call Interceptor Code
 
 ```java
 @Component(property = { "judo.model.name=<app>" })
@@ -388,10 +455,13 @@ public class ParentEntityCreateInterceptor implements OperationCallInterceptor {
         Payload input = ((CreateInstanceCallPayload) parameterPayload).getInput();
 
         // Validate input before operation
-        if (!input.getAs(Boolean.class, ParentEntityAttribute.FORM_IS_PRIMARY.getName())) {
-            throw ExceptionUtils.createValidationException(
-                ParentEntityAttribute.FORM_IS_PRIMARY.getName(), 
-                "Primary flag is required");
+        // getAs returns null when the key is absent: compare with Boolean.TRUE instead of unboxing
+        if (!Boolean.TRUE.equals(input.getAs(Boolean.class, ParentEntityAttribute.FORM_IS_PRIMARY.getName()))) {
+            throw new ValidationException(List.of(ValidationResult.builder()
+                    .code("PRIMARY_FLAG_REQUIRED")
+                    .level(ValidationResult.Level.ERROR)
+                    .location(ParentEntityAttribute.FORM_IS_PRIMARY.getName())
+                    .build()));
         }
 
         // Build complex nested payload from form fields
@@ -418,6 +488,11 @@ public class ParentEntityCreateInterceptor implements OperationCallInterceptor {
         return OperationCallInterceptor.super.preCall(operation, parameterPayload);
     }
 
+```
+
+#### Post-call part of the same interceptor
+
+```java
     @Override
     public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload) {
         Payload input = ((CreateInstanceCallPayload) parameterPayload).getInput();
@@ -451,11 +526,12 @@ public class ParentEntityCreateInterceptor implements OperationCallInterceptor {
 }
 ```
 
-**Key patterns demonstrated:**
+#### Key patterns demonstrated
+
 - **Payload manipulation**: Modify input before operation execution
 - **Payload.map()**: Build nested payloads with key-value pairs
 - **Form field mapping**: Transform flat form fields to nested entity structures
-- **Pre-call validation**: Validate and throw exceptions before operation
+- **Pre-call validation**: Validate and throw `ValidationException` (field rule) or `InterceptorCallBusinessException` (business refusal) before the operation
 - **Setting relationship references**: `parentEntityDao.setPrimaryChild()`, `setDefaultChild()`
 - **Post-processing related entities**: Call external services on created entities
 
@@ -469,7 +545,7 @@ public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCall
 
     @Reference EntityDao entityDao;
     @Reference RecalculateRelatedData recalculateRelatedData;
-    @Reference AccessValidationDao accessValidationDao;
+    @Reference EntityValidationQueries validationQueries;   // illustrative: a DAO exposing model-defined validation queries
 
     private AsmUtils asmUtils;
     private List<EOperation> interceptedOperations;
@@ -501,13 +577,16 @@ public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCall
     public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload) {
         // Validate business rule after any permission change
         Boolean activeEntitiesWithAtLeastManagementPermission = 
-            accessValidationDao.queryActiveEntitiesWithAtLeastManagementPermission().orElse(false);
+            validationQueries.queryActiveEntitiesWithAtLeastManagementPermission().orElse(false);
         Boolean activeEntitiesWithAtLeastAdminPermission = 
-            accessValidationDao.queryActiveEntitiesWithAtLeastAdminPermission().orElse(false);
+            validationQueries.queryActiveEntitiesWithAtLeastAdminPermission().orElse(false);
 
         if (!(activeEntitiesWithAtLeastManagementPermission && activeEntitiesWithAtLeastAdminPermission)) {
-            throw new IllegalStateException(
-                "Maintain minimum required entities with specific permissions");
+            // IllegalStateException would become a 500; refuse with a business error (rolls back the change)
+            throw new InterceptorCallBusinessException(
+                    "<app>.services.MinimumPermissionsViolated", "MINIMUM_PERMISSIONS_REQUIRED",
+                    Map.of("message", "Maintain minimum required entities with specific permissions"),
+                    null, null);
         }
 
         // Recalculate related data for all entities
@@ -515,8 +594,10 @@ public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCall
         for (Entity entity : entities) {
             try {
                 recalculateRelatedData.accept(entity);
-            } catch (GenericOperationErrorException e) {
-                throw new RuntimeException(e);
+            } catch (RecalculationFailedException e) {      // generated <Fault>Exception
+                throw new InterceptorCallBusinessException(
+                        "<app>.services.RecalculationFailed", "RECALCULATION_FAILED",
+                        Map.of("message", String.valueOf(e.getMessage())), e, null);
             }
         }
 
@@ -525,15 +606,18 @@ public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCall
 }
 ```
 
-**Key patterns demonstrated:**
+#### Key patterns demonstrated
+
 - **Multiple operation interception**: Single interceptor for related operations
 - **Reference operations**: `_addReference`, `_removeReference`, `_setReference`
-- **Business rule enforcement**: Validate after changes, rollback via exception
+- **Business rule enforcement**: Validate after changes; an `InterceptorCallBusinessException` rolls back the whole operation
 - **Derived query methods**: Use model-generated validation queries
 
 ## Example 6: Handling Both Create and Update
 
 **Pattern**: Single interceptor for create and update with pattern matching
+
+### Create and Update Interceptor Code
 
 ```java
 @Component(property = { "judo.model.name=<app>" })
@@ -585,6 +669,11 @@ public class ChildEntityCreateAndUpdateInterceptor implements OperationCallInter
         return OperationCallInterceptor.super.preCall(operation, parameterPayload);
     }
 
+```
+
+#### Post-call part of the same interceptor
+
+```java
     @Override
     public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload) {
         if (parameterPayload instanceof CreateInstanceCallPayload) {
@@ -627,7 +716,8 @@ public class ChildEntityCreateAndUpdateInterceptor implements OperationCallInter
 }
 ```
 
-**Key patterns demonstrated:**
+#### Key patterns demonstrated
+
 - **Pattern matching**: Modern Java `instanceof` with pattern variables
 - **Mixed operation types**: Handle create and update in same interceptor
 - **Container navigation**: `queryContainer()` to get parent entity
@@ -635,20 +725,50 @@ public class ChildEntityCreateAndUpdateInterceptor implements OperationCallInter
 - **External service calls**: Injecting and calling custom services
 - **Invoking other operations**: Call `validateEntity.accept()` operation
 
+## Throwing a Business Error from an Interceptor
+
+`preCall` and `postCall` declare `throws InterceptorCallBusinessException` (package `hu.blackbelt.judo.runtime.core.dispatcher.behaviours`, a subclass of the platform `BusinessException`). It is the **only** business-level exception an interceptor may throw:
+
+- A modeled fault's generated `<Fault>Exception` is checked and cannot be thrown from an interceptor; catch it from the service you called and rewrap it.
+- A raw `RuntimeException` (or `IllegalStateException`) is wrapped by the dispatcher as `InternalServerException` and the client sees a generic 500.
+- Interceptors do not handle business problems on their own; they refuse the call by wrapping the problem.
+
+```java
+throw new InterceptorCallBusinessException(
+        "<app>.services.AlreadyShipped",                 // type: FQN of a modeled fault transfer object
+        "ALREADY_SHIPPED",                               // errorCode
+        Map.of("message", "The order was already shipped"), // details; never null
+        null,                                            // cause (optional)
+        null);                                           // locale: replaced by the dispatcher's locale
+```
+
+What happens next: the behaviour call catches the exception and returns a `_fault` payload; `DefaultDispatcher` turns it into a `BusinessException`; REST answers **422** with header `X-Fault: <type>` and body `{ "<type>": {details without "_"-prefixed keys and nulls}, "code": "<errorCode>" }`. Because interceptors run inside the operation's transaction, the exception rolls back the DAO write, also when thrown from `postCall`.
+
+Guidance:
+
+- Use the **FQN of a modeled fault transfer object as `type`** and put the message and parameters into `details`. The frontend fault dialog resolves translations with `faults.<type>.<attribute>`; a `type` such as an interceptor or guard name matches no translation. Neither `type` nor `details` is validated against the model, so a typo still produces a 422 but the dialog falls back to raw attribute names. `details` must not be `null`.
+- For a field rule on one attribute throw `ValidationException` (400) with the attribute name as `location`; the location is optional.
+- To refuse for permission reasons (write guards) use `InterceptorCallBusinessException` with your own stable `errorCode`; it is a business refusal, not a field error.
+- For the full mapping see [Error Handling Guide](error-handling-guide.md#how-the-runtime-maps-exceptions-to-http).
+
+## Reading the Principal and Actor in an Interceptor
+
+The dispatcher keeps request context in an exchange map. The key constants are defined on `hu.blackbelt.judo.dispatcher.api.Dispatcher`: `PRINCIPAL_KEY` (`"__principal"`), `ACTOR_KEY` (`"__actor"`), `INSTANCE_KEY_OF_BOUND_OPERATION` (`"__this"`) and `ENTITY_TYPE_MAP_KEY` (`"__entityType"`). The signed identifier of an instance is read from the `__signedIdentifier` payload key. Actor and principal variables are also available to JQL and Java through `VariableResolver.resolve(String.class, "ACTOR", "identifier")` (see [Custom Operations](custom-operations.md)).
+
 ## Operation FQN Format Reference
 
 Operation Fully Qualified Names follow specific patterns:
 
 | Operation Type | FQN Pattern | Example |
 |----------------|-------------|---------|
-| Create (Transfer) | `[model_name].[actor_package].[ActorName]#_createInstance[EntityPlural]` | `myapp.entity_admin.Admin#_createInstanceEntities` |
-| Create (Contained) | `[model_name].[entity_package].[Parent]#_createInstance[ChildEntityPlural]` | `myapp.data_management.DataGroup#_createInstanceDataItems` |
-| Update | `[model_name].[entity_package].[Entity]#_updateInstance[FullEntityFQN]` | `myapp.access_management.AccessRole#_updateInstanceMyapp_access_management_AccessRole` |
-| Delete | `[model_name].[entity_package].[Entity]#_deleteInstance[FullEntityFQN]` | `myapp.access_management.AccessRole#_deleteInstanceMyapp_access_management_AccessRole` |
-| Add Reference | `[model_name].[entity_package].[Entity]#_addReference[RelationshipName]` | `myapp.access_management.AccessRole#_addReferenceAccessPermissions` |
-| Remove Reference | `[model_name].[entity_package].[Entity]#_removeReference[RelationshipName]` | `myapp.access_management.AccessRole#_removeReferenceAccessPermissions` |
-| Set Reference | `[model_name].[entity_package].[Entity]#_setReference[RelationshipName]` | `myapp.access_management.AccessRole#_setReferenceAccessPermissions` |
-| Custom Operation | `[model_name].[entity_package].[Entity]#[operationName]` | `myapp.entity_management.Entity#toggleStatus` |
+| Create (Transfer) | `[model_name].[actor_package].[ActorName]#_createInstance[EntityPlural]` | `<app>.entity_admin.Admin#_createInstanceEntities` |
+| Create (Contained) | `[model_name].[entity_package].[Parent]#_createInstance[ChildEntityPlural]` | `<app>.data_management.DataGroup#_createInstanceDataItems` |
+| Update | `[model_name].[entity_package].[Entity]#_updateInstance[FullEntityFQN]` | `<app>.access_management.AccessRole#_updateInstance<app>_access_management_AccessRole` |
+| Delete | `[model_name].[entity_package].[Entity]#_deleteInstance[FullEntityFQN]` | `<app>.access_management.AccessRole#_deleteInstance<app>_access_management_AccessRole` |
+| Add Reference | `[model_name].[entity_package].[Entity]#_addReference[RelationshipName]` | `<app>.access_management.AccessRole#_addReferenceAccessPermissions` |
+| Remove Reference | `[model_name].[entity_package].[Entity]#_removeReference[RelationshipName]` | `<app>.access_management.AccessRole#_removeReferenceAccessPermissions` |
+| Set Reference | `[model_name].[entity_package].[Entity]#_setReference[RelationshipName]` | `<app>.access_management.AccessRole#_setReferenceAccessPermissions` |
+| Custom Operation | `[model_name].[entity_package].[Entity]#[operationName]` | `<app>.entity_management.Entity#toggleStatus` |
 
 **Finding Operation FQNs:**
 

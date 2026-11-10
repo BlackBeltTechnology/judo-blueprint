@@ -1,3 +1,8 @@
+---
+title: Backend Authentication Guide
+description: AuthenticationInterceptor, the principal operation, token attribute extraction and just-in-time user provisioning.
+---
+
 # Authentication Guide
 
 ## Overview
@@ -97,8 +102,10 @@ When a user authenticates, their JWT token contains claims that are passed to th
 
 The following example demonstrates how to create a user in the local application database on their first login — appropriate when the actor is **not** using the mapped + managed shape, or when extra fields must be populated beyond the declared `<claims>`.
 
+### Provisioning Interceptor Code
+
 ```java
-@Component(property = {"judo.model.name=MyApp"})
+@Component(property = {"judo.model.name=<app>"})
 public class AutoUserCreationAuthenticationInterceptor implements AuthenticationInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(AutoUserCreationAuthenticationInterceptor.class);

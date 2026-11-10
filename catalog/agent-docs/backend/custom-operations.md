@@ -1,3 +1,8 @@
+---
+title: Custom Operations
+description: Implementing custom operation logic: .default files, OSGi registration, rules and examples.
+---
+
 # Custom Operations
 
 > [!IMPORTANT]
@@ -239,6 +244,15 @@ public class [OperationName]CustomImplementation implements [OperationInterface]
 - `service = [OperationInterface].class` - Registers implementation as OSGi service
 - Implements the operation interface generated from your model
 
+## Rules for Custom Operations
+
+- **Declare faults in the model.** A custom-implemented operation that throws a modeled fault must declare it (`<faults>` in ESM, `throws` in JSL). Without the declaration the generated SDK interface has no `throws` clause and the build fails with `not compatible with throws clause`. See [Error Handling Guide](error-handling-guide.md#modeled-faults).
+- **Interceptors do not protect custom operations.** Built-in-operation interceptors and write guards never fire for custom, MAPPED or script operations. Put permission checks inside each `*CustomImplementation` ([Interceptors](interceptors.md#which-operations-are-intercepted)).
+- **Operation to implementation mapping.** Each `<Op>CustomImplementation` implements the generated interface `...operation.<model>.<path>.<Op>`; the interface path names the model operation.
+- **Stateful flag.** A bound operation must keep parameters compatible with every inherited operation of the same name. An implementation of an inherited abstract operation must be `stateful`, and the flag must match every overloaded operation that has an implementation.
+- **`G E N E R A T E D` header.** A `*CustomImplementation.java` can still carry the stub `G E N E R A T E D` header although it is fully implemented. Compare the file with its `.java.default` sibling (the stub only throws `UnsupportedOperationException`) instead of trusting the header.
+- **Operation inputs on the wire.** Exposed operations arrive with the reserved keys described in [Platform Behavior Reference](platform-behavior-reference.md#reserved-payload-keys).
+
 ## Example 1: Simple Toggle Operation
 
 **Pattern**: Boolean toggle with validation
@@ -248,11 +262,11 @@ public class [OperationName]CustomImplementation implements [OperationInterface]
 public class ToggleStatusCustomImplementation implements ToggleStatus {
 
     @Reference EntityDao entityDao;
-    @Reference AccessValidationDao accessValidationDao;
+    @Reference EntityValidationDao validationDao;   // illustrative: a DAO for model-defined validation queries
     @Reference VariableResolver variableResolver;
 
     @Override
-    public void accept(Entity _this) {
+    public void accept(Entity _this) throws MinimumPermissionsViolatedException {  // fault declared on the model operation
         // Security check: prevent self-modification
         if (!_this.getIdentifier().equals(variableResolver.resolve(String.class, "ACTOR", "identifier"))) {
             Entity thiss = entityDao.getById(_this.identifier()).orElseThrow();
@@ -262,13 +276,14 @@ public class ToggleStatusCustomImplementation implements ToggleStatus {
             // Business rule validation after toggle
             if (!thiss.getStatus()) {
                 Boolean activeEntitiesWithAtLeastManagementPermission =
-                    accessValidationDao.queryActiveEntitiesWithAtLeastManagementPermission().orElse(false);
+                    validationDao.queryActiveEntitiesWithAtLeastManagementPermission().orElse(false);
                 Boolean activeEntitiesWithAtLeastAdminPermission =
-                    accessValidationDao.queryActiveEntitiesWithAtLeastAdminPermission().orElse(false);
+                    validationDao.queryActiveEntitiesWithAtLeastAdminPermission().orElse(false);
 
                 if (!(activeEntitiesWithAtLeastManagementPermission && activeEntitiesWithAtLeastAdminPermission)) {
-                    throw new IllegalStateException(
-                        "Maintain minimum required entities with specific permissions");
+                    // IllegalStateException would reach the client as a generic 500. Use a fault
+                    // declared on the operation (generated checked exception, HTTP 422):
+                    throw new MinimumPermissionsViolatedException("MINIMUM_PERMISSIONS_REQUIRED", details);
                 }
             }
         }
@@ -281,7 +296,7 @@ public class ToggleStatusCustomImplementation implements ToggleStatus {
 - `VariableResolver` for accessing current actor context
 - Security validation (prevent self-modification)
 - Business rule validation (ensure minimum required entities)
-- Throwing exceptions to prevent invalid state
+- Throwing a declared fault to prevent invalid state (see [Error Handling Guide](error-handling-guide.md#modeled-faults))
 
 ## Example 2: Complex Multi-Entity Operation
 

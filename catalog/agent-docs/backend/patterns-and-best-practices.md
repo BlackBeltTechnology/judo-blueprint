@@ -1,3 +1,8 @@
+---
+title: Backend Patterns and Best Practices
+description: OSGi patterns, request context, custom data types, validation and query patterns.
+---
+
 # Backend Patterns and Best Practices
 
 This document provides a catalog of common and advanced design patterns for backend developers writing custom Java code for a JUDO application. These patterns represent best practices for building robust, maintainable, and scalable business logic.
@@ -187,7 +192,7 @@ Beyond modeled business faults, you can implement validation logic in Java in tw
 
 ### Throwing Standard Exceptions
 -   **Use Case**: You need to stop an operation for a common error case, like invalid input, a missing object, or a permissions failure.
--   **Concept**: JUDO provides a set of standard, unmodeled runtime exceptions in the `hu.blackbelt.judo.services.core.exception` package. Throwing these from your Java code will immediately stop execution and return a standard HTTP error code.
+-   **Concept**: JUDO provides a set of standard, unmodeled runtime exceptions in the `hu.blackbelt.judo.runtime.core.exception` package (module `judo-runtime-core`). They are `ClientException` subclasses (unchecked); `ValidationException` takes a collection of `ValidationResult`, the other three take a single `ValidationResult`. Business rule violations that the client should handle as typed faults are **modeled faults** (HTTP 422), see the [Error Handling Guide](error-handling-guide.md). Throwing these from your Java code will immediately stop execution and return a standard HTTP error code.
 -   **Implementation**: In your Java operation implementation, throw one of the standard exceptions.
     *   `ValidationException` -> `HTTP 400 Bad Request`
     *   `AuthenticationRequiredException` -> `HTTP 401 Unauthorized`
@@ -203,14 +208,16 @@ Beyond modeled business faults, you can implement validation logic in Java in tw
     }
     ```
 
+The platform's own checks report codes such as `MISSING_REQUIRED_ATTRIBUTE`, `MISSING_REQUIRED_RELATION`, `MAX_LENGTH_VALIDATION_FAILED`, `PATTERN_VALIDATION_FAILED` and `NOT_ACCEPTED_BY_RANGE` (constants on `Validator`). The runtime enforces required attributes and relations itself, so custom code should not repeat those checks.
+
 ### Creating Generic, Model-Driven Validators
 -   **Use Case**: You have a validation rule that should apply *everywhere* a certain model element is used. For example, any attribute of type `FutureTime` must always be in the future.
 -   **Concept**: This is an advanced pattern that allows you to create a reusable, platform-level validation rule that is triggered automatically based on the model.
 -   **Implementation**:
     1.  **Model**: Create a specific element to trigger the validator, such as a custom data type (e.g., `FutureTime`).
-    2.  **Validator Class**: Create an OSGi component that implements the `hu.blackbelt.judo.services.dispatcher.validators.Validator` interface.
-    3.  **`isApplicable()` method**: In this method, you write logic to tell the platform which model elements your validator should run against (e.g., "all attributes of type `FutureTime`").
-    4.  **`validateValue()` method**: This method contains the actual validation logic. If the validation fails, it should return a collection of `ValidationResult` objects.
+    2.  **Validator Class**: Create a component that implements `hu.blackbelt.judo.runtime.core.validator.Validator` (module `judo-runtime-core-validator`).
+    3.  **`isApplicable(EStructuralFeature feature)` method**: In this method, you write logic to tell the platform which model elements your validator should run against (e.g., "all attributes of type `FutureTime`").
+    4.  **`validateValue(Payload payload, EStructuralFeature feature, Object value, Map<String, Object> context)` method**: This method contains the actual validation logic. If the validation fails, it should return a collection of `ValidationResult` objects.
 -   **Result**: The JUDO platform will automatically find and execute your validator for all applicable attributes in every incoming request, providing a powerful, DRY (Don't Repeat Yourself) way to enforce common constraints.
 
 ---

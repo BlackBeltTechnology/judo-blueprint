@@ -1,3 +1,8 @@
+---
+title: Debugging and Monitoring Guide
+description: Hot deployment, logging, X-Exchange-Id correlation, remote debugging and health checks.
+---
+
 # Debugging, Monitoring, and Performance Guide
 
 ## Overview
@@ -79,6 +84,12 @@ JUDO automatically enriches every log message with a request-specific context, w
 | `RequestExchangeId` | A unique identifier for the entire HTTP request. |
 | `operation` | The fully qualified name of the JUDO operation being executed. |
 | `user` | The username from the OAuth 2.0 access token. |
+
+### Request Correlation with `X-Exchange-Id`
+Two built-in CXF interceptors correlate a request across client and server logs. `ExchangeIdDecorator` (incoming, `Phase.RECEIVE`) assigns a UUID to the CXF exchange (key `exchangeId`) and publishes it in the SLF4J MDC as `RequestExchangeId`. `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header; its fault handler delegates to the normal handler, so error responses carry the header as well. Quote that header value when you search server logs for a failing request. It is the same id the CXF logging feature uses.
+
+### Log Messages Emitted by the Dispatcher
+Only these dispatcher messages exist in the runtime: `Operation {} completed in {} ms` (`DefaultDispatcher`, per operation) and `Unable to rollback transaction` (`TransactionalOperationCall`). Do not search for other strings such as "Dispatching operation" or "Resolved actor"; they are not logged. To see operation names add your own interceptor that logs `AsmUtils.getOperationFQName(operation)` (see [Interceptors](interceptors.md)).
 
 ### Changing Log Levels at Runtime
 You can dynamically change log levels for any package or class without restarting the application by using the Karaf console.

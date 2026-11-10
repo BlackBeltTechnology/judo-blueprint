@@ -1,3 +1,8 @@
+---
+title: Backend Testing Guide
+description: Unit testing custom operations with mocks and running integration tests.
+---
+
 # Backend Testing Guide
 
 ## Overview
@@ -29,7 +34,7 @@ class ToggleStatusCustomImplementationTest {
     private EntityDao entityDao;
 
     @Mock
-    private AccessValidationDao accessValidationDao;
+    private EntityValidationDao validationDao;   // illustrative DAO for model-defined validation queries
 
     @Mock
     private VariableResolver variableResolver;
@@ -61,11 +66,11 @@ class ToggleStatusCustomImplementationTest {
             .thenReturn("admin@example.com");
         when(entityDao.getById(any())).thenReturn(Optional.of(entity));
         when(entityDao.update(any())).thenReturn(entity);
-        when(accessValidationDao.queryActiveEntitiesWithAtLeastManagementPermission())
+        when(validationDao.queryActiveEntitiesWithAtLeastManagementPermission())
             .thenReturn(Optional.of(false));
 
-        // Assert that the correct exception is thrown when the business rule is violated.
-        assertThrows(IllegalStateException.class, () -> {
+        // Assert that the declared fault (generated checked exception) is thrown when the rule is violated.
+        assertThrows(MinimumPermissionsViolatedException.class, () -> {
             implementation.accept(entity);
         });
     }
@@ -80,12 +85,16 @@ For a complete guide on how to set up, write, and run integration tests, please 
 
 ### Running Integration Tests
 
-You can run the full suite of integration tests by activating the `integration-tests` Maven profile.
+The generated root project has no `integration-tests` Maven profile (the profiles it defines are for building: `build-model`, `build-schema`, `build-sdk`, `build-karaf`, `build-frontend-*`, `build-docker`, `build-e2e`, ...). Integration tests live in a separate test project that uses the runtime testkit and run with `mvn test` after the application artifacts were installed. Follow the [Integration Testing Guide](../integration-testing/README.md) for the exact commands.
 
 ```bash
-# From the project root
-mvn clean install -Pintegration-tests
+# Build and install the application first, then run the tests of the separate test project
+mvn clean install -DskipTests
+cd application/integration-test
+mvn test
 ```
+
+Unit tests for interceptors and custom operations that mock DAOs run in the module they belong to with `mvn test`.
 
 ---
 

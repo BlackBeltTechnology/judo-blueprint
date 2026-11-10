@@ -1,3 +1,8 @@
+---
+title: Backend Architectural Patterns
+description: Multi-tenancy filtering, custom service layer and state machine patterns for JUDO backends.
+---
+
 # Architectural Patterns
 
 This document provides a catalog of high-level architectural patterns for building robust, maintainable, and scalable JUDO applications.

@@ -1,3 +1,8 @@
+---
+title: Backend Type System Guide
+description: Service layer versus entity layer types and converting between them.
+---
+
 # Understanding JUDO's Two-Layer Type System
 
 > [!IMPORTANT]

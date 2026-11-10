@@ -1,3 +1,8 @@
+---
+title: Data Access Guide
+description: DAO queries, filters, masks, generated DAO behaviour and known issues.
+---
+
 # Data Access Guide
 
 This guide provides a comprehensive overview of data access patterns in a JUDO application. It covers how to inject Data Access Objects (DAOs), perform queries, and use masks for performance optimization.
@@ -473,6 +478,66 @@ List<Address> addresses = addressDao.query()
 
 ---
 
+## Generated DAO Behaviour and Known Issues
+
+### Which Types Get a Full DAO
+
+The generated DAO interface emits full CRUD only for **mapped, non-abstract** transfer object types: `create`/`createAll` (with and without a mask), `getById`, `existsById`, `getAll`, `countAll`, `delete`, `query()`, and per-relation `create`/`set`/`unset`/`add`/`remove`/range methods (subject to the relation's allowed-operation flags). Unmapped transfer objects and unmapped single relations get only `query<...>()` accessors.
+
+### Unmapped (Static) Data and Navigations
+
+Unmapped attributes and relations are read through generated static-data DAO interfaces:
+
+- `selectValue()` (or `selectValue(parameter)` when the query has a parameter) returns the attribute's primitive type; a missing value is `null`.
+- `query()` returns the collection of a static navigation; `selectOne()` returns the single value (parameter overloads exist when the navigation has a parameter).
+
+### Absent, Null and Empty Are Different
+
+JUDO distinguishes a missing key, a `null` value and an empty value. Generated getters follow the model's `required` flag:
+
+- `required = true`: plain getter (`Boolean getMinimumOfferPriceEnabled()`). A `null` means the caller omitted the field; read it directly instead of adding Java-side null workarounds.
+- `required = false`: `Optional<T>` getter (`Optional<FileType> getReviewReportMarkdownTemplate()`).
+- DTO getters check `containsKey`, so "key missing" and "key present with null" differ.
+
+### Clearing a Relation: `unset`, Not `set(null)`
+
+The single-relation setter `set<Relation>(object, relatedObject)` calls `relatedObject.identifier()` without a null check, so passing `null` throws a `NullPointerException`. This is by design: set needs a value. Clear an optional single relation with `unset<Relation>(object)` (generated when unsetting is allowed). `add`/`remove` on multi-valued relations also call `identifier()` per element, so a `null` element fails.
+
+### Filtering for "Not Set" on Optional Booleans
+
+`BooleanFilter` has only `isTrue()` and `isFalse()`. To find rows where an optional boolean is unset, use the raw JQL escape hatch of the query builder, `filterBy(String customFilter)`, with `!isUndefined()` / `!isDefined()`:
+
+```java
+dao.query().filterBy("this.withMaterial!isUndefined()").selectList();  // raw JQL; verify the exact expression against your model
+```
+
+Alternatively count all rows minus `isTrue` minus `isFalse`.
+
+### Known Issues of the Generated DAO
+
+- **`query<Attribute>()` on an enumeration attribute** can fail with a `ClassCastException` (`Integer` cannot be cast to the enum): the runtime delivers the ordinal. Workaround: read the value through the DTO or convert with `<Enum>.getByOrdinal(...)`. The same can happen when a navigation returns an enumeration value; check the result cast after adding an enum attribute to a relation.
+- **Derived attribute navigating through an inherited member** can produce a query that is missing a JOIN.  No generator-side workaround is known; check the generated SQL when a derived value comes back empty.
+- Generated DAO code lives under `target/` and is not in git; when debugging a stack trace, open the generated `<Entity>DaoImpl` there.
+
+### Pagination
+
+A list call without an explicit seek returns **all** matching rows; pagination is opt-in. A full pull is fine for small per-user data sets.
+
+### Low-Level DAO and `QueryCustomizer`
+
+For calls the fluent SDK cannot express, the generic `DAO` accepts a `QueryCustomizer` (Lombok `@Builder`) with `filter` (a JQL expression string), `orderBy` entries (`OrderBy.attribute` is `@NonNull`), `seek`, `withoutFeatures`, `mask`, `parameters` and `instanceIds`.
+
+### The `Payload` Type
+
+`Payload` (`hu.blackbelt.judo.dao.api.Payload`) is a `Map<String, Object>` with static factories `asPayload(map)`, `map(k1, v1, ...)` (overloads for 1 to 20 key/value pairs), `map(Entry...)` and `entry(k, v)`, and typed accessors `getAs(Class<T>, String)`, `getAsPayload(String)` and `getAsCollectionPayload(String)`. `getAs` returns `null` for an absent key, so do not unbox it directly (`Boolean.TRUE.equals(...)`).
+
+### Native SQL from a Custom Service
+
+There is no DAO method for native SQL. A query that JQL and `QueryCustomizer` cannot express (for example a join-table lookup) needs a JDBC `DataSource` injected into your own component with `@Reference`, and the test kit must bind it as well; no platform precedent exists, so keep such code isolated in one service.
+
+---
+
 ## See Also
+- [Platform Behavior Reference](platform-behavior-reference.md) - Signed identifiers, optimistic locking, reserved payload keys.
 - [Custom Operations](custom-operations.md) - For how to apply these patterns in your business logic.
 - [Patterns and Best Practices](patterns-and-best-practices.md) - For other common backend patterns.

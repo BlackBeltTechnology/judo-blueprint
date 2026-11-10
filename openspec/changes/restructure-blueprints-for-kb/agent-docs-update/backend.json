@@ -1,0 +1,1104 @@
+{
+ "area": "backend",
+ "items": {
+  "BA-001": {
+   "action": "already-correct",
+   "file": null,
+   "heading": "",
+   "note": "decision recorded; known-issue notes added where behaviour is covered"
+  },
+  "BA-002": {
+   "action": "already-correct",
+   "file": null,
+   "heading": "",
+   "note": "ownership decision, no doc change"
+  },
+  "BA-003": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Keycloak theme: belongs to deployment/auth docs, not backend"
+  },
+  "BA-004": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "kb frontmatter facts: authoring/skill concern"
+  },
+  "BA-005": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "process note about template drift"
+  },
+  "BA-006": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "inventory of judo-ng agent-docs; no doc change"
+  },
+  "BA-007": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Custom REST Endpoints and CXF",
+   "note": "CXF interceptor properties, X-JAXRS-Provider, shared ObjectMapper filter"
+  },
+  "BA-008": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Low-Level DAO and QueryCustomizer",
+   "note": "builder fields"
+  },
+  "BA-009": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "filestore: deployment area"
+  },
+  "BA-010": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "OpenAPI generation: deployment area"
+  },
+  "BA-011": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "frontend auth behaviour"
+  },
+  "BA-012": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Keycloak theme: belongs to deployment/auth docs, not backend"
+  },
+  "BA-013": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "IDE tooling"
+  },
+  "BA-014": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Keycloak Users and the Entity Store",
+   "note": "invitation mails sent by Keycloak, SMTP rewrite, mailpit"
+  },
+  "BA-015": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "E2E orchestration: e2e-testing area"
+  },
+  "BA-016": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Postman/OpenAPI testing: integration/e2e area"
+  },
+  "BA-017": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Keycloak theme: belongs to deployment/auth docs, not backend"
+  },
+  "BA-018": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "Guice DAO module generation not verified and generator-internal"
+  },
+  "BA-019": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "OpenAPI client generator: deployment area"
+  },
+  "BA-020": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Keycloak Users and the Entity Store",
+   "note": "DB row can be missing"
+  },
+  "BA-021": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal skill/design docs"
+  },
+  "BA-022": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal skill/design docs"
+  },
+  "BA-023": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal skill/design docs"
+  },
+  "BA-024": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-025": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-026": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-027": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-028": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-029": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-030": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-031": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-032": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-033": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-034": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-035": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-036": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-037": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "judo-generator-commons agent-docs corrections; not a backend agent-doc"
+  },
+  "BA-038": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "heading": "Request Correlation with X-Exchange-Id",
+   "note": ""
+  },
+  "BA-039": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Range and Choice Operations",
+   "note": ""
+  },
+  "BA-040": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "osgi-liquibase executor: deployment/schema area"
+  },
+  "BA-041": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Pagination",
+   "note": ""
+  },
+  "BA-042": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Absent, Null and Empty Are Different",
+   "note": ""
+  },
+  "BA-043": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/internationalization-guide.md",
+   "heading": "Localized Business Error Transfer Objects",
+   "note": ""
+  },
+  "BA-044": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator fragment layouts: deployment/build-process area; also unvalidated"
+  },
+  "BA-045": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "rackinspect conventions; only the generic mapping rule was applied (BA-046)"
+  },
+  "BA-046": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/custom-operations.md",
+   "heading": "Rules for Custom Operations",
+   "note": "operation-to-implementation interface path"
+  },
+  "BA-047": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Optimistic Locking and __version",
+   "note": "meta UPDATE only"
+  },
+  "BA-048": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Keycloak defaults: deployment area"
+  },
+  "BA-049": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "REST Wire Contract",
+   "note": "verb suffixes verified against generator templates; DTO metadata keys"
+  },
+  "BA-050": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "operator codes not verified; only INVALID_QUERY_MASK code listed in error guide"
+  },
+  "BA-051": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "EXPORT/Jxls SPI: UnsupportedExportImpl binding seen in JudoDefaultModule but JxlsExport not verified"
+  },
+  "BA-052": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Custom REST Endpoints and CXF",
+   "note": "jaxrs.resource.* keys; deferred-startup detail not added"
+  },
+  "BA-053": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "(whole file)",
+   "note": "new reference file covers signed ids, locking, REST contract, upload token, time zones; JQL/JCL reference, MUI license, CORS left to other areas"
+  },
+  "BA-054": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Signed Identifiers",
+   "note": "BOUND_OPERATION_INSTANCE_IS_IMMUTABLE verified DefaultDispatcher.java:662"
+  },
+  "BA-055": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/internationalization-guide.md",
+   "heading": "Localization of Validation Messages by the Runtime",
+   "note": ""
+  },
+  "BA-056": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Clearing a Relation: unset, Not set(null)",
+   "note": ""
+  },
+  "BA-057": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Filtering for Not Set on Optional Booleans",
+   "note": ""
+  },
+  "BA-058": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Absent, Null and Empty Are Different",
+   "note": ""
+  },
+  "BA-059": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Unmapped (Static) Data and Navigations",
+   "note": ""
+  },
+  "BA-060": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "The Payload Type",
+   "note": ""
+  },
+  "BA-061": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Which Types Get a Full DAO",
+   "note": ""
+  },
+  "BA-062": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/custom-operations.md",
+   "heading": "Rules for Custom Operations",
+   "note": "declared faults; also error guide"
+  },
+  "BA-063": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Throwing a Business Error from an Interceptor",
+   "note": ""
+  },
+  "BA-064": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Which Operations Are Intercepted",
+   "note": ""
+  },
+  "BA-065": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Which Operations Are Intercepted / Ordering and Combining",
+   "note": "registration order, last non-null wins"
+  },
+  "BA-066": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Known Issues of the Generated DAO",
+   "note": ""
+  },
+  "BA-067": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Known Issues of the Generated DAO",
+   "note": ""
+  },
+  "BA-068": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Variable Providers",
+   "note": ""
+  },
+  "BA-069": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Custom Sequences",
+   "note": ""
+  },
+  "BA-070": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "GenModel generator config: not backend dev"
+  },
+  "BA-071": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Tuning System Properties",
+   "note": ""
+  },
+  "BA-072": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Modeled Faults",
+   "note": "JSL error/throws mentioned"
+  },
+  "BA-073": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/custom-operations.md",
+   "heading": "Rules for Custom Operations",
+   "note": "stateful flag rule"
+  },
+  "BA-074": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Custom REST Endpoints and CXF",
+   "note": ""
+  },
+  "BA-075": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Custom REST Endpoints and CXF",
+   "note": ""
+  },
+  "BA-076": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Custom REST Endpoints and CXF",
+   "note": "Jackson keys only"
+  },
+  "BA-077": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "CxfContext wiring not added"
+  },
+  "BA-078": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "heading": "Request Correlation with X-Exchange-Id",
+   "note": ""
+  },
+  "BA-079": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Variable Providers",
+   "note": ""
+  },
+  "BA-080": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Optimistic Locking and __version",
+   "note": ""
+  },
+  "BA-081": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Optimistic Locking and __version",
+   "note": ""
+  },
+  "BA-082": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "REST Wire Contract",
+   "note": ""
+  },
+  "BA-083": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "tatami transformation internals: model area"
+  },
+  "BA-084": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "tatami transformation internals: model area"
+  },
+  "BA-085": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "tatami transformation internals: model area"
+  },
+  "BA-086": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "tatami transformation internals: model area"
+  },
+  "BA-087": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/internationalization-guide.md",
+   "heading": "Localization of Validation Messages by the Runtime",
+   "note": ""
+  },
+  "BA-088": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "REST Wire Contract",
+   "note": ""
+  },
+  "BA-089": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Unmapped (Static) Data and Navigations",
+   "note": ""
+  },
+  "BA-090": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Which Types Get a Full DAO",
+   "note": ""
+  },
+  "BA-091": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Clearing a Relation: unset, Not set(null)",
+   "note": ""
+  },
+  "BA-092": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Best Practices / Validation Strategy",
+   "note": "multi-result shape"
+  },
+  "BA-093": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Validation Strategy",
+   "note": ""
+  },
+  "BA-094": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Time and Time Zones",
+   "note": "default zone from template is UTC (docs example Budapest was only a deployment value)"
+  },
+  "BA-095": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Filtering for Not Set on Optional Booleans",
+   "note": ""
+  },
+  "BA-096": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Known Issues of the Generated DAO",
+   "note": ""
+  },
+  "BA-097": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "runtime performance fix"
+  },
+  "BA-098": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Reading the Principal and Actor in an Interceptor",
+   "note": ""
+  },
+  "BA-099": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Custom REST Endpoints and CXF",
+   "note": ""
+  },
+  "BA-100": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Signed Identifiers",
+   "note": "immutable flag and optimistic locking; full transfer-object lifecycle belongs to model docs"
+  },
+  "BA-101": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Configuration Mapper for Custom Parameters",
+   "note": ""
+  },
+  "BA-102": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Tuning System Properties",
+   "note": "EsmUtilsCacheExpiration not found in source, omitted"
+  },
+  "BA-103": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "IdentifierProvider not added"
+  },
+  "BA-104": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "REST Wire Contract",
+   "note": ""
+  },
+  "BA-105": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "API Error Code Reference",
+   "note": "codes verified in source"
+  },
+  "BA-106": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Reserved Payload Keys",
+   "note": ""
+  },
+  "BA-107": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "cited runtime.core.PayloadTraverser not found (dao-rdbms version is package-private)"
+  },
+  "BA-108": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Binary Upload Tokens",
+   "note": ""
+  },
+  "BA-109": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generation switches: model/deployment area"
+  },
+  "BA-110": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "mapper Coercer not added"
+  },
+  "BA-111": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "SDK generator parameters: deployment area"
+  },
+  "BA-112": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Optimistic Locking and __version",
+   "note": ""
+  },
+  "BA-113": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Native SQL from a Custom Service",
+   "note": ""
+  },
+  "BA-114": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/custom-operations.md",
+   "heading": "Rules for Custom Operations",
+   "note": "G E N E R A T E D header"
+  },
+  "BA-115": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract",
+   "note": ""
+  },
+  "BA-116": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/custom-operations.md",
+   "heading": "Example 1",
+   "note": "AccessValidationDao replaced in custom-operations, interceptors, testing-guide"
+  },
+  "BA-117": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Example Project Helpers (Not Platform API)",
+   "note": ""
+  },
+  "BA-118": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-119": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "create-min-max.sql bug"
+  },
+  "BA-120": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-121": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-122": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-123": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Ordering and Combining Several Interceptors",
+   "note": ""
+  },
+  "BA-124": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-125": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-126": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-127": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "heading": "Log Messages Emitted by the Dispatcher",
+   "note": ""
+  },
+  "BA-128": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-129": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-130": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-131": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-132": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "judo-ng internal AGENTS docs"
+  },
+  "BA-133": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "(whole file)",
+   "note": ""
+  },
+  "BA-134": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Ordering and Combining Several Interceptors",
+   "note": ""
+  },
+  "BA-135": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Backend-computed TO example",
+   "note": "getOperations(AsmModel), asmUtils field"
+  },
+  "BA-136": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/custom-operations.md",
+   "heading": "Example 1",
+   "note": ""
+  },
+  "BA-137": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Generated DAO Behaviour and Known Issues",
+   "note": ""
+  },
+  "BA-138": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Generated DAO Behaviour and Known Issues",
+   "note": ""
+  },
+  "BA-139": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Using Masks (Projections)",
+   "note": "mask section exists"
+  },
+  "BA-140": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Generated DAO Behaviour and Known Issues",
+   "note": ""
+  },
+  "BA-141": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "Generated DAO Behaviour and Known Issues",
+   "note": ""
+  },
+  "BA-142": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-143": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-144": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-145": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-146": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-147": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-148": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-149": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-150": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-151": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-152": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-153": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-154": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-155": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-156": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-157": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-158": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-159": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Platform Exceptions / Modeled Faults / How the Runtime Maps Exceptions to HTTP",
+   "note": ""
+  },
+  "BA-160": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/error-handling-guide.md",
+   "heading": "Modeled Faults",
+   "note": "PerformOperation example replaced"
+  },
+  "BA-161": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Pre-Call Interceptor Code",
+   "note": "Boolean.TRUE.equals"
+  },
+  "BA-162": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-163": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-164": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-165": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-166": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-167": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-168": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-169": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-170": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-171": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-172": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-173": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-174": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "The Interceptor Contract / Which Operations Are Intercepted / Throwing a Business Error",
+   "note": ""
+  },
+  "BA-175": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "Example 2",
+   "note": "illustrative generated operation FQN; unverifiable"
+  },
+  "BA-176": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/internationalization-guide.md",
+   "heading": "Pattern 3",
+   "note": "AUTO -> MANUAL"
+  },
+  "BA-177": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/internationalization-guide.md",
+   "heading": "Pattern 3",
+   "note": "amount check now <= 0"
+  },
+  "BA-178": {
+   "action": "unverified",
+   "file": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "heading": "Custom data type registration",
+   "note": "service properties of DataTypeManager not verified; left unchanged"
+  },
+  "BA-179": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Signed Identifiers",
+   "note": "placed in platform-behavior-reference.md"
+  },
+  "BA-180": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/testing-guide.md",
+   "heading": "Running Integration Tests",
+   "note": ""
+  },
+  "BA-181": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/testing-guide.md",
+   "heading": "Unit Testing",
+   "note": ""
+  }
+ },
+ "files": {
+  "catalog/agent-docs/backend/error-handling-guide.md": "rewritten: platform vs modeled errors, no project helpers as platform API, HTTP mapping, codes",
+  "catalog/agent-docs/backend/interceptors.md": "contract, built-in-only, ordering, InterceptorCallBusinessException, fixed examples",
+  "catalog/agent-docs/backend/platform-behavior-reference.md": "new: signed ids, locking, payload keys, wire contract, time zones, variables, sequences, REST",
+  "catalog/agent-docs/backend/data-access-guide.md": "generated DAO behaviour, known issues, Payload, unset/BooleanFilter",
+  "catalog/agent-docs/backend/custom-operations.md": "rules section, AccessValidationDao replaced, fault in example",
+  "catalog/agent-docs/backend/testing-guide.md": "AccessValidationDao, integration-tests profile",
+  "catalog/agent-docs/backend/internationalization-guide.md": "project-helper note, i18n runtime pipeline, bug fixes",
+  "catalog/agent-docs/backend/debugging-and-monitoring-guide.md": "X-Exchange-Id, dispatcher log messages",
+  "catalog/agent-docs/backend/patterns-and-best-practices.md": "exception package, Validator interface",
+  "catalog/agent-docs/backend/README.md": "links, frontmatter",
+  "(all backend)": "frontmatter added"
+ }
+}

@@ -1,3 +1,8 @@
+---
+title: Backend Internationalization Guide
+description: Backend i18n service, localized validation messages and translation files.
+---
+
 # Backend Internationalization (i18n) Guide
 
 ## Overview
@@ -56,7 +61,12 @@ public interface ApplicationI18n {
 
 ### Using I18n in Custom Operations
 
-**Pattern 1: Injecting I18n Service**
+> [!NOTE]
+> The examples below use `ExceptionUtils`, a **small helper class from the example project's own common module**. It is not part of the JUDO platform. Its methods only build platform objects: `createValidationResult(location, message)` returns a `hu.blackbelt.judo.dao.api.ValidationResult` (level `ERROR`, the message as code or detail), and `createValidationException(results)` returns `new hu.blackbelt.judo.runtime.core.exception.ValidationException(results)`. A sketch of the helper is in the [Error Handling Guide](error-handling-guide.md#example-project-helpers-not-platform-api). Business faults such as `GenericOperationErrorException` are likewise generated from a fault that the example project modeled itself; in your project you declare your own fault on the operation (see [Modeled Faults](error-handling-guide.md#modeled-faults)).
+>
+> Field errors are `ValidationException` (HTTP 400); business faults are modeled faults (HTTP 422). Neither can be thrown as a modeled fault from an interceptor (see [Interceptors](interceptors.md#throwing-a-business-error-from-an-interceptor)).
+
+#### Pattern 1: Injecting I18n Service
 
 ```java
 @Component(immediate = true, service = ToggleStatus.class)
@@ -67,11 +77,12 @@ public class ToggleStatusCustomImplementation implements ToggleStatus {
     @Reference ApplicationI18n i18n;  // Inject i18n service
 
     @Override
-    public void accept(Entity _this) throws GenericOperationErrorException {
+    public void accept(Entity _this) throws GenericOperationErrorException {  // generated from the project's own modeled fault
         Entity entity = entityDao.getById(_this.identifier()).orElseThrow();
 
         if (!entity.isActive()) {
-            // Use i18n for error message
+            // Use i18n for error message; createBusinessException is project code that
+            // builds the generated GenericOperationErrorException (title + details)
             throw ExceptionUtils.createBusinessException(
                 i18n.status_change_failed(),
                 i18n.entity_must_be_active()
@@ -84,7 +95,7 @@ public class ToggleStatusCustomImplementation implements ToggleStatus {
 }
 ```
 
-**Pattern 2: Validation with I18n Messages**
+#### Pattern 2: Validation with I18n Messages
 
 ```java
 @Component(immediate = true, service = ValidateEntity.class)
@@ -140,7 +151,7 @@ public class ValidateEntityCustomImplementation implements ValidateEntity {
 }
 ```
 
-**Pattern 3: Complex Validation with Multiple Messages**
+#### Pattern 3: Complex Validation with Multiple Messages
 
 ```java
 @Component(immediate = true, service = CreateExternalData.class)
@@ -169,7 +180,7 @@ public class CreateExternalDataCustomImplementation implements CreateExternalDat
             // Validate no existing record for date
             Optional<ExternalData> existingRecord = externalDataDao.query()
                 .filterByDateField(DateFilter.equalTo(dateField))
-                .filterByRecordingMethod(EnumerationFilter.equalTo(RecordingMethod.AUTO))
+                .filterByRecordingMethod(EnumerationFilter.equalTo(RecordingMethod.MANUAL))
                 .selectOne();
 
             if (existingRecord.isPresent()) {
@@ -194,7 +205,8 @@ public class CreateExternalDataCustomImplementation implements CreateExternalDat
 
         // Validate numeric field
         String numericFieldName = ExternalDataAttribute.AMOUNT.getName();
-        if (!NumberUtils.isPositiveNumber(input.getAmount()) || input.getAmount().compareTo(BigDecimal.ONE) < 0) {
+        // Reject zero and negative amounts (the message says "positive number")
+        if (input.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             validationResults.add(
                 ExceptionUtils.createValidationResult(
                     numericFieldName,
@@ -271,6 +283,20 @@ public interface ApplicationI18n {
 ---
 
 
+
+## Localization of Validation Messages by the Runtime
+
+Bean validation in the runtime goes through a Hibernate Validator OSGi component whose `MessageInterpolator` resolves each message at call time:
+
+1. `I18nService.getTemplate(message)` returns the localized template; if it returns `null` the raw message is used as is.
+2. Parameter tokens such as `{min}` and `{max}` are interpolated and EL expressions such as `${validatedValue}` are evaluated.
+3. Escaped literals `\{ \} \\ \$` are replaced by the literal characters.
+
+The locale comes from `LocaleProvider.getLocale()` when present, else the configured `defaultLocale`, else `Locale.getDefault()`. A malformed format falls back to the original message and logs a warning.
+
+## Localized Business Error Transfer Objects
+
+When a modeled fault or error transfer object carries a `message` and a `location` (for example an upload error with the offending row), both should be localized: let the backend language decide the active locale and return the translated message and location in the fault TO rather than a raw exception, so that the client can show the translated text at the right place.
 
 ## I18n Best Practices
 
