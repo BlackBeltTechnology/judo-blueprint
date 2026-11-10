@@ -1,80 +1,72 @@
 ---
 id: mutable-entity-update-pattern
 title: Mutable Entity Update Pattern
-description: Entities returned by DAO queries are mutable objects.
-aliases: []
-keywords: [mutable, update]
+description: Change a persisted entity by loading it from its DAO, calling setters on the returned object and passing it back to dao.update, optionally with a mask that limits the written fields.
+aliases: [fetch-mutate-update, setter then update, in-place entity update]
+keywords: [mutable, update, setter, dao, mask, partial update, optimistic locking, __version]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "status:established"]
 category: data-access
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-related: [builder-pattern-entity-creation, dao-fluent-query-filter, mask-field-projection]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Entities returned by DAO queries are mutable objects. Updates are performed by modifying fields directly on the returned entity object via setter methods, then calling `dao.update(entity)` to persist. This is a simple but effective pattern for in-place modifications without needing a separate update DTO.
+Update an existing record without a separate update object: the entity returned by the generated DAO is mutable, so the code changes it with setters and persists it with `dao.update`.
 
-## Structure
+## Practice
+
+### Platform: the DAO update call
+
+- Generated DAOs offer `update(entity)` and `update(entity, mask)`. `update` returns the persisted entity, so assign the result when the code continues with it ([DAO operations](../../agent-docs/backend/data-access-guide.md)).
+- With a mask, only the fields named in the mask are written ("Pattern 4: Partial Updates" in the [data access guide](../../agent-docs/backend/data-access-guide.md#using-masks-projections)). Without a mask the whole entity is updated.
+- Optimistic locking is on by default, but the version check runs only when the update payload contains `__version`; an entity loaded from the DAO and written back carries its version, while a payload rebuilt by hand without `__version` silently skips the guard. A stale version fails the update ([optimistic locking](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)).
+- Fields not included in the mask used to load an entity are `null` ([mask best practices](../../agent-docs/backend/data-access-guide.md#mask-best-practices)). The docs do not say what an unmasked update does with them, so for an entity loaded with a narrow mask pass an update mask naming only the changed fields.
+
+### Project practice: fetch, mutate, update
 
 ```java
-// Fetch entity
-Entity entity = entityDao.getById(id).get();
+// Example project code: Entity, EntityDao and EntityMask are generated types
+Entity entity = entityDao.getById(id).orElseThrow();
 
-// Modify fields
 entity.setStatus(NewStatus.VALUE);
-entity.setTimestamp(LocalDateTime.now());
-entity.setField(null);  // Clear a field
+entity.setChangedAt(LocalDateTime.now());
+entity.setNote(null);                       // clearing a field is a setter call
 
-// Persist changes
-entityDao.update(entity);
+entityDao.update(entity);                   // whole entity
+// or only some fields:
+entityDao.update(entity, EntityMask.entityMask().withStatus().withChangedAt());
 ```
 
-Note: No mask is used in this pattern (updates all fields). For partial updates, use `entityDao.update(entity, EntityMask.entityMask().withField())`.
+- Nine projects use this cycle for state transitions, timestamps, flags (archive, enable/disable, processed), and metadata.
+- Several projects pass a mask when the change touches few fields or when the entity was loaded with a mask; others call `update(entity)` for small entities.
+- Batch changes loop over the entities and call `update` for each; one project calls `updateAll` on a collection.
+- Operations that receive a transfer object copy its values onto the entity with setters (guarding optional inputs) and then update.
+- Updates inside interceptors (for example a last-login time) follow the same cycle; the entity is loaded, changed and saved.
 
-## Examples
+## Rationale
 
-### Trivia
-Used extensively: `user.get().setTmpCode(null); user.get().setCode(input.getCode()); userDao.update(user.get())` in Activate. `_this.setStatus(TestStatus.FINISHED); _this.setDuration(duration); testDao.update(_this)` in Submit. Direct setter mutation followed by DAO update call.
+- Simple and readable; no extra update type, and clearing a field is just a null assignment.
+- A mask makes the write explicit and cheaper for wide entities, and keeps unrelated fields untouched.
+- Cost: nothing stops accidental changes to the loaded object before it is saved, and an unmasked update of a partially loaded entity has undocumented behaviour (see the mask note above).
 
-### RackInspect
-Toggle operations use masked updates: `thiss.setActive(!thiss.getActive()); addressDao.update(thiss, AddressMask.addressMask());`. Permission recalculation uses dirty-checking before update: compares `user.toMap()` before and after changes to avoid unnecessary writes.
+## Example
 
-### ALBA
-State transitions use setter + masked update: `product.setState(ProductState.FINALIZED); productDao.update(product, ProductMask.productMask())`. Batch rollback in ApproveVersion iterates approved versions: `for (Product p : approved) { p.setState(ProductState.FINALIZED); productDao.update(p); }`.
+A state change in a custom operation: load the record by its identifier, set the new state and a timestamp, update with a mask naming only those two attributes. A cancellation loop does the same for each reservation in a list; a duplicate-detection job sets a flag on each match and saves the group in one `updateAll`. To avoid a write when nothing changed, compare before and after first ([[dirty-check-before-update]]).
 
-### mlszksz-platform
-User lastLogin update in interceptor: `user.setLastLogin(LocalDateTime.now()); userDao.update(user)`. Post lifecycle: `offer.setStatus(PostStatus.PUBLISHED); offer.setPublishedAt(LocalDateTime.now()); offerDao.update(offer)`. Configuration update: fetch single config entity, set fields from input (with null-safe Optional handling), then `configurationDao.update(config)`.
+## When to avoid
 
-### Ubives
-Organization registration toggle: `org.setIsRegistrationFeatureSupported(false); organizationDao.update(org, mask)`. Access role change: `access.setOrganizationAccessType(accessType); accessDao.update(access, mask)`. User enable/disable: `user.setEnabled(enabled); userDao.update(user, mask)`. All service methods follow the fetch-mutate-update cycle with masks.
-
-### ParkHere
-Reservation state changes: `reservation.setReservationStatus(ReservationStatus.EXPIRED); reservation.setEndTime(LocalTime.now()); reservation.setModified(LocalDateTime.now(Clock.systemUTC())); reservation.setModifiedBy(currentUser.getName()); reservationDao.update(reservation)`. Car archival: `car.setIsFavorite(false); car.setIsArchived(true); carDao.update(car)`. Holiday cancellation loops update each reservation's status to DELETED with masked update.
-
-### Indamedia-AdTrack
-Account updates: `account.setPlatform(input.getPlatform()); account.setIsActive(input.getIsActive()); accountTransferDao.update(account)`. Campaign updates: `campaign.setName(input.getName()); campaign.setTotalBudget(input.getTotalBudget()); campaign.setRemainingBudget(...); aggregatedCampaignTransferDao.update(campaign)`. Tracked campaign cost updates: `trackedCampaign.setTodaySpend(costInfo.getSpendToday()); trackedCampaign.setTotalCost(costInfo.getTotalSpendToDate()); trackedCampaignTransferDao.update(trackedCampaign)`.
-
-### judo-partner
-Partner soft delete: `partner.setTaxIdentifier(null); partner.setIsArchived(true); partnerDao.update(partner)`. Validation status updates: `partner.setValidationStatus(ValidationStatus.FAILED); partner.setValidationError(errorCode); partnerDao.update(partner)`. Batch duplicate detection: iterates all matching partners, sets `isDuplicateName` flag, then `partnerDao.updateAll(duplicates)` for batch persistence.
-
-### workflow-poc
-Context label update: `context.setLabel(input.getLabel().get()); contextDao.update(context)`. Event processing: `event.setProcessed(true); eventDao.update(event)`. Workflow version metadata: `workflowVersion.setModel(model); workflowVersion.setDiagram(diagramUtils.getDiagram(workflowVersion)); workflowVersion.setUploadTime(LocalDateTime.now()); workflowVersionDao.update(workflowVersion)`. Token timestamp: `_this.setTimestamp(LocalDateTime.now()); tokenDao.update(_this)`.
-
-## Trade-offs
-
-- Pros: Simple, intuitive, no separate update DTO needed, supports clearing fields via null
-- Cons: Updates all fields (no partial update without mask), mutable objects can lead to accidental state changes
-- Alternative: Masked updates via `dao.update(entity, mask)` for partial field updates (more performant)
+- For a create, use the builder ([[builder-pattern-entity-creation]]); update needs an existing, persisted entity.
+- When the entity was loaded with a narrow mask and you would write unloaded fields: use a mask that names only the changed fields.
+- When many rows change with one rule, a bulk operation or a model-level action is cheaper than loading and saving each row.
 
 ## Related
 
-- [[builder-pattern-entity-creation]]
-- [[dao-fluent-query-filter]]
-- [[mask-field-projection]]
-
+- [[builder-pattern-entity-creation]] — the creation counterpart
+- [[dao-fluent-query-filter]] — how the entity to update is found
+- [[mask-field-projection]] — masks for partial reads and writes
+- [[dirty-check-before-update]] — skip the write when nothing changed

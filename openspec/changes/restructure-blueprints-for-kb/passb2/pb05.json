@@ -1,0 +1,225 @@
+{
+ "batch": "pb05",
+ "entries": {
+  "multi-tenant-keycloak-realm": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "Keycloak realm multi-tenant authentication"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/deployment/osgi-runtime-services.md#realm-and-client-generation-from-the-model",
+    "catalog/agent-docs/deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration",
+    "catalog/agent-docs/backend/authentication-guide.md#several-keycloak-clients-in-one-realm",
+    "catalog/agent-docs/backend/authentication-guide.md#principal-to-actor-resolution-and-multi-client-mapping"
+   ],
+   "fixes": [
+    "added platform section: realms from model annotations, azp->actor, actor row per request",
+    "labelled RealmManager/KeycloakFactory as project code",
+    "removed legacy format"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "mutable-entity-update-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "DAO update entity payload update method mutable"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#using-masks-projections",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version"
+   ],
+   "fixes": [
+    "added platform section: update/update-with-mask, __version only checked when present",
+    "removed legacy format; added dirty-check link"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "osgi-karaf-bundle-architecture": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "OSGi Karaf bundle custom operation component judo.model.name",
+    "hot deployment bundle watcher Karaf"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/README.md#architecture",
+    "catalog/agent-docs/backend/custom-operations.md#osgi-component-registration-pattern",
+    "catalog/agent-docs/deployment/osgi-runtime-services.md#deploying-a-model-as-an-osgi-bundle",
+    "catalog/agent-docs/deployment/build-process.md",
+    "catalog/agent-docs/deployment/application-config.md"
+   ],
+   "fixes": [
+    "added platform section: generated vs custom, checksums, Judo-Models bundle, DS component, hot deploy",
+    "per-project example list condensed into project practice",
+    "legacy removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "permission-denormalization": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "access filter permission boolean attribute derived expression getVariable ACTOR",
+    "which operations are intercepted"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#actor-vs-principal-vs-user-context-variables",
+    "catalog/agent-docs/backend/data-access-guide.md#using-masks-projections"
+   ],
+   "fixes": [
+    "added: interceptors do not fire for custom ops so drift/guard caveat",
+    "labelled RecalculatePermissions as project code",
+    "added derived-attribute alternative and model blueprint link"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "personal-best-tracking": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "DAO query filterBy selectOne orderBy relation query method",
+    "transaction atomic operation custom operation concurrency"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#query-result-methods",
+    "catalog/agent-docs/backend/data-access-guide.md#common-query-mistakes"
+   ],
+   "fixes": [
+    "added platform section: relation query customizer, BooleanFilter, no ordering",
+    "added missing flag-clear update and concurrency caveat (undocumented)",
+    "legacy removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "product-versioning-container": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "create entity ForCreate builder relation set add reference DAO"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#query-result-methods",
+    "catalog/agent-docs/backend/data-access-guide.md#which-types-get-a-full-dao",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted"
+   ],
+   "fixes": [
+    "added platform section; add<Relation> method documented generically (per-relation add, flags)",
+    "added race caveat, ApproveVersion code, project-code labels",
+    "legacy removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "quartz-scheduled-job": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "Quartz scheduler scheduled job cron",
+    "UserTransaction transaction outside request thread background"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#osgi-component-registration-pattern",
+    "catalog/agent-docs/backend/interceptors.md#the-interceptor-contract",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted"
+   ],
+   "fixes": [
+    "stated agent-docs have no scheduler/Quartz coverage; entry is project practice",
+    "added interceptor-bypass and no ACTOR context caveats",
+    "labelled activator/job code as example project code; legacy removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "read-tracking-postcall-interceptor": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "postCall interceptor getter read operation payload async",
+    "which operations are intercepted"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#the-interceptor-contract",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors",
+    "catalog/agent-docs/backend/error-handling-guide.md#exceptions-thrown-from-interceptors"
+   ],
+   "fixes": [
+    "added: only built-in refresh is intercepted (lists/custom ops untracked)",
+    "added: async interceptors have no context so actor unavailable; sync runs in tx and rolls back",
+    "added InterceptorCallBusinessException-only throws",
+    "labelled project code; legacy removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "recaptcha-precall-interceptor": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "public unauthenticated operation anonymous actor exposed without login",
+    "which operations are intercepted"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#the-interceptor-contract",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#exceptions-thrown-from-interceptors",
+    "catalog/agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http"
+   ],
+   "fixes": [
+    "raw RuntimeException -> 500; documented InterceptorCallBusinessException instead",
+    "added: custom/script ops never intercepted so guard must be in operation",
+    "labelled project class; legacy removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "relation-based-entity-creation": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "create child through parent DAO createChildren containment relation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#which-types-get-a-full-dao",
+    "catalog/agent-docs/backend/data-access-guide.md#query-result-methods",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted"
+   ],
+   "fixes": [
+    "added platform section: per-relation create/add/set methods gated by allowed-operation flags",
+    "single-valued query returns entity directly",
+    "interceptor caveat; labelled generated names; legacy removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "relation-traversal-validation": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "create child through parent DAO createChildren containment relation",
+    "DAO query filterBy selectOne orderBy relation query method"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#query-result-methods",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md#rules-for-custom-operations",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version"
+   ],
+   "fixes": [
+    "added platform section: single vs multi-valued relation queries, fault vs ValidationException vs 500",
+    "added declare-fault and race/locking caveat",
+    "legacy removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

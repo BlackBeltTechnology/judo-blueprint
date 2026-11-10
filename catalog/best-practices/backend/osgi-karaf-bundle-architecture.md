@@ -1,98 +1,65 @@
 ---
 id: osgi-karaf-bundle-architecture
 title: OSGi Bundle Architecture with Karaf Deployment
-description: The application is structured as multiple OSGi bundles deployed to Apache Karaf.
-aliases: []
-keywords: [osgi, bundle, architecture, karaf, deployment]
+description: How a JUDO application is split into OSGi bundles deployed to Apache Karaf (generated model, sdk, internal, rest bundles plus custom app and interceptor bundles) and the extra modules projects add on top.
+aliases: [Karaf modules, bundle layout, application module structure]
+keywords: [osgi, bundle, architecture, karaf, deployment, module, feature, declarative services, hot deployment]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:bhs-global-operation", "project:mjsz", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: config
 status: established
 projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [custom-operation-osgi-component, generator-ignore-config-protection]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-The application is structured as multiple OSGi bundles deployed to Apache Karaf. Each module (app, interceptors, SDK, internal, REST, frontend) is a separate bundle. Services are discovered and wired at runtime via OSGi Declarative Services. Karaf features aggregate bundles for deployment. Development supports hot-reload via bundle watching.
+A JUDO application is a set of OSGi bundles running in Apache Karaf: platform-generated bundles plus a small number of custom bundles. Know which bundles are generated, which are yours, and where projects add their own modules, so custom code lands in the right place and survives regeneration.
 
-## Structure
+## Practice
 
-Bundle modules:
-- `application/model` -- Compiled model + script2operation mapping
-- `application/sdk` -- Generated SDK (API interfaces, DAOs, DTOs)
-- `application/internal` -- Generated internal wiring
-- `application/app` -- Custom operation implementations
-- `application/interceptors` -- Custom interceptors
-- `application/rest` -- Generated REST endpoints
-- `application/frontend-react` -- Frontend bundles
-- `application/karaf-features` -- Feature descriptors aggregating bundles
-- `application/karaf-offline` -- Offline Karaf distribution
+### Platform: generated and custom modules
 
-Karaf feature XML declares bundle dependencies and deployment order.
+- Generated, not to be edited: SDK interfaces and DAOs (`application/sdk`), internal SDK wrappers (`application/internal`), REST endpoints (`application/rest`) and the compiled model. Custom code lives in `application/app` (operation implementations) and `application/interceptors` ([backend overview](../../agent-docs/backend/README.md#architecture)).
+- Checksums guard the generated files: editing one makes the build fail unless the file is listed in `.generator-ignore`. Prefer generator parameters or the fragment-override hooks for pom and feature files ([build process](../../agent-docs/deployment/build-process.md)); see [[generator-ignore-config-protection]].
+- Custom implementations register as OSGi Declarative Services components with `@Component(immediate = true, service = <OperationInterface>.class)` ([OSGi component registration](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)); see [[custom-operation-osgi-component]]. An interceptor component must carry the property `judo.model.name=<app>` to bind to its model ([key patterns](../../agent-docs/backend/authentication-guide.md#key-patterns-in-the-example)).
+- A model is deployed either as raw files or as an OSGi bundle with a `Judo-Models` manifest header; the model bundle tracker then loads the `model/<name>-*.model` resources ([deploying a model as an OSGi bundle](../../agent-docs/deployment/osgi-runtime-services.md#deploying-a-model-as-an-osgi-bundle)).
+- `application/karaf-features` aggregates the bundles into a Karaf feature (extra bundles are added through the feature fragment hooks) and `application/karaf-offline` assembles the distribution; the Karaf `etc/*.cfg` files are overwritten on rebuild, so configure through environment variables ([application config](../../agent-docs/deployment/application-config.md)).
+- Hot deployment lets backend changes reach a running Karaf without a restart; `JUDO_PLATFORM_BUNDLE_WATCHER=false` turns bundle watching off, and `judo.sh reckless` is the fast development build ([build process](../../agent-docs/deployment/build-process.md#reckless-mode)). If a change does not show up, the [debugging guide](../../agent-docs/backend/debugging-and-monitoring-guide.md) covers the stale-bundle case.
 
-## Examples
+### Project practice: extra modules next to the generated ones
 
-### Trivia
-11 modules built as OSGi bundles. Karaf feature `trivia-application-judo-platform-prototype` based on `judo-platform-default-sdk`. Includes additional bundles: Apache Tika, PDFBox, JSON.org, Apache Sling. 8 application bundles deployed. Development uses `judo.sh reckless` for fast hot-reload.
+The baseline layout (model, sdk, internal, app, interceptors, rest, schema, docker, karaf-features, karaf-offline, plus frontend bundles) is the same across the projects. Larger projects add their own bundles:
 
-### RackInspect
-17+ modules including dedicated `common/` (shared services), `mnb-soap-client/` (SOAP integration), `report/` (XDocReport), `scheduler/` (Quartz), and `test/` (integration tests). Additional third-party bundles for CXF, Handlebars, JODConverter. Significantly more modular than Trivia.
+- `common` for shared services used by `app` and `interceptors` (mlszksz-platform, park-here, indamedia-adtrack, rackinspect).
+- `scheduler` for scheduled jobs and their activators ([[quartz-scheduled-job]]).
+- Integration-client bundles that isolate third-party libraries: SOAP, XSD-generated JAXB clients, Google Ads, email provider wrappers ([[external-api-adapter-pattern]]).
+- Keycloak bundles: admin client, magic-link authenticator, login theme ([[multi-tenant-keycloak-realm]], [[magic-link-authentication]]).
+- An `integration-test` module, and `generator-overrides` for pom and feature fragments.
+- Extra third-party bundles (Tika, PDFBox, CXF, Handlebars, JODConverter) are added to the Karaf feature.
+- When a bundle injects services from another custom bundle (for example interceptors using an app-level service), start order and package exports must allow it.
 
-### itracker
-Standard 9-module architecture (model, sdk, internal, app, interceptors, rest, docker, karaf-features, karaf-offline) plus 2 frontend bundles. Feature `itracker-application-judo-platform-prototype` includes Apache Tika and PDFBox. Interceptors module scaffolded but empty. Demonstrates the minimal baseline JUDO OSGi/Karaf deployment.
+## Rationale
 
-### ALBA
-Full OSGi/Karaf stack with modules for model, sdk, internal, app, interceptors, rest, schema, docker, karaf-features, plus dedicated keycloak-theme and generator-overrides modules. Runtime on Karaf 4.4.6 with PostgreSQL 16.2 and Keycloak 23.0. Docker Compose deployment with health-check dependency chain.
+- Each concern is its own bundle with its own dependencies, so a heavy library stays out of the app bundle and the generated bundles remain untouched.
+- Declarative Services wires components at runtime, and hot deployment shortens the edit loop.
+- Cost: OSGi class-loading and bundle-lifecycle problems, and the runtime is harder to debug than a plain application. Projects reported both (for example the composite class loader needed for the Keycloak admin client).
 
-### mlszksz-platform
-15+ modules: app (65+ custom ops), common (15+ services), interceptors (5), scheduler (4 jobs), keycloak-client, keycloak-extensions (magic link authenticator), integration-test (20+ test classes), sdk, model, rest, resteasy, web-root, schema, karaf-features, karaf-offline, docker. Dedicated modules for Keycloak integration and scheduled jobs. Java 21 with ECJ compiler.
+## Example
 
-### viterra_demo
-Standard 10-module layout: model, sdk, internal, app, interceptors, rest, schema, karaf-features, karaf-offline, docker, plus 2 React frontend bundles (admin + partner portals). Karaf feature includes Apache Tika, PDFBox, JSON.org, Apache Sling bundles. Java 17 with ECJ compiler. Karaf 4.4.5, PostgreSQL 16.2, Keycloak 23.0. Template/demo project demonstrating the baseline JUDO architecture.
+The smallest observed projects (a blank skeleton, a mini-workflow demo, an interface register) use only the generated layout with empty custom directories. A mid-size project adds `common`, `scheduler` and one integration client. The largest (15+ modules) adds Keycloak client and magic-link bundles, a mail wrapper, an integration-test module and generator overrides. One older project (2022 stack) used Pax CDI with Weld instead of Declarative Services and had no interceptors or internal module; new projects use the Declarative Services layout above. Java 17 or 21 with the Eclipse compiler and Karaf 4.4.x were the versions in use.
 
-### bhs-global-operation
-Minimal blank-slate project with standard 10-module layout (model, sdk, internal, app, interceptors, rest, schema, docker, karaf-features, karaf-offline). All custom code directories empty. Java 17 with ECJ compiler, Karaf 4.4.5, PostgreSQL 16.2, Keycloak 23.0. Includes Apache Tika, PDFBox, JSON.org, and Apache Sling bundles in Karaf feature. Demonstrates the generated project skeleton before any business logic is added.
+## When to avoid
 
-### mjsz
-Older JUDO stack variant (2022) using Pax CDI 1.1.3 with Weld instead of OSGi DS for dependency injection. Simplified module layout: model, sdk, app, schema, karaf-features, karaf-offline, docker, plus Flutter frontend bundle. No dedicated interceptors or internal modules. Karaf 4.3.4, Java 11, Hsqldb default. Feature includes Apache Tika, PDFBox, JSON.org, Apache Sling. App bundle empty (gitkeep only). Demonstrates the earlier-generation JUDO project skeleton with CDI-based DI.
-
-### judo-demo-miniworkflow
-Standard 10-module layout: model, sdk, internal, app, interceptors, rest, schema, karaf-features, docker, plus React frontend bundle. Karaf feature `miniworkflow-application-judo-platform-prototype` based on `judo-platform-default-sdk`. Includes Apache Tika, PDFBox, and script2operation bundle. Java 17 with ECJ compiler, Karaf 4.4.5, PostgreSQL 16.2, Keycloak 23.0. Deployment via `judo.sh build start` with Docker Compose (dev and production with Traefik SSL).
-
-### Ubives
-12+ modules: app (42 custom ops + 7 services), interceptors (2 auth interceptors), keycloak-client (Keycloak admin API), keycloak-magic-link (magic link SPI), keycloak-theme, sendgrid (email wrapper), sdk, model, rest, resteasy, schema, karaf-features, karaf-offline, docker, web-root. Java 17, Karaf 4.4.7, PostgreSQL+HSQLDB. Dedicated modules for Keycloak integration (client + magic link) and SendGrid email. Separate `face-recognitation/` directory with Python Flask face recognition backend.
-
-### ParkHere
-12+ modules: app (20 custom ops), common (7 services), interceptors (7 interceptors), scheduler (3 jobs + RDBMS activator), sdk, model, internal, rest, schema, karaf-features, karaf-offline, docker, frontend-react. Java 17 with ECJ compiler and Lombok. Generator overrides for app, interceptors, and karaf-features POM/feature fragments. Karaf feature includes i18n bundles, scheduler bundles, and common service bundle. PostgreSQL/HSQLDB dual dialect support.
-
-### Indamedia-AdTrack
-14+ modules: app (17 custom ops), common (6 services + utils + i18n), interceptors (1 auth interceptor), scheduler (4 jobs + 2 activators), adapters/ads-business-api (API abstraction), adapters/google-ads (Google Ads v20 integration), sdk, model, internal, rest, schema, karaf-features, karaf-offline, docker, frontend-react. Java 21 with ECJ compiler. Karaf 4.4.7, PostgreSQL/HSQLDB. Dedicated adapter modules for external API integration with Google Ads SDK 38.0.0. Includes Guava 33, google-api-ads, and Apache Tika features.
-
-### InterfaceRegister
-Standard module layout: model, sdk, internal, app, schema, karaf-features, karaf-offline, docker, plus React frontend bundle. Karaf feature `interfaceregister-application-judo-platform-prototype` based on `judo-platform-default-sdk`. Includes Apache Tika, PDFBox, JSON.org, Apache Sling bundles. Java 17, Karaf 4.4.3, PostgreSQL/HSQLDB dual dialect. No dedicated interceptors or common module. Bundle start order: model -> sdk -> internal -> app. Deployment via Docker Compose with Traefik reverse proxy and Keycloak.
-
-### judo-partner
-12+ modules: app (15 custom ops + 7 services + 7 utils), interceptors (3 interceptors in separate bundle), navonline-client (JAXB-generated NAV Online API v3.0 client), sdk, internal, model, schema, rest, web-root, karaf-features, karaf-offline, docker, frontend-react. Java 17 with ECJ compiler. Karaf 4.4.7. Dedicated `navonline-client` bundle with XSD-generated JAXB classes. Interceptors bundle depends on app bundle for `PartnerServices` injection.
-
-### workflow-poc
-Standard module layout: model, sdk, internal, app, interceptors, rest, schema, web-root, docker, karaf-features, karaf-offline, plus React frontend bundle. App module contains 4 custom operations and 2 utility services. Interceptors module contains default templates only (`.java.default`). Java 17 with ECJ compiler (`plexus-compiler-eclipse`). HSQLDB default with PostgreSQL support. Uses `mvnd` for builds.
-
-### ReserveApp
-Standard 10+ module layout: model, sdk, internal, app (empty -- no custom operations), interceptors (2 hand-written interceptors), rest, schema, web-root, karaf-features, karaf-offline, docker, plus 5 React frontend bundles (one per actor). Java 17 with ECJ compiler. Karaf 4.4.7, PostgreSQL/HSQLDB dual dialect. Interceptors-only customization approach with zero custom Java operations. 5 actor-specific frontends (Admin, Partner, Logistician, Doorman, Readonly).
-
-## Trade-offs
-
-- Pros: Hot deployment, modular architecture, service isolation, runtime wiring flexibility
-- Cons: OSGi complexity (classloader issues, bundle lifecycle), harder to debug than monolithic apps
-- Alternative: Spring Boot monolith, Docker container per service (microservices)
+- Do not split into more custom bundles than the code needs; a project that only has a few operations should stay with `app` and `interceptors`.
+- Do not hand-edit generated bundle sources to add behaviour; use a custom implementation, an interceptor, or a generator fragment.
+- If the target runtime is the Spring Boot variant instead of Karaf, the bundle layout does not apply ([Spring Boot runtime](../../agent-docs/deployment/spring-boot-runtime.md)).
 
 ## Related
 
-- [[custom-operation-osgi-component]]
-- [[generator-ignore-config-protection]]
-
+- [[custom-operation-osgi-component]] — how a custom operation registers as a component
+- [[generator-ignore-config-protection]] — keeping hand-edited generated files from being overwritten
+- [[quartz-scheduled-job]] — scheduler bundle
+- [[external-api-adapter-pattern]] — client bundles for external APIs

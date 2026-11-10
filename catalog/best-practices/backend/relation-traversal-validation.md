@@ -1,58 +1,71 @@
 ---
 id: relation-traversal-validation
 title: Relation Traversal for Cross-Entity Validation
-description: Validating entity state by navigating relationships via DAO query methods rather than storing denormalized copies.
-aliases: []
-keywords: [relation, traversal, cross, validation]
+description: Validate an operation against the current state of related entities by navigating relations with DAO query methods (for example the status of the parent contest) instead of keeping a denormalized copy on the child.
+aliases: [validate through parent, navigate relation to validate, parent state check, cross-entity validation]
+keywords: [relation, traversal, validation, cross-entity, DAO query, parent state, normalized, precondition]
 tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
 category: operation
 status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
-related: [entity-re-fetch-pattern, typed-exception-error-handling]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Validating entity state by navigating relationships via DAO query methods rather than storing denormalized copies. For example, checking if a contest is open by traversing from Test to Contest: `testDao.queryContest(_this).getStatus()`. This keeps data normalized but requires relationship traversal for each validation check.
+A custom operation on one entity often depends on the state of a related one (a test may only be submitted while its contest is open). Read that state through the relation at the moment of the check, so the data stays normalized and cannot drift.
 
-## Structure
+## Practice
+
+### Platform: relation queries and error types
+
+- The DAO query methods navigate relations. A single-valued relation query returns the entity directly (adding `.selectOne()` does not compile); a multi-valued one returns a customizer with `filterBy...`, `maskedBy` and `selectList()` ([relationship navigation](../../agent-docs/backend/data-access-guide.md#query-result-methods)). Mask the traversal to the fields the check reads ([using masks](../../agent-docs/backend/data-access-guide.md#using-masks-projections)).
+- A refusal is a typed error: a field or input problem is a `ValidationException` (400); a business rule violation the client should handle is a modeled fault declared on the operation (422 with `X-Fault`); a bare `RuntimeException` becomes a generic 500 ([error handling guide](../../agent-docs/backend/error-handling-guide.md)). A custom operation that throws a modeled fault must declare it in the model, or the build fails ([rules for custom operations](../../agent-docs/backend/custom-operations.md#rules-for-custom-operations)).
+- The check runs in the operation's transaction, so the state read is a consistent view for that call, but the platform does not lock the related row: another request can change the contest between the check and the write. Optimistic locking guards a row only when its `__version` is part of the update ([optimistic locking](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)).
+- The same rule can often live in the model as a derived value or an operation precondition, which the UI can use to hide buttons; a UI rule alone does not protect an operation ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+
+### Project practice: traverse, then refuse
 
 ```java
-// Navigate relation and validate
-Contest contest = testDao.queryContest(_this);
+// Example project code: Test, Contest, TestDao and the fault/error types are generated or project types
+Contest contest = testDao.queryContest(_this);       // single-valued: entity returned directly
 if (contest.getStatus() != ContestStatus.OPEN) {
     throw new ErrorException(Error.builder()
         .withCode(ErrorCode.CONTEST_NOT_OPEN)
         .withMessage("Contest is not open.")
-        .build());
+        .build());                                    // project's modeled fault, see typed-exception-error-handling
 }
 
-// Multi-hop validation
-Category category = questionDao.queryCategory(question);
-// Validate category properties...
+Category category = questionDao.queryCategory(question);   // further hops work the same way
 ```
 
-Single-valued relations return the entity directly (not a query builder).
-Collection-valued relations return a query builder with `selectList()`.
+- Start, submit and enter operations of the observed project all check the contest status through the test-to-contest relation before doing anything else.
+- Enter filters the user by email, code and active flag with the DAO query filters ([[dao-fluent-query-filter]]).
+- Each hop is a query; in a loop over many parents, load once outside the loop or use a masked relation query.
+- Reload the entity before the check when an earlier step may have changed it ([[entity-re-fetch-pattern]]).
 
-## Examples
+## Rationale
 
-### Trivia
-Start, Submit, and Enter operations all validate contest status by traversing Test->Contest via `testDao.queryContest(_this).getStatus()`. Enter validates user by querying with email+code+active filters. Exclude traverses Test->Contest to find sibling tests for PB recalculation.
+- The check always uses the current state; there is no copied status column that can drift.
+- The data model stays free of denormalized fields and the rule sits next to the operation.
+- Costs: an extra query per hop and per check, an N+1 risk inside loops, and no caching. The check is repeated in every operation that needs it, so put it in one helper.
 
-## Trade-offs
+## Example
 
-- Pros: Always validates against current state, no denormalization drift, clean separation of concerns
-- Cons: Additional DB queries per validation, N+1 risk if done in loops, no caching
-- Alternative: Denormalize status onto child entity, or use model-level derived attributes
+Submitting a test: the operation loads the test's contest, sees it has been closed, and refuses with a coded error that the client shows, without writing anything. Starting a test of an open contest passes the same check and proceeds.
+
+## When to avoid
+
+- When the check must hold under concurrent writes to the related entity: add a version check or a lock-like model design, since a read does not stop later changes.
+- When the same status is needed in list screens or filters: expose a derived attribute in the model ([[derived-attribute-flattening]]) rather than traversing in Java.
+- When many children are checked at once: query the parent once, not per child.
 
 ## Related
 
-- [[entity-re-fetch-pattern]]
-- [[typed-exception-error-handling]]
-
+- [[entity-re-fetch-pattern]] — reload before checking when state may be stale
+- [[typed-exception-error-handling]] — the refusal raised after the check
+- [[dao-fluent-query-filter]] — filters used for the checks on lists
+- [[relation-based-entity-creation]] — the creating side of the same relations

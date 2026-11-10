@@ -1,79 +1,95 @@
 ---
 id: quartz-scheduled-job
 title: Quartz Scheduled Job with OSGi Configuration
-description: Background scheduled jobs using Quartz Scheduler integrated with OSGi.
-aliases: []
-keywords: [quartz, scheduled, job, osgi, configuration]
+description: Project practice for background jobs on a Quartz scheduler started by an OSGi activator, with cron triggers from configuration and an explicit transaction inside each job because jobs run outside any request.
+aliases: [Quartz job, cron job, scheduler activator, background job]
+keywords: [quartz, scheduled, job, osgi, configuration, cron, scheduler, UserTransaction, RAMJobStore, clustering]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "status:established"]
 category: scheduling
 status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack]
 evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
-related: [osgi-karaf-bundle-architecture, soap-client-integration]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Background scheduled jobs using Quartz Scheduler integrated with OSGi. A `SingleInstanceSchedulerActivator` component configures and starts the Quartz scheduler via OSGi ConfigurationAdmin. Jobs are registered with cron triggers. Each job manages its own `UserTransaction` for database operations since scheduled execution happens outside the request-scoped transaction context.
+Run periodic work (rate refresh, expiry, cleanup, reminders, external sync) from inside the Karaf runtime. This is entirely project practice: the platform provides no scheduler, and the agent-docs say nothing about Quartz or scheduled jobs. What the platform does document is the OSGi component model, the DAO API and the interceptor and transaction behaviour the jobs have to work around.
 
-## Structure
+## Practice
+
+### Platform: what a job can rely on
+
+- A job is an ordinary OSGi component, so the Declarative Services rules apply ([OSGi component registration](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)); the scheduler runs in its own bundle ([[osgi-karaf-bundle-architecture]]).
+- Request-scoped context is absent. Code on other threads runs outside the operation's transaction and without context variables ([interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)), so a job cannot use the `ACTOR` variable of a logged-in user. The docs do not describe the transaction and variable context of a plain scheduler thread; the project practice below manages the transaction itself.
+- Interceptors fire only for the built-in behaviour operations, and custom operations never hit them ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). The docs do not mention scheduler threads; a job writes through DAOs, so treat denormalization or validation interceptors as not applying and repeat that logic in the job's service if needed.
+
+### Project practice: scheduler activator, jobs, own transactions
+
+- A scheduler activator component (example project code `SingleInstanceSchedulerActivator`) requires its configuration PID (`configurationPolicy = REQUIRE`), starts Quartz with an in-memory job store and a small thread pool, and registers each job with a cron trigger:
 
 ```java
-// Scheduler activator
+// Example project code: not a platform type
 @Component(configurationPid = { "schedulerConfig" },
            configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true)
 public class SingleInstanceSchedulerActivator {
     // RAMJobStore, 4 threads
-    // Register jobs with CronTrigger
-    scheduler.scheduleJob(jobDetail, CronTriggerBuilder.newTrigger()
-        .withSchedule(cronSchedule("0 0 13 * * ?")).build());
+    void register(Scheduler scheduler, JobDetail job) throws SchedulerException {
+        scheduler.scheduleJob(job, TriggerBuilder.newTrigger()
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 0 13 * * ?")).build());
+    }
 }
+```
 
-// Scheduled job
-public class UpdateExchangeRatesJob implements Job {
+- Each job manages its own `UserTransaction`: begin, do the work, commit, roll back on failure.
+
+```java
+// Example project code
+public class UpdateRatesJob implements Job {
     @Override
     public void execute(JobExecutionContext ctx) {
-        UserTransaction tx = // lookup from OSGi
+        UserTransaction tx = lookupTransaction();   // from the OSGi service registry
         try {
             tx.begin();
-            // Check configuration flag before executing
-            if (config.getUpdateExchangeRates()) {
-                exchangeRateService.updateRates();
+            if (config.getUpdateRates()) {          // a configuration entity can switch the job off
+                rateService.updateRates();
             }
             tx.commit();
         } catch (Exception e) {
-            tx.rollback();
+            rollbackQuietly(tx);
+            log.error("Job failed", e);             // never let the exception escape
         }
     }
 }
 ```
 
-## Examples
+- Keep the job body thin and delegate to a shared business service ([[service-delegation-pattern]]); catch failures per item so one bad record does not stop the batch ([[safe-failure-pattern]]).
+- Disable overlapping runs of the same job (`scheduler.concurrent=false` in the observed projects).
+- Two stores were used: the in-memory store (state is lost on restart, one instance only) and an RDBMS-backed store whose tables are created by Liquibase and which supports clustering; the dialect is detected from the configured database.
+- Observed jobs: daily rate refresh, hourly expiry of past-due records, 30-minute sync and reminder jobs within a daily time window, nightly cleanup of old news and expired registrations, daily reset of counters, cost sync from an external API every few minutes.
 
-### RackInspect
-`UpdateExchangeRatesJobFirst` runs at 13:00 daily via Quartz cron. Checks `Configuration.updateExchangeRates` boolean flag before executing. Uses explicit `UserTransaction` management (begin/commit/rollback). `SingleInstanceSchedulerActivator` configures RAMJobStore with 4 threads, ensures single-instance execution.
+## Rationale
 
-### mlszksz-platform
-4 scheduled jobs: `PostExpirationJob` (hourly, expires past-due offers/requests), `FeedOrganizationSyncJob` (every 30 min, syncs new orgs to feeds), `NewsFeedCleanupJob` (daily 2 AM, deletes old news), `RegistrationCleanupJob` (daily 3 AM, cleans expired registrations). All use `scheduler.concurrent=false`. Safe failure: individual item failures are caught and logged, processing continues.
+- Quartz gives reliable cron scheduling, and OSGi configuration lets operators change the schedule or disable a job without a code change.
+- An explicit transaction is needed because no request transaction exists around a job.
+- Costs: hand-written transaction code is error-prone, the in-memory store forgets missed runs after a restart, there is no built-in retry, and writes bypass interceptors.
 
-### ParkHere
-3 scheduled jobs with RDBMS-backed persistence via `RdbmsBasedSchedulerActivator` (Liquibase creates Quartz tables, supports clustering). `SendReminderJob` (every 30 min, 6-22h, sends reservation start/end reminders). `SendEmailToDoormanJob` (every 30 min, 7-23h, sends daily reservation summary to doormen, only on working days). `SetPastActiveReservationToExpiredJob` (daily 4 AM, expires past active reservations). All use `scheduler.concurrent=false` with auto-detected database dialect (PostgreSQL/HSQLDB).
+## Example
 
-### Indamedia-AdTrack
-4 scheduled jobs with both RAM and RDBMS activators. `FetchCampaignCost` (every 3 min, 01:00-23:59, syncs Google Ads spending). `ResetDailyAttributes` (daily 00:01, resets todaySpend to zero). `UpdateExpiredAggregatedCampaignStatus` (daily 00:01, archives finished campaigns by setting status to FINISHED). `SendReminderJob` (every 30 min, 06:00-22:00, placeholder for budget alerts). All use `scheduler.concurrent=false`. RDBMS activator includes Liquibase for Quartz tables with PostgreSQL/HSQLDB support.
+A nightly job in one project deletes news older than a limit at 02:00 and another cleans expired registrations at 03:00; both delegate to a service and log failures per item. A reminder job runs every 30 minutes between 06:00 and 22:00 and sends the day's reservation reminders; on the RDBMS store, two nodes do not run the same trigger twice.
 
-## Trade-offs
+## When to avoid
 
-- Pros: Reliable cron scheduling, OSGi-integrated, configurable via ConfigurationAdmin, explicit transaction control
-- Cons: RAMJobStore loses state on restart, manual UserTransaction management is error-prone, no built-in retry
-- Alternative: OSGi Scheduler service, external scheduler (cron, Kubernetes CronJob), or event-driven approach
+- When the work is a reaction to a user action, use an operation or an interceptor, not a timer.
+- When the schedule belongs to the infrastructure (Kubernetes CronJob, system cron calling a REST operation), which keeps the scheduler out of the runtime.
+- When exactly-once execution across several nodes is needed and only the in-memory store is configured.
 
 ## Related
 
-- [[osgi-karaf-bundle-architecture]]
-- [[soap-client-integration]]
-
+- [[osgi-karaf-bundle-architecture]] — the scheduler bundle next to app and interceptors
+- [[soap-client-integration]] — a typical job target
+- [[safe-failure-pattern]] — per-item catch inside jobs
+- [[service-delegation-pattern]] — keep the job a thin trigger
+- [[scheduled-data-sync-pipeline]] — jobs that run a sync
