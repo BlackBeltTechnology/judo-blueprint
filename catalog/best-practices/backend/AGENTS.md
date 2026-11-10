@@ -24,7 +24,7 @@
 | `diagram-generation-service.md` | A project service renders a Mermaid diagram from persisted entity data and stores it as text on the parent entity, so the UI can show it without extra tooling. |
 | `dirty-check-before-update.md` | When code recomputes many fields of an entity, compare the new values with the loaded ones and call the DAO update only if something changed. |
 | `document-generation-pipeline.md` | A custom operation builds a document from a stored template and a deeply masked data model, optionally converts it to PDF and watermarks it, and stores the result in the file store. |
-| `dual-dao-pattern.md` | A custom operation may see two generated DAOs with the same simple name, one for the entity and one for an actor's transfer view. |
+| `dual-dao-pattern.md` | A custom operation may see two generated DAOs for one entity, one for the entity and one for an actor's transfer view, whose simple names may or may not clash. |
 | `dual-operation-layer.md` | The same business operation can exist on the entity and again on actor-facing transfer objects. |
 | `duplicate-detection-normalization.md` | Store a normalized copy of a name next to the display name, flag all non-archived entities that share it, and use a similarity score when checking names against an external source. |
 | `email-normalization-at-invite.md` | Trim and lowercase e-mail addresses with one shared helper at every boundary that creates or matches a user, so case variants cannot slip past duplicate checks or mismatch the identity server. |

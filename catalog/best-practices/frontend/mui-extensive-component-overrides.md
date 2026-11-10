@@ -4,16 +4,16 @@ title: Extensive MUI Component Theme Overrides
 description: "Customize the MUI theme with extensive `components` overrides covering 15+ component types."
 aliases: []
 keywords: [MUI theme, component overrides, styleOverrides, defaultProps, theme fragments, branding]
-tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "project:indamedia-adtrack", "status:emerging"]
 category: theme
-status: single-project
-projects: [actiongroup-test-react]
-evidence: ["actiongroup-test-react:unrecorded"]
+status: emerging
+projects: [actiongroup-test-react, indamedia-adtrack]
+evidence: ["actiongroup-test-react:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: [dark-theme-override]
 related: [model-defined-color-palette, generator-ignore-app-theme, dark-theme-override]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-11-10
+last_updated: 2026-11-11
 ---
 ## Intent
 

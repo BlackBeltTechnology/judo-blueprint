@@ -4,16 +4,16 @@ title: Actor Context Variable Lookup Pattern
 description: "Read the signed-in user with the typed getVariable call in JQL (ACTOR, USER or PRINCIPAL, chosen by actor shape) to scope access, find the current user and derive permission flags."
 aliases: [current user lookup, session variable, getVariable]
 keywords: [getVariable, ACTOR, PRINCIPAL, USER, actor, claims, JQL, ownership]
-tags: ["domain:model", "layer:model", "project:itracker", "project:alba", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "status:established"]
+tags: ["domain:model", "layer:model", "project:itracker", "project:alba", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:indamedia-adtrack", "status:established"]
 category: access
 status: established
-projects: [itracker, alba, viterra_demo, judo-demo-miniworkflow, InterfaceRegister, judo-partner, workflow-poc]
-evidence: ["itracker:unrecorded", "alba:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+projects: [itracker, alba, viterra_demo, judo-demo-miniworkflow, InterfaceRegister, judo-partner, workflow-poc, indamedia-adtrack]
+evidence: ["itracker:unrecorded", "alba:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
 fragment: actor-context-variable-lookup
 diagram: { kinds: [entity, transfer, actor], members: types }
-last_updated: 2026-11-10
+last_updated: 2026-11-11
 ---
 ## Intent
 

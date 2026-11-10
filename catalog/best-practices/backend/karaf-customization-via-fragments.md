@@ -4,15 +4,15 @@ title: Karaf Customization via Generator Fragment Overrides
 description: "Extra Karaf bundles, repositories, Maven plugins or dependencies and OSGi config PIDs are added through the generator's named fragment slots, so they survive regeneration without editing generated files."
 aliases: [feature.xml fragment, generator-overrides, extra-bundles fragment, inline config]
 keywords: [fragment, feature.xml, extra-bundles, generator-overrides, karaf-features, config PID, env substitution, generator-ignore]
-tags: ["domain:backend", "layer:backend", "project:compsych-letter-demo", "project:rackinspect", "status:emerging"]
+tags: ["domain:backend", "layer:backend", "project:compsych-letter-demo", "project:rackinspect", "project:indamedia-adtrack", "status:emerging"]
 category: config
 status: emerging
-projects: [compsych-letter-demo, rackinspect]
-evidence: ["compsych-letter-demo:unrecorded", "rackinspect:unrecorded"]
+projects: [compsych-letter-demo, rackinspect, indamedia-adtrack]
+evidence: ["compsych-letter-demo:unrecorded", "rackinspect:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 fragment: "none: infrastructure"
 first_seen: 2026-05-12
-last_updated: 2026-11-10
+last_updated: 2026-11-11
 ---
 ## Intent
 

@@ -4,16 +4,16 @@ title: "Custom Public Assets (Logos, Images, Icons)"
 description: Add custom static assets (logos, backgrounds, QR codes) to the frontend public directory under unique names, and protect only the generator-owned files you override.
 aliases: [branding assets, custom logo, static images]
 keywords: [public, assets, logo, images, favicon, generator-ignore, applicationLogo, flutter assets]
-tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:workflow-poc", "status:emerging"]
+tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:itracker", "project:workflow-poc", "project:indamedia-adtrack", "status:established"]
 category: customization
-status: emerging
-projects: [trivia, itracker, workflow-poc]
-evidence: ["trivia:unrecorded", "itracker:unrecorded", "workflow-poc:unrecorded"]
+status: established
+projects: [trivia, itracker, workflow-poc, indamedia-adtrack]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "workflow-poc:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [pwa-manifest-customization, generator-ignore-app-theme]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-11-10
+last_updated: 2026-11-11
 ---
 ## Intent
 
