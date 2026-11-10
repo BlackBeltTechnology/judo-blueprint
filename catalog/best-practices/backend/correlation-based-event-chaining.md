@@ -1,52 +1,51 @@
 ---
 id: correlation-based-event-chaining
 title: Correlation-Based Event Chaining with ThreadLocal
-description: A pattern for chaining multiple events within a single logical operation using a correlation ID stored in a ThreadLocal.
-aliases: []
-keywords: [correlation, based, event, chaining, threadlocal]
+description: "Events raised during one trigger share a correlation id (generated per request thread) and are processed one after another by querying the next unprocessed event of the same chain."
+aliases: [event chain, correlation id, cascading events]
+keywords: [correlation id, event chain, threadlocal, workflow, cascade, processed flag]
 tags: ["domain:backend", "layer:backend", "project:workflow-poc", "status:single-project"]
 category: operation
 status: single-project
 projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
 alternatives: []
-related: [state-lifecycle-operation, audit-event-trail, dao-fluent-query-filter]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A pattern for chaining multiple events within a single logical operation using a correlation ID stored in a ThreadLocal. When an operation triggers an event that causes a state transition, the transition may fire actions that generate additional events. All events within the same trigger share a correlation ID, enabling sequential processing. After processing one event, the system queries for the next unprocessed event in the same correlation chain, creating a recursive processing loop.
+A single external trigger can cause a transition whose actions raise further events, which cause further transitions. Persisting each event with a correlation id and a processed flag lets the engine drain the chain deterministically: process one event, mark it processed, then fetch the next unprocessed event of the same chain.
 
-## Structure
+## Practice
+
+### Platform base
+
+- Events are ordinary entities created through the generated builder and DAO, and queried with typed filters (`StringFilter`, `BooleanFilter`) and ordering ([query patterns](../../agent-docs/backend/data-access-guide.md#query-patterns)). `selectOne()` returns an `Optional` ([query result methods](../../agent-docs/backend/data-access-guide.md#query-result-methods)).
+- The whole operation, including all chained events, runs in one transaction; an exception rolls back every write made so far ([ordering and combining interceptors](../../agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors) describes the transaction scope).
+- The platform has its own request correlation, the `X-Exchange-Id` header ([Debugging and Monitoring Guide](../../agent-docs/backend/debugging-and-monitoring-guide.md)); it is for log tracing and is separate from the domain correlation id described here.
+- Async interceptors and other threads run outside the transaction and without context variables ([interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)), so a ThreadLocal value is not visible there.
+
+### Project practice: correlation id and recursive drain
+
+This is workflow-poc project code, not a platform feature.
 
 ```java
-// ThreadLocal correlation ID generator
+// Example project code (workflow engine)
 private static final ThreadLocal<String> correlationID =
     ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
 
-public String getCorrelationID() {
-    return correlationID.get();
-}
-
-// Create event with correlation ID
 Event event = eventDao.create(EventForCreate.builder()
     .withEventID(input.getEventID())
     .withCorrelationID(correlationId)
     .build());
 
-// Process event and check for chained events
 private void processEvent(Token token, Event event) {
-    // Find matching transition and execute
     findAndExecuteTransition(token, event);
-
-    // Mark event as processed
     event.setProcessed(true);
     eventDao.update(event);
 
-    // Check for next event in correlation chain
     eventDao.query()
         .filterByCorrelationID(StringFilter.equalTo(getCorrelationID()))
         .filterByProcessed(BooleanFilter.isFalse())
@@ -56,27 +55,31 @@ private void processEvent(Token token, Event event) {
 }
 ```
 
-Key elements:
-- `ThreadLocal<String>` ensures correlation ID is unique per request thread
-- Events are persisted with both `eventID` (what happened) and `correlationID` (which chain)
-- After processing, the system recursively checks for unprocessed events in the same chain
-- Ordering by `SEQUENCE` ensures deterministic processing order
-- Enables cascading state transitions from a single external trigger
+- Events carry two ids: what happened (`eventID`) and which chain (`correlationID`). A sequence attribute gives a deterministic order inside a chain.
+- If the caller supplies a correlation id, the event is only stored (another run processes the chain); otherwise it is processed immediately.
+- Pass the correlation id explicitly to actions and nested calls ([[action-delegation-workflow]]) instead of relying on the ThreadLocal alone.
+- A ThreadLocal is never cleared by itself: on a pooled request thread the same id would be reused by later requests. Remove it at the end of the outermost operation.
+- Recursion has no cycle detection; cap the chain length or loop iteratively.
+- Use one clock when ordering by timestamp ([time zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)).
 
-## Examples
+## Rationale
 
-### workflow-poc
-`TriggerCustomImplementation` creates an `Event` with either the caller-provided `correlationID` or a thread-local generated one. If no explicit correlation ID is provided, it processes the event immediately. `processEvent()` finds the current state's matching transition by `eventID`, executes the transition via `WorkflowUtils.step()`, marks the event as processed, then recursively calls `getNextEvent()` to find the next unprocessed event in the same correlation chain. Actions executed during transitions (ON_ENTER, ON_LEAVE, ON_TRANSITION) may create additional events with the same correlation ID, enabling cascading workflow advancement.
+- Cascading transitions are driven from a single trigger with a persistent log of every event, which also helps debugging ([[audit-event-trail]]).
+- Cost: thread-bound state, deep recursion for long chains, and no protection against cycles.
 
-## Trade-offs
+## Example
 
-- Pros: Enables complex multi-step workflows from a single trigger, deterministic ordering, persistent event log for debugging, supports cascading transitions
-- Cons: ThreadLocal can leak in thread-pool scenarios, recursive processing may cause deep stacks, no built-in cycle detection, correlation chain is tied to a single thread
-- Alternative: Message queue-based event processing (async, scalable), saga pattern (distributed), in-memory state machine (no persistence overhead)
+In workflow-poc a trigger operation creates an event with the caller's or a generated correlation id. Processing finds the current state's transition for that event, executes it, marks the event processed and looks up the next unprocessed event with the same correlation id. Actions run during the transition (on enter, on leave, on transition) can create further events with the same id, so one trigger advances the workflow as far as it can go.
+
+## When to avoid
+
+- When processing must be asynchronous or distributed: use a queue and a saga.
+- When there is a single transition per request: no chain is needed ([[state-lifecycle-operation]]).
 
 ## Related
 
-- [[state-lifecycle-operation]]
-- [[audit-event-trail]]
-- [[dao-fluent-query-filter]]
-
+- [[state-lifecycle-operation]] — simple single-step transitions
+- [[audit-event-trail]] — persistent event rows as history
+- [[action-delegation-workflow]] — actions that raise chained events
+- [[token-based-workflow-execution]] — the engine this chain drives
+- [[dao-fluent-query-filter]] — the queries used to fetch the next event

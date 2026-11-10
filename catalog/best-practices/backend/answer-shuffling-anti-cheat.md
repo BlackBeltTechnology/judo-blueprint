@@ -1,59 +1,67 @@
 ---
 id: answer-shuffling-anti-cheat
 title: Answer and Question Shuffling for Anti-Cheating
-description: "Two-layer randomization to prevent cheating in quiz/test applications: (1) answer position shuffling during question import so the correct answer is not always in the same position, and (2) question order shuffling during test creation s..."
-aliases: []
-keywords: [answer, question, shuffling, anti, cheating, cheat]
+description: "Quiz applications shuffle answer positions when questions are imported and question order when a test is created, so no two sessions see the same layout."
+aliases: [quiz shuffling, answer randomization]
+keywords: [shuffle, randomization, quiz, anti-cheat, import, test creation]
 tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
 category: operation
 status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
-related: [bulk-json-import-export, state-lifecycle-operation]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Two-layer randomization to prevent cheating in quiz/test applications: (1) answer position shuffling during question import so the correct answer is not always in the same position, and (2) question order shuffling during test creation so each test has a unique question sequence. Both use `Collections.shuffle()` for randomization.
+In a quiz or test application, a fixed answer position or a fixed question order makes answers easy to share. Two layers of randomization address this: answer positions are shuffled when questions are imported, and the question sequence is shuffled when a test is created.
 
-## Structure
+## Practice
 
-Answer shuffling (during import):
+This is plain Java business logic inside custom operations; the platform contributes only the operation hook ([custom operations](../../agent-docs/backend/custom-operations.md)) and the DAO calls used to persist the result ([data access](../../agent-docs/backend/data-access-guide.md#crud-operations)). The shuffling itself is project practice.
+
+### Shuffle answer positions at import
+
+Shuffle the list of answer slots once per question, remap each choice to its new slot and remap the stored solution accordingly. Keep the mapping between old and new letter in one place so the solution cannot drift from the choices.
+
 ```java
+// Example project code (trivia import operation)
 List<String> order = new ArrayList<>(List.of("A", "B", "C", "D"));
 Collections.shuffle(order);
-// Remap choices to new positions
 builder.withChoiceA(choiceMap.get(order.get(0)))
        .withChoiceB(choiceMap.get(order.get(1)))
-       .withSolution(choices.get(String.valueOf((char)('A' + order.indexOf(originalAnswer)))));
+       .withSolution(choices.get(String.valueOf((char) ('A' + order.indexOf(originalAnswer)))));
 ```
 
-Question shuffling (during test creation):
+### Shuffle question order at test creation
+
+Draw questions by shuffled position indices, add the fixed questions, then shuffle the combined list again so fixed questions do not stay at predictable places.
+
 ```java
+// Example project code (trivia test creation operation)
 List<Integer> positions = IntStream.range(0, total).boxed().collect(toList());
 Collections.shuffle(positions);
-// Select questions using shuffled indices
-// Then shuffle final list for additional randomness
+// pick questions by the shuffled indices, add fixed ones
 Collections.shuffle(selectedQuestions);
 ```
 
-## Examples
+## Rationale
 
-### Trivia
-Upload operation shuffles answer positions [A,B,C,D] when importing questions, remapping the solution letter using character arithmetic. Enter operation shuffles question selection order using shuffled position indices, includes fixed questions, then shuffles the combined list again for final order.
+- Two independent layers: a leaked answer key by position is useless, and so is a leaked question sequence.
+- Cost: `Collections.shuffle()` without a seed is not cryptographically secure and not reproducible in tests; pass a seeded `Random` in tests. Shuffling at import makes the answer order permanent for that question.
 
-## Trade-offs
+## Example
 
-- Pros: Two layers of randomization, simple implementation, effective for casual cheating prevention
-- Cons: `Collections.shuffle()` uses unseeded Random (not cryptographically secure), shuffling at import time means shuffled order is permanent
-- Alternative: Shuffle at display time (more flexible), use seeded random for reproducibility in testing
+The trivia project's upload operation shuffles the A to D positions while importing questions and recomputes the solution letter by index arithmetic. Its enter operation selects questions through shuffled indices, includes the fixed questions and shuffles the final list again.
+
+## When to avoid
+
+- When the answer order carries meaning (for example scales such as "never ... always").
+- When each user must see a different order on every display: shuffle at read time instead of at import time.
 
 ## Related
 
-- [[bulk-json-import-export]]
-- [[state-lifecycle-operation]]
-
+- [[bulk-json-import-export]] — import operation where answers are shuffled
+- [[state-lifecycle-operation]] — test lifecycle around the shuffled sessions

@@ -1,77 +1,80 @@
 ---
 id: audit-event-trail
 title: Audit Event Trail via Entity-Based Event Logging
-description: "An audit trail pattern where every significant state change creates an `Event` entity stored in the database."
-aliases: []
-keywords: [audit, event, trail, based, logging]
+description: "Significant state changes create an event entity (type, message, timestamp, subject reference, acting user) in the same transaction as the business operation, so the audit history is queryable and shown in the UI."
+aliases: [event log, history entries, audit log]
+keywords: [audit, event, history, log entry, transaction, interceptor, postCall, state change]
 tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:park-here", "project:judo-partner", "project:workflow-poc", "project:doors-model", "status:established"]
 category: operation
 status: established
 projects: [alba, mlszksz-platform, judo-demo-miniworkflow, park-here, judo-partner, workflow-poc, doors-model]
 evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
-alternatives: []
-related: [state-lifecycle-operation, builder-pattern-entity-creation, data-snapshot-versioning]
+alternatives: [audit-log-entity]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An audit trail pattern where every significant state change creates an `Event` entity stored in the database. Events record the event type (enumeration), a human-readable message (often localized), a timestamp, a reference to the affected entity, and a reference to the user who performed the action. Events are queryable and displayable in the UI, providing a persistent, transactional audit history that is part of the same transaction as the business operation.
+Record who did what and when for every significant change as ordinary rows of an event entity, so the history is persistent, queryable and displayable like any other data. The event is written in the same transaction as the business change, so both succeed or both roll back. The entity shape itself is described in [[audit-log-entity]]; this practice covers how the backend writes the rows.
 
-## Structure
+## Practice
+
+### Platform base
+
+- A custom operation injects the generated DAO of the event entity and creates the row with the generated builder (`<Entity>ForCreate.builder()...build()`, then `dao.create(...)`) ([CRUD operations](../../agent-docs/backend/data-access-guide.md#crud-operations)).
+- The operation runs in one transaction. Synchronous interceptors run inside the operation's transaction too, and an exception from `preCall` or `postCall` rolls back the DAO write including earlier interceptors' writes ([ordering and combining interceptors](../../agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors)).
+- Interceptors fire only for built-in operations (create, update, delete, reference operations and similar). Custom, MAPPED and script operations never hit interceptors ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). An async interceptor runs outside the transaction and its exceptions are lost, so it is unsuitable for a transactional audit row.
+- The acting user comes from `VariableResolver` ([[actor-resolution-variable-resolver]]).
+- Use one clock for stamps and comparisons: `LocalDateTime.now()` follows the JVM zone, while `current_timestamp` in model expressions follows the platform `defaultZoneId` ([time zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)).
+
+### Project practice: where the rows are written
+
+Two places, depending on the operation kind:
+
+- **Custom operations** write the event themselves after the state change, usually through a small project service (`AuditLogService`, `logCompletion` helpers are example project code).
+- **Built-in create/update/delete** are audited from an `OperationCallInterceptor` `postCall`, which catches every update, including those from generated CRUD. One project logs create and delete in the custom operations and update in an interceptor.
 
 ```java
-// After performing a state transition, create an audit event
+// Example project code: Event, EventDao, EventType are project/generated types
 Event event = eventDao.create(EventForCreate.builder()
     .withType(EventType.ENTITY_STATE_CHANGED)
     .withMessage("Description of what happened")
     .withCreatedAt(LocalDateTime.now())
-    .withProduct(affectedEntity)
-    .withPerformedBy(currentUser)
+    .withProduct(affectedEntity)      // reference to the affected entity
+    .withPerformedBy(currentUser)     // resolved acting user
     .build());
 ```
 
-Event entity fields:
-- `type` -- Enumeration (PRODUCT_CREATED, PRODUCT_FINALIZED, PRODUCT_APPROVED, PRODUCT_APPROVAL_REVOKED)
-- `message` -- Human-readable description (can be localized)
-- `createdAt` -- Timestamp of the event
-- `product` -- Reference to the affected entity
-- `performedBy` -- Reference to the user who triggered the action
+Typical event fields: an enumeration `type`, a human-readable `message` (possibly localized), a timestamp, a reference to the subject and a reference to the performing user.
 
-## Examples
+Variants seen in the projects:
 
-### ALBA
-Five event types across the product lifecycle. `CreateProduct` logs `PRODUCT_CREATED` with Hungarian message "Produktum letrehozva." `Finalize` logs `PRODUCT_FINALIZED` with version number. `ApproveVersion` logs `PRODUCT_APPROVED`. `RevokeApproval` logs `PRODUCT_APPROVAL_REVOKED`. All events include timestamp, product reference, and performing user. Events are stored in the same transaction as the business operation.
+- one event entity with a type enumeration per lifecycle step;
+- a history entry per transition with `fromState`, `toState`, time and user, attached to the subject by a composition relation;
+- a service-based log with many action types and JSON details, whose failures must not break the business operation ([[safe-failure-pattern]]) at the price of a possibly missing audit row;
+- lightweight audit through `created/createdBy/modified/modifiedBy` fields on the entity instead of separate rows.
 
-### mlszksz-platform
-Comprehensive AuditLogService with 20+ action types (USER_LOGIN, POST_PUBLISHED, INVITATION_SENT, REGISTRATION_SUBMITTED, etc.). Each operation calls `auditLogService.log(actionType, entityType, entityId, detailsMap)`. Auto-resolves current user/organization. Details stored as JSON. Safe failure pattern: audit log failures never propagate to break business operations. Supports CSV export for compliance.
+## Rationale
 
-### judo-demo-miniworkflow
-`DocumentHistoryEntry` entity records every state transition with fields: `fromState` (previous DocumentState, null for initial), `toState` (new DocumentState), `eventTime` (Timestamp), `user` (who performed), `message` (optional). Each Accept/Reject/Close/RequestReview operation appends a new history entry. CreateDocument creates the initial entry with `toState=IN_PROGRESS` and no `fromState`. History entries are attached to the document via a one-to-many relation.
+- Same-transaction writes keep the audit history consistent with the data.
+- Events are ordinary data: filterable, exportable and listable in generated pages.
+- Cost: rows grow linearly with operations (no compaction), and every audited operation takes an extra write. Swallowing audit failures trades completeness for availability, so decide it deliberately.
 
-### ParkHere
-Lightweight audit via entity fields rather than separate Event entities. Reservations track `created` (LocalDateTime UTC), `createdBy` (user name), `modified` (LocalDateTime UTC), `modifiedBy` (user name) on every state change. `CancelReservation` and `DeleteReservation` set `modified` and `modifiedBy` to current timestamp and user. `DoormanNotified` entity tracks notification timestamps for doorman email deduplication. Scheduled jobs mark `remindedBeforeStart`/`remindedBeforeEnd` flags.
+## Example
 
-### judo-partner
-`PartnerLog` entity records all partner lifecycle events with `LogType` enum (CREATE, UPDATE, DELETE), user email, and partner reference. CREATE/DELETE operations create log entries directly in the custom operation class. UPDATE logging is handled by `PartnerUpdateInterceptor` in postCall, ensuring every update (even from the generated CRUD) is audited. Provides a complete audit trail for partner data changes.
+ALBA logs five product lifecycle event types (created, finalized, approved, approval revoked) with message, timestamp, product and performing user, each written by the corresponding custom operation. The mini-workflow demo appends a history entry with from-state, to-state, time and user for every transition. judo-partner writes create and delete logs in operations and update logs in an interceptor `postCall`, so every update is covered.
 
-### workflow-poc
-`LogEntry` entities record workflow state completions. `WorkflowUtils.logCompletion()` creates a `LogEntryForCreate` with type `COMPLETION`, level `INFO`, and message (state task name or state name). Log entries are created as children of the `Context` via `contextDao.createLogs()`. User email is optionally set from the token's assignee. Logs are queried for auto-assignment preference (most recent completion by email, ordered by descending timestamp).
+## When to avoid
 
-### doors-model
-`ContractLog` entity records contract events with event type enumeration (e.g., SIGNED). The `uploadSignedContract` operation creates a `ContractLog` entry when a signed contract is uploaded, recording the SIGNED event. Approval workflow operations track stage completions with approver, financial/legal approval names and dates. The multi-stage workflow provides full audit visibility into who approved which stage and when.
-
-## Trade-offs
-
-- Pros: Queryable audit history, transactional consistency with business operations, supports UI display, clear event typing via enumeration
-- Cons: Events grow linearly with operations (no compaction), localized messages are not easily translatable, no event aggregation or summary
-- Alternative: Application log files (not queryable), external event store (Kafka, EventBridge), log-based audit (less structured)
+- When only creation and modification stamps are needed: entity fields are enough.
+- When the audit must survive rollback of the business transaction, or must go to an external store: use a separate sink outside the transaction.
+- Do not rely on an interceptor to audit custom operations; it never fires for them.
 
 ## Related
 
-- [[state-lifecycle-operation]]
-- [[builder-pattern-entity-creation]]
-- [[data-snapshot-versioning]]
-
+- [[audit-log-entity]] — entity shape of the event rows
+- [[state-lifecycle-operation]] — transitions that produce events
+- [[builder-pattern-entity-creation]] — how the event row is created
+- [[data-snapshot-versioning]] — keeping full snapshots instead of events
+- [[safe-failure-pattern]] — audit failures that must not break operations

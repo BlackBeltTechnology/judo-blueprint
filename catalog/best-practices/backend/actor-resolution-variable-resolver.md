@@ -1,86 +1,70 @@
 ---
 id: actor-resolution-variable-resolver
 title: Actor Resolution via VariableResolver Pattern
-description: A standard pattern for resolving the current authenticated user in custom operations.
-aliases: []
-keywords: [actor, resolution, variableresolver, variable, resolver]
+description: Resolve the current authenticated user in a custom operation by reading ACTOR variables through VariableResolver and loading the user entity, usually wrapped once in a project service.
+aliases: [current user resolution, getCurrentUser, actor lookup]
+keywords: [actor, variable resolver, getVariable, current user, authentication, ownership, audit]
 tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:reserve-app", "project:doors-model", "status:established"]
 category: auth
 status: established
 projects: [alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, judo-partner, reserve-app, doors-model]
 evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
-alternatives: []
-related: [keycloak-jit-user-provisioning, custom-operation-osgi-component, dao-fluent-query-filter]
+alternatives: [keycloak-jit-user-provisioning]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A standard pattern for resolving the current authenticated user in custom operations. The `VariableResolver` service is injected via `@Reference` and used to extract the actor's email from the security context. The email is then used to query the user entity from the database. This pattern appears as a boilerplate block at the start of virtually every custom operation, providing the "current user" context for authorization checks, ownership assignment, and audit trail recording.
+Custom operations and interceptors often need to know who is calling: for authorization checks, ownership of created records and audit entries. The caller's identity is read from the request context with `VariableResolver`, and the application's user entity is then loaded from it.
 
-## Structure
+## Practice
+
+### Platform: variables of the ACTOR category
+
+- Java: inject `hu.blackbelt.judo.dispatcher.api.VariableResolver` with `@Reference` and call `variableResolver.resolve(String.class, "ACTOR", "email")`. This is the Java equivalent of the model/JQL expression `!getVariable('ACTOR', 'email')` ([accessing the logged-in user](../../agent-docs/backend/patterns-and-best-practices.md#4-pattern-accessing-user--request-context)).
+- Variable categories include `SYSTEM`, `ENVIRONMENT`, `REQUEST`, `ACTOR`, `PRINCIPAL` and `SEQUENCE` ([variable providers](../../agent-docs/backend/platform-behavior-reference.md#variable-providers)). `ACTOR` values come from the actor the runtime resolved for the request; the actor row is read from the database on every request that carries a principal, and a missing row gives `AUTHENTICATED_ENTITY_NOT_FOUND` ([principal-to-actor resolution](../../agent-docs/backend/authentication-guide.md#principal-to-actor-resolution-and-multi-client-mapping)).
+- In model expressions the same value is available without Java: `Type!filter(u | u.email == types::Email!getVariable('ACTOR', 'email'))!any()`; primitive types must be fully qualified ([getVariable rules](../../agent-docs/backend/architectural-patterns.md#rules-for-accessesgetterexpression)).
+
+### Project practice: look up the user entity, then wrap it once
+
+Which actor attributes exist (`email`, `userName`, `identifier`) depends on the model's actor type. The projects query their user entity with the resolved value:
 
 ```java
+// Example project code: User and UserDao are project/generated types
 @Reference VariableResolver variableResolver;
 @Reference UserDao userDao;
 
-// Resolve current user (appears at the start of every operation)
+String email = variableResolver.resolve(String.class, "ACTOR", "email");
 User user = userDao.query()
-    .filterByEmail(StringFilter.equalTo(
-        variableResolver.resolve(String.class, "ACTOR", "email")
-    ))
+    .filterByEmail(StringFilter.equalTo(email))
     .selectOne()
-    .stream()
-    .findAny()
-    .orElse(null);
+    .orElseThrow(() -> new IllegalStateException("Current user not found: " + email));
 ```
 
-Key elements:
-- `VariableResolver.resolve(String.class, "ACTOR", "email")` extracts email from security context
-- The email is used with `StringFilter.equalTo()` to find the user entity
-- `.selectOne().stream().findAny().orElse(null)` handles the case where user might not exist
-- This block is copy-pasted across ALL custom operations that need the current user
+- `selectOne()` returns an `Optional` ([query result methods](../../agent-docs/backend/data-access-guide.md#query-result-methods)); decide explicitly what a missing user means instead of `.orElse(null)`, which only moves the failure to a later NullPointerException.
+- Do not paste this block into every operation. Four projects (mlszksz-platform, park-here, indamedia-adtrack, ubives) wrap it in one project service (`ActorService` / `Variables`, example project helpers) with `getCurrentUser()`, which throws a business error when the user is missing; operations inject only that service.
+- Interceptors use the same lookup, for example to resolve the caller's partner for ownership on create or to check an admin flag. Remember that interceptors do not protect custom operations, so the check must also sit in the operation or its service ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- When a Keycloak user may exist without a database row, provisioning is a separate concern ([[keycloak-jit-user-provisioning]]).
 
-## Examples
+## Rationale
 
-### ALBA
-All 9 custom operations use identical actor resolution code. The resolved user is used for: product ownership (`withAuthor(user)`), event attribution (`withPerformedBy(user)`), task creation (`withCreatedBy(user)`), impersonation tracking (`withImpersonatingAuthor(user)`), and role-based validation (`user.getRole().orElse(UserRole.GUEST)`). The `LogAuthenticationInterceptor` ensures the user entity exists before operations run.
+- The identity comes from the authenticated request, not from client-supplied input, so it cannot be spoofed by an operation parameter.
+- One wrapper removes the duplicated lookup, gives one place for the not-found handling, and makes operations easier to unit test with a mocked service.
+- Cost: one extra database query per operation for the user entity (the runtime already read the actor row, but your user entity is a separate load); a wrapper may cache per request.
 
-### mlszksz-platform
-Encapsulated in a dedicated `ActorServiceImpl` that wraps the VariableResolver + UserDao lookup into a reusable `getCurrentUser()` method. All operations inject `ActorService` instead of repeating the boilerplate. Throws `BusinessErrorException("USER_NOT_FOUND")` if user not found. Used for authorization, audit logging (auto-resolves user+organization), and as author for created content.
+## Example
 
-### judo-demo-miniworkflow
-Actor resolution via model script expression: `User!filter(u | u.email == types::Email!getVariable('ACTOR', 'email'))!any()`. Used in all state transition operations to identify who performed Accept, Reject, Close, or RequestReview. The resolved user is stored on each `DocumentHistoryEntry` for audit. Also used in `CreateDocument` to assign the document owner.
+Typical uses seen in the projects: setting the author or owner on a created record, recording who performed a state transition, writing a log entry with the acting user, and gating admin-only features. One project resolves the actor purely in the model with an expression (`!getVariable('ACTOR', 'email')` filtered over the user entity) in its transition operations, and another injects a thin wrapper with a model-name target filter so it binds to the right model.
 
-### Ubives
-Encapsulated in a `Variables` wrapper class that injects `VariableResolver` with target filter `(judo.model.name=Ubives)`. Provides `getActorUserName()`, `getActorEmailName()`, and `getCurrentOrganizationId()`. Services (AccountService, OrganizationService) inject `Variables` to resolve the current authenticated account for organization ownership and leave operations.
+## When to avoid
 
-### ParkHere
-Encapsulated in `ActorServiceImpl` which wraps VariableResolver + UserDao lookup into `getCurrentUser()` and `validateCurrentUserHasPermissionTo(user, message)`. Permission check allows same-user or admin access. All custom operations inject `ActorService` for user context. Used for: permission validation, audit trail (createdBy/modifiedBy), reservation ownership, and admin-only feature gating (exclusive parking slots).
-
-### Indamedia-AdTrack
-Encapsulated in `ActorServiceImpl` which wraps VariableResolver + UserDao lookup into `getCurrentUser()`. Uses `VariableResolver` to resolve `ACTOR.email` from security context, then queries User entity by email. Throws `BusinessErrorException(USER_NOT_FOUND)` with i18n message if user not found. Injected with `ThreadLocalLocaleSupplier` for locale-aware error messages. Used for audit trails throughout the application.
-
-### judo-partner
-Used directly in custom operations and interceptors (not encapsulated in a service). `CreatePartnerCustomImplementation` and `DeleteCustomImplementation` both resolve the current user via `variableResolver.resolve(String.class, "ACTOR", "email")` then `userDao.query().filterByEmail(StringFilter.equalTo(email)).selectOne().orElseThrow()` to create `PartnerLog` audit entries. `PartnerInterceptor` uses the same pattern to check `user.getIsPartnerAdmin()` for role-based access control.
-
-### ReserveApp
-Used in `PartnerActorInterceptor` to resolve the authenticated partner user's email via `variableResolver.resolve(String.class, "ACTOR", "email")`, then queries User by email and navigates to the associated Partner entity. Demonstrates the pattern in an interceptor context (not a custom operation) for automatic ownership assignment on reservation creation.
-
-### doors-model
-Model-level actor resolution using JUDO expression language: `doors::types::Email!getVariable('ACTOR', 'email')`. Used in approval workflow operations to identify the current employee initiating approval, approving, or rejecting stages. Position-based authorization checks match the resolved employee against workflow stage requirements for division and role matching.
-
-## Trade-offs
-
-- Pros: Standard approach across all JUDO projects, decouples security context from business logic, works with any authentication provider (Keycloak, custom)
-- Cons: Boilerplate code duplicated across every operation, extra DB query per operation, null result not always handled safely, `.orElse(null)` can lead to NPE
-- Alternative: Centralized actor service that caches the resolved user per request, or framework-level actor injection (not currently available)
+- When a model expression can do the work: a derived attribute or an access filter using `getVariable` needs no Java at all.
+- When the operation only needs the actor's identifier or email and not the entity, skip the user query and use the resolved value directly.
+- Authorization decisions belong in the model's access control where possible; this pattern only supplies identity.
 
 ## Related
 
-- [[keycloak-jit-user-provisioning]]
-- [[custom-operation-osgi-component]]
-- [[dao-fluent-query-filter]]
-
+- [[keycloak-jit-user-provisioning]] — creates the user row this lookup expects
+- [[custom-operation-osgi-component]] — where the lookup is called from
+- [[dao-fluent-query-filter]] — the query used to load the user

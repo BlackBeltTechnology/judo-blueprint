@@ -1,97 +1,79 @@
 ---
 id: dao-fluent-query-filter
 title: Fluent DAO Query with Type-Safe Filters
-description: "The standard JUDO data access pattern using generated SDK DAOs with fluent, chainable query builders and type-safe filter classes."
-aliases: []
-keywords: [fluent, dao, query, type, safe, filters, filter]
+description: "Read data through generated DAOs: chain typed filterBy calls (AND-combined), then selectOne, selectList or count; use filterBy(String) JQL for OR logic and relation query methods for navigation."
+aliases: [DAO query, typed filters, fluent query, StringFilter]
+keywords: [dao, query, filter, StringFilter, BooleanFilter, selectOne, selectList, count, jql, mask]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: data-access
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [builder-pattern-entity-creation, relation-based-entity-creation, mask-field-projection]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-The standard JUDO data access pattern using generated SDK DAOs with fluent, chainable query builders and type-safe filter classes. Filters are AND-combined when chained. Supports `selectOne()` (Optional), `selectList()` (List), and `count()` (long) terminal operations.
+Query entities in backend code with the generated DAO's fluent query builder: type-safe filters per attribute, chained with AND, ended by a terminal call. This is the default way to read data in custom operations, services and interceptors.
 
-## Structure
+## Practice
 
-Filter types from `hu.blackbelt.judo.sdk.query`:
-- `StringFilter.equalTo(value)` -- exact string match
-- `BooleanFilter.isTrue()` / `isFalse()` -- boolean filtering
-- `EnumerationFilter.equalTo(enumValue)` -- enum match
-- `NumberFilter.equalTo(number)` -- numeric match
-- `TimestampFilter.greaterOrEqualThan(threshold)` -- timestamp comparison
-- `DateFilter.greaterOrEqualThan(date)` / `lessOrEqualThan(date)` -- date range
-- `TimeFilter.lessThan(time)` / `greaterThan(time)` -- time comparison
+### Platform: the fluent query API
+
+The platform documents this API in the [data access guide](../../agent-docs/backend/data-access-guide.md#query-patterns). Key points:
+
+- `dao.query()` returns a builder; `filterBy<Attribute>(Filter)` calls chain with **AND** logic ([combining filters](../../agent-docs/backend/data-access-guide.md#combining-multiple-filters)). Terminals: `selectOne()` (an `Optional`), `selectList()` and `count()` ([query result methods](../../agent-docs/backend/data-access-guide.md#query-result-methods)).
+- Filter classes live in `hu.blackbelt.judo.sdk.query`: `StringFilter` (`equalTo`, `notEqualTo`, `like`, `ilike`), `NumberFilter`, `DateFilter`, `TimestampFilter` (equal, not equal, greater/less, with or-equal variants), `BooleanFilter` (`isTrue()` / `isFalse()`, not `equalTo(boolean)`) and `EnumerationFilter` (`equalTo`, `notEqualTo`) ([filters reference](../../agent-docs/backend/data-access-guide.md#sdk-query-filters-reference)).
+- OR logic and anything a typed filter cannot express go through `filterBy(String)` with a JQL expression such as `this.isAdmin == true or this.isCoordinator == true`; use `==`, and `(this.f)!like('%x%')` for patterns; navigation (`this.relation.field`) is not supported there ([OR logic](../../agent-docs/backend/data-access-guide.md#or-logic-with-custom-filter-expressions)).
+- Relation queries are generated per relation. Multi-valued ones (`countyDao.querySettlements(county)`) return a query customizer that supports filters, masks and `selectList()` but not `orderBy`; single-valued ones return the entity directly, so `.selectOne()` on them does not compile ([relationship navigation](../../agent-docs/backend/data-access-guide.md#relationship-navigation-queries)). Sort multi-valued results in Java.
+- `maskedBy(...)` limits the loaded fields and avoids N+1 loading ([masks](../../agent-docs/backend/data-access-guide.md#using-masks-projections), [[mask-field-projection]]).
+- Pagination is opt-in: a list call without a seek returns all matching rows ([pagination](../../agent-docs/backend/data-access-guide.md#pagination)).
+- Known issues: querying an enumeration attribute with `query<Attribute>()` can throw a `ClassCastException`; and "not set" on an optional boolean needs `filterBy("this.x!isUndefined()")` ([known issues](../../agent-docs/backend/data-access-guide.md#known-issues-of-the-generated-dao)). For calls the SDK cannot express, the low-level `DAO` takes a `QueryCustomizer`.
 
 ```java
-// Multi-filter query returning Optional
+// Example project code (generated DAO types)
 Optional<User> user = userDao.query()
     .filterByEmail(StringFilter.equalTo(email))
-    .filterByCode(StringFilter.equalTo(code))
     .filterByActive(BooleanFilter.isTrue())
     .selectOne();
 
-// Relation-based query with enum filter
 List<Test> tests = contestDao.queryTests(contest)
     .filterByStatus(EnumerationFilter.equalTo(TestStatus.STARTED))
-    .filterByPlayerEmail(StringFilter.equalTo(email))
     .selectList();
 
-// Count query
-long correctCount = testDao.queryPrompts(_this)
+long correct = testDao.queryPrompts(_this)
     .filterByCorrect(BooleanFilter.isTrue())
     .count();
 ```
 
-## Examples
+### Project practice
 
-### Trivia
-Uses all four filter types extensively: `StringFilter` for email/code lookups, `BooleanFilter.isTrue()` for active users and correct answers, `EnumerationFilter` for TestStatus/QuestionStatus filtering, `NumberFilter.equalTo()` for prompt number matching. 15+ distinct query patterns across 8 operations.
+- Duplicate detection before creation: `count() > 0` on the business key ([[upsert-create-or-update]]); existence checks combine `count()` with an empty or small mask.
+- Where the query is a user lookup, wrap it once in a service ([[actor-resolution-variable-resolver]]).
+- Several projects use `TimeFilter` for time-overlap queries (parking availability) and paged `selectList(offset, limit)` loops for batch validation or migration, and `findAllById` for bulk fetches by identifier list. These calls are not described in the platform docs; verify against the generated DAO of your model.
+- Use one clock when a timestamp filter is compared with values written by Java code ([time zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)).
 
-### RackInspect
-Adds `StringFilter.notEqualTo()`, `DateFilter.equalTo()`, and `maskedBy()` for field projection. Example: `currencyDao.query().filterByCode(StringFilter.equalTo("HUF")).selectOne()`. Also uses paginated queries with `selectList(limit, lastItem, isReverse)` and `orderBy(Attribute, Order.ASC)`.
+## Rationale
 
-### ALBA
-Uses `StringFilter.equalTo()` for user lookup by email, `EnumerationFilter.equalTo(ProductState.APPROVED)` for finding approved versions across a container. Also uses `findAllById()` for bulk-fetching related entities (audiences, curriculums, result types) by extracted UUIDs from input.
+- Compile-time checked attribute names and filter types, readable chained calls, and no query strings for the common cases.
+- Cost: AND-only chaining (OR needs a JQL string, which is unchecked until runtime), no ordering on relation queries, and boolean filters that differ from the other filter classes.
 
-### mlszksz-platform
-Extensive use of `TimestampFilter.greaterOrEqualThan()` for active-user counting (lastLogin within 30 days) and date-filtered queries. Relation queries via `organizationDao.queryUsers(orgId)` for per-org user counts. `EnumerationFilter.equalTo(UserStatus.ACTIVE)` and `EnumerationFilter.equalTo(PostStatus.PUBLISHED)` for status filtering. Count queries for statistics aggregation.
+## Example
 
-### Ubives
-`StringFilter.equalTo()` used extensively for username lookups: `accountDao.query().filterByUserName(StringFilter.equalTo("admin")).maskedBy(mask).count()` for existence checks, `.selectOne()` for user retrieval. `count() > 0` pattern for duplicate detection before creation (organizations, applications). All queries consistently use `maskedBy()` for field projection.
+Trivia filters by status, email and correctness flags in about fifteen query shapes across eight operations. ParkHere combines date, enumeration and two time filters into an availability query. workflow-poc fetches the next unprocessed event with a string filter, a boolean filter and an ordering. Ubives uses `count()` with a mask for username existence checks before creating organizations or applications.
 
-### ParkHere
-Extensive use of `DateFilter` for date range queries (reservation lookups), `TimeFilter` for time overlap detection (parking slot availability), `EnumerationFilter` for status/type filtering (ACTIVE reservations, non-GUEST types), and `BooleanFilter` for archived/favorite filtering. Complex availability queries combine 4+ filters: `.filterByDate(DateFilter.equalTo(date)).filterByReservationStatus(EnumerationFilter.equalTo(ACTIVE)).filterByStartTime(TimeFilter.lessThan(endTime)).filterByEndTime(TimeFilter.greaterThan(startTime))`.
+## When to avoid
 
-### Indamedia-AdTrack
-Uses `StringFilter.equalTo()` for user lookup by email in interceptor and ActorService. `EnumerationFilter.equalTo(Status.ONGOING)` for filtering active campaigns in scheduled jobs. `DateFilter.lessOrEqualThan(today)` and `DateFilter.greaterOrEqualThan(today)` for campaign date range checks. Relation queries: `trackedCampaignTransferDao.queryAggregatedCampaign()` for parent navigation, `aggregatedCampaignDao.queryTrackedCampaigns()` for children.
-
-### judo-partner
-Heavy use of `StringFilter.equalTo()` for tax identifier, email, country code, and alpha2/alpha3 lookups. `BooleanFilter.isTrue()`/`isFalse()` for primary flag and archive filtering. Paginated batch processing with `selectList(i, i += 100)` for bulk validate/migrate operations. Combined mask + filter: `partnerDao.query().maskedBy(PartnerMask.partnerMask().withNormalizedName().withIsArchived()).filterByNormalizedName(...)`.
-
-### workflow-poc
-Uses `StringFilter.equalTo()` for name-based lookups across workflow entities: `contextTypeDao.query().filterByName(StringFilter.equalTo(input.getContextType())).selectOne()`, `tokenDao.query().filterByTokenID(StringFilter.equalTo(input.getTokenID())).selectOne()`. Multi-filter with ordering: `eventDao.query().filterByCorrelationID(StringFilter.equalTo(correlationID)).filterByProcessed(BooleanFilter.isFalse()).orderBy(EventAttribute.SEQUENCE).selectOne()`. `EnumerationFilter.equalTo(LogEntryType.COMPLETION)` for log queries. `BooleanFilter.isTrue()/isFalse()` for generic context type and event-less transition filtering.
-
-### ReserveApp
-`PartnerActorInterceptor` uses `userDao.query().filterByEmail(StringFilter.equalTo(email)).selectOne().stream().findAny().orElse(null)` to find the current user by email. Also uses relation query `userDao.queryPartner(user, PartnerMask.partnerMask())` to navigate from User to Partner with mask projection. Minimal but demonstrates both entity query and relation navigation patterns.
-
-## Trade-offs
-
-- Pros: Type-safe, compile-time checked, fluent API, supports all common filter types
-- Cons: Filters are AND-only when chained (OR requires `filterBy(String)` with JQL), no built-in pagination in trivia usage, no mask usage observed in trivia
-- Alternative: Raw JQL expressions via `filterBy(String)` for OR logic or complex conditions
+- When the condition needs OR, navigation or a function: use `filterBy(String)` with JQL, or a model-side derived attribute.
+- When the data needs native SQL (for example a join table): there is no DAO method; isolate it in one service with a `DataSource`.
+- To create or change data: see [[builder-pattern-entity-creation]] and [[mutable-entity-update-pattern]].
 
 ## Related
 
-- [[builder-pattern-entity-creation]]
-- [[relation-based-entity-creation]]
-- [[mask-field-projection]]
-
+- [[builder-pattern-entity-creation]] — creating entities
+- [[relation-based-entity-creation]] — creating children through a parent
+- [[mask-field-projection]] — limiting the fields loaded
+- [[upsert-create-or-update]] — query then create or update
+- [[actor-resolution-variable-resolver]] — user lookup built on this query

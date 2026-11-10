@@ -1,28 +1,29 @@
 ---
 id: api-key-generation
 title: SecureRandom API Key Generation Pattern
-description: "A utility pattern for generating random alphanumeric API keys using `java.security.SecureRandom`."
-aliases: []
-keywords: [securerandom, api, key, generation]
+description: "A static utility generates 32-character alphanumeric keys with java.security.SecureRandom for application tokens, invitation ids and temporary names; storage, expiry and rotation are left to the caller."
+aliases: [random token generator, invitation id generator]
+keywords: [securerandom, api key, token, random, invitation, utility]
 tags: ["domain:backend", "layer:backend", "project:ubives", "status:single-project"]
 category: service
 status: single-project
 projects: [ubives]
 evidence: ["ubives:unrecorded"]
 alternatives: []
-related: [two-phase-registration, service-delegation-pattern]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A utility pattern for generating random alphanumeric API keys using `java.security.SecureRandom`. The generated keys are 32 characters long and used as application tokens, invitation IDs, and temporary realm names. The pattern is implemented as a static utility class with no external dependencies, ensuring cryptographically strong randomness.
+Backend code sometimes needs an unguessable string: an application token handed to an integration, an invitation id embedded in an e-mail link, or a throwaway name used while a record is being created. A small utility around `SecureRandom` produces such values without any dependency.
 
-## Structure
+## Practice
+
+The platform has no key generator for this: signed identifiers are minted by the runtime only when it serves a response and cannot be produced by custom code ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md#signed-identifiers)), and variable providers or sequences give environment values or numbers, not secrets ([variables and sequences](../../agent-docs/backend/platform-behavior-reference.md#variables-and-sequences)). An application secret is therefore project practice: a plain Java utility class that service classes call.
 
 ```java
+// Example project code (a static utility, not a platform class)
 public class ApiKeyGenerator {
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final String CHARACTERS =
@@ -31,32 +32,37 @@ public class ApiKeyGenerator {
     public static String generateApiKey() {
         StringBuilder sb = new StringBuilder(32);
         for (int i = 0; i < 32; i++) {
-            int randomIndex = RANDOM.nextInt(CHARACTERS.length());
-            sb.append(CHARACTERS.charAt(randomIndex));
+            sb.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
         }
         return sb.toString();
     }
 }
 ```
 
-Usage contexts:
-- Application tokens: `withApplicationToken(ApiKeyGenerator.generateApiKey())`
-- Invitation IDs: `withInvitationId(ApiKeyGenerator.generateApiKey())`
-- Temporary realm names: used during organization creation before renaming to organization name
+- Use `SecureRandom`, never `java.util.Random`, and keep one shared instance.
+- The generated value is then written through the generated builder, for example an application token or an invitation id field on the created entity.
+- The utility does not check for collisions, expire keys or rotate them. Add a unique constraint or a lookup before storing when a collision would matter, and model an expiry or revoked flag if keys must be time-limited.
+- For secrets that are checked later, store only a hash of the value, as in [[invitation-with-recipients]].
 
-## Examples
+## Rationale
 
-### Ubives
-`ApiKeyGenerator.generateApiKey()` used in three contexts: (1) `ApplicationService.createApplication()` generates tokens for new applications, (2) `InviteService.invite()` generates unique invitation IDs for email invite links, (3) `OrganizationService.createOrganization()` generates temporary realm names. Static utility class in `com.ubives.ubives.services` package. No expiration or rotation mechanism built in.
+- Thirty-two characters from 62 symbols give about 190 bits of entropy, enough that guessing is impractical.
+- A static class with no dependencies is trivial to reuse from any service and to unit test (length, alphabet).
+- Cost: no standard format (a UUID may be easier to trace), no built-in lifecycle.
 
-## Trade-offs
+## Example
 
-- Pros: Cryptographically strong randomness via SecureRandom, simple static utility, no external dependencies, sufficient entropy (62^32 possible keys)
-- Cons: No built-in expiration or rotation, no collision detection, not UUID-based (harder to trace), 32-char alphanumeric may not meet all API key standards
-- Alternative: `UUID.randomUUID().toString()` for standard UUID format, JWT-based tokens for self-contained claims, external token service (Vault, AWS KMS)
+The ubives project uses the generator in three places: an application service creates tokens for new applications, an invite service creates the ids used in e-mail invitation links, and the organization service creates a temporary realm name that is replaced by the organization name once registration completes.
+
+## When to avoid
+
+- When a standard UUID is enough and the value is an identifier, not a secret: `UUID.randomUUID()`.
+- When keys need expiry, scopes or rotation: use a token service or a model with explicit lifecycle fields.
+- When login is the goal: delegate to the identity provider ([[magic-link-authentication]]).
 
 ## Related
 
-- [[two-phase-registration]]
-- [[service-delegation-pattern]]
-
+- [[two-phase-registration]] — registration flow where temporary names are used
+- [[service-delegation-pattern]] — where the generator is called from
+- [[magic-link-authentication]] — another use of single-use tokens
+- [[invitation-with-recipients]] — stores only hashes of generated tokens

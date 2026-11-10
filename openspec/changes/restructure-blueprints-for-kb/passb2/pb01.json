@@ -1,0 +1,255 @@
+{
+ "batch": "pb01",
+ "entries": {
+  "action-delegation-workflow": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#osgi-component-registration-pattern",
+    "catalog/agent-docs/backend/custom-operations.md#rules-for-custom-operations",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md#injecting-daos-and-services"
+   ],
+   "fixes": [
+    "Added platform base: custom op component, inject generated interface, stateful rule, interceptors do not fire for custom ops",
+    "Labelled ActionOperation/WorkflowUtils as project code; flagged that single-valued relation queries return entity directly (old Optional code wrapped)",
+    "Dropped related frontmatter key (moved to Related with reasons)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "actor-resolution-variable-resolver": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/patterns-and-best-practices.md#4-pattern-accessing-user--request-context",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#variable-providers",
+    "catalog/agent-docs/backend/authentication-guide.md#principal-to-actor-resolution-and-multi-client-mapping",
+    "catalog/agent-docs/backend/architectural-patterns.md#rules-for-accessesgetterexpression"
+   ],
+   "fixes": [
+    "Added ACTOR variable categories, JQL equivalent, actor row read each request/AUTHENTICATED_ENTITY_NOT_FOUND",
+    "Replaced .orElse(null) boilerplate by explicit orElseThrow; selectOne is Optional",
+    "Labelled ActorService/Variables as project helpers; interceptors do not guard custom ops"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "answer-shuffling-anti-cheat": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/data-access-guide.md#crud-operations"
+   ],
+   "fixes": [
+    "Marked as pure project Java logic; platform only provides op hook/DAO; unseeded shuffle caveat"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "api-key-generation": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#signed-identifiers",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#variables-and-sequences"
+   ],
+   "fixes": [
+    "Stated platform cannot mint signed ids and has no key generator; labelled utility as project code; hashing/collision/rotation caveats"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "audit-event-trail": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#time-and-time-zones",
+    "catalog/agent-docs/backend/data-access-guide.md#crud-operations"
+   ],
+   "fixes": [
+    "Added same-transaction/interceptor-rollback semantics, async interceptors outside transaction, interceptors never fire for custom ops (audit custom ops explicitly)",
+    "Added clock caveat (defaultZoneId vs JVM)",
+    "Added alternatives audit-log-entity"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "builder-pattern-entity-creation": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#which-types-get-a-full-dao",
+    "catalog/agent-docs/backend/data-access-guide.md#clearing-a-relation-unset-not-setnull",
+    "catalog/agent-docs/backend/data-access-guide.md#absent-null-and-empty-are-different",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#signed-identifiers"
+   ],
+   "fixes": [
+    "Added DAO creation only for mapped non-abstract TOs, set(null) NPE / unset, absent vs null, required/Optional getters",
+    "Marked ForCreate.create() setter variant as seen-in-project only, not in docs"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "bulk-csv-import-export": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#binary-upload-tokens",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#excel-export-operations",
+    "catalog/agent-docs/backend/data-access-guide.md#pagination",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted"
+   ],
+   "fixes": [
+    "Added upload token two-phase flow/INVALID_FILE_TOKEN, platform Excel EXPORT SPI distinction, pagination default all rows, interceptors do not guard custom ops",
+    "Labelled FileStoreService/CSV helpers as project code; fixed RecipientForCreate.create() to builder"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "bulk-json-import-export": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#binary-upload-tokens",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#custom-rest-endpoints-and-cxf",
+    "catalog/agent-docs/backend/data-access-guide.md#query-patterns"
+   ],
+   "fixes": [
+    "Added upload token flow, no interceptor guard, labelled FileStoreService/inner class as project code, partial data/transaction note",
+    "Do not swallow IOException"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "correlation-based-event-chaining": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#query-patterns",
+    "catalog/agent-docs/backend/interceptors.md#the-interceptor-contract",
+    "catalog/agent-docs/backend/debugging-and-monitoring-guide.md#request-correlation-with-x-exchange-id",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#time-and-time-zones"
+   ],
+   "fixes": [
+    "Distinguished domain correlation id from platform X-Exchange-Id; async threads lack context; transaction scope; labelled as workflow-poc project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-operation-osgi-component": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#osgi-component-registration-pattern",
+    "catalog/agent-docs/backend/custom-operations.md#generator-emitted-package-convention",
+    "catalog/agent-docs/backend/custom-operations.md#rules-for-custom-operations",
+    "catalog/agent-docs/backend/custom-operations.md#example-4-delegated-implementation-with-dependency-injection-bridge",
+    "catalog/agent-docs/backend/patterns-and-best-practices.md#field-vs-method-injection"
+   ],
+   "fixes": [
+    "Added .default/generator package convention, .generator-ignore, G E N E R A T E D header, declared faults, stateful rule, interceptors do not protect custom ops, DI-bridge example 4",
+    "Labelled services as example project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "dao-fluent-query-filter": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "backend architectural patterns service layer delegation",
+    "custom operation implementation component Reference DAO accept _this input",
+    "interceptor postCall audit transaction rollback",
+    "FileStore file token binary upload download",
+    "SecureRandom API key secret hashing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#query-patterns",
+    "catalog/agent-docs/backend/data-access-guide.md#or-logic-with-custom-filter-expressions",
+    "catalog/agent-docs/backend/data-access-guide.md#relationship-navigation-queries",
+    "catalog/agent-docs/backend/data-access-guide.md#known-issues-of-the-generated-dao",
+    "catalog/agent-docs/backend/data-access-guide.md#pagination"
+   ],
+   "fixes": [
+    "Corrected filter list per docs (no TimeFilter in docs; flagged as project-observed), BooleanFilter isTrue/isFalse, relation queries: single-valued returns entity, no orderBy on multi-valued",
+    "Added JQL OR rules (==, !like, no navigation), enum ClassCastException, isUndefined, pagination opt-in, QueryCustomizer, native SQL"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}
