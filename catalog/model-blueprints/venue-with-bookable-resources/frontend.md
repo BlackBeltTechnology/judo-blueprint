@@ -1,19 +1,18 @@
-## Overview
+## Frontend guidance
 
-The venue with bookable resources pattern manifests in the React frontend indirectly through the reservation creation workflow. While the ParkingGarage and ParkingSlot entities do not have dedicated custom components or hooks of their own, the parking slot is deeply integrated into the reservation input form logic: preferred slot auto-selection, slot availability validation via range queries, next-to-wall warning display, and parking slot information rendering in reservation cards.
+### Generated pages
 
-## Implementation Pattern
+- Keep the generated Venue table and view pages for administrators; the slot collection appears as an inline table on the venue, where slots are added through the generated creation action.
+- Keep the Slot form for physical descriptors (floor, wall, plan image, flags).
+- Hide the generated Reservation create pages from members; members book through a dedicated booking form whose slot field uses the reference range.
+- The preferred-slot field on the member profile is a relation with a range selection dialog; the dialog lists whatever the range interceptor returns, so no frontend filtering is needed.
 
-- **Preferred slot auto-selection**: When a user is selected in the reservation form, the `setFavoriteParkingSlot` function queries `servicesReservationInputServiceImpl.getRangeForParkingSlot()` with a filter matching the user's `preferredParkingSlot.aggregaredName`. If the preferred slot is available in the current context, it is auto-populated into the form; otherwise the slot field is cleared.
-- **Next-to-wall warning**: The `onParkingSlotBlurAction` function checks the selected parking slot's `nextToWall` boolean. If true, it shows a warning text (`extra.message.warningNextToText`) via `storeDiff('warningNextToWallTextHidden', false)`. This warns users that the selected slot is next to a wall, which may require additional care when parking.
-- **Parking slot info display in cards**: Both the `UserActiveReservationsCard` and `UserPreviousReservationsCard` custom components display the `parkingSlotInformation` field (a denormalized string combining garage and slot identifiers) with a garage icon (`garage-open-variant`).
-- **Custom data mask inclusion**: The `getActiveReservationsMask` hook explicitly includes `parkingSlotInformation` in the fetch mask, and `getUserFieldsForReservation` includes `preferredParkingSlot{aggregaredName,nextToWall}` to fetch slot details along with user data.
-- **i18n**: Hungarian translations cover parking garage and slot table labels, slot attributes (floor, nextToWall, isActive, isExclusive, floorPlan), and the aggregated name display used in reservation cards.
+### Hiding is not security
+
+Hiding the exclusive-slot toggle or the venue access table from non-administrators is a convenience only. The backend range interceptor and the access definition of the actor decide what is reachable (see [backend.md](backend.md)).
 
 ## Examples
 
 ### park-here
-- Framework: React
-- Key files: `custom/services/ReservationInputServices.ts` (functions: `setFavoriteParkingSlot`, `onParkingSlotBlurAction`, `getUserFieldsForReservation`), `custom/hooks/components/UserActiveReservationsCard.tsx`, `custom/hooks/components/UserPreviousReservationsCard.tsx`
-- Pattern: The venue/slot pattern is consumed by the reservation workflow rather than customized independently. Preferred parking slot is auto-selected during reservation creation by querying the parking slot range API. A next-to-wall warning appears when the selected slot has the `nextToWall` flag. Parking slot information is displayed in reservation cards with the `garage-open-variant` icon.
-- Notable: No custom hooks or components target ParkingGarage or ParkingSlot views directly. The venue/slot customizations are entirely embedded in reservation-related hooks, reflecting that the slot is a supporting entity selected during the reservation workflow rather than managed through custom UI flows.
+
+- React frontend with generated pages; the booking form and the profile page use the slot range selection.

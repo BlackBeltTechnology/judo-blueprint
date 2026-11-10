@@ -1,24 +1,58 @@
 ---
 id: work-status-lifecycle-enum
 title: "Work Status Lifecycle Enum (Not Started/In Progress/Done/Won't Fix)"
-description: "A four-state work/task lifecycle enumeration with members: NOT_STARTED, IN_PROGRESS, DONE, and WONT_FIX."
-aliases: []
-keywords: [work, status, lifecycle, enum, not, started, progress, done]
+description: "A four-state work item status enumeration: NOT_STARTED, IN_PROGRESS, DONE and WONT_FIX, with two terminal outcomes."
+aliases: [work status, task status enum, repair work status]
+keywords: [work, status, lifecycle, enum, not started, in progress, done, wont fix]
 tags: ["domain:model", "layer:model", "project:rackinspect", "status:single-project"]
 category: pattern
 status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [draft-done-status-enum]
+fragment: work-status-lifecycle-enum
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A four-state work/task lifecycle enumeration with members: NOT_STARTED, IN_PROGRESS, DONE, and WONT_FIX. This models entities that track repair or maintenance work items: they begin as NOT_STARTED, transition to IN_PROGRESS when work begins, and end at either DONE (completed) or WONT_FIX (abandoned/deferred). The WONT_FIX terminal state distinguishes this from simpler lifecycle enums by acknowledging that not all work items reach completion. Used by both JobSheet and WorkReport entities as their workStatus attribute.
+Track the progress of a work item, such as a repair or maintenance task, through one enumeration with two ways to end: finished (DONE) or abandoned (WONT_FIX).
 
-## Model Definition
+### Two terminal outcomes
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+A work item starts as NOT_STARTED, moves to IN_PROGRESS when work begins, and ends as DONE or WONT_FIX. The enumeration only names the states; it does not enforce the order.
+
+## Structure
+
+One enumeration, `WorkStatus`, with four members: NOT_STARTED (ordinal 0), IN_PROGRESS (1), DONE (2) and WONT_FIX (3). The owning entity (here WorkItem) has a required `workStatus` attribute of this type, with a default value. The default is a project choice: the source project defaulted new work items to IN_PROGRESS, while NOT_STARTED is the natural initial value when work is planned before it starts.
+
+## Constraints
+
+### Ordinals are stored and sent
+
+Members persist by ordinal and enumerations travel as integer ordinals on the wire. Ordinals must be unique and between 0 and 9999 in the model. Do not renumber existing members; in the source project the ordinals are not in lifecycle order (IN_PROGRESS 1, DONE 2, WONT_FIX 3, NOT_STARTED 4), so never infer the order from the ordinal.
+
+### The enumeration is not a state machine
+
+Nothing in the platform stops a write of DONE over WONT_FIX. Project practice: allow changes only through operations of the owning entity. Custom operations are not seen by interceptors, so the check belongs in the operation itself.
+
+## Variations
+
+- Several entities in a chain (for example a job sheet and the work report that follows it) can each carry the same enumeration so the status is comparable across them.
+- Drop WONT_FIX for the two-state form in [[draft-done-status-enum]].
+
+## When to use
+
+- Work items that can be dropped as well as completed, and "not started" differs from "in progress" for users or reports.
+
+## When to avoid
+
+- A review or approval loop is needed; use [[document-review-state-machine]].
+- The status is on or off; use [[active-inactive-status-enum]].
+
+## Related
+
+- [[draft-done-status-enum]] — the two-state form without an abandoned outcome
+- [[document-review-state-machine]] — adds review steps and history
+- [[active-suspended-deactivated-status-enum]] — another small status enumeration with an inactive branch

@@ -1,27 +1,28 @@
-## Overview
+## Backend guidance
 
-The workflow versioning pattern's backend implementation manages the version lifecycle (upload, commit, publish) through a custom upload operation that handles version number incrementing, uncommitted head cleanup, structural entity creation from YAML definitions, and head pointer management.
+### Upload creates the next head
 
-## Implementation Pattern
+Upload is a custom operation on the parent, with its DAOs and services injected as an OSGi component (see [[custom-operation-osgi-component]] and the [custom operations guide](../../agent-docs/backend/custom-operations.md)). Its flow:
 
-- **Upload operation**: An OSGi `@Component` implementing the `upload` instance operation on the parent Workflow entity. The upload operation orchestrates the full version creation lifecycle:
-  1. Parses the uploaded YAML file (via `FileStoreService` and Jackson `YAMLFactory`) into a structured definition
-  2. Validates the definition name matches the parent entity name
-  3. Checks for an existing uncommitted head version -- if found, deletes it (including all composed structural entities) via a utility method and resets the head pointer to the previous committed version
-  4. Creates a new WorkflowVersion with `versionNumber = head.versionNumber + 1` (or 1 if no head exists), linked to the parent Workflow
-  5. Sets the new version as the Workflow's head pointer via `workflowDao.setHead()`
-  6. Creates all composed structural entities (states, transitions, event types) as children of the new version
-  7. Sets metadata on the version (model text, generated diagram, uploadTime)
-  8. Returns an admin transfer object projection of the created version
-- **Version cleanup utility**: A shared `WorkflowUtils` service provides `deleteWorkflowVersion()` which handles cascading deletion -- first removing incoming transitions from all states (to break circular references), then deleting the version entity (which cascades to composed states, transitions, events)
-- **Head pointer management**: After deleting an uncommitted head, the code queries the remaining versions ordered by descending versionNumber and resets the head pointer to the latest remaining version
-- **Commit and publish operations**: These simpler operations are typically model-defined (setting `committed=true`, `commitTime=now()`, and moving the published pointer), while upload requires custom Java due to YAML parsing and structural entity creation
-- **DI wiring**: The upload operation injects `WorkflowDao`, `WorkflowVersionDao`, and all structural entity DAOs via OSGi `@Reference`, plus `FileStoreService` for file access, `DiagramUtils` for diagram generation, and `WorkflowUtils` for version cleanup
+1. Read the uploaded file. The input binary uses the two-phase upload-token flow; an invalid token fails with `INVALID_FILE_TOKEN` (see [platform behaviour](../../agent-docs/backend/platform-behavior-reference.md)).
+2. Parse and validate the definition, including that its name matches the parent.
+3. If the head is uncommitted, delete it with the structure it owns and reset the head pointer to the latest remaining version, found by ordering versions by descending version number.
+4. Create the new version with number head+1 (or 1), link it to the parent and set it as head.
+5. Create the owned structural entities and set the content, diagram and upload time.
+6. Return the admin projection of the version.
+
+When structural elements reference each other, remove the incoming references first, then delete the version, which removes the owned elements.
+
+### Commit and publish
+
+Commit sets committed and the commit time and stores the comment. Publish checks that the version is committed and moves the published pointer. They are simple, but because they are custom operations no interceptor guards them: put the checks inside.
+
+### Example project code
+
+`UploadCustomImplementation`, `WorkflowUtils` and `DiagramUtils` in the source project are example project code, not platform classes.
 
 ## Examples
 
 ### workflow-poc
-- Key files: `custom/.../entities/workflow/UploadCustomImplementation.java`, `custom/workflow/utils/WorkflowUtils.java`
-- Pattern: The `UploadCustomImplementation` (372 lines) implements the full upload-with-versioning lifecycle. It reads YAML via `FileStoreService`, validates cross-references, manages the uncommitted-head cleanup and version number increment, creates States/Transitions/EventTypes as composed children, generates a Mermaid diagram via `DiagramUtils`, and returns an admin TO projection.
-- Notable: Version cleanup in `WorkflowUtils.deleteWorkflowVersion()` must explicitly remove incoming transitions before deleting states to handle bidirectional transition-state references. The head pointer reset queries versions `orderByDescending(WorkflowVersionAttribute.VERSION_NUMBER).selectOne()` to find the latest remaining committed version.
-- DI: Injects 8 entity DAOs (`WorkflowDao`, `WorkflowVersionDao`, `RoleDao`, `EventTypeDao`, `StateDao`, `TransitionDao`, `ContextTypeDao`, plus an admin `WorkflowVersionDao`), `FileStoreService`, `DiagramUtils`, and `WorkflowUtils`.
+
+- The upload operation is the largest class; the cleanup helper breaks transition links before deleting states.

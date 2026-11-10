@@ -1,62 +1,78 @@
 ---
 id: workflow-engine-state-machine-cluster
 title: Workflow Engine State Machine Entity Cluster
-description: "A complete, reusable workflow/state machine engine modeled as an interconnected entity cluster."
-aliases: []
-keywords: [workflow, engine, state, machine, cluster]
+description: "A data-driven workflow engine modeled as an entity cluster: workflow definitions, versions, states, transitions, guards and actions as entities, with runtime contexts and tokens that move through them."
+aliases: [workflow engine, state machine engine, token workflow, runtime workflow definition]
+keywords: [workflow, engine, state machine, token, transition, guard, action, context, versions, fork, join]
 tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:workflow-poc", "status:single-project"]
 category: pattern
 status: single-project
 projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [entity-based-state-machine]
+fragment: workflow-engine-state-machine-cluster
+diagram: { kinds: [entity, enum, operation], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A complete, reusable workflow/state machine engine modeled as an interconnected entity cluster. The pattern provides a generic, data-driven workflow execution engine where workflow definitions are stored as entities (not hardcoded), enabling runtime-configurable business processes. The core entities are:
+Run business processes from workflow definitions stored as data instead of code. A definition (states, transitions, guards, roles, actions) is uploaded, versioned and published at runtime; each started process is a context whose tokens mark the current position in the state machine.
 
-- **Workflow** -- the top-level definition entity with a name and versioning support (headVersionNumber, publishedVersionNumber). It holds multiple WorkflowVersion instances and pointers to the head (latest) and published (active) versions. Operations include upload (import definition), publish (make a version active), and commit (finalize a version).
-- **WorkflowVersion** -- a specific revision of a workflow definition, with versionNumber, model (YAML definition), diagram (visual representation), committed flag, commitComment, commitTime, and uploadTime. It composes State entities (0..*) and Event entities (0..*), and associates to an initialState (0..1), a default Role (0..1), and observer URLs (0..*).
-- **State** -- a node in the state machine, with name, task (label for human tasks), autoAssign flag, joinState flag (for parallel merges), and finalState flag. It composes outgoing Transition entities (0..*) and associates to incoming transitions (0..*). Optional onEnter and onLeave Action associations allow triggering side effects on state entry/exit. A supervisor Role association enables oversight control.
-- **Transition** -- an edge between states, with eventID, onTransitionActionID, isHuman flag (human vs. automatic), and hasEvent flag. It associates to an EventType (0..1 event trigger), an Action (0..1 onTransition side effect), multiple nextStates (0..*), multiple Guard entities (0..* COMPOSITION), and a Role (0..1) for authorization.
-- **Guard** -- a condition expression (expression attribute) with an errorMessage, composed by a Transition. Guards are evaluated before a transition fires; all must pass.
-- **Action** -- a named executable unit (actionID attribute) with a run (INSTANCE) operation. Concrete action implementations extend Action via generalization (e.g., Action1, Action2, InitDocumentWorkflow), providing a Strategy pattern for pluggable behaviors.
-- **EventType** -- a named event definition with eventID, label, and showInTasklist flag. These define the events that can trigger transitions.
-- **Event** -- a runtime event instance with eventID, correlationID, processed flag (default: false), and sequence number (auto-generated). Events are composed by WorkflowVersion and represent queued trigger signals.
-- **Context** -- a runtime workflow execution instance with label and identifier. It composes ContextAttribute entities (0..* key-value pairs), associates to active Token entities (0..* tracking current positions), the workflow definition (1..1), assignable Users (0..*), LogEntry records (0..*), and a ContextType (1..1). Derived relations provide assignees and lastTransitions. Operations: trigger (INSTANCE, fire an event), createContext (STATIC, start new workflow instance).
-- **ContextType** -- a workflow type registry that associates a workflow to an external application entity type. Carries generic flag, name, actor/access/createOperation/idName attributes for integration with the host application's navigation system.
-- **ContextAttribute** -- a key-value pair with name, type (ContextAttributeType enum), and value. This allows workflows to carry arbitrary typed data in their execution context.
-- **Token** -- tracks a workflow execution's current position in the state machine. It carries tokenID, label, timestamp, and boolean flags isAssigneeLogged/isSupervisorLogged. Relations to state (0..1 current state), assignee (0..1 User), authorizedUsers (0..* DERIVED), context (1..1), and lastTransition (0..1). Operations: trigger, checkout, release, execute, assign, navigate -- providing the full task lifecycle.
-- **Role** -- a workflow-scoped role with name, associating to users (0..*) and transitions (0..*). This controls who can execute which transitions.
-- **User** -- a minimal user entity with email, associating to roles (0..*) and contexts (0..*). Operation: startWorkflow (INSTANCE).
-- **LogEntry** -- an audit log entry with timestamp (default: now()), type (LogEntryType enum), userEmail, message, and level (LogLevel enum). Associated to Context via logs relation.
-- **URL** -- a simple entity with address attribute, used as webhook observer endpoints.
+### Definition side and runtime side
 
-Supporting enumerations:
-- **ContextAttributeType** -- BOOLEAN, STRING, NUMERIC
-- **LogEntryType** -- COMPLETION (extensible for other event types)
-- **LogLevel** -- TRACE, INFO
+The definition side (Workflow, WorkflowVersion, State, Transition, Guard, Action, EventType, Role) describes what may happen. The runtime side (Context, ContextAttribute, Token, Event, LogEntry) records what is happening. A token moves from state to state when an event fires a transition whose guards pass.
 
-The transfer layer provides:
-- **TaskList TO** -- aggregates myTasks and allTasks with count attributes (userTasksCount, unassignedTasksCount, supervisedAssignedTasksCount, supervisedUnassignedTasksCount) and a startWorkflow operation.
-- **Task TO** -- a rich view of a Token with status, subject, task, workflow, creationTime, assignment state flags (isUnassigned, isAssigned, isCheckoutEnabled, isReleaseEnabled, isNavigable, isAssigneeLogged, isSupervisorLogged), assignables/authorizedUsers/logEntries relations, and operations: checkout, release, assign, execute, navigate.
-- **Admin TOs** -- Workflow/WorkflowVersion projections with upload/commit operations and version history.
-- **Input TOs** -- ContextInput, ActionInput, YamlData, UploadInput, CommitInput, CreateURLInput, CreateRedirect, UpdateRedirect for workflow management operations.
+## Structure
 
-All core entities are non-CRUD (createable=false, updateable=false, deleteable=false), managed entirely through custom operations.
+- **Workflow** has a name and the head and published version numbers. It owns WorkflowVersion entities (0..*, composition) and points to the head and published versions (0..1 each, association). Operations: upload, publish, commit.
+- **WorkflowVersion** has versionNumber, a model (the definition text), a diagram (generated diagram source), a committed flag and commit data. It owns State (0..*) and Event (0..*) entities, and points to an initial state and a default Role.
+- **State** has name, task label, autoAssign, joinState and finalState flags. It owns its outgoing Transition entities (0..*, composition) and points to optional onEnter and onLeave actions and a supervisor Role.
+- **Transition** has an event identifier, an isHuman flag and a hasEvent flag. It points to an EventType, an Action, a Role and one or more next states (0..*, association; several next states mean a fork). It owns its Guard entities (0..*, composition).
+- **Guard** has an expression and an error message. All guards of a transition must pass.
+- **Action** is the base of pluggable behaviours: an actionID and a run operation. Concrete actions are specializations (generalization) that implement run.
+- **Context** is a running instance: label, identifier, ContextAttribute entries (key, typed value; composition), tokens, the workflow, assignable users, log entries and a ContextType. Operation createContext is static.
+- **ContextType** registers a workflow for an application entity type (name, generic flag).
+- **Token** marks a position: tokenID, label, timestamp, assignee-logged and supervisor-logged flags, the current state (0..1), assignee (0..1), context (1..1) and last transition. Operations: trigger, checkout, release, assign, navigate.
+- **Role** and **User** are linked many to many. User has the startWorkflow operation.
+- **Enumerations**: ContextAttributeType (BOOLEAN, STRING, NUMERIC) and LogLevel (TRACE, INFO).
+- Transfer layer in the source project: a task list transfer object (own and all tasks with counts), a task transfer object mapping a Token with assignment-state flags, admin projections of Workflow and WorkflowVersion, and input transfer objects for upload, commit, action input and redirect.
 
-## Model Definition
+All core entities are neither createable, updateable nor deleteable through generated actions; they change only through custom operations.
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+## Constraints
 
-## Frontend Implementation
+### Definition entities change only through operations
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+Upload, publish and commit are the only writers of definition entities, which keeps a published version immutable. See [[workflow-versioning-pattern]] for the version lifecycle.
 
-## Backend Implementation
+### Operations are custom and bypass interceptors
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+createContext, trigger, upload and the task operations are custom operations. Interceptors fire only for built-in behaviour operations, so permission and state checks (for example "only the assignee may execute") must live inside the operations or the services they call (see [backend.md](backend.md)).
+
+### Tokens, not the entity, hold the position
+
+A context may hold several tokens at once (parallel branches). Do not store a single "current state" on the context.
+
+## Variations
+
+- Several next states on a transition model a fork; a join state merges the tokens that arrived. Omit both when processes are strictly sequential.
+- Replace guard expression text with a fixed set of guard types when no expression language should be exposed.
+- A simpler form keeps the status as an enumeration or entity on the business object; see [[entity-based-state-machine]].
+
+## When to use
+
+- Process definitions must change at runtime without a deployment, by a business user.
+- Human tasks, assignment and parallel branches are needed.
+
+## When to avoid
+
+- The process is small and stable: a status enumeration plus an operation is far cheaper.
+- Compliance needs the process in reviewed code and not in uploaded data.
+
+## Related
+
+- [[workflow-versioning-pattern]] — head and published versions of a definition
+- [[entity-based-state-machine]] — the lightweight alternative
+- [[contract-management-workflow-cluster]] — a business workflow that could run on such an engine
+- [[custom-operation-osgi-component]] — how each custom operation is registered

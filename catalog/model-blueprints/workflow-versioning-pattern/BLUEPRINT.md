@@ -1,57 +1,65 @@
 ---
 id: workflow-versioning-pattern
 title: Workflow/Definition Versioning with Head and Published Pointers
-description: "A versioning pattern for domain definitions (workflows, templates, configurations) where a parent entity manages an ordered series of version entities."
-aliases: []
-keywords: [workflow, definition, versioning, head, published, pointers]
+description: "A parent definition entity with an ordered series of version entities and two pointers, head (latest, possibly uncommitted) and published (live), driven by upload, commit and publish operations."
+aliases: [head and published version, definition versioning, draft and live version]
+keywords: [versioning, head, published, commit, upload, definition, draft, version number]
 tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:workflow-poc", "status:single-project"]
 category: pattern
 status: single-project
 projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [forecast-versioning-snapshot]
+fragment: workflow-versioning-pattern
+diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A versioning pattern for domain definitions (workflows, templates, configurations) where a parent entity manages an ordered series of version entities. The parent holds:
+Let a definition (workflow, template, configuration) be edited and tested without touching the version that production uses. New content is uploaded as a head version; only after it is committed and published does it become the live version.
 
-- **versions** (0..* ASSOCIATION) -- all historical versions
-- **head** (0..1 ASSOCIATION) -- the latest (possibly uncommitted) version
-- **published** (0..1 ASSOCIATION) -- the currently active version used at runtime
-- **headVersionNumber** and **publishedVersionNumber** -- denormalized version numbers for quick display
+### Draft and live side by side
 
-Each version entity carries:
+The head is the newest version and may still be uncommitted. The published version is the one the runtime reads. They may point to the same version or to different ones.
 
-- **versionNumber** (required) -- monotonically increasing version identifier
-- **committed** (required, default: false) -- whether this version has been finalized
-- **commitComment** -- human-readable description of what changed
-- **commitTime** -- when the version was finalized
-- **uploadTime** -- when the version data was initially uploaded
-- **model** -- the actual definition content (YAML, JSON, or other format)
-- **diagram** -- a visual representation (image binary or SVG)
-- **name** / **label** -- human-readable identifiers
+## Structure
 
-The workflow provides three lifecycle operations:
-- **upload** (on parent) -- creates a new head version with the uploaded model definition
-- **commit** (on version) -- finalizes the version, setting committed=true and recording commitTime
-- **publish** (on parent) -- promotes a committed version to be the active published version
+A Definition entity has a required name and denormalised headVersionNumber and publishedVersionNumber (integers) for display. It points to its DefinitionVersion entities with three relations: versions (0..*), head (0..1) and published (0..1), all association kind. A DefinitionVersion has a required versionNumber, a required committed flag (default false), commitComment, commitTime, uploadTime, the definition content (text) and an optional diagram (text). It owns the structural elements of the definition (here Step, composition 0..*) so every version is a self-contained snapshot. Definition has two instance operations, upload and publish; DefinitionVersion has commit. All three are custom operations.
 
-This separation of head from published enables a draft/review cycle: new definitions are uploaded and tested as the head version while the published version continues serving production traffic. Only after committing and publishing does the new definition become active.
+## Constraints
 
-The version entity typically composes the definition's structural elements (e.g., states and events for workflows) so that each version is a complete, self-contained snapshot.
+### A version is complete and then frozen
 
-## Model Definition
+A version owns its structural elements, so copying or deleting a version moves or removes the whole snapshot. Once committed it must not change; commit and publish are the only writers of those flags.
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+### Upload replaces an uncommitted head
 
-## Frontend Implementation
+Upload deletes an existing uncommitted head, with the structure it owns, and resets head to the latest remaining version before creating version number head+1 (or 1). Committed versions are never deleted. If structural elements point at each other across the version, break those links before deleting.
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+### Operations are custom, so interceptors do not guard them
 
-## Backend Implementation
+Upload, commit and publish are custom operations, which interceptors never see (see [backend.md](backend.md)). State checks, such as "only a committed version can be published", belong in the operation.
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+## Variations
+
+- Keep the denormalised version numbers as derived attributes (computed from head and published) so they cannot drift.
+- Snapshot the data at commit time instead of owning structure per version; see [[forecast-versioning-snapshot]].
+- Drop the committed flag when every upload is immediately publishable.
+
+## When to use
+
+- Definitions are edited by users and must be testable before they go live.
+- The history of definitions must be kept, and the running system must pin to a published version.
+
+## When to avoid
+
+- Changes may go live immediately and history is unimportant: a plain updatable entity is enough.
+- Only the data needs history, not a definition: use an audit log or [[data-snapshot-versioning]].
+
+## Related
+
+- [[workflow-engine-state-machine-cluster]] — the workflow engine that uses this pattern for its definitions
+- [[forecast-versioning-snapshot]] — versions as data snapshots
+- [[data-snapshot-versioning]] — snapshot practice for versions
+- [[custom-operation-osgi-component]] — how upload, commit and publish are registered

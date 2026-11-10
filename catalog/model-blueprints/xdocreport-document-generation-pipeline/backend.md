@@ -1,64 +1,40 @@
-## Overview
+## Backend guidance
 
-Implements a complete document generation pipeline using XDocReport (Freemarker-templated DOCX files) with multiple conversion backends (docx4j, JODConverter REST), PDF watermarking (PDFBox), and file storage integration. The pipeline spans a dedicated `report` module (template utilities), a `common` module (ReportService orchestrator + supporting services), and the application's FileStoreService for template retrieval and output storage.
+### Module and service layout
 
-## Implementation Pattern
+Keep the template code separate from the service layer:
 
-**Module structure:**
-```
-application/
-  report/                  -- XDocReport utility classes (static, no OSGi)
-    ReportUtil.java        -- Base DOCX/PDF generation with Freemarker
-    OfferReportUtil.java   -- Offer-specific template with logo image
-    JobSheetReportUtil.java -- JobSheet template with multiple images
-    ReviewReportReportUtil.java -- Review report with photos + dual logos
-    ImageProvider.java     -- FileStore-backed image for template embedding
-    StreamImageProvider.java -- InputStream-based IImageProvider implementation
-  common/
-    services/
-      ReportService.java              -- Orchestrator interface
-      DocumentConversionService.java  -- DOCX-to-PDF conversion interface
-      PdfWatermarkService.java        -- PDF watermark overlay interface
-      ConfigurationTemplateService.java -- Template retrieval from DB
-    services/impl/
-      ReportServiceImpl.java          -- Full pipeline orchestration
-      DocumentConversionServiceImpl.java -- JODConverter REST client
-      PdfWatermarkServiceImpl.java    -- PDFBox watermark implementation
-      ConfigurationTemplateServiceImpl.java -- Reads templates from Configuration entity
-```
+- a report module of plain utility classes, one per document type, with no OSGi dependency;
+- a service layer with an orchestrator, a template service, a conversion service and a watermark service, each registered as an OSGi service and injected into the operations (see [[custom-operation-osgi-component]] and the [custom operations guide](../../agent-docs/backend/custom-operations.md)).
 
-**Report utility classes (report module):**
-- Static utility classes, one per document type (assessment sheet, review report, job sheet, offer, work report, completion certificate)
-- Load DOCX template via `XDocReportRegistry.getRegistry().loadReport(templateStream, TemplateEngineKind.Freemarker)`
-- Create `IContext`, populate with `transferObject.toMap()` (converts Optional values to plain values for Freemarker)
-- Image embedding via `FieldsMetadata.addFieldAsImage()` with `NullImageBehaviour.RemoveImageTemplate` for optional images
-- PDF generation: write DOCX to temp file, then convert via `ConverterRegistry` (docx4j) with ClassLoader bridging (`Thread.currentThread().setContextClassLoader(Docx4J.class.getClassLoader())`)
-- All `generateDocx/generatePdf` methods are `synchronized` to handle XDocReport thread-safety limitations
+The class names in the source project (`ReportService`, `DocumentConversionService`, `PdfWatermarkService`, `ConfigurationTemplateService`, the `*ReportUtil` classes, `ImageProvider`) are example project code.
 
-**ImageProvider pattern:**
-- `ImageProvider` wraps `FileStoreService.get(id)` to retrieve images by FileStore ID
-- `StreamImageProvider` extends `AbstractImageProvider` (XDocReport) to stream images without byte-array conversion
-- Builder pattern with optional width override and `getImageWithRatio()` for proportional scaling
+### The pipeline steps
 
-**ReportService orchestrator (common module):**
-- `@Component(immediate=true, service=ReportService.class)` with `@Reference` to multiple DAOs, FileStoreService, ConfigurationTemplateService, PdfWatermarkService, DocumentConversionService
-- Pipeline for each document: (1) load template from `ConfigurationTemplateService`, (2) query DAOs to assemble transfer object model, (3) call report utility to generate DOCX in memory, (4) convert to PDF via `DocumentConversionService`, (5) optionally add watermark via `PdfWatermarkService`, (6) store result via `FileStoreService.put()`
+1. Load the template stream from the file store.
+2. Query the DAOs and assemble the transfer object that is the data model. Use a mask deep enough for every placeholder.
+3. Load the template with the XDocReport registry for the Freemarker engine, create the context, put the data as a plain map, and register image fields. Optional images use the remove-placeholder behaviour.
+4. For PDF: convert the DOCX in-process or post it to an external converter service as multipart form data.
+5. For previews: overlay text with PDFBox, rotated and semi-transparent.
+6. Store the output in the file store and return its token to the caller. Returning the file to the client uses the platform's two-phase binary token flow (see [platform behaviour](../../agent-docs/backend/platform-behavior-reference.md)).
 
-**DocumentConversionService (JODConverter REST):**
-- `@Component` with `@Designate(ocd=Config.class)` for configurable base URL, connection timeout, read timeout
-- Environment variable (`JODCONVERTER_URL`) takes precedence over OSGi configuration
-- Sends multipart form POST to `/lool/convert-to/pdf` endpoint
-- Pure `HttpURLConnection` -- no external HTTP client library dependency
+### Images
 
-**PdfWatermarkService (PDFBox):**
-- Overlays rotated semi-transparent text on every page of a PDF
-- Uses `PDExtendedGraphicsState` for opacity control and `Matrix.getRotateInstance()` for 45-degree rotation
-- Configurable font size (80pt), opacity (15%), and rotation angle
+An image provider wraps a file store read and streams it to XDocReport without copying it to a byte array; a builder can scale to a width with the aspect ratio kept.
+
+### Configuration
+
+The converter URL and timeouts are component configuration; an environment variable overrides the configured URL. See the [application configuration guide](../../agent-docs/deployment/application-config.md) for how environment variables and OSGi configuration are resolved. This override order is project practice.
+
+### Checks and interceptors
+
+The calling operations are custom, so interceptors do not guard them (see [interceptors](../../agent-docs/backend/interceptors.md)). Do the permission check inside the operation, and throw a business fault for missing templates.
 
 ## Examples
 
 ### rackinspect
-- Key files: `report/ReportUtil.java`, `report/OfferReportUtil.java`, `report/JobSheetReportUtil.java`, `report/ReviewReportReportUtil.java`, `report/CompletionCertificateReportUtil.java`, `report/ImageProvider.java`, `report/StreamImageProvider.java`, `common/services/impl/ReportServiceImpl.java`, `common/services/impl/DocumentConversionServiceImpl.java`, `common/services/impl/PdfWatermarkServiceImpl.java`
-- Pattern: 6 document types (assessment sheet, review report, job sheet, offer, work report, completion certificate) each with a dedicated report utility class. `ReportServiceImpl` orchestrates the full pipeline with 10+ DAO references. Templates are stored as `BinaryType` fields on a singleton `Configuration` entity and retrieved via `ConfigurationTemplateService`.
-- Notable: Dual conversion backends -- docx4j (in-process, used for assessment sheets and review reports) and JODConverter REST (external Docker service, used for offers and job sheets). `ImageProvider` supports embedded photos (fault registry images) and company logos. The `PdfWatermarkService` adds "DRAFT" watermarks to preview documents. Hungarian locale-specific formatting throughout.
-- DI wiring: Custom operations -> `ReportService` (orchestrator) -> `ConfigurationTemplateService` (template retrieval) + report utilities (DOCX generation) + `DocumentConversionService` (PDF conversion) + `PdfWatermarkService` (watermark) + `FileStoreService` (storage)
+
+- Six document types, each with its own report utility; the orchestrator uses a dozen DAOs.
+- Two conversion backends: in-process for some documents, an external converter for others.
+- A watermark service adds a draft mark to preview documents.
+- Templates live as binary attributes on a singleton configuration entity.
