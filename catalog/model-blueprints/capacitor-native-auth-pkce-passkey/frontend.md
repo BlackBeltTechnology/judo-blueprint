@@ -13,7 +13,7 @@ Check the platform at startup. On the web, keep the standard OIDC redirect flow 
 
 ### Store tokens in two layers
 
-Keep tokens in encrypted storage for persistence, and mirror them in session storage. Shape the mirror in the format the OIDC client expects, so existing HTTP interceptors keep working without change. The generated layout waits for the principal (`__signedIdentifier`) before it renders, so the mirror must be in place before that call.
+Keep tokens in encrypted storage for persistence, and mirror them in session storage. Shape the mirror in the format the OIDC client expects, so existing HTTP interceptors keep working without change. In the source project the layout loaded the principal (`__signedIdentifier`) early on start-up, so the mirror had to exist before that call; check when your generated layout first requests the principal.
 
 ### Handle the callback after a WebView restart
 

@@ -98,6 +98,8 @@ export const paletteThemeDark = createTheme({
 
 ## Customizing Theme
 
+> **Prefer the model.** Brand colours belong on the `ActorType` colour attributes (layer 1 above); regenerating then updates the palette. Edit `src/theme/palette.ts` only for values the actor attributes cannot express. Because the generator overwrites `palette.ts`, a hand edit must be listed in `.generator-ignore`, and from then on model colour changes no longer reach it.
+
 ### Step 1: Modify Palette File
 
 ```bash

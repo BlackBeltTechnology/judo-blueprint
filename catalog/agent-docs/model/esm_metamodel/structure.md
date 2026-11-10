@@ -20,7 +20,7 @@ The abstract base for all complex types in the model, such as entities and trans
 | :--- | :--- | :--- | :--- |
 | `attributes` | `DataFeature` | `[0..*]` | The list of data attributes (fields) for this class. |
 | `relations` | `RelationFeature` | `[0..*]` | The list of relationships this class has with other classes. |
-| `generalizations` | `Generalization`| `[0..*]` | The list of superclasses this class inherits from. |
+| `generalizations` | `Generalization`| `[0..*]` | The list of superclasses this class inherits from. Supported for entities only: inheritance between transfer object types is not supported, even though the `judo-cli` schema for `TransferObjectType` exposes `superTypes`. Declare each purpose-specific transfer object separately. |
 | `createable` | Boolean | `[1]` | Specifies if instances of this class can be created. |
 | `updateable` | Boolean | `[1]` | Specifies if instances can be updated. |
 | `deleteable` | Boolean | `[1]` | Specifies if instances can be deleted. |
@@ -73,7 +73,7 @@ A bidirectional relationship between two classes, where both ends are explicitly
 | `target` | `Class` | `[1]` | The class on the other side of the relationship (e.g., `Order`). |
 | `partner` | `TwoWayRelationMember` | `[1]` | A direct link to the corresponding member on the `target` class, making the relation bidirectional. |
 | `lower` / `upper` | Integer | `[1]` | The cardinality of this end of the relationship (e.g., a Customer has `0..*` orders). |
-| `relationKind`| `RelationKind` Enum | `[1]` | The nature of the relationship: `ASSOCIATION` (a simple link), `COMPOSITION` (a strong "owns" relationship with cascade delete), `AGGREGATION` (a weaker "part-of" relationship). |
+| `relationKind`| `RelationKind` Enum | `[1]` | The nature of the relationship: `ASSOCIATION` (a simple link), `COMPOSITION` (a strong "owns" relationship with cascade delete), `AGGREGATION` (a weaker "part-of" relationship). **CLI note:** `judo-cli` `create`/`update` accept only `ASSOCIATION` and `COMPOSITION` for relation members, although the schema lists `AGGREGATION`; models that need `AGGREGATION` (see the asymmetric bidirectional pattern in [advanced-modeling-patterns.md](../advanced-modeling-patterns.md)) carry it from the modeling tool or a direct XMI edit. |
 | `primary` | Boolean | `[1]` | In a many-to-many relationship, one side must be designated as primary to resolve ownership. |
 
 ### `OneWayRelationMember`
@@ -84,7 +84,7 @@ A unidirectional relationship from one class to another, like a simple reference
 | `name` | String | `[1]` | The name of the relationship. |
 | `target` | `Class` | `[1]` | The class being pointed to. |
 | `lower` / `upper` | Integer | `[1]` | The cardinality of the relationship. |
-| `relationKind`| `RelationKind` Enum | `[1]` | The nature of the relationship (`ASSOCIATION`, `COMPOSITION`, or `AGGREGATION`). |
+| `relationKind`| `RelationKind` Enum | `[1]` | The nature of the relationship (`ASSOCIATION`, `COMPOSITION`, or `AGGREGATION`). `judo-cli` sets only `ASSOCIATION` or `COMPOSITION` (see the CLI note above). |
 
 ---
 

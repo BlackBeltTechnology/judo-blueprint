@@ -28,7 +28,7 @@ The agent-docs describe this as the *View Model (Dashboard)* pattern ([advanced 
 
 ### Mapped panel or unmapped panel
 
-The agent-docs describe the panel as **unmapped**. In the sandbox model used for this entry's diagram, a validated model rejected an access whose target is an unmapped transfer object (validator message "Access target have to be mapped"). The agent-docs do not mention this rule, so check it in your own model. The reliable shape that validates is a panel **mapped** to the entity that represents the actor's workspace (typically the user or employee entity) and reached through a derived access whose getter returns that entity (see [[self-access-point]] and [[derived-access-filtering]]). The derived relations then start from `self`.
+A panel reached through an actor access must be **mapped**: EVL rejects an access whose target is an unmapped transfer object (`Access target have to be mapped`, see the View Model pattern in the [advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md)). Map the panel to the entity the screen is about and keep its relations derived. An unmapped panel works only as an operation input or output. Older wording that called the panel unmapped is superseded; check it in your own model. The reliable shape that validates is a panel **mapped** to the entity that represents the actor's workspace (typically the user or employee entity) and reached through a derived access whose getter returns that entity (see [[self-access-point]] and [[derived-access-filtering]]). The derived relations then start from `self`.
 
 ### Host the screen's operations on the panel
 

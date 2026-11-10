@@ -17,7 +17,8 @@ JCL (JUDO Control Language) is the imperative language of operation bodies. An o
 - **Reference sets** are changed with `+=` (add) and `-=` (remove).
 - **Subtype spawning**: `x as Type` casts a transfer object reference to a subtype. A wrong runtime type is a runtime error; an incompatible static type is a compile-time error. Spawning is only allowed on mutable, assignable operands (`Cannot spawn immutable objects`).
 - **Unary prefix operators** are `not`, `-`, `mutable` and `immutable`.
-- **Operation calls**: the parenthesis must follow the feature name immediately, with no whitespace (`self.a(self.b())`).
+- **The instance is `this`, not `self`**: in an instance operation body the current object is `this` (`this.status = ...`). `self` is the JQL name used in derived expressions; in a JCL body it fails the build with `Unknown symbol: self`.
+- **Operation calls**: the parenthesis must follow the feature name immediately, with no whitespace (`this.a(this.b())`).
 - **No dangling navigation**: a bare navigation used as a statement is an error (`Dangling navigation`); a statement must be a call, an assignment or another real statement.
 - **Naming**: the operation's input parameter is called `input` and is immutable unless declared mutable; the implicit return value is called `output`. Only the first argument of an operation call is bound; later arguments are silently dropped.
 

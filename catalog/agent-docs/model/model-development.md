@@ -324,7 +324,7 @@ Operate on a collection of object instances. The `i` in examples represents an i
 | `!any()` | Instance | Returns an arbitrary single instance from the collection. **Use sparingly** — see the *Using `!any()` correctly* note below. |
 | `!contains(obj)` | Boolean | Returns `true` if the collection contains the specified `obj`. |
 | `!count()` | Numeric | Returns the number of items in the collection. |
-| `!empty()` | Boolean | Returns `true` if the collection has no items. |
+| `!empty()` | Boolean | Returns `true` if the collection has no items. There is no `!isEmpty()` (it fails with `Unknown function: isempty`); negate with `not ...!empty()` or use `!count() > 0`. |
 | `!exists(i \| expr)` | Boolean | Returns `true` if the logical `expr` is true for at least one item `i`. |
 | `!filter(i \| expr)` | Collection | Returns a new collection containing only items `i` for which the logical `expr` is true.<br>`self.items!filter(i \| i.price > 10)` |
 | `!forAll(i \| expr)` | Boolean | Returns `true` if the logical `expr` is true for all items `i`. |

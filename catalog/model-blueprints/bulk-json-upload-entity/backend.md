@@ -32,7 +32,7 @@ The sketch is illustrative. `FileStoreService`, the `Q` record and the DAO names
 
 ### Write the batch row first
 
-The Upload row is written before the items, so each item can refer to it. The count is set at the end. The operation runs in one transaction, so an exception thrown out of it rolls back the batch row and the items together (project expectation).
+The Upload row is written before the items, so each item can refer to it. The count is set at the end. The project expects the operation to run in one transaction, so that an exception thrown out of it rolls back the batch row and the items together. The agent-docs do not state the transaction scope of a custom operation, so verify the rollback with an integration test before relying on it.
 
 ### Skip duplicates, do not fail
 

@@ -6,6 +6,8 @@ Batch ids in brackets: `bp` = model blueprints, `pm`/`pb`/`pf` = model/backend/f
 
 ## A. Contradictions: the docs say something the CLI or runtime rejects
 
+**Status: all 9 applied.** A1, A2, A5 and A6 were reproduced in a fresh Sandbox with `judo-cli` (`'AGGREGATION' is not valid`, `Access target have to be mapped`, `Unknown symbol: self`, `Unknown function: isempty`). The catalog is re-checked by `skills/judo-blueprint-author/scripts/claim-check`.
+
 | # | Gap | Evidence | Reported by | Where to fix |
 |---|---|---|---|---|
 | A1 | `AGGREGATION` is listed as an entity `relationKind` with no caveat (`structure.md` lines 87 and 204; `advanced-modeling-patterns.md` says one-way AGGREGATION is fine). The CLI rejects it: only `ASSOCIATION` and `COMPOSITION` are accepted, even though `--schema` lists it. | CLI error `relationKind: 'AGGREGATION' is not valid` | bp03, bp10, bp15, pm05 | `model/esm_metamodel/structure.md`, `model/advanced-modeling-patterns.md` |
@@ -119,7 +121,8 @@ None of these are documented. Entries label them as project practice. Whether th
 
 ## E. Catalog follow-ups found during the run
 
-- `capacitor-native-auth-pkce-passkey/frontend.md`: the sentence about the mirror needing to be in place before the call was meant to be softened, but a `sed` failure left the original wording [bp02].
+- ~~`capacitor-native-auth-pkce-passkey/frontend.md` mirror sentence~~ softened [bp02].
+- Also fixed by claim-check: `panel-dashboard-transfer` and `actor-based-transfer-projection` (an unmapped panel cannot be an access target), and the `bulk-json-upload-entity` one-transaction claim (now says to verify). Removed a broken `../domain/README.md` link in `deployment/tooling-guide.md`.
 - Dead related ids were dropped: `category-hierarchy`, `flutter-arb-localization`, `flutter-frontend-framework`, `three-layout-responsive-pattern` and `flutter-clone-edit-save-pattern`. They are candidates for new entries or should simply stay gone.
 - 164 of 310 entries have weak kb-use records (fewer than 3 queries or fewer than 2 docs). Prioritise them in the content review.
 

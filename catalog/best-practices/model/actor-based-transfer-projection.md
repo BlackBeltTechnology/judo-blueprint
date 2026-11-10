@@ -54,7 +54,7 @@ An Order entity has a number, a total and an internal note. AdminOrder maps all 
 
 - One role only, or all roles see the same data: map one transfer object per entity.
 - The difference between roles is only the row set: use one transfer object and different Access getter expressions.
-- Needs that cut across entities (dashboards): use an unmapped transfer object, see [[unmapped-transfer-dto]].
+- Needs that cut across entities (dashboards): use a panel transfer object with derived relations, see [[panel-dashboard-transfer]]. It must be mapped if an actor access targets it; an unmapped transfer object ([[unmapped-transfer-dto]]) fits operation inputs and outputs.
 
 ## Related
 

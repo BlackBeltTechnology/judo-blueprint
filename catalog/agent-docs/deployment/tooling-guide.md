@@ -56,5 +56,5 @@ The generated file, `generated-diagrams.md`, will be placed in the specified out
 
 ## See Also
 
-- [Domain Model Guide](../domain/README.md) - For an overview of the application's domain model.
+- Domain model guide (`agent-docs/domain/README.md`, generated per project; not part of the catalog) - For an overview of the application's domain model.
 - [Model Development Guide](../model/README.md) - For information on editing the ESM model.

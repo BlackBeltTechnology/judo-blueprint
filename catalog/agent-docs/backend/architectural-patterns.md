@@ -72,7 +72,7 @@ Access getters on an `ActorType` are strict; violating any rule below yields an 
 
     The generator projects from the entity to the target TO automatically.
 
-2. **`self` is not in scope.** The actor has no `self`; always iterate from the entity with a lambda variable.
+2. **`self` is not in scope.** The actor has no `self`; always iterate from the entity with a lambda variable. This applies to actor **access getters** only. A derived member on a transfer object or entity (including the principal's transfer object) does have `self`, which is the instance it is evaluated on; see [advanced-modeling-patterns.md](../model/advanced-modeling-patterns.md).
 
 3. **`accessType="DERIVED"` requires a reference-returning expression.** A boolean literal (`getterExpression="true"`) is rejected by `ReferenceBindingExpressionIsValid`. For an unrestricted "see everything" access, drop the getter and set `accessType="ALL"`.
 

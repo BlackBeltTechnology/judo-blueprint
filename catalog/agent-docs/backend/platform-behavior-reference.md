@@ -81,7 +81,7 @@ Generated REST operations read these request headers (`rest.service.operation.fr
 
 ### Client Side of the Upload Token Flow
 
-The generated axios service (`accessServiceImpl.ts`) sends the token in the `X-Token` header. `uploadFile` first requests `<attributePath>/~upload-token`, then posts the multipart data with `X-Token`. `downloadFile` calls the download path with `?disposition=inline|attachment` and `X-Token`; an inline download renders in a dialog frame.
+The generated axios service (`accessServiceImpl.ts`) sends the token in the `X-Token` header. `uploadFile` first requests `<attributePath>/~upload-token`, then posts the multipart data with `X-Token`. `downloadFile` calls the download path with `?disposition=inline|attachment` and `X-Token`; an inline download renders in a dialog frame in the generated frontend. Projects that replace the handler may open a new tab instead, so check the generated `downloadFile` caller in your version before relying on either.
 
 ### Excel Export Operations
 

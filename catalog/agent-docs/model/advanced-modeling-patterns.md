@@ -23,7 +23,7 @@ This document details advanced, non-obvious design patterns and concepts for the
 *   **Problem**: A simple `TransferObjectType` mapped 1:1 to a single `Entity` is insufficient to represent such a screen, as the data comes from multiple sources and has different filtering logic.
 *   **Pattern**:
     1.  Create simple, data-focused `TransferObjectType`s that represent the individual items to be displayed (e.g., `UserReservation`, `Holiday`). These often have few or no relations of their own.
-    2.  Create a higher-level, **unmapped** `TransferObjectType` that represents the entire view or screen (e.g., `UserReservationPanel`). This acts as the "View Model."
+    2.  Create a higher-level `TransferObjectType` that represents the entire view or screen (e.g., `UserReservationPanel`). This acts as the "View Model." If an actor `Access` targets it (step 4), it must be **mapped**: EVL rejects an access to an unmapped transfer object (`Access target have to be mapped`). Map it to the root entity the screen is about (for example the user), and keep the panel's own relations `DERIVED`. An unmapped view model is only reachable as an operation input or output, not as an access target.
     3.  Define all the contextual relationships on this View Model TO. These are almost always **`DERIVED`** relations, each with its own `Getter expression` to fetch and filter its specific data set (e.g., `activeReservations`, `pastReservations`).
     4.  The main `Access` link for the actor then targets this high-level View Model (`UserReservationPanel`), not the individual data TOs.
 *   **Key Insight**: This pattern decouples the UI's structure from the domain model's structure. It allows you to create purpose-built screens by creating a transient "view model" that aggregates and filters data from multiple sources, presenting it in exactly the way the UI needs it, without requiring a direct mapping to a single database entity. This was observed in the `ParkHere.model`.
@@ -211,6 +211,7 @@ These patterns capture rules the JUDO ESM EVL validator enforces but that neithe
 *   **Pattern**: Make the two ends asymmetric:
     *   Owner end (the `upper ≠ 1` end, i.e. the collection side) = `AGGREGATION`
     *   Child end (the `upper = 1` end, i.e. the back-pointer) = `ASSOCIATION`
+*   **Authoring with `judo-cli`**: the CLI rejects `relationKind=AGGREGATION` on `create` and `update` (`'AGGREGATION' is not valid`, valid: `ASSOCIATION · COMPOSITION`) for both one-way and two-way relation members. Set the owner end's kind in the modeling tool or in the XMI; with the CLI alone, model both ends as `ASSOCIATION`.
 *   **Cardinality companion rule**: EVL additionally emits *"At least one reference of a bidirectional association should have lower bound with zero"*. Relax the owner-collection end (`1..*` → `0..*`); relaxing the child end breaks referential integrity.
 *   **Scope**: These rules apply to bidirectional (`TwoWayRelationMember`) relations. `ASSOCIATION` is **not** forbidden on entities: an `ASSOCIATION` end is valid, and unidirectional entity relations are not required to be `AGGREGATION` or `COMPOSITION`. Which relation kinds an application uses is a design choice; check the project's own models before generalising.
 
