@@ -26,6 +26,10 @@ With `@JudoTest` all of this happens in the extension. A custom fixture only nee
 
 For every test method the extension prepares a fixture, begins a transaction (`AUTO_ROLLBACK` and `AUTO_COMMIT` only), and in the after-each step rolls back (`AUTO_ROLLBACK`), commits and optionally truncates (`AUTO_COMMIT`), or only truncates (`MANUAL`). `tearDown()` always rolls back a transaction that is still open. The `JudoRuntimeFixture` is the only fixture type the test method may declare as a parameter, next to `JudoDatasourceFixture`.
 
+## Runtime Caching Details
+
+`shareInjector` (default `false`) applies only to class-level `BY_CLASS` and `SINGLETON`; `BY_METHOD` and method-level annotations are never cached. When true, the Injector, QueryFactory, Liquibase executor and transaction manager are reused across methods. The cache key combines model name, dialect, model source, modules and interceptors (plus the test class for `BY_CLASS`; `SINGLETON` shares JVM-wide). A shared injector means siblings see each other's runtime mutations; use `BY_METHOD` or `@BeforeEach` resets. `JUDO_TEST_DIALECT` and `JUDO_TEST_CONTAINER` environment variables win over the annotation attributes. The QueryFactory build is the dominant per-class cost for a real model, so reuse is what keeps large suites fast.
+
 ## Keep Integration Tests Self-Contained
 
 - Create exactly the entities a test needs through DAOs (`EntityForCreate.builder()`), not the application-wide init or master-data seeding. Seeding everything in every test is slow and hides missing setup.

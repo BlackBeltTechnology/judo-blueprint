@@ -39,3 +39,7 @@ A static JSL query with parameters generates an unmapped parameter transfer obje
 ## Actor metadata generated from JSL and ESM
 
 Every actor gets a `_metadata` operation (`GET_METADATA`) returning `_MetadataFor<Actor>`, and an actor with a principal also a `_principal` operation. `_MetadataSecurityFor<Actor>` is an unmapped type with the attributes `name`, `openIdConfigurationUrl`, `issuer`, `authEndpoint`, `tokenEndpoint`, `logoutEndpoint`, `clientId`, `clientBaseUrl` and `defaultScopes` (strings up to 8192 characters; `name`, `clientId` and `defaultScopes` are required). A claim attribute is generated when `identity` and `claim` are both present.
+
+## Editor Support for JSL
+
+JSL files (`.jsl`) get IDE support from the JUDO JSL VS Code extension (activates on `onLanguage:jsl`, language id `jsl`, grammar scope `source.jsl`, embeds a Java language server started over LSP stdio; packaged as `jsl-language.vsix`) and from the `judo-jsl-tmbundle` TextMate bundle for VS Code, JetBrains and Sublime. In IntelliJ install the TextMate Bundles plugin, point it at the cloned bundle directory and associate `*.jsl`.

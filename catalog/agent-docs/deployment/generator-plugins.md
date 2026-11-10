@@ -88,6 +88,30 @@ A single-actor application (`generateSingleActorApplication`) has no separate we
 
 With `generateOpenApiAnnotations=true` the rest module runs `swagger-maven-plugin` (resolve), writes OpenAPI JSON/YAML to `target/api-documentation-swagger` and embeds it into the bundle; services and DTOs carry `@Schema` annotations. The generated `ApplicationConfig` declares one server per actor (`<baseUrl>/api/<restPath>/<actor>`) and an OpenID Connect security scheme for actors with a realm. The Swagger UI is switched on at runtime with `JUDO_PLATFORM_SWAGGER_UI` (path `JUDO_PLATFORM_SWAGGER_UI_PATH`, default `/swagger-ui`).
 
+## SDK Generator Template Parameters
+
+`judo-psm-generator-sdk-core` reads five template variables, set as plugin parameters or in `generator-parameter.properties`: `apiPrefix` (package prefix for generated API packages), `generateOptionalTypes` (wrap non-required attributes and relations in `java.util.Optional`), `generatePayloadValidator` (gate `validatePayload` in the generated DAO implementations), `debugPrint` (debug banner comments) and `identifierType` (Java type of identifiers in generated DAO and DTO code). They change the shape of the SDK your code compiles against.
+
+## Report Generator (JasperReports)
+
+`judo-psm-generator-report` (generator type `psm-report`, parameters `reportPrefix`, `reportFqNameFilter`, `locales`) generates for each qualifying transfer object type a `{Type}Report` facade with `generate{Type}Report(OutputType, dto, File|OutputStream[, Map additionalParameters])`, data-source classes, a per-model `ReportUtil` (`OutputType`: PDF, XLSX, CSV, HTML; compiles `.jrxml` at runtime when no `.jasper` exists) and master and sub-report `.jrxml` files (sub-reports for embedded collections). Call the facade from custom operations to export reports.
+
+## REST Assured Test Client
+
+`judo-psm-generator-restassured` emits `ApiClient.api(Config)` per model with `BASE_URL_<ACTOR>` constants, `authTo<Actor>(grantType, userName, password)` password-grant helpers (client id `<model>-<actor>`) and one wrapper per exposed transfer object whose operations pin `REQ_METHOD` (GET only for stateless operations without input, else POST) and `REQ_URI`, with `body(...)`, `xJudoCountRecordsHeader`, `xJudoMaskHeader`, `xJudoSignedIdentifierHeader` and `execute()`. The generated Postman collections (`models/*/postman`) run against a local Karaf (`http://localhost:8181`) and keep signed identifiers in environment variables used by `~set`/`~add` bodies. The OpenAPI toggle is `ignoreOpenAPI=false`.
+
+## OpenAPI Client for OSGi (`jaxrs-cxf-client-osgi-ds`)
+
+The generator `jaxrs-cxf-client-osgi-ds` (`openapi-generator-cxf-jaxrs-client-osgi-ds`) produces a CXF JAX-RS client bundle with a Declarative Services `ClientApiServiceActivator`. Configuration: `endPoint`, `log_payload`, `log_payload_limit` (1000), `connection_timeout` (10000 ms), `receive_timeout` (15000 ms). Options: `activatorPackage` (default `org.openapitools.activator`), `activatorDsConfigurationRequired` (`false`; `true` emits `configurationPolicy=REQUIRE`), `useGzipFeature`, `useLoggingFeature`.
+
+## Generator Fragment Slots
+
+Fragments are files named `<target>.<slot>.fragment.hbs`: `feature.xml` slots `extra-repositories`, `extra-bundles`, `model-bundles`; each module `pom.xml` slots `project-definition`, `properties-definition`, `extra-plugin-management`, `extra-plugins`, `extra-dependencies`; the root pom `extra-modules`. Slot names come from the `<!-- To define create ... -->` markers in the generated file. Tools that scan for overrides should glob `*.fragment.hbs`. See also the [Backend README](../backend/README.md).
+
+## Custom Keycloak Login Theme
+
+The generated `keycloak-theme` module (`src/main/resources/themes/keycloak-theme/`) holds FreeMarker login pages (`login.ftl`, `register.ftl`, `error.ftl`, `template.ftl` with the `registrationLayout` macro and an empty `footer.ftl` override point), `theme.properties` (`parent=base`, `import=common/keycloak`, `kc*` class keys) and `login.css`. `test-users-realm.json` (realm `TEST_USERS`) and `test-theme-with-compose.sh` start a dev Keycloak on port 8080 with the built theme unzipped into `./keycloak-themes`. The realm's `loginTheme` must equal the theme name exactly. the keycloak-theme module is one of the project generation toggles.
+
 ## Flutter Frontends
 
 Flutter frontends are built with the goals `install-flutter` (installs the SDK from a pinned version or a Git channel, default `stable`) and `flutter` (runs flutter CLI commands, default `pub get`). Parameters: `flutter.arguments`, `flutter-version`, `flutter-channel`, `flutter-skip`, `flutter-install-skip`, `workingDirectory` / `installDirectory` / `tempDirectory` (defaults `${basedir}`, `${basedir}/.flutter`, `${basedir}/target/temp`) and `flutterInheritsProxyConfigFromMaven=true`.

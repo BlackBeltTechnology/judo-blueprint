@@ -2037,6 +2037,10 @@ These patterns work together to create a context-aware frontend, which is essent
 
 _For a complete picture of how these frontend patterns enable secure, backend data filtering, see [Architectural Patterns](../backend/architectural-patterns.md)._
 
+## Custom Attachments: Token Flow
+
+Generated `fileHandling` helpers (`downloadFile`, `uploadFile`, `exportFile`, `extractFileNameFromToken`) wrap the two-phase token flow described in the [Backend Platform Behavior Reference](../backend/platform-behavior-reference.md#client-side-of-the-upload-token-flow): request `~upload-token`, post multipart with `X-Token`; download with `?disposition=inline|attachment`.
+
 ## Related Documentation
 
 - [Frontend Hooks Overview](./hooks/README.md)

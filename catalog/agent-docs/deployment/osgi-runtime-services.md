@@ -76,6 +76,40 @@ JUDO registers the rules `ModelsCheck`, `OperationsCheck` and `PlatformComponent
 
 The workflow save step writes deterministic file names: `<modelName>-rdbms_<dialect>.model`, `<modelName>-<realm>-keycloak.json`, `<modelName>-liquibase_<dialect>.changelog.xml`, and the generated Java operation bundle with `Bundle-SymbolicName` `<modelName>-script2operation`. Models are written only when `saveModels` is true (default) or when the workflow failed, and the destination directory must already exist.
 
+## Keycloak Connector and Realm Synchronizer Configuration
+
+The OSGi Keycloak activator builds per-model components from these keys (defaults in the source):
+
+- Connector: `serverUrl`, `publicUrl`, `adminUser`, `adminPassword`, optional `clientSecret`.
+- `managementEnabled` (default `false`): `false` registers only the connector; `true` also registers the admin client, realm synchronizer, user manager and password policies (`NO_PASSWORD`, `SAME_EMAIL`, `SAME_USERNAME`).
+- Realm synchronizer: `realm_loginByEmail` (`true`), `client_accessType_human` (`CONFIDENTIAL`), `client_accessType_system` (`BEARER_ONLY`). Values go through `AccessType.valueOf`, so they must be exact enum names or activation fails with `IllegalArgumentException`. Retry defaults: `asyncServiceCall=true`, `retryMaxAttempts=1000`, `retryExponentialBackoff=true`, `retryWaitDuration=1000` ms.
+- User manager: `updateExistingUsers`, `enabled` and `requiredActions` (comma separated, no default).
+- Login interceptor: `acceptableClients` (`ActorFQN=client1,client2;OtherActor=client3`), see the [Authentication Guide](../backend/authentication-guide.md#several-keycloak-clients-in-one-realm).
+
+The realm synchronizer provisions realms, clients and users from the model's asm2keycloak output when the runtime starts. Existing realms and clients are updated only when a compared field differs; redirect URIs and web origins are merged as sorted unions. User provisioning waits until the synchronizer calls `setIdentityManagerReady(true)`, and runs asynchronously by default.
+
+The Guice runtime (`JudoKeycloakModuleConfiguration`) defaults `keycloakServerUrl` to `http://localhost:8080/auth` and `keycloakAdminPassword` to `judo`. Both runtimes pass `CONFIDENTIAL` for human actors and `BEARER_ONLY` for system actors (the constructor-level defaults of `KeycloakRealmSynchronizer` are the reverse, but they are always overridden).
+
+### Realm and client generation from the model
+
+The ASM-to-Keycloak transformation turns every distinct non-blank `realm` annotation on actor types into a realm (`loginWithEmailAllowed`), and every actor type with a `realm` annotation into a client named after the actor FQN with `.` replaced by `-` (`directAccessGrantsEnabled`, `redirectUris=["*"]`). Adding a `realm` annotation therefore provisions Keycloak without manual client setup.
+
+## CORS Filter per Model
+
+`CxfSecurityActivator` registers one `CrossOriginResourceSharingFilter` per model (service filter `application.filter=(judo.model.name=<model>)`). Keys and defaults: `cors_allowOrigin` `*`, `cors_allowCredentials` `true`, `cors_allowHeaders` `Content-Type,Origin,Accept,Authorization,X-Judo-SignedIdentifier,X-Judo-CountRecords`, `cors_exposeHeaders` `X-Exchange-Id,X-Fault,X-Judo-Count`, `cors_maxAge` `-1`, `cors_prefligthErrorStatus` `400` (the spelling is the real key), `cors_blockIfUnauthorized` `false`, `cors_defaultOptionsMethodsHandlePreflight` `false`. A frontend that sends `X-Judo-Mask` or `X-Judo-RequestParameters` from another origin needs them added to `cors_allowHeaders`.
+
+## Swagger UI Serving Location
+
+A Swagger UI servlet is registered per OpenAPI model at `/api-spec/<model name>`. The `apiRoot` key (default `/api`) prefixes the `basePath` of the generated `swagger.json`; the host and scheme come from the request.
+
+## Filestore S3 Backend Details
+
+Besides the environment variables in [Application Configuration](./application-config.md), the S3 component needs `protocol`, `bucketName`, `accessKey` and `secretKey`; `endpoint` defaults to empty (AWS) and `region` to `us-east-1`. The access URL it returns is an internal `<protocol>:<fileId>-<filename>` URL, not a public or signed link, so downloads flow through the Karaf servlet. The S3 backend has no metadata cache: each name, size, type or time lookup is a HEAD request.
+
+## Running Liquibase Changelogs from a Bundle
+
+`osgi-liquibase` exposes `LiquibaseExecutor.executeLiquibaseScript(Connection, scriptPathInBundle, Bundle)` and an overload taking a `Map` of changelog parameters. **Known issue:** the default executor rethrows only `LiquibaseException`; any other exception is swallowed, so the caller can see success after a failure. Check the log and the database state.
+
 ## Related Documentation
 
 - [Application Configuration](./application-config.md)

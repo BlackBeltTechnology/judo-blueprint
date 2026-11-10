@@ -58,6 +58,39 @@ A transfer field that maps a binary on a create-capable transfer gets a generate
 
 Choice and range lookups are generated as `getRangeFor<Name>` operations whose input is a synthesized `_GetRangeInput...` transfer object (an `owner` relation and, for mapped references, a `queryCustomizer`). Values outside the allowed range fail with `NOT_ACCEPTED_BY_RANGE`.
 
+### Protocol Headers
+
+Generated REST operations read these request headers (`rest.service.operation.fragment.hbs`; the React client declares them in `headers.ts`):
+
+| Header | Maps to | Use |
+| :--- | :--- | :--- |
+| `X-Judo-CountRecords` | `__countRecords` | Ask for a total count of a collection. The response carries `X-Judo-Count`. |
+| `X-Judo-Mask` | `__mask` | Projection of the response. |
+| `X-Judo-RequestParameters` | `__requestParameters` | Query parameters as a map; a malformed value gives HTTP 400. |
+| `X-Judo-SignedIdentifier` | bound instance | Target of a bound operation or an instance command. |
+| `X-Judo-MarkSelectedRangeItems` | range operations | Marks the items that are already attached. |
+
+`__principal` comes from the security context and `__locale` from the first `Accept-Language` value. The generated CORS filter allows `X-Judo-SignedIdentifier` and `X-Judo-CountRecords` by default and exposes `X-Judo-Count`, `X-Exchange-Id` and `X-Fault`; see [OSGi Runtime Services](../deployment/osgi-runtime-services.md#cors-filter-per-model).
+
+### Response Metadata and Wire Conversion
+
+- Response DTOs of mapped transfer objects carry `__deleteable`, `__updateable`, `__entityType`, `__identifier`, `__signedIdentifier`, `__version` and `__referenceId`. Request DTOs carry only `__identifier`, `__signedIdentifier` and `__referenceId`. Use `__updateable` and `__deleteable` to enable or disable row actions.
+- Enum attributes travel as integer ordinals; `ResponseConverter` turns the ordinal back into a literal. Binary attributes travel as file-store tokens, and the token's context must name an attribute of the same binary type. Unknown keys in a request are dropped.
+- Query customizer filter operators are numeric codes: strings `0 <`, `1 >`, `2 <=`, `3 >=`, `4 ==`, `5 !=`, `6 ~` (matches), `7 like`; numbers, dates and times use `0`-`5`; booleans only `0` (equal); enumerations `0` (equal) and `1` (not equal).
+- An access reached through a path that is not updatable rejects updates, because the signed identifier records the navigation that produced the instance. Identifiers are type specific: an identifier of one transfer object type cannot be used for another type.
+
+### Client Side of the Upload Token Flow
+
+The generated axios service (`accessServiceImpl.ts`) sends the token in the `X-Token` header. `uploadFile` first requests `<attributePath>/~upload-token`, then posts the multipart data with `X-Token`. `downloadFile` calls the download path with `?disposition=inline|attachment` and `X-Token`; an inline download renders in a dialog frame.
+
+### Excel Export Operations
+
+Modeled `EXPORT` operations call the `Export` SPI. The reference implementation is `JxlsExport` (JXLS/POI): row 0 holds headers, row 1 placeholders and data starts at row 2. Cell formats follow the type: timestamp `dd/mm/yyyy hh:mm:ss`, date `dd/mm/yyyy`, time `hh:mm:ss`, decimal `#,##0.00`, integer `0`. Only the overloads taking an ASM model and a fully qualified name work. When no `Export` is configured the default module binds `UnsupportedExportImpl`, and export calls fail with `Not implemented`.
+
+### Payload Type
+
+`Payload` (`judo-dao-api`) is a `Map<String,Object>` with static factories (`asPayload`, `map(k1, v1, ...)`, `entry`) and typed accessors (`getAs(Class, key)`, `getAsPayload`, `getAsCollectionPayload`). `PayloadImpl` keeps its values in a `TreeMap`; the constructor wraps nested maps and collections as `Payload`, but `put` and `putAll` do not. Keys starting with `__$` are transient: `equals()` ignores them but `hashCode()` includes them, so two equal payloads can have different hash codes.
+
 ## Time and Time Zones
 
 Two clocks exist and they do not agree:

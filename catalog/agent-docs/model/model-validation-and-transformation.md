@@ -59,6 +59,16 @@ Ordering and filtering are available on a reference whose target is mapped and h
 
 A transfer object used as a `CREATE_INSTANCE` or `VALIDATE_CREATE` target must not map to an abstract entity, and it must bind every required feature of the mapped entity (required relations with a lower bound above zero and required attributes), otherwise EVL fails with `AllRequiredFeaturesHaveBindingIfCreatable`.
 
+## Transformation Mode and Generation Switches
+
+The tatami engine runs in `ETL` (Epsilon), `ZETA` (Java) or `DUAL` (both, compared) mode, chosen with `-Djudo.transformation.mode=ETL` or per step with `transformationMode(...)`. The default is `ZETA`; use `ETL` to compare when debugging.
+
+ESM-to-PSM is gated by `generateActors`, `generateOperations`, `generateBehaviours`, `generateTransferObjectTypes` and `generateDefaultTransferObjectTypes` (all `true`) and `stringMaxLength` (65536). The switches are not uniform: default-transfer-object attribute rules follow `generateDefaultTransferObjectTypes`, and the query customizer, ordering and filter families follow `generateBehaviours`; but not every rule is guarded (query ordering, filter and seeking types and the upload-token type are generated regardless).
+
+### Embedding the transformations
+
+`Esm2Ui.executeEsm2UiTransformation(Esm2UiParameter)` (built with `esm2UiParameter()`; defaults ETL, `parallel=false`, `applicationType` `default`, `applicationColumns` 12, `useCache=true`) or the work unit `Esm2UiWork` inside a `TransformationContext` run the ESM-to-UI step from Java. Workflows compose with `SequentialFlow`, `ParallelFlow`, `ConditionalFlow` and `RepeatFlow` builders; work names must be unique and each work must catch exceptions and report `WorkStatus.FAILED`. `TransformationTraceService` navigates the trace chain from one element (`getAscendantsOfInstanceByModelType`, `getRootAscendantsOfInstance`, `getTraceEntriesForInstance`); it throws `IllegalArgumentException` for an unregistered model name.
+
 ## Known issues
 
 - A derived attribute that navigates through a member **inherited** from a supertype can produce SQL with a missing join in the RDBMS query generator (for example `lastWorkReport = self.workReports!any().lastDocument.document` with `lastDocument` inherited from `Task`). It works when the member is declared locally; declare the member on the subtype or avoid the inherited navigation.

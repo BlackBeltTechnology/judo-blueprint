@@ -123,6 +123,12 @@ The CLI runs one daemon per model. Its session lives under `~/.judo/sessions/<ha
 - **Merge output** may print `[WARN] Zeta transformation not yet implemented, falling back to ETL`; it is harmless.
 - **Signed identifiers cannot be minted with the CLI**; the runtime only mints them while serving a REST response, see [Bound operations](../backend/README.md).
 
+## Querying and UI FQNs
+
+`query <model> <Type>` builds GraphQL with `--select`, `--where`, `--limit`, `--offset`. Operators: `eq`, `contains`, `startsWith`, `endsWith`, `regex`, their case-insensitive forms (`icontains`, `istartsWith`, `iendsWith`, `iregex`), and `gt`, `gte`, `lt`, `lte`. Collection fields are pluralised and nested reference filters are AND-combined. `graphql` takes `--variables` and `-o`; `--schema` writes the SDL to `.judo-schema.graphql`.
+
+For model type `ui`, FQNs are non-uniform: an Application is its simple name, a Theme is `<App>::Theme`, a Frame is `<containerFQN>::Frame`, a MimeType is `type/subType`, other named elements use `::` hierarchy, unnamed elements fall back to the XMI URI fragment.
+
 ## Reach for the CLI when…
 
 - You need to know what is currently in the model (entities, attributes, relations, actors, UI definitions).

@@ -51,7 +51,7 @@ See [Prune (Destructive)](../deployment/build-process.md) for the full reference
 cd application/frontend-react/<app>__[actor_fqn]
 ```
 
-Replace `<app>__[actor_fqn]` with your actual module name (e.g., `myapp__service__admin`).
+Replace `<app>__[actor_fqn]` with your actual module name (e.g., `<app>__service__admin`).
 
 ### Starting Development Server
 

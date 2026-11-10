@@ -190,6 +190,34 @@ public class AutoUserCreationAuthenticationInterceptor implements Authentication
 
 ---
 
+## Principal-to-Actor Resolution and Multi-Client Mapping
+
+### Resolution order (`DefaultActorResolver`)
+
+`ActorResolver` is the SPI that maps a `JudoPrincipal` or token claims to the persisted actor payload: `authenticateActor(Map exchange)`, `authenticateByPrincipal(JudoPrincipal)` (returns `Optional<Payload>`) and `getActorByClaims(EClass actorType, Map claims)`. `JudoDefaultModule` wires `DefaultActorResolver`; bind your own implementation to add custom matching, just-in-time provisioning or rejection.
+
+`getActorByClaims` chooses the lookup attribute in this order:
+
+1. the attribute with `claim = USERNAME`, if its claim is present in the token;
+2. the attribute with `claim = EMAIL`, if present;
+3. the first identifier attribute (sorted by name) whose name is in the claims; otherwise `IllegalStateException`.
+
+It then runs `dao.search` on the actor type, so **the actor row is read from the database on every request that carries a principal**. Zero matches give `AccessDeniedException` `AUTHENTICATED_ENTITY_NOT_FOUND`; several matches give `SecurityException` ("Multiple actors found in database by token"). When the principal resolution is slow, profile this read (index the claim column) rather than the application's `#_principal` interceptor. `authenticateByPrincipal` runs only when the exchange has no actor yet and `checkMappedActors` is `true` (default `false`). Claims whose matching attribute is `transient` are copied onto the returned actor payload.
+
+### Several Keycloak clients in one realm
+
+JUDO derives the actor from the token's `azp` claim: dashes become dots and the result must equal an actor FQN. A frontend client with another name cannot be resolved. Set the whitelist `JUDO_PLATFORM_ACCEPTABLE_CLIENTS` (OSGi/Guice key `acceptableClients`, default empty):
+
+```
+ActorTypeFQN=client1,client2;OtherActor=client3
+```
+
+Client ids are normalised (dash to dot) and an ambiguous client-to-actor mapping is rejected. The Keycloak login interceptor also accepts a `clientToActorMap` that renames `azp` values to actor names. See [OSGi Runtime Services](../deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration) for the realm side.
+
+### Discovery endpoints for custom frontends
+
+Each actor exposes `GET /api/<Model>/Actor/<Actor>/~meta` and `GET .../~principal` (the authenticated principal with `__identifier` and `__signedIdentifier`). The `security` entry of `~meta` carries `tokenEndpoint`, `clientId` and `openIdConfigurationUrl`, which a custom frontend needs to obtain an access token for that actor. The generated React layout waits for `principal.__signedIdentifier` before rendering, maps `AUTHENTICATED_ENTITY_NOT_FOUND` to a "User not found" message, and logs out with `signoutRedirect` using the current URL without its hash as `post_logout_redirect_uri`.
+
 ## Testing and Best Practices
 
 ### Testing Authentication Interceptors
