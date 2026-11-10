@@ -1,0 +1,157 @@
+#!/usr/bin/env python3
+"""Spec-conformance check for catalog entries (restructure-blueprints-for-kb specs).
+
+Usage: spec-check [paths...] [--json]   (default: the whole catalog)
+
+Adds the spec requirements that entry-lint does not cover:
+  blueprint-format     duplicate ids; evidence/first_seen/last_updated/alternatives/status present
+  catalog-kb-indexing  no block scalars; title, description, keywords, aliases, tags with domain:/layer:/status: facets;
+                       Related links ([[id]] or relative .md) resolve; no generic-only headings
+  sandbox              fragment entries: fragments/<id>.model exists, generated block names fragment + cli version
+  mermaid              every mermaid fence starts with a known diagram type and has balanced braces/quotes
+Runs from any cwd. Exit 1 on any error.
+"""
+import argparse
+import json
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[3]
+CAT = ROOT / "catalog"
+GENERIC = {"overview", "details", "notes", "description", "example", "examples", "implementation", "usage", "misc", "other", "general"}
+MERMAID_TYPES = ("classDiagram", "stateDiagram", "stateDiagram-v2", "sequenceDiagram", "flowchart", "graph", "erDiagram")
+GEN_RX = re.compile(r"<!-- mermaid:generated fragment=([\w-]+) cli=(\S+) -->")
+
+
+def fm_of(text):
+    m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+    if not m:
+        return None, text, []
+    fm, raw = {}, m.group(1).splitlines()
+    for line in raw:
+        mm = re.match(r"^([\w-]+):\s*(.*)$", line)
+        if mm:
+            fm[mm.group(1)] = mm.group(2).strip()
+    return fm, text[m.end():], raw
+
+
+def flow(v):
+    v = (v or "").strip()
+    if v.startswith("[") and v.endswith("]"):
+        return [x.strip().strip("\"'") for x in v[1:-1].split(",") if x.strip()]
+    return [v.strip("\"'")] if v else []
+
+
+def entry_files():
+    for d in sorted((CAT / "model-blueprints").iterdir()):
+        if (d / "BLUEPRINT.md").exists():
+            yield "blueprint", d.name, d / "BLUEPRINT.md", [d / f for f in ("model.md", "backend.md", "frontend.md") if (d / f).exists()]
+    for f in sorted((CAT / "best-practices").glob("*/*.md")):
+        if f.name not in ("README.md", "AGENTS.md"):
+            yield "practice", f.stem, f, []
+
+
+def check_mermaid(text, errs, where):
+    for i, m in enumerate(re.finditer(r"```mermaid\n(.*?)```", text, re.S)):
+        body = m.group(1).strip()
+        first = body.splitlines()[0].strip() if body else ""
+        if not first.startswith(MERMAID_TYPES):
+            errs.append(f"{where}: mermaid block {i} has no diagram type ({first[:30]!r})")
+        if body.count("{") != body.count("}"):
+            errs.append(f"{where}: mermaid block {i} unbalanced braces")
+        if body.count('"') % 2:
+            errs.append(f"{where}: mermaid block {i} unbalanced quotes")
+
+
+def check_links(text, ids, base, errs, where):
+    sec = re.search(r"^## Related\s*\n(.*?)(?=^## |\Z)", text, re.S | re.M)
+    if sec:
+        for wid in re.findall(r"\[\[([^\]|#]+)", sec.group(1)):
+            if wid.strip() not in ids:
+                errs.append(f"{where}: Related [[{wid}]] does not resolve")
+    for link in re.findall(r"\]\(([^)#\s]+\.md)(?:#[^)]*)?\)", text):
+        if link.startswith(("http:", "https:")):
+            continue
+        if not (base.parent / link).resolve().exists():
+            errs.append(f"{where}: link {link} does not resolve")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("paths", nargs="*")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+    entries = list(entry_files())
+    ids = {}
+    report = {}
+    for kind, eid, path, layers in entries:
+        ids.setdefault(eid, []).append(str(path.relative_to(ROOT)))
+    sel = [pathlib.Path(p).resolve() for p in a.paths]
+    for kind, eid, path, layers in entries:
+        if sel and not any(str(path).startswith(str(s)) for s in sel):
+            continue
+        errs = []
+        text = path.read_text()
+        fm, body, raw = fm_of(text)
+        if fm is None:
+            report[str(path.relative_to(ROOT))] = ["missing frontmatter"]
+            continue
+        if len(ids[eid]) > 1:
+            errs.append(f"duplicate id {eid}: {ids[eid]}")
+        for line in raw:
+            if re.match(r"^[\w-]+:\s*[|>][-+]?\s*$", line):
+                errs.append(f"block scalar: {line.strip()}")
+        for k in ("title", "description", "keywords", "aliases", "tags", "projects", "evidence", "first_seen", "last_updated", "alternatives", "status", "fragment"):
+            if k not in fm:
+                errs.append(f"frontmatter: missing {k}")
+        if "format" in fm:
+            errs.append(f"frontmatter: format: {fm['format']} still present")
+        if not flow(fm.get("keywords")):
+            errs.append("frontmatter: keywords empty")
+        tags = flow(fm.get("tags"))
+        for facet in ("domain:", "layer:", "status:"):
+            if not any(t.startswith(facet) for t in tags):
+                errs.append(f"tags: no {facet} facet")
+        for p in flow(fm.get("projects")):
+            if f"project:{p}" not in tags:
+                errs.append(f"tags: missing project:{p}")
+        if fm.get("status") and f"status:{fm['status'].strip(chr(34))}" not in tags:
+            errs.append("tags: status facet differs from status")
+        required = {"intent", "structure", "constraints", "variations", "when to use", "when to avoid", "related"} if kind == "blueprint" else {"intent", "practice", "rationale", "example", "when to avoid", "related", "structure diagram"}
+        for lvl, h in re.findall(r"^(#{2,4}) (.+)$", body, re.M):
+            name = h.strip().lower()
+            if lvl == "##" and name in required:
+                continue  # spec-mandated section names (blueprint-format)
+            if name in GENERIC:
+                errs.append(f"generic heading: {h.strip()}")
+        frag = fm.get("fragment", "").strip("\"'")
+        if frag and not frag.startswith(("none", "pending")):
+            if not (ROOT / "fragments" / f"{frag}.model").exists():
+                errs.append(f"fragments/{frag}.model missing")
+            alltext = text + "".join(l.read_text() for l in layers)
+            g = GEN_RX.search(alltext)
+            if not g:
+                errs.append("no generated block with fragment + cli markers")
+            elif g.group(1) != frag:
+                errs.append(f"generated block names fragment {g.group(1)} != {frag}")
+        for f in [path] + layers:
+            t = f.read_text()
+            check_mermaid(t, errs, f.name)
+            check_links(t, set(ids), f, errs, f.name)
+        if errs:
+            report[str(path.relative_to(ROOT))] = errs
+    n = sum(1 for _ in entries) if not sel else len([1 for e in entries if any(str(e[2]).startswith(str(s)) for s in sel)])
+    if a.json:
+        print(json.dumps({"checked": n, "failed": len(report), "errors": report}, indent=1))
+    else:
+        for p, e in report.items():
+            print(p)
+            for x in e:
+                print("   -", x)
+        print(f"{n} entries, {len(report)} failed")
+    return 1 if report else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
