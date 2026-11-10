@@ -201,7 +201,7 @@ These rules define how accesspoint elements behave based on their context and at
 | `deleteable` | Always | Allow deleting instances |
 | `exportable` | Always | Allow exporting instances |
 
-Access CRUD flags are rung 2 of the relation-CUD capability ladder. Full ladder (rungs 1–6: target outer flags, relation flag, `enabledBy` chain, parent per-instance `__updateable` / `__deletable`, filter membership invariant, LIST scope) in [relation-driven-crud-with-custom-input.md — §4](../../../best-practices/model/relation-driven-crud-with-custom-input.md#4-capability-ladder).
+Access CRUD flags are rung 2 of the relation-CUD capability ladder. Full ladder (rungs 1–6: target outer flags, relation flag, `enabledBy` chain, parent per-instance `__updateable` / `__deletable`, filter membership invariant, LIST scope) in [relation-driven-crud-with-custom-input.md — §4](../../../best-practices/model/relation-driven-crud-with-custom-input.md#capability-ladder).
 
 ### Claim Attribute Rules
 

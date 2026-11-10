@@ -6,12 +6,12 @@
 
 | File | Purpose |
 |---|---|
-| `access-paired-with-menu-item.md` | access-paired-with-menu-item |
+| `access-paired-with-menu-item.md` | An actor Access only defines the data surface; the navigation menu is built from the actor's menu items, so every access meant for end users needs its own MenuItemAccess. |
 | `action-group-conditional-enabling.md` | Group related operation buttons in a UI ActionGroup, show the first few as standalone buttons, and switch the group on or off with a derived boolean on the same transfer object. |
 | `actor-based-transfer-projection.md` | Give each actor role its own mapped transfer objects over the shared entities, with a per-role member selection, derived display fields and permission flags. |
 | `actor-context-variable-lookup.md` | Read the signed-in user with the typed getVariable call in JQL (ACTOR, USER or PRINCIPAL, chosen by actor shape) to scope access, find the current user and derive permission flags. |
 | `aggregated-stored-field.md` | Store a summary of a collection relation in a dedicated attribute of the owning entity and refresh it from backend code, trading staleness risk for cheap reads. |
-| `api-package-thin-ref-projection.md` | List ApiRef-style TOs (thin mapped projections in an API package) |
+| `api-package-thin-ref-projection.md` | When an API input transfer object needs a typed picker relation to an entity, point it at a small mapped read-only projection in the API package instead of the UI dashboard transfer object. |
 | `approval-workflow-pattern.md` | Keep a requested and an approved value as two parallel relations on one entity, derive the approval flag from them, and approve with an instance operation that copies one to the other. |
 | `attribute-renaming-in-transfer.md` | Present an entity attribute under a different name in a transfer object, either as a MAPPED member bound to the attribute or as a DERIVED member computed from it. |
 | `audit-event-entity.md` | A non-editable Event entity records what happened (category enum), who did it, when, and to which entity, written by backend code in the same transaction as the action. |
@@ -28,7 +28,7 @@
 | `default-value-patterns.md` | Entities and transfer objects use consistent default value conventions. |
 | `derived-access-filtering.md` | Access points use the DERIVED access type with getter expressions to filter or restrict the data visible to an actor. |
 | `derived-attribute-flattening.md` | Transfer objects flatten navigation paths from entity relations into derived attributes, eliminating the need for clients to traverse relations. |
-| `derived-relation-membership-invariant.md` | derived-relation-membership-invariant |
+| `derived-relation-membership-invariant.md` | An update through a filtered derived relation or a derived access is rejected when the updated row would no longer match the filter, so state changes need an unfiltered path or a custom operation. |
 | `derived-relation-navigation.md` | Entity or transfer relations use derived getter expressions to compute their contents by navigating through other relations, applying filters, or combining multiple sources. |
 | `derived-state-from-history.md` | Instead of storing the current lifecycle state directly on an entity, the state is derived from the most recent entry in a composed history collection. |
 | `dual-role-relation.md` | When an entity can participate in the same relationship type under different roles, two separate bidirectional relations are defined to the same target entity instead of a single generic relation with |
@@ -44,7 +44,7 @@
 | `flat-entity-model.md` | All entity types are concrete with no abstract parents or inheritance hierarchies. |
 | `generalization-base-entity.md` | Hold the attributes and relations that several entities share (timestamps, documents, assignee, history) once on a base entity and let the concrete entities extend it through generalization. |
 | `guard-clause-delete.md` | A delete operation on the entity checks its preconditions first, returns without deleting when they fail, and otherwise removes dependent parts and the entity itself. |
-| `identifier-attribute-vs-relation.md` | Find suspicious *Id / *Identifier members across the project, separating |
+| `identifier-attribute-vs-relation.md` | Decide when a String identifier member is a legitimate domain value and stays an attribute, and when it stands in for a typed relation and should be replaced. |
 | `impersonation-relation.md` | Store a second optional reference to the user next to the owner relation, so an admin can record content created in another user's name, and expose it only on the admin transfer object. |
 | `initializer-operation.md` | Declare a static, input-less initializer operation on a dedicated entity that seeds reference data and first accounts, and guard its body so a repeated run does not duplicate rows. |
 | `integer-boolean-for-aggregation.md` | Type a derived true/false condition as an Integer 0 or 1 using a ternary expression, so that !sum can add the flags in standings, points and statistics. |
@@ -62,7 +62,7 @@
 | `permission-flag-enum.md` | Role-based feature permissions: a Permission entity holds one enum flag per feature, roles group permissions, users get roles, and derived booleans on the user expose each feature for UI visibility. |
 | `primary-selection-pattern.md` | A parent that owns a collection of items (addresses, accounts) designates one as primary through a single reference on the parent, set by an operation on the item, so only one primary can exist. |
 | `range-expression-filtering.md` | A mapped or transient relation on a transfer object restricts which instances can be picked by giving it a derived range: a JQL expression filtering (and sorting) the target entity. |
-| `relation-driven-crud-with-custom-input.md` | relation-driven-crud-with-custom-input |
+| `relation-driven-crud-with-custom-input.md` | Let a mapped relation target generate the table, detail and create screens; use a custom operation with an unmapped input when the create shape differs; know the capability ladder that gates create, u |
 | `responsive-multi-device-layout.md` | Responsive layout is expressed in the UI model through a 12-column grid (col spans per component); device variants of each page are an observation of generated UI models, not an authoring step. |
 | `self-access-point.md` | An actor gets a 0..1 derived access that resolves to the actor's own entity row, giving a 'my profile' or personal dashboard entry point; the getter finds the row through the ACTOR variable, not throu |
 | `self-referencing-derived-relation.md` | A transfer object has a derived relation whose getter is self and whose target is a different transfer object over the same entity, so one entity row is shown through two projections at once. |
@@ -74,7 +74,7 @@
 | `soft-delete-active-flag.md` | Entities carry a required boolean flag (active, isEnabled, or inverted isArchived) instead of being physically deleted, so records stay for references and audit while being hidden from active use. |
 | `standard-type-library.md` | Every model uses one shared types package of named primitive types (String, Text, Email, Integer, Double, Timestamp and so on) and a measures package, instead of ad-hoc type definitions per attribute. |
 | `state-based-transfer-partitioning.md` | One entity is exposed through separate transfer objects and accesses per lifecycle state group (for example open and closed), so editable and read-only views are structurally different. |
-| `thin-identifiable-result-for-parent-relation-create.md` | thin-identifiable-result-for-parent-relation-create |
+| `thin-identifiable-result-for-parent-relation-create.md` | A custom create-on-relation operation returns a minimal mapped transfer object of the new row, so the frontend can redirect to the caller's relation view without a full second projection. |
 | `toggle-operation-pattern.md` | A boolean flag is changed only through a dedicated toggle operation on the entity, so the business rules and side effects of a flag change (mutual exclusivity, cascades) always run. |
 | `token-based-quota-limit.md` | A user entity holds one numeric quota attribute per kind of owned item, and the operation that creates such an item counts the user's active items of that kind and refuses when the quota is reached. |
 | `token-based-verification-workflow.md` | An entity that needs e-mail verification carries a token, an expiry time and a verified-at time plus a status enumeration, and moves from pending to verified to approved or rejected, with expired as a |

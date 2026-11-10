@@ -14,10 +14,10 @@
 | `builder-pattern-entity-creation.md` | Entities are created through generated EntityForCreate builders passed to the DAO create method; relations to existing entities are set in the builder, and composition children can be created through  |
 | `bulk-csv-import-export.md` | Custom operations export data as a CSV file (UTF-8 BOM for Excel) stored in the file store and return a FileType, and import operations read an uploaded CSV from the file store and create one entity p |
 | `bulk-json-import-export.md` | Admin operations import entity data from an uploaded JSON file (deserialized with Jackson, deduplicated, created via builders) and export it as a JSON file in the file store. |
-| `business-error-vs-generic-operation-error.md` | Model: set the operation fault target to the business-error TO (regenerate after) |
-| `cancel-replace-cascade-service.md` | cancel-replace-cascade-service |
+| `business-error-vs-generic-operation-error.md` | A failure the user must see and act on is raised as a modeled business fault (HTTP 422) declared on the operation; anything else surfaces as a generic 500 toast. |
+| `cancel-replace-cascade-service.md` | An OSGi component keeps one background cascade per entity and cancels the in-flight one when a newer trigger arrives, so only the latest state is processed. |
 | `correlation-based-event-chaining.md` | Events raised during one trigger share a correlation id (generated per request thread) and are processed one after another by querying the next unprocessed event of the same chain. |
-| `custom-jaxrs-sse-endpoint.md` | Endpoint should appear in the CXF service list |
+| `custom-jaxrs-sse-endpoint.md` | A hand-written JAX-RS resource mounted next to the generated REST stack, used when an endpoint must stream Server-Sent Events, which generated unary operations cannot do. |
 | `custom-operation-osgi-component.md` | A custom operation is an OSGi Declarative Services component that implements the generated operation interface, registered with @Component(immediate = true, service = ...) and wired with @Reference. |
 | `dao-fluent-query-filter.md` | Read data through generated DAOs: chain typed filterBy calls (AND-combined), then selectOne, selectList or count; use filterBy(String) JQL for OR logic and relation query methods for navigation. |
 | `data-snapshot-versioning.md` | Before a significant state transition, copy the current child records into a version entity so the state at that moment stays readable later. |
@@ -36,7 +36,7 @@
 | `filestore-mediated-file-transfer.md` | Custom operations that import or produce files exchange them through the platform FileStore service: upload operations read the stored file by id, download operations store the result and return a fil |
 | `form-field-flattening.md` | A create form for a parent with child records uses flat form_ fields on the parent transfer object; a create interceptor maps them into the nested child payload before the platform create runs. |
 | `generator-ignore-config-protection.md` | List hand-edited configuration files and custom code in .generator-ignore so that regeneration from the model neither overwrites them nor fails the build on a checksum mismatch. |
-| `guarded-delete-with-deactivate-fallback.md` | guarded-delete-with-deactivate-fallback |
+| `guarded-delete-with-deactivate-fallback.md` | An entity offers a hard delete allowed only when nothing references it (otherwise a modeled business fault) and a separate active toggle to retire referenced records. |
 | `handlebars-email-template.md` | Render emails and other structured text from Handlebars templates compiled at runtime, with templates kept in the FileStore or inline in code, so wording changes need no code change. |
 | `i18n-osgi-service.md` | A type-safe backend i18n interface with one method per message, a properties file per locale, a thread-local locale supplier and an OSGi-registered proxy service, injected into services and operations |
 | `identifier-adaptation-pattern.md` | Use the SDK identifier adaptTo() to turn the identifier of one mapped transfer object type into the identifier of another type mapped to the same entity, so another DAO can load the entity through a d |
@@ -51,10 +51,10 @@
 | `interceptor-security-filter-validation.md` | A pre-call interceptor on selected list operations that checks the client-supplied query filter against an allowed pattern and refuses the call otherwise, to stop enumeration of data the actor may not |
 | `interceptor-template-postcall.md` | A post-call interceptor on the template or refresh read operations that removes or rewrites fields in the returned Payload before it reaches the client, to keep internal configuration and user lists o |
 | `jaxb-external-api-client.md` | An external XML API client built from JAXB classes generated from the provider's XSD schemas, in its own OSGi bundle, using the JDK HttpClient with retry and proxy support and a database-backed respon |
-| `karaf-customization-via-fragments.md` | karaf-customization-via-fragments |
+| `karaf-customization-via-fragments.md` | Extra Karaf bundles, repositories, Maven plugins or dependencies and OSGi config PIDs are added through the generator's named fragment slots, so they survive regeneration without editing generated fil |
 | `keycloak-jit-user-provisioning.md` | An AuthenticationInterceptor that runs on the principal operation after a Keycloak login, reads the token claims and creates the application's user row on first login with a default status, idempotent |
 | `magic-link-authentication.md` | A custom Keycloak authenticator deployed as a Keycloak extension that signs users in by a time-limited e-mailed link, with token handling in an application service and the Keycloak admin client wrappe |
-| `managed-actor-admin-pattern.md` | managed-actor-admin-pattern |
+| `managed-actor-admin-pattern.md` | Admin user management on a managed actor uses a read-only users relation plus gated custom operations that write through the principal TO's DAO, so Keycloak realm sync fires. |
 | `mask-field-projection.md` | Use the generated Mask classes to say which attributes and relations a DAO read or update touches: minimal masks for existence checks, lists and loops, nested masks for detail views, and masks on upda |
 | `multi-tenant-keycloak-realm.md` | Project practice for multi-tenancy where each organization gets its own Keycloak realm, created at runtime through the Keycloak admin API behind a project RealmManager service. |
 | `mutable-entity-update-pattern.md` | Change a persisted entity by loading it from its DAO, calling setters on the returned object and passing it back to dao.update, optionally with a mask that limits the written fields. |
@@ -71,7 +71,7 @@
 | `safe-failure-pattern.md` | Secondary work such as audit rows, statistics or notifications is wrapped so that its failure is logged but never breaks the primary operation, and loops over items continue after a single failure. |
 | `scheduled-data-sync-pipeline.md` | Several scheduled jobs (frequent fetch, daily reset, daily archive) delegate to one service that pulls external data, stores snapshots, upserts daily records and recalculates parent aggregates. |
 | `script-driven-operations.md` | Business logic is written as JCL scripts in the operation bodies of the model (customImplementation false), so the build generates the operations and no Java implementation classes are written. |
-| `self-learning-reference-dictionary.md` | self-learning-reference-dictionary |
+| `self-learning-reference-dictionary.md` | A reference dictionary (city and postal code) grows from user-entered free text through one idempotent learn() primitive wired into every write path, with a bulk path for imports. |
 | `sequence-code-generation.md` | A custom operation takes the next number of a named platform sequence from the VariableResolver (category SEQUENCE) and formats it into a padded code such as PRT-00001. |
 | `service-delegation-pattern.md` | Custom operation implementations stay thin adapters that delegate to shared, plain-Java OSGi service classes holding the business logic, so logic is reused across operations and unit-testable. |
 | `soap-client-integration.md` | An external SOAP service is wrapped in an OSGi component that builds a CXF JAX-WS proxy, parses the XML reply and falls back from a database cache to the remote call. |

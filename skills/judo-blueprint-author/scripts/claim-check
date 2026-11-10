@@ -7,6 +7,8 @@ Each check: id, regex, optional path predicate, why, allow regex (same line). AL
 import re,pathlib,sys
 ROOT=pathlib.Path(__file__).resolve().parents[3]/'catalog'
 ALLOW={
+ ("A1 AGGREGATION unqualified","best-practices/model/api-package-thin-ref-projection.md"),  # keyword only
+ ("A1 AGGREGATION unqualified","model-blueprints/testkit-integration-foundation/backend.md"),  # says TO relations, reviewed
  ("A2","best-practices/model/service-based-transfer-organization.md"),
  ("A2","best-practices/model/panel-dashboard-transfer.md"),
  ("A3","model-blueprints/custom-theme-with-native-status-bar/frontend.md"),

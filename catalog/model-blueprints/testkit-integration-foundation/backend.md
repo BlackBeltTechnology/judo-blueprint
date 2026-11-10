@@ -233,7 +233,7 @@ Map<String, Object> identifierMap(Serializable id, String entityType, Integer ve
 }
 ```
 
-For mandatory AGGREGATION (containment) relations, embed a fresh `*ForCreate.builder()` payload — `from(Map)` would still create rather than reference.
+For a mandatory relation on a transfer object (transfer object relations are usually `AGGREGATION`, a reference, not containment), embed a fresh `*ForCreate.builder()` payload when the test needs a new target; `from(Map)` would still create rather than reference (project observation, verify).
 
 ### G10. `PayloadValidator` runs before parent-link auto-population
 

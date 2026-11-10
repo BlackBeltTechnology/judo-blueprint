@@ -40,6 +40,12 @@ Batch ids in brackets: `bp` = model blueprints, `pm`/`pb`/`pf` = model/backend/f
 | B12 | **Unauthenticated operations** | How to expose an operation without login. The model-level `anonymous` actor flag is documented only in e2e-testing. | bp08, pb05, pb07 |
 | B13 | **`isActiveExpression`** | How the runtime evaluates it, and how it interacts with actor resolution by `azp`. There is no sample with a boolean role flag as the guard. | bp14, pm04 |
 | B50 | **Actor realm vs schema name** | cciu says `ActorType.realm` must equal the `judo.properties` `schema_name`, otherwise the local-dev Keycloak SSL script times out. Only the `realm` default `DEFAULT` is confirmed (esm.ecore); the script is not in judo-ng. | cciu merge CM-055 |
+| B51 | **Transient relations on unmapped TOs** | What `mutable input.<rel>` means for a transient relation; whether an unmapped transient target renders a nested form instead of a picker; that such a relation must be `AGGREGATION` (`ASSOCIATION` fails strict validation; the CLI sets aggregation by default and rejects `aggregation=true` as read-only). | mg1, mg2 |
+| B52 | **Access with list cardinality needs a table column** | `validate --strict` fails until the access target's table has a column (`create -t DataColumn --ns <TO>::<TO>_Table --set dataFeature=...`). Not documented. | mg2, also D5 |
+| B53 | **Unmapped operation output, mapped TO minimum** | What the generator emits for an unmapped operation output; that a mapped transfer object needs at least one mapped attribute. | mg2 |
+| B54 | **Derived-path membership vs writes** | Whether custom operations and direct DAO writes bypass a derived-path membership filter. | mg2 |
+| B55 | **Frontend typeahead and row-action icons** | `TextWithTypeAhead`, freeSolo, `getForm_<field>Options` getter names and signature `(searchText, data, editMode, validation)`; operation-form icon precedence and the `chevron_right` default for row actions; `ComponentProxy` placeholder pages; flow-manager input keys. | mg4 |
+| B56 | **SSE endpoints** | JAX-RS SSE with `cxf-rt-rs-sse` and the CXF version. | mg3 |
 | B14 | **Authentication interceptor scope** | `AuthenticationInterceptor` runs on authentication events, not operations. This is stated nowhere. | bp14 |
 | B15 | **`VariableResolver` target filter** | Whether a `judo.model.name` target filter is needed. | pb06 |
 | B16 | **Mapped claim attributes** | A claim attribute on a mapped principal must map to an identifier or derived attribute, and the `required` flags must match. Only partly stated. | pm01, pm05 |

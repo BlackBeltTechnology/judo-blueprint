@@ -263,7 +263,7 @@
 | `test-attempt-lifecycle-entity/model.md` | test-attempt-lifecycle-entity: model shape and generated structure diagram |
 | `test-attempt-lifecycle-entity/backend.md` | test-attempt-lifecycle-entity: backend guidance |
 | `test-attempt-lifecycle-entity/frontend.md` | test-attempt-lifecycle-entity: frontend guidance |
-| `testkit-integration-foundation/BLUEPRINT.md` | BLUEPRINT |
+| `testkit-integration-foundation/BLUEPRINT.md` | An in-process integration-test foundation for JUDO applications on the guice testkit and HSQLDB, with eight support classes, activation flags, a Maven tier layout and an optional docker overlay for re |
 | `testkit-integration-foundation/model.md` | testkit-integration-foundation: model shape and generated structure diagram |
 | `testkit-integration-foundation/backend.md` | testkit-integration-foundation: backend guidance |
 | `toggle-active-operation/BLUEPRINT.md` | An entity with a required active boolean (default true) and an instance operation that flips it, giving soft enable and disable without deletion. |
@@ -273,15 +273,15 @@
 | `token-based-verification-entity/model.md` | token-based-verification-entity: model shape and generated structure diagram |
 | `token-based-verification-entity/backend.md` | token-based-verification-entity: backend guidance |
 | `token-based-verification-entity/frontend.md` | token-based-verification-entity: frontend guidance |
-| `transient-relation-multi-select-input/BLUEPRINT.md` | BLUEPRINT |
+| `transient-relation-multi-select-input/BLUEPRINT.md` | An unmapped operation input transfer object holds a 0..* or 1..* transient relation to a mapped transfer object, so the user picks several existing records in the input form and the operation body lin |
 | `transient-relation-multi-select-input/model.md` | transient-relation-multi-select-input: model shape and generated structure diagram |
 | `transient-relation-multi-select-input/backend.md` | transient-relation-multi-select-input: backend guidance |
 | `transient-relation-multi-select-input/frontend.md` | transient-relation-multi-select-input: frontend guidance |
-| `transient-relation-single-select-input/BLUEPRINT.md` | BLUEPRINT |
+| `transient-relation-single-select-input/BLUEPRINT.md` | An unmapped operation input transfer object holds a 0..1 or 1..1 transient relation to a mapped transfer object, so the user picks one existing record in the input form and the operation body links it |
 | `transient-relation-single-select-input/model.md` | transient-relation-single-select-input: model shape and generated structure diagram |
 | `transient-relation-single-select-input/backend.md` | transient-relation-single-select-input: backend guidance |
 | `transient-relation-single-select-input/frontend.md` | transient-relation-single-select-input: frontend guidance |
-| `two-call-generation-state/BLUEPRINT.md` | BLUEPRINT |
+| `two-call-generation-state/BLUEPRINT.md` | A pair of non-CRUD entities for a two-step API flow, where a short-lived Handle holds the generated result between the start call and the confirm call, and a permanent Document is written only on conf |
 | `two-call-generation-state/model.md` | two-call-generation-state: model shape and generated structure diagram |
 | `two-call-generation-state/backend.md` | two-call-generation-state: backend guidance |
 | `user-holiday-absence-tracking/BLUEPRINT.md` | A Holiday entity composed by a User that stores the date ranges when the user is unavailable, with a check for overlapping ranges and a calendar that can override public days. |
