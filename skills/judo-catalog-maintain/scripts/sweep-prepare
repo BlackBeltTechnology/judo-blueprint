@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""Prepare a sweep of one project: plan, source worktree, blueprint worktree, resume state (D10 steps 1-2, D10b step 1).
+
+Usage:
+  sweep-prepare <project> [--src DIR] [--branch develop] [--sha SHA] [--json]
+  sweep-prepare --clean [--dry-run]       remove sweep worktrees whose branch is merged into HEAD
+
+<project> must be a PROJECTS.md row. The source is a local checkout (--src, default ~/Projects/**/<project>);
+the script resolves <branch> there to a SHA (use --sha to pin) and adds a DETACHED worktree at W/src.
+It never fetches, clones over the network, or pushes. Re-running reuses existing worktrees (resume).
+"""
+import argparse
+import json
+import pathlib
+import shutil
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from _sweep import ROOT, SWEEP, die, git, load_state, registry, save_state, work_dir  # noqa: E402
+
+
+def find_checkout(project):
+    home = pathlib.Path.home() / "Projects"
+    for p in sorted(home.glob(f"**/{project}"), key=lambda x: len(x.parts)):
+        if (p / ".git").exists() and len(p.relative_to(home).parts) <= 3:
+            return p
+    return None
+
+
+def _has_own_commits(br):
+    """True when the branch was ever ahead of where it started: its reflog has more than the creation entry."""
+    log = git(["reflog", "show", "--format=%H", br], ROOT, check=False).splitlines()
+    return len(log) > 1
+
+
+def clean(dry):
+    out = git(["worktree", "list", "--porcelain"], ROOT)
+    removed = []
+    for block in out.split("\n\n"):
+        lines = dict(l.split(" ", 1) for l in block.splitlines() if " " in l)
+        path, br = lines.get("worktree"), lines.get("branch", "").replace("refs/heads/", "")
+        if not br.startswith("sweep/"):
+            continue
+        tip = git(["rev-parse", br], ROOT, check=False)
+        base = git(["rev-parse", "HEAD"], ROOT)
+        # merged = the branch has commits and all of them are in HEAD (a fresh, empty sweep branch is not "merged")
+        ahead = git(["rev-list", "--count", f"{base}..{br}"], ROOT, check=False)
+        own = git(["rev-list", "--count", f"{git(['merge-base', br, base], ROOT, check=False) or base}..{br}"], ROOT, check=False)
+        merged = bool(tip) and ahead == "0" and _has_own_commits(br)
+        if merged:
+            removed.append((path, br))
+            if not dry:
+                git(["worktree", "remove", "--force", path], ROOT)
+                git(["branch", "-d", br], ROOT, check=False)
+    for p, b in removed:
+        print(f"{'would remove' if dry else 'removed'} {p} ({b})")
+    if not removed:
+        print("nothing to clean (no merged sweep/* worktrees)")
+    return 0
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("project", nargs="?")
+    ap.add_argument("--src")
+    ap.add_argument("--branch")
+    ap.add_argument("--sha")
+    ap.add_argument("--clean", action="store_true")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+    if a.clean:
+        return clean(a.dry_run)
+    if not a.project:
+        die("project required")
+    reg = registry()
+    if a.project not in reg:
+        die(f"{a.project} is not in PROJECTS.md")
+    row = reg[a.project]
+    src = pathlib.Path(a.src).expanduser().resolve() if a.src else find_checkout(a.project)
+    if not src or not (src / ".git").exists():
+        die(f"no local checkout of {a.project}; pass --src (the script never clones from the network)")
+    branch = a.branch or row["Branch"] or "develop"
+    sha = a.sha or git(["rev-parse", "--verify", f"{branch}^{{commit}}"], src, check=False) \
+        or git(["rev-parse", "--verify", f"origin/{branch}^{{commit}}"], src, check=False)
+    if not sha:
+        die(f"cannot resolve {branch} in {src} (local refs only; fetch it yourself if needed)")
+    sha = git(["rev-parse", sha], src)
+    w = work_dir(a.project, sha)
+    st = load_state(w)
+    reused = bool(st)
+    srcwt, bpwt = w / "src", w / "bp"
+    if not srcwt.exists():
+        w.mkdir(parents=True, exist_ok=True)
+        git(["worktree", "add", "--detach", str(srcwt), sha], src)
+    bpbranch = f"sweep/{a.project}-{sha[:7]}"
+    if not bpwt.exists():
+        exists = git(["rev-parse", "--verify", "-q", bpbranch], ROOT, check=False)
+        git(["worktree", "add", *([] if exists else ["-b", bpbranch]), str(bpwt), *([bpbranch] if exists else ["HEAD"])], ROOT)
+    st.update({"project": a.project, "source_checkout": str(src), "branch": branch, "sha": sha,
+               "work": str(w), "src": str(srcwt), "bp": str(bpwt), "bp_branch": bpbranch,
+               "previous_swept": row["Swept SHA"]})
+    st.setdefault("steps", {})["prepare"] = "done"
+    save_state(w, st)
+    if a.json:
+        print(json.dumps(st))
+    else:
+        print(f"{'reused' if reused else 'prepared'} {w.relative_to(ROOT)}  {a.project}@{branch} {sha[:7]}"
+              f"  (previous swept: {row['Swept SHA']})\n  src (read-only): {srcwt}\n  blueprint: {bpwt} on {bpbranch}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

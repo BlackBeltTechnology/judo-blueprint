@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+"""Print the whole source model of a prepared sweep, read-only (D10 step 3).
+
+Usage: model-overview <project> [--json]
+
+Writes into the sweep work folder W (gitignored):
+  shape.md    mermaid model --md --members none          (one diagram per aggregate)
+  domain.md   mermaid model --md --members types
+  access.md   mermaid model --md --split package --kinds transfer,actor --members none
+  counts.txt  entities, enums, compositions, generalizations, transfer objects, actors, operations
+The CLI runs on a COPY of the model in W/.model-copy, so the source worktree is never touched.
+"""
+import argparse
+import json
+import pathlib
+import re
+import shutil
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from _sweep import cli, die, latest_work_dir, load_state, save_state  # noqa: E402
+
+
+def find_model(src):
+    ms = sorted(p for p in src.glob("model/*.model")) or sorted(src.glob("**/model/*.model"))
+    ms = [m for m in ms if not {"target", "node_modules"} & set(m.relative_to(src).parts)]
+    if not ms:
+        die(f"no model/*.model under {src}")
+    return ms[0]
+
+
+def counts(xmi):
+    c = {
+        "entities": len(re.findall(r'xsi:type="structure:EntityType"', xmi)),
+        "abstract_entities": len(re.findall(r'xsi:type="structure:EntityType"[^>]*abstract="true"', xmi)),
+        "enumerations": len(re.findall(r'xsi:type="type:EnumerationType"', xmi)),
+        "transfer_objects": len(re.findall(r'xsi:type="structure:TransferObjectType"', xmi)),
+        "actors": len(re.findall(r'xsi:type="accesspoint:ActorType"', xmi)),
+        "generalizations": len(re.findall(r"<generalizations\b", xmi)),
+        "compositions": len(re.findall(r'relationKind="COMPOSITION"', xmi)),
+        "operations": len(re.findall(r"<operations\b", xmi)),
+        "custom_operations": len(re.findall(r'<operations\b[^>]*customImplementation="true"', xmi)),
+        "derived_members": len(re.findall(r'memberType="DERIVED"', xmi)),
+    }
+    return c
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("project")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+    w = latest_work_dir(a.project)
+    st = load_state(w)
+    src = pathlib.Path(st["src"])
+    model = find_model(src)
+    copy = w / ".model-copy"
+    if copy.exists():
+        shutil.rmtree(copy)
+    copy.mkdir()
+    shutil.copy2(model, copy / model.name)
+    m = copy / model.name
+    runs = {
+        "shape.md": ["mermaid", "model", "--md", "--members", "none"],
+        "domain.md": ["mermaid", "model", "--md", "--members", "types"],
+        "access.md": ["mermaid", "model", "--md", "--split", "package", "--kinds", "transfer,actor", "--members", "none"],
+    }
+    sizes = {}
+    for name, args in runs.items():
+        rc, out, err = cli(args, m, copy)
+        if rc:
+            die(f"{name}: CLI failed: {err.strip()[-400:]}")
+        (w / name).write_text(out)
+        sizes[name] = len(out)
+    cli(["server", "stop"], m, copy)
+    c = counts(model.read_text())
+    (w / "counts.txt").write_text("".join(f"{k}: {v}\n" for k, v in c.items()))
+    st.setdefault("steps", {})["model-overview"] = "done"
+    st["model_file"] = str(model.relative_to(src))
+    save_state(w, st)
+    if a.json:
+        print(json.dumps({"work": str(w), "counts": c, "chars": sizes}))
+    else:
+        print(f"wrote {', '.join(sizes)} + counts.txt to {w}")
+        print("  " + ", ".join(f"{k}={v}" for k, v in c.items()))
+        print("  approx tokens: " + ", ".join(f"{k} {v // 4}" for k, v in sizes.items()))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

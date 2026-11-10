@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""Finish a sweep LOCALLY: commit the blueprint worktree and write the PR body (design D10b step 8, local only).
+
+Usage: sweep-publish <project> [--dry-run] [--json]
+
+Origin is read-only: this script NEVER pushes, never opens a PR and never touches a remote. It:
+  1. refuses unless W/gates.json says pass (written by the operator from check-all, or by --check);
+  2. commits catalog/** and fragments/** in the blueprint worktree on its sweep/<project>-<sha> branch;
+  3. writes W/pr-body.md (counts + candidate -> entry list, neutral names only) and runs redact-check
+     on it when skills/judo-session-distill/scripts/redact-check exists;
+  4. prints the local branch name. Merging it into your branch is a separate, manual `git merge`.
+"""
+import argparse
+import json
+import pathlib
+import subprocess
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from _sweep import ROOT, die, git, latest_work_dir, load_state, save_state  # noqa: E402
+
+
+def pr_body(st, w):
+    counts = (w / "counts.txt").read_text() if (w / "counts.txt").exists() else ""
+    d = json.loads((w / "decisions.json").read_text()) if (w / "decisions.json").exists() else {"decisions": []}
+    rows = [f"| {x.get('name')} | {x.get('decision')} | {x.get('entry') or 'new'} |" for x in d.get("decisions", [])]
+    return "\n".join([f"# Sweep {st['project']} @ {st['sha'][:7]}", "", "## Model counts", "", "```", counts.strip(), "```",
+                      "", "## Candidates", "", "| candidate (neutral) | decision | entry |", "|---|---|---|", *rows, ""])
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("project")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+    w = latest_work_dir(a.project)
+    st = load_state(w)
+    gates = json.loads((w / "gates.json").read_text()) if (w / "gates.json").exists() else {}
+    if gates.get("result") != "pass":
+        die("gates not passed: run check-all in the blueprint worktree and write W/gates.json {\"result\":\"pass\"}", 1)
+    bp = pathlib.Path(st["bp"])
+    body = pr_body(st, w)
+    (w / "pr-body.md").write_text(body)
+    rc = ROOT / "skills" / "judo-session-distill" / "scripts" / "redact-check"
+    if rc.exists():
+        r = subprocess.run([str(rc), str(w / "pr-body.md")], capture_output=True, text=True)
+        if r.returncode:
+            die(f"redact-check failed on pr-body.md:\n{r.stdout}{r.stderr}", 1)
+    status = git(["status", "--porcelain", "--", "catalog", "fragments"], bp)
+    if not status:
+        print("nothing to commit in the blueprint worktree")
+    elif not a.dry_run:
+        git(["add", "--", "catalog", "fragments"], bp)
+        git(["commit", "-q", "-m", f"feat(catalog): sweep {st['project']} @ {st['sha'][:7]}", "-m", body], bp)
+    st.setdefault("steps", {})["publish"] = "dry-run" if a.dry_run else "committed locally"
+    save_state(w, st)
+    out = {"branch": st["bp_branch"], "committed": bool(status) and not a.dry_run, "pushed": False,
+           "pr_body": str(w / "pr-body.md")}
+    print(json.dumps(out) if a.json else
+          f"local branch {out['branch']} ({'committed' if out['committed'] else 'no commit'}); NOT pushed. "
+          f"PR body: {out['pr_body']}. Merge locally with: git merge {out['branch']}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
