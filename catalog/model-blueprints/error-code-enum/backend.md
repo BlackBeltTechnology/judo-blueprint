@@ -2,7 +2,7 @@
 
 ### Declare the business error on each operation that can raise it
 
-A business failure is a modeled fault. The operation declares the general business error as its fault parameter. Without that declaration the generated operation interface has no checked exception for it, and throwing it does not compile. Declare it on every operation that can fail for a business reason.
+A business failure is a modeled fault: a transfer object of the model that is attached to the operation as a fault. The SDK generator turns it into a checked exception class per project (here `BusinessErrorException`, a name that exists only because the project models a fault called `BusinessError`; it is not platform API). Without the declaration the generated operation interface has no `throws` clause and throwing it fails the build with a message about an incompatible throws clause. Declare it on every operation that can fail for a business reason. The runtime answers HTTP 422 with `X-Fault: <fault name>` and a body keyed by that name, plus the `code`.
 
 ### Throw through one factory, never inline
 
@@ -10,22 +10,27 @@ Build the business error and wrap it in the business exception in one factory of
 
 - The factory takes the code and a message key or text, and builds the error object and the exception.
 - Overloads can take the enumeration member or a string code, depending on the variant chosen.
-- The factory is project code, not platform API. Copy the pattern, not the class name.
+- The factory (for example an `ExceptionUtils`) is project code, not platform API. Copy the pattern, not the class name.
+- The generated exception has constructors taking the details, the error code and the details, or the code, details and a cause. Projects use it as `new BusinessErrorException(BusinessError.builder().withCode(...).build())` or through the factory.
 
 ### Keep the failure a business error, not a 500
 
-- A business rule (not found, not allowed, already exists, wrong state) is thrown as the business error with its code. The client then gets the business answer.
-- An external failure (a connection to another system is down, credentials are missing, a result is unavailable) is wrapped in the same business error with a code, and the cause is logged. Do not let a raw runtime exception escape: the client would see a server error.
+- A business rule (not found, not allowed, already exists, wrong state, last-administrator guard, quota or permission check) is thrown as the business error with its code. The client then gets the business answer.
+- An external failure (a connection to another system is down, credentials are missing, a result is unavailable) is wrapped in the same business error with a code, and the cause is logged. Do not let a raw runtime exception escape: the dispatcher wraps it as an internal error and the client sees a generic 500. Failures of the identity provider belong here too, with codes of their own.
 - A business invariant is never an illegal-state runtime exception. It is a business error with a code.
-- A typed business error caught and re-thrown as a generic runtime exception turns into a 500. Let it pass unchanged.
+- A typed business error caught and re-thrown as a generic runtime exception turns into a 500. Let it pass unchanged. The platform does not unwrap a business exception buried in a cause chain either.
 
 ### Interceptors wrap, they do not invent
 
-An interceptor runs only for built-in operations. When a rule must stop a built-in operation, the interceptor throws the interceptor wrapper, not a generated fault class (which is checked and cannot be thrown there). The wrapper carries the fault type, the error code, and the details. Use the fault's full name as the type, so the client's fault dialog finds its translations.
+An interceptor runs only for built-in operations. When a rule must stop a built-in operation, the interceptor throws the platform's `InterceptorCallBusinessException`, not a generated fault class (which is checked and cannot be thrown there). The wrapper carries the fault type, the error code and the details (never null). Use the fully qualified name of the fault transfer object as the type, so the client's fault dialog finds its translations; a wrong type still gives a 422 but with raw attribute names.
 
 ### Field errors are not business errors
 
-A problem with one field is a field validation error with the attribute name as its location. Put a business error on the operation only for failures that are not about one field.
+A problem with one field is a `ValidationException` (HTTP 400) with a `ValidationResult` whose location is the attribute name. Put a business error on the operation only for failures that are not about one field. When several rows or fields fail together, collect all results and throw one `ValidationException`: folding them into one business error loses the per-row list.
+
+### Instances the dispatcher refuses
+
+Operations on an immutable bound instance are refused by the dispatcher itself with an `AccessDeniedException` (HTTP 403), before the operation code runs. That is a platform answer, not a business error of this vocabulary.
 
 ### Readiness checks return a list
 

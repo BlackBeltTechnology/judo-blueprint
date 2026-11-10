@@ -13,7 +13,7 @@ alternatives: [history-audit-trail-entity]
 fragment: entity-change-history-snapshot
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -36,9 +36,9 @@ The parent entity has a list of history rows (0..*). Each history row is non-CRU
 - Createable, updateable and deleteable are all false on the history entity.
 - The `changed` timestamp is required and is set when the snapshot is taken.
 - The copied fields are the fields a user can change. A field that never changes adds no value to the trail.
-- A snapshot written inside a custom operation belongs to that operation's transaction, so a rollback removes it too.
-- Interceptors do not run for custom operations. A custom operation must write its own snapshot.
-- Deleting the parent must also delete its snapshots, because the association is one-way and owned by the parent.
+- Project practice: write the snapshot inside the operation that changes the parent, so both succeed or fail together. The platform gives no snapshot mechanism of its own.
+- Interceptors run only for built-in operations (create, update, delete, list). A custom operation must write its own snapshot.
+- Deleting the parent must also delete its snapshots. In the shown shape the history is a plain association, so nothing cascades. Making the history a composition of the parent would let the platform delete the rows with it.
 
 ## Variations
 

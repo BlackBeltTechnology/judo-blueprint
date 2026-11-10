@@ -11,9 +11,9 @@ projects: [indamedia-adtrack, park-here, ubives, workflow-poc, trivia, mlszksz-p
 evidence: ["indamedia-adtrack:unrecorded", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "trivia:unrecorded", "mlszksz-platform:unrecorded"]
 alternatives: [validation-exception-hierarchy, typed-exception-error-handling]
 fragment: error-code-enum
-diagram: { kinds: [entity, enum], members: types }
+diagram: { kinds: [entity, enum, transfer], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -29,15 +29,16 @@ One business error object with a code and a message is thrown across the operati
 
 ## Structure
 
-Three parts. An error code vocabulary, either a modeled enumeration (one member per error) or plain string constants in code. One business error object, a transfer object that is not mapped to an entity, with the code and the message. A factory in the application that builds the error object and wraps it in the business exception, so that no operation builds it inline.
+Three parts. An error code vocabulary, either a modeled enumeration (one member per error) or plain string constants in code. One business error object, a transfer object that is not mapped to an entity, with the code and the message, declared in the model as the fault of the operations that can fail. The platform generates a checked exception class from that fault in each project; the name `BusinessErrorException` exists only because the project models a fault called `BusinessError`. A factory in the application (project code) builds the error object and wraps it in that generated exception, so that no operation builds it inline.
 
 ## Constraints
 
-- Every business failure an operation can raise is declared on that operation. A failure that is not declared cannot be thrown as a checked error.
+- Every business failure an operation can raise is declared as a fault on that operation. Without the declaration the generated interface has no `throws` clause and the build fails. A modeled fault reaches the client as HTTP 422.
 - The code is stable. A renamed code breaks any client that branches on it; add a new code instead.
 - Messages come from the application's translation service, not from string literals in operations.
 - A business failure is raised as a business error. It must not escape as a raw runtime exception, because the client would see a server error (500) instead of the business answer.
-- Field-level errors use the field validation mechanism with the attribute name as their location. They are not business errors.
+- Field-level errors use the field validation mechanism (`ValidationException`, HTTP 400) with the attribute name as their location. They are not business errors. Rethrowing a validation exception as one business error loses its per-field result list.
+- Project practice, not platform behavior: the vocabulary, the factory and the translation of the codes are conventions of this blueprint.
 
 ## Variations
 

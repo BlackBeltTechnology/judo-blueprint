@@ -1,25 +1,37 @@
 ## Overview
 
-Document and Attachment entities are managed through custom operations that create, delete, and associate file attachments with parent entities (RegistryHeader, Task). Backend operations handle binary file storage and parent-child relationship management.
+Binary attributes are held in the platform file store. On the wire the client sends and receives a file token, and in the generated Java a binary is a `FileType` value (id, file name, MIME type), not the bytes. The upload is two-phase: a generated token operation, then the content upload with that token, then the token as the attribute value in create or update. Creating and removing attachments in this blueprint is done by custom operations on the parent entity, which call project services. Those services are project code, not platform code.
 
 ## Implementation Pattern
 
-- Attachment creation is handled by custom operations like `AddFaultRegistryAttachmentCustomImplementation` that accept an input TO (AttachmentInput) with the binary file and delegates to a shared service (e.g., `FaultRegistryService`)
-- Attachment deletion uses a custom `DeleteAttachmentCustomImplementation` that delegates to the same service for cleanup logic
-- The service layer manages the parent composition relationship: creating the Attachment via the parent DAO's `createAttachments()` method and handling cascading concerns
-- Document entities (with version and documentPDF attributes) are typically created by document generation operations rather than direct user upload
-- Binary file content is stored and retrieved through the platform's `FileStoreService` integration
-- In simpler variants, attachments are created inline during parent entity creation by mapping input TO attachment lists to `AttachmentForCreate` builders
+- **Upload.** A custom operation on the parent takes a DocumentInput. The `FileType` of its `file` field is handed to the project service, which creates the document through the parent's relation method on the generated DAO. If the client can create the document through a built-in create instead, the token flow described above applies and no custom operation is needed.
+- **Download.** The generated download is token-gated. Project practice: serve a file through an operation that checks access, not through a public URL built from the stored id. A public URL lets anyone who can guess an id retrieve the file.
+- **Delete.** A custom delete operation removes the document from the parent and cleans up the stored file; the cleanup call is project code. Keep the cleanup in a project service so the rule is in one place.
+- **Services (project code).** A parent-specific service, for example `FaultRegistryService`, owns the parent composition and calls the parent's data access to add the document. Name it for the domain. The platform does not provide it.
+- **Interceptors do not run here.** Interceptors run only on built-in operations, so an upload or delete that is a custom operation never triggers one (the built-in upload token and create do). Put any audit step in the custom operation.
+- **Inline creation.** When the file is only a field of the parent, map the input's attachment list while the parent is created. This needs no separate upload operation.
+
+```java
+public class AddAttachmentCustomImplementation implements AddAttachment {
+    private final AttachmentService attachments; // project code
+
+    @Override
+    public Document execute(Parent _this, DocumentInput input) {
+        return attachments.attach(_this, input.getFile());
+    }
+}
+```
+
+The class is project code. The operation interface is generated.
 
 ## Examples
 
 ### rackinspect
 - Key files: `custom/.../registryheader/AddFaultRegistryAttachmentCustomImplementation.java`, `custom/.../attachment/DeleteAttachmentCustomImplementation.java`, `common/utils/services/impl/FaultRegistryServiceImpl.java`
-- Pattern: Both add and delete operations delegate to `FaultRegistryService`; add accepts `AttachmentInput` (binary file + description) and creates via parent DAO composition; delete removes the attachment entity
-- Notable: Two document-like entities exist -- `Document` (with version and documentPDF) for generated task documents, and `Attachment` (simpler, binary + description) for user-uploaded files on RegistryHeader
-- Document generation operations (e.g., `GenerateFaultRegistryDocumentCustomImplementation`) create Document entities programmatically with version tracking
+- Pattern: add and delete operations delegate to a project service. Add takes an input with the file and a description, and the service creates the attachment through the parent's data access. Delete removes the attachment.
+- Notable: two document-like entities exist. One holds version and rendition fields for generated documents. The other is a simple attachment with a file and a description, for files uploaded by users.
 
 ### alba
 - Key files: `custom/.../services/adminproduct/CreateProductCustomImplementation.java`, `custom/.../services/authorproduct/CreateProductCustomImplementation.java`, `custom/.../entities/product/DraftNewVersionCustomImplementation.java`
-- Pattern: Attachments (single binary field) are created inline during product creation by mapping form input to `AttachmentForCreate.builder().withAttachment(a.getAttachment()).build()` and passing the list to `ProductForCreate.withAttachments()`; on version draft, existing attachments are copied to the new product via `productDao.createAttachments()`
-- Notable: No standalone attachment upload/delete operations; attachments are managed entirely through the parent Product's create and version-copy lifecycle operations
+- Pattern: attachments are created inline with the product, by mapping the input's attachment list to the create input. On a version draft the attachments are copied to the new product.
+- Notable: there are no standalone upload or delete operations. Attachments follow the parent's create and version lifecycle.

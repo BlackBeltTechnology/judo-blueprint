@@ -1,28 +1,57 @@
 ---
 id: document-file-attachment
 title: Document/File Attachment Entity
-description: "A Document entity for file attachments with a binary `file` or `document` attribute and metadata fields."
-aliases: []
-keywords: [document, file, attachment]
-tags: ["domain:model", "layer:model", "layer:backend", "project:mlszksz-platform", "project:rackinspect", "project:reserve-app", "project:alba", "project:judo-demo-miniworkflow", "project:doors-model", "status:established"]
+description: A non-CRUD document entity that holds one binary file with metadata, attached to a parent entity and uploaded through a parent operation.
+aliases: [file attachment, document attachment, binary attachment]
+keywords: [document, file, attachment, binary, upload, download, filestore, parent]
+tags: [domain:model, layer:model, layer:backend, project:mlszksz-platform, project:rackinspect, project:reserve-app, project:alba, project:judo-demo-miniworkflow, project:doors-model, status:established]
 category: pattern
 status: established
 projects: [mlszksz-platform, rackinspect, reserve-app, alba, judo-demo-miniworkflow, doors-model]
-evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "reserve-app:unrecorded", "alba:unrecorded", "judo-demo-miniworkflow:unrecorded", "doors-model:unrecorded"]
-alternatives: []
-fragment: pending
+evidence: [mlszksz-platform:unrecorded, rackinspect:unrecorded, reserve-app:unrecorded, alba:unrecorded, judo-demo-miniworkflow:unrecorded, doors-model:unrecorded]
+alternatives: [binary-document-with-link-pattern]
+fragment: document-file-attachment
+diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A Document entity for file attachments with a binary `file` or `document` attribute and metadata fields. It associates back to the parent entity (e.g., announcement -> Announcement, 0..1). This is a generic file attachment pattern where any content entity can have multiple documents attached via association or composition. The entity is non-CRUD (created through parent entity operations). Transfer objects expose the file and metadata for viewing, and a DocumentInput unmapped TO provides the file field for upload operations. Some variants add versioning (version attribute) and a PDF rendition (documentPDF binary). The simplest variant is an Attachment entity with only a single binary attribute (picture or attachment), composed by the parent. Richer variants add a `type` discriminator attribute alongside the file and an optional description. Some variants store the file directly as an attribute on the parent entity (e.g., Contract.file, Contract.signedFile) rather than creating a separate entity, with upload operations using dedicated input TOs (UploadFileInput, UploadSignedFileInput). URL-based variants (e.g., Kep/Image with a `url` string attribute instead of a binary file) store a reference to an externally-hosted file rather than the file content itself.
+Attach a file to a business entity, so the file travels with its parent and is shown and removed with it. The attachment is a document entity with a binary file and a few metadata fields.
 
-## Model Definition
+## Structure
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+A parent entity composes or associates zero or more Document entities. A Document holds a required binary `file`, an upload timestamp and an optional description, and it refers back to its parent. The document is not createable, updateable or deleteable through the generated interface, so it is created by a parent operation. An unmapped DocumentInput transfer object carries the file into an upload operation, and a mapped transfer object exposes the file and metadata for viewing.
 
-## Backend Implementation
+## Constraints
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+- A Document is created through its parent. A client never creates or edits it directly, so the rules sit in the parent's operation (a custom operation, or the generated relation-based create on the parent).
+- The file is a binary attribute. The platform keeps the content in its file store and the client sends and receives a file token, never the bytes in the JSON body. A transfer object field that maps a binary on a create-capable transfer gets a generated token operation, and the upload is two-phase: request the token, upload the content with it, then send the token as the attribute value.
+- Project practice: serve a file through an access-checked operation or the generated token-gated download. Do not expose a public URL built from the stored id, because anyone who can guess the id could read the file.
+- Interceptors run only for the built-in operations (create, update, delete, list, the upload token). They do not run on a custom upload or delete operation, so audit the attachment inside those operations.
+
+## Variations
+
+- **Simple attachment.** One binary file, composed by the parent. The minimal form.
+- **Typed attachment.** Adds a `type` attribute that classifies the file, alongside a description.
+- **Versioned document.** Adds a version number and a rendition of the file, for documents generated by the system rather than uploaded by users.
+- **Inline attachment.** The file is an attribute of the parent (for example a signed copy of a contract), uploaded through a dedicated input. No separate entity.
+- **Link instead of file.** A URL string replaces the binary file, referring to a file hosted elsewhere. See [[binary-document-with-link-pattern]].
+
+## When to use
+
+- A business entity needs one or more files that belong to it.
+- The files must follow the parent's lifecycle: copied with a new version, removed with the parent.
+- Users upload files through the same screen as the parent.
+
+## When to avoid
+
+- The file is shared by several parents. Use a shared document entity, or a link.
+- The file is only referred to, not stored. Use a URL attribute.
+- The files need their own workflow. Give the document a status, or use [[document-review-state-machine]].
+
+## Related
+
+- [[binary-document-with-link-pattern]] — a binary file with a companion URL, for files that may be hosted elsewhere
+- [[document-review-state-machine]] — a document with an approval cycle, for files that need a workflow
+- [[document-registry-sequence]] — numbering for generated documents

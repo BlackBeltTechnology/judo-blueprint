@@ -13,7 +13,7 @@ alternatives: []
 fragment: environment-enum
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -26,7 +26,8 @@ One enumeration with three members, DEV, TEST and PROD, stored with ordinals 1, 
 ## Constraints
 
 - The enumeration is closed. Adding a stage is a model change, not a data change.
-- Member ordinals are persisted. Do not renumber existing members; a new stage gets a new ordinal.
+- Member ordinals are persisted and are the wire value (enumerations travel as integer ordinals). They must be unique and between 0 and 9999. Do not renumber existing members; a new stage gets a new ordinal.
+- The name is only a model choice. It has nothing to do with the platform's `ENVIRONMENT` variable category, which reads deployment settings at runtime; this enumeration is stored data on a resource.
 - The attribute that uses the enumeration is required when every resource must belong to a stage.
 
 ## Variations
