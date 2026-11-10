@@ -1,18 +1,19 @@
 ## Overview
 
-The organization entity manifests in the React frontend through two custom view components: a full-page `OrganizationView` for company reader / discovery detail pages, and `DiscoveryOrganizationCard` for the organization discovery list. Both display logo, contact info, capabilities, and membership details.
+The organization appears in the frontend through two custom views: a full organization profile page, and a card in the discovery list. Both show the logo, contact details, capabilities and membership information.
 
 ## Implementation Pattern
 
-- **Custom OrganizationView**: A container extra-actions component registered via Pandino replaces the generated CompanyReaderOrganization form with a richly styled organization profile page. It downloads and displays the organization logo as a blob URL, shows contact information with clickable email/phone actions, capability chips, membership dates, and full address.
-- **DiscoveryContainer and DiscoveryOrganizationCard**: The discovery panel replaces the generated table with an infinite-scrolling card grid. Each `DiscoveryOrganizationCard` shows the organization logo, name, city, and capability chips. The container uses `useDiscoveryFilters` for search and capability filtering, and `useDiscoveryPagination` for seek-based pagination.
-- **Portal-based injection**: Custom views use `createPortal` with `MutationObserver` to find the generated `TransferObjectViewPageContainer`, hide it, and inject the custom view in its place.
-- **Page mask override**: A page actions hook overrides `getMask` on the discovery organization detail page to include `capabilities{name}` for displaying capability chips.
+- **Profile view:** a custom view registered for the organization's reader container replaces the generated form with a styled profile. It shows the logo, contact actions (mail and phone links), capability chips, membership dates and the full address.
+- **Discovery card:** the discovery panel shows organization cards (see [[organization-discovery-search-component]]). The card reuses the profile view's logo and contact parts.
+- **Portal injection:** a custom view mounts in a portal and hides the generated view page container. A mutation observer finds that container when it renders.
+- **Page mask:** a page actions hook extends the query mask of the discovery detail page with the capability names, so the chips can render.
+- **Hook keys:** registration keys are generated per page or container. Copy them from the generated customizer of your own project.
 
 ## Examples
 
-### mlszksz-platform
+### mlszksz-platform (example project code, not platform API)
 - Framework: React
-- Key files: `custom/custom_views/OrganizationView.tsx`, `custom/discoveryComponent/DiscoveryContainer.tsx`, `custom/discoveryComponent/DiscoveryOrganizationCard.tsx`, `custom/hooks/containers/registerServicesCompanyReaderOrganizationContainerHook.tsx`, `custom/hooks/containers/registerServicesFeedOrganizationSearchContainerHook.tsx`, `custom/hooks/pages/registerServicesFeedDiscoveryPanelOrganizationSearchRelationViewPageActionsHook.tsx`
-- Pattern: The OrganizationView uses a `useLogoUrl` hook that downloads the binary logo token via `AccessServiceImpl.downloadFile` and creates a blob URL. ContactActions component provides clickable email (`mailto:`) and phone (`tel:`) links. The DiscoveryContainer reuses the feed's `useInfiniteScroll` hook.
-- Notable: The organization view supports both the companyreader profile context (own organization) and the feed discovery context (browsing other organizations), using the same underlying `OrganizationView` component registered via two different container hooks.
+- Key files: `custom/custom_views/OrganizationView.tsx`, `custom/hooks/containers/registerServicesCompanyReaderOrganizationContainerHook.tsx`, `custom/hooks/containers/registerServicesFeedOrganizationSearchContainerHook.tsx`, `custom/hooks/pages/registerServicesFeedDiscoveryPanelOrganizationSearchRelationViewPageActionsHook.tsx`
+- Pattern: a `useLogoUrl` hook downloads the logo through the access service and creates a blob URL; contact actions render `mailto:` and `tel:` links.
+- Notable: the same view serves the user's own organization profile and the public discovery detail, registered through two container hooks.

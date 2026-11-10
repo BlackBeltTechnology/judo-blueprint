@@ -27,7 +27,7 @@ application/
 
 **Custom operation consumption:**
 - Custom operation classes `@Reference` the service interface (never the implementation)
-- Operations become thin controllers: validate input, call service, map result
+- Operations become thin controllers: validate input, call service, map result. Interceptors do not run for custom operations (platform), so write rules and permission checks in the service or operation
 - Multiple operations across different actors can share the same service (e.g., both admin and company-admin publish operations call `FeedService.createFeedEntry()`)
 
 **Service layering:**
@@ -37,7 +37,7 @@ application/
 
 **i18n sub-pattern:**
 - A method-per-message interface (e.g., `AdTrackI18n`, `RackInspectI18n`) registered via `I18nService` with a `ThreadLocalLocaleSupplier` for request-scoped locale
-- Services `@Reference` the i18n interface to produce localized error messages for `BusinessErrorException`
+- Services `@Reference` the i18n interface to produce localized messages for modeled faults and validation errors (the fault exception class is generated per project; helpers such as `ExceptionUtils` are example project code, not platform API)
 - An activator component (`@Component(immediate=true)`) calls `i18nService.register(I18nInterface.class, localeSupplier)` on activation and `unregister()` on deactivation
 
 ## Examples
@@ -57,5 +57,5 @@ application/
 ### indamedia-adtrack
 - Key files: `common/AccountService.java`, `ActorService.java`, `AggregatedCampaignService.java`, `ClientService.java`, `TrackedCampaignService.java`, `AdsBusinessApiProviderService.java` (6 service interfaces), `common/impl/` (6 implementations), `common/i18n/AdTrackI18n.java`, `common/i18n/AdTrackI18nActivator.java`, `common/i18n/ThreadLocalLocaleSupplier.java`, `common/utils/ExceptionUtils.java`
 - Pattern: 6 shared service interfaces in `common/` with matching implementations in `common/impl/`. Custom operations in `app/custom/` are thin one-liner delegators (e.g., `TestConnectionCustomImplementation` calls `accountService.testConnection(_this)`). Services reference other services (e.g., `AggregatedCampaignServiceImpl` references `TrackedCampaignService`) and the external API provider (`AdsBusinessApiProviderService`).
-- Notable: The `AdsBusinessApiProviderService` acts as a factory for external API adapters (see `external-api-adapter-provider-pattern` blueprint). `ExceptionUtils` is a static utility interface with factory methods for `BusinessErrorException` and `ValidationException`. The `AdTrackI18n` interface uses `@MessageByKey` annotation for a generic `getMessage(key, params)` method alongside method-per-message methods. Properties files provide English default and Hungarian (`_hu`) translations.
+- Notable: The `AdsBusinessApiProviderService` acts as a factory for external API adapters (see `external-api-adapter-provider-pattern` blueprint). `ExceptionUtils` is a project helper (not platform API) with factory methods that wrap the project's generated fault exception and the platform `ValidationException`. The `AdTrackI18n` interface uses `@MessageByKey` annotation for a generic `getMessage(key, params)` method alongside method-per-message methods. Properties files provide English default and Hungarian (`_hu`) translations.
 - DI wiring: Custom operations `@Reference` service interfaces (e.g., `AccountService`, `TrackedCampaignService`). Service implementations `@Reference` DAOs, `AdTrackI18n`, `FileStoreService`, `AdsBusinessApiProviderService`, and other services. `ActorServiceImpl` `@Reference VariableResolver` to resolve the current authenticated user's email.

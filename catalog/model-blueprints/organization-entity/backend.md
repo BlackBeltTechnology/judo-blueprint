@@ -1,20 +1,20 @@
 ## Overview
 
-The Organization entity is managed through an `OrganizationService` OSGi service that handles creation (with admin user provisioning), data updates, address management, and status transitions (suspend/reactivate). Organization creation also provisions a Keycloak user for the initial admin.
+The organization is managed through custom operations that call a project service. The service holds the rules: unique names, status transitions, and address composition. The generated built-in operations (create, update, delete, list) still run, but interceptors do not run around custom operations, so every rule that matters for a custom operation sits in the operation or its service.
 
 ## Implementation Pattern
 
-- `OrganizationServiceImpl` is an OSGi `@Component` injecting `OrganizationDao`, `UserDao`, `UserService`, `AddressDao`, `OrganizationAdminPanelDao`, and i18n services
-- `createOrganization()` validates uniqueness of organization name and user email, creates the Organization with ACTIVE status, then delegates user creation to `UserService.createUser()` which also provisions a Keycloak account
-- `updateCompanyData()` updates profile fields from an unmapped `OrganizationDataUpdate` TO, handles capability relation management (remove all then add new), and restricts organization renaming to PLATFORM_ADMIN role
-- `updateAddress()` creates or updates the composed Address entity, validates PostalCode-City combinations against the reference data hierarchy, and computes `fullAddress` and `addressInformation` strings using `AddressUtils`
-- `suspend()` validates the organization is ACTIVE and not the admin organization before setting SUSPENDED status
-- `reactivate()` validates the organization is SUSPENDED before restoring ACTIVE status
-- Custom operations: `CreateOrganizationCustomImplementation` (AdminDashboard), `UpdateComapnyDataCustomImplementation`, `UpdateAddressCustomImplementation`, `SuspendCustomImplementation`, `ActivateCustomImplementation` (OrganizationAdminPanel)
+- **Service (example project code, not platform API):** a service class with the operations as methods. It receives DAOs and a user service through dependency injection.
+- **Creation:** a custom create operation checks that the name and the user email are unique, creates the organization with status ACTIVE, and creates the first administrator user through the user service.
+- **Profile update:** a custom operation updates the profile fields from a transfer object and replaces the capability set (remove all, then add the new ones). Renaming is limited to platform administrators.
+- **Address update:** a custom operation creates or updates the composed address, checks that postal code and city match the reference data, and recomputes the full address text in one shared helper.
+- **Status transitions:** suspend requires ACTIVE and rejects the administrator organization; reactivate requires SUSPENDED. Each transition is a custom operation, because a plain update would let any status be written; the transition rules are project practice, kept in the operation (interceptors would not see custom operations).
+- **Faults:** a business rule violation is a modeled fault in the operation signature (HTTP 422). Field validation is reported as a validation exception (HTTP 400). Project error helpers are not platform API.
+- **Audit:** an interceptor does not see custom operations, so each status change writes its own audit row (see [[audit-log-entity]]).
 
 ## Examples
 
-### mlszksz-platform
+### mlszksz-platform (example project code, not platform API)
 - Key files: `common/services/OrganizationService.java`, `common/services/impl/OrganizationServiceImpl.java`, `custom/.../admindashboard/CreateOrganizationCustomImplementation.java`, `custom/.../organizationadminpanel/UpdateAddressCustomImplementation.java`
-- Pattern: Service layer handles creation + Keycloak provisioning + address composition; address update validates PostalCode-City relationships; status transitions enforce state machine rules
-- Notable: Organization creation is a compound operation (creates Organization + User + Keycloak account); address computation uses shared `AddressUtils` for consistent Hungarian-format addresses across registration and update flows
+- Pattern: the service handles creation with user provisioning, address composition and status rules; each custom operation is a thin wrapper over one service method.
+- Notable: creating an organization is a compound action (organization, first user, identity-provider account). Address text uses a shared helper so registration and update produce the same format.

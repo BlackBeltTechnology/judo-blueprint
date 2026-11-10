@@ -1,21 +1,19 @@
 ## Overview
 
-The Partner entity's backend manages creation through interceptors that handle initial address setup with flag designations, validation through a custom `Validate` operation that synchronizes billing address flags, and toggle operations for the active status.
+Interceptors cover the built-in create and update of the partner and its contacts. The custom validate and toggle operations are not covered by interceptors (platform rule: interceptors fire only on built-in operations), so they carry their own rules. All class names below are example project code, not platform API.
 
 ## Implementation Pattern
 
-- `PartnerCreateInterceptor` handles Partner creation in two phases: `preCall` validates that headquarters is set and restructures flat `form_*` attributes into a nested Address payload; `postCall` sets headquarters/billing/postal associations on the created Partner and delegates to `AddressService` for computed fields
-- `ValidateCustomImplementation` clears and recalculates partner errors: it synchronizes the `isBilling` flag across all addresses to match the current `billingAddress` association, resets `genericValid` to true, and updates the partner
-- `ToggleActiveCustomImplementation` follows the standard toggle pattern: reload by ID, flip `active`, update
-- `PartnerUpdateInterceptor` handles updates with validation and address field recalculation
-- The `AddressService` (common module) provides `updateFullAddress()` and `autoUpdateAddressInformation()` for computed address fields
-- Create interceptors for child contact entities (EmailAddress, PhoneNumber, BankAccount) handle primary designation after creation
-- The `Validate` operation is referenced from toggle operations on child entities (Address, EmailAddress, PhoneNumber) to re-run partner-level business rules after any contact info change
+- **Create interceptor (project practice).** `preCall` checks that a headquarters is given and turns flat form attributes into a nested address payload; `postCall` sets the headquarters, billing and postal associations on the created partner and calls an address helper service for computed fields. See [[form-field-flattening]] and [[interceptor-crud-lifecycle]].
+- **Update interceptor.** Validates the update and recalculates computed address fields.
+- **Child create interceptors.** Contact creation (e-mail, phone, bank account) sets the primary designation after the contact exists.
+- **Validate custom operation.** Clears and rewrites the error rows, aligns the billing flag on every address with the billingAddress association, resets the validity flag and updates the partner. Because it is a custom operation, no interceptor runs around it; it is called explicitly from the toggle operations of the contacts.
+- **Toggle custom operation.** Reload by id, flip the active flag, update; see [[toggle-operation-pattern]].
+- **Faults.** A rule violation that should stop the operation is a modeled fault (HTTP 422) declared on the operation; field errors are validation exceptions (HTTP 400). The stored error rows are a separate project pattern for showing results after a refresh.
 
 ## Examples
 
-### rackinspect
-- Key files: `interceptors/partner/PartnerCreateInterceptor.java`, `interceptors/partner/PartnerUpdateInterceptor.java`, `custom/.../partner/ValidateCustomImplementation.java`, `custom/.../partner/ToggleActiveCustomImplementation.java`, `interceptors/partner/address/AddressCreateAndUpdateInterceptor.java`, `interceptors/partner/emailaddress/EmailAddressCreateInterceptor.java`, `interceptors/partner/phonenumber/CreatePhoneInterceptor.java`, `common/services/AddressService.java`
-- Pattern: Partner creation interceptor validates headquarters requirement, builds nested Address payload from flat form fields, sets designation associations in `postCall`; Validate operation synchronizes `isBilling` flags across all addresses to match the `billingAddress` association
-- Notable: `PartnerCreateInterceptor.preCall()` transforms flat `form_*` attributes (form_city, form_streetName, etc.) into a structured `addresses` payload with Address fields -- this is the JUDO pattern for converting form-optimized TOs into entity composition structure
-- The `Validate` operation acts as a cross-cutting concern: called from address toggle, email toggle, phone toggle, and create interceptors to ensure partner-level consistency after any contact info change
+### rackinspect (example project code, not platform API)
+- Key files: `interceptors/partner/PartnerCreateInterceptor.java`, `PartnerUpdateInterceptor.java`, `custom/.../partner/ValidateCustomImplementation.java`, `ToggleActiveCustomImplementation.java`, `common/services/AddressService.java`
+- Pattern: the create interceptor builds the nested address payload from flat form fields and sets the designations in `postCall`; the validate operation synchronizes the billing flags.
+- Notable: the validate operation is the shared consistency check, called from the contact toggles and create interceptors.

@@ -1,26 +1,29 @@
-## Examples
+## Model shape
 
-### mlszksz-platform
-- **Entity**: `MLSZKSZPlatform::entities::Configuration`
-  - createable=false, updateable=true, deleteable=false
-  - Attributes: senderEmail (req), baseUrl (req), platformName (req), invitationExpiryDays (req), verificationExpiryMinutes (req), invitationEmailTemplate, verificationEmailTemplate, approvalEmailTemplate, postPublishedEmailTemplate
-- **Transfer Object**: `MLSZKSZPlatform::services::admin::AdminConfigurationTO`
-  - Mapped to Configuration entity
-  - Operation: updateConfiguration (custom implementation)
-- **Input TO**: `MLSZKSZPlatform::services::admin::ConfigurationInput` (all fields optional for partial updates)
-- Accessed from AdminDashboard via `configuration` relation (0..1)
+The shape has one Configuration entity. It is not createable and not deleteable. It is updateable when settings are changed through the generated update.
 
-### rackinspect
-- **Entity**: `rackinspect::entities::Configuration` (non-CRUD: createable=false, updateable=false, deleteable=false)
-  - Attributes (12): senderEmail (req), emailTemplate (req), closingTime (req), incidentNotificationEmail (req), netMarginPercent (req, default: 40), updateExchangeRates (req, default: true), assessmentSheetTemplate (req), reviewReportTemplate (req), offerTemplate (req), completionCertificateTemplate (req), workReportTemplate (req), jobSheetTemplate (req)
-  - Relations: minimumOfferPrices (0..* COMPOSITION to MinimumOfferPrice)
-- Stores business parameters (margin, closing time) alongside email and document templates (binary)
-- MinimumOfferPrice sub-entity holds per-currency minimum offer thresholds
+- **Configuration** holds the platform settings as plain attributes. Typical attributes are the sender address and base URL (text, required), the platform name (text, required), expiry durations (integers, required), and email templates (long text, optional).
+- The variants add other attributes to the same entity: numeric business parameters with defaults, closing times, and document templates stored as binary data. A variant may also add a composition to a sub-entity such as per-currency thresholds.
+- A transfer object maps onto Configuration for reads. A separate input transfer object has all fields optional, so a partial update sends only the fields it changes. The input transfer object is not mapped to the entity.
+- Access: an administrator actor reads and updates the configuration. Other actors do not see the entity.
 
-### park-here
-- **Entity**: `ParkHere::entities::Configuration` (non-CRUD: createable=false, updateable=false, deleteable=false)
-  - Attributes (6): senderEmail (req), contactEmail (req), doormanEmailTemplate (req), deletationEmailTemplate (req), modificationEmailTemplate (req), reminderEmailTemplate (req)
-  - Relations: doormans (0..* ASSOC to Doorman), additionalDays (0..* ASSOC to AdditionalDay)
-- Focused on email configuration: stores the sender address, a contact email, and four email templates for different notification scenarios (doorman alerts, deletion notices, modification notices, reminders)
-- **Transfer Objects**: `ParkHere::services::ConfigurationSettings` (mapped, with isConfigurationExist flag) exposes configuration/createDoorman/createDay operations; `ParkHere::services::ConfigurationInput` (unmapped input with all template fields)
-- Also manages doorman assignments and calendar day overrides (work days/holidays) via associated entities
+Generated UI pages follow from the entity. Keep the View and Update pages for administrators. The createable and deleteable flags are false, so the generated UI shows no Create or Delete action for the entity. The update form should be pre-filled with current values; see [frontend.md](frontend.md).
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=platform-configuration-singleton cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Configuration {
+    <<Entity>>
+    +String senderEmail [1]
+    +String baseUrl [1]
+    +String platformName [1]
+    +Integer invitationExpiryDays [1]
+    +Integer verificationExpiryMinutes [1]
+    +Text invitationEmailTemplate
+    +Text verificationEmailTemplate
+    +Text approvalEmailTemplate
+  }
+```
+<!-- /mermaid:generated -->

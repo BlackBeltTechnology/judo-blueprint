@@ -1,10 +1,90 @@
-## Examples
+## Model shape
 
-### rackinspect
-- **Entity**: `rackinspect::entities::Partner` (non-CRUD)
-  - Attributes (13): name (req), active (default: true), vatId, vatIdEu, vatIdGroup, customerSAPCode, vendorSAPCode, isEszamla (default: false), notes, errorMessages, genericValid (default: true), serviceCalculationPeriod, logo
-  - Composition relations (5): addresses (0..* Address), bankAccounts (0..* BankAccount), emailAddresses (0..* EmailAddress), phoneNumbers (0..* PhoneNumber), ratings (0..* Rating), partnerErrors (0..* PartnerError)
-  - Association relations (8): billingAddress (0..1), headquarters (0..1), postalAddress (0..1), primaryBankAccount (0..1), primaryContactEmail (0..1), primaryEszamlaEmail (0..1), primaryPhoneNumber (0..1), paymentDeadline (0..1), paymentMethod (0..1), currency (0..1), language (0..1)
-  - Derived: deliveryAddresses (0..*)
-  - Operations: toggleActive, validate
-- **CompanyData entity**: `rackinspect::entities::CompanyData` follows a similar pattern with companyAddresses, companyBankAccounts, companyEmails, companyPhones composed, plus headquarters, billingAddress, postalAddress, primaryAddress, primaryEmail, primaryPhone association shortcuts
+The shape is a Partner entity with six composed collections, nine optional associations and a rating enumeration.
+
+- **Partner** has name (required), isActive (required, default true), vatId, vatIdEu, vatIdGroup, notes and isValid (default true).
+- **Composed collections (0..*)**: addresses, bankAccounts, emailAddresses, phoneNumbers, ratings and errors. They are owned by the partner and deleted with it.
+- **Preferred contacts (association, 0..1)**: headquarters, billingAddress and postalAddress to an Address; primaryBankAccount; primaryEmail; primaryPhone.
+- **Reference data (association, 0..1)**: paymentMethod, currency and language. They outlive the partner.
+- **Rating** holds a RatingResult (EXCELLENT, ACCEPTABLE, NOT_ACCEPTABLE).
+- **PartnerError** holds a field location and a message, written by the validate operation.
+
+Generated UI pages follow from the entities: View, Form and Table pages for Partner and for each contact. Keep the generated Form for the partner and embed the contact tables; customize it only for the validation display (see frontend.md).
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=partner-with-contact-details cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Address {
+    <<Entity>>
+    +String city
+    +String streetName
+  }
+  class BankAccount {
+    <<Entity>>
+    +String accountNumber
+  }
+  class Currency {
+    <<Entity>>
+    +String name [1]
+  }
+  class EmailAddress {
+    <<Entity>>
+    +String email [1]
+  }
+  class Language {
+    <<Entity>>
+    +String name [1]
+  }
+  class Partner {
+    <<Entity>>
+    +String name [1]
+    +Boolean isActive [1]
+    +String vatId
+    +String vatIdEu
+    +String vatIdGroup
+    +Text notes
+    +Boolean isValid
+  }
+  class PartnerError {
+    <<Entity>>
+    +String location
+    +String errorMessage
+  }
+  class PaymentMethod {
+    <<Entity>>
+    +String name [1]
+  }
+  class PhoneNumber {
+    <<Entity>>
+    +String number [1]
+  }
+  class Rating {
+    <<Entity>>
+    +RatingResult result [1]
+  }
+  class RatingResult {
+    <<Enumeration>>
+    EXCELLENT
+    ACCEPTABLE
+    NOT_ACCEPTABLE
+  }
+  Partner *-- "*" Address : addresses
+  Partner *-- "*" BankAccount : bankAccounts
+  Partner *-- "*" EmailAddress : emailAddresses
+  Partner *-- "*" PartnerError : errors
+  Partner *-- "*" PhoneNumber : phoneNumbers
+  Partner *-- "*" Rating : ratings
+  Partner --> "0..1" Address : billingAddress
+  Partner --> "0..1" Address : headquarters
+  Partner --> "0..1" Address : postalAddress
+  Partner --> "0..1" BankAccount : primaryBankAccount
+  Partner --> "0..1" Currency : currency
+  Partner --> "0..1" EmailAddress : primaryEmail
+  Partner --> "0..1" Language : language
+  Partner --> "0..1" PaymentMethod : paymentMethod
+  Partner --> "0..1" PhoneNumber : primaryPhone
+  Rating ..> RatingResult : result
+```
+<!-- /mermaid:generated -->

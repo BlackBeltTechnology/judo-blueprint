@@ -1,6 +1,6 @@
 ## Overview
 
-Implements a transactional email service using Handlebars templates stored in the database. A `ConfigurationTemplateService` reads email templates and platform settings from a singleton Configuration entity, while the email service implementation renders templates with dynamic context and sends via the JUDO `EmailService` API.
+(Interface and class names below are example project code, not platform API; only `EmailService` is provided by the platform.) Implements a transactional email service using Handlebars templates stored in the database. A `ConfigurationTemplateService` reads email templates and platform settings from a singleton Configuration entity, while the email service implementation renders templates with dynamic context and sends via the JUDO `EmailService` API.
 
 ## Implementation Pattern
 
@@ -12,14 +12,17 @@ Implements a transactional email service using Handlebars templates stored in th
 - `@Component(immediate=true, service=<EmailServiceInterface>.class)` with `@Reference` to `EmailService`, `ConfigurationTemplateService`, and entity DAOs
 - Uses `com.github.jknack.handlebars.Handlebars` for template rendering: `handlebars.compileInline(templateContent)` with `Context.newContext(model)`
 - Each email method: (1) loads template from `ConfigurationTemplateService`, (2) builds a context model with dynamic values, (3) renders HTML, (4) sends via `EmailService.sendMessage(EmailMessage.emailBuilder()...)`
+- Interceptors do not run around the custom operations that call this service (they fire only on built-in operations), so each caller invokes the send explicitly.
 - Graceful degradation: if template is null (not configured in DB), the method logs and returns without error
 - Document attachment support: retrieves files from `FileStoreService` by ID and attaches as `BinaryAttachment`
 
 **Template variable conventions:**
-- `{{registrationUrl}}`, `{{verificationUrl}}`, `{{magicLinkUrl}}` -- action URLs constructed from `baseUrl` + route + token parameters
-- `{{platformName}}`, `{{organizationName}}`, `{{userName}}`, `{{partner}}`, `{{companyName}}` -- display names
-- `{{title}}`, `{{subjectName}}` -- email subject and content title
-- `{{expiryDays}}`, `{{expiryMinutes}}` -- configurable expiration periods
+- Action URLs (registration, verification, magic link): built from the base URL plus a route and a token parameter.
+- Display names: platform name, organization name, user name, partner name, company name.
+- Subject and content title.
+- Expiration periods, in days or minutes.
+
+Names are listed in prose rather than as template placeholders, so the guidance stays free of template syntax.
 
 **Email context pattern:**
 - A dedicated context POJO (e.g., `EmailContext`) with builder pattern, holding all template variables

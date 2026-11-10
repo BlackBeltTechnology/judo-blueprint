@@ -1,51 +1,56 @@
 ## Overview
 
-Implements scheduled background jobs as OSGi Declarative Services components in a dedicated `scheduler` Maven module. Each job is a thin `Runnable` that delegates to a shared business service, with configuration via OSGi Configuration Admin for cron expressions and operational parameters.
+Scheduled jobs are OSGi Declarative Services components in a dedicated scheduler module. Each job implements `Runnable`, is configured through OSGi Configuration Admin, and calls one shared business service. The job itself holds no business logic.
 
 ## Implementation Pattern
 
-**Job structure:**
-- Each job is a `@Component(immediate=true, configurationPid="...", configurationPolicy=REQUIRE, service=Runnable.class)` with `scheduler.concurrent:Boolean=false` to prevent overlapping executions
-- The `configurationPolicy=REQUIRE` ensures the job only activates when its configuration (cron expression) is provided via OSGi Config Admin
-- Business logic lives in shared services (`@Reference` injection); the job class is 10-20 lines of boilerplate
-- Jobs with configurable parameters use `@Designate(ocd=Config.class)` with `@ObjectClassDefinition` for typed configuration
+**Job component:**
+- Expose the job as a `Runnable` service. Set the component to require its configuration, so the job starts only when its cron expression is provided.
+- Turn off overlapping runs of the same job with the scheduler's concurrency property.
+- Use a typed configuration definition for each tunable value (cron, thresholds, batch size).
 
-**Typical job categories:**
-1. **Data cleanup jobs** -- query entities by status/timestamp filters, delete or transition expired records (e.g., registration cleanup, stale token cleanup, news feed cleanup)
-2. **Processing pipeline jobs** -- pick up PENDING records and process them (e.g., notification delivery, feed population)
-3. **Expiration jobs** -- find published entities past their expiry date and transition them to EXPIRED status (e.g., post expiration)
-4. **Sync jobs** -- reconcile data across entities (e.g., feed-organization sync for new members)
-5. **External data refresh jobs** -- fetch data from external APIs and update local entities (e.g., exchange rate updates, ad campaign cost sync)
+```java
+@Component(immediate = true, configurationPid = "example.job.cleanup",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           property = { "scheduler.concurrent:Boolean=false" },
+           service = Runnable.class)
+@Designate(ocd = CleanupJobConfig.class)
+public class StaleRecordCleanupJob implements Runnable {
 
-**Module structure:**
-- All jobs live in a `scheduler` module with its own `pom.xml`
-- A `SingleInstanceSchedulerActivator` component logs module lifecycle
-- Jobs reference services from the `common` module or DAOs from the generated SDK
+    @Reference
+    private StaleRecordService staleRecordService; // example project code
+
+    @Override
+    public void run() {
+        try {
+            staleRecordService.purgeStaleRecords();
+        } catch (Exception e) {
+            LOG.error("Cleanup job failed", e); // never let the scheduler see the exception
+        }
+    }
+}
+```
+
+`StaleRecordService` and the class names are example project code, not platform API.
+
+**Business logic:**
+- The service holds the work and reads the DAOs of the generated SDK through `@Reference`.
+- The service handles each item on its own. A bad record is logged and skipped, so it does not stop the batch.
+- Because a job is not an operation, interceptors do not run for the work it does (platform: interceptors fire only on built-in operations). If the same rules must hold for the data, call them from the service explicitly.
+- A scheduled run has no request transaction. Open and close a transaction in the job or service around the database work (project practice, see [[quartz-scheduled-job]]); the job also has no principal or actor, so pass the acting identity explicitly if a rule needs it.
+
+**Job categories:**
+1. Cleanup: find records by status and age, then delete or transition them.
+2. Pipeline: pick up records in a pending state and process them in batches.
+3. Expiration: find published records past their end date and move them to an expired state.
+4. Sync: reconcile related data after a change (for example, new members joining an organization).
+5. External refresh: fetch data from an outside API through an adapter and update local entities.
+
+**Module layout:**
+- All jobs live in one `scheduler` module with its own build descriptor.
+- A small activator component logs the module lifecycle. It does not run any work.
+- Jobs depend on services in the common module, not on the other job modules.
 
 **Error handling:**
-- Each job wraps its `run()` body in try-catch, logging errors but never propagating exceptions (scheduler must not crash)
-- Business services handle individual item failures independently (one bad record does not block the batch)
-
-**Transaction management (variant):**
-- Some jobs manage their own transactions via `@Reference UserTransaction` with explicit `begin()/commit()/rollback()` when calling generated operation interfaces that require a transactional context
-- Other jobs delegate to services that handle transactions internally
-
-## Examples
-
-### mlszksz-platform
-- Key files: `scheduler/NotificationDeliveryJob.java`, `scheduler/FeedPopulationJob.java`, `scheduler/PostExpirationJob.java`, `scheduler/RegistrationCleanupJob.java`, `scheduler/StaleTokenCleanupJob.java`, `scheduler/NewsFeedCleanupJob.java`, `scheduler/FeedOrganizationSyncJob.java`
-- Pattern: 7 scheduled jobs in a dedicated `scheduler` module, each implementing `Runnable` with `configurationPolicy=REQUIRE` and `scheduler.concurrent=false`. Jobs delegate to services in the `common` module.
-- Notable: `StaleTokenCleanupJob` uses `@Designate(ocd=Config.class)` for configurable threshold days. `PostExpirationJob` queries Offers and Requests with `filterByStatus(PUBLISHED).filterByValidUntil(lessThan(now))` then delegates to `PostLifecycleService.expireOffer()/expireRequest()`. All jobs catch exceptions at the top level to prevent scheduler crashes.
-- DI wiring: Jobs `@Reference` shared services (PushNotificationService, FeedService, PostLifecycleService) or DAOs (OfferDao, RequestDao, RegistrationRequestDao)
-
-### rackinspect
-- Key files: `scheduler/UpdateExchangeRatesJobFirst.java`, `scheduler/UpdateExchangeRatesJobSecond.java`, `scheduler/SingleInstanceSchedulerActivator.java`, `scheduler/RdbmsBasedSchedulerActivator.java`
-- Pattern: 2 scheduled jobs for fetching exchange rates from the MNB (Hungarian National Bank) SOAP API at different times (13:00 and 14:00). Jobs implement `Runnable` (not `service=Runnable.class`) with `configurationPid` and `configurationPolicy=REQUIRE`. Jobs manage their own transactions via `@Reference UserTransaction` with explicit `begin()/commit()/rollback()`.
-- Notable: Jobs check a `Configuration.updateExchangeRates` boolean flag via `ConfigurationDao` before executing -- providing an admin toggle to enable/disable exchange rate updates. Two scheduler activator variants: `SingleInstanceSchedulerActivator` (RAM-based Quartz for single-node) and `RdbmsBasedSchedulerActivator` (JDBC-backed Quartz for clustered deployments using Liquibase for schema creation with PostgreSQL/HSQLDB dialect detection).
-- DI wiring: Jobs `@Reference UpdateExchangeRates` (generated operation interface), `UserTransaction` (JTA), `ConfigurationDao` (feature flag). Activators `@Reference ConfigurationAdmin` (OSGi) and optionally `DataSource` + `LiquibaseExecutor` (for JDBC store).
-
-### indamedia-adtrack
-- Key files: `scheduler/FetchCampaignCost.java`, `scheduler/ResetDailyAttributes.java`, `scheduler/UpdateExpiredAggregatedCampaignStatus.java`, `scheduler/SendReminderJob.java`, `scheduler/SingleInstanceSchedulerActivator.java`, `scheduler/RdbmsBasedSchedulerActivator.java`
-- Pattern: 4 scheduled jobs in a dedicated `scheduler` module, each implementing `Runnable` with `configurationPid` and `configurationPolicy=REQUIRE`. Jobs delegate to shared services (`AggregatedCampaignService`, `TrackedCampaignService`) from the `common` module. Both `SingleInstanceSchedulerActivator` (RAM-based) and `RdbmsBasedSchedulerActivator` (JDBC-backed) are present.
-- Notable: `FetchCampaignCost` fetches current ad spend from external Google Ads API via the service layer. `ResetDailyAttributes` resets daily spend counters and updates cost data for ongoing campaigns. `UpdateExpiredAggregatedCampaignStatus` transitions campaigns past their end date to FINISHED status. `SendReminderJob` is a placeholder (stub implementation). The `RdbmsBasedSchedulerActivator` uses Liquibase to create Quartz JDBC tables, with PostgreSQL/HSQLDB dialect auto-detection -- identical to the rackinspect variant.
-- DI wiring: Jobs `@Reference AggregatedCampaignService`, `TrackedCampaignService`, `AggregatedCampaignTransferDao`. Activators `@Reference ConfigurationAdmin`, `DataSource`, `LiquibaseExecutor`.
+- Wrap the body of `run()` in a try-catch. Log the error and return.
+- Let the service decide per item what to do with a failure.

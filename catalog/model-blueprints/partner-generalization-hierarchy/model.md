@@ -1,49 +1,85 @@
-## Examples
+## Model shape
 
-### doors-model
-**Entity types (all in doors::entities package):**
+The shape is an abstract Partner base, an abstract intermediate CompanyPartner, four concrete subtypes, a PartnerType enumeration and two owned entities, Address and BankAccount.
 
-- **Partner**: `doors::entities::Partner` (non-CRUD, base entity)
-  - Attributes: name (req), email, phone
-  - Relations: bankAccounts [0..*] COMPOSITION BankAccount, mainBankAccount [0..1] ASSOC BankAccount (bidirectional, range: self.bankAccounts), postalAddress [0..1] COMPOSITION Address
-  - Operations: init (STATIC, model-defined -- seeds test OrganizationPartner instances with addresses and bank accounts)
+- **Partner** is abstract. Attributes: name (required), email, phone, partnerType. Relations: bankAccounts (composition, 0..*), mainBankAccount (association, 0..1) and postalAddress (composition, 0..1).
+- **CompanyPartner** extends Partner. It is a concrete intermediate type that groups the company-like forms. Attributes: taxNumber, euTaxNumber. Relation: hqAddress (composition, 0..1).
+- **OrganizationPartner** extends CompanyPartner: registrationNumber, representative, representativeTitle and siteAddresses (composition, 0..*).
+- **SelfEmployedPartner** extends CompanyPartner: registrationNumber.
+- **IndividualPartner** extends Partner directly: taxId, healthInsuranceId and livingAddress (composition, 0..1).
+- **OtherPartner** extends Partner directly: registrationNumber and address (composition, 0..1).
+- **PartnerType** is an enumeration: FREELANCE, RESIDENT_ENTERPRISE, FOREIGN_ENTERPRISE, FOUNDATION, ORGANIZATION, GOVERNMENT, OTHER.
 
-- **CompanylikePartner**: `doors::entities::CompanylikePartner` (non-CRUD, extends Partner)
-  - Additional attributes: taxNumber, euTaxNumber
-  - Additional relations: hqAddress [0..1] COMPOSITION Address
-  - Operations: loadNavData (INSTANCE, custom -- integrates with external company registry API, returns LoadNavDataResult TO with title and message)
+Composition cascades on delete: removing a partner removes its addresses and bank accounts. The main bank account is an association, so it is a reference only and never deletes an account.
 
-- **OrganizationPartner**: `doors::entities::OrganizationPartner` (non-CRUD, extends CompanylikePartner)
-  - Additional attributes: companyRegistrationNumber, representative, representativeTitle
-  - Additional relations: siteAddresses [0..*] COMPOSITION Address
+### Transfer objects and generated pages
 
-- **SelfEmployedPartner**: `doors::entities::SelfEmployedPartner` (non-CRUD, extends CompanylikePartner)
-  - Additional attributes: registrationNumber
+Transfer objects mirror the hierarchy: each actor sees the subtypes it manages through its own mapped transfer objects, with operations that add or remove the addresses and bank accounts. A partner-select transfer object (name and phone) serves pickers. Only mapped, non-abstract transfer objects get Create. If an access targets the abstract base, the generated Create action offers the concrete subtypes (see the [advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md)). Keep generated View and Table pages per subtype; hide the Form of the abstract Partner.
 
-- **PrivatePartner**: `doors::entities::PrivatePartner` (non-CRUD, extends Partner directly)
-  - Additional attributes: taxId, hisId
-  - Additional relations: livingAddress [0..1] COMPOSITION Address
+## Structure diagram
 
-- **OtherPartner**: `doors::entities::OtherPartner` (non-CRUD, extends Partner directly)
-  - Additional attributes: registrationNumber
-  - Additional relations: address [0..1] COMPOSITION Address
-
-**Generalization hierarchy:**
+<!-- mermaid:generated fragment=partner-generalization-hierarchy cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Address {
+    <<Entity>>
+  }
+  class BankAccount {
+    <<Entity>>
+  }
+  class CompanyPartner {
+    <<Entity>>
+    +String taxNumber
+    +String euTaxNumber
+  }
+  class IndividualPartner {
+    <<Entity>>
+    +String taxId
+    +String healthInsuranceId
+  }
+  class OrganizationPartner {
+    <<Entity>>
+    +String registrationNumber
+    +String representative
+    +String representativeTitle
+  }
+  class OtherPartner {
+    <<Entity>>
+    +String registrationNumber
+  }
+  class Partner {
+    <<Abstract Entity>>
+    +String name [1]
+    +String email
+    +String phone
+    +PartnerType partnerType
+  }
+  class PartnerType {
+    <<Enumeration>>
+    FREELANCE
+    RESIDENT_ENTERPRISE
+    FOREIGN_ENTERPRISE
+    FOUNDATION
+    ORGANIZATION
+    GOVERNMENT
+    OTHER
+  }
+  class SelfEmployedPartner {
+    <<Entity>>
+    +String registrationNumber
+  }
+  CompanyPartner *-- "0..1" Address : hqAddress
+  CompanyPartner <|-- OrganizationPartner
+  CompanyPartner <|-- SelfEmployedPartner
+  IndividualPartner *-- "0..1" Address : livingAddress
+  OrganizationPartner *-- "*" Address : siteAddresses
+  OtherPartner *-- "0..1" Address : address
+  Partner *-- "*" BankAccount : bankAccounts
+  Partner *-- "0..1" Address : postalAddress
+  Partner --> "0..1" BankAccount : mainBankAccount
+  Partner ..> PartnerType : partnerType
+  Partner <|-- CompanyPartner
+  Partner <|-- IndividualPartner
+  Partner <|-- OtherPartner
 ```
-Partner (base)
-  +-- CompanylikePartner (intermediate)
-  |     +-- OrganizationPartner
-  |     +-- SelfEmployedPartner
-  +-- PrivatePartner
-  +-- OtherPartner
-```
-
-**Enumeration:**
-- `PartnerType`: FREELANCE(1), RESIDENT_ENTERPRISE(2), FOREIGN_ENTERPRISE(3), FOUNDATION(4), ORGANIZATION(5), GOVERMENT(6), OTHER(7)
-
-**Transfer objects (in doors::actors::employee package):**
-- PrivatePartner TO -- maps PrivatePartner, exposes: name (req), email, phone, taxId, hisId, partnerType, livingAddress (AGGREGATION), postalAddress (AGGREGATION), bankAccounts (AGGREGATION), mainBankAccount (AGGREGATION). Operations: createPartner (STATIC), create/delete living/postal address, add/remove bank accounts
-- OrganizationPartner TO -- maps OrganizationPartner, exposes: name (req), email, phone, companyRegistrationNumber, taxNumber, euTaxNumber, representative, representativeTitle, partnerType, hqAddress (AGGREGATION), postalAddress (AGGREGATION), siteAddresses (AGGREGATION), bankAccounts (AGGREGATION), mainBankAccount (AGGREGATION). Operations: createPartner (STATIC), loadNavData, manage addresses and bank accounts
-- SelfEmployedPartner TO -- maps SelfEmployedPartner, similar structure with registrationNumber
-- OtherPartner TO -- maps OtherPartner, similar structure with registrationNumber
-- PartnerSelect TO -- simplified view for partner selection in contract forms, exposing only name and phone
+<!-- /mermaid:generated -->
