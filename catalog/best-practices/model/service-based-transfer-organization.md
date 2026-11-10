@@ -1,68 +1,101 @@
 ---
 id: service-based-transfer-organization
 title: Service-Based Transfer Object Organization
-description: "Transfer objects are organized into service-domain packages (e.g., `services::fault_registry_services`, `services::partner_service`, `services::offer_services`) rather than actor-specific packages."
-aliases: []
-keywords: [service, based, transfer, object, organization]
+description: "Transfer objects are grouped into packages by business service (orders, billing, partners) rather than by actor, typically behind one actor that is authorized through project-level permission flags."
+aliases: [service packages, transfer objects by domain, single-actor service layer]
+keywords: [transfer object, service package, single actor, access, permission flag, mapped, unmapped]
 tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:reserve-app", "status:established"]
 category: transfer
 status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, reserve-app]
 evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: [actor-based-transfer-projection]
-related: [actor-based-transfer-projection, unmapped-transfer-dto, panel-dashboard-transfer]
-fragment: pending
+fragment: service-based-transfer-organization
+diagram: { kinds: [entity, transfer, actor], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Transfer objects are organized into service-domain packages (e.g., `services::fault_registry_services`, `services::partner_service`, `services::offer_services`) rather than actor-specific packages. A single actor (GenericUser) accesses all services, with permission-based access control handled at the entity/transfer level. This is an alternative to the actor-based organization where each actor gets its own transfer package.
+Organize the transfer layer by business service. One package per domain holds the mapped views, the unmapped inputs and the dashboard objects of that domain. A single actor (or a few) reaches all of them. This is the alternative to giving every actor its own transfer package.
 
-## Structure
+## Practice
 
-- Root `services` package with sub-packages per business domain
-- Each service package contains:
-  - Mapped TOs (views of entities for that domain)
-  - Unmapped DTOs (operation inputs/outputs)
-  - Panel/dashboard TOs (entry points for UI views)
-- Single actor type accesses all service packages
-- Permission control via entity-level flags (e.g., `User.permissionTo*` booleans)
-- Same entity may appear in multiple service packages with different projections
+### One package per domain, entities apart
 
-## Examples
+- Entities live in their own package (for example `entities`). A root `services` package has one sub-package per domain.
+- A service package holds three kinds of transfer objects, as defined in the [model development guide](../../agent-docs/model/model-development.md): mapped transfer objects (a projection of one entity, with mapped, derived and transient members), unmapped transfer objects (no entity; typically operation inputs and outputs) and panel or dashboard objects (unmapped entry points for pages).
+- The same entity can be mapped by transfer objects in several service packages, each with the member selection that domain needs.
 
-### RackInspect
-14 service packages with 142 service TOs: `fault_registry_services` (30 TOs, 33 operations), `offer_services` (14 TOs, 22 operations), `partner_service` (22 TOs), `item_service` (9 TOs), `job_task_services` (5 TOs), etc. `ElementFault` appears in fault_registry_services, offer_services, and report_services with different attribute selections per context.
+### Reach the packages through Access entries
 
-### MLSZKSZPlatform
-5 service packages organized by business domain and role: `admin` (AdminDashboard, Announcement, Capability, City, RegistrationRequest, AdminConfigurationTO), `companyadmin` (CompanyUser, News, Offer, Request, OrganizationAdminPanel, UserInvitationRequestTO), `feed` (FeedPanel, Offer, Request), `registration` (RegistrationPoint, RegistrationTransfer), plus the main `MLSZKSZ` service with 5 access point dashboards. Multiple access points per service map to different user roles (feedDashboard for all, adminDashboard for PLATFORM_ADMIN only).
+Each ActorType needs an Access entry per transfer object it may reach, and a paired MenuItemAccess for every page that should appear in the menu: an Access is a data-permission grant only ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md)). With one actor, that actor holds Access entries into every service package.
 
-### ParkHere
-All 41 transfer objects organized in a single `ParkHere::services` package with a single Actor. Transfer naming uses functional suffixes: `*Input` (CreateCarInput, HolidayInput), `*Settings` (UserSettings, ConfigurationSettings, ParkingGarageSettings), `*Panel` (UserReservationPanel, ReservationsPanel, HolidayPanel). Role-based access control via `User.isAdministrator` flag with `hiddenBy` on menu items for admin-only features. Multiple TOs per entity: `Car` and `CarSettings` provide different contexts for the same entity.
+### Permissions are a project layer on top
 
-### IndamediaAdTrack
-All 22 service transfer objects organized in `AdTrack::services` with a single Actor. Transfer naming uses functional suffixes: `*Transfer` (ClientTransfer, AccountTransfer, TrackedCampaignTransfer), `*Input` (ClientInput, AccountInput, GoogleCredentialInput), `*UpdateInput` (ClientUpdateInput, AccountUpdateInput), `*Panel` (ClientPanel, CampaignPanel), `*Info` (CostInfo). Clear two-namespace separation: `AdTrack::entities` for domain model and `AdTrack::services` for service contracts.
+The platform gives per-actor access and an optional row filter on the Access. When all users share one actor, differences between users are modelled by the project: a role flag on the user entity (for example `isAdministrator`, `permissionTo...`), used in `hiddenBy` / `enabledBy` expressions on menu items and actions, and checked again in operations or interceptors. This is project practice, not platform enforcement. UI hiding alone does not stop an API client, so the server side must check too.
 
-### InterfaceRegister
-All 23 transfer objects organized in a single `InterfaceRegister::enterpriseArchitect` package with one `EnterpriseArchitect` actor. Transfer naming uses `{Entity}Transfer` for mapped views (ApplicationTransfer, VendorTransfer, HighLevelConnectionTransfer) and `Create{Entity}Input` for creation DTOs. The single package contains mapped TOs, input DTOs, the Dashboard TO, and protocol-specific transfer objects (Rest, SOAP, DBLink, Email, MessageQueue). Role-based access via `isEnterpriseArchitect` boolean flag on User entity.
+### Naming
 
-### judo-partner
-Two-tier service-based organization with a single Actor: **Internal TOs** in `::database` packages are identity-mapped (same FQN as entity) for backend use. **API TOs** in the parent packages (`Partner::partner`, `Partner::registry`) provide curated views with derived fields and operations. Sub-view TOs like `PartnerContacts` and `PartnerAddresses` provide focused views of specific entity aspects.
+Functional suffixes keep a large package readable: `*Transfer` or `*View` (mapped), `*Input` (creation or action input), `*Settings`, `*Panel` (dashboard or list entry), `*Info`.
 
-### ReserveApp
-All 40 transfer objects organized in `ReserveApp::services` package with 5 actors sharing the same service namespace. Admin TOs (17) and partner-scoped TOs (8) coexist in the same `services` package. Entity-layer TOs (15) share FQN with entities in `ReserveApp::entities`. This hybrid approach uses service-based organization for the transfer layer while having multiple distinct actors access the same service package.
+### Variations seen
 
-## Trade-offs
+- Several actors sharing one service namespace (ReserveApp: admin and partner-scoped objects in the same package).
+- Two tiers (judo-partner): identity-mapped internal transfer objects for backend use, plus curated API objects with derived members and operations.
+- Several access points per service for different roles (MLSZKSZ), hidden per role.
 
-- Pros: Groups related functionality together regardless of actor, scales well for single-actor systems with permission-based access, reduces TO duplication across actors
-- Cons: No built-in actor-level data isolation, permission enforcement must be done manually, all services visible to the single actor
-- Prefer when: Application has one user type with role-based permissions rather than fundamentally different actor types
+## Rationale
+
+- Related functionality sits together whatever the caller, and transfer objects are not duplicated per actor.
+- Works well when one user type has role-based permissions rather than fundamentally different actors.
+- Cost: separate actors give platform-level isolation (own Access entries and row filters); with one actor every service is reachable by everyone, so project flags and server checks replace that. The set of packages can grow large (RackInspect: 14 packages, 142 transfer objects).
+
+## Example
+
+A model has an `entities` package with an Order entity (number, total, note) and an `AppUser` actor. The `orders` package holds OrderView (maps all three attributes) and NewOrderInput (unmapped, one transient quantity). The `billing` package holds OrderBilling (maps only the total). AppUser has one Access per mapped view. The same Order appears in two service packages with different projections. Names are neutral stand-ins for the project services.
+
+## When to avoid
+
+- Fundamentally different user types who must see different data: use [[actor-based-transfer-projection]].
+- Strict isolation between roles is required and cannot rest on project flags.
+- Only a handful of transfer objects: packages add nothing.
 
 ## Related
 
-- [[actor-based-transfer-projection]] (alternative: per-actor organization)
-- [[unmapped-transfer-dto]]
-- [[panel-dashboard-transfer]]
+- [[actor-based-transfer-projection]] — alternative: per-actor organization
+- [[unmapped-transfer-dto]] — the unmapped inputs and outputs inside each service package
+- [[panel-dashboard-transfer]] — dashboard objects that act as package entry points
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=service-based-transfer-organization cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AppUser {
+    <<Actor>>
+  }
+  class NewOrderInput {
+    <<Transfer>>
+    +Integer quantity
+  }
+  class Order {
+    <<Entity>>
+    +String number
+    +Double total
+    +Text note
+  }
+  class OrderBilling {
+    <<Transfer>>
+    +Double total
+  }
+  class OrderView {
+    <<Transfer>>
+    +String number
+    +Double total
+    +Text note
+  }
+  OrderBilling ..> Order : maps
+  OrderView ..> Order : maps
+```
+<!-- /mermaid:generated -->

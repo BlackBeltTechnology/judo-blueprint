@@ -1,67 +1,98 @@
 ---
 id: singleton-entity
 title: Singleton Entity Pattern
-description: "An entity with no attributes or relations that serves as a singleton application-level container for static operations (initialization, registration, bulk actions)."
-aliases: []
-keywords: [singleton]
+description: "An entity that has exactly one meaningful row (settings) or no data at all (an initializer container for static operations), reached through a single-instance access."
+aliases: [singleton, configuration entity, initializer entity, application entity]
+keywords: [singleton, any, empty, single access, upper 1, configuration, initializer, static operation]
 tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:park-here", "project:InterfaceRegister", "project:judo-partner", "status:established"]
 category: entity
 status: established
 projects: [trivia, itracker, mlszksz-platform, viterra_demo, mjsz, park-here, InterfaceRegister, judo-partner]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-related: [custom-implementation-placeholder, derived-access-filtering]
-fragment: pending
+fragment: singleton-entity
+diagram: { kinds: [entity, transfer, actor, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An entity with no attributes or relations that serves as a singleton application-level container for static operations (initialization, registration, bulk actions). It is accessed via `EntityType!any()` and checked for existence with `EntityType!empty()`. Often used as the entry point for application-level functionality exposed to actors.
+Model application-wide state or entry points as an entity of which the project only ever keeps one row. Two variants occur: a data-carrying singleton for settings, and an attribute-less container that hosts static operations such as an initializer.
 
-## Structure
+## Practice
 
-- Entity has no stored attributes or relations
-- Contains static and instance operations (e.g., `init`, `register`)
-- Checked with `!empty()` for first-run initialization
-- Accessed via `!any()` in derived access getters
-- Actor access uses cardinality `0..1` with a derived getter: `EntityType!any()`
+### The platform has no singleton construct
 
-## Examples
+"Singleton" is project practice. Nothing in the model stops a second row. The pattern is: an entity, a single-instance Access, and a project rule that only one row is created.
 
-### Trivia
-`Application` entity has no attributes. It hosts `init` (static initializer that seeds data), `generate` (creates sample questions), and `approveAll` (bulk status update). Player accesses it via `Player.application` with getter `trivia::entities::Application!any()`.
+### Data-carrying singleton: settings
 
-### itracker
-`Application` entity has no attributes or relations. It hosts only `init` (static initializer, `initializer=true`) which seeds 3 SRTCategories, 2 Regions, and 3 Users. Unlike Trivia, it is not exposed to any actor as an access point -- it exists solely for startup data seeding.
+- An entity such as Configuration holds the settings (sender address, base URL, templates, credentials).
+- The actor reaches it through an Access with upper bound 1 and a derived getter expression that ends in `!any()`. The agent-docs say `!any()` collapses a collection to one instance and is needed exactly when the final value must be a single instance, as for a singleton Access ([model development guide](../../agent-docs/model/model-development.md)). It may appear once per expression.
+- Often update-only: the Access and transfer object allow update, not create or delete. The row is created by an initializer.
+- The Access needs a paired MenuItemAccess to appear in the menu ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md)).
 
-### MLSZKSZPlatform
-Two singleton entities: **Configuration** (platform settings like `senderEmail`, `baseUrl`, `platformName`, email templates; CRUD: update-only, no create/delete) and **Initializer** (hosts `init` static operation with only `createdAt` timestamp attribute). Configuration is a data-carrying singleton used for system-wide settings, unlike the attribute-less initializer pattern.
+### Attribute-less singleton: initializer and application container
 
-### Viterra Demo
-`Application` entity has no attributes or relations. It hosts only `init()` (static, initializer=true) which seeds 7 Commodities, 4 Silos, 4 Periods, 2 Clients, and 4 Reports with Stocks. Pure operations-only singleton -- not exposed as an access point to any actor.
+- An entity with no attributes or relations (named Application or Initializer) hosts static operations: an initializer that seeds data, registration, bulk actions. Operation type `INITIALIZER` is stored as a static operation with the initializer flag set ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)). Whether and when the platform calls it is not documented there; see [[initializer-operation]] for the seeding practice.
+- If clients should call its operations, expose the entity through the same single-instance Access. Several projects (itracker, Viterra, MJSZ) did not expose it at all: it exists only for startup seeding.
 
-### MJSZ
-`Application` entity has no attributes or relations. It hosts a single `init()` operation (static, initializer=true, stateful=true) that seeds comprehensive demo data including 17 clubs, 20 teams, 14 matches, and 5 venues for Hungarian ice hockey. Not exposed as an access point -- purely for startup initialization.
+### First-run check
 
-### ParkHere
-Two singletons: **Initializer** (no attributes, hosts `init` static operation with `initializer=true`) and **Configuration** (data-carrying singleton with 6 email template attributes, doormans/additionalDays relations). Configuration accessed via `Configuration!any()` for global system settings. This dual-singleton approach mirrors MLSZKSZPlatform's pattern of separating initialization from configuration.
+Operations that create the singleton row guard with a collection check (`!empty()` or `!count()`), so a second call changes nothing. The checks are JQL collection functions ([model development guide](../../agent-docs/model/model-development.md)). The guard is not atomic: concurrent first calls can still both create a row.
 
-### InterfaceRegister
-`Initializer` entity with no attributes and full CRUD enabled. Hosts 4 separate static initializer operations (`initUsers`, `initVendors`, `initBrands`, `initBusinessDataTypes`), each seeding a different entity type with idempotent `!count() == 0` guards. Unlike most projects that have a single `init` operation, this splits seeding across domain-specific operations for modularity.
+### Variants seen
 
-### judo-partner
-`Application` entity has no attributes or relations. It hosts only `init` (static operation for application initialization). The `NAVConfig` entity also serves as a singleton-like configuration entity for NAV API credentials (login, passwordHash, taxNumber, signKey), accessed via `NAVConfig!any()` on the Actor.
+- Two singletons side by side: an attribute-less Initializer and a data-carrying Configuration (MLSZKSZPlatform, ParkHere).
+- InterfaceRegister split seeding across four domain-specific initializer operations, each guarded.
+- judo-partner keeps API credentials in a configuration entity read with `!any()` on the actor.
 
-## Trade-offs
+## Rationale
 
-- Pros: Clean entry point for app-level operations, supports initialization logic, works well with actor access patterns
-- Cons: Slightly unusual entity pattern (no data), may confuse developers expecting data-carrying entities
-- Prefer when: Application needs a global entry point for static operations or initialization
+- One clear entry point for application-level operations and settings, and a natural home for seeding.
+- Fits the actor access model: a single-instance Access is just a derived getter.
+- Cost: the entity looks unusual, and the one-row rule is not enforced by the platform. Code that reads it must handle the case where it does not exist yet.
+
+## Example
+
+A Configuration entity has `senderEmail` and `baseUrl`. ConfigurationView maps both and is updateable. AppUser has one Access to it with upper bound 1, a derived getter `Configuration!any()` and update permission. A separate Initializer entity has no attributes and hosts one initializer operation `init`. Names are neutral stand-ins.
+
+## When to avoid
+
+- Settings that vary per tenant or per actor: use a normal entity with a row filter on the Access.
+- A handful of constants needing no UI or editing: use a plain default expression.
+- Operations that belong to a real entity: put them on that entity.
 
 ## Related
 
-- [[custom-implementation-placeholder]]
-- [[derived-access-filtering]]
+- [[initializer-operation]] — seeding the singleton row
+- [[derived-access-filtering]] — the getter expression on the Access
+- [[custom-implementation-placeholder]] — operations of the singleton implemented in project code
+- [[platform-configuration-singleton]] — a data-carrying singleton blueprint
+- [[single-access-entity-pattern]] — client-side fetch and create-if-missing for a single-instance Access
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=singleton-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AppUser {
+    <<Actor>>
+  }
+  class Configuration {
+    <<Entity>>
+    +String senderEmail
+    +String baseUrl
+  }
+  class ConfigurationView {
+    <<Transfer>>
+    +String senderEmail
+    +String baseUrl
+  }
+  class Initializer {
+    <<Entity>>
+    +init()
+  }
+  ConfigurationView ..> Configuration : maps
+```
+<!-- /mermaid:generated -->

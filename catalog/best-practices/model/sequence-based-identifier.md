@@ -1,63 +1,83 @@
 ---
 id: sequence-based-identifier
 title: Sequence-Based Identifier Pattern
-description: An entity attribute marked as an identifier uses a sequence-based default value expression to auto-generate unique sequential IDs.
-aliases: []
-keywords: [sequence, based, identifier]
+description: "An entity attribute gets its value from a platform sequence through a default expression, giving auto-generated sequential numbers or formatted business identifiers."
+aliases: [auto-increment number, sequence default, running number, formatted identifier]
+keywords: [sequence, identifier, default expression, getVariable, SEQUENCE, lpad, count]
 tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:mjsz", "project:InterfaceRegister", "project:workflow-poc", "status:established"]
 category: entity
 status: established
 projects: [trivia, itracker, mjsz, InterfaceRegister, workflow-poc]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "mjsz:unrecorded", "InterfaceRegister:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-related: [default-value-patterns]
-fragment: pending
+fragment: sequence-based-identifier
+diagram: { kinds: [entity], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An entity attribute marked as an identifier uses a sequence-based default value expression to auto-generate unique sequential IDs. The expression `TypeName!getVariable("SEQUENCE", "EntityName")` produces an auto-incrementing value on creation.
+Give each new row an automatically assigned number, either a plain counter or a readable identifier such as `TCK00042`, without client input.
 
-## Structure
+## Practice
 
-- Attribute is of numeric type (typically `Long` with precision 18, or `Integer` with precision 9) or String with formatted sequence
-- Marked as an identifier field
-- Default value uses: `TypeName!getVariable("SEQUENCE", "EntityName")`
-- The attribute is typically made derived (read-only) in transfer projections
-- Variant: String identifier with prefix and zero-padding for human-readable IDs
-- Variant: Count-based expression `'PREFIX-' + ((Entity!count()+1)!asString())!lpad(N, "0")` for simpler sequential IDs
+### Default expression on a stored attribute
 
-```
-identifier: Long, required, identifier=true
-  default: trivia::types::Long!getVariable("SEQUENCE", "Question")
-```
+- The attribute is a stored (not derived) member of the entity, required, usually an `Integer` or `Long`. It may be marked as the entity's identifier attribute.
+- Its default expression reads the `SEQUENCE` variable category: `<Type>!getVariable("SEQUENCE", "<SequenceName>")`. The platform documents `SEQUENCE` as one of the variable categories (`SYSTEM`, `ENVIRONMENT`, `REQUEST`, `ACTOR`, `PRINCIPAL`, `SEQUENCE`), backed by database sequences. `getVariable` is typed by the primitive it is called on and returns a scalar; an undefined variable resolves to `null` with a warning ([model development guide](../../agent-docs/model/model-development.md)).
+- Use one sequence name per number space, typically the entity name. Two entities that share a name share a counter.
 
-## Examples
+### Readable identifiers: format in the expression
 
-### Trivia
-`Question.identifier` is a Long (precision 18) with default `trivia::types::Long!getVariable("SEQUENCE", "Question")`. In the admin transfer projection, `identifier` is exposed as a derived (read-only) attribute, preventing manual override.
+Wrap the value: a prefix, `asString()` and `lpad(width, "0")` give `PREFIX00042`. `lpad`, `asString` and the other string functions come from the framework function library ([JSL built-in libraries](../../agent-docs/model/jsl-language-notes.md)). The width is fixed in the expression, so numbers beyond it grow longer, they do not wrap.
 
-### itracker
-`Initiative.id` is an Integer (precision 9) with default `itracker::types::Integer!getVariable("SEQUENCE", "initiative")`. The `id` field is not exposed on the actor-level transfer, keeping it internal. Note: uses Integer instead of Long, showing the type can vary.
+### Keep the number read-only for users
 
-### MJSZ
-`Player.identifier` is a String with default `"MJSZ" + mjsz::types::Long!getVariable("SEQUENCE", "MJSZID")!asString()!lpad(5, "0")`. This produces human-readable IDs like "MJSZ00001". Demonstrates a String-type variant with domain prefix and zero-padding for consistent width.
+Expose the attribute on transfer objects as a read-only (derived or mapped, non-editable) member, or leave it off the actor-facing transfer object. Then the form shows it but nobody types over it.
 
-### InterfaceRegister
-Uses count-based ID generation on transfer objects instead of the SEQUENCE variable: `ApplicationTransfer.id = 'APP-' + ((Application!count()+1)!asString())!lpad(4, "0")`, `VendorTransfer.id = 'VND-' + ((Vendor!count()+1)!asString())!lpad(4, "0")`, `InterfaceSpecification.id = 'IFS-' + ...`, `ConnectionDefinition.id = 'CON-' + ...`. Each entity type uses a unique 3-letter prefix. This variant uses `!count()` instead of `!getVariable("SEQUENCE", ...)`, making the ID transfer-level (default on creation form) rather than entity-level.
+### Count-based variant on a transfer object
 
-### workflow-poc
-`Event.sequence` is a Long (required) with default `workflow::types::Long!getVariable("SEQUENCE", "Event")`. Used not as a business identifier but as an ordering sequence for event processing -- ensuring workflow events are processed in the correct order. Demonstrates using the SEQUENCE pattern for ordering rather than identification.
+One project (InterfaceRegister) put the default on the transfer object instead: `'APP-' + ((Application!count()+1)!asString())!lpad(4, "0")`, so the creation form is pre-filled. This is project practice, weaker than a sequence: the count falls after a delete (a number can be issued twice), and two concurrent creates can read the same count. It is only suitable for small, rarely deleted registers.
 
-## Trade-offs
+### Platform facts that limit the pattern
 
-- Pros: Guaranteed uniqueness, auto-generated, human-readable sequential IDs
-- Cons: Not suitable for distributed systems without coordination, sequential IDs may leak information about record counts
-- Prefer when: You need simple, auto-incrementing numeric identifiers for an entity
+- Sequences can have gaps; values of rolled-back transactions are not reused. Do not promise gap-free numbers.
+- The default sequence type is `rdbms`. A custom sequence implementation can replace it (OSGi component for the platform `Sequence` interface); transient sequences are not supported on multi-node deployments ([custom sequences](../../agent-docs/backend/platform-behavior-reference.md)).
+- Uniqueness of the value follows from the sequence, but the platform docs do not describe a unique constraint on identifier attributes. Do not rely on the model to reject a manually set duplicate.
+
+## Rationale
+
+- Uniqueness and ordering come from the database, not from application code.
+- The expression lives in the model, so every client and the API get the same behavior.
+- Sequential numbers reveal record counts and do not work across systems without coordination.
+- The same mechanism also serves as an ordering key: workflow-poc uses a required `sequence` attribute on an event entity to process events in order, not as a business identifier.
+
+## Example
+
+A Ticket entity has a required `number` (Integer, identifier attribute, default from the `Ticket` sequence), a `title`, and a `reference` string whose default is `"TCK"` plus the zero-padded value of a second sequence (`TCK00001`). Trivia, itracker (Integer instead of Long) and MJSZ (prefix `MJSZ`, width 5) used the same shape. Names are neutral stand-ins.
+
+## When to avoid
+
+- You need gap-free, per-period or prefixed document numbers with locking: see [[document-registry-sequence]].
+- Identifiers must be created offline or across systems: use a generated unique id instead.
+- Numbers must stay secret: sequential values leak volume.
 
 ## Related
 
-- [[default-value-patterns]]
+- [[default-value-patterns]] — the wider set of default expression conventions
+- [[document-registry-sequence]] — gap-free, per-period numbering built in project code
+- [[composite-identifier-pattern]] — identifiers made of several attributes
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=sequence-based-identifier cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Ticket {
+    <<Entity>>
+    +Integer number [1]
+    +String title
+    +String reference
+  }
+```
+<!-- /mermaid:generated -->

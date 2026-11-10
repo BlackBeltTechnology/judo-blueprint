@@ -1,60 +1,101 @@
 ---
 id: snapshot-versioning-pattern
-title: Snapshot Versioning via Clone-to-Version Entities
-description: "An entity maintains a history of snapshots by cloning its current data into separate \"history\" or \"version\" entities."
-aliases: []
-keywords: [snapshot, versioning, clone, version, entities]
+title: Snapshot Versioning Pattern
+description: "A parent entity keeps its working data editable and stores point-in-time copies of selected data (with summary values) as separate, never-edited version or history entities."
+aliases: [history entity, version entity, point-in-time copy, forecast snapshot, head and published version]
+keywords: [snapshot, version, history, archive, clone, immutable, head, published, timestamp]
 tags: ["domain:model", "layer:model", "project:itracker", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "status:established"]
 category: entity
 status: established
 projects: [itracker, indamedia-adtrack, judo-partner, workflow-poc]
 evidence: ["itracker:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: [self-referencing-versioning]
-related: [self-referencing-versioning, composition-ownership, audit-event-entity]
-fragment: pending
+fragment: snapshot-versioning-pattern
+diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An entity maintains a history of snapshots by cloning its current data into separate "history" or "version" entities. The parent holds both the current working data (editable) and archived snapshots (read-only collection of version entities). An operation creates point-in-time copies with aggregate summaries or timestamped records of key field values at the time of change.
+Keep a parent entity editable while preserving what its data looked like at chosen moments. A snapshot is a separate entity that copies the key values (and child rows) at that moment and is not changed afterwards.
 
-## Structure
+## Practice
 
-- Parent entity has a composition or association to history/version entities (`0..*`)
-- Version/history entity mirrors key attributes from the parent with additional metadata (timestamp)
-- Version entity has a required `1..1` relation back to the parent
-- An update operation:
-  1. Creates a new history/version record with the current or previous field values
-  2. Attaches it to the parent's history collection
-  3. Updates the parent entity
-- History records are immutable once created
+### Shape: working data plus a collection of snapshots
 
-## Examples
+- The parent owns its working children (for example `lines`) and a collection of snapshot entities (`snapshots`, `0..*`).
+- A snapshot entity holds a timestamp, the copied attributes and optional summary values (totals) computed when it was taken. It can own copies of the child rows (`SnapshotLine`), which are a second entity type, not the live child type.
+- Ownership relations use composition (the parent owns the snapshots and the snapshots own their lines), so deleting the parent removes its history. Associations are equally valid where history must outlive the parent; relation kind is a design choice ([relation kinds](../../agent-docs/model/advanced-modeling-patterns.md)). If a back-reference from the snapshot to the parent is wanted, remember bidirectional relations are validated asymmetrically (one aggregation end, one association end).
 
-### itracker
-`Initiative` has current data in `monthlyForecasts -> MonthlyForecast [0..*]` and history in `forecastVersions -> ForecastVersion [0..*]`. `ForecastVersion` holds `timestamp`, `sumOfSavingPotential`, `sumOfSaving` and its own `monthlyForecasts -> MonthlyForecastVersion [0..*]`. The `archiveForecast` operation creates a ForecastVersion, computes sums (with null-safe `!isDefined()` filtering), clones each MonthlyForecast into a MonthlyForecastVersion, and attaches everything to the initiative.
+### Taking a snapshot is a custom operation
 
-### IndamediaAdTrack
-`AggregatedCampaign` has a `history [0..*]` association to `AggregatedCampaignHistory`. The history entity snapshots 5 key fields (`name`, `start`, `end`, `totalBudget`, `dailyBudget`) plus a `changed: Timestamp`. When `updateAggregatedCampaign` changes budget or dates, a new history record captures the previous values. Each history record has a required `aggregatedCampaign [1..1]` back-reference. Records are immutable and ordered by `changed` timestamp.
+The platform generates create, update and delete only. The step "copy now" is a custom operation on the parent, written in project code with the generated DAOs ([data access guide](../../agent-docs/backend/data-access-guide.md)):
 
-### judo-partner
-`Record` entity has `versions -> RecordVersion [0..*]` (TWO-WAY) and `currentVersion -> RecordVersion [0..1]` (stored pointer to the latest version). `RecordVersion` captures `version: Integer`, `registrationTimestamp: Timestamp`, `changes: Text`, `recordNumber: String` (identifier), and `deliveryTimestamp`. The `currentVersion` stored pointer avoids the need for derived head/sort expressions to find the latest version.
+1. Create the snapshot with the timestamp.
+2. Compute the summary values, with null-safe filtering ([[null-safe-collection-aggregation]]).
+3. Copy each live child into a snapshot line and attach everything to the parent.
 
-### workflow-poc
-`Workflow` maintains version tracking with `versions [0..*]` (all versions), `head [0..1]` (latest, possibly uncommitted), and `published [0..1]` (active production version). `WorkflowVersion` has `versionNumber`, `committed` (boolean), `commitComment`, `commitTime`, `uploadTime`, and `model`/`diagram` (YAML/Mermaid content). The `upload` operation creates new versions; `commit` marks them as finalized; `publish` promotes head to published. This dual-pointer (head/published) pattern enables draft editing without affecting production.
+Do all of it in one operation call so a failure leaves no partial snapshot. Alternatively the update operation writes a history record with the previous values before it changes the parent (IndamediaAdTrack: five key fields plus a `changed` timestamp, written whenever budget or dates change).
 
-## Trade-offs
+### Make snapshots read-only
 
-- Pros: Full history preserved with timestamps and aggregates, current data remains editable, each version is independent
-- Cons: Data duplication (cloned entities), requires separate entity types for versions, more complex entity graph
-- Prefer self-referencing-versioning when: The entire entity needs versioning (not just child data)
-- Prefer snapshot-versioning when: Only a subset of child data needs periodic snapshots with aggregated summaries
+Nothing in the platform makes an entity immutable by itself. Turn off the update and delete flags on the snapshot's transfer objects and access entries, and offer no operation that edits it. The agent-docs describe an `immutable` mark on signed identifiers that makes the dispatcher refuse operations on such instances, but they say it applies to instances produced from an `immutable` copy ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)); do not rely on it for snapshots without checking.
+
+### Finding the latest version
+
+- Sort the snapshot collection by timestamp.
+- Or keep a stored pointer to the latest (judo-partner: a `currentVersion` relation next to the `versions` collection), which avoids a derived head expression. The pointer must be updated by the operation that adds a version.
+- Or keep two pointers (workflow-poc: `head` for the latest, possibly uncommitted, and `published` for the active one). Upload creates a version, commit finalizes it, publish promotes head to published. This lets drafts be edited without touching production.
+
+## Rationale
+
+- The working data stays simple and editable; history is complete with timestamps and aggregates; each snapshot stands alone.
+- Cost: duplicated data, a second entity type per snapshotted child, a larger entity graph. Pointer fields (`currentVersion`, `head`, `published`) can drift from the collection unless one operation owns them.
+
+## Example
+
+A Plan entity owns `lines` (PlanLine with an amount) and `snapshots` (PlanSnapshot with `takenAt` and `totalAmount`). Each PlanSnapshot owns its own `lines` of the copy type SnapshotLine. The operation `archive` on Plan creates a snapshot, sums the amounts, copies every line and attaches the result. This mirrors itracker's forecast archive (an initiative archives its monthly forecasts into a forecast version). Names are neutral stand-ins.
+
+## When to avoid
+
+- The whole entity, not only some child data, needs a version chain: use [[self-referencing-versioning]].
+- Only a change log is needed: use [[audit-event-entity]].
+- Snapshots must stay when the parent is deleted and you chose composition: use associations instead.
 
 ## Related
 
-- [[self-referencing-versioning]] (alternative: linked-list versioning of the entity itself)
-- [[composition-ownership]]
-- [[audit-event-entity]] (related: event-based audit trail)
+- [[self-referencing-versioning]] — alternative: linked-list versioning of the entity itself
+- [[composition-ownership]] — ownership relation for snapshots and their lines
+- [[audit-event-entity]] — event-based audit trail instead of copies
+- [[null-safe-collection-aggregation]] — summary values computed over optional data
+- [[workflow-versioning-pattern]] — the head/published variant as a blueprint
+- [[forecast-versioning-snapshot]] — the forecast archive as a blueprint
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=snapshot-versioning-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Plan {
+    <<Entity>>
+    +String name
+    +archive()
+  }
+  class PlanLine {
+    <<Entity>>
+    +Integer amount
+  }
+  class PlanSnapshot {
+    <<Entity>>
+    +Timestamp takenAt [1]
+    +Integer totalAmount
+  }
+  class SnapshotLine {
+    <<Entity>>
+    +Integer amount
+  }
+  Plan *-- "*" PlanLine : lines
+  Plan *-- "*" PlanSnapshot : snapshots
+  PlanSnapshot *-- "*" SnapshotLine : lines
+```
+<!-- /mermaid:generated -->

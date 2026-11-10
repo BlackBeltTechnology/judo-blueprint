@@ -1,53 +1,106 @@
 ---
 id: token-based-verification-workflow
 title: Token-Based Verification Workflow Pattern
-description: Entities that require email-based verification use a set of token-related attributes to implement a multi-step verification workflow.
-aliases: []
-keywords: [token, based, verification, workflow]
+description: "An entity that needs e-mail verification carries a token, an expiry time and a verified-at time plus a status enumeration, and moves from pending to verified to approved or rejected, with expired as an extra end state."
+aliases: [email verification, invitation token, registration verification, verification token]
+keywords: [token, verification, expiry, email, status, pending, verified, expired, invitation, registration]
 tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single-project"]
 category: operation
 status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:unrecorded"]
 alternatives: []
-related: [enum-state-machine, custom-implementation-placeholder, singleton-entity]
-fragment: pending
+fragment: token-based-verification-workflow
+diagram: { kinds: [entity, enum, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Entities that require email-based verification use a set of token-related attributes to implement a multi-step verification workflow. A temporary token is generated and sent via email; the user clicks a link to verify, progressing the entity through a state machine (PENDING -> VERIFIED -> APPROVED/REJECTED). Tokens have configurable expiry times and the workflow includes expiration handling.
+Let an external person prove control of an e-mail address before they get access. The system sends a one-time token; clicking the link verifies the request; an administrator then approves or rejects it. Tokens expire.
 
-## Structure
+## Practice
 
-- Entity has token-related attributes:
-  - `verificationToken` or `invitationToken`: String storing the random token
-  - `verificationExpiresAt` or `expiresAt`: Timestamp for token expiry
-  - `verifiedAt`: Timestamp recording when verification occurred
-- Entity has a status enum that includes PENDING, VERIFIED, EXPIRED states
-- Configuration entity stores expiry durations (e.g., `invitationExpiryDays`, `verificationExpiryMinutes`)
-- Operations:
-  - Submit/create: generates token, sets expiry, sends email
-  - Verify: validates token, checks expiry, transitions to VERIFIED
-  - Accept/Reject: admin action after verification
-- Token validation is implemented as a custom backend operation
+### Attributes and status
 
-## Examples
+- A token attribute (stored as a hash, see below), an expiry timestamp (`verificationExpiresAt`, `expiresAt`) and a `verifiedAt` timestamp.
+- A status enumeration with at least Pending, Verified, Expired and the administrator outcomes Approved and Rejected ([[enum-state-machine]]). Pending moves to Verified on a valid token, then to Approved or Rejected by an administrator, or to Expired when the time has passed.
+- Expiry durations (`invitationExpiryDays`, `verificationExpiryMinutes`) are settings, kept in a configuration singleton ([[singleton-entity]]), not in each row.
 
-### MLSZKSZPlatform
-Three entities use token-based verification: **RegistrationRequest** (`verificationToken`, `verificationExpiresAt`, `verifiedAt` with `RegistrationRequestStatus`: PENDING -> VERIFIED -> APPROVED/REJECTED or EXPIRED), **InvitationRecipient** (`verificationToken`, `verificationExpiresAt`, `usedForSuccessfulRegistration` flag), and **UserInvitationRequest** (`invitationToken`, `expiresAt`, `verifiedAt` with `InvitationStatus`: PENDING -> VERIFIED -> APPROVED/REJECTED or EXPIRED). Configuration entity stores `invitationExpiryDays` and `verificationExpiryMinutes`. Custom operations: `RegistrationTransfer.registration` (generates token), `RegistrationTransfer.verifyUserInvitation` (validates token).
+### Operations are project code
 
-## Trade-offs
+The platform has no token or verification feature. These steps are custom operations ([[custom-implementation-placeholder]]):
 
-- Pros: Secure email verification without storing passwords, configurable expiry, clear state progression, supports multiple verification workflows
-- Cons: Requires email service integration, token management adds complexity, expired tokens need cleanup
-- Prefer when: External users need to verify their identity via email before gaining access (registration, invitation workflows)
+- Submit or create: generate the token, set the expiry from the configuration, send the e-mail.
+- Verify: find the row by token, refuse if the expiry has passed or it is not pending, set the status to Verified and `verifiedAt`.
+- Approve and reject: administrator operations after verification.
+
+The operations write data, so they must be `stateful` ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)). A refusal (expired, wrong status, unknown token) is a business failure and can be a modeled fault attached to the operation ([modeled faults](../../agent-docs/backend/error-handling-guide.md)).
+
+### Public entry points need an anonymous actor
+
+The person verifying has no account. The submit and verify operations are exposed to an actor that is marked anonymous (an unauthenticated guest actor, see [accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md)). Because that actor is open to anyone, the operations must be written defensively: do not reveal whether a token exists, and rate-limit in project code if needed.
+
+### Token handling (project practice)
+
+- Generate the token with a cryptographically secure random source and make it long; see [[api-key-generation]].
+- Store only a hash of the token and send the plain token once, as the invitation blueprint does ([[invitation-with-recipients]]). The source project named the attribute `verificationToken` (or `invitationToken`); the diagram names it `tokenHash` because only the hash is stored.
+- Mark the token used only after the follow-up step (registration) has succeeded, so a failure does not burn it.
+- Expired rows do not clean themselves; the Expired status is set when the token is presented late, or by a scheduled job in project code. Delete or archive old rows in project code.
+
+## Rationale
+
+- Proves e-mail ownership without storing a password.
+- Expiry is configurable, and the state progression is explicit and testable.
+- Cost: needs an e-mail integration, token handling code and cleanup of expired rows. The tokens and expiry rely entirely on project code; nothing in the model enforces them.
+
+## Example
+
+A Request entity has a required `email`, a `tokenHash`, `expiresAt`, `verifiedAt` and a `status` (Pending, Verified, Approved, Rejected, Expired). A Configuration entity holds `verificationExpiryMinutes` and `invitationExpiryDays`. Operations `verify` and `approve` on Request are custom implementations. The original MLSZKSZPlatform used three entities this way (registration request, invitation recipient, user invitation request) with a registration operation that generated the token and a verify operation that checked it. Names are neutral stand-ins.
+
+## When to avoid
+
+- Users already log in through the platform's authentication: no verification step is needed.
+- A one-time code entered by the user rather than a link: see [[two-phase-registration]] and the code-based authentication blueprint.
+- No e-mail channel available.
 
 ## Related
 
-- [[enum-state-machine]] (status lifecycle for verification entities)
-- [[custom-implementation-placeholder]] (token generation/validation in custom code)
-- [[singleton-entity]] (Configuration singleton stores expiry settings)
+- [[enum-state-machine]] — status lifecycle for verification entities
+- [[custom-implementation-placeholder]] — token generation and validation in project code
+- [[singleton-entity]] — configuration singleton that stores the expiry settings
+- [[api-key-generation]] — generating the random token
+- [[invitation-with-recipients]] — the same token flow with hashed tokens as a blueprint
+- [[two-phase-registration]] — registration in two steps
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=token-based-verification-workflow cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Configuration {
+    <<Entity>>
+    +Integer verificationExpiryMinutes
+    +Integer invitationExpiryDays
+  }
+  class Request {
+    <<Entity>>
+    +Email email [1]
+    +String tokenHash
+    +Timestamp expiresAt
+    +Timestamp verifiedAt
+    +RequestStatus status [1]
+    +verify()
+    +approve()
+  }
+  class RequestStatus {
+    <<Enumeration>>
+    Pending
+    Verified
+    Approved
+    Rejected
+    Expired
+  }
+  Request ..> RequestStatus : status
+```
+<!-- /mermaid:generated -->

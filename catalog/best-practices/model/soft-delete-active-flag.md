@@ -1,79 +1,91 @@
 ---
 id: soft-delete-active-flag
 title: Soft Delete via Active Boolean Flag
-description: "Entities include a required boolean `active` or `isEnabled` attribute (default: `true`) to implement soft delete."
-aliases: []
-keywords: [soft, delete, active, boolean, flag]
+description: "Entities carry a required boolean flag (active, isEnabled, or inverted isArchived) instead of being physically deleted, so records stay for references and audit while being hidden from active use."
+aliases: [soft delete, logical delete, archive flag, isEnabled flag, deactivation flag]
+keywords: [soft delete, active, isEnabled, isArchived, deactivate, range expression, isActiveExpression, status enum]
 tags: ["domain:model", "layer:model", "project:rackinspect", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:sanctuary-backend", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:reserve-app", "status:established"]
 category: entity
 status: established
 projects: [rackinspect, alba, skillmatrix-model, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, sanctuary-backend, park-here, indamedia-adtrack, judo-partner, reserve-app]
 evidence: ["rackinspect:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [toggle-operation-pattern, default-value-patterns]
-fragment: pending
+fragment: soft-delete-active-flag
+diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Entities include a required boolean `active` or `isEnabled` attribute (default: `true`) to implement soft delete. Instead of physically deleting records, they are marked inactive/disabled. This preserves referential integrity and audit history while allowing records to be hidden from active views. Some implementations include a `toggleActive` operation while others manage the flag through standard CRUD updates. An alternative approach uses a status enum with a DELETED member for richer lifecycle tracking.
+Keep records that other data refers to. Mark them inactive instead of deleting them, so references and history stay intact and the record can be brought back.
 
-## Structure
+## Practice
 
-- Entity has `active: Boolean, required, default: true` or `isEnabled: Boolean, default: true`
-- Optionally, entity has a `toggleActive` instance operation
-- Soft-deleted records remain in the database but are excluded from active queries
-- Pattern is applied uniformly across reference data, contact information, and user entities
-- Often combined with the toggle operation pattern for flag mutation
-- Alternatively, status enums include a DELETED member (e.g., PostStatus.DELETED)
-- Variant: an ActiveStatus enum (active/archived) can serve the same purpose
-- Variant: `isArchived` flag (inverted semantics, default: false) marks records as deleted
+### The flag
 
-## Examples
+- A required boolean stored attribute with a default expression: `active` or `isEnabled` defaulting to `true` (new rows are live), or the inverted `isArchived` defaulting to `false`. Pick one polarity per model.
+- Variants: a status enumeration with a DELETED member (MLSZKSZPlatform: draft, published, deleted), or a two-value active/archived enumeration (Sanctuary Backend). Use an enumeration when the record has a richer lifecycle than on/off ([[enum-state-machine]]).
+- A derived status can be computed from the flag and other state (judo-partner derives ACTIVE, DRAFT or DELETED from `isArchived`).
+- Platform delete stays available unless you turn it off. Soft delete is project practice: switch off the delete flag on the transfer objects and access entries for these entities (Viterra: admin access has no delete permission), or the physical delete still works.
 
-### RackInspect
-15+ entities use the active flag pattern: `Address`, `BankAccount`, `CompanyAddress`, `CompanyBankAccounts`, `CompanyEmail`, `CompanyPhone`, `EmailAddress`, `Partner`, `PaymentDeadline`, `PaymentMethod`, `PhoneNumber`, `Unit`, `User`, `UserAddress`, `UserEmail`, `UserPhone`. All default to `active=true` with `toggleActive` operations.
+### Hide inactive rows where they are chosen or listed
 
-### Alba
-4 reference data entities use `isEnabled: Boolean, default: true`: `Audience`, `Curriculum`, `ResultType`, `Institution`. No toggle operation -- the flag is managed through admin CRUD updates. Access points filter by `isEnabled` to exclude disabled entries from user-facing views while preserving referential integrity for existing product associations.
+The flag alone changes nothing; every reader must filter it.
 
-### SkillMatrix-Model
-`Competence.active` (required, default: `true`) serves as the soft-delete flag. The `Competence.delete()` operation guards against deleting active competences: `if (this.active) { return; }`. Range expressions filter by active status: `Competence!filter(c | c.active)!sort(c | c.name ASC)` ensures only active competences appear in pickers. `TrainingPlan.closed` (default: `false`) uses a similar boolean-flag lifecycle concept.
+- Pickers: give the relation a derived range expression such as `Company!filter(c | c.active)`. The relation's range type must be set to derived for the expression to apply ([operation reference](../../agent-docs/model/esm_metamodel/operation.md) lists the same range type and expression attributes for input parameters; relations on transfer objects work alike). Range expressions only restrict what can be chosen: existing links to a now-inactive row stay.
+- Lists: a derived Access getter expression that filters on the flag (see [[derived-access-filtering]]). Without it, lists show every row.
+- Several entities of the same project often get the identical filter, so keep the flag name uniform.
 
-### MLSZKSZPlatform
-Uses status enum-based soft delete instead of boolean flags: `PostStatus.DELETED` and `AnnouncementStatus.DELETED` mark content as deleted without physical removal. Content remains in the database for audit trail purposes and feed integrity. This approach provides richer lifecycle tracking (DRAFT -> PUBLISHED -> DELETED) compared to a simple boolean, but serves the same purpose of preserving data while hiding it from active views.
+### Block login of deactivated users
 
-### Viterra Demo
-`Client.active` and `Silo.active` are required Boolean attributes (default: `true`) used for soft delete. Admin access has no delete permission on any entity. The `Client` range expression in `ReportTransfer` filters by active: `viterra::Client!filter(c | c.active)` ensures only active clients appear in selectors. Partner actor checks `self.active` in its `isActiveExpression` to prevent deactivated partners from logging in.
+If the flag sits on the principal's entity, the actor's `isActiveExpression` (a JQL expression that returns true when the actor may log in, see the [accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md)) can read it: `self.active`. Viterra and the mini-workflow demo did this.
 
-### judo-demo-miniworkflow
-`User.active` (required Boolean, default: `true`) serves as the soft-delete/deactivation flag. The `GenericActor.isActiveExpression` can check `self.active` to prevent deactivated users from accessing the system. No toggle operation is defined -- the flag is managed through direct CRUD updates on the `users` access point (admin only).
+### Changing the flag
 
-### Sanctuary Backend
-Uses the `ActiveStatus` enum (active/archived) on `User.status` and `PositionTitle.status` for soft delete. This enum variant provides a binary active/archived lifecycle without requiring a boolean flag. Entities with `archived` status are logically hidden while data is preserved. The enum approach is shared across multiple entity types via a root-level enum definition.
+- Through ordinary updates when the flag is exposed on an editable transfer object (Alba, mini-workflow demo).
+- Through a dedicated instance operation (`toggleActive`, `deleteCar` that sets `isArchived`), see [[toggle-operation-pattern]]. The operation is a custom implementation in project code.
+- Guard operations that really delete: SkillMatrix's `delete` refuses while the competence is still active.
+- Deactivating can also have side effects done by an operation, for example sync jobs skipping inactive accounts (IndamediaAdTrack).
 
-### ParkHere
-5 entities use the soft delete pattern: `Car.isArchived` (inverted flag, default: false), `User.isActive`, `ParkingGarage.isActive`, `ParkingSlot.isActive`, `Doorman.isActive` (all default: true). Car uses the `isArchived` variant, where `true` means deleted. The `deleteCar` operation sets `isArchived=true` rather than physically removing the record, preserving historical reservation references.
+## Rationale
 
-### IndamediaAdTrack
-`Client.isActive` and `Account.isActive` are required Boolean attributes (default: `true`) for soft-delete/deactivation. The `updateAccount` operation sets `isActive=false` to deactivate accounts, causing sync operations to skip inactive accounts. `untrack` operation on TrackedCampaign similarly acts as a soft delete by removing the aggregation association while preserving historical Cost and FetchedData records.
+- Data stays for audit and registry documents; no referential-integrity break; easy to undelete.
+- Cost: every query, picker and report must filter the flag, and the table grows. Missing a filter shows inactive rows. Unique business keys keep occupying their value.
+- The default expression applies on creation only; the flag is not kept in step with anything else automatically.
 
-### judo-partner
-`Partner.isArchived` (required Boolean) uses the inverted-flag variant for soft deletion. The derived `Partner.status` attribute computes `PartnerStatus` (ACTIVE/DRAFT/DELETED) from the `isArchived` flag and other entity state. The `Partner.delete` operation sets `isArchived = true` rather than physically removing the record. This preserves partner data for registry document references and audit logs.
+## Example
 
-### ReserveApp
-11 reference/lookup entities use `active: Boolean, default: true`: Gate, Partner, Company, LoadingType, VehicleType, Project, Spot, ProductCategory, LoadingTime, Unit, StorageType. Range expressions enforce active filtering: `Company!filter(c | c.active)`, `Project!filter(p | p.active)`, etc. Item entity uses a separate `deleted` Boolean for true soft-delete semantics.
+A Company entity has `name` and a required `active` (default true) and a `toggleActive` operation. An Order entity has an association `company` whose derived range expression offers only companies with `active` true, and its own inverted flag `archived` (default false). Existing orders keep pointing at a deactivated company. Names are neutral stand-ins.
 
-## Trade-offs
+## When to avoid
 
-- Pros: Preserves data for audit, no referential integrity violations, easy to "undelete"
-- Cons: Requires filtering inactive records in all queries, database grows over time
-- Prefer when: Records have references from other entities and physical deletion would break integrity
+- Records without references and no audit need: delete them.
+- Personal data that must really be erased on request: a flag keeps it.
+- A richer lifecycle than active or not: use a status enumeration.
 
 ## Related
 
-- [[toggle-operation-pattern]]
-- [[default-value-patterns]]
+- [[toggle-operation-pattern]] — operation that flips the flag
+- [[default-value-patterns]] — default expression conventions for flags
+- [[derived-access-filtering]] — filter inactive rows in lists
+- [[enum-state-machine]] — enumeration variant for richer lifecycle
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=soft-delete-active-flag cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Company {
+    <<Entity>>
+    +String name
+    +Boolean active [1]
+    +toggleActive()
+  }
+  class Order {
+    <<Entity>>
+    +String number
+    +Boolean archived [1]
+  }
+  Order --> "0..1" Company : company
+```
+<!-- /mermaid:generated -->

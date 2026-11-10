@@ -1,110 +1,91 @@
 ---
 id: standard-type-library
 title: Standard Primitive Type and Measures Library
-description: "JUDO projects include a standard library of primitive types and physical measures in dedicated packages (`types` and `measures`)."
-aliases: []
-keywords: [standard, primitive, type, measures, library]
+description: "Every model uses one shared types package of named primitive types (String, Text, Email, Integer, Double, Timestamp and so on) and a measures package, instead of ad-hoc type definitions per attribute."
+aliases: [types package, primitive type library, measures package, shared type system]
+keywords: [types, primitive, String, Text, Email, Phone, URL, precision, scale, maxLength, measures, units, binary]
 tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:bhs-global-operation", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:park-here", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: type
 status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [naming-conventions]
-fragment: pending
+fragment: standard-type-library
+diagram: { kinds: [entity], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-JUDO projects include a standard library of primitive types and physical measures in dedicated packages (`types` and `measures`). The types package provides String (max 255), Text (max 4000), Email (regex-validated), Phone, URL, Long, Integer, Double, Float, Boolean, Date, Timestamp, and Time. The measures package includes 28+ SI unit measures. These are included by default and reused across all entities.
+Give every attribute a named type from one library, so limits and formats are decided once per project. The library is a `types` package (strings, numerics, boolean, date and time types) plus a `measures` package of physical units.
 
-## Structure
+## Practice
 
-- `<root>::types` package: 13 primitive types covering strings, numerics, boolean, date/time
-- `<root>::measures` package: 28+ physical measures (Mass, Time, Length, Temperature, etc.)
-- Key type characteristics:
-  - `String`: max 255 chars (general purpose)
-  - `Text`: max 4000 chars (descriptions, long content) -- but some projects use max 250 or 2000
-  - `Email`: max 255 chars with regex validation
-  - `Integer`: precision 9
-  - `Long`: precision 18
-  - `Timestamp`: base unit second
-- Binary types defined at model root (e.g., `JSON` with application/json MIME)
+### Use library types, not inline parameters
 
-## Examples
+- The platform's primitives are string, numeric, boolean, date, time, timestamp, binary and enumeration types. A string type requires `maxLength` (and may have a regular expression); a numeric type requires `precision` and `scale`; time and timestamp types carry a base unit; a binary type has a size limit and MIME types ([type reference](../../agent-docs/model/esm_metamodel/type.md)). Password and XML types are not usable in a generated application.
+- The model language itself ships a minimal set: `Boolean`, `Date`, `Time`, `Timestamp`, `Integer` (precision 9, scale 0), `Long` (precision 15, scale 0) and `String` (max size 4000) ([built-in libraries](../../agent-docs/model/jsl-language-notes.md)). The project type library below is project practice on top of those.
+- Declare attributes with the library types only. Add domain types (a tax number with a pattern, a lower-case code, a coordinate) as named project additions in the same package.
 
-### Trivia
-Uses `String` (names, codes, IDs), `Text` (question text, descriptions), `Email` (user/admin emails with regex), `Long` (question identifier), `Integer` (scores, durations, counts), `Boolean` (active flags), `Timestamp` (creation/start/finish times). Measures package included but unused by domain entities.
+### Typical library contents
 
-### RackInspect
-Uses the same types package (`rackinspect::types`) plus custom `Numeric` type. Timestamps for audit trails (`Timestamp!now()`), Email for notifications and actor variable defaults (`Email!getVariable('ACTOR', 'email')`). Binary types used for documents (PDF), images (pictures), and logos. Measures package included.
+The values below are what the projects settled on, not platform rules.
 
-### itracker
-Standard 13 types in `itracker::types`. Notable: `Text` max length is 250 (not 4000 as in other projects), `Double` (precision 15, scale 4) and `Float` (precision 7, scale 4) for financial amounts. Uses `Integer` for sequence IDs (not Long). Measures package included but unused. No binary types defined.
+- Strings: `String` (255), `Text` (a longer limit; projects use 250, 1000, 2000 or 4000), `Email` (255, usually with a regular expression), `Phone` (20), `URL` (1024).
+- Numerics: `Integer` (9, 0), `Long` (18, 0), `Double` (15, 4), `Float` (7, 4). Precision is the number of digits, scale the digits after the point.
+- Others: `Boolean`, `Date`, `Timestamp` (base unit second), usually `Time`.
+- Binary types are declared at the model root per use: documents, pictures, JSON or YAML uploads, each with its MIME types and size limit.
+- Pick one `Text` limit for the project and keep it; the projects differ (250 in itracker, BHS, judo-partner; 2000 in SkillMatrix and AMS), which matters when copying attributes between models.
 
-### SkillMatrix
-Standard 12 types in `SkillMatrix::types` including `Phone` (maxLength=20), `Text` (maxLength=2000), `URL` (maxLength=1024), and `Email` (maxLength=255, regex-validated). Uses `Double` (precision 15, scale 4) and `Float` (precision 7, scale 4). Measures package included as `SkillMatrix::measures`.
+### Choose by meaning
 
-### ActionGroupTest
-Custom domain-specific types: `massInKg` (NumericType, precision=16, scale=2) for mass measurements, `LowerCaseString` (maxLength=127, regex=`^[a-z]*$`) for constrained input, `Phone` (maxLength=20) reused from standard library. System operator enums (`_StringOperation`, `_NumericOperation`, `_BooleanOperation`, `_EnumerationOperation`) define filter operations per type.
+`String` for names, codes, identifiers; `Text` for descriptions and notes; `Email`, `Phone`, `URL` for contact values (the validation travels with the type); `Integer` for counts, scores and flags that must be summed; `Date`, `Time`, `Timestamp` by business meaning (ParkHere uses all three). Strings longer than 255 render as multi-line text fields ([type-to-widget mapping](../../agent-docs/frontend/esm-to-ui-mappings/README.md)).
 
-### Alba
-Standard types in `Alba::types`: String, RichText (for long-form educational content), Email (user identifier), URL (institution website), Boolean, Integer, Timestamp. `Alba::measures` includes comprehensive SI units (length, mass, time, area, volume, temperature). AttachmentType for file uploads. RichText heavily used for educational content fields (areaOfDevelopment, introduction, goal, etc.).
+### Measures
 
-### SkillMatrix-Model
-12 standard types in `SkillMatrix::types` confirmed. Distinctive type usage: `String` (max 255) for identifiers/names/codes, `Text` (max 2000) for descriptions/profiles/notes, `URL` (max 1024) for report download links (`Result.excel`). `Phone` (max 20) for user contact. Clear String vs Text distinction observed: `name`, `code`, `email` use String; `description`, `profile` use Text. Measures package included but unused by domain entities.
+The measures package holds about 25 to 28 measures (Mass, Length, Time, Temperature, Area, Volume and so on), each with units and conversion rates to a base unit. Almost no project uses them: of the 18 projects, only a custom measured type in ActionGroupTest (`massInKg`) appears on an attribute. The package is generated into every model whether or not it is used. See [[standard-type-and-measure-library]] for how a measured type works.
 
-### MLSZKSZPlatform
-13 enumeration types plus standard primitives. Custom numeric types: `Coordinate` (precision 10, scale 7) for latitude/longitude geographic data, `Double` (15,4), `Float` (7,4), `Integer` (9,0), `Long` (18,0). Temporal types: `Timestamp` for event tracking, `Date` for validity periods (Offer.validFrom/validUntil, Request.deadline). String types include `Email`, `Phone`, `URL`, `Text`, `LongText` for various content lengths. Binary type for document file attachments (`Document.file`).
+## Rationale
 
-### Viterra Demo
-Standard types in `viterra::types`: String, Long, Integer, Double, Float, Boolean, Date, Timestamp, Time, plus specialized Phone, Text, URL, Email (regex-validated). Comprehensive `viterra::measures` package with Mass, Time, Length, Temperature, Area, Volume, Velocity, Acceleration, Momentum, Force, and Work units. Measures are defined but not used by domain entities -- Stock quantities use simple Integer type rather than Mass measures.
+- One place decides lengths, precision and validation, so entities stay consistent.
+- Regular expressions on `Email` and similar types validate input without code.
+- Cost: the measures package adds clutter when unused, and changing a shared type changes every attribute that uses it, which can change database column sizes.
+- Types are not interchangeable across models: do not assume `Text` has the same limit in a copied model.
 
-### BHS Global Operation
-Skeleton project with 14 standard types in `BHSGlobalOperation::types` (Text maxLength=250) and the most comprehensive measures package observed: 25 measures with 100+ units covering all 7 SI base units plus 18 derived quantities (Velocity, Acceleration, Force, Work, Power, Frequency, Pressure, Density, Capacitance, Resistance, etc.). No domain entities defined to consume these types.
+## Example
 
-### MJSZ
-Standard types in `mjsz::types`: String, Long, Integer, Double, Float, Boolean, Date, Timestamp, Time, Phone, Text, URL, Email (regex-validated). Comprehensive `mjsz::measures` package with 9 measures (Mass, Time, Length, Temperature, Area, Volume, Velocity, Acceleration, Momentum, Force, Work). Notable: Boolean type defined but not used in the model -- Integer flags (0/1) used instead for summation support in Match.homeWin/draw/visitorWin.
+A Contact entity uses `String` for the name, `Text` for notes, `Email`, `Phone` and `URL` for contact values, `Integer` for a visit counter, `Double` for a balance, a measured type `massInKg` for a weight, `Timestamp` for the registration time, `Date` for a birth date and `Boolean` for an active flag. Every attribute type comes from the one types package. Names are neutral stand-ins.
 
-### judo-demo-miniworkflow
-Standard types in `MiniWorkflow::types`: String (255), Text (250), Email (255, regex-validated), Boolean, Timestamp, plus unused Phone, URL, Long, Integer, Double, Float, Date, Time. Binary type `FileType` with `mimeTypes="*/*"` and `maxFileSize="0"` (unlimited) for document attachments. Measures package with 15 measures included but unused. Text maxLength=250, consistent with the itracker/BHS/kozut pattern.
+## When to avoid
 
-### AMS-Model
-13 standard types in `ams::types`: String (255), Long (18), Integer (9), Double (15,4), Float (7,4), Boolean, Date, Timestamp (second), Phone (20), Text (2000), URL (1024), Email (255, regex-validated). Custom domain type: `CampaignDocument` (String, maxLength=1024) for campaign report download URLs. Comprehensive measures package with 25+ measures (Mass through Inductance) -- none used by domain entities. Text maxLength=2000, matching the SkillMatrix pattern.
-
-### Sanctuary Backend
-13 standard types in `Sanctuary::types`: String (255), Long (18), Integer (9), Double (15,4), Float (7,4), Boolean, Date, Timestamp (second), Time (second), Phone (20), Text (250), URL (1024), Email (255, regex-validated). Comprehensive measures package with 28 measures covering all 7 SI base units plus 21 derived quantities -- none used by domain entities. The model has the most extensive measures library observed, including Capacitance, ElectricalResistance, Inductance, and Illuminance.
-
-### ParkHere
-Standard types in `ParkHere::types` and `ParkHere::measures` packages. Uses String (names, identifiers), Text (email templates, floor plan descriptions), Email (user/doorman identifiers with regex validation), Integer (floor numbers, reservation quotas), Boolean (active flags, role flags, notification tracking), Date (holiday periods, reservation dates), Time (start/end times, working hours, reminder timers), Timestamp (audit timestamps). Notably uses all three temporal types (Date, Time, Timestamp) for different business contexts.
-
-### InterfaceRegister
-Standard types in `InterfaceRegister::types` (String, Text, Email, etc.) plus a Binary type for document storage (`specificationDocument`, `openApiDocument`, `WSDLDocument`). Uses URL type for specification links (`linkToTheSpecification`, `linkToOpenApiSpecification`, `linkToWSDLSpecification`). The model uses Binary and URL types in tandem for the "link + document" pattern where specifications can be either referenced by URL or uploaded as binary documents.
-
-### judo-partner
-Standard 14 types in `Partner::types` including a custom `TaxNumberHun` string type (maxLength=13, regex `^\d{8}-\d-\d{2}$`) for Hungarian tax number validation, and a `JSON` binary type for bulk import payloads. Text maxLength=250. Measures package with standard SI units included but unused by domain entities.
-
-### KozutEugyfelModelTest
-12 standard types in `e_ugyfelszolgalat::types`: String (255), Long (18), Integer (9), Double (15,4), Float (7,4), Boolean, Date, Timestamp (second), Phone (20), Text (250), URL (1024), Email (255, regex). Comprehensive measures package included but unused by domain entities. Text maxLength=250, consistent with related KOZUT projects.
-
-### workflow-poc
-Standard 13 types in `workflow::types` (String 255, Long 18, Integer 9, Double 15/4, Float 7/4, Boolean, Date, Timestamp, Time, Phone 20, Text 250, URL 1024, Email 255 with regex). Additional types at model root: `LongText` (String) for extended text and `YAML` (Binary) for workflow definition uploads. Comprehensive measures package with 25+ measures (Mass through Illuminance) -- none used by domain entities.
-
-### ReserveApp
-Standard types in `ReserveApp::types`: String, Phone, Text, URL, Email, Long, Integer, Double, Float, Boolean, Date, Timestamp, Time. Comprehensive `ReserveApp::measures` package with 28 measures. Binary type `Picture` defined at root for attachment images. Uses Phone type for both vehicle and loading driver contact numbers.
-
-### AMS-Frontend
-13 standard types in `ams::types` plus custom `CampaignDocument` (String, maxLength=1024) for download URLs. Standard set: String (255), Long (18), Integer (9), Double (15,4), Float (7,4), Boolean, Date, Timestamp, Phone (20), Text (2000), URL (1024), Email (regex-validated). Comprehensive measures package included but unused.
-
-## Trade-offs
-
-- Pros: Consistent type definitions across projects, regex validation on Email, measures available if needed
-- Cons: Measures package included even when unused, limited customization of standard types
-- Prefer when: Always -- this is the standard JUDO type library
+- A one-off value with a unique limit: define a named domain type rather than an inline exception.
+- Amounts with a business-defined scale (money): the library `Double` has scale 4 and `Float` scale 4; define a named numeric type with the precision and scale the business needs.
+- Boolean semantics where sums are needed: MJSZ used Integer 0/1 flags for that, a deliberate exception.
 
 ## Related
 
-- [[naming-conventions]]
+- [[standard-type-and-measure-library]] — the blueprint with measured types and the generated pages
+- [[naming-conventions]] — naming of types and members
+- [[category-enum-pattern]] — enumerations as the other kind of attribute type
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=standard-type-library cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Contact {
+    <<Entity>>
+    +String name
+    +Text notes
+    +Email email
+    +Phone phone
+    +URL website
+    +Integer visits
+    +Double balance
+    +massInKg weight
+    +Timestamp registeredAt
+    +Date birthDate
+    +Boolean active
+  }
+```
+<!-- /mermaid:generated -->

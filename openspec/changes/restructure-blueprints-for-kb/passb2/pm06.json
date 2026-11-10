@@ -1,0 +1,222 @@
+{
+ "batch": "pm06",
+ "entries": {
+  "self-referencing-versioning": {
+   "status": "rewritten",
+   "fragment": "self-referencing-versioning",
+   "kb": [
+    "self-reference association versioning",
+    "operation create clone DAO",
+    "relation kinds asymmetric bidirectional"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Asymmetric bidirectional relations",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers",
+    "catalog/agent-docs/backend/data-access-guide.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added optimistic-locking/signed-identifier note",
+    "relation kind per docs (association allowed, bidirectional asymmetry)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "sequence-based-identifier": {
+   "status": "rewritten",
+   "fragment": "sequence-based-identifier",
+   "kb": [
+    "sequence identifier generation",
+    "Variables and Sequences",
+    "lpad asString JQL"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Variables and Sequences",
+    "catalog/agent-docs/model/model-development.md#Other environment-variable categories",
+    "catalog/agent-docs/model/jsl-language-notes.md#Built-in libraries"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added: sequence gaps, custom Sequence, no documented unique constraint",
+    "count variant flagged as weaker project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "service-based-transfer-organization": {
+   "status": "rewritten",
+   "fragment": "service-based-transfer-organization",
+   "kb": [
+    "transfer object packages mapped unmapped",
+    "accesspoint Access MenuItemAccess"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Mapped vs. Unmapped Transfer Objects",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Access"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "Access+MenuItemAccess pairing added",
+    "permission flags labelled project practice, UI hiding not protection"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "singleton-entity": {
+   "status": "rewritten",
+   "fragment": "singleton-entity",
+   "kb": [
+    "singleton entity access",
+    "initializer static operation any empty",
+    "!any() correctly"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Using !any() correctly",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#INITIALIZER Special Handling",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Access"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "no platform singleton construct stated",
+    "!any() rules from docs",
+    "initializer startup call not documented"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "snapshot-versioning-pattern": {
+   "status": "rewritten",
+   "fragment": "snapshot-versioning-pattern",
+   "kb": [
+    "version history clone",
+    "composition cascade",
+    "signed identifiers immutable"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers",
+    "catalog/agent-docs/backend/data-access-guide.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "immutability is not a platform feature; immutable flag caveat",
+    "relation kind choice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "soft-delete-active-flag": {
+   "status": "rewritten",
+   "fragment": "soft-delete-active-flag",
+   "kb": [
+    "isActiveExpression",
+    "rangeExpression filter picker"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#ActorType Attribute Rules",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Input Parameter Attribute Rules"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "platform delete stays available unless turned off",
+    "rangeType DERIVED needed for range expression",
+    "isActiveExpression semantics"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "standard-type-library": {
+   "status": "rewritten",
+   "fragment": "standard-type-library",
+   "kb": [
+    "primitive types maxLength precision",
+    "judo::types built-in libraries"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md#Primitive Types",
+    "catalog/agent-docs/model/jsl-language-notes.md#Built-in libraries"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "platform primitive parameters vs project library separated",
+    "Long precision 15 in JSL built-in vs 18 in projects"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "state-based-transfer-partitioning": {
+   "status": "rewritten",
+   "fragment": "state-based-transfer-partitioning",
+   "kb": [
+    "operation return type navigation",
+    "accesspoint Access"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Access"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "partition is a view not a guard",
+    "Access and transfer flags both needed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "toggle-operation-pattern": {
+   "status": "rewritten",
+   "fragment": "toggle-operation-pattern",
+   "kb": [
+    "mapped operation binding stateful",
+    "interceptors which operations"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "stateful required; interceptors do not fire for mapped/custom ops; flag read-only"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "token-based-quota-limit": {
+   "status": "rewritten",
+   "fragment": "token-based-quota-limit",
+   "kb": [
+    "modeled faults",
+    "interceptors create"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "faults must be declared; 422 X-Fault",
+    "creation paths and races"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "token-based-verification-workflow": {
+   "status": "rewritten",
+   "fragment": "token-based-verification-workflow",
+   "kb": [
+    "token email verification expiry",
+    "anonymous actor accesspoint"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+    "catalog/agent-docs/model/esm_metamodel/operation.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "no platform token feature; anonymous actor; hash storage as project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}
