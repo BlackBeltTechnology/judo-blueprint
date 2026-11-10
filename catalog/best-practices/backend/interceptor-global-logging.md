@@ -1,85 +1,77 @@
 ---
 id: interceptor-global-logging
 title: Global Operation Logging Interceptor
-description: "A global pre-call interceptor that logs every intercepted operation's fully qualified name."
-aliases: []
-keywords: [global, operation, logging, interceptor]
+description: "A global operation-call interceptor with no getOperations override that logs the fully qualified name of every built-in operation in preCall, shipped as a development aid and toggled by enabling or disabling the component; also the authentication variant."
+aliases: ["operation logger", "debug interceptor", "LogOperationCallInterceptor"]
+keywords: ["interceptor", "logging", "debug", "getOperations", "preCall", "AsmUtils", "operation FQN", "AuthenticationInterceptor"]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:judo-demo-miniworkflow", "project:ubives", "project:park-here", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: interceptor
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [interceptor-security-filter-validation, interceptor-template-postcall, interceptor-crud-lifecycle]
+related: [interceptor-security-filter-validation, interceptor-template-postcall, interceptor-crud-lifecycle, keycloak-jit-user-provisioning]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
 
-A global pre-call interceptor that logs every intercepted operation's fully qualified name. By not overriding `getOperations()`, it applies to ALL operations. Useful for debugging and understanding operation dispatch flow during development. Typically shipped commented-out and enabled on demand.
+## Intent
 
-## Structure
+During development you want to see which operations the runtime dispatches and in which order, with their names in the exact form `getOperations` expects. A tiny global interceptor logs the fully qualified name of each intercepted operation.
+
+## Practice
+
+### Platform: what "global" covers
+
+- A `getOperations` that returns the default empty collection registers the interceptor for **all built-in operations**: create, update, delete, list, refresh, reference operations, range, template, metadata, principal, upload token, export and validate ([contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)).
+- It never sees custom (SDK-implemented), mapped or script operations, even though the Javadoc says "all operation calls". A log that lacks your custom operation is normal ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- `AsmUtils.getOperationFQName(operation)` gives the name; the same string format is used to register targeted interceptors ([FQN reference](../../agent-docs/backend/interceptors.md#operation-fqn-format-reference)). The component needs `judo.model.name=<model>` ([registration](../../agent-docs/backend/interceptors.md#interceptor-component-registration)); the platform guide shows this logger as its first example ([example 1](../../agent-docs/backend/interceptors.md#example-1-simple-logging-interceptor)).
+- The generator emits `Log*Interceptor.java.default` templates. They are not compiled until renamed to `.java`, and the renamed file needs no `.generator-ignore` entry ([.default templates](../../agent-docs/backend/interceptors.md#using-default-template-files)).
+
+### Project practice: one logger class, switched on only when needed
 
 ```java
-@Component(property = { "judo.model.name=appname" })
+// Example project code
+@Component(property = { "judo.model.name=<model>" })
 public class InterceptorOperationLogger implements OperationCallInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(InterceptorOperationLogger.class);
 
+    @Override public String getName() { return getClass().getSimpleName(); }
+
     @Override
     public Object preCall(EOperation operation, Object parameterPayload) {
-        String operationFQName = AsmUtils.getOperationFQName(operation);
-        log.info("INTERCEPTED OPERATION: {}", operationFQName);
+        log.info("INTERCEPTED OPERATION: {}", AsmUtils.getOperationFQName(operation));
         return OperationCallInterceptor.super.preCall(operation, parameterPayload);
     }
 }
 ```
 
-Key: No `getOperations()` override means it intercepts ALL operations globally.
+- Ten projects carry this class. Some keep it active, most ship it disabled (logic commented out, or the unrenamed `.java.default` template) and enable it on demand.
+- Log at a level you can filter; the logger runs on every intercepted call, so leave it off in production or limit the log level.
+- Variants seen: also log the parameter payload in `preCall` and the return value in `postCall`; and an `AuthenticationInterceptor` twin that logs the claim, realm, client and all token attributes for debugging token mapping ([authentication interceptor](../../agent-docs/backend/authentication-guide.md#authenticationinterceptor-interface), [[keycloak-jit-user-provisioning]]).
+- Do not log payloads that contain personal data or secrets, and do not log the full token attributes outside development.
 
-## Examples
+## Rationale
 
-### Trivia
-`InterceptorOperationLogger` registered with `judo.model.name=trivia`. Logic is currently commented out but shows the pattern: `AsmUtils.getOperationFQName(operation)` to get the FQN, then log it. Acts as a development debugging aid.
+- It needs no configuration and shows the real dispatch flow, including the exact operation names for targeted interceptors.
+- Cost: overhead on every call if left on, and no filtering. To look at a few operations only, return them from `getOperations`.
 
-### RackInspect
-`LogOperationCallInterceptor` registered with `judo.model.name=rackinspect`. Implements both `preCall` (logs operation name + parameters) and `postCall` (logs return value). Same global logging approach, with `getOperations` commented out to intercept all operations.
+## Example
 
-### ALBA
-`InterceptorOperationLogger` registered with `judo.model.name=Alba`. Logs with visual markers: `*** INTERCEPTED OPERATION ***` plus the operation FQN. Active (not commented out), providing runtime visibility into all operation calls across the system.
+Developer needs the FQN of the update operation of an entity to register a targeted interceptor. The logger is enabled, the screen action is performed once, and the log line `INTERCEPTED OPERATION: <model>.services...#_updateInstance...` is copied into the targeted interceptor's `getOperations`. The logger is then disabled again.
 
-### mlszksz-platform
-`LogOperationCallInterceptor` registered with `judo.model.name=MLSZKSZPlatform`. Currently disabled (getOperations commented out). Uses visual markers in log output. Demonstrates the pattern as a toggle-able debugging tool across the 65+ custom operations in the platform.
+## When to avoid
 
-### judo-demo-miniworkflow
-`LogInterceptor` registered with `judo.model.name=MiniWorkflow`. Active preCall implementation using emoji visual markers (`*** arrow-down INTERCEPTED OPERATION arrow-down ***`). Logs the operation FQN (e.g., `MiniWorkflow::DocumentTransfer.accept`). No `getOperations()` override, intercepting all 10 workflow operations globally.
-
-### Ubives
-`LogAuthenticationInterceptor` uses `AuthenticationInterceptor` interface (not `OperationCallInterceptor`) to log authentication events. Logs operation FQN, claim, realm, client, and all authentication attributes with formatted key-value pairs. Registered with `judo.model.name=Alba` (legacy model name). `isSuitableForOperation()` returns true for all operations. Variant of the pattern applied to authentication interception rather than operation interception.
-
-### ParkHere
-`LogOperationCallInterceptor` registered with `judo.model.name=ParkHere`. Implements `preCall` with visual markers logging the operation FQN. `getOperations()` method is commented out, serving as a toggle-able debugging tool. Can be enabled by uncommenting `getOperations()` to return all operations from the model.
-
-### judo-partner
-`LogOperationCallInterceptor` registered with `judo.model.name=Partner`. Logs all intercepted operation names with visual markers at INFO level. `getOperations()` is commented out, so it intercepts ALL operations globally. Serves as a debugging tool for the partner management system.
-
-### workflow-poc
-Both `LogOperationCallInterceptor` and `LogAuthenticationInterceptor` exist as `.java.default` templates (not activated). `LogOperationCallInterceptor` logs operation FQN via SLF4J. `LogAuthenticationInterceptor` logs operation FQN, claim, realm, client, and all authentication attributes. Both registered with `judo.model.name=workflow`. Would need renaming to `.java` and `.generator-ignore` entry to activate.
-
-### ReserveApp
-`InterceptorOperationLogger` registered with `judo.model.name=ReserveApp`. Active preCall logging with emoji arrow visual markers. Logs the operation FQN using `AsmUtils.getOperationFQName(operation)`. No `getOperations()` override, intercepting all operations globally. One of only two hand-written Java classes in the entire project.
-
-## Trade-offs
-
-- Pros: Zero-config debugging tool, shows full operation dispatch flow, trivial to enable/disable
-- Cons: Performance overhead if left enabled in production (intercepts ALL operations), no filtering capability
-- Alternative: Targeted interceptor with `getOperations()` for specific operations only
+- In production at INFO level: it adds log volume and time on every call.
+- To audit who did what: log lines are not an audit trail; see [[audit-event-trail]].
+- To trace custom operations: they are not intercepted; log inside the operation.
 
 ## Related
 
-- [[interceptor-security-filter-validation]]
-- [[interceptor-template-postcall]]
-- [[interceptor-crud-lifecycle]]
-
+- [[interceptor-security-filter-validation]] — a targeted pre-call interceptor
+- [[interceptor-template-postcall]] — a targeted post-call interceptor
+- [[interceptor-crud-lifecycle]] — interceptors that change behaviour
+- [[keycloak-jit-user-provisioning]] — authentication interceptors
+- [[audit-event-trail]] — the real audit trail

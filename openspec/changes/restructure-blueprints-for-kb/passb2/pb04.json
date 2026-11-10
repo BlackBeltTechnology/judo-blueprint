@@ -1,0 +1,215 @@
+{
+ "batch": "pb04",
+ "entries": {
+  "interceptor-aggregation-postcall": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor postCall",
+    "reserved payload keys",
+    "transient member"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#data-denormalization-and-aggregation",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md#absent-null-and-empty-are-different"
+   ],
+   "fixes": [
+    "added platform scope (built-in operations only), transaction rollback, InterceptorCallBusinessException",
+    "added transient-member read-time variant",
+    "masks and Optional getter note",
+    "staleness cost when relation ops not intercepted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "interceptor-call-replacement": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "ignoreDecoratedCall"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#the-interceptor-contract",
+    "catalog/agent-docs/backend/interceptors.md#decoupled-service-creation-cqrs-like-pattern"
+   ],
+   "fixes": [
+    "legacy example returned input payload from preCall; platform requires decorated call's return type",
+    "scope: only built-in ops can be replaced",
+    "fixed wrong postCall fallback in old code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "interceptor-crud-lifecycle": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor CRUD",
+    "interceptor ordering"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors",
+    "catalog/agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor",
+    "catalog/agent-docs/backend/interceptors.md#operation-fqn-format-reference"
+   ],
+   "fixes": [
+    "added registration order/transaction rollback",
+    "added exception kinds (InterceptorCallBusinessException / ValidationException / 500)",
+    "custom ops never intercepted",
+    "Payload.getAs null"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "interceptor-global-logging": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor logging",
+    "getOperations empty"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#example-1-simple-logging-interceptor",
+    "catalog/agent-docs/backend/interceptors.md#using-default-template-files"
+   ],
+   "fixes": [
+    "'ALL operations' corrected to all built-in operations only",
+    "added .java.default template rule",
+    "performance/PII notes"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "interceptor-range-override": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "getRangeReference range interceptor"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#range-and-choice-operations",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#reserved-payload-keys"
+   ],
+   "fixes": [
+    "range interceptors only on _getRangeReference*, not list",
+    "security boundary for rangeType ANY; min/max UI-only",
+    "NOT_ACCEPTED_BY_RANGE"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "interceptor-security-filter-validation": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor list filter"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor",
+    "catalog/agent-docs/backend/data-access-guide.md#low-level-dao-and-querycustomizer"
+   ],
+   "fixes": [
+    "raw RuntimeException replaced by InterceptorCallBusinessException (500 otherwise)",
+    "range interceptors do not cover lists",
+    "labelled project guard vs platform access"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "interceptor-template-postcall": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "getTemplate postCall"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#payload-type"
+   ],
+   "fixes": [
+    "scope built-in only",
+    "transient member link; ordering",
+    "not an authorization mechanism"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "jaxb-external-api-client": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "JAXB OSGi bundle"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md"
+   ],
+   "fixes": [
+    "labelled everything as project practice; no platform client exists",
+    "interceptor transaction warning"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "keycloak-jit-user-provisioning": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "AuthenticationInterceptor JIT",
+    "Keycloak users entity store"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/authentication-guide.md#example-just-in-time-user-provisioning",
+    "catalog/agent-docs/backend/authentication-guide.md#principal-to-actor-resolution-and-multi-client-mapping",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#keycloak-users-and-the-entity-store"
+   ],
+   "fixes": [
+    "runtime does not auto-insert managed actors (verified warning)",
+    "interceptor runs before actor lookup",
+    "claim must match lookup attribute",
+    "<claims> only EMAIL/USERNAME",
+    "lock is single node"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "magic-link-authentication": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "Keycloak SPI magic link",
+    "Keycloak admin client"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#keycloak-users-and-the-entity-store"
+   ],
+   "fixes": [
+    "platform has no magic link; extension is Keycloak-side",
+    "platform user manager/admin client may already exist",
+    "stores drift; acceptable clients"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "mask-field-projection": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "masks DAO projection"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#using-masks-projections",
+    "catalog/agent-docs/backend/data-access-guide.md#pagination"
+   ],
+   "fixes": [
+    "masks limit columns not rows",
+    "null for unmasked fields, Optional getters",
+    "not a security mechanism"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

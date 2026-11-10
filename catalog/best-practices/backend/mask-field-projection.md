@@ -1,82 +1,86 @@
 ---
 id: mask-field-projection
 title: Mask Pattern for Field Projection
-description: The Mask pattern controls which fields and nested relations are loaded from the database when querying or updating entities.
-aliases: []
-keywords: [mask, field, projection]
+description: "Use the generated Mask classes to say which attributes and relations a DAO read or update touches: minimal masks for existence checks, lists and loops, nested masks for detail views, and masks on update for partial writes."
+aliases: ["mask pattern", "DAO projection", "partial update mask"]
+keywords: ["mask", "projection", "DAO", "getById", "maskedBy", "partial update", "N+1", "performance", "nested mask"]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "status:established"]
 category: data-access
 status: established
 projects: [rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner]
 evidence: ["rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-related: [dao-fluent-query-filter, mutable-entity-update-pattern]
+related: [dao-fluent-query-filter, mutable-entity-update-pattern, entity-re-fetch-pattern, dirty-check-before-update]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
 
-The Mask pattern controls which fields and nested relations are loaded from the database when querying or updating entities. Generated `EntityMask` builder classes allow specifying exactly which attributes and relation depths to include. This reduces data transfer and avoids loading unnecessary relation graphs. Masks can be used with `getById()`, `query().maskedBy()`, `update()`, and relation queries.
+## Intent
 
-## Structure
+Every DAO read and update takes a mask that names the attributes and relations to load or write. Using the smallest mask that serves the code reduces data transfer, avoids loading relation graphs and N+1 reads, and makes updates touch only what changed.
+
+## Practice
+
+### Platform: what masks are and how they behave
+
+- Every entity has a generated `<Entity>Mask` with a static factory `<Entity>Mask.<entity>Mask()` and fluent `.withAttribute()` methods; `.withRelation(<Related>Mask...)` takes a nested mask ([mask basics](../../agent-docs/backend/data-access-guide.md#mask-basics)).
+- Masks apply to `getById`, `query().maskedBy(...)`, relation queries (`queryRelation(entity).maskedBy(...)`), `create` and `update` ([common mask patterns](../../agent-docs/backend/data-access-guide.md#common-mask-patterns)).
+- The platform guide's rules: always mask queries; an **empty mask** loads only the identifier and is the cheapest existence check; use minimal masks in loops; chain nested masks to control relation depth; use masks in updates for partial writes ([mask best practices](../../agent-docs/backend/data-access-guide.md#mask-best-practices)).
+- Do not read a field you did not include; it is `null` (same section). In generated getters an optional attribute is an `Optional`, a required one a plain value, and a key absent from the payload differs from a key present with `null` ([absent, null and empty](../../agent-docs/backend/data-access-guide.md#absent-null-and-empty-are-different)).
+- A list call without an explicit seek returns all matching rows, so a mask limits columns, not rows; use a seek for paging ([pagination](../../agent-docs/backend/data-access-guide.md#pagination)).
+
+### Project practice: how the seven projects use them
 
 ```java
-// Simple mask - specific fields only
-PartnerMask.partnerMask()
-    .withGenericValid()
-    .withName();
+// Example project code: Partner, Address and their DAOs and masks are generated types
+// existence check: identifier only
+boolean exists = partnerDao.getById(id, PartnerMask.partnerMask()).isPresent();
 
-// Nested mask - include relations with their own field selection
-PartnerMask.partnerMask()
-    .withAddresses(AddressMask.addressMask().withIsBilling().withCity())
-    .withBillingAddress(AddressMask.addressMask())
-    .withPartnerErrors(PartnerErrorMask.partnerErrorMask());
+// list: only the displayed columns
+partnerDao.query().maskedBy(PartnerMask.partnerMask().withName().withIsArchived()).selectList();
 
-// Usage with getById
-partnerDao.getById(id, PartnerMask.partnerMask().withGenericValid());
+// detail: nested masks control depth
+partnerDao.getById(id, PartnerMask.partnerMask()
+        .withName()
+        .withAddresses(AddressMask.addressMask().withCity().withIsBilling()));
 
-// Usage with relation query
-partnerDao.queryAddresses(partner)
-    .maskedBy(AddressMask.addressMask().withIsBilling())
-    .selectList();
+// relation query
+partnerDao.queryAddresses(partner).maskedBy(AddressMask.addressMask().withIsBilling()).selectList();
 
-// Usage with update (partial update)
-addressDao.update(entity, AddressMask.addressMask());
+// partial update: only these fields are written
+partner.setName(newName);
+partnerDao.update(partner, PartnerMask.partnerMask().withName());
 ```
 
-## Examples
+- Build one named helper for a deep mask used in several places (one project has a standard-rack mask five levels deep) instead of repeating the chain.
+- Use the empty mask for toggle operations and batch deletes that need only the identifiers: `dao.update(entity, EntityMask.entityMask())` and loading ids before deleting in batches.
+- In authentication and per-request paths (user lookup by e-mail) use the smallest mask: the check runs on every login or call ([[keycloak-jit-user-provisioning]]).
+- On update, mask what you set. A wider mask than the changed fields rewrites values you loaded, which can overwrite concurrent changes; compare before writing ([[dirty-check-before-update]], [[mutable-entity-update-pattern]]).
+- After a write, re-read with the mask the next step needs rather than reusing an object loaded with a smaller one ([[entity-re-fetch-pattern]]).
+- Masks are for the DAO. Which fields a REST client receives is decided by the transfer object in the model; to hide fields from a response see [[interceptor-template-postcall]].
 
-### RackInspect
-Extensive mask usage across all services. `RackService.createStandardRackMask()` builds a deeply nested mask spanning 5+ levels (rack -> elements -> dimension groups -> parameters -> selectable values + templates). Toggle operations use empty masks on update: `dao.update(entity, EntityMask.entityMask())`. `queryContainer()` uses masks to load only needed parent fields.
+## Rationale
 
-### ALBA
-Masks used for performance optimization in every operation. `ProductMask.productMask().withState().withOwnVersion()` fetches only state for validation. `UserMask.userMask().withEmail().withIsActive()` for authentication checks. `ResultTypeMask.resultTypeMask().withName()` when bulk-fetching related entities for aggregation. Mask also used in `update()` calls: `productDao.update(product, ProductMask.productMask())`.
+- Smaller reads: fewer columns and no hidden relation loads, which matters most in lists, loops and per-request code.
+- Type-safe field selection checked at compile time.
+- Cost: you must list every needed field; a forgotten field is `null` at runtime and reads like missing data; deeply nested masks are verbose.
 
-### mlszksz-platform
-`UserMask.userMask().withEmail()` used in `LogAuthenticationInterceptor` for efficient user lookup during authentication. Minimal field loading in interceptors for performance-sensitive paths. Used across the 5 interceptors to load only the fields needed for their specific logic.
+## Example
 
-### Ubives
-`AccountMask.accountMask().withUserName()` used in authentication interceptor for efficient user lookup. `AccountEntityMask.accountEntityMask()` used in init operations for existence checks. `OrganizationEntityMask.organizationEntityMask().withName()` for organization lookups. `InvitationEntityMask.invitationEntityMask()` for invitation queries. Consistent mask usage across all 7 services.
+Seven projects use masks throughout. A duplicate check loads only the normalized name and archived flag of partners with the same normalized name. A validation step loads only the state of a product. A holiday cancellation reads only the status of reservations. A cache clearing job loads ids with an empty mask and deletes in batches. A rack service builds a five-level nested mask once and reuses it. Authentication interceptors load only the e-mail of the user.
 
-### ParkHere
-`UserMask.userMask()` used in authentication interceptor and actor resolution. `ReservationMask.reservationMask().withReservationStatus()` for efficient status-only queries during holiday cancellation. `UserReservationMask` with specific fields (date, startTime, endTime, reserverName, parkingSlotInformation, reservationType, owner) for holiday conflict preview queries. Masks used consistently in `getById()` calls and `update()` calls across services.
+## When to avoid
 
-### Indamedia-AdTrack
-`UserMask.userMask().withEmail()` used in `LogAuthenticationInterceptor` for efficient user existence check during JIT provisioning. Minimal mask ensures only the email field is loaded from database when checking if user already exists before creation. Consistent with the pattern seen in other projects for authentication-path optimization.
-
-### judo-partner
-`PartnerMask.partnerMask().withNormalizedName().withIsArchived()` used in duplicate detection queries to minimize data transfer when scanning all partners with the same normalized name. `TaxpayerMask.taxpayerMask()` (empty mask) used in batch cache clearing to load only identifiers for deletion. Demonstrates combining mask with multi-filter queries for efficient bulk operations.
-
-## Trade-offs
-
-- Pros: Reduces data transfer, controls relation depth, type-safe field selection, prevents N+1 for nested relations
-- Cons: Must explicitly include every needed field (easy to miss), empty mask behavior may be unintuitive, deeply nested masks are verbose
-- Alternative: Load full entity without mask (simpler but less performant), GraphQL-style automatic field selection
+- When the entity is tiny and used once: the full read is no cost, though it is still cheap to write the mask.
+- When you need every attribute, for example copying an entity; then name them explicitly rather than assume a default.
+- Do not use a mask to try to secure data: the field is still reachable through other operations; use access rules in the model.
 
 ## Related
 
-- [[dao-fluent-query-filter]]
-- [[mutable-entity-update-pattern]]
-
+- [[dao-fluent-query-filter]] — queries that the mask is attached to
+- [[mutable-entity-update-pattern]] — update with a mask
+- [[entity-re-fetch-pattern]] — reading again after a write
+- [[dirty-check-before-update]] — compare before writing
+- [[interceptor-template-postcall]] — shaping responses
+- [[keycloak-jit-user-provisioning]] — minimal mask on a per-login path

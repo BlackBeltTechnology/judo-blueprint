@@ -1,87 +1,89 @@
 ---
 id: interceptor-crud-lifecycle
 title: Interceptor as CRUD Lifecycle Hook
-description: "Interceptors that hook into the generated CRUD operations (_createInstance, _updateInstance, _deleteInstance) to add cross-cutting behavior that the framework cannot express in the model."
-aliases: []
-keywords: [interceptor, as, crud, lifecycle, hook]
+description: "Interceptors on the built-in create, update, delete and reference operations that add behaviour the model cannot express: validation and payload shaping in preCall, relation wiring and cascades in postCall, with the platform's operation scope, ordering and error rules."
+aliases: ["CRUD interceptor", "create update interceptor", "lifecycle hook"]
+keywords: ["interceptor", "CRUD", "preCall", "postCall", "create", "update", "delete", "payload", "transaction", "InterceptorCallBusinessException"]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba", "project:park-here", "project:judo-partner", "project:reserve-app", "status:established"]
 category: interceptor
 status: established
 projects: [rackinspect, alba, park-here, judo-partner, reserve-app]
 evidence: ["rackinspect:unrecorded", "alba:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [interceptor-global-logging, interceptor-access-control-flags, interceptor-range-override, form-field-flattening]
+related: [interceptor-global-logging, interceptor-access-control-flags, interceptor-range-override, form-field-flattening, interceptor-call-replacement, interceptor-aggregation-postcall]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
 
-Interceptors that hook into the generated CRUD operations (_createInstance, _updateInstance, _deleteInstance) to add cross-cutting behavior that the framework cannot express in the model. Common uses: setting singular reference relations after create, validating format constraints in preCall, cascading updates in postCall, and transforming flat form fields into nested structures.
+## Intent
 
-## Structure
+The generated create, update and delete operations cover the plain write. Real applications need more around it: validate a format, turn flat form fields into a nested structure, set a singular relation after create, cascade a change to other entities. An `OperationCallInterceptor` adds this without editing generated code.
+
+## Practice
+
+### Platform: contract and limits
+
+- An interceptor implements `OperationCallInterceptor` with `preCall` (before the platform call, may replace the input payload) and `postCall` (after it, receives the return payload and may replace it), registered as an OSGi component with the property `judo.model.name=<model>` ([contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract), [registration](../../agent-docs/backend/interceptors.md#interceptor-component-registration)).
+- `getOperations` names the operations by FQN, for example `<model>.services.ServiceContext#_createInstance<Entities>` for create, `#_updateInstance<EntityFQN with underscores>` for update, `#_deleteInstance<...>` and `#_addReference<Relation>` / `#_removeReference` / `#_setReference` for relations ([FQN format](../../agent-docs/backend/interceptors.md#operation-fqn-format-reference)). Resolve them once through `AsmUtils` and cache the list.
+- Only built-in behaviour operations are intercepted. Custom, mapped and script operations never are, so guards for those belong in the operation itself ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- Several interceptors on one operation run in registration order for `preCall` and for `postCall` (not reversed); all run in the operation's transaction, so an exception anywhere rolls back the write, including the DAO writes of earlier interceptors ([ordering](../../agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors)).
+- The only business-level exception an interceptor may throw is `InterceptorCallBusinessException` (REST 422 with `X-Fault`). A field rule on one attribute is a `ValidationException` (400). A raw `RuntimeException` becomes a 500. A generated `<Fault>Exception` from a service must be caught and rewrapped ([business error](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)).
+- Payload access: the create payload is `CreateInstanceCall.CreateInstanceCallPayload` (`getInput()`), the update payload `UpdateInstanceCall.UpdateInstanceCallPayload` (`getInput()`, `getInstance()`); the id of a returned payload is its `__identifier` key. `Payload.getAs` returns `null` for an absent key, so do not unbox it ([payload type](../../agent-docs/backend/data-access-guide.md#the-payload-type)).
+
+### Project practice: what the projects put in the hooks
 
 ```java
-@Component(property = { "judo.model.name=appname" })
-public class EntityCreateInterceptor implements OperationCallInterceptor {
-    @Reference EntityDao entityDao;
-    @Reference ParentDao parentDao;
-
-    @Override
-    public Collection<EOperation> getOperations(AsmModel asmModel) {
-        // Target specific CRUD operations
-        return List.of(asmUtils.resolveOperation(
-            "app.actors.Actor#_createInstanceChildren").orElseThrow());
-    }
-
-    @Override
-    public Object preCall(EOperation op, Object payload) {
-        // Validate before CRUD executes
-        CreateInstanceCallPayload create = (CreateInstanceCallPayload) payload;
+// Example project code: Entity, EntityDao, Child, ChildDao are generated types
+@Override
+public Object preCall(EOperation operation, Object parameterPayload)
+        throws InterceptorCallBusinessException {
+    if (parameterPayload instanceof CreateInstanceCall.CreateInstanceCallPayload create) {
         Payload input = create.getInput();
-        // Validate, transform input...
-        return OperationCallInterceptor.super.preCall(op, payload);
+        // validate, or reshape flat form fields into the nested payload the create expects
     }
+    return OperationCallInterceptor.super.preCall(operation, parameterPayload);
+}
 
-    @Override
-    public Object postCall(EOperation op, Object paramPayload, Object returnPayload) {
-        // Set relations, cascade updates after CRUD
-        Payload created = (Payload) returnPayload;
-        UUID id = created.getAs(UUID.class, "__identifier");
-        // Set relations, trigger validation...
-        return OperationCallInterceptor.super.postCall(op, paramPayload, returnPayload);
-    }
+@Override
+public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload)
+        throws InterceptorCallBusinessException {
+    UUID id = ((Payload) returnPayload).getAs(UUID.class, "__identifier");
+    Entity entity = entityDao.getById(id, EntityMask.entityMask()).orElseThrow();
+    // set singular relations, cascade, re-validate
+    return OperationCallInterceptor.super.postCall(operation, parameterPayload, returnPayload);
 }
 ```
 
-## Examples
+- `preCall`: validate input (format by regular expression, required flags) and throw the right exception kind; flatten `form_*` fields into a nested payload ([[form-field-flattening]]).
+- `postCall` on create: load the created entity by the returned id (with a mask), set singular relations such as a primary or default child, trigger recalculation or validation services. Set only relations that the model declares settable.
+- `postCall` on update: cascade, for example normalise names, check uniqueness, recompute denormalized fields ([[interceptor-aggregation-postcall]]) or write an audit entry.
+- One project assigns ownership in the create `postCall`: it resolves the current user through `VariableResolver` and sets the owner relation on the new record ([[actor-resolution-variable-resolver]]).
+- Handle create and update in one class with `instanceof` pattern matching on the payload type, and throw `IllegalArgumentException` for an unexpected type.
 
-### RackInspect
-38 interceptors organized by domain. `PartnerCreateInterceptor` validates headquarters address in preCall, transforms 15+ flat `form_*` fields into nested Address payload, then sets headquarters/billing/postal relations in postCall. `BankAccountCreateAndUpdateInterceptor` validates account number format via regex in preCall, sets primary relation in postCall.
+## Rationale
 
-### ALBA
-`AdminUserCreateInterceptor` intercepts `_createInstanceAdminProfiles` in preCall, extracts profile data from `AdminAuthorProfile`, creates a `UserTransfer` entity, and uses `ignoreDecoratedCall()=true` to completely replace the original create operation. `ProductUpdateInterceptor` hooks into `_updateInstance` postCall to recompute aggregated string fields.
+- Generated CRUD stays generated and regeneration-safe; cross-cutting write rules live in one class per aggregate.
+- Interceptors run in the operation's transaction, so a refusal also undoes the write.
+- Cost: interceptors work on raw `Payload` maps (no type safety), several of them on one operation depend on registration order, and they are harder to debug than a named custom operation. A custom operation wrapping the write gives more control but loses the generated UI binding.
 
-### ParkHere
-`CarUpdateInstanceInterceptor` intercepts `Car#_updateInstanceParkHere_services_Car` in postCall to validate and enforce favorite car settings. After a car is updated, if the favorite flag is set, it calls `carService.setFavoriteCarWithValidationException()` to ensure only one car per user is marked as favorite. Uses `ValidationException` for immediate UI feedback.
+## Example
 
-### judo-partner
-`PartnerUpdateInterceptor` intercepts `Partner#_updateInstancePartner_partner_Partner` in postCall. After every partner update: corrects company name format, normalizes name for duplicate detection, validates tax identifier uniqueness, re-validates against NAV, recalculates `isDuplicateName` flags across all partners with the same normalized name, and creates a `PartnerLog` audit entry with `LogType.UPDATE`.
+Typical sets in the five projects: a partner create validates the headquarters address in `preCall`, turns fifteen flat form fields into a nested address payload, then sets headquarters, billing and postal relations in `postCall`; a bank-account create checks the account number format in `preCall` and sets the primary relation after; a car update enforces "one favourite per user" in `postCall` and surfaces a `ValidationException`; a partner update normalises names, flags duplicates and writes a log entry; a reservation create assigns the calling partner as owner.
 
-### ReserveApp
-`PartnerActorInterceptor` intercepts `PartnerActor#_createInstanceReservationsForPartner` in postCall. After a partner-role user creates a FreightReservation, resolves the current user via `VariableResolver`, navigates to their Partner entity via `userDao.queryPartner()`, and sets the partner relation on the new reservation via `freightReservationDao.setPartner()`. Demonstrates ownership assignment via postcall enrichment.
+## When to avoid
 
-## Trade-offs
-
-- Pros: Extends generated CRUD without modifying generated code, cross-cutting concerns centralized, supports complex post-creation wiring
-- Cons: Interceptors interact with raw Payload objects (less type-safe than custom operations), harder to debug, order dependency between interceptors
-- Alternative: Custom operations that wrap CRUD logic entirely (more control but more boilerplate)
+- For custom, mapped or script operations: interceptors never fire for them; put the logic in the operation.
+- For permission checks that must hold for every path: hiding or intercepting is not enough; use the model's access definitions and write guards inside custom operations.
+- When the whole create should differ, not just be extended: see [[interceptor-call-replacement]].
+- When the work is slow or calls external systems: it runs inside the transaction and holds it open; use an asynchronous interceptor only for work whose result and failure do not matter, because async exceptions are lost.
 
 ## Related
 
-- [[interceptor-global-logging]]
-- [[interceptor-access-control-flags]]
-- [[interceptor-range-override]]
-- [[form-field-flattening]]
-
+- [[interceptor-global-logging]] — log which operations are intercepted
+- [[interceptor-access-control-flags]] — per-row flags on list and refresh
+- [[interceptor-range-override]] — interception of reference range operations
+- [[form-field-flattening]] — flat form fields into nested payloads
+- [[interceptor-call-replacement]] — skip the platform call
+- [[interceptor-aggregation-postcall]] — denormalized aggregates after update
+- [[actor-resolution-variable-resolver]] — resolving the caller
