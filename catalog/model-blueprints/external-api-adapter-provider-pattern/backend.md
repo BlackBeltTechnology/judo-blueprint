@@ -22,15 +22,16 @@ Keep the three layers in separate modules, so the API module has no dependency o
 
 ### The factory
 
-- The provider is a component in the common module. It injects the data-access services it needs and the file store service for credential files.
+- The provider is a component in the common module. It injects the data-access objects (DAOs) it needs and the project's file store service for credential files.
 - The lookup method does three things: load the entity, read its platform, load the platform's credentials. Then it constructs the adapter and returns it.
-- Dispatch on the platform with one branch per platform. An unknown or not-yet-implemented platform fails with a business error that carries a code and a localized message.
+- Dispatch on the platform with one branch per platform. An unknown or not-yet-implemented platform fails with a business fault that carries an error code and a localized message.
 
 ### Business errors, not raw exceptions
 
-- A connection failure to the external platform is not a 500 for the user. Catch it in the factory or the calling operation, log the cause, and rethrow it as the business fault declared on the operation, with a code and a message.
+- A connection failure to the external platform is not a 500 for the user. Catch it in the factory or the calling operation, log the cause, and rethrow it as a modeled fault declared on the operation (the generated interface has a `throws` clause only for declared faults), with an error code and details. The client receives HTTP 422.
 - An error that the platform's API returns is translated to a business error at the adapter boundary or in the calling operation, not passed through as a raw exception.
-- Use the fault's type as the business error's type, so the client's fault dialog can find its translations.
+- Use the modeled fault's full name as the type, so the frontend fault dialog finds its `faults.<fqn>.<attribute>` translations. A modeled fault is a checked exception and cannot be thrown from an interceptor; there, wrap it in `InterceptorCallBusinessException`.
+- Field problems in the input are a `ValidationException` (HTTP 400), not a fault.
 
 ### Consumption
 
@@ -39,7 +40,7 @@ Keep the three layers in separate modules, so the API module has no dependency o
 
 ### Project code, not platform API
 
-The example project's names for the provider, the adapter and the data objects, and its error helper, are project code. Copy the pattern, not the names.
+The example project's names for the provider, the adapter and the data objects, and its error helper, are project code (not platform API). Copy the pattern, not the names.
 
 ## Examples
 

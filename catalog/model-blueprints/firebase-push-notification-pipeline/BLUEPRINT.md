@@ -12,7 +12,7 @@ evidence: ["mlszksz-platform:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -34,16 +34,17 @@ The pipeline has three parts:
 - **Notification service.** Creates pending notifications for eligible users, honouring their opt-in preferences, and delivers them. It also registers devices and refreshes their tokens.
 - **Scheduled jobs.** One job delivers pending and retriable notifications on a short cycle. A daily job deactivates devices whose token has not been refreshed for a set number of days.
 
-The entities involved are the notification, the device (one per user and device token) and the user. A notification has a type that maps to a deep-link route in the app.
+The pipeline is project practice built on platform mechanisms: OSGi components with references, the generated data-access objects (DAOs), and an OSGi-registered scheduler. The platform itself supplies no push or scheduling feature. The entities involved are the notification, the device (one per user and device token) and the user. A notification has a type that maps to a deep-link route in the app.
 
 ## Constraints
 
-- A notification is created in the pending state and is delivered only by the delivery job.
+- A notification is created in the pending state and is delivered only by the delivery job. Creation happens inside the triggering operation's transaction, so a rollback removes the pending record; the job runs outside that transaction.
 - Duplicate notifications are suppressed when they are created in a batch.
 - Retry delay doubles with each retry, is capped at one hour, and stops after five retries.
 - A device token belongs to one user at a time. Registering a token that another user holds moves it.
 - Messages to Android devices carry data only, with no visible notification payload, so the app handles both foreground and background taps.
 - Email is a best-effort fallback sent only to users who opted in. Its failure does not fail the push.
+- A delivery failure is logged and recorded on the notification; it is never thrown to a user as a business fault. Failures in the triggering operation's own creation step are platform failures too: fail the operation rather than throwing a bare runtime exception for a user-facing problem.
 
 ## Variations
 
@@ -68,3 +69,4 @@ The entities involved are the notification, the device (one per user and device 
 - [[safe-failure-pattern]] — when a side-effect failure must not break the business operation
 - [[operation-call-logging-interceptor]] — logging around operations that trigger notifications
 - [[external-api-adapter-provider-pattern]] — wrapping a third-party SDK behind an adapter
+- [[osgi-scheduled-background-jobs]] — the scheduled job framework that runs the delivery and cleanup jobs

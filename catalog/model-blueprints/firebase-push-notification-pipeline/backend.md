@@ -4,22 +4,23 @@ Implements a multi-stage push notification delivery pipeline using Firebase Clou
 
 ## Implementation Pattern
 
-**1. Firebase Module (OSGi service wrapping FCM):**
+**1. Firebase Module (OSGi service wrapping FCM; project code, not platform API):**
 - `FirebaseMessagingService` -- `@Component(service=..., configurationPolicy=REQUIRE)` with `@Designate(ocd=Config.class)` for service account credentials (file path or base64)
 - `BridgingClassLoader` -- bridges bundle and system class loaders for Firebase SDK compatibility in OSGi
 - `FcmSendResult` enum -- `SUCCESS`, `FAILED_RETRYABLE`, `FAILED_INVALID_TOKEN` enabling callers to distinguish transient vs permanent failures
 - `sendMessage()` builds platform-specific configs: Android uses data-only messages (no notification payload) for Capacitor deep link compatibility; APNs uses alert with badge
 - Supports collapse keys for notification coalescing and silent mode for do-not-disturb
 
-**2. PushNotificationService (common module):**
-- `@Component(immediate=true, service=PushNotificationService.class)` with `@Reference` to `FirebaseMessagingService`, DAOs, `PlatformEmailService`, and `MLSZKSZPlatformI18n`
+**2. PushNotificationService (common module, project code):**
+- `@Component(immediate=true, service=PushNotificationService.class)` with `@Reference` to `FirebaseMessagingService`, the generated DAOs, `PlatformEmailService`, and `MLSZKSZPlatformI18n`
 - **Creation phase:** `sendPostPublishedNotification()` / `sendAnnouncementNotification()` query eligible users respecting opt-in preferences, create PENDING `Notification` records with fast-path batch deduplication
 - **Delivery phase:** `deliverPendingNotifications()` (called by scheduler) queries PENDING + retriable FAILED notifications, builds user/device caches to avoid N+1, sends FCM per device, sends email if user opted in
 - **Retry logic:** Exponential backoff (`BASE_RETRY_DELAY * 2^retryCount`, capped at 60 min), max 5 retries, cumulative delay check before retry eligibility
 - **Device management:** `registerDevice()` does global token dedup (migrates tokens across users), `updateDeviceToken()` handles token refresh, `cleanupStaleTokens()` deactivates devices with old `tokenUpdatedAt`
 - **Deep link routing:** Static map from `NotificationType` to route prefix (e.g., `NEW_OFFER` -> `Services/Feed/FeedEntryTO/Offer/RelationViewPage/`)
 
-**3. Scheduler Integration:**
+**3. Scheduler Integration (project-registered jobs; see [[osgi-scheduled-background-jobs]]):**
+- Interceptors are not involved: they run only for built-in operations, so custom operations that raise an event call the notification service themselves.
 - `NotificationDeliveryJob` -- runs every 30s, delegates to `PushNotificationService.deliverPendingNotifications()`
 - `StaleTokenCleanupJob` -- daily, delegates to `cleanupStaleTokens(thresholdDays)` with configurable threshold
 

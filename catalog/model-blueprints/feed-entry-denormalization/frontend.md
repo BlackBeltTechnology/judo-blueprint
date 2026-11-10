@@ -6,7 +6,7 @@ The generated list of feed rows is a table. For a feed, replace it with a custom
 
 ### Load pages by seek, not by offset
 
-Load the rows with seek pagination, ordered by creation time, newest first. Load the next page when the user reaches the end of the list (infinite scroll). This keeps the page fast as the feed grows.
+A list call without an explicit seek returns all rows, so pagination is opt-in. Load the rows with seek pagination, ordered by creation time, newest first. Load the next page when the user reaches the end of the list (infinite scroll). This keeps the page fast as the feed grows.
 
 ### Keep filters on the page
 
@@ -14,7 +14,7 @@ Provide filters for the capabilities (with autocomplete) and for the entry type.
 
 ### Navigate by type
 
-A row carries the content id and the entry type. The row's open action queries the derived relation for that type, and then opens the matching detail page. Do not open the detail page from the row id alone.
+A row carries the content id and the entry type. The row's open action is overridden through a page action hook (a registered service that replaces the generated action). It queries the derived relation for that type, and then opens the matching detail page. Do not open the detail page from the row id alone.
 
 ### Show a create action only to the right roles
 

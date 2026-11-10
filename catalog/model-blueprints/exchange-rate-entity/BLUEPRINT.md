@@ -13,7 +13,7 @@ alternatives: []
 fragment: exchange-rate-entity
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -21,7 +21,7 @@ Keep a dated history of conversion rates between currencies, so that amounts can
 
 ### Rates are records, not edits
 
-The rate entity is not createable, updateable or deleteable through generated actions. A rate is written by a dedicated operation, either a manual entry or an automatic fetch.
+The rate entity is not createable, updateable or deleteable, so the generated pages offer no create, edit or delete action. A rate is written by a dedicated custom operation (backend code can still write the entity), either a manual entry or an automatic fetch.
 
 ### Recording metadata is part of the row
 

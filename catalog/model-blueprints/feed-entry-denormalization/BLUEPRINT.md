@@ -13,7 +13,7 @@ alternatives: []
 fragment: feed-entry-denormalization
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -29,7 +29,7 @@ The row links to its owning organization and to the organizations it is shown to
 
 ## Structure
 
-The FeedEntry entity is not createable, updateable or deleteable through generated actions. It has a required entry type (an enumeration of the content kinds), a required content id, and a required creation timestamp. It has display fields: title, summary, organization name, capabilities, author name, validity dates and a sensitivity flag. Its associations are an optional source post (0..1), a required owning organization (1..1), and the target organizations (0..*).
+The FeedEntry entity is not createable, updateable or deleteable, so the generated pages offer no such action (backend code still writes it through its data-access object). It has a required entry type (an enumeration of the content kinds), a required content id, and a required creation timestamp. It has display fields: title, summary, organization name, capabilities, author name, validity dates and a sensitivity flag. Its associations are an optional source post (0..1), a required owning organization (1..1), and the target organizations (0..*).
 
 ## Constraints
 
@@ -37,7 +37,7 @@ The FeedEntry entity is not createable, updateable or deleteable through generat
 - The entry type, the content id and the creation timestamp are required.
 - The display fields are copies. They are written when the row is created and refreshed when the source changes, so the feed never reads stale data for a changed title.
 - Each row has exactly one owning organization.
-- Interceptors do not run for custom operations. A custom operation that publishes or removes content must update the feed in the same transaction.
+- Interceptors run only for the platform's built-in operations, not for custom ones. A custom operation that publishes or removes content must update the feed in the same transaction.
 
 ## Variations
 

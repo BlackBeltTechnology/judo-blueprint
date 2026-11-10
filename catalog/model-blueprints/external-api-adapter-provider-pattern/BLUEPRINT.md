@@ -12,7 +12,7 @@ evidence: ["indamedia-adtrack:unrecorded"]
 alternatives: []
 fragment: none: backend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -28,20 +28,20 @@ The provider service reads the platform of an entity, loads its credentials, and
 
 ## Structure
 
-Three layers. The API module is a standalone bundle with the interface and its data objects, with no dependency on the model or on any platform SDK. Each adapter module depends on the API module and on one platform SDK. The provider service is a component in the common module. It loads the entity and its credentials, dispatches on the platform, and returns the adapter. Custom operations and services reference the provider service, never an adapter.
+Three layers. The API module is a standalone bundle with the interface and its data objects, with no dependency on the model or on any platform SDK. Each adapter module depends on the API module and on one platform SDK. The provider service is a component in the common module. It loads the entity and its credentials, dispatches on the platform, and returns the adapter. Custom operations and services reference the provider service, never an adapter. The provider and the callers are OSGi components of the application (project practice; the platform only supplies the component and reference mechanism and the data-access objects).
 
 ## Constraints
 
 - The API module has no dependency on the model or on any platform SDK.
 - Adapters are plain objects built by the provider with runtime credentials, not components of their own.
 - Callers reference the provider service, never an adapter class.
-- A platform with no adapter yet fails with a business error, not with a runtime exception.
-- Credentials that are files (for example a key file) are read through the file store service, not from a path.
+- A platform with no adapter yet fails with a modeled business fault declared on the calling operation (HTTP 422), not with a bare runtime exception (which the client sees as a generic 500). The calling operation must declare the fault.
+- Credentials that are files (for example a key file) are read through the project's file store service, not from a path.
 
 ## Variations
 
 - **Dispatch on an enumeration.** The provider switches on the platform enumeration of the entity. A new platform adds one enum member and one branch.
-- **Declared but not implemented.** Declare a platform in the enumeration before its adapter exists. The provider returns a clear "not implemented" business error, which marks the extension point.
+- **Declared but not implemented.** Declare a platform in the enumeration before its adapter exists. The provider raises a clear "not implemented" business fault, which marks the extension point.
 - **Lookup by configuration.** Choose the adapter from a configuration entry instead of an enumeration. This suits tenants that use different providers for the same platform.
 - **Helper methods on the provider.** The provider exposes helpers that extract platform-specific identifiers from the entity, so callers do not know the platform's id format.
 

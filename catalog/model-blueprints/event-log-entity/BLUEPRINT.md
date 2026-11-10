@@ -13,11 +13,11 @@ alternatives: [audit-event-trail]
 fragment: event-log-entity
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
-Keep a chronological record of domain events, so that an entity can show its own timeline and an administrator can see what happened. Events are written by backend operations when a state changes. Users do not create, edit or delete them through generated actions.
+Keep a chronological record of domain events, so that an entity can show its own timeline and an administrator can see what happened. Events are written by backend operations (custom operation code through a data-access object) when a state changes. Marking the entity not createable, updateable or deleteable only removes the generated user actions; backend code can still write it. Users do not create, edit or delete them through generated actions.
 
 ### Events are typed by an enumeration
 
@@ -37,7 +37,7 @@ The Event entity is not createable, updateable or deleteable through generated a
 - The type and the timestamp are required. The type must be a value of the enumeration.
 - Events are written inside the operation that changes the state. The event shares that operation's transaction, so a rollback removes it.
 - Interceptors do not run for custom operations. A custom operation must write its own event.
-- Associations store the id, not the name. If the user or the entity is removed, the reference is cleared, and the event text should therefore carry any name that must stay readable.
+- Associations store the id, not the name, and only a composition cascades a delete. The event is therefore not removed with the user or the entity, and its link can no longer be followed. The event text should carry any name that must stay readable.
 
 ## Variations
 

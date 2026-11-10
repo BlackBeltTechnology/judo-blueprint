@@ -12,11 +12,11 @@ evidence: ["rackinspect:unrecorded", "park-here:unrecorded"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
-Show a business error to the user as a short message, instead of the generated fault dialog. The backend already sends the business error as HTTP 422 with its message; the frontend only chooses how to display it.
+Show a business error to the user as a short message, instead of the generated fault dialog. The platform already sends a modeled business fault as HTTP 422, with a body keyed by the fault; the generated frontend opens a fault dialog for it. This blueprint is project practice on top of that: the frontend registers an error handler interceptor and chooses a different display.
 
 ### The hook decides what to intercept
 
@@ -24,25 +24,27 @@ A predicate says whether the hook handles an error. Everything the predicate rej
 
 ### The backend stays the source of the rule
 
-The business rule is enforced in the backend, as a modeled business fault. The hook is a display choice. Removing the hook must not change what the backend allows.
+The business rule is enforced in the backend, as a modeled fault (or a fault thrown from an interceptor through `InterceptorCallBusinessException`). The hook is a display choice. Removing the hook must not change what the backend allows.
 
 ## Structure
 
-The application registers one error handler hook with the platform's error-handler interceptor key. The hook has two parts: a predicate that matches a 422 business error, and a handler that reads the message from the response and shows it as a snackbar with an automatic hide. Both parts share one detection function, so they always agree.
+The application registers one error handler interceptor hook with the platform's interceptor key (`ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY`). The platform runs it before the default handling. The hook returns two parts (`shouldInterceptError`, `interceptError`): a predicate that matches a 422 business error, and a handler that reads the message from the response and shows it as a snackbar with an automatic hide. The message exists only when the fault carries a message attribute; that is a project convention, not something the platform adds. Both parts share one detection function, so they always agree.
 
 ## Constraints
 
 - The hook intercepts only the 422 business error. Field validation (400) and server errors keep their default handling.
-- The message is read from the response body. The body is keyed by the fault's type name, so the reader takes the first key's message.
+- The message is read from the response body. The 422 body is keyed by the fault's full name (and also carries a `code` key after it), so the reader takes the first key's entry and its `message` attribute. The platform's own fault dialog reads the first key the same way.
+- The generated batch/CRUD dialog renders faults itself and is not affected by the interceptor. Test both paths.
 - The hook must not show a message for an error it did not intercept.
 - The hook is registered once per application, through the customizer's registration function.
 
 ## Variations
 
 - **Fault dialog fallback.** When the body has no message, fall back to the generated fault dialog, so the user still sees the error.
-- **Matched fault translations.** Use the fault's full type name as the business error's type, so the generated fault dialog finds its own translations (`faults.<fqn>.<attr>`). With any other type name, no translation matches, and the hook has to supply the text itself.
+- **Matched fault translations.** Use the modeled fault's full name as the business error's type (for a fault thrown from an interceptor, the `type` argument). The generated fault dialog then finds its translations (`faults.<fqn>.<attr>`). With any other type name, the request still returns 422, but the dialog falls back to raw attribute names, and the hook has to supply the text itself.
 - **Several predicates.** Add a predicate for each error scenario, and share the detection callback between the predicate and the handler.
-- **Location-less errors.** Show a 400 error that has no field location as a message, because the generated handling would otherwise show only a generic toast.
+- **Location-less errors.** Show a 400 error that has no field location as a message, because the generated handling would otherwise show only a generic validation toast. The platform's example hook also intercepts a 400 that carries an explicit `code`.
+- **Open the fault dialog from the hook.** The hook may call the fault dialog itself with the first key and its payload, for example to keep the dialog for some faults.
 
 ## When to use
 

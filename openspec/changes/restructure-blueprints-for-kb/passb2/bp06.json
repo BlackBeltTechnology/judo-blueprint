@@ -1,0 +1,196 @@
+{
+ "batch": "bp06",
+ "entries": {
+  "error-handler-interceptor-customization": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "interceptor error handling fault",
+    "error handling guide validation vs fault",
+    "DAO create custom operation",
+    "external service OSGi reference",
+    "seek pagination",
+    "page action hook override",
+    "push firebase scheduler",
+    "instance operation mapped",
+    "composition cascade"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/error-handling.md#Customizing the 422 Handling",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Error Interceptor Hook",
+    "catalog/agent-docs/backend/error-handling-guide.md#Exceptions Thrown from Interceptors"
+   ],
+   "fixes": [
+    "422 body is keyed by fault FQN plus code key; message only if fault defines it",
+    "platform runs hook before default; keys named",
+    "batch/CRUD dialog not covered by interceptor",
+    "type FQN fallback: still 422, raw attribute names",
+    "added 400-with-code and open-dialog variations; project-vs-platform labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "event-log-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "interceptor error handling fault",
+    "error handling guide validation vs fault",
+    "DAO create custom operation",
+    "external service OSGi reference",
+    "seek pagination",
+    "page action hook override",
+    "push firebase scheduler",
+    "instance operation mapped",
+    "composition cascade"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/error-handling-guide.md#Exceptions Thrown from Interceptors",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour"
+   ],
+   "fixes": [
+    "wrong claim: reference cleared on delete -> not removed, only composition cascades",
+    "non-createable only removes generated actions",
+    "interceptors built-in only wording; modeled fault cannot be thrown from interceptor",
+    "DAO wording"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "exchange-rate-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "interceptor error handling fault",
+    "error handling guide validation vs fault",
+    "DAO create custom operation",
+    "external service OSGi reference",
+    "seek pagination",
+    "page action hook override",
+    "push firebase scheduler",
+    "instance operation mapped",
+    "composition cascade"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Platform Exceptions",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults"
+   ],
+   "fixes": [
+    "removed 'Part B problems doc' reference; ValidationException 400 with optional location vs modeled fault 422",
+    "fault must be declared on operation",
+    "non-createable semantic",
+    "project helpers labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "external-api-adapter-provider-pattern": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "interceptor error handling fault",
+    "error handling guide validation vs fault",
+    "DAO create custom operation",
+    "external service OSGi reference",
+    "seek pagination",
+    "page action hook override",
+    "push firebase scheduler",
+    "instance operation mapped",
+    "composition cascade"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/custom-operations.md"
+   ],
+   "fixes": [
+    "business error = modeled fault declared on operation (422), bare RuntimeException -> 500",
+    "fault FQN as type; interceptor wrapper note",
+    "file store/provider labelled project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "feed-entry-denormalization": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "interceptor error handling fault",
+    "error handling guide validation vs fault",
+    "DAO create custom operation",
+    "external service OSGi reference",
+    "seek pagination",
+    "page action hook override",
+    "push firebase scheduler",
+    "instance operation mapped",
+    "composition cascade"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Pagination",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Page and Container Action Hooks"
+   ],
+   "fixes": [
+    "interceptors built-in only wording",
+    "only composition cascades delete",
+    "seek pagination opt-in",
+    "page action hook override described",
+    "non-createable semantic"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "firebase-push-notification-pipeline": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "interceptor error handling fault",
+    "error handling guide validation vs fault",
+    "DAO create custom operation",
+    "external service OSGi reference",
+    "seek pagination",
+    "page action hook override",
+    "push firebase scheduler",
+    "instance operation mapped",
+    "composition cascade"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md"
+   ],
+   "fixes": [
+    "labelled as project practice on platform OSGi/DAO; no platform push/scheduler",
+    "transaction scope of pending record vs job",
+    "interceptors not involved",
+    "added related osgi-scheduled-background-jobs"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "forecast-versioning-snapshot": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "interceptor error handling fault",
+    "error handling guide validation vs fault",
+    "DAO create custom operation",
+    "external service OSGi reference",
+    "seek pagination",
+    "page action hook override",
+    "push firebase scheduler",
+    "instance operation mapped",
+    "composition cascade"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md#Parent Flags Affect Child Operations",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour"
+   ],
+   "fixes": [
+    "model.md had no Model shape section (was examples-only) -> rewrote",
+    "cascade delete of compositions",
+    "custom instance op: no interceptor, own transaction",
+    "mapped operation on TO"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

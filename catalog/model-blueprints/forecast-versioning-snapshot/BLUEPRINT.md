@@ -13,7 +13,7 @@ alternatives: []
 fragment: forecast-versioning-snapshot
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -37,10 +37,11 @@ The monthly row for the current forecast has a required month, a required projec
 
 ## Constraints
 
+- Every relation is a composition, so deleting the parent deletes its current rows, its versions and their rows.
 - The monthly rows of a version are composed by the version, not by the parent. The parent reaches them only through the versions.
 - The month and projected saving are required on the current monthly row. The timestamp and both totals are required on the version.
 - The archive operation copies the current monthly rows into a new version, sets the totals and the timestamp, and increments the version counter.
-- The archive operation is an instance operation on the parent. Its body is a custom implementation placeholder.
+- The archive operation is an instance operation on the parent with a custom implementation. Interceptors run only for the platform's built-in operations, so the operation does the copy itself, in one transaction: a failure leaves no half-written version.
 
 ## Variations
 

@@ -2,7 +2,7 @@
 
 ### One service owns the feed rows
 
-A single feed service creates and removes the rows. Publishing a source item creates its rows. Deleting or expiring the item removes them. Operations do not write feed rows directly.
+A single project service (not platform API) creates and removes the rows through the generated data-access objects (DAOs). Publishing a source item creates its rows. Deleting or expiring the item removes them. Operations do not write feed rows directly.
 
 - Provide one create method per content kind, and one delete method per content kind.
 - Each create method copies the display fields from the source and sets the type discriminator.
@@ -10,7 +10,7 @@ A single feed service creates and removes the rows. Publishing a source item cre
 
 ### Write the rows in the publishing transaction
 
-Interceptors run only for built-in operations, so the publish and unpublish custom operations call the feed service themselves. Call it after the source item is saved, inside the same transaction, so the feed and the source commit or roll back together.
+Interceptors run only for the platform's built-in operations (create, update, delete, list and so on), so the publish and unpublish custom operations call the feed service themselves. Call it after the source item is saved, inside the same transaction, so the feed and the source commit or roll back together.
 
 ### Keep targets in step with new organizations
 
@@ -18,11 +18,11 @@ When a new organization is created, add it as a target to the existing rows that
 
 ### Bulk re-sync is a repair tool
 
-Provide one custom operation that re-syncs every row against the current targeting rules, for example after a rule change. Run it on demand. It is not the normal write path.
+Provide one custom operation (a static operation with a custom implementation) that re-syncs every row against the current targeting rules, for example after a rule change. Run it on demand. It is not the normal write path.
 
 ### Errors
 
-A failed feed write is a platform failure. Fail the publishing operation so the source and the feed stay consistent. Do not throw a business fault for it.
+A failed feed write is a platform failure. Fail the publishing operation so the source and the feed stay consistent. Do not throw a business fault for it, and never a bare `RuntimeException` for a user-facing problem.
 
 ## Examples
 
