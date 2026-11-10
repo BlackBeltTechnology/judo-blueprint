@@ -9,9 +9,9 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | **mlszksz-platform** | git@github.com:BlackBeltTechnology/mlszksz-platform.git | app | develop | 7a03bd4 | 2026-01-07 | 2026-02-24 | 104 | 6 |
 | 2 | **rackinspect** | git@github.com:BlackBeltTechnology/rackinspect.git | app | develop | 489ab5b | 2025-08-07 | 2026-02-17 | 206 | 8 |
-| 3 | **indamedia-adtrack** | git@github.com:BlackBeltTechnology/indamedia-adtrack.git | app | develop | - | 2025-06-16 | 2025-07-10 | 56 | 5 |
+| 3 | **indamedia-adtrack** | git@github.com:BlackBeltTechnology/indamedia-adtrack.git | app | develop | 748fbb1 | 2025-06-16 | 2025-07-10 | 56 | 5 |
 | 4 | **judo-partner** | git@github.com:BlackBeltTechnology/judo-partner.git | app | develop | - | 2025-03-13 | 2025-04-16 | 61 | 0 |
-| 5 | **park-here** | git@github.com:BlackBeltTechnology/park-here.git | app | develop | - | 2025-03-10 | 2025-05-13 | 71 | 5 |
+| 5 | **park-here** | git@github.com:BlackBeltTechnology/park-here.git | app | develop | 72834d1 | 2025-03-10 | 2025-05-13 | 71 | 5 |
 | 6 | **reserve-app** | git@github.com:BlackBeltTechnology/reserve-app.git | demo | develop | - | 2025-02-17 | 2025-02-18 | 5 | 0 |
 | 7 | **ubives** | git@github.com:BlackBeltTechnology/ubives.git | app | develop | - | 2024-12-17 | 2025-02-24 | 48 | 0 |
 | 8 | **workflow-poc** | git@github.com:BlackBeltTechnology/workflow-poc.git | demo | develop | - | 2024-12-12 | 2025-01-31 | 83 | 0 |
