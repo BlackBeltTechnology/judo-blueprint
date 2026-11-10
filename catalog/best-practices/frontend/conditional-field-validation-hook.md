@@ -4,11 +4,11 @@ title: Conditional Field Validation via Action Hook
 description: Make a form field required or optional depending on other field values by returning a handler from a page or container actions hook, without editing generated code.
 aliases: [conditional required field, dynamic required validation]
 keywords: [conditional, field, validation, action hook, required, page actions hook, scaffold]
-tags: ["domain:frontend", "layer:frontend", "project:reserve-app", "status:single-project"]
+tags: ["domain:frontend", "layer:frontend", "project:reserve-app", "project:rackinspect", "status:emerging"]
 category: hook
-status: single-project
-projects: [reserve-app]
-evidence: ["reserve-app:unrecorded"]
+status: emerging
+projects: [reserve-app, rackinspect]
+evidence: ["reserve-app:unrecorded", "rackinspect:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, hook-scaffold-default-pattern, application-customizer-hub, approval-workflow-conditional-visibility]
 fragment: "none: frontend-only"
@@ -56,6 +56,10 @@ const entityActionsHook: EntityActionsHook = () => ({
 
 - Keep the predicate a pure function of `data`; one hook file serves one page or dialog.
 - Enforce the same rule in the backend as well (a model constraint or interceptor); the hook only changes the form.
+
+### Variation: container action hooks (rackinspect)
+
+A second project sets required and disabled state per field from hooks on container actions, rather than a single required-predicate handler.
 
 ## Rationale
 

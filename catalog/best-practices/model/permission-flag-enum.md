@@ -49,6 +49,10 @@ The original project kept the booleans as stored attributes (default false) refr
 
 A neutral model: enumeration `PermissionFlag` (orders, invoices, users), entities `Permission`, `Role`, `User`. `Role.permissions` and `User.roles` are 0..* associations. `User.permissions` is derived as the roles' permissions; `User.permissionToOrders` and `User.permissionToUsers` are derived booleans over it. The original RackInspect model had 23 flags with matching booleans.
 
+### Source evolution (2026-11-10)
+
+The source project has since replaced the Permission entity with a Role entity whose identifier is a role-flag enumeration (`User.roles`); a `recalculatePermissions` operation remains. The practice itself stays valid.
+
 ## When to avoid
 
 - Two or three coarse roles: one stored role flag on the principal is simpler.

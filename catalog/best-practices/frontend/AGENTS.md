@@ -59,6 +59,7 @@
 | `promise-based-dialog-system.md` | In a hand-built JUDO frontend, expose filter, range selection, confirmation and page-in-dialog as React Context dialogs opened through hooks that return a Promise, so callers use await instead of call |
 | `pwa-manifest-customization.md` | Take over the generated public/manifest.json through .generator-ignore to set the installable web app name, display mode and colors; trivia uses it for a mobile-first player frontend. |
 | `react-intl-flat-key-pattern.md` | In a hand-built JUDO frontend, keep UI strings as flat dot-separated keys in one TypeScript locale file used with react-intl, with a defaultMessage on every lookup; the generated frontend uses react-i |
+| `role-landing-redirect-access-filter.md` | A registered AccessFilterComponent sends each signed-in role from the home route to its own first visible menu entry, derived from the generated menu tree instead of a role-to-URL map. |
 | `seek-based-table-pagination.md` | Page table data with the _seek keyset cursor (last or first visible row plus a reverse flag) instead of offsets; load limit+1 rows to know whether a next page exists. |
 | `session-storage-table-state.md` | Persist a table's sort model and filters in sessionStorage so they survive navigation within the tab. |
 | `single-access-entity-pattern.md` | For an actor access that holds at most one instance (settings, a single planet), fetch the instance first and send the user to a create page when it does not exist, then refresh the full view with a m |

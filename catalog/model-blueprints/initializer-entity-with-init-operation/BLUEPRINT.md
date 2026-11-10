@@ -47,6 +47,7 @@ The Initializer entity has a marker attribute and a single static operation. The
 - **Multiple named initializers.** The entity has several static operations, one per reference data group, each marked as an initializer.
 - **Counter-based migrations.** An integer counter records which numbered migration step has run, so each step runs once across deployments.
 - **Initializer on a domain entity.** The init operation sits on the entity it seeds, with no separate Initializer entity.
+- **Reference data import plus user creation.** The init operation imports reference data from a spreadsheet and also creates identity-server users for the imported people through a user service.
 
 ## When to use
 
