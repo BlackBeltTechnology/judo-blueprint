@@ -2,8 +2,8 @@
 id: entity-as-enum-pattern
 title: Entity Instances as Runtime-Extensible Enum Alternative
 description: "Instead of using an enumeration type for a fixed set of classification values, the model uses a regular entity with instances created at runtime (typically via the initializer operation)."
-aliases: []
-keywords: [instances, as, runtime, extensible, enum, alternative]
+aliases: [lookup entity as enum, runtime enum, extensible classification]
+keywords: [lookup entity, enumeration alternative, runtime extensible, range expression, seed rows, score]
 tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
 category: entity
 status: single-project
@@ -11,41 +11,67 @@ projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
 alternatives: []
 related: [category-enum-pattern, initializer-operation, range-expression-filtering]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: entity-as-enum-pattern
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Instead of using an enumeration type for a fixed set of classification values, the model uses a regular entity with instances created at runtime (typically via the initializer operation). This pattern provides runtime extensibility -- new classification values can be added without schema changes. Each instance carries a name and optionally a score or ordering attribute.
+A classification (level, grade, category) must be extensible after deployment. Instead of an enumeration, keep the values as rows of a small entity that other entities reference.
 
-## Structure
+## Practice
 
-- Entity with `name: String` (required) and optional `score: Integer` or ordering attribute
-- Instances created in the static initializer operation (e.g., JUNIOR=1, MEDIOR=2, SENIOR=3, EXPERT=4)
-- Referenced via `0..1` or `1..1` relations from other entities (instead of an enum-typed attribute)
-- Transfer objects expose the entity through range expressions with sorting: `EntityType!sort(l | l.score ASC)`
-- UI presents these as selection pickers, indistinguishable from enum dropdowns
-- HR/admin actors may have CRUD access to add/modify levels at runtime
+### Model the values as an entity with a sortable attribute
 
-## Examples
+- A lookup entity holds a required `name` and, when the order matters, a required `score` or sort key. Other entities reference it with a `0..1` or `1..1` relation instead of an enum-typed attribute.
+- Rows are created by a seeding step at startup (see [[initializer-operation]]) and later by authorised actors through an Access with create/update permission.
+- Offer the values in selectors through a range expression on the relation, sorted by the key, for example `Level!sort(l | l.score ASC)` ([[range-expression-filtering]]). The UI shows a picker that looks like an enum drop-down.
 
-### SkillMatrix
-`SkillLevel` entity has `name: String` (required) and `score: Integer` (required). Initializer creates 4 instances: JUNIOR (score=1), MEDIOR (score=2), SENIOR (score=3), EXPERT (score=4). Referenced by `Skill.approvedLevel`, `Skill.requestedLevel`, `SkillTarget.skillLevel`. Range expression: `SkillLevel!sort(l | l.score ASC)`. HREmployeeActor has CRUD access (C, U) to manage levels at runtime.
+### Know what you give up compared to an enumeration
 
-### SkillMatrix-Model
-Model source confirms `SkillLevel` entity with `name` and `score` attributes. Used in 4+ range expressions across transfers: `SkillLevel!sort(l | l.score ASC)` for level pickers. Contrasts with `LanguageSkillLevel` which is a true enum (BEGINNER, CONVERSATIONAL, FLUENT, NATIVE) -- demonstrating the project's deliberate choice of entity-as-enum for extensible classifications vs fixed enums for stable ones.
+- An enumeration is a platform type with literals (`Type#VALUE`) that expressions and operation bodies can name directly. A row has no literal: a rule that depends on a particular value has to look it up by name or key.
+- Enumeration members persist by their ordinal ([ordinal rules](../../agent-docs/model/esm_metamodel/type.md)). Rows have an identity and can be renamed or deleted, so give rows that are referenced by code a stable key attribute.
+- Deleting a referenced row needs a guard (see [[guard-clause-delete]]).
 
-## Trade-offs
+## Rationale
 
-- Pros: New values added at runtime without schema migration, values can carry additional data (score, description), supports CRUD management by authorized actors
-- Cons: No compile-time safety (unlike enums), requires initializer for seed data, reference by relation instead of literal enum value
-- Prefer when: Classification values may need to change or expand after deployment; prefer regular enums when values are truly fixed and known at design time
+- New values need no model change, no regeneration and no deployment: only data changes.
+- Values can carry data (score, description, colour) and be managed from the UI.
+- Project practice (not platform behaviour): the original project used an entity for levels that administrators extend and a true enumeration for a stable scale, deciding per classification.
+- Cost: no compile-time safety, a seeding step, and a relation join instead of a literal.
+
+## Example
+
+A `SkillLevel` entity has `name` and `score`, both required. A `Task` references it twice, as `level` and `requestedLevel`, both `0..1`. The selector range of both relations is `SkillLevel!sort(l | l.score ASC)`. Names are neutral stand-ins for the original skill-matrix model.
+
+## When to avoid
+
+- The set is fixed and known at design time: use an enumeration ([[category-enum-pattern]]).
+- Logic branches on individual values: a literal is safer than a name lookup.
+- Nobody will maintain the rows: the extensibility is then unused cost.
 
 ## Related
 
-- [[category-enum-pattern]] (alternative: fixed enum for stable classifications)
-- [[initializer-operation]]
-- [[range-expression-filtering]]
+- [[category-enum-pattern]] — fixed enumeration alternative
+- [[initializer-operation]] — seeds the initial rows
+- [[range-expression-filtering]] — sorted selector options over the rows
+- [[guard-clause-delete]] — protect referenced rows
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=entity-as-enum-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class SkillLevel {
+    <<Entity>>
+    +String name [1]
+    +Integer score [1]
+  }
+  class Task {
+    <<Entity>>
+    +String title [1]
+  }
+  Task --> "0..1" SkillLevel : level
+  Task --> "0..1" SkillLevel : requestedLevel
+```
+<!-- /mermaid:generated -->

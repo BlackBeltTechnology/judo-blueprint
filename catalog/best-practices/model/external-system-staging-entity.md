@@ -2,8 +2,8 @@
 id: external-system-staging-entity
 title: External System Staging Entity for Integration
 description: A dedicated staging entity serves as a buffer for data received from external systems before it is validated and transformed into domain entities.
-aliases: []
-keywords: [external, system, staging, integration]
+aliases: [staging table, integration buffer, import entity]
+keywords: [staging, integration, external id, deduplication, unmapped input, import]
 tags: ["domain:model", "layer:model", "project:indamedia-adtrack", "project:judo-partner", "status:emerging"]
 category: entity
 status: emerging
@@ -11,45 +11,78 @@ projects: [indamedia-adtrack, judo-partner]
 evidence: ["indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [initializer-operation, unmapped-transfer-dto, category-enum-pattern]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: external-system-staging-entity
+diagram: { kinds: [entity, transfer, operation], members: types }
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A dedicated staging entity serves as a buffer for data received from external systems before it is validated and transformed into domain entities. The staging entity mirrors the external system's data format (often with English field names matching the external API), while the domain entities use the project's internal naming and structure. Separate operations handle creation from the staging data, including deduplication checks and organizational routing.
+Data received from an external system should not go straight into domain entities. Land it in a dedicated staging entity that mirrors the external format, then validate, deduplicate and transform it into domain entities with explicit operations.
 
-## Structure
+## Practice
 
-- Staging entity with attributes matching external API field names (may use English names even when domain uses another language)
-- Attributes are simple types (String, Timestamp, Text) without domain enums or relations
-- No business logic on the staging entity itself
-- Domain entity has dedicated operations for creating from staging data (e.g., `letrehozJarokeloBejelentes`)
-- Operations include deduplication: `Entity!filter(e | e.externalId == input.externalId)!empty()` checks
-- Operations include routing: filter by organizational identifier to determine which org unit handles the record
-- The staging entity may also have a synchronization flag for tracking bidirectional sync status
+### A flat staging entity that mirrors the source
 
-## Examples
+- The staging entity uses simple attribute types (String, Text, Timestamp, Boolean) and the external system's own field names, with no domain enumerations or relations. It carries an `externalId` and optionally a received timestamp and a processed flag for synchronization.
+- It holds no business logic. Keeping the raw record allows audit and reconciliation.
+- The staging row and the domain row stay separate even when they look alike: external naming and shape changes must not leak into the domain model.
 
-### KozutEugyfelClient
-`JarokeloStaging` entity with English-named fields (`url`, `title`, `description`, `fullAddress`, `user`, `id`, `status`, `institution`, `ceated`, `updated`) mirroring the Jarokelo road inspector API. `Bejelentes.letrehozJarokeloBejelentes` operation receives `JarokeloBejelentes` DTO, checks `SzervezetAzonosito` for org routing and `Bejelentes!filter(b | b.jarokeloAzonosito == input.jarokeloAzonosito)` for deduplication before creating the domain entity with Hungarian-named fields.
+### Operations turn staging data into domain data
 
-### IndamediaAdTrack
-`FetchedData` entity captures raw platform API data (`totalCost`, `dailyCost`, `fetchedUpdated`) with a required `trackedCampaign [1..1]` back-reference. `AvailableCampaign` similarly stages campaign metadata fetched from Google/Meta platforms (`id`, `name`, `start`, `end`). The `syncData` and `fetchAvailableCampaigns` operations create staging records from platform API responses, which are then processed into domain entities (`Cost`, `TrackedCampaign`). Both staging entities preserve the raw data for audit and reconciliation.
+- A static operation on the domain side takes the external payload as an unmapped input transfer object ([[unmapped-transfer-dto]]) and creates or updates the domain entity ([JCL scripts](../../agent-docs/model/jcl-operation-scripts.md); the body may be custom Java instead).
+- Deduplicate by the external id before creating, for example `Order!filter(o | o.externalId == input.externalId)!empty()` ([JQL collection functions](../../agent-docs/model/model-development.md)).
+- Route by an organisational identifier when several units own the data.
+- A relation from the domain entity back to the staging row (`0..1`) keeps the link for traceability.
+- Fetching from the external system is custom operation or scheduled code. The platform has no integration feature for it; see [[initializer-operation]] for the startup hook some projects use.
 
-### judo-partner
-NAV (Hungarian tax authority) integration uses a multi-entity staging subsystem: `Taxpayer` entity stores queried taxpayer data (name, validity, vatCode, countyCode), `TaxpayerQuery` tracks query metadata (timestamp, taxIdentifier, status), and `TaxpayerAddress` stores detailed Hungarian address data (streetName, publicPlaceCategory, building, staircase, floor, door, lotNumber). The `Partner.queryTaxpayer` operation queries NAV and stages results. `Taxpayer.updatePartner` and `TaxpayerAddress.addToPartner` operations transform staging data into domain Partner/Address records.
+## Rationale
 
-## Trade-offs
+- External format changes are absorbed in one entity and one operation.
+- Deduplication and validation happen at one boundary.
+- Project practice (not platform behaviour): two source projects used staging for a road-inspection API, an advertising-platform API and a tax-authority lookup.
+- Cost: an extra entity, a transformation step and possibly stale staging rows to clean up.
 
-- Pros: Clean separation between external API format and domain model, deduplication at integration boundary, supports multiple external sources
-- Cons: Additional entity to maintain, data transformation logic in operations, potential data staleness in staging
-- Prefer when: Integrating with external systems that have different data formats or when deduplication/validation is needed before domain entity creation
+## Example
+
+`StagedRecord` has `externalId` (required), `title`, `payload` (Text), `receivedAt` and `processed`. `Order` has `externalId` and `name`, a `0..1` relation `source` to the staging row, and a static operation `createFromStaging` taking an unmapped `ImportInput`. The operation skips a record whose external id already exists. Names are neutral stand-ins for the original integrations.
+
+## When to avoid
+
+- The external data already has the domain shape and needs no checks: write it directly.
+- The data is read live and never stored.
+- A one-off import: a seeding operation is enough.
 
 ## Related
 
-- [[initializer-operation]] (synchronization operations run periodically)
-- [[unmapped-transfer-dto]] (input DTOs for external data)
-- [[category-enum-pattern]] (BejelentesTipus classifies source system)
+- [[unmapped-transfer-dto]] — input transfer object for the external payload
+- [[initializer-operation]] — startup seeding and synchronization hook
+- [[category-enum-pattern]] — classify the source system of a record
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=external-system-staging-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class ImportInput {
+    <<Transfer>>
+    +String externalId
+    +String title
+  }
+  class Order {
+    <<Entity>>
+    +String externalId [1]
+    +String name [1]
+    +createFromStaging(ImportInput)
+  }
+  class StagedRecord {
+    <<Entity>>
+    +String externalId [1]
+    +String title
+    +Text payload
+    +Timestamp receivedAt
+    +Boolean processed
+  }
+  Order --> "0..1" StagedRecord : source
+```
+<!-- /mermaid:generated -->

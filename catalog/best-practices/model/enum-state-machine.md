@@ -2,8 +2,8 @@
 id: enum-state-machine
 title: Enum-Based State Machine Pattern
 description: Entities use enumeration-typed status attributes to model lifecycle state machines.
-aliases: []
-keywords: [enum, based, state, machine]
+aliases: [status enum lifecycle, state transitions operations]
+keywords: [enumeration, status, state machine, transition operation, derived boolean, lifecycle]
 tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:mlszksz-platform", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:reserve-app", "status:established"]
 category: enum
 status: established
@@ -11,80 +11,83 @@ projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, 
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: [derived-state-from-history, entity-based-state-machine]
 related: [conditional-visibility-getter, default-value-patterns, derived-state-from-history, entity-based-state-machine]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: enum-state-machine
+diagram: { kinds: [entity, enum, operation], members: types }
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Entities use enumeration-typed status attributes to model lifecycle state machines. Each enum member represents a distinct lifecycle state, and named operations on the entity enforce valid state transitions by setting `this.status = EnumType#NEW_STATE`. Multiple entities in a model may each have their own independent state machines.
+Represent a lifecycle with a required enumeration-typed `status` attribute. Each member is a state, and named operations perform the allowed transitions.
 
-## Structure
+## Practice
 
-- Entity has a required `status` attribute typed to a dedicated enum
-- Enum members represent lifecycle states (e.g., CREATED, STARTED, FINISHED)
-- Status attribute has a default value pointing to the initial state
-- Instance operations implement transitions: `this.status = EnumType#TARGET_STATE`
-- Derived boolean attributes may compute from status (e.g., `isClosed = self.status == CLOSED`)
+### Status attribute with an initial default
 
-## Examples
+- The entity has a required `status` attribute typed by a dedicated enumeration. Members persist by ordinal, so add new states at the end and never renumber ([ordinal rules](../../agent-docs/model/esm_metamodel/type.md)).
+- The default expression names the initial state with the literal syntax `Type#VALUE`, for example `Status#DRAFT` ([[default-value-patterns]]).
+- Several entities can each carry their own status enumeration; a shared enumeration works when the states really are the same.
 
-### Trivia
-Three state machines: **Question** (REVIEW -> APPROVED/REJECTED, with cycle-back), **Contest** (CLOSED <-> OPEN), and **Test** (CREATED -> STARTED -> FINISHED, plus FAILED and EXCLUDED terminal states). Each transition is a simple named operation like `approve`, `open`, `start`.
+### Transitions are operations
 
-### RackInspect
-Three status enums: **FaultRegistryStatus** (DRAFT -> DONE), **OfferStatus** (DRAFT -> DONE), and **WorkStatus** (NOT_STARTED -> IN_PROGRESS -> DONE/WONT_FIX). WorkStatus is shared across JobSheet, JobSheetItem, and WorkReport. Transitions triggered by named operations like `finishFaultRegistry`, `closeOffer`, `statusToDone`.
+- Each transition is a named instance operation (`submit`, `approve`) that sets `status`. The platform has no built-in transition table or guard: the operation body, written in JCL or as a custom Java implementation, checks the current state and rejects invalid moves ([JCL scripts](../../agent-docs/model/jcl-operation-scripts.md), [[custom-implementation-placeholder]]).
+- Declare a fault on the operation for a refused transition so the client gets a typed business error ([error handling guide](../../agent-docs/backend/error-handling-guide.md), [[error-code-enum-pattern]]).
+- A client can call any operation the API exposes, so state checks belong in the operation, not only in the UI.
 
-### itracker
-**InitiativeStatus** with 5 states: NEW -> REVIEW -> APPROVED/REJECTED, plus COMPLETE. Operations `sendForApproval`, `approve`, `reject` implement transitions. The `approve` operation chains `archiveForecast()` before status change, demonstrating side-effect composition in transitions.
+### Derived booleans drive the UI
 
-### Alba
-Three independent state machines: **ProductState** (DRAFT -> FINALIZED -> APPROVED, with revokeApproval back to DRAFT), **TaskState** (TODO -> APPROVED/REJECTED via `closeTask`), **AccountStatus** (PENDING_APPROVAL -> ACTIVE -> SUSPENDED). Operations `finalize`, `approveVersion`, `revokeApproval` enforce Product transitions; `closeTask` drives Task transitions. Derived booleans: `isFinalizedOrApproved`, `isActive`.
+Derived booleans computed from the status (`submittable = self.status == Status#DRAFT`) feed `enabledBy` and `hiddenBy` of buttons on the same transfer object ([[conditional-visibility-getter]]). Combine the state with the actor's ownership in the expression when needed.
 
-### MLSZKSZPlatform
-Six independent state machines across the model: **PostStatus** (DRAFT -> PUBLISHED -> EXPIRED -> DELETED, with PENDING_REVIEW branch), **OrganizationStatus** and **UserStatus** (ACTIVE <-> SUSPENDED -> DEACTIVATED), **RegistrationRequestStatus** (PENDING -> VERIFIED -> APPROVED/REJECTED, or EXPIRED), **InvitationStatus** (same pattern as Registration), **NotificationStatus** (PENDING -> SENT/FAILED with retry). Operations: `publish`, `expired`, `delete`, `activate`, `suspend`, `accept`, `reject`.
+### Known generated-DAO limit
 
-### Viterra Demo
-**ReportStatus** with 4 states: PENDING -> SUBMITTED -> ACCEPTED, plus REVIEW loopback. Partner calls `submit()` (PENDING -> SUBMITTED), admin calls `accept()` (SUBMITTED/REVIEW -> ACCEPTED) or `review()` (SUBMITTED -> REVIEW). All transitions are simple one-line operations: `this.status = viterra::ReportStatus#SUBMITTED`. Derived booleans `showAcceptButton` and `showReviewButton` control UI visibility based on status.
+In backend code, `query<Attribute>()` on an enumeration attribute can fail with a `ClassCastException` because the runtime delivers the ordinal. Read the status through the DTO instead ([known issues](../../agent-docs/backend/data-access-guide.md)).
 
-### KozutEugyfelClient
-**BejelentesAllapot** with 2 states: AKTIV (active) and LEZART (closed). `Bejelentes.lezaras` transitions AKTIV -> LEZART, `Bejelentes.megnyitas` transitions LEZART -> AKTIV. All operations guard with `if (this.allapot == BejelentesAllapot#AKTIV)` before executing, and 6 derived `*Engedely` (permission) booleans check state + user role.
+## Rationale
 
-### judo-demo-miniworkflow
-**DocumentState** with 5 states: IN_PROGRESS -> REVIEW_REQUESTED -> ACCEPTED/REJECTED -> CLOSED. Uniquely, the current state is not stored but derived from the latest `DocumentHistoryEntry` via `self.documentHistoryEntries!head(h | h.eventTime DESC).toState`. Four operations (`requestReview`, `accept`, `reject`, `close`) create history entries with the target state. Derived booleans (`isAcceptable`, `isClosable`, `isReviewable`, `isRejectable`) combine state checks with actor ownership.
+- The lifecycle is explicit in the model and checked at build time (literals are validated).
+- Transitions are ordinary operations, easy to secure per actor.
+- Project practice (not platform behaviour): twelve source projects model lifecycles this way; some derive the state from history instead ([[derived-state-from-history]]).
+- Limit: no guard conditions or actions beyond what the operation code does; adding a state needs a model change.
 
-### AMS-Model
-Two parallel state machines: **Status** (PENDING -> APPROVED/REJECTED) on the abstract `Request` entity, and **CampaignStatus** (OPEN <-> CLOSED) on `Campaign`. `Request.approve()` sets `this.status = Status#APPROVED` and `this.decisionTime = Timestamp!now()`. `Campaign.open()`/`close()` toggle between OPEN and CLOSED. The `isPending = self.status == Status#PENDING` derived boolean and `Campaign` transfer's `isOpen`/`isClosed` booleans compute from status. Campaign.status defaults to `CampaignStatus#OPEN`.
+## Example
 
-### ParkHere
-**ReservationStatus** with 3 states: ACTIVE, DELETED, EXPIRED. ACTIVE is the initial state after creation. ACTIVE -> DELETED via `deleteReservation`/`cancelReservation` operations or automatic holiday cancellation. ACTIVE -> EXPIRED via background job when end time passes. No recovery from DELETED or EXPIRED states. Operations manage transitions through custom implementations with `BusinessError` faults for invalid state transitions.
+`Request` has a required `status` of enumeration `Status` (DRAFT, SUBMITTED, APPROVED, REJECTED), default `Status#DRAFT`, a derived boolean `submittable`, and two instance operations `submit` and `approve` that move the status. Names are neutral stand-ins.
 
-### IndamediaAdTrack
-**CampaignStatus** with 3 states: ONGOING (default), FINISHED, DELETED. Used on both `TrackedCampaign.status` and `AggregatedCampaign.status`. ONGOING -> FINISHED when end date passes; ONGOING -> DELETED via `deleteAggregatedCampaign` or `untrack` operations. Both FINISHED and DELETED are terminal states. Status changes on AggregatedCampaign trigger `AggregatedCampaignHistory` snapshot creation.
+## When to avoid
 
-### judo-partner
-Multiple state machines across both domains: **PartnerStatus** (ACTIVE/DRAFT/DELETED) is derived from entity state (e.g., `isArchived`). **RegisterStatus** (DRAFT/OPEN/CLOSED) and **RecordStatus** (DRAFT/REGISTERED/ARCHIVED) manage the document registry lifecycle. **MigrationStatus** (DISABLED/AWAITING/MIGRATED) tracks bulk import partner migration progress. **ValidationStatus** (NOT_VALIDATED/OK/FAILED) tracks partner validation state.
-
-### KozutEugyfelModelTest
-**BejelentesAllapot** with 2 states: AKTIV and LEZART. The `lezaras` operation transitions AKTIV -> LEZART by creating a Lezaras event and setting `allapot`. Operations `tovabbitas` and `megjegyzes` guard with `allapot == AKTIV` before executing. This binary state machine controls the entire complaint lifecycle.
-
-### ReserveApp
-**FreightState** with 9 states covering a full logistics lifecycle: NOT_SUBMITTED -> SUBMITTED -> APPROVED/REJECTED/SUSPENDED -> ARRIVED -> FINISHED, plus DELAYED_UNLOADING and DELAYED_ARRIVAL for delay tracking. This is one of the most complex state machines observed, with states covering submission, approval, suspension, arrival, completion, and delay phases.
-
-### AMS-Frontend
-Two parallel state machines: **Status** (PENDING/APPROVED/REJECTED) for access requests on abstract `Request`, and **CampaignStatus** (OPEN/CLOSED) for campaigns. `approve()` sets `Status#APPROVED` + `decisionTime`, `reject()` sets `Status#REJECTED` + `decisionTime`. Campaign toggles between OPEN and CLOSED via `open()`/`close()`. Derived booleans `isPending`, `isOpen`, `isClosed` drive UI button enablement.
-
-## Trade-offs
-
-- Pros: Clear lifecycle visualization, transitions enforced by operations, enums are well-supported in JUDO
-- Cons: No built-in guard conditions (must be coded in operation bodies), adding states requires enum changes
-- Prefer when: Entities have well-defined lifecycle stages with explicit transitions
+- States and transitions must be configurable at runtime: use [[entity-based-state-machine]].
+- The state is better derived from an event trail ([[derived-state-from-history]]).
+- Only two states with no transition rules: a plain boolean may do.
 
 ## Related
 
-- [[conditional-visibility-getter]]
-- [[default-value-patterns]]
-- [[derived-state-from-history]] (alternative: state derived from audit trail)
-- [[entity-based-state-machine]] (alternative: runtime-configurable state machine via entities)
+- [[conditional-visibility-getter]] — derived booleans from the status
+- [[default-value-patterns]] — initial state as default
+- [[derived-state-from-history]] — state derived from history
+- [[entity-based-state-machine]] — runtime-configurable alternative
+- [[error-code-enum-pattern]] — typed refusal of a transition
+- [[custom-implementation-placeholder]] — transition bodies in Java
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=enum-state-machine cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Request {
+    <<Entity>>
+    +String title [1]
+    +Status status [1]
+    +Boolean /submittable
+    +submit()
+    +approve()
+  }
+  class Status {
+    <<Enumeration>>
+    DRAFT
+    SUBMITTED
+    APPROVED
+    REJECTED
+  }
+  Request ..> Status : status
+```
+<!-- /mermaid:generated -->

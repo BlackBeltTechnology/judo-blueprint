@@ -2,8 +2,8 @@
 id: entity-crud-at-service-layer
 title: CRUD Permissions Controlled at Service Layer
 description: "All entities are defined with `createable=false`, `updateable=false`, `deleteable=false` at the entity level."
-aliases: []
-keywords: [crud, permissions, controlled, at, service, layer]
+aliases: [crud flags, createable updateable deleteable, access permissions]
+keywords: [createable, updateable, deleteable, access, transfer object, crud, operation, permissions]
 tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: access
 status: established
@@ -11,86 +11,79 @@ projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo,
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, derived-access-filtering]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: entity-crud-at-service-layer
+diagram: { kinds: [entity, transfer, operation], members: types }
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-All entities are defined with `createable=false`, `updateable=false`, `deleteable=false` at the entity level. CRUD permissions are instead controlled at the access/transfer layer, where each actor's access points specify which operations (C/R/U/D) are allowed. This enforces that all mutations go through the service layer.
+Keep create, update and delete permissions out of the entity layer. Entities declare no mutation rights; each actor receives exactly the rights it needs through its own transfer objects and Access entries, and business changes go through operations.
 
-## Structure
+## Practice
 
-- Entity level: all CRUD flags set to `false`
-- Access level: each access point specifies individual C, R, U, D boolean flags
-- Different actors can have different CRUD permissions for the same underlying entity
-- Read is almost always `true`; write permissions vary by actor role
+### Entities closed, transfer objects and accesses open
 
-## Examples
+- The platform defines `createable`, `updateable` and `deleteable` on entities ([structure reference](../../agent-docs/model/esm_metamodel/structure.md)), on transfer objects, on relations and on Access entries ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md)). Project practice: set all three to false on every entity and decide per transfer object and per Access.
+- A transfer object maps one entity. Give the actor that may edit a mutable view (`createable`/`updateable` as needed) and everyone else a read-only view of the same entity.
+- The Access entry carries the actor's own flags. The same entity can be fully editable for an administrator and read-only for a member, without any entity change.
+- Read is nearly always allowed; the write flags vary by role. Delete is often left off everywhere in favour of an active flag ([[soft-delete-active-flag]]).
+- CRUD flags on relations steer the generated pages and endpoints: a relation without create, update or delete flags does not get the matching create, update or delete actions in the UI ([UI mapping of relation flags](../../agent-docs/frontend/model-screen-layout.md)). A parent relation's `updateable` and `deleteable` flags also decide what can be done on the element reached through it.
 
-### Trivia
-All 9 entities have `createable=false, updateable=false, deleteable=false`. Admin access `Admin.questions` has full CRUD (C=yes, R=yes, U=yes, D=yes). Admin access `Admin.tests` is read-only (C=no, R=yes, U=no, D=no). All Player accesses are read-only.
+### Business changes go through operations
 
-### RackInspect
-All 72 entities have `createable=false, updateable=false, deleteable=false`. CRUD is managed via 214 transfer objects organized into service packages, with a single GenericUser actor and permission-based access control via `PermissionFlag` enum (23 flags).
+State changes (approve, close, archive) are operations on the entity or the transfer object, not field edits. An operation can check the state and the actor before it changes anything. The generated DAO itself emits create, update and delete for mapped, non-abstract transfer object types ([data access guide](../../agent-docs/backend/data-access-guide.md)), so backend code is not limited by the flags; the flags govern what the generated API and UI expose to a client. Keep that difference in mind when reasoning about "cannot be created".
 
-### itracker
-All 8 entities have `createable=false, updateable=false, deleteable=false`. UserActor.initiatives is update-only (C=false, U=true, D=false). Admin has full CUD on reference data (users, categories, regions). Initiative creation is handled via a static `createInitiative` operation rather than direct CRUD.
+### Pair the access with transfer-object design
 
-### SkillMatrix
-CRUD controlled per-actor per-access: AdminActor.users (C, U), HREmployeeActor.professionals (U only), HREmployeeActor.competencies (C, U, D). ProfessionalActor.myProfession (U only), while composition children like `Professional.skills` have relation-level CRUD (create, update, delete).
+See [[actor-based-transfer-projection]] for one transfer object per actor role and [[derived-access-filtering]] for narrowing rows. Rights must match across layers: an editable Access on a read-only transfer object offers nothing to edit.
 
-### Alba
-All 11 entities have `createable=false, updateable=false, deleteable=false`. CRUD permissions at access layer: `adminProfiles` (C, U), `curriculumsForAdmins` (C, U), `audiencesForAdmins` (C, U), `institutionsForAdmins` (C, U). Filter accesses are read-only. Product creation handled via static `createProduct` operations on AuthorProduct/AdminProduct transfers.
+## Rationale
 
-### SkillMatrix-Model
-Model source confirms 140 occurrences of `createable="false"` across all entity and relation declarations. CRUD granted selectively at access level: `AdminActor.users` (create, update), `HREmployeeActor.professionals` (update only), `ProfessionalActor.myProfession` (update only). Composition children use `targetDefinedCRUD="true"` for relation-level CRUD control.
+- Permissions live in one place per actor instead of being scattered over entities.
+- Different actors can have different rights over the same entity.
+- The entity stays a plain storage shape; change rules are explicit operations.
+- Cost: more transfer objects, and the entity flags look redundant because they are always false. Project practice (not a platform rule): fifteen source projects followed it; the platform does not require it.
 
-### Viterra Demo
-All 7 entities have `createable=false, updateable=false, deleteable=false`. Admin access grants C+U (no delete) on all 5 access points (periods, silos, clients, commodities, reports). Partner access is read-only at the access level, but `PartnerOpenReportTransfer.stocks` overrides to `updateable=true` and `ReportTransfer.stocks` overrides to full CRUD at the relation level. No entity has delete permission -- soft delete via active flags is used instead.
+## Example
 
-### MJSZ
-All 10 entities have CRUD flags at entity level (Player has full CRUD, License is read-only). The `Munkatars` actor grants full CRUD on all 6 access points (season, tournament, player, club, match, transfer) with `accessType="ALL"` and `targetDefinedCRUD="false"`. All access collections use `[0..*]` cardinality with unlimited upper bound.
+Entities `Item` and `Category` have all three flags false. `Item` maps to two transfer objects: `ItemAdminView` (create and update on, delete off) and `ItemReadView` (all off). `Item` has an instance operation `archive` for the business change. An administrator actor would point its Access at `ItemAdminView`, a member actor at `ItemReadView`. The diagram shows the entities, transfer objects and operation; the actor and accesses are described here only. Names are neutral stand-ins.
 
-### judo-demo-miniworkflow
-All 4 entities have `createable=false, updateable=false, deleteable=false`. All mutations happen through operations: `createDocument` (static factory), `accept`/`reject`/`close`/`requestReview` (workflow transitions). Only `FilesTransfer` is writable (C+U+D) at the transfer level. The `users` access point grants full CRUD for admin user management, while `myDocuments` is update-only (no create/delete at access level).
+## When to avoid
 
-### AMS-Model
-All 7 entities (User, Application, Request, Campaign, ConfirmationRequest, AccessRequest, Admin) have `createable=false, updateable=false, deleteable=false`. All 12 relations also have CRUD disabled. Manager actor access points (`subordinates`, `approvalAll`, `approvalList`) are all read-only at the access level. CRUD is entirely deferred to the access/transfer layer, with operations (`approve`, `reject`, `open`, `close`, `load`, `approveAll`) handling all mutations.
-
-### ParkHere
-All 12 entities have `createable=false, updateable=false, deleteable=false`. All data mutations go through custom-implemented operations: car management via `createCar`/`deleteCar`/`favoriteCar`, reservations via `reservation`/`deleteReservation`/`cancelReservation`/`modificateReservation`, configuration via `configuration`/`createDoorman`/`createDay`. Access points specify CRUD per access: `parkingGarages` (C+U), `users` (C+U), `profileSettings` (U only), `reservationsAccess` (read-only).
-
-### IndamediaAdTrack
-All 12 entities have `createable=false, updateable=false, deleteable=false`. All data mutations go through 17 custom-implemented operations. No direct CRUD is exposed to the UI. Operations like `createClient`, `updateClient`, `newAccount`, `setGoogleCredential`, `syncData` handle all entity lifecycle management through the service layer with `BusinessError` faults for validation.
-
-### InterfaceRegister
-23 of 25 entities have `createable=false, updateable=false, deleteable=false`. Only `Initializer` and `User` have CRUD enabled. The single EnterpriseArchitect actor's 14 access points grant varied CRUD: most collections have C+U (e.g., `applications`, `vendors`, `highLevelConnections`) but no delete. `interfaceSpecifications` is read-only. Entity creation also handled via mapped operations: `createApplication`, `createHighLevelConnection`, `createUser`.
-
-### judo-partner
-Single Actor with 11 access points providing varied CRUD: `users` (C/U/D), `countries` (read-only), `partnerList` (U only), `NAVConfig` (U only), `imports` (read-only), `registers`/`deliveryMethods`/`caseTypes`/`cases`/`documentTypes` (C/U/D), `records` (read-only). Entity mutations for partners happen through operations (`createPartner`, `delete`, `validate`), not direct CRUD on the partner access point.
-
-### KozutEugyfelModelTest
-Most entities have `createable=false, updateable=false, deleteable=false`. Only `Kep` (Image) has full CRUD enabled as a composed child. All complaint lifecycle mutations are handled through operations (`tovabbitas`, `lezaras`, `megjegyzes`) rather than direct CRUD. The Admin actor gets user management CRUD, while KOZUT-realm actors get read-only `bejelentesek` and DERIVED actionable `intezendoBejelentesek`.
-
-### workflow-poc
-All 21 entities have `createable=false, updateable=false, deleteable=false` at the entity level. Model source confirms this across all entity declarations (Token, WorkflowVersion, State, Transition, Action, etc.). All mutations are handled through operations (`trigger`, `checkout`, `release`, `assign`, `execute`, `navigate`, `commit`, `upload`, `publish`, `startWorkflow`). Access points grant read-only access at the actor level.
-
-### ReserveApp
-All 15 entities have `createable=false, updateable=false, deleteable=false` at the entity level. CRUD is controlled through transfer objects and actor accesses. AdminActor has 13 access points to manage reference data (gates, partners, companies, etc.) and users. PartnerActor has 2 restricted accesses (profile + reservations). Three actors (Logistician, Doorman, Readonly) have no accesses defined yet.
-
-### AMS-Frontend
-All 7 entities have CRUD disabled at entity level. Admin actor grants CRUD on `campaigns` (C+U+D), `applications` (C+U+D), and read-only on `users`. Manager actor accesses are read-only -- all mutations handled via MAPPED operations (`approve`, `reject`, `open`, `close`, `load`, `approveAll`).
-
-## Trade-offs
-
-- Pros: Centralized permission control, different actors get different permissions, follows CQRS principles
-- Cons: Entity-level flags may seem redundant (always false), requires careful access configuration
-- Prefer when: Always in JUDO -- this is the standard architecture pattern
+- A throwaway prototype where generated entity pages are enough.
+- Entities that are never exposed to a client (backend-only data): flags have no audience.
+- Mixing styles: if some entities allow direct CRUD, document which and why, otherwise reviewers cannot tell a gap from a decision.
 
 ## Related
 
-- [[actor-based-transfer-projection]]
-- [[derived-access-filtering]]
+- [[actor-based-transfer-projection]] — one transfer object per actor role
+- [[derived-access-filtering]] — row-level scoping on the Access
+- [[soft-delete-active-flag]] — delete replaced by an active flag
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=entity-crud-at-service-layer cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Category {
+    <<Entity>>
+    +String name [1]
+  }
+  class Item {
+    <<Entity>>
+    +String name [1]
+    +archive()
+  }
+  class ItemAdminView {
+    <<Transfer>>
+    +String name [1]
+  }
+  class ItemReadView {
+    <<Transfer>>
+    +String name [1]
+  }
+  ItemAdminView ..> Item : maps
+  ItemReadView ..> Item : maps
+```
+<!-- /mermaid:generated -->

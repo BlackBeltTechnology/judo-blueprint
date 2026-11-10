@@ -2,8 +2,8 @@
 id: error-code-enum-pattern
 title: Error Code Enumeration for Operation Faults
 description: Operations that can fail use a dedicated Error transfer object (unmapped) containing a message string and a typed error code enumeration.
-aliases: []
-keywords: [error, code, enumeration, operation, faults, enum]
+aliases: [business error fault, error code enum, modeled fault]
+keywords: [fault, error code, enumeration, operation, 422, X-Fault, unmapped transfer object]
 tags: ["domain:model", "layer:model", "project:trivia", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "status:established"]
 category: enum
 status: established
@@ -11,46 +11,77 @@ projects: [trivia, park-here, indamedia-adtrack, judo-partner]
 evidence: ["trivia:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [unmapped-transfer-dto, enum-state-machine]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: error-code-enum-pattern
+diagram: { kinds: [entity, enum, transfer, operation], members: types }
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Operations that can fail use a dedicated Error transfer object (unmapped) containing a message string and a typed error code enumeration. The error code enum lists all possible domain-specific failure reasons, enabling structured error handling on the client side.
+Operations that can fail for business reasons should tell the client why in a typed way. Model a fault transfer object that carries a message and an enumeration of error codes, and attach it to every operation that can raise it.
 
-## Structure
+## Practice
 
-- Unmapped transfer object `Error` or `BusinessError` with:
-  - `message: String` (optional or required, human-readable)
-  - `code/errorCode: ErrorCode` (required, typed enum)
-- ErrorCode enum defines domain-specific error conditions
-- Error is used as the fault type for operations: `fault: Error (1..1)`
-- Error enum placed in the actor package (not entities) when actor-specific
+### An unmapped fault transfer object with a coded enumeration
 
-## Examples
+- The fault is an unmapped transfer object (here `BusinessError`) with an optional human-readable `message` and a required `code` attribute typed by an `ErrorCode` enumeration. The enumeration lists the domain failure reasons.
+- The fault is declared on each operation that may throw it, as a fault parameter with cardinality `1..1` ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)). Without the declaration the generated SDK interface has no `throws` clause, so a custom implementation cannot throw it.
+- The SDK generator turns the fault into a checked `<Fault>Exception` with typed details. On the wire the client gets HTTP 422 with the header `X-Fault: <fault FQN>` and the details in the body ([error handling guide](../../agent-docs/backend/error-handling-guide.md)). The exception class name exists only because your model defines this fault; it is not a platform class.
+- Thrown from an interceptor, the fault cannot be used directly: wrap it in `InterceptorCallBusinessException` with the fault's FQN as `type` ([interceptors](../../agent-docs/backend/interceptors.md)).
+- The frontend fault dialog translates the fault's attributes with keys `faults.<fault FQN>.<attribute>`, so give the enumeration members translatable labels.
 
-### Trivia
-`player::Error` has `message` (String, optional) and `code` (ErrorCode, required). `ErrorCode` enum has 5 members: `INVALID_CODE`, `CONTEST_NOT_OPEN`, `TEST_NOT_STARTED`, `TEST_ALREADY_STARTED`, `TEST_CLOSED`. Used as fault type for `enter`, `submit`, `start`, and `activate` operations.
+### One fault type, many codes
 
-### ParkHere
-`BusinessError` transfer has `message` (String, required) and `errorCode` (ErrorCode, required). `ErrorCode` enum has 8 members: `PERMISSION_DENIED`, `USER_NOT_FOUND`, `MISSING_REQUIRED_DATA`, `NOT_VALID_DATA`, `RESERVATION_NOT_FOUND`, `TOO_MANY_RESERVATION`, `CAR_NOT_FOUND`, `CONFIGURATION_NOT_FOUND`. Used as fault type across 20+ operations including `favoriteCar`, `deleteCar`, `configuration`, `createDoorman`, `deleteHoliday`, etc.
+A single fault (`BusinessError`) with an enumeration serves many operations: the client branches on `code` instead of parsing messages. Group the codes by cause (not found, permission, configuration, external system). When codes belong to one actor only, place the fault and enumeration in that actor's package.
 
-### IndamediaAdTrack
-`BusinessError` transfer used as the single fault type for all 17 operations. `ErrorCode` enum has 12 members spanning 4 categories: entity-not-found (`CLIENT_NOT_FOUND`, `USER_NOT_FOUND`, `ACCOUNT_NOT_FOUND`, `CAMPAIGN_NOT_FOUND`, `CREDENTIAL_NOT_FOUND`, `TRACKED_CAMPAIGN_NOT_FOUND`), authorization (`PERMISSION_DENIED`), configuration (`CREDENTIAL_NOT_SET`), and platform integration (`CONNECTION_FAILD`, `TRACKED_CAMPAIGN_UNFETCHABLE`, `PLATFORM_NOT_SUPPORTED`, `PLATFORM_NOT_IMPLEMENTED`).
+### Keep the codes and the throwing code in sync
 
-### judo-partner
-`ValidationErrorCode` enum with 9 members classifying partner validation failures: `NON_HU_TAX_ID`, `INVALID_TAX_ID`, `TAX_ID_SUFFIX_ERROR`, `UNDER_LIQUIDATION`, `UNDER_DISSOLUTION`, `NAME_MISMATCH`, `MISSING_TAX_ID`, `DUPLICATE_TAX_ID`, `COMMUNICATION_ERROR`. Used on both `Partner.validationError` and `ImportPartner.validationError` to record validation results from NAV tax authority queries.
+The enumeration is model data; adding a reason needs a model change and a regeneration, and a code that no operation throws is dead weight. Members persist by ordinal, so append and do not renumber.
 
-## Trade-offs
+## Rationale
 
-- Pros: Typed error codes enable structured client-side error handling, self-documenting API errors
-- Cons: Adding new error conditions requires enum changes, error codes must be kept in sync with operation logic
-- Prefer when: Operations need to communicate specific failure reasons to clients
+- Clients get a stable, typed contract for failures instead of message strings.
+- Declared faults give the generated SDK a checked exception, so callers must handle it.
+- Project practice (not platform behaviour): four source projects used one shared fault with an error-code enumeration; the platform also supports one fault type per failure.
+- A validation problem on one input field is better reported as a `ValidationException`; use a fault for a business rule that deserves its own handling.
+
+## Example
+
+`BusinessError` is an unmapped transfer object with `message` and a required `code` of type `ErrorCode` (NOT_FOUND, NOT_OPEN, ALREADY_STARTED, PERMISSION_DENIED). The instance operation `Contest.open` declares `BusinessError` as its fault and is implemented in Java, where it throws the generated exception with the code `NOT_OPEN` when the contest is not open. Names are neutral stand-ins. The diagram shows the entity, the enumeration and the fault on the operation.
+
+## When to avoid
+
+- A failure that needs different details per case: model separate faults with their own attributes.
+- Field-level input validation: use validation exceptions.
+- A single operation with one failure reason: one dedicated fault is enough.
 
 ## Related
 
-- [[unmapped-transfer-dto]]
-- [[enum-state-machine]]
+- [[unmapped-transfer-dto]] — the fault is an unmapped transfer object
+- [[enum-state-machine]] — refused transitions are a typical fault source
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=error-code-enum-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class BusinessError {
+    <<Transfer>>
+    +String message
+    +ErrorCode code [1]
+  }
+  class Contest {
+    <<Entity>>
+    +String name [1]
+    +open()
+  }
+  class ErrorCode {
+    <<Enumeration>>
+    NOT_FOUND
+    NOT_OPEN
+    ALREADY_STARTED
+    PERMISSION_DENIED
+  }
+  BusinessError ..> ErrorCode : code
+```
+<!-- /mermaid:generated -->

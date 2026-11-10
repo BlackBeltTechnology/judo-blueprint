@@ -1,0 +1,198 @@
+{
+ "batch": "pm03",
+ "entries": {
+  "dual-role-relation": {
+   "status": "rewritten",
+   "fragment": "dual-role-relation",
+   "kb": [
+    "dual role relation",
+    "platform mechanisms of dual-role-relation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/structure.md#TwoWayRelationMember",
+    "catalog/agent-docs/advanced-modeling-patterns.md#Asymmetric bidirectional relations",
+    "catalog/agent-docs/model-development.md#collection functions"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "entity-as-enum-pattern": {
+   "status": "rewritten",
+   "fragment": "entity-as-enum-pattern",
+   "kb": [
+    "entity as enum pattern",
+    "platform mechanisms of entity-as-enum-pattern"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/esm_metamodel/type.md#EnumerationMember Attribute Rules",
+    "catalog/agent-docs/esm_metamodel/operation.md#rangeExpression"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "entity-based-state-machine": {
+   "status": "rewritten",
+   "fragment": "entity-based-state-machine",
+   "kb": [
+    "entity based state machine",
+    "platform mechanisms of entity-based-state-machine"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "entity-crud-at-service-layer": {
+   "status": "rewritten",
+   "fragment": "entity-crud-at-service-layer",
+   "kb": [
+    "entity crud at service layer",
+    "platform mechanisms of entity-crud-at-service-layer"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/structure.md",
+    "catalog/agent-docs/accesspoint.md#Access CRUD Rules",
+    "catalog/agent-docs/frontend/model-screen-layout.md#ESM CRUD Flags on Relations",
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md#Parent Flags Affect Child Operations"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built",
+    "old text implied entity flags enforce mutations; now states that DAO emits CRUD for mapped non-abstract TOs and flags govern generated API/UI"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "enum-sentinel-value": {
+   "status": "rewritten",
+   "fragment": "enum-sentinel-value",
+   "kb": [
+    "enum sentinel value",
+    "platform mechanisms of enum-sentinel-value"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/esm_metamodel/type.md#EnumerationMember Attribute Rules"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "enum-state-machine": {
+   "status": "rewritten",
+   "fragment": "enum-state-machine",
+   "kb": [
+    "enum state machine",
+    "platform mechanisms of enum-state-machine"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/jcl-operation-scripts.md",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/data-access-guide.md#Known Issues of the Generated DAO"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "error-code-enum-pattern": {
+   "status": "rewritten",
+   "fragment": "error-code-enum-pattern",
+   "kb": [
+    "error code enum pattern",
+    "platform mechanisms of error-code-enum-pattern"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/error-handling-guide.md#Exceptions Thrown from Interceptors",
+    "catalog/agent-docs/esm_metamodel/operation.md#fault parameter 1..1"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built",
+    "fault declaration, 422/X-Fault, interceptor wrapping, generated exception per project added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "external-system-staging-entity": {
+   "status": "rewritten",
+   "fragment": "external-system-staging-entity",
+   "kb": [
+    "external system staging entity",
+    "platform mechanisms of external-system-staging-entity"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/jcl-operation-scripts.md",
+    "catalog/agent-docs/model-development.md#collection functions"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "factory-operation-with-prepopulation": {
+   "status": "rewritten",
+   "fragment": "factory-operation-with-prepopulation",
+   "kb": [
+    "factory operation with prepopulation",
+    "platform mechanisms of factory-operation-with-prepopulation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/esm_metamodel/operation.md#INITIALIZER",
+    "catalog/agent-docs/jcl-operation-scripts.md#Statements and syntax",
+    "catalog/agent-docs/advanced-modeling-patterns.md#getVariable ACTOR"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "feed-denormalization-entity": {
+   "status": "rewritten",
+   "fragment": "feed-denormalization-entity",
+   "kb": [
+    "feed denormalization entity",
+    "platform mechanisms of feed-denormalization-entity"
+   ],
+   "docs_used": [
+    "none beyond practice cross-refs"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "flat-entity-model": {
+   "status": "rewritten",
+   "fragment": "flat-entity-model",
+   "kb": [
+    "flat entity model",
+    "platform mechanisms of flat-entity-model"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model-validation-and-transformation.md#Creatable transfer objects",
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO / Known Issues"
+   ],
+   "fixes": [
+    "full rewrite from legacy: GraphQL-era text replaced by platform-grounded practice, project-specific example lists reduced to neutral example, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

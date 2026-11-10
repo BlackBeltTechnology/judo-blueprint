@@ -2,8 +2,8 @@
 id: flat-entity-model
 title: Flat Entity Model (No Generalization)
 description: All entity types are concrete with no abstract parents or inheritance hierarchies.
-aliases: []
-keywords: [flat, model, no, generalization]
+aliases: [no inheritance, concrete entities only, no generalization]
+keywords: [flat model, generalization, abstract entity, inheritance, transfer projection, composition]
 tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:sanctuary-backend", "project:park-here", "project:judo-partner", "project:reserve-app", "status:established"]
 category: entity
 status: established
@@ -11,75 +11,75 @@ projects: [trivia, itracker, actiongroup-test-react, alba, skillmatrix-model, vi
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: [generalization-base-entity]
 related: [enum-state-machine, actor-based-transfer-projection, generalization-base-entity]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: flat-entity-model
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-All entity types are concrete with no abstract parents or inheritance hierarchies. The domain model is completely flat with no generalization relationships. Variation is handled through composition, enums, and different transfer projections rather than entity inheritance.
+Keep every entity concrete and independent: no abstract parents and no inheritance. Variation is expressed through enumerations, composition and different transfer projections.
 
-## Structure
+## Practice
 
-- All entities are concrete (not abstract)
-- No generalization/inheritance relationships between entities
-- No shared base entity types
-- Variation is achieved through:
-  - Enum-typed status attributes for lifecycle variation
-  - Different transfer projections per actor for view variation
-  - Composition for parent-child ownership
+### Concrete entities and variation by other means
 
-## Examples
+- Every entity is concrete and none declares a generalization. Similar entities (two kinds of address, user and administrator) stay separate even when they share attributes.
+- Lifecycle variation uses an enumeration-typed status ([[enum-state-machine]]); role variation uses a role enumeration or derived booleans on the actor's own data.
+- View variation uses one transfer object per actor role over the same entity ([[actor-based-transfer-projection]]).
+- Parent-child ownership uses composition.
 
-### Trivia
-All 9 entities (User, Question, Contest, Test, Category, Prompt, Application, Upload, Admin) are concrete with no inheritance. `User` and `Admin` are separate entities despite similar attributes (email, active) -- no shared base type.
+### What the platform offers if you need inheritance
 
-### itracker
-All 8 entities (Initiative, Region, SRTCategory, MonthlyForecast, ForecastVersion, MonthlyForecastVersion, User, Application) are concrete with zero generalization hierarchies. MonthlyForecast and MonthlyForecastVersion are separate entities (not sharing a base) despite similar attributes.
+Generalization is a platform feature between entity types. An abstract entity cannot be the target of a create, so a transfer object used for creation must map a concrete entity ([model validation](../../agent-docs/model/model-validation-and-transformation.md)), and the generated DAO offers create only for mapped, non-abstract types ([data access guide](../../agent-docs/backend/data-access-guide.md)). Choosing the flat model means giving up these shared definitions and polymorphic queries on purpose ([[generalization-base-entity]]).
 
-### ActionGroupTest
-All 11 entity types (God, Galaxy, Star, Planet, Creature, CreatureTemplate, Matter, MatterCreator, Astronomer, Sign, Message) are concrete with zero generalization. Template types (CreatureTemplate, MatterCreator, Message) are separate unmapped types rather than inheriting from their corresponding entities.
+## Rationale
 
-### Alba
-All 11 entities (Product, ProductVersion, ProductVersions, User, Institution, Attachment, Audience, Curriculum, ResultType, Event, Task) are concrete with no inheritance. Role-based polymorphism is achieved through 44 transfer objects instead of entity generalization. The research explicitly notes "No explicit inheritance hierarchies exist in this model."
+- Simple to read and map: one entity, one table, no hierarchy rules.
+- No inherited-member surprises in generated code. The agent-docs list a known generated-DAO issue with derived attributes that navigate through an inherited member ([known issues](../../agent-docs/backend/data-access-guide.md)).
+- Project practice (not platform behaviour): twelve source projects stayed flat, mostly for small and medium models.
+- Cost: attributes repeated across similar entities, no shared base for audit fields and no polymorphic queries.
 
-### SkillMatrix-Model
-All 21 entities confirmed flat with zero `GeneralizationType` declarations in the model source. Entities like `User`, `Competence`, `Skill`, `SkillLevel`, `TrainingPlan`, `SkillTarget`, `Tag`, `Note` are all standalone. Role-based polymorphism achieved via 37 transfer objects and boolean role flags (`isActiveAdmin`, `isActiveHREmployee`, `isActiveProfessional`) rather than entity inheritance.
+## Example
 
-### Viterra Demo
-All 7 entities (Period, Client, Silo, Stock, Commodity, Report, Application) are concrete with no inheritance. No abstract entities or supertypes defined. Variation handled through 10 transfer objects providing different views per actor (3 Report projections, 2 Client projections, 2 Stock projections).
+`Account` (name, role enumeration), `Order` (number, a mandatory `owner` to `Account`) and `OrderLine` (quantity, composed in `Order`). There is no base entity; role variation is the `Role` enumeration. Names are neutral stand-ins.
 
-### KozutEugyfelClient
-All 13 entities (Bejelentes, Kep, Erkezteto, Megye, SzervezetiEgysegTipus, Esemeny, Ertesites, Felhasznalo, SzervezetAzonosito, Munkakor, TovabbitasAction, ResztvevoAction, JarokeloStaging) are concrete with no inheritance. Role variation achieved via derived boolean flags on Felhasznalo and 20 transfer objects across 3 actors.
+## When to avoid
 
-### MJSZ
-All 10 entities (License, Player, Season, Tournament, Transfer, Match, Club, Team, Venue, Application) are concrete with no inheritance. No abstract entities. The research explicitly notes this as unusual: common patterns like a base entity with audit fields are absent. Simplicity is the design goal.
-
-### judo-demo-miniworkflow
-All 4 entities (Document, Files, DocumentHistoryEntry, User) are concrete with no inheritance. Despite the small model size, no shared base type is used. Variation is handled entirely through 10 transfer objects (4 self-mapped, 4 enhanced/actor-specific, 2 transient input DTOs) and the DocumentState enum.
-
-### Sanctuary Backend
-All 6 entities (User, UserPrivacySettings, UserSettings, PositionTitle, Role, RoleGroup) are concrete with no inheritance. No abstract entities or generalization hierarchies. Variation is handled through composition (settings as composed children of User) and a shared `ActiveStatus` enum for lifecycle status across User and PositionTitle.
-
-### ParkHere
-All 12 entities (User, Car, Guest, Reservation, ParkingGarage, ParkingSlot, Configuration, Doorman, DoormanNotified, Holiday, AdditionalDay, Initializer) are concrete with no inheritance. Polymorphism achieved through enum-based type discrimination (ReservationType), role boolean flags on User, and 41 transfer objects providing different views. Research explicitly notes this as a flat entity model with behavior in operations rather than type hierarchies.
-
-### judo-partner
-All 23 entity types are concrete with no abstract parents or generalization hierarchies. Despite having two distinct domains (partner and registry) with substantial entity count, the model remains completely flat. Variation across similar entities (e.g., Address and TaxpayerAddress) is handled through separate entity types rather than shared base types.
-
-### ReserveApp
-All 15 entity types are concrete with no abstract parents or inheritance relationships. The entity graph is entirely flat despite moderately complex domain (freight reservations, partners, gates, spots, projects). Variation is handled through the `Role` enum for user classification and 40 transfer objects across 5 actors for view variation.
-
-## Trade-offs
-
-- Pros: Simple to understand, no inheritance complexity, straightforward persistence mapping
-- Cons: Potential attribute duplication across similar entities, no polymorphic queries
-- Prefer when: Domain is small or entities are sufficiently distinct that inheritance would add unnecessary complexity
+- Many entities share a large set of attributes or behaviour: use [[generalization-base-entity]].
+- Queries must treat several types uniformly (one list of all kinds).
+- Audit fields on every entity: a shared base avoids repetition.
 
 ## Related
 
-- [[enum-state-machine]] (alternative to inheritance for variation)
-- [[actor-based-transfer-projection]] (alternative to inheritance for different views)
-- [[generalization-base-entity]] (alternative: use inheritance for shared infrastructure)
+- [[enum-state-machine]] — lifecycle variation without subtypes
+- [[actor-based-transfer-projection]] — view variation without subtypes
+- [[generalization-base-entity]] — the inheritance alternative
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=flat-entity-model cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Account {
+    <<Entity>>
+    +String name [1]
+    +Role role [1]
+  }
+  class Order {
+    <<Entity>>
+    +String number [1]
+  }
+  class OrderLine {
+    <<Entity>>
+    +Integer quantity [1]
+  }
+  class Role {
+    <<Enumeration>>
+    ADMIN
+    MEMBER
+  }
+  Account ..> Role : role
+  Order *-- "*" OrderLine : lines
+  Order --> "1" Account : owner
+```
+<!-- /mermaid:generated -->

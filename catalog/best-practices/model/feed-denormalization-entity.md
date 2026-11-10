@@ -2,8 +2,8 @@
 id: feed-denormalization-entity
 title: Feed Denormalization Entity for Precomputed Views
 description: A dedicated read-only entity stores denormalized copies of data from multiple source entities to enable fast feed/listing rendering without joins.
-aliases: []
-keywords: [feed, denormalization, precomputed, views]
+aliases: [feed table, precomputed view, read-only copy entity]
+keywords: [feed, denormalization, read-only entity, sync operation, empty default, timeline]
 tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single-project"]
 category: entity
 status: single-project
@@ -11,40 +11,82 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:unrecorded"]
 alternatives: []
 related: [derived-attribute-flattening, category-enum-pattern, default-value-patterns]
-fragment: pending
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+fragment: feed-denormalization-entity
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A dedicated read-only entity stores denormalized copies of data from multiple source entities to enable fast feed/listing rendering without joins. The feed entity is system-managed (no CRUD), populated and synchronized by operations on the source entities, and includes all display-relevant attributes as flat fields. An optional reference to the source entity allows drill-down navigation.
+A feed or timeline lists items of several entity types. Instead of joining them on every read, keep a read-only entity with a flat copy of the display data, one row per feed item.
 
-## Structure
+## Practice
 
-- Entity with `createable=false`, `updateable=false`, `deleteable=false` (system-managed)
-- Denormalized attributes copied from multiple source entities (title, summary, authorName, organizationName, etc.)
-- Classification enum for entry type (to distinguish content subtypes in the feed)
-- Optional relation to the source entity (0..1) for detail navigation
-- Optional relation to the owning organization (0..1) for filtering
-- Empty string defaults on optional display fields to avoid NULL rendering issues
-- A manual `syncFeed` operation may be provided for admin-triggered resynchronization
-- Feed entries are created/updated/removed as side effects of source entity operations (publish, delete, edit)
+### A system-managed, flat feed entity
 
-## Examples
+- The feed entity has no create, update or delete rights at entity or transfer-object level (see [[entity-crud-at-service-layer]]): it is changed only by operations.
+- It holds denormalized display attributes copied from the sources (title, summary, author name, organisation name, time), a classification enumeration for the item type ([[category-enum-pattern]]) and optional relations (`0..1`) to the source and to the owning organisation for drill-down and filtering.
+- Optional display fields get an empty-string default so the UI never renders a null ([[default-value-patterns]]).
+- Feed rows are written as a side effect of the source operations (publish, edit, delete) and an admin operation can rebuild them. The platform does not synchronise the copies: the write path is your own operation code.
 
-### MLSZKSZPlatform
-`FeedEntry` entity denormalizes data from `Post` (via generalization: News, Offer, Request, Announcement) and `Organization`. Attributes: `entryType` (FeedEntryType enum: NEWS, OFFER, REQUEST, ANNOUNCEMENT), `contentId` (Long, default ""), `createdAt` (Timestamp), `title`, `summary`, `organizationName`, `authorName`, `capabilities`, `validFrom`, `validUntil`, `isSensitive`. Relations: `post [0..1]` (association to Post), `ownerOrganization [0..1]` (two-way with Organization). The `AdminDashboard.syncFeed` operation provides manual feed rebuild. Feed entries are created by `publish` operations and removed by `delete` operations on content entities.
+### Prefer derived members when the data can be read live
 
-## Trade-offs
+A derived member of a transfer object can flatten values from related entities on read ([[derived-attribute-flattening]]). Choose the stored feed entity only when the join cost or the sorting and paging need justify the copies.
 
-- Pros: Fast feed rendering without joins, pre-computed display data, efficient pagination, search-optimized fields
-- Cons: Data redundancy, must be kept synchronized with source entities, eventual consistency risk, storage overhead
-- Prefer when: Application has a feed/timeline view that aggregates data from multiple entity types and requires high read performance
+## Rationale
+
+- Reads are one flat table: simple sorting, filtering and paging.
+- Display shape is decoupled from the source entities.
+- Project practice (not platform behaviour): one source project kept a feed table in sync from its publish and delete operations.
+- Cost: redundant data, a synchronisation obligation and the risk of stale rows.
+
+## Example
+
+`FeedEntry` has an `entryType` (NEWS, OFFER, NOTICE), `title`, `summary`, `authorName`, `organizationName` and `publishedAt`, plus `0..1` relations `post` and `organization`. It is created with all rights off. An admin operation `syncFeed` on the organisation rebuilds the feed. Names are neutral stand-ins for the original platform.
+
+## When to avoid
+
+- A small data set where a derived member or a query is fast enough.
+- The data must always be current: copies lag behind their sources.
+- Only one source entity: page that entity directly.
 
 ## Related
 
-- [[derived-attribute-flattening]] (feed attributes are flattened from source entities)
-- [[category-enum-pattern]] (FeedEntryType classifies entries)
-- [[default-value-patterns]] (empty string defaults for display fields)
+- [[derived-attribute-flattening]] — flatten on read instead of copying
+- [[category-enum-pattern]] — classifies the feed items
+- [[default-value-patterns]] — empty-string defaults
+- [[entity-crud-at-service-layer]] — read-only entity with operation-driven changes
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=feed-denormalization-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class EntryType {
+    <<Enumeration>>
+    NEWS
+    OFFER
+    NOTICE
+  }
+  class FeedEntry {
+    <<Entity>>
+    +EntryType entryType [1]
+    +String title
+    +String summary
+    +String authorName
+    +String organizationName
+    +Timestamp publishedAt
+  }
+  class Org {
+    <<Entity>>
+    +String name [1]
+  }
+  class Post {
+    <<Entity>>
+    +String title [1]
+    +Text body
+  }
+  FeedEntry --> "0..1" Org : organization
+  FeedEntry --> "0..1" Post : post
+  FeedEntry ..> EntryType : entryType
+```
+<!-- /mermaid:generated -->
