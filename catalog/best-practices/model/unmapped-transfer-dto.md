@@ -1,96 +1,107 @@
 ---
 id: unmapped-transfer-dto
 title: Unmapped Transfer Object (DTO) Pattern
-description: "Unmapped transfer objects have no entity mapping and serve as standalone data containers for operation inputs, outputs, and fault types."
-aliases: []
-keywords: [unmapped, transfer, object, dto]
+description: "Use unmapped transfer objects (no entity mapping, transient attributes) for operation inputs, outputs, fault payloads and report rows; they get no generated CRUD."
+aliases: [DTO, input object, parameter object, standalone transfer object]
+keywords: [unmapped transfer object, DTO, operation input, operation output, fault, TRANSIENT, report row, parameter object, binary wrapper]
 tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:judo-demo-miniworkflow", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "status:established"]
 category: transfer
 status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, judo-demo-miniworkflow, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-related: [transient-relation-parameter, actor-based-transfer-projection]
-fragment: pending
+related: [transient-relation-parameter, actor-based-transfer-projection, error-code-enum-pattern, factory-operation-with-prepopulation, transfer-object-multiplicity]
+fragment: unmapped-transfer-dto
+diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Unmapped transfer objects have no entity mapping and serve as standalone data containers for operation inputs, outputs, and fault types. They are used when the data structure does not correspond to any persisted entity -- typically for API request/response payloads, error objects, and parameter wrappers.
+Some data has no entity behind it: the input of an operation, the result of a calculation, an error payload, a flat report row. Model it as an unmapped transfer object, a standalone container that is never persisted and has no generated list or edit pages.
 
-## Structure
+## Practice
 
-Common unmapped DTO categories:
-- **Operation input**: Captures user input for an operation (e.g., `RegisterInput`, `Credential`)
-- **Operation output**: Wraps operation results (e.g., `PromptList`)
-- **Error/fault type**: Carries error information (e.g., `Error` with `message` + `code` enum)
-- **Data container**: Holds binary or structured data (e.g., `JsonData` with a binary JSON field)
-- **ID wrapper**: Simple wrapper for a single identifier (e.g., `TestId`)
-- **Transient report row**: Denormalized data for report generation (no persistence)
+### What an unmapped transfer object is
 
-Naming conventions for unmapped DTOs:
-- `*Input` suffix for creation/operation inputs
-- `*Update` suffix for modification inputs
-- `*Data` suffix for read-only data containers
-- `*Output` suffix for operation results
+A transfer object type is mapped when it has a mapping to an entity type and unmapped when it has none. An unmapped one is a standalone data container, often the input of an operation ([model development guide](../../agent-docs/model/model-development.md), "Mapped vs. Unmapped Transfer Objects"). It cannot hold stored or mapped members: its attributes are `TRANSIENT` or `DERIVED`, and its relations `TRANSIENT` or `DERIVED` ([structure reference](../../agent-docs/model/esm_metamodel/structure.md), member constraints). Transient relations are covered in [[transient-relation-parameter]].
 
-## Examples
+### Common roles
 
-### Trivia
-Seven unmapped DTOs: `admin::JsonData` (JSON container for upload/download), `player::RegisterInput` (email + name), `player::Answer` (number + choice), `player::AnswerList` (transient answer collection), `player::Error` (message + ErrorCode enum), `player::TestId` (ID wrapper), `player::Credential` (email + code for activation).
+- **Operation input**: one container per operation or per family of operations, with required attributes for what the caller must supply and optional ones for the rest. Defaults can be set per attribute (see [[factory-operation-with-prepopulation]]).
+- **Operation output**: the result type of an operation. An operation output must be a transfer object; the docs warn that pointing it at a bare data type silently fails, so a result that is a single binary or primitive needs a wrapper with one transient attribute ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), wrapper transfer object for binary outputs).
+- **Fault payload**: a modeled fault is a transfer object type attached to the operation as a fault. The operation must declare it, or custom code cannot throw it ([error handling guide](../../agent-docs/backend/error-handling-guide.md), Modeled Faults). A code enumeration plus a message is the usual payload, see [[error-code-enum-pattern]].
+- **Identifier or data wrapper**: a single identifier, or a binary or structured payload.
+- **Report row**: a flat object of transient attributes filled by an operation, one per result line.
+- **Static operations holder and principal**: an unmapped transfer object can also carry static operations, or be an actor's principal (see the advanced modeling patterns and the access point reference).
 
-### RackInspect
-40+ unmapped DTOs across service packages following consistent suffixes: `FaultRegistryInput`, `ElementFaultInput`, `CostPriceInput` (creation), `CostPriceUpdate`, `OfferItemUpdate`, `PriceModifierInstanceUpdate` (modification), `CostPriceData`, `PriceModifierData` (read-only), `PreviewOutput` (results), `EmailInput`, `FaultRegistryEmailInfo` (email integration), `BusinessError` (fault type).
+### What the platform does and does not generate
 
-### itracker
-Single unmapped DTO: `InititativeInput` for the `createInitiative` operation. Contains 8 required attributes (location, title, source, enum defaults, numeric defaults, date default) plus 2 transient relations (region, category with `!any()` defaults). Demonstrates a compact input DTO with comprehensive defaults for all fields.
+The generated DAO has full CRUD only for mapped, non-abstract transfer objects; unmapped ones get only query accessors ([data access guide](../../agent-docs/backend/data-access-guide.md), "Which Types Get a Full DAO"). The UI model shows the CRUD page only for mapped transfer objects. Static parameterized query calls of the form `Type#query(...)` are only allowed on unmapped transfer objects (JCL scripts reference). Tabular reference field columns on an unmapped input transfer object that point at attributes of another transfer object break the UI build (frontend pitfalls guide).
 
-### SkillMatrix
-`report::Competence` is a transient/unmapped transfer object with all TRANSIENT attributes (`user`, `unit`, `competence`, `tag`, `score`, `level`). Used as an intermediate denormalized row during the report generation pipeline, populated in the `Definition.run` operation body and passed to the Excel generation custom implementation.
+### Project naming (convention, not platform)
 
-### ActionGroupTest
-3 unmapped DTOs: `CreatureTemplate` (transient name + required id, plus transient signs relation for creature creation), `MatterCreator` (transient mass + shortNote for Galaxy matter creation operations), `Message` (transient message string for creature-God communication as both input and output).
+Source projects named containers by role: an `Input` suffix for creation or operation input, `Update` for modification input, `Data` for read-only containers, `Output` for results, and a `BusinessError` fault type. Keep one convention per model.
 
-### Alba
-3 transient/unmapped DTOs: `ApprovalTaskInput` (transient relation `users` with derived range filtering active TEACHER/APPROVER users), `CloseTaskInput` (transient `result` attribute of type TaskState), `TeacherAccountFinalizationForm` (profile completion data). Also form-specific TOs: `AuthorProductForm` and `AdminProductForm` for product creation input.
+## Rationale
 
-### SkillMatrix-Model
-Transient report DTO `report::Competence` confirmed with all-transient attributes for denormalized report rows. The `ResultHelper` transfer serves as a utility view for report result handling. The model uses minimal unmapped DTOs compared to its transfer object count (37 total), relying primarily on mapped transfers with selective attribute projection rather than standalone input/output DTOs.
+- Operation signatures stay explicit and typed, with nothing persisted for transient input.
+- Fault and result types are first-class model elements, so generated clients get typed errors and results.
+- Cost: many small types accumulate in a large API; reuse one container across operations only when the fields really coincide (one project shared a single message container across four workflow operations).
+- Because no CRUD is generated, anything users browse or edit must be a mapped transfer object instead, see [[transfer-object-multiplicity]].
 
-### KozutEugyfelClient
-5 unmapped operation input DTOs: `Lezaras` (szoveg + lezaroDokumentum for closing), `Megjegyzes` (szoveg for comments), `Tovabbitas` (mapped to TovabbitasAction with szoveg), `Megnyitas` (szoveg for reopening), `Resztvevo` (mapped to ResztvevoAction for adding participants). Also `EmailKuldo` and `Alkalmazas` as utility DTOs. Demonstrates minimal, purpose-built input DTOs per operation.
+## Example
 
-### judo-demo-miniworkflow
-2 unmapped DTOs: `Message` (single optional `message: Text` attribute, used by all 4 workflow operations as a comment container) and `NewDocument` (single optional `referenceNumber: String`, used by `createDocument` factory). Both are minimal transient types with no entity mapping, demonstrating the pattern of one shared input DTO reused across multiple operations.
+An Order entity with a mapped OrderView. The operation `place` is declared on OrderView. Its input is the unmapped OrderInput (a required transient number and an optional transient note), its output is the unmapped OrderSummary (a transient count), and its declared fault is the unmapped BusinessError (a message and an ErrorCode enumeration with INVALID and DUPLICATE). None of the three is stored or gets a page of its own.
 
-### ParkHere
-8+ unmapped input DTOs: `CreateCarInput`, `ModificationCarInput` (car CRUD), `ReservationInput`, `ReservationModificationInput` (reservation CRUD), `HolidayInput` (holiday creation with user selection and affected reservation preview), `ConfigurationInput` (global settings update), `DoormanInput` (doorman creation), `AdditionalDayInput` (calendar override). Also `BusinessError` as a fault DTO with `message` + `errorCode` enum. `QueryReservationsForHolidayOperationResult` as an output DTO for preview operations.
+## When to avoid
 
-### IndamediaAdTrack
-9 unmapped input DTOs: `ClientInput`, `ClientUpdateInput`, `AccountInput`, `AccountUpdateInput`, `GoogleCredentialInput`, `AggregatedCampaignCreateInput`, `AggregatedCampaignUpdateInput`, `TrackedCampaignUpdateInput`, `CostInput`. Plus `BusinessError` as the unified fault DTO and `CostInfo` as a summary data container. Demonstrates consistent `*Input`/`*UpdateInput`/`*CreateInput` naming for create vs update operations.
-
-### InterfaceRegister
-7+ unmapped input DTOs forming a nested hierarchy for complex creation operations: `CreateApplicationInput` (4 transient attributes + nested `CreateApplicationVendorInput`), `CreateHighLevelConnectionInput` (12 transient attributes + 6 nested input relations including `CreateHighLevelConnectionApplicationInput`, `CreateHighLevelConnectionBrandInput`, `CreateHighLevelConnectionBusinessDataTypeInput`, `CreateHighLevelConnectionVendorInput`), `CreateUserInput` (8 transient attributes with boolean access flags defaulting to false). Nested input DTOs use derived attributes with `self.*` getters for pre-populating from selected entities.
-
-### judo-partner
-3 unmapped input DTOs: `CreatePartnerInput` (flat fields combining partner + address + contact data for creation), `PartnerImportInput` (JSON payload field for bulk partner import), `CountryImportInput` (JSON payload field for country reference data import). The JSON-typed inputs demonstrate a pattern of accepting raw structured data for batch processing operations.
-
-### KozutEugyfelModelTest
-7 unmapped input DTOs in the shared `KozosTransferObjectek` and domain packages: `TovabbitasInput` (szoveg + felhasznalo relation for forwarding), `SzovegInput` (szoveg for closure), `MegjegyzesInput` (szoveg + ertesitendok notification list), `JarokeloBejelentesInput` (6 fields for pavement report creation), `EUgyfelszolgalatBejelentesInput` (7 fields for e-gov report creation), `EmailKuldesInput` (single-recipient email), `EmailKuldesTobbCimzettInput` (multi-recipient email with composed `Cimzett` list).
-
-### workflow-poc
-11 unmapped DTOs across public and admin namespaces: `Event` (eventID + correlationID for trigger input), `ContextInput` (context creation parameters), `ActionInput` (tokenID + correlationID for action execution), `Identifier` (simple value wrapper), `WorkflowDiagram` (diagram data), `YamlData` (YAML payload), `CreateURLInput` (address + workflow relation). Admin DTOs: `UploadInput` (YAML upload), `CommitInput` (comment for commit), `DeclarationError` (fault DTO with DeclarationErrorCode enum + message). Also `test::DocumentInfo` for test document creation.
-
-## Trade-offs
-
-- Pros: Clean operation signatures, no persistence overhead, purpose-built for each operation
-- Cons: More transfer types to maintain, may proliferate for complex APIs
-- Prefer when: Operation input/output does not map to a single entity, or for error/fault types
+- The data should be listed, edited or deleted by users: use a mapped transfer object.
+- An existing mapped transfer object already carries the values: pass it instead of a copy.
+- A single scalar input: a plain operation parameter attribute on the operation's input may be enough.
 
 ## Related
 
-- [[transient-relation-parameter]]
-- [[actor-based-transfer-projection]]
+- [[transient-relation-parameter]] — transient relations inside an input container
+- [[actor-based-transfer-projection]] — mapped, role-specific counterpart
+- [[error-code-enum-pattern]] — fault payload with an error code enumeration
+- [[factory-operation-with-prepopulation]] — input containers with defaults
+- [[transfer-object-multiplicity]] — the mapped views that do have CRUD
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=unmapped-transfer-dto cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class BusinessError {
+    <<Transfer>>
+    +String message
+    +ErrorCode code
+  }
+  class ErrorCode {
+    <<Enumeration>>
+    INVALID
+    DUPLICATE
+  }
+  class Order {
+    <<Entity>>
+    +String number
+  }
+  class OrderInput {
+    <<Transfer>>
+    +String number [1]
+    +Text note
+  }
+  class OrderSummary {
+    <<Transfer>>
+    +Integer count
+  }
+  class OrderView {
+    <<Transfer>>
+    +String number
+    +place(OrderInput) OrderSummary
+  }
+  BusinessError ..> ErrorCode : code
+  OrderView ..> Order : maps
+```
+<!-- /mermaid:generated -->

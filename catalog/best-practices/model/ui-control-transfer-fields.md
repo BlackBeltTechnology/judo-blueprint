@@ -1,82 +1,100 @@
 ---
 id: ui-control-transfer-fields
 title: UI Control Fields on Transfer Objects
-description: "Actor-level transfer objects include additional boolean or string attributes that control UI behavior (form editability, button visibility, display labels) but have no corresponding entity attribute."
-aliases: []
-keywords: [ui, control, fields, transfer, objects]
+description: "Add derived boolean (or label) attributes to a transfer object so that hiddenBy, enabledBy, requiredBy and conditional confirmation can read them; the entity needs no such attribute."
+aliases: [UI flags on transfer object, permission flags, button visibility attributes]
+keywords: [ui control, hiddenBy, enabledBy, requiredBy, confirmationCondition, derived boolean, transfer object, button visibility, editability]
 tags: ["domain:model", "layer:model", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:judo-partner", "status:established"]
 category: transfer
 status: established
 projects: [itracker, alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, park-here, judo-partner]
 evidence: ["itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-related: [actor-based-transfer-projection, conditional-visibility-getter]
-fragment: pending
+related: [actor-based-transfer-projection, conditional-visibility-getter, literal-derived-attribute, guard-clause-delete, action-group-conditional-enabling]
+fragment: ui-control-transfer-fields
+diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Actor-level transfer objects include additional boolean or string attributes that control UI behavior (form editability, button visibility, display labels) but have no corresponding entity attribute. These fields are populated by derived getter expressions or custom backend logic, enabling the model to drive UI state without client-side business rules.
+The UI model decides visibility, enablement and confirmation only from boolean data members. When the rule depends on entity state or on the current user, expose the result as an attribute of the transfer object the page uses, so the page carries no business logic of its own.
 
-## Structure
+## Practice
 
-- Transfer object adds attributes not present on the mapped entity
-- Common field types:
-  - **Editability flag**: `editable: Boolean` -- controls whether a form/field is editable
-  - **Button visibility flags**: `hide<ActionName>: Boolean` -- controls whether an action button is shown
-  - **Display labels**: `label: String` -- computed display text
-  - **Role indicators**: `financialUser: Boolean` -- indicates current user's role for UI branching
-  - **enabledBy references**: Links an operation or field to a boolean attribute that controls its enabled state
-  - **confirmationType CONDITIONAL**: Delete operations show confirmation dialogs based on a condition attribute
-  - **hiddenBy references**: Links a UI group to a boolean attribute that controls its visibility
-- These fields are typically `required: false` (optional)
-- They may be populated by getter expressions or custom backend logic
+### The control must be a boolean on the same transfer object
 
-## Examples
+The UI authoring guide states that `hiddenBy`, `enabledBy`, `requiredBy` and `confirmationCondition` must reference a boolean data member of the transfer object that owns the element; cross-object references are not possible ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md), invariants and section on `hiddenBy` / `enabledBy` / `requiredBy`). The effect is: `hiddenBy` true hides the element, `enabledBy` true enables it (otherwise disabled), `requiredBy` true makes a data field required. `confirmationType` on an operation form is `NONE`, `CONDITIONAL` (the condition member decides) or `MANDATORY`. So a state computed elsewhere must first be exposed on this transfer object.
 
-### itracker
-`user::Initiative` adds 7 UI-control fields not on the entity: `label` (display label), `editable` (form editability), `hideSendForApproval`, `hideApproval`, `hideReject`, `hideArchive` (button visibility per lifecycle state), `initiator` (display name of owning user). `user::MonthlyForecast` adds `financialUser` (role indicator) and `editable` (field editability).
+### Derive the flag, do not store it
 
-### SkillMatrix
-`enabledBy` pattern: Delete User button enabled by `actorIsAdmin` (session-level role check), HR/Admin checkboxes enabled by `actorIsAdmin`, Training plan fields enabled by `isOpen` (derived: `not self.closed`), Approve button enabled by `unapproved` (derived: `not self.approved`). `confirmationType CONDITIONAL`: Delete User confirms when `hasSkills = true`, Delete Competence confirms when `hasReferences = true`.
+Add the flag to the transfer object as a derived attribute with a getter expression evaluated on the mapped entity, for example "not closed" or a status comparison. Derived attributes are read-only for clients and need no entity field ([structure reference](../../agent-docs/model/esm_metamodel/structure.md): derived members are allowed on any class). Typical members:
 
-### Alba
-Extensive UI control fields on role-based transfers: `AuthorProduct.isEditEnabled` (only drafts editable), `AuthorProduct.canNotFinalize` (hides finalize button for non-owners/non-drafts), `AuthorProduct.isApproveDisabled` (complex approval logic), `AuthorProduct.fixNotEnabled = false` (literal constant). `PublicAuthorProfile.isTrue = true` and `PublicAuthorProfile.isNotTeacher` control visibility. Operations use `hiddenBy` and `enabledBy` attributes plus `confirmationType="MANDATORY"` for critical actions.
+- an editability flag that enables the fields of a form;
+- a hide or show flag for an action button, per lifecycle state;
+- a role flag read from the current user, used for menu items and buttons (see [[conditional-visibility-getter]]);
+- a computed display label.
 
-### SkillMatrix-Model
-Model source confirms `enabledBy` and `confirmationType="CONDITIONAL"` on multiple transfer operations. Derived UI control attributes: `isOpen = not self.closed` (TrainingPlan editability), `unapproved = not self.approved` (Skill approval enablement), `hasReferences` (Competence delete confirmation). The pattern integrates with the guard-clause-delete pattern: UI conditional confirmation mirrors the operation's guard logic.
+Name flags positively or negatively to match the binding: `hiddenBy` wants a flag that is true when the element is hidden, so a negated twin (`isNotAdmin` beside `isAdmin`) is common.
 
-### Viterra Demo
-`ReportTransfer.showAcceptButton` (`self.status == SUBMITTED or self.status == REVIEW`) and `showReviewButton` (`self.status == SUBMITTED`) are derived booleans controlling operation button visibility. Operation forms use `enabledBy` to reference these attributes. `PartnerClientTransfer.hasNoOpenReport` uses `self.reports!filter(r | r.status == PENDING)!empty()` to control a `hiddenBy` warning group: "You have open reports. Please click on Open Reports menu."
+### Use the flag for conditional confirmation
 
-### KozutEugyfelClient
-`BejelentesMegtekinto` transfer exposes 7 permission booleans from entity-level derived attributes: `tovabbitasEngedely`, `tovabbitasFelelosnekEngedely`, `megjegyzesEngedely`, `lezarasEngedely`, `resztvevoHozzadasEngedely`, `megnyitasEngedely`, `leiratkozasEngedely`. Each evaluates state + user role + user relationship to the report, controlling which operation buttons are enabled in the UI viewer.
+An operation form with confirmation `CONDITIONAL` points `confirmationCondition` at a boolean on the same transfer object, for instance "has dependent records". This mirrors the guard of the operation itself, see [[guard-clause-delete]].
 
-### judo-demo-miniworkflow
-`DocumentTransfer` adds 4 negative derived attributes not on the entity: `isNotClosable = not self.isClosable`, `isNotRejectable = not self.isRejectable`, `isNotReviewable = not self.isReviewable`, `isNotAcceptable = not self.isAcceptable`. These are used in `hiddenBy` bindings to hide workflow operation buttons. `GenericUser` adds `isNotAdmin = not self.admin` and `isNotApprover = not self.approver` for menu item conditional hiding.
+### Menu items read the principal
 
-### AMS-Model
-`manager::Request` transfer includes derived boolean fields: `isPending = self.status == Status#PENDING`, `isOpen`, `isClosed`, `isEmpty` for controlling UI state. These enable/disable approve/reject buttons based on request status. The `manager::Campaign` transfer uses `isOpen` and `isClosed` derived booleans to control visibility of open/close toggle operations, preventing invalid state transitions in the UI.
+On menu items, `hiddenBy` references a boolean of the actor's principal transfer object, usually a derived permission flag (UI authoring guide, section 9). See [[actor-based-transfer-projection]] for the actor side.
 
-### ParkHere
-Entity-level UI control attributes: `User.isNotAdministrator = not self.isAdministrator` used in `hiddenBy` for admin-only menu items and accesses. `Holiday.isNotDeletable` controls delete button visibility (past holidays cannot be deleted). `ConfigurationSettings.isConfigurationExist` enables doorman creation only when configuration exists. `HolidayInput` uses `hiddenBy` on `userHidden` and `hiddenByCustom` to show/hide fields based on admin role and form state.
+### The flag is presentation, not security
 
-### judo-partner
-`isActorPartnerAdmim` (note: typo in model) is a DERIVED Boolean appearing on Partner, Contact, Address, and PartnerList transfer objects. It controls role-based UI visibility, enabling partner admin functionality. `User.isNotAdmin` derived attribute (negation of `isAdmin`) is used for UI control via `hiddenBy`.
+An API client can ignore the flag. The operation body or an interceptor must still reject invalid calls. Values that cannot be written as a model expression can be computed in backend code and exposed as a transient attribute without binding, the escape hatch the interceptor guide describes; this is a project-code option, not required by the pattern.
 
-### AMS-Frontend
-`Campaign` transfer adds 4 derived UI control booleans: `isOpen = self.status == CampaignStatus#OPEN`, `isClosed = self.status == CampaignStatus#CLOSED`, `isEmpty = self.confirmationRequests!count() == 0`. These control `enabledBy` bindings on campaign operations (close enabled when open, open enabled when closed, load enabled when empty). `Request.isPending` enables/disables approve/reject buttons. UI includes mandatory confirmation dialogs on approve, reject, open, and close operations.
+## Rationale
 
-## Trade-offs
+- The UI behaviour follows the model: one derived expression serves every page that shows the transfer object.
+- Different actors can have different flags on their own transfer objects over the same entity.
+- Cost: the transfer object grows beyond its entity and every extra flag is another member to keep correct. Combine conditions inside the expression, because the UI model accepts one reference per element.
+- Project practice: source projects used flags such as editable, `hide<Action>`, `isNot...`, permission booleans per operation and `isOpen` / `isClosed` state flags. Names such as these are conventions, not platform names.
 
-- Pros: UI state driven by the model, no client-side business logic needed, different actors can see different controls
-- Cons: Transfer objects become larger than their entities, may need custom backend logic to populate
-- Prefer when: UI needs to conditionally show/hide buttons or toggle editability based on entity state or user role
+## Example
+
+A Report entity has a title and a stored `closed` flag. The ReportView transfer object maps the entity and adds two derived members that exist nowhere on the entity: `hideSubmit`, true when the report is closed, and `label`, the display text. The page binds the submit button's `hiddenBy` to `hideSubmit`. A delete operation on the same view would use a derived "has dependants" flag as its confirmation condition.
+
+## When to avoid
+
+- The condition is constant: use a literal derived attribute, see [[literal-derived-attribute]].
+- Several buttons share one enabling rule: group them, see [[action-group-conditional-enabling]].
+- The rule needs data not reachable from the transfer object's entity: expose it through a relation first, or compute it in backend code.
 
 ## Related
 
-- [[actor-based-transfer-projection]]
-- [[conditional-visibility-getter]]
+- [[actor-based-transfer-projection]] — role-specific transfer objects that carry role flags
+- [[conditional-visibility-getter]] — derived getter that drives visibility
+- [[literal-derived-attribute]] — constant flags
+- [[guard-clause-delete]] — the operation-side guard that conditional confirmation mirrors
+- [[action-group-conditional-enabling]] — one flag for a group of buttons
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=ui-control-transfer-fields cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Report {
+    <<Entity>>
+    +String title
+    +Boolean closed
+    +Boolean /open
+    +submit()
+  }
+  class ReportView {
+    <<Transfer>>
+    +String title
+    +Boolean closed
+    +Boolean open
+    +Boolean /hideSubmit
+    +String /label
+    +submit()
+  }
+  ReportView ..> Report : maps
+```
+<!-- /mermaid:generated -->

@@ -1,71 +1,106 @@
 ---
 id: transfer-object-multiplicity
 title: Transfer Object Multiplicity per Entity
-description: "A single entity is exposed through multiple transfer objects, each tailored for a specific actor and purpose."
-aliases: []
-keywords: [transfer, object, multiplicity, per]
+description: "Expose one entity through several mapped transfer objects, each shaped for one consumer: full editor, picker, read-only card, and an unmapped report row."
+aliases: [multiple transfer objects per entity, purpose-built transfer objects, list and detail transfer]
+keywords: [transfer object, multiplicity, projection, picker, summary, read-only view, list transfer, detail transfer, report row]
 tags: ["domain:model", "layer:model", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: transfer
 status: established
 projects: [alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, workflow-poc, reserve-app]
 evidence: ["alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [actor-based-transfer-projection, derived-attribute-flattening, unmapped-transfer-dto]
-fragment: pending
+related: [actor-based-transfer-projection, derived-attribute-flattening, unmapped-transfer-dto, transfer-generalization]
+fragment: transfer-object-multiplicity
+diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A single entity is exposed through multiple transfer objects, each tailored for a specific actor and purpose. This goes beyond simple actor-based projection -- the same entity may have 5-7+ distinct transfer objects varying in attribute selection, CRUD permissions, derived fields, and operational capabilities. This includes full-CRUD views, read-only summaries, picker/selector views, and transient report views.
+One entity usually has more than one audience: an editor that needs every attribute, a dropdown that needs a name, a list that needs a few derived columns, a report that needs a flat row. Give each purpose its own transfer object instead of one large transfer object for everybody.
 
-## Structure
+## Practice
 
-- One entity maps to N transfer objects (where N can be 5+)
-- Transfer object categories:
-  - **Full CRUD view**: Complete attribute set with create/update/delete (actor-specific)
-  - **Summary/read-only view**: Subset of attributes, all derived (for display in lists/tables)
-  - **Picker/selector view**: Minimal transfer with just identifier/name (for dropdowns)
-  - **Extended view**: Inherits from a base transfer and adds relations/operations (via generalization)
-  - **Transient/report view**: Unmapped, all attributes transient (for report generation)
-- Different actors may share the same transfer object (cross-actor reuse)
+### Several mapped transfer objects over one entity
 
-## Examples
+The platform lets any number of transfer object types map the same entity. The agent-docs describe this as the purpose-built transfer object pattern: a small list transfer object for tables and a full detail transfer object for forms, and the table's access should target the list one to avoid over-fetching ([model development guide](../../agent-docs/model/model-development.md), "Purpose-Built Transfer Objects"). Typical kinds:
 
-### SkillMatrix
-`Competence` entity has 5 transfer objects: `hrEmployee::Competence` (full CRUD with tags, hasReferences guard, delete op), `hrEmployee::SelectedCompetence` (picker: name-only, derived), `professional::Competence` (read-only: name-only), `manager::Competence` (read-only: name + required), `report::Competence` (transient: denormalized row with user/unit/tag/score). `User` entity has 7+ views including `Admin`, `HREmployee`, `Professional`, `MyProfessional`, `Subordinate`, `UnapprovedSkillsView`, `ReportedUser`.
+- **Full editor**: all attributes the role may edit, with create, update and delete allowed as the role needs.
+- **Summary or read-only card**: a subset of mapped attributes plus derived ones, with create, update and delete switched off.
+- **Picker**: only the identifying attribute (name) for selection lists.
+- **Report row**: an unmapped transfer object whose attributes are all transient; see [[unmapped-transfer-dto]].
 
-### Alba
-`Product` entity has 4+ role-based TOs: `AuthorProduct` (own products, create/finalize/version), `AdminProduct` (full access, impersonation, approval), `GuestProduct` (public read-only), `ApproverProduct` (approval workflow). `User` entity has 4+ TOs: `UserTransfer` (self-view), `AuthorTransfer`, `AdminAuthorProfile`, `PublicAuthorProfile`. `Task` has 3 role TOs: `AuthorTask`, `ApproverTask`, `AdminTask`. Total: 44 TOs from 11 entities (4:1 ratio).
+### Each transfer object is declared separately
 
-### SkillMatrix-Model
-37 transfer objects for 21 entities confirmed (nearly 2:1 ratio). User entity alone has 10 TOs: `Admin`, `User`, `Professional`, `HREmployee`, `MyProfessional`, `Subordinate`, `UnitMember`, `UnitManager`, `ReportedUser`, and `UnitOfProfessional`. Context-specific TOs include `UnapprovedSkillsView` (approval workflow), `SelectedCompetence` (picker), and `ResultHelper` (report utility).
+Do not model the kinds as one transfer object extending another. The agent-docs state that inheritance between transfer object types is not supported, so each view lists its own attributes (see [[transfer-generalization]]). A mapped attribute binds to the entity attribute; a derived attribute carries its own getter expression, evaluated on the mapped entity (see [[derived-attribute-flattening]]).
 
-### Viterra Demo
-10 transfer objects for 7 entities (1.4:1 ratio). `Report` entity has 3 TOs: `ReportTransfer` (admin: full CRUD + accept/review ops), `PartnerOpenReportTransfer` (partner: PENDING only, update stocks, submit op), `PartnerClosedReportTransfer` (partner: non-PENDING, read-only). `Stock` has 2 TOs: `StockTransfer` (admin, with diff calculations) and `PartnerOpenStockTransfer` (partner, editable reported fields only). `Client` has 2 TOs: `ClientTransfer` (admin) and `PartnerClientTransfer` (partner self-view with `hasNoOpenReport` derived).
+### Choose the transfer object per access
 
-### judo-demo-miniworkflow
-10 transfer objects for 4 entities (2.5:1 ratio). `Document` has 2 TOs: self-mapped `Document` (default API) and `DocumentTransfer` (enhanced API with negative permissions, mixed operations, full UI). `User` has 2 TOs: self-mapped `User` and `GenericUser` (actor-specific with `isNotAdmin`/`isNotApprover`). `Files` has 2 TOs: self-mapped `Files` (read-only) and `FilesTransfer` (writable C+U+D). Plus 2 transient input DTOs (`Message`, `NewDocument`).
+An actor reaches an entity through an access whose target is a transfer object type. Pick the narrowest transfer object for that access: the role's editor for its own records, the card for a read-only list, the picker for the range of a relation. Different actors may share one transfer object when their needs match. How access rules are written is described in [[actor-based-transfer-projection]].
 
-### AMS-Model
-7 transfer objects for 7 entities (1:1 ratio), but User entity maps to 3+ distinct views: `Subordinate` (read-only summary with fullName, email, subordinate count), `manager::ManagerApprovalList` (approval-centric view with requests collection and approveAll operation), and `admin::User` (full CRUD management view). The `Request` transfer maps to the `ConfirmationRequest` entity (not the abstract `Request` base), demonstrating a naming collision where the TO name differs from the entity name.
+### Mapped transfer objects have a generated CRUD surface, unmapped ones do not
 
-### workflow-poc
-50 transfer objects for 21 entities (2.4:1 ratio). `Token` entity maps to the `Task` transfer (user-facing task view with 13+ derived attributes, 6 operations, and 3 derived relations) plus the auto-generated `Token` transfer. `User` maps to `TaskList` (task dashboard with derived counts and filtered task collections), plus `test::User`. `Workflow` has 2 projections: public `Workflow` (name only) and `admin::Workflow` (full management with version tracking and upload operation). The model demonstrates purpose-based renaming where `Task` maps to `Token` and `Activity` maps to `Transition`.
+The data-access guide says the generated DAO has full CRUD only for mapped, non-abstract transfer object types, and the model reference shows the CRUD page only for mapped ones. Unmapped transfer objects get no create, read or delete by identifier. Use mapped transfer objects for anything a user lists or edits and unmapped ones only for operation parameters and result rows.
 
-### ReserveApp
-40 transfer objects for 15 entities (2.67:1 ratio). Entity-layer TOs (15) mirror entities exactly. Admin TOs (17) provide full management views. Partner-scoped TOs (8) restrict fields -- e.g., `Partner` entity has 3 projections: `entities::Partner` (default), `services::Partner` (admin, all fields), `PartnerForPartner` (partner actor, name/phone/address only). `FreightReservation` has `ReservationForPartner` with 6 computed display attributes not on the entity.
+## Rationale
 
-## Trade-offs
+- Each consumer receives only the data it needs, which keeps payloads small and limits what a role can read.
+- Create, update and delete permissions can differ per transfer object while the entity stays the single source of the stored data.
+- Project practice (not a platform rule): in the source projects the ratio was often 2:1 to 4:1 transfer objects per entity (for example about 44 transfer objects over 11 entities in one project), and some entities had five or more views. Names state the purpose or the role (`...Admin`, `...Picker`, `...ForPartner`), because several transfer objects for one entity are easy to confuse.
+- Cost: every entity change must be checked against all views that bind to it, and a shared attribute must be repeated in each view that needs it.
 
-- Pros: Each consumer gets exactly the data it needs, fine-grained security, supports diverse UI requirements from one entity
-- Cons: Large number of transfer objects to maintain, changes to the entity may require updates to many TOs, naming must be clear to avoid confusion
-- Prefer when: A core entity serves multiple actors with significantly different data and permission needs
+## Example
+
+A Product entity has name, price and description. ProductAdmin maps all three and may create, update and delete. ProductCard maps name and price, adds a derived label, and is read-only. ProductPicker maps only name and is read-only. ProductReportRow is unmapped and holds a transient product name and total for a report. The first three all map Product; the fourth maps nothing and is filled by an operation.
+
+## When to avoid
+
+- One consumer only: a single transfer object is enough.
+- The views differ by one or two attributes and the role split is not needed: use one transfer object and hide the extras in the UI.
+- No team capacity to keep many views in sync: fewer, broader transfer objects are easier to maintain.
 
 ## Related
 
-- [[actor-based-transfer-projection]]
-- [[derived-attribute-flattening]]
-- [[unmapped-transfer-dto]]
+- [[actor-based-transfer-projection]] — transfer objects reached by an actor access
+- [[derived-attribute-flattening]] — derived attributes on summary views
+- [[unmapped-transfer-dto]] — transient report rows and parameter containers
+- [[transfer-generalization]] — why views are declared separately
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=transfer-object-multiplicity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Product {
+    <<Entity>>
+    +String name
+    +Integer price
+    +Text description
+  }
+  class ProductAdmin {
+    <<Transfer>>
+    +String name
+    +Integer price
+    +Text description
+  }
+  class ProductCard {
+    <<Transfer>>
+    +String name
+    +Integer price
+    +String /label
+  }
+  class ProductPicker {
+    <<Transfer>>
+    +String name
+  }
+  class ProductReportRow {
+    <<Transfer>>
+    +String productName
+    +Integer total
+  }
+  ProductAdmin ..> Product : maps
+  ProductCard ..> Product : maps
+  ProductPicker ..> Product : maps
+```
+<!-- /mermaid:generated -->

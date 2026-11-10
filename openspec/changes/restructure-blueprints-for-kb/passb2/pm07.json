@@ -1,0 +1,103 @@
+{
+ "batch": "pm07",
+ "entries": {
+  "transfer-generalization": {
+   "status": "rewritten",
+   "fragment": "transfer-generalization",
+   "kb": [
+    "transfer object generalization inheritance extends",
+    "TransferObjectType generalization not supported inheritance between transfer objects",
+    "Mapped vs Unmapped Transfer Objects"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Pattern: Polymorphism with Inheritance",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#Class"
+   ],
+   "fixes": [
+    "old entry claimed transfer objects extend a base transfer; agent-docs say inheritance between transfer object types is not supported: reframed as per-purpose mapped transfers, entity generalization pointer"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "transfer-object-multiplicity": {
+   "status": "rewritten",
+   "fragment": "transfer-object-multiplicity",
+   "kb": [
+    "purpose-built transfer objects list detail access target over-fetching",
+    "transfer object type supertype mapped entity"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Pattern: Purpose-Built Transfer Objects (DTOs)",
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#TransferObjectType Rules"
+   ],
+   "fixes": [
+    "old 'Extended view inherits from base via generalization' removed: TO inheritance unsupported",
+    "added mapped vs unmapped CRUD surface",
+    "labelled ratio statistics as project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "transient-relation-parameter": {
+   "status": "rewritten",
+   "fragment": "transient-relation-parameter",
+   "kb": [
+    "transient relation default value operation input unmapped",
+    "mutable keyword operation body transient reference stored"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationMember Constraints",
+    "catalog/agent-docs/model/jcl-operation-scripts.md#Statements and syntax",
+    "catalog/agent-docs/frontend/ui-model-pitfalls.md#Values That Break the Generator"
+   ],
+   "fixes": [
+    "old claim 'mutable converts transient refs to stored' not in agent-docs: flagged as project practice to verify",
+    "added entity-cannot-have-transient, range/default, UI pitfall"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "ui-control-transfer-fields": {
+   "status": "rewritten",
+   "fragment": "ui-control-transfer-fields",
+   "kb": [
+    "hiddenBy enabledBy boolean DataMember same transfer object confirmationCondition",
+    "derived attribute on transfer object getterExpression"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/ui-authoring-guide.md#9. hiddenBy / enabledBy / requiredBy",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#DataMember Constraints",
+    "catalog/agent-docs/backend/interceptors.md#Pattern: Backend-Computed TO Attribute"
+   ],
+   "fixes": [
+    "added same-owner-TO boolean rule and menu-item principal rule",
+    "confirmationType values documented",
+    "flagged flag names as project convention"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "unmapped-transfer-dto": {
+   "status": "rewritten",
+   "fragment": "unmapped-transfer-dto",
+   "kb": [
+    "Mapped vs Unmapped Transfer Objects",
+    "unmapped transfer object DAO create getById not generated",
+    "fault type error transfer object operation throws"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Pattern: Mapped vs. Unmapped Transfer Objects",
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: Wrapper TO for binary operation outputs"
+   ],
+   "fixes": [
+    "added no-CRUD surface, fault declaration requirement, output wrapper rule, UI pitfall",
+    "naming suffixes labelled convention"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

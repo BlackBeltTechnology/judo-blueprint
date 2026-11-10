@@ -1,55 +1,93 @@
 ---
 id: transient-relation-parameter
 title: Transient Relation for Operation Parameters
-description: Unmapped transfer objects use transient relations (memberType=TRANSIENT) to hold collections of data that exist only during operation execution and are never persisted.
-aliases: []
-keywords: [transient, relation, operation, parameters, parameter]
+description: "Give an operation structured input with a collection or reference by declaring a transient relation on an unmapped parameter transfer object; the data lives only for the call."
+aliases: [transient reference, operation parameter relation, input wrapper relation]
+keywords: [transient relation, TRANSIENT, operation input, parameter transfer object, unmapped, selection, default expression, range]
 tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "project:actiongroup-test-react", "project:alba", "status:established"]
 category: relation
 status: established
 projects: [trivia, itracker, actiongroup-test-react, alba]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded"]
 alternatives: []
-related: [unmapped-transfer-dto]
-fragment: pending
+related: [unmapped-transfer-dto, factory-operation-with-prepopulation]
+fragment: transient-relation-parameter
+diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Unmapped transfer objects use transient relations (memberType=TRANSIENT) to hold collections of data that exist only during operation execution and are never persisted. This pattern creates ephemeral parameter containers for operations that accept structured input.
+An operation sometimes needs more than flat values: a chosen set of existing records, or a few nested input objects. Carry them in a transient relation on an unmapped parameter transfer object, so the operation signature stays a single input object and nothing is stored for the input itself.
 
-## Structure
+## Practice
 
-- An unmapped transfer object acts as a parameter wrapper
-- It contains a relation with `memberType="TRANSIENT"`
-- The relation target is another transfer object representing the referenced entity
-- The wrapper is used as the input type for an operation
-- Transient relations can have default values (e.g., `EntityType!any()`)
-- The `mutable` keyword in operation bodies converts transient references to stored
+### Declare the relation as TRANSIENT on an unmapped transfer object
 
-## Examples
+The metamodel allows a relation member of kind `TRANSIENT` on any transfer object type, mapped or unmapped; entities cannot have one, and a transient relation is not persisted ([structure reference](../../agent-docs/model/esm_metamodel/structure.md), relation member constraints). Use an unmapped transfer object as the operation's input type and put the transient relations on it:
 
-### Trivia
-`player::AnswerList` has a transient relation `answers -> player::Answer (0..*)`. The `AnswerList` is used as input for `Test.submit`, carrying a collection of individual `Answer` objects (each with `number` and `choice`). Neither AnswerList nor its answers are persisted.
+- the relation target is another transfer object type (here a view of the entity whose records are chosen), never the entity itself;
+- cardinality says whether one choice or a collection is expected;
+- the relation kind is usually aggregation, a reference without ownership.
 
-### itracker
-`InititativeInput` has two transient relations: `region -> Region (1..1)` with default `Region!any()` and `category -> SRTCategory (1..1)` with default `SRTCategory!any()`. The `createInitiative` operation uses `mutable input.region` and `mutable input.category` to convert transient references to stored entity references on the new Initiative.
+### Control what the user may pick and what is preselected
 
-### ActionGroupTest
-`CreatureTemplate.signs` is a transient AGGREGATION relation to `Sign [0..*]` with limited behaviors (RANGE, REFRESH). Used during creature creation as part of the `Planet.createCreature(input: CreatureTemplate)` operation input, allowing sign selection in the UI without persisting the template relation itself.
+For a transient relation the model offers a default expression (a preselected value) and a range (the set of selectable targets, either any instance of the target or a derived expression). The CLI schema lists both fields as available for transient relations on a transfer object, and the generated UI uses the range for the picker. A derived range lets the input offer only valid candidates, for example active users of one role.
 
-### Alba
-`ApprovalTaskInput.users` is a transient DERIVED relation (0..*) to User, with a range expression filtering active TEACHER and APPROVER users: `User!filter(u | u.isActive and (u.role == UserRole#TEACHER or u.role == UserRole#APPROVER))`. Used as input for `Product.assignApproval()` to select which users receive approval tasks. The transient relation provides a filtered picker for user selection.
+### Read the input in the operation
 
-## Trade-offs
+The operation receives the parameter transfer object as `input`. The JCL reference states that `input` is immutable unless declared mutable, and that `mutable` is a unary prefix operator ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). The agent-docs do not describe what happens when a transient reference is read from `input` and linked to a stored record; test that on the target version before relying on it. Source projects used `mutable input.<relation>` in the body for this; treat it as project practice.
 
-- Pros: Clean operation signatures with structured input, no persistence overhead, supports collection parameters
-- Cons: Data is ephemeral (lost after operation completes), cannot be referenced later
-- Prefer when: An operation needs a structured collection input that should not be stored
+## Rationale
+
+- The signature stays simple: one input object carries all parts, instead of many scalar parameters.
+- The transient data cannot be queried or reused later, which is right for a one-shot input and avoids cleanup.
+- The range and default expressions put picker behaviour in the model rather than in client code.
+- Limit: tabular reference field columns on an unmapped input transfer object that reference attributes of another transfer object break the UI build (see the frontend pitfalls guide), so keep the picker to the reference field itself and avoid extra columns on the input page.
+
+## Example
+
+An Order view has an operation `addProducts`. Its input is the unmapped transfer object ProductSelection. ProductSelection has a transient relation `products` to ProductView with cardinality zero or more, and a transient relation `focus` to ProductView with exactly one. The caller fills the input from a picker; the body of `addProducts` reads `input.products` and `input.focus` and links them to the order. After the call nothing of ProductSelection remains.
+
+## When to avoid
+
+- The input is flat scalar data: use plain transient attributes on the parameter object, see [[unmapped-transfer-dto]].
+- The user must keep editing the collection across several calls: that data needs an entity.
+- The chosen records are already part of the mapped transfer object the operation is bound to: use that relation directly.
 
 ## Related
 
-- [[unmapped-transfer-dto]]
+- [[unmapped-transfer-dto]] — the parameter container that holds the transient relation
+- [[factory-operation-with-prepopulation]] — input objects with defaults for create operations
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=transient-relation-parameter cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Order {
+    <<Entity>>
+    +String number
+  }
+  class OrderView {
+    <<Transfer>>
+    +String number
+    +addProducts(ProductSelection)
+  }
+  class Product {
+    <<Entity>>
+    +String name
+  }
+  class ProductSelection {
+    <<Transfer>>
+  }
+  class ProductView {
+    <<Transfer>>
+    +String name
+  }
+  OrderView ..> Order : maps
+  ProductSelection o-- "*" ProductView : products
+  ProductSelection o-- "1" ProductView : focus
+  ProductView ..> Product : maps
+```
+<!-- /mermaid:generated -->
