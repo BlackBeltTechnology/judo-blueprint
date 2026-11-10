@@ -1,3 +1,8 @@
+---
+title: JUDO Model Development Guide
+description: Primary reference for JUDO model development: layers, workflow, patterns, the JQL expression language reference, pitfalls and best practices.
+---
+
 # JUDO Model Development Guide
 
 This document is the primary reference for understanding and working with the JUDO application model. It synthesizes foundational concepts, a practical workflow for getting started, and a comprehensive catalog of advanced design patterns for solving real-world modeling problems.
@@ -39,7 +44,7 @@ JUDO models have a mandatory two-layer logical structure that promotes abstracti
 
 ## Part 2: The Core Modeling Workflow
 
-This section provides a step-by-step guide to the fundamental process of creating a simple, functional application component from scratch using the JUDO Designer.
+This section provides a step-by-step guide to the fundamental process of creating a simple, functional application component from scratch. The steps are written in Designer terms; each of them can also be done with the [JUDO Model CLI](./judo-cli.md) (`create`, `update`, `fill`).
 
 1.  **Create a Project**: Use the "New project" icon in the Designer.
 2.  **Define an Entity**: Drag the **Entity** tool from the Palette to create a core business object (e.g., `SalesPerson`).
@@ -59,7 +64,7 @@ The `.model` file is a single XMI document that accumulates every mutation from 
 1.  **Commit per stage, or at least per green checkpoint.** `git commit -m "Stage B: ..."` after each stage validates. This gives you an explicit rollback target and prevents accidental loss.
 2.  **Never run `git restore model/*.model` (or `git checkout -- model/*.model`) with uncommitted mutations unless you have a backup.** It silently reverts *every* ESM mutation made since the last commit — there is no partial undo. One wrong `git restore` has cost full stages of work.
 3.  **Before any `git restore` / `git checkout` / branch switch that could touch the model, copy the file aside first:** `cp model/<name>.model /tmp/<name>.model.stageB.bak`. If the restore was a mistake, `cp` the backup back and diff against HEAD to verify.
-4.  **Prefer `judo-model-designer` CLI mutations over hand-editing the XMI**, so the set of changes is reproducible from transcripts even if the working copy is lost.
+4.  **Prefer JUDO Model CLI mutations (see [judo-cli.md](./judo-cli.md)) over hand-editing the XMI**, so the set of changes is reproducible from transcripts even if the working copy is lost.
 
 This is workflow advice, not a metamodel rule — but in practice it is the single most common cause of large rework in multi-stage modeling work.
 
@@ -110,7 +115,7 @@ This section is a "cookbook" of reusable design patterns for solving common mode
 
 #### Pattern: Alternative Data Representations
 *   **Use Case**: Display a list as a grid of cards, chips, or an autocomplete field instead of a table.
-*   **Solution**: Use the `representationComponent` attribute on a `TabularReferenceField` (e.g., `"card"`, `"tag"`, `"autocomplete"`).
+*   **Solution**: Use the `representationComponent` attribute on a `TabularReferenceField` (`"table"`, `"tag"`, `"card"` or `"button"`). A dropdown/autocomplete selector for a relation is a separate widget (`isTypeAheadField`, `autocompleteRows`), not a `representationComponent` value.
 
 ### Advanced Data Modeling Patterns
 
@@ -159,13 +164,13 @@ JQL supports two types of comments:
 This powerful function retrieves request-scoped context variables. It is the primary way to access information about the currently authenticated user.
 
 *   **`!getVariable('PRINCIPAL', 'claim_name')`**
-    *   **Purpose**: To access claims on the current **principal `TransferObjectType`** of a non-`claimPrincipal` actor.
-    *   **Use Case**: Actors whose `principal` is an `unmapped` `TransferObjectType` populated by the framework from the IdP token and **without** `claimPrincipal: true`. The values come from the principal TO's attributes, not directly from the raw JWT.
+    *   **Purpose**: To read an attribute of the current **principal `TransferObjectType`**. The runtime calls the actor's generated `_principal` operation and returns the named attribute of its result (`PrincipalVariableProvider`).
+    *   **Use Case**: Actors whose `principal` is an `unmapped` `TransferObjectType` populated by the framework from the IdP token. The values come from the principal TO's attributes, not directly from the raw JWT. An actor with **no** `principal` has no `_principal` operation, so `PRINCIPAL.*` yields nothing.
     *   **Example**: `String!getVariable('PRINCIPAL', 'preferred_username')`.
 
 *   **`!getVariable('USER', 'claim_name')`**
     *   **Purpose**: To access **raw JWT claims** of the logged-in user.
-    *   **Use Case**: **Required** for actors declared with `claimPrincipal: true`. For such actors the JWT claims surface under the `USER` category — `PRINCIPAL.*` returns empty and silently breaks access filters, custom ops, and audit logic. This is the single most common source of "mysterious empty claim" bugs.
+    *   **Use Case**: **Required** for token-only actors (no `principal` TO). For such actors the JWT claims surface under the `USER` category — `PRINCIPAL.*` returns empty and silently breaks access filters, custom ops, and audit logic. This is the single most common source of "mysterious empty claim" bugs. The `USER` category reads the attributes of the authenticated `JudoPrincipal` (the token claims) and works for every actor shape.
     *   **Example**: `String!getVariable('USER', 'sub')` retrieves the subject identifier directly from the JWT.
 
 *   **`!getVariable('ACTOR', 'attribute_name')`**
@@ -178,11 +183,29 @@ This powerful function retrieves request-scoped context variables. It is the pri
 >
 > | Actor shape | JWT claims via | Persisted attrs via |
 > |---|---|---|
-> | `claimPrincipal: true` (token-only, no persisted record) | `USER.*` | n/a |
-> | Unmapped principal TO, no `claimPrincipal` | `PRINCIPAL.*` | n/a |
+> | Token-only: no `principal` TO (no persisted record) | `USER.*` | n/a |
+> | Unmapped principal TO | `PRINCIPAL.*` (principal TO attributes) or `USER.*` (raw claims) | n/a |
 > | Mapped principal TO (persisted Actor entity) | `USER.*` for raw claims | `ACTOR.*` |
 >
-> Using `PRINCIPAL.*` against a `claimPrincipal: true` actor is valid JQL but returns empty at runtime. See [ACTOR vs PRINCIPAL vs USER](./advanced-modeling-patterns.md#actor-vs-principal-vs-user-context-variables).
+> Using `PRINCIPAL.*` against an actor with no `principal` TO is valid JQL but returns empty at runtime. See [ACTOR vs PRINCIPAL vs USER](./advanced-modeling-patterns.md#actor-vs-principal-vs-user-context-variables).
+
+### Other environment-variable categories
+
+Besides `PRINCIPAL`, `USER` and `ACTOR`, the engine knows more categories, mostly used implicitly:
+
+- **`SYSTEM`**: `current_date`, `current_timestamp`, `current_time`, reached through `<Type>!now()` (see *Temporal functions*).
+- **`PARAMETER`**: the attributes of an input parameter transfer object of a parameterized query become `PARAMETER`-category variables while the expression is resolved.
+- **`ENVIRONMENT`, `SEQUENCE`, `REQUEST`**: runtime providers registered by the default variable resolver (environment configuration values, database sequences, per-request parameters). An undefined variable resolves to `null` with a warning.
+
+`!getVariable` is typed by the primitive it is called on (`Integer`, `Decimal`, `Boolean`, `String`, an enumeration, a custom type, `Date`, `Timestamp`, `Time`); for measured numerics the variable carries the unit. It always returns a scalar, never a collection.
+
+### JQL grammar quirks
+
+- The ternary `cond ? then : else` is right-associative and compiles to a typed switch expression. The condition must be a logical expression; `then` and `else` must be of the same kind (a decimal result is chosen when either side is decimal; entity branches resolve to a common supertype, and an ambiguous or missing common supertype fails the build).
+- Equality is `==` and `!=` only (no `=` and no `<>`). Keywords are case-insensitive.
+- There is a `^` power operator between multiplication and the `as` (spawn) operator.
+- Enumeration literals are `EnumType#LITERAL`; a function call is `expr!name(args)` and its result can be navigated further.
+- Collection iterator functions take a lambda over **one** iterator variable and may select only an immediate field of it; multi-step navigation inside the lambda body is out of scope (see *Lambda scopes do not nest*).
 
 ---
 
@@ -207,6 +230,10 @@ Represents a text value. String literals are enclosed in single (`'`) or double 
 | `!like(pattern)` | Boolean | Returns `true` if the string matches the SQL-style LIKE `pattern` (`%` wildcard, `_` single char). | `'apple'!like('%pl_')` is `true`. |
 | `!replace(old, new)` | String | Replaces all occurrences of `old` with `new`. | `'apple'!replace('le', 'endix')` is `'appendix'`. |
 | `!trim()` | String | Removes leading and trailing whitespace. | `'   apple '!trim()` is `'apple'`. |
+| `!ltrim()` / `!rtrim()` | String | Removes leading / trailing whitespace only. | `'  apple'!ltrim()` is `'apple'`. |
+| `!lpad(size [, pad])` / `!rpad(size [, pad])` | String | Pads the string on the left / right up to `size` characters; the default pad string is a single space. | `'7'!lpad(3, '0')` is `'007'`. |
+| `!capitalize()` | String | Upper-cases the first character and lower-cases the rest. | `'aPPLE'!capitalize()` is `'Apple'`. |
+| `!ilike(pattern)` | Boolean | Case-insensitive variant of `!like`. | `'Apple'!ilike('a%')` is `true`. |
 
 ### Numeric
 Represents numeric values. Literals are written as digits with an optional decimal point (e.g., `10`, `3.14`).
@@ -217,6 +244,8 @@ Represents numeric values. Literals are written as digits with an optional decim
 | `+`, `-`, `*`, `/` | Numeric | Arithmetic operations. | `9.0 / 2` is `4.5`. |
 | `mod`, `div` | Numeric | Integer modulus and division. Both arguments must have a scale of 0. | `9 mod 2` is `1`. |
 | `!round()` | Numeric | Rounds a non-integer number to the nearest integer. | `7.89!round()` is `8`. |
+| `!round(scale)` | Numeric | Rounds to `scale` decimal places (a decimal result). | `7.891!round(2)` is `7.89`. |
+| `!abs()`, `!ceil()`, `!floor()` | Numeric | Absolute value, round up, round down. | `(-3)!abs()` is `3`. |
 | `-` (unary) | Numeric | Negation. | `5 + -5` is `0`. |
 | `!asString()` | String | Converts the number to its string representation. | `123.45!asString()` is `"123.45"`. |
 
@@ -224,6 +253,10 @@ Represents numeric values. Literals are written as digits with an optional decim
 Represents a numeric value with a unit of measure (e.g., `5 [kg]`). JUDO automatically handles unit conversions during comparisons and assignments.
 -   `5 [km] == 5000 [m]` is `true`.
 -   `1 [kg] + 50 [dkg]` evaluates to `1.5 [kg]` if the target's unit is `kg`.
+
+**Literal syntax.** A measured literal is a number followed by the unit in brackets. The bracket content is either the unit alone (`10[kg]`) or `measure#unit` (`10[Mass#kilogram]`) when the unit name is ambiguous; measure namespaces are joined with `::`. An unknown unit or measure fails the expression build (`No unit found in model` / `Unknown measure`).
+
+**Durations.** Only the duration units `MILLISECOND`, `SECOND`, `MINUTE`, `HOUR`, `DAY` and `WEEK` support addition; `MONTH` and `YEAR` do not (a month has no fixed length). Adding or subtracting a temporal value requires a unit that supports addition. `!elapsedTimeFrom(other [, measure])` (the difference of two dates, timestamps or times) takes the duration measure as an optional second argument; without it the model must contain exactly one default duration measure (`No single duration measure in the model` otherwise).
 
 ### Boolean
 Represents a logical value: `true` or `false`. JQL uses a three-valued logic system (Kleene logic) that includes `undefined`.
@@ -249,6 +282,20 @@ Represents a value from a predefined set of members. Members are referenced by `
 -   **Timestamp**: Represents a point in time with a mandatory time zone. Literals are ISO-8601 strings in backticks (e.g., `` `2024-01-01T12:00:00Z` ``).
 
 Both support standard chronological comparisons (`<`, `>`, `==`, etc.) and `!asString()`.
+
+#### Temporal functions
+
+| Function | Applies to | Meaning |
+| :--- | :--- | :--- |
+| `<Type>!now()` | Date, Timestamp, Time types | Current date / timestamp / time. These are `SYSTEM`-category environment variables (`current_date`, `current_timestamp`, `current_time`), e.g. `<app>::types::Timestamp!now()`. As an attribute default it fills the value at creation. |
+| `!year()`, `!month()`, `!day()` | Date, Timestamp | Extract the part as an integer. |
+| `!hour()`, `!minute()`, `!second()`, `!millisecond()` | Timestamp, Time | Extract the part. |
+| `!dayOfWeek()`, `!dayOfYear()` | Date | Day number within the week / year. |
+| `!date()`, `!time()` | Timestamp | The date / time part of a timestamp. |
+| `<Type>!of(...)` | Constructors | Date: exactly three integers `(year, month, day)`. Time: 2 to 4 integers `(hour, minute [, second [, millisecond]])`. Timestamp: `(date [, time])` or `(year, month, day, hour, minute [, second [, millisecond]])`. |
+| `!elapsedTimeFrom(other [, measure])` | Date, Timestamp, Time | Difference as a measured number (dates are counted in days, timestamps and times in seconds, then converted to the measure unit), e.g. `self.end!elapsedTimeFrom(self.start)`. |
+| `!asMilliseconds()` / `<Type>!fromMilliseconds(n)` | Temporal | Convert to / from epoch milliseconds. |
+| `!plusYears(n)`, `!plusMonths(n)`, `!plusDays(n)`, `!plusHours(n)`, `!plusMinutes(n)`, `!plusSeconds(n)`, `!plusMilliseconds(n)` | Date, Timestamp | Timestamp arithmetic. |
 
 ---
 
@@ -285,10 +332,11 @@ Operate on a collection of object instances. The `i` in examples represents an i
 | `!head()` / `!heads(n)` | Instance / Collection | First item / first `n` items. Order is deterministic only after `!sort`. |
 | `!tail()` / `!tails(n)` | Instance / Collection | Last item / last `n` items. |
 | `!sort(i \| sel [,...])`| Collection | Returns a new collection sorted by one or more selectors (`sel`). `ASC` (default) or `DESC` can be specified.<br>`self.items!sort(i \| i.price DESC, i.name)` |
-| `!join(i \| selector, separator)` | String | ⚠️ **Recognised by the JQL grammar but not implemented at runtime.** The function name is registered in the parser (so expressions using it pass `transform` without an `Unknown function` error), but evaluation fails downstream — there is currently no built-in string-aggregation function. For concatenating a string attribute across a collection, use a **backend-computed `TRANSIENT` TO attribute** populated from an `OperationCallInterceptor` (see Pitfall 5.1 below and the backend Interceptors guide). Do **not** use `!collectAsString` or `!mkString` either — they do not exist at all. |
+| `!join(i \| selector, separator)` | String | ⚠️ **Recognised by the JQL grammar and expression builder, but not implemented by the query engine** (the converter throws `Not supported yet`). The function name is registered in the parser (so expressions using it pass `transform` without an `Unknown function` error), but evaluation fails downstream — there is currently no built-in string-aggregation function. For concatenating a string attribute across a collection, use a **backend-computed `TRANSIENT` TO attribute** populated from an `OperationCallInterceptor` (see Pitfall 5.1 below and the backend Interceptors guide). Do **not** use `!collectAsString` or `!mkString` either — they do not exist at all. |
 | `!asCollection(type)`| Collection | Casts the collection to a collection of the specified `type`. |
-| `!avg(i \| selector)` | Numeric | Returns the average value of the `selector` across the collection. |
-| `!sum(i \| selector)` | Numeric | Returns the sum of the `selector` across the collection. |
+| `!anyTrue(i \| expr)` etc. | Boolean | `!anyTrue`/`!anyFalse` compile to an exists test; `!allTrue`/`!allFalse` compile to a for-all test that also requires the value to be defined. |
+| `!avg(i \| selector)` | Numeric | Returns the average value of the `selector` across the collection (integer, decimal, date, timestamp or time values; not strings). |
+| `!sum(i \| selector)` | Numeric | Returns the sum of the `selector` across the collection (integer and decimal values only; other types fail with `Invalid expression for aggregation`). |
 | `!min(i \| selector)` | Numeric | Returns the minimum value of the `selector` across the collection. |
 | `!max(i \| selector)` | Numeric | Returns the maximum value of the `selector` across the collection. |
 
@@ -303,13 +351,13 @@ Operate on a collection of object instances. The `i` in examples represents an i
 
 ```jql
 -- Equivalent: navigation flattens through a guaranteed-singleton collection
-compsychletter::entities::User
-  !filter(u | u.userName == compsychletter::types::String!getVariable('ACTOR', 'userName'))
+<app>::entities::User
+  !filter(u | u.userName == <app>::types::String!getVariable('ACTOR', 'userName'))
   .accessibleTemplates
 
 -- Same result, redundant !any()
-compsychletter::entities::User
-  !filter(u | u.userName == compsychletter::types::String!getVariable('ACTOR', 'userName'))
+<app>::entities::User
+  !filter(u | u.userName == <app>::types::String!getVariable('ACTOR', 'userName'))
   !any().accessibleTemplates
 ```
 
@@ -317,8 +365,8 @@ compsychletter::entities::User
 
 ```jql
 -- getterExpression of a singleton Access (upper=1) returning the current user row
-compsychletter::entities::User
-  !filter(u | u.userName == compsychletter::types::String!getVariable('ACTOR', 'userName'))
+<app>::entities::User
+  !filter(u | u.userName == <app>::types::String!getVariable('ACTOR', 'userName'))
   !any()
 ```
 
@@ -336,7 +384,7 @@ anytrue, alltrue, anyfalse, allfalse, empty,
 join, sort, min, max, sum, avg, contains, memberof, ascollection
 ```
 
-Any `!<name>(...)` call whose `<name>` is not in this list fails the builder with `Unknown function: <name>`. In particular `!collectAsString` and `!mkString` **do not exist** — use `!join(lambda, separator)` (with the runtime caveat noted on the `!join` row above).
+Any `!<name>(...)` call whose `<name>` is not in this list fails the builder with `Unknown function: <name>`. In particular `!collectAsString` and `!mkString` **do not exist** — there is no working string-aggregation function: `!join(lambda, separator)` is parsed but not supported by the query engine (see the `!join` row above), so compute the string in a backend `TRANSIENT` TO attribute.
 
 ---
 

@@ -1,3 +1,8 @@
+---
+title: Other Packages Reference
+description: Reference of the ESM measure, expression and script packages.
+---
+
 # Other Packages Reference
 
 **[◄ Back to Index](./README.md)**

@@ -1,3 +1,8 @@
+---
+title: ui Package Reference
+description: Reference of the ESM ui package: pages, forms, tables, fields, widgets, actions and their attributes.
+---
+
 # `ui` Package Reference
 
 **[◄ Back to Index](./README.md)**
@@ -95,7 +100,7 @@ The main container for a screen showing a list, grid, or cards of objects.
 | `selectorDialogSize` | Enum | Size for selector dialogs |
 | `checkboxSelection` | Enum | Row selection: `AUTO`, `ENABLED`, `DISABLED` |
 | `masterDetail` | Boolean | Enable master-detail view |
-| `representationComponent` | String | Visual representation: `table`, `tag`, `card` |
+| `representationComponent` | String | Visual representation: `table`, `tag`, `card` (`TableRepresentation` enum) |
 | `countRows` | Boolean | Show total row count |
 | `isInlineEditable` | Boolean | Enable inline editing in table |
 | `actionColumnWidth` | Integer | Width of the action column |
@@ -311,7 +316,7 @@ A button for standard form actions like Submit or Cancel.
 | Attribute | Type | Description |
 |-----------|------|-------------|
 | `name` | String | Unique identifier |
-| `action` | Enum | Action type: `SUBMIT`, `CANCEL` |
+| `action` | Enum | Action type: `SUBMIT`, `CANCEL`, `VIRTUAL` (default) |
 | `label` | String | Button text (i18n key) |
 | `iconName` | String | Button icon |
 | `variant` | Enum | Button style: `contained`, `outlined`, `text` |
@@ -322,6 +327,7 @@ A button for standard form actions like Submit or Cancel.
 |--------|-------------|
 | `SUBMIT` | Triggers form submission/save operation |
 | `CANCEL` | Closes dialog/navigates back without saving |
+| `VIRTUAL` | Default. No built-in submit/cancel behaviour; the button only performs its own `PerformableAction` |
 
 ### Divider
 
@@ -709,6 +715,7 @@ Standard form action types.
 |-------|-------------|
 | `SUBMIT` | Form submission/save action |
 | `CANCEL` | Form cancel/close action |
+| `VIRTUAL` | Default; no built-in form behaviour |
 
 ### Justify
 

@@ -1,3 +1,8 @@
+---
+title: ESM Metamodel Documentation Index
+description: Index of the ESM metamodel reference, one page per esm.ecore package.
+---
+
 # ESM Metamodel Documentation Index
 
 Welcome to the detailed documentation for the Editor Specific Model (ESM) metamodel. This documentation is structured to be easily parsed and navigated by agentic LLM coders, providing a clear and modular breakdown of every component in the `esm.ecore` definition.

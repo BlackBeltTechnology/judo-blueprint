@@ -1,3 +1,8 @@
+---
+title: UI Element Behaviour Rules
+description: Behaviour rules of ESM UI elements: when attributes are enabled, visible or constrained.
+---
+
 # UI Element Behaviour Rules
 
 **[Back to UI Package Reference](./ui.md)**
@@ -419,7 +424,7 @@ For `TabularReferenceField`:
 
 | Attribute | Help Text |
 |-----------|-----------|
-| `action` | SUBMIT - Invokes the operation with the parameters specified on the form. CANCEL - Exits the form without invoking any action. |
+| `action` | SUBMIT - Invokes the operation with the parameters specified on the form. CANCEL - Exits the form without invoking any action. VIRTUAL (default) - no built-in form behaviour. |
 
 ### ActionGroup Attributes
 

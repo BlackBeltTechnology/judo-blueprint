@@ -1,3 +1,8 @@
+---
+title: type Package Reference
+description: Reference of the ESM type package: primitive types, enumerations, cardinality and attribute rules.
+---
+
 # `type` Package Reference
 
 **[◄ Back to Index](./README.md)**
@@ -18,9 +23,9 @@ These are the basic, indivisible data types. All inherit from the abstract `Prim
 | **`TimeType`** | Represents a time of day. | `baseUnit` (`DurationType` Enum: `second`, `millisecond`, etc.) |
 | **`TimestampType`** | Represents a specific point in time (date and time). | `baseUnit` (`DurationType` Enum) |
 | **`BinaryType`** | Represents binary data, such as a file. | `maxFileSize` (Long), `mimeTypes` (`MimeType`, 1..*) |
-| **`PasswordType`**| A specialized string type that implies masked UI widgets and secure handling. | - |
+| **`PasswordType`**| A specialized string type that implies masked UI widgets and secure handling. **Not usable in a generated application:** the PSM→ASM transformation throws `Password type is not supported yet.` | - |
 | **`CustomType`**| A primitive type whose implementation is defined externally. | - |
-| **`XMLType`**| A string-based type that represents XML content. | `xmlNamespace` (String), `xmlElement` (String) |
+| **`XMLType`**| A string-based type that represents XML content. **Not usable in a generated application:** the PSM→ASM transformation throws `XML type is not supported yet.` | `xmlNamespace` (String), `xmlElement` (String) |
 
 
 ## Enumeration Types
@@ -114,12 +119,16 @@ Omitting `mimeTypes` on a `BinaryType` fails EMF validation: *"The feature 'mime
 | `name` | Yes | Enumeration type name |
 | `members` | Yes (1..*) | List of enumeration members |
 
+**Numeric to Java mapping.** The SDK generator (`JavaApiHelper`) chooses the Java type from precision and scale: integer numerics with precision 1-9 become `java.lang.Integer`, 10-19 `java.lang.Long`, larger ones `java.math.BigDecimal`; decimal numerics with precision 1-7 and scale at most 4 become `java.lang.Float`, precision 8-15 with scale at most 4 `java.lang.Double`, anything else `java.math.BigDecimal`. `BinaryType` becomes `hu.blackbelt.judo.dispatcher.api.FileType`; an unmapped data type falls back to `java.lang.Object`.
+
+**JSL binary modifiers.** In JSL a binary primitive declares both `mime-type:` (entries `type/subtype`, the subtype may be `*`; the keyword is the singular `mime-type`) and `max-file-size:`. The size takes an optional unit: decimal `KB`/`MB`/`GB` (1000-based) or binary `KiB`/`MiB`/`GiB` (1024-based); the unit needs an uppercase `K`, so `kB` does not parse. Values are converted to bytes.
+
 ### EnumerationMember Attribute Rules
 
 | Attribute | Required | Description |
 |-----------|----------|-------------|
 | `name` | Yes | Member name (e.g., `PENDING`) |
-| `ordinal` | Yes | Integer value (auto-generated) |
+| `ordinal` | Yes | Integer value (auto-generated); must be unique within the enumeration and, in JSL models, between 0 and 9999 |
 
 **On Member Creation:**
 - `ordinal` = `getNextOrdinal()` (auto-incremented)

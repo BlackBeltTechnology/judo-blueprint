@@ -1,3 +1,8 @@
+---
+title: Documentation Generalization Guide
+description: Placeholder conventions and generic code examples used across the JUDO agent documentation, so it applies to any application.
+---
+
 # Documentation Generalization Guide
 
 This document explains the generic placeholders and patterns used throughout the documentation to make it reusable across any JUDO-based application.
@@ -120,34 +125,45 @@ public class OperationNameCustomImplementation implements OperationInterface {
         // Business logic here
         entity.setStatus(newStatus);
         entityDao.update(entity);
-.
     }
 }
 ```
 
 ### Backend - Interceptor
 
-**Generic Pattern:**
+**Generic Pattern:** (illustrative project code; `EntityDao` is a generated per-entity DAO, and the interceptor interface is the platform `OperationCallInterceptor`)
 ```java
 @Component(property = { "judo.model.name=<app>" })
 public class EntityCreateInterceptor implements OperationCallInterceptor {
     @Reference EntityDao entityDao;
-    
+
+    private AsmUtils asmUtils;                 // built lazily from asmModel.getResourceSet()
+    private List<EOperation> operations;
+
+    @Override public String getName() { return getClass().getSimpleName(); }
+
     @Override
     public Collection<EOperation> getOperations(AsmModel asmModel) {
-        return Stream.of(
-            "[model_name].[actor_package].[ActorName]#_createInstanceEntities"
-        ).map(asmUtils::resolveOperation).map(Optional::orElseThrow).toList();
+        if (operations == null) {
+            asmUtils = new AsmUtils(asmModel.getResourceSet());
+            operations = Stream.of(
+                "<app>.<actor_package>.<ActorName>#_createInstanceEntities"   // illustrative FQN
+            ).map(asmUtils::resolveOperation).map(Optional::orElseThrow).toList();
+        }
+        return operations;
     }
 
     @Override
     public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload) {
-        Entity entity = entityDao.getById(getIdOf(returnPayload)).orElseThrow();
-        // Post-creation logic
+        Payload created = (Payload) returnPayload;
+        // read the identifier from the payload (see the backend interceptors guide),
+        // load the entity through entityDao and apply post-creation logic
         return returnPayload;
     }
 }
 ```
+
+See [Interceptors](../backend/interceptors.md) for the full interceptor reference and the operation FQN format.
 
 ### Frontend - Data Hook
 

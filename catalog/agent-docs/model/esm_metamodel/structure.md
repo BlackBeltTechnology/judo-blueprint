@@ -1,3 +1,8 @@
+---
+title: structure Package Reference
+description: Reference of the ESM structure package: entity types, transfer objects, members, relations, mappings and behaviour rules.
+---
+
 # `structure` Package Reference
 
 **[◄ Back to Index](./README.md)**
@@ -31,7 +36,7 @@ Represents a core, persistent business object with its own lifecycle and identit
 | `sequences` | `EntitySequence` | `[0..*]` | Defines any database sequences associated with this entity. |
 | `mapping` | `Mapping` | `[1]` | **Mandatory self-reference** — must point back to the owning `EntityType` itself (`target=<own xmi:id>`). EVL rejects an `EntityType` without it. See note below. |
 
-**Mandatory self-mapping on `EntityType`.** Every `EntityType` must carry a `<mapping target="<own xmi:id>"/>` child (`target` = the entity's own id). EVL rejects an entity without it (`EntityTypeHasSelfMapping`); removing these because they look redundant produces a cascade of validation errors. This is distinct from a `TransferObjectType`'s `mapping`, which projects the TO from an entity and carries the optional `filter`.
+**Mandatory self-mapping on `EntityType`.** Every `EntityType` must carry a `<mapping target="<own xmi:id>"/>` child (`target` = the entity's own id). EVL rejects an entity without it (`EntityTypeHasMapping`); removing these because they look redundant produces a cascade of validation errors. This is distinct from a `TransferObjectType`'s `mapping`, which projects the TO from an entity and carries the optional `filter`.
 
 ### `TransferObjectType`
 A Data Transfer Object (DTO) used as a data structure for service operations or UI components. It acts as a "view" or "projection" of an `EntityType` and is the primary vehicle for data exchange.
@@ -60,7 +65,7 @@ A data-holding attribute within a `Class` (like `EntityType` or `TransferObjectT
 | `defaultExpression` | `DataExpression` | `[0..1]` | An expression to calculate the default value for this attribute. |
 
 ### `TwoWayRelationMember`
-A bidirectional relationship between two classes, where both ends are explicitly linked and aware of each other (e.g., `Customer.orders` and `Order.customer`).
+A bidirectional relationship between two classes, where both ends are explicitly linked and aware of each other (e.g., `Customer.orders` and `Order.customer`). `target` and `lower`/`upper` are not declared on this class: they are inherited (`target` from `ClassReference`, cardinality from `Cardinality`); `partner` and `primary` are its own features.
 
 | Attribute / Reference | Type | Cardinality | Description |
 | :--- | :--- | :--- | :--- |
@@ -97,7 +102,7 @@ Links a `TransferObjectType` to an `EntityType`, defining how the DTO is project
 
 | Attribute / Reference | Type | Cardinality | Description |
 | :--- | :--- | :--- | :--- |
-| `target` | `EntityType` | `[1]` | The source `EntityType` for the mapping. |
+| `target` | `Class` | `[1]` | The mapped class (`#//structure/Class` in `esm.ecore`; for a `TransferObjectType` it is the source `EntityType`, for an `EntityType`'s own mapping it is the entity itself). |
 | `filter` | `LogicalExpression` | `[0..1]`| An optional expression to filter the instances of the `EntityType` that are visible through this TO. |
 
 ### `InvariantConstraint`

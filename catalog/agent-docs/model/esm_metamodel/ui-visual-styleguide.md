@@ -1,3 +1,8 @@
+---
+title: UI Visual Style Guide
+description: Visual style indicators and styling rules for ESM model elements and UI components.
+---
+
 # UI Visual Style Guide
 
 **[◄ Back to Index](./README.md)**

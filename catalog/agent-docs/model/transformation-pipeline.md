@@ -1,3 +1,8 @@
+---
+title: Transformation Pipeline
+description: The JUDO transformation pipeline from ESM to PSM, ASM, RDBMS and Liquibase, server versus client regeneration, in-memory CLI state and the git-restore hazard.
+---
+
 # Transformation Pipeline
 
 The JUDO platform turns the developer-authored **ESM** (Entity State Model) into runtime-ready artifacts through a sequence of model-to-model transformations. This document describes the pipeline as a **platform concept** — what each stage produces, when it runs, and what state lives where.
@@ -61,10 +66,10 @@ The pipeline is split across two execution contexts:
 | **Maven plugin** | `judo-tatami-workflow-maven-plugin` | `judo-tatami-client-workflow-maven-plugin` |
 | **Defined in** | `application/model/pom.xml` | `application/frontend-react/model/pom.xml` |
 | **Reads** | `model/<app>.model` | `model/<app>.model` |
-| **Produces** | PSM, ASM, RDBMS, Measure, Expression, Script, Operation, Keycloak, Liquibase | UI model + regenerated React code |
-| **Includes UI?** | **No** | **Yes** |
+| **Produces** | PSM, ASM, RDBMS, Measure, Expression, Script, Operation, Keycloak, Liquibase (and, from the CLI, an ESM→UI model) | UI model + regenerated React code |
+| **Includes UI?** | The CLI `transform` also runs esm2ui (`<app>-ui.model`; skip with `--skip esm2ui`), but this is not the build's client pipeline | **Yes** |
 
-This split has a sharp consequence: **the CLI's `transform` does not refresh the UI model.** After any ESM change that affects forms, tables, views, menu items, or actor UI scaffolding, `./judo.sh build -f` must run before UI queries return up-to-date results. The CLI will report `ui: loaded` even when the UI model on disk is stale — `--load` only makes the existing UI file visible to GraphQL queries, it does not re-run the client-side transformation.
+This split has a consequence: **the CLI-generated UI model is not the build's UI model.** The CLI `transform` runs esm2ui on the in-memory ESM and writes `<app>-ui.model` into `cli-generated/`, but the React code is generated only by the client-side build. After any ESM change that affects forms, tables, views, menu items, or actor UI scaffolding, `./judo.sh build -f` must run before the generated frontend reflects it.
 
 ## In-memory state model
 
@@ -93,7 +98,7 @@ The CLI keeps the loaded model in memory and tracks edits separately from disk:
                            └──────────┘
 ```
 
-A `.model.dirty` marker file alongside the ESM signals pending in-memory edits. **Dirty state survives server restarts** — until a `save` or `discard --force` runs, the dirty edits remain.
+A hidden side-car file next to the ESM, named `.<file-name>.dirty` (for example `.<app>.model.dirty`), holds the pending in-memory edits; the server writes it about every 500 ms (`PersistenceThread`). Further sidecars (`.base`, `.intent`) record the file the edits were made against. **Dirty state survives server restarts** — until a `save` or `discard --force` runs, the dirty edits remain.
 
 ## Save / discard / transform-load — when to use which
 

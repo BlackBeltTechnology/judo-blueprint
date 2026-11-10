@@ -1,3 +1,8 @@
+---
+title: XMI ID Traceability Guide
+description: How xmi:id values are composed and linked so a model element can be traced through the PSM, ASM, RDBMS and UI models.
+---
+
 # XMI ID Traceability Guide
 
 This document explains the mechanisms by which JUDO maintains traceability from a model element in the Designer to the various artifacts in the generated models (`psm`, `asm`, `ui`, etc.) and runtime components.

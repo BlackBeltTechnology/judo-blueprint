@@ -1,11 +1,6 @@
 ---
-name: judo-model-docs
-description: Model documentation for JUDO applications. Covers ESM metamodel, cardinality, CRUD flags, and advanced modeling patterns.
-disable-model-invocation: false
-user-invocable: false
-model: inherit
-context: fork
-agent: general-purpose
+title: Model Documentation
+description: Model documentation for JUDO applications: ESM metamodel, JUDO Model CLI, JQL, modeling patterns, validation and transformation.
 ---
 
 # Model Documentation
@@ -14,11 +9,9 @@ This directory contains documentation related to the application's domain model.
 
 ## Model Design & Development
 
-For model design specifications (entities, attributes, relations, operations), see:
-- **JUDOSPEC_PIPELINE.md** `## YAML Requirements Format` - Complete YAML specification format
-- **`judo-model-cli` skill** - CLI commands for querying and mutating models
+Model elements (entities, attributes, relations, operations) are created and changed with the [JUDO Model CLI](judo-cli.md) or the Designer; never by editing the model XMI as text.
 
-**Key principle:** Model changes are designed by `change-architect` using YAML specifications, then executed by `judo-model-designer` using the CLI.
+**Key principle:** a model is changed by exactly one writer at a time; parallel work uses separate copies joined with the CLI `merge` command (see [judo-cli.md](judo-cli.md)).
 
 ## Reference Documentation
 
@@ -29,6 +22,9 @@ For model design specifications (entities, attributes, relations, operations), s
 - **[Advanced Modeling Patterns](advanced-modeling-patterns.md)**: Reusable design patterns for common modeling problems.
 - **[Generalization Guide](generalization-guide.md)**: Entity inheritance and generalization patterns.
 - **[XMI ID Traceability](xmi-id-traceability.md)**: How JUDO maintains traceability from model elements to generated artifacts.
+- **[Operation Script Language (JCL)](jcl-operation-scripts.md)**: Syntax and restrictions of operation bodies.
+- **[JSL Language Rules](jsl-language-notes.md)**: Identifiers, built-in libraries, actor grammar and the rules that fail a build.
+- **[Validation and Transformation Options](model-validation-and-transformation.md)**: EVL validation, ETL vs ZETA engines, Maven workflow, measures, known issues.
 - **[ESM Metamodel](./esm_metamodel/README.md)**: Detailed breakdown of every component in `esm.ecore`.
 
 ## Quick Reference
@@ -49,25 +45,3 @@ For model design specifications (entities, attributes, relations, operations), s
 | `createable` | Entity instances can be created |
 | `updateable` | Entity instances can be modified |
 | `deleteable` | Entity instances can be deleted |
-
-### Entity YAML Template
-
-```yaml
-name: Customer
-namespace: <app>::entities
-extends: AbstractEntity
-crud:
-  createable: true
-  updateable: true
-  deleteable: true
-attributes:
-  - name: email
-    type: String
-    cardinality: 0..1
-relations:
-  - name: orders
-    target: Order
-    cardinality: 0..*
-    bidirectional: true
-    opposite: customer
-```

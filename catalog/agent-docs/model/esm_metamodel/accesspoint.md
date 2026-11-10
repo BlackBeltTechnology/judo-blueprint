@@ -1,3 +1,8 @@
+---
+title: accesspoint Package Reference
+description: Reference of the ESM accesspoint package: actors, claims, principals, accesses and security behaviour rules.
+---
+
 # `accesspoint` Package Reference
 
 **[◄ Back to Index](./README.md)**
@@ -63,11 +68,11 @@ Which claim type to choose is an IdP / deployment decision, not a modelling one:
 
 ### Three actor shapes (authoring reference)
 
-Three mutually exclusive shapes for `ActorType.principal` are supported. The shape dictates which JQL category surfaces the identity data and what the framework persists:
+Three shapes for `ActorType.principal` are supported (there is no `claimPrincipal` flag: the shape follows from `principal`, `managed` and `claims`). The shape dictates which JQL category surfaces the identity data and what the framework persists:
 
 | Shape | `principal` | `managed` | `<claims>` | Framework persists | JQL for JWT claims | JQL for persisted attrs |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Token-only** (`claimPrincipal: true`) | absent / unmapped | `false` | ignored | nothing | `USER.*` | — |
+| **Token-only** | absent (no `principal`) | `false` | none | nothing | `USER.*` | — |
 | **Transient principal** | unmapped `TransferObjectType` | `false` | optional | nothing | `PRINCIPAL.*` | — |
 | **Managed mapped principal** | mapped `TransferObjectType` projecting an `EntityType` | `true` | ≥ 1, each pointing at a `MAPPED` `DataMember` | the principal entity row (auto-insert / auto-update from JWT) | `USER.*` (raw claim) | `ACTOR.*` (from the row) |
 

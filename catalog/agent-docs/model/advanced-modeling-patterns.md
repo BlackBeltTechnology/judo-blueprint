@@ -1,3 +1,8 @@
+---
+title: Advanced JUDO Modeling Patterns
+description: Reusable advanced JUDO modeling patterns: actors and principals, role flags, polymorphism, JQL concepts and validator-enforced structures.
+---
+
 # Advanced JUDO Modeling Patterns
 
 This document details advanced, non-obvious design patterns and concepts for the JUDO Editor Specific Model (ESM). These patterns represent a deeper understanding of the platform's capabilities and were discovered through a detailed, query-based analysis of existing application models. They go beyond the basic workflow to cover more complex architectural and security considerations.
@@ -49,19 +54,23 @@ This document details advanced, non-obvious design patterns and concepts for the
     1.  **`ActorType.principal`** points at a **mapped** `TransferObjectType` that projects the `EntityType` that stores the user row (e.g. a `User` TO mapped to `User` entity).
     2.  **`ActorType.managed = true`**. On `#_principal` the framework is *intended* to insert (first login) or update (subsequent logins) the principal row from the JWT. **In practice the auto-insert is NOT implemented in the current runtime** — see the warning below — so you must pair `managed=true` with an `AuthenticationInterceptor` that performs the first-login insert. The lookup path that consumes the row IS implemented, so once the interceptor writes it the rest of the pattern (`ACTOR.*` in JQL, etc.) works as designed.
     3.  **`ActorType.<claims>`** declares, for each standard claim (`EMAIL`, `USERNAME`), which `DataMember` on the principal TO carries it. Each referenced `DataMember` MUST be `MAPPED` (have a `binding` to an `EntityType` attribute) so the value persists through the TO into the DB.
+#### Reading the persisted row in access getters
+
 *   **Access getters then read the persisted row.** The JQL key is the `DataMember.name` on the principal TO, not the JWT claim name — the `<claims>` element is what links them. The example below uses `EMAIL`; swap in `USERNAME` — with an `<claims claimType="USERNAME">` pointing at a `userName` / `preferredUsername` member — if that is the identifier your IdP guarantees stable.
     ```jql
     // Root access: the User row for this actor (EMAIL-keyed variant)
-    MyApp::entities::User
-      !filter(u | u.email == MyApp::types::String!getVariable("ACTOR", "email"))
+    <app>::entities::User
+      !filter(u | u.email == <app>::types::String!getVariable("ACTOR", "email"))
       !any()
 
     // USERNAME-keyed variant, same pattern
-    MyApp::entities::User
-      !filter(u | u.userName == MyApp::types::String!getVariable("ACTOR", "userName"))
+    <app>::entities::User
+      !filter(u | u.userName == <app>::types::String!getVariable("ACTOR", "userName"))
       !any()
     ```
     This pairs naturally with the *Fully User-Scoped Data Access* pattern above: every other access is a navigation from this root.
+#### Principal conventions and limits
+
 *   **Principal TO conventions.** The TO used as `ActorType.principal` typically carries `createable="false" updateable="false" deleteable="false"` at the outer level (no public CRUD service — the framework owns the row) and `actorType="<ActorType.id>"` as the back-link. Individual `accesses[*]` inside the actor can still grant CRUD on other TOs, including a separate `users` access targeting the same entity for administrators.
 *   **Extending beyond the automatic sync.** The model-driven sync only covers the declared `<claims>` attributes. When you need more — copying a custom claim to a plain entity attribute, initialising roles from a group claim, writing an audit row — add an `AuthenticationInterceptor` on `#_principal`; it runs **before** the framework's actor lookup. See [Authentication Guide](../backend/authentication-guide.md).
 *   **Verified runtime gap (judo-runtime-core-dispatcher 1.0.6.20241030 / 1.0.6.20251205).** `DefaultActorResolver.getActorByClaims` is lookup-only — it calls `dao.search(actorType, …)` and throws `AccessDeniedException("AUTHENTICATED_ENTITY_NOT_FOUND")` when the row is missing. No insertion code path exists for `managed=true` actors in these versions. The `INFO` log `"Operation failed, authenticated entity not found in database"` on every first login is the symptom. **Mitigation:** add the *Just-in-Time User Provisioning* `AuthenticationInterceptor` from [the Authentication Guide](../backend/authentication-guide.md#example-just-in-time-user-provisioning), even for the textbook mapped + managed + `<claims>` shape. The interceptor's `authenticate()` hook runs **before** `getActorByClaims`, so inserting there satisfies the upcoming lookup.
@@ -84,37 +93,43 @@ This document details advanced, non-obvious design patterns and concepts for the
     2.  Project it as a `MAPPED` `DataMember` of the principal `TransferObjectType` so the framework's actor-row sync exposes it under the `ACTOR` category at `!getVariable("ACTOR", "isAdmin")`.
     3.  Decide how the flag gets set: typically a one-time seed via an `AuthenticationInterceptor` on `#_principal` for the first admin (e.g., compare the JWT email against a bootstrap value), and an admin-only `UpdateAccess` afterwards. The flag itself is plain stored data — nothing in the framework writes it for you.
 
+#### Reading the role flag in JQL
+
 *   **Canonical role check (preferred form).** Once the flag is exposed under `ACTOR`, every authenticated-context JQL site can read it as a single typed-`getVariable` call:
 
     ```jql
     -- Anywhere a Boolean is expected and the request is authenticated:
-    MyApp::types::Boolean!getVariable("ACTOR", "isAdmin")
+    <app>::types::Boolean!getVariable("ACTOR", "isAdmin")
     ```
 
     Use this form inside any boolean-valued slot — a `DERIVED` boolean attribute's `getterExpression`, an `enabledBy` / `requiredBy` source, the predicate of a `!filter` lambda, etc.
 
-*   **Fallback form** when the `ACTOR` category is **not** available (e.g., a `claimPrincipal: true` actor without `<claims>` / `managed=true`, where only `USER` is populated). Re-derive the user row from a JWT claim, then test the flag:
+*   **Fallback form** when the `ACTOR` category is **not** available (e.g., an actor without a mapped principal / `managed=true`, where only `USER` is populated). Re-derive the user row from a JWT claim, then test the flag:
 
     ```jql
     -- Parentheses must close the !getVariable call BEFORE the boolean conjunction.
     -- !count() is the collection-function form (leading ! is required).
-    MyApp::entities::User
-      !filter(u | u.userName == MyApp::types::String!getVariable("USER", "userName")
+    <app>::entities::User
+      !filter(u | u.userName == <app>::types::String!getVariable("USER", "userName")
                   and u.isAdmin)
       !count() > 0
     ```
 
     Prefer the typed-`getVariable` `ACTOR` form whenever the actor shape supports it — the fallback issues an extra row lookup per evaluation.
 
+#### Role-scoped access getters
+
 *   **Wiring the flag into an `Access.getterExpression`** (admin sees all rows; non-admin sees only their own). JQL has no `if/then/else` operator — use a single `!filter` whose lambda disjuncts the role flag with the per-user clause. The `!getVariable("ACTOR", "isAdmin")` call is constant per request, so when it returns `true` the predicate admits every row:
 
     ```jql
-    MyApp::entities::Order!filter(o |
-      MyApp::types::Boolean!getVariable("ACTOR", "isAdmin")
-      or o.owner.userName == MyApp::types::String!getVariable("ACTOR", "userName"))
+    <app>::entities::Order!filter(o |
+      <app>::types::Boolean!getVariable("ACTOR", "isAdmin")
+      or o.owner.userName == <app>::types::String!getVariable("ACTOR", "userName"))
     ```
 
-*   **Wiring the flag into a `hiddenBy` on a `MenuItemAccess`.** `hiddenBy` must reference a **boolean `DataMember` on the principal TO** (see [UI Authoring Guide §6](./ui-authoring-guide.md)). Since `hiddenBy` hides when *true*, model the negation as a derived attribute on the principal TO itself — inside that getter `self` already **is** the actor's row, so no `!getVariable` call is needed:
+#### Hiding menu items by role
+
+*   **Wiring the flag into a `hiddenBy` on a `MenuItemAccess`.** `hiddenBy` must reference a **boolean `DataMember` on the principal TO** (see [UI Authoring Guide, section 5 (data-binding cheat sheet)](./ui-authoring-guide.md#5-data-binding-cheat-sheet)). Since `hiddenBy` hides when *true*, model the negation as a derived attribute on the principal TO itself — inside that getter `self` already **is** the actor's row, so no `!getVariable` call is needed:
 
     1.  Add a `DERIVED` boolean attribute `isNotAdmin` on the principal TO with `getterExpression`:
 
@@ -164,13 +179,13 @@ This document details advanced, non-obvious design patterns and concepts for the
 JQL provides **three** categories for accessing user/session data. They have critically different purposes tied to the security model, and picking the wrong one is a silent-failure class of bug (empty values at runtime, no compile error).
 
 *   **Use `!getVariable('USER', 'claim_name')` when:**
-    *   The `Actor` is declared with **`claimPrincipal: true`** (token-only actor; no persisted principal record).
+    *   The `Actor` is token-only (it has no `principal` TO and no persisted principal record).
     *   You want the **raw JWT claim** regardless of actor shape (e.g. `sub`, `email`, a custom scope claim).
-    *   This is the **only** category that surfaces JWT claims for `claimPrincipal: true` actors — `PRINCIPAL.*` against such an actor silently returns empty.
+    *   This category reads the raw token claims for every actor shape, and it is the only one that works for token-only actors — `PRINCIPAL.*` against such an actor silently returns empty.
 
 *   **Use `!getVariable('PRINCIPAL', 'claim_name')` when:**
     *   Your user representation is **stateless and transient** via a framework-populated principal TO.
-    *   The `Actor`'s `principal` is an **unmapped `TransferObjectType`** and the actor is **not** `claimPrincipal: true`.
+    *   The `Actor`'s `principal` is an **unmapped `TransferObjectType`**.
     *   You want a value exposed by the principal TO (populated from the token by the framework, not read from the raw JWT).
 
 *   **Use `!getVariable('ACTOR', 'attribute_name')` when:**
@@ -181,7 +196,7 @@ JQL provides **three** categories for accessing user/session data. They have cri
 > [!WARNING]
 > **Silent-failure pitfall — access filters and audit logic**
 >
-> Access `Derived` filters and custom-op helpers that reference `PRINCIPAL.*` on a `claimPrincipal: true` actor compile and deploy, but evaluate to empty at runtime. Symptoms: empty result sets, `null` audit-user fields, or "access denied" despite valid tokens. Fix by switching those call sites to `USER.*`. Audit every access-filter and interceptor whenever an actor is migrated to or from `claimPrincipal: true`.
+> Access `Derived` filters and custom-op helpers that reference `PRINCIPAL.*` on a token-only actor (no `principal` TO) compile and deploy, but evaluate to empty at runtime. Symptoms: empty result sets, `null` audit-user fields, or "access denied" despite valid tokens. Fix by switching those call sites to `USER.*`. Audit every access-filter and interceptor whenever an actor gains or loses its `principal` TO.
 
 ---
 
@@ -192,17 +207,17 @@ These patterns capture rules the JUDO ESM EVL validator enforces but that neithe
 ### Pattern: Asymmetric bidirectional relations (AGGREGATION × ASSOCIATION)
 
 *   **Use Case**: A parent-child relationship between two entities that must be navigable from both sides (e.g. `Partner` has many `PartnerSupportedLanguage`, and each `PartnerSupportedLanguage` points back at its `Partner`).
-*   **Problem**: The UML-intuitive answer — declare both ends as `COMPOSITION` or both as `AGGREGATION` — fails EVL with *"Bidirectional association: X cannot be composition"* or *"Partner of bidirectional association: X cannot be aggregation"*.
-*   **Pattern**: The **only** combination that passes is asymmetric:
+*   **Problem**: The UML-intuitive answer — declare both ends as `COMPOSITION`, or both as `AGGREGATION` — fails EVL (`twoWayRelationMember.evl`): *"Bidirectional association: X cannot be composition"* (`TwoWayRelationIsNotComposition`) and *"Partner of bidirectional association: X cannot be aggregation"* (the partner of an `AGGREGATION` end must be an `ASSOCIATION`).
+*   **Pattern**: Make the two ends asymmetric:
     *   Owner end (the `upper ≠ 1` end, i.e. the collection side) = `AGGREGATION`
     *   Child end (the `upper = 1` end, i.e. the back-pointer) = `ASSOCIATION`
 *   **Cardinality companion rule**: EVL additionally emits *"At least one reference of a bidirectional association should have lower bound with zero"*. Relax the owner-collection end (`1..*` → `0..*`); relaxing the child end breaks referential integrity.
-*   **Scope**: This rule applies to **entity-to-entity** relations only. Entity `ASSOCIATION` on its own is also forbidden; on an entity, every unidirectional relation must be `AGGREGATION` or `COMPOSITION`. `ASSOCIATION` is reserved for TO-to-TO relations.
+*   **Scope**: These rules apply to bidirectional (`TwoWayRelationMember`) relations. `ASSOCIATION` is **not** forbidden on entities: an `ASSOCIATION` end is valid, and unidirectional entity relations are not required to be `AGGREGATION` or `COMPOSITION`. Which relation kinds an application uses is a design choice; check the project's own models before generalising.
 
 ### Pattern: Derived-member self-binding
 
 *   **Use Case**: Any `DataMember` whose `memberType` is `DERIVED`.
-*   **Rule**: Every derived `DataMember` must set `binding="<self-id>"` pointing at its own `xmi:id`. EVL emits *"Derived data member X must bind itself"* otherwise.
+*   **Convention**: Every derived `DataMember` sets `binding="<self-id>"` pointing at its own `xmi:id`. This is a modelling convention: the EVL validator does **not** emit a "must bind itself" error when it is missing (verified with a create → `validate --strict` → `discard` probe), so no validator will tell you if you omit it.
 *   **Authoring**: This is distinct from — and complements — the mandatory self-mapping on every `EntityType` (see [structure.md](./esm_metamodel/structure.md), *Mandatory self-mapping on `EntityType`*). Code generators that emit YAML→XMI must set both.
 
 ### Pattern: Mandatory UI scaffolding for operation-I/O TOs

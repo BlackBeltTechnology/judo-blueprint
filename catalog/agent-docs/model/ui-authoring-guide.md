@@ -1,10 +1,15 @@
+---
+title: UI Authoring Guide
+description: How to compose form, table and view scaffolds on transfer objects and wire them onto an actor menu in the ESM, with bindings, layout rules, pitfalls and audits.
+---
+
 # UI Authoring Guide
 
 **[◄ Back to Index](./README.md)**
 
 This guide is the **authoring playbook** for composing ESM UI presentations (Form, Table, View) on `TransferObjectType`s, and for wiring them onto an `ActorType` menu. It is the companion to the per-element reference in [ui.md](./esm_metamodel/ui.md).
 
-**Scope boundary.** This file explains **what to put in the model**. For how to actually mutate the model, see the `judo-model-cli` skill. For per-element attribute definitions, enums, and conditional rules, see [ui.md](./esm_metamodel/ui.md) and [ui-behaviour.md](./esm_metamodel/ui-behaviour.md). For customizing the **generated React** once the UI model is in place, see the frontend skill.
+**Scope boundary.** This file explains **what to put in the model**. For how to actually mutate the model, see [judo-cli.md](./judo-cli.md). For per-element attribute definitions, enums, and conditional rules, see [ui.md](./esm_metamodel/ui.md) and [ui-behaviour.md](./esm_metamodel/ui-behaviour.md). For customizing the **generated React** once the UI model is in place, see the [frontend documentation](../frontend/README.md).
 
 ---
 
@@ -605,7 +610,35 @@ Pair every `Access` that should appear in the navigation with a `MenuItemAccess`
 
 ---
 
-## 17. Related documentation
+## 17. Reference-derived elements, custom components and capability rules
+
+### Reference-derived elements have no writable name
+
+`DataField`, `DataColumn`, `ReferenceField`, the `<Feature>Filter` elements (for example `DataFilter`), `OperationForm` and the `Inherited*` references are **reference-derived**: the metamodel computes their `name` and FQN from the binding (`dataFeature.member.name`, `...name + "Filter"`, `operation.name`). Their CLI `CreateInput` therefore has no `name`; the identity is the binding (`dataFeature`, `relationFeature` or `operation`) and the writable fields are `container`, `containment`, `label`, `documentation` and the binding. Unmapped `User` elements should not set a name, and bare View/Form/Table sibling names are forbidden. Place bound widgets with `update <container> --add feature ...` (see [judo-cli.md](./judo-cli.md)); there is no separate `ui-mutations` document. To add a model attribute to an existing view or form, add a `DataField` under a `Group` or the view container, bound to a `dataFeature` that already exists as a `MAPPED` or `TRANSIENT` member of the transfer object.
+
+### Embedded tables bind the member or its inherited reference
+
+Columns and filters of an embedded table may bind either the member or its inherited reference; `EsmUtils.purifyAttribute` rebinds them to the `InheritedDataFeatureReference`, and both forms are equivalent for UI generation.
+
+### A button representation still needs columns
+
+A `TabularReferenceField` with `representationComponent="button"` still raises the validator warning `Columns are not defined for viewable table` unless its `<columns>` are populated.
+
+### Conditional confirmation
+
+For a `CONDITIONAL` operation-form confirmation, `confirmationCondition` must be a boolean attribute of the operation's **root type**; otherwise validation fails with `Confirmation condition must be an attribute of the root type`. The candidates listed by a selector can include fields of another entity, so the EVL root-type rule, not the list, is authoritative.
+
+### What enables sorting and filtering in the generated UI
+
+Sort and filter controls appear only for references whose target is mapped and has at least one non-`TRANSIENT` attribute of a supported type (orderable: string, numeric, date, timestamp, time, boolean; filterable: those plus enumeration). See [model-validation-and-transformation.md](./model-validation-and-transformation.md).
+
+### Selecting a custom React component from the model
+
+A model annotation whose name starts with the prefix `use` (configurable with the `customComponentAnnotationPrefix` generator parameter, default `use`) makes the generator register and use a custom component. An annotation such as `useFancyText` on a visual element selects the custom widget that the developer implements; see the [frontend documentation](../frontend/README.md).
+
+---
+
+## 18. Related documentation
 
 - [UI Package Reference](./esm_metamodel/ui.md) — per-element attribute dictionary
 - [UI Behaviour Rules](./esm_metamodel/ui-behaviour.md) — conditional attributes, defaults, help-text
@@ -614,5 +647,5 @@ Pair every `Access` that should appear in the navigation with a `MenuItemAccess`
 - [Accesspoint Package](./esm_metamodel/accesspoint.md) — `ActorType`, `Access`, `Claim`
 - [Advanced Modeling Patterns](./advanced-modeling-patterns.md) — Dynamic Menu System, Polymorphic Creation
 - [Generator Reserved Names](./esm_metamodel/generator-reserved-names.md) — names to avoid
-- `judo-model-cli` skill — how to actually create/mutate these elements from the CLI
-- Frontend skill — customizing the **generated** React once this UI model is in place
+- [JUDO Model CLI](./judo-cli.md) — how to actually create/mutate these elements from the CLI
+- [Frontend documentation](../frontend/README.md) — customizing the **generated** React once this UI model is in place

@@ -1,14 +1,19 @@
+---
+title: Generator Reserved Names
+description: Member names that collide with generator-emitted methods and how to avoid them.
+---
+
 # Generator Reserved Names
 
 **[◄ Back to Index](./README.md)**
 
-Structural flags on a `TransferObjectType` (`createable`, …) cause the generators to emit methods with fixed names. A relation or attribute whose `name` collides with one of these methods surfaces only at `tsgo` / `vite build` time as `error TS2393: Duplicate function implementation`, several transformation steps away from the root cause.
+Create and operation-input usage of a `TransferObjectType` (relations with the `createable` flag that target it, operations that take it as input) causes the generators to emit methods with fixed names. A relation or attribute whose `name` collides with one of these methods surfaces only at `tsgo` / `vite build` time as `error TS2393: Duplicate function implementation`, several transformation steps away from the root cause.
 
 ## Reserved Member Names
 
 | Flag on TO | Emitted method | Reserved member name |
 |---|---|---|
-| `createable="true"` | `getTemplate()` — returns a blank prototype for Create forms (endpoint `/services/<TO>/~template`). | **`template`** |
+| the TO can be created through a relation (a `createable` relation targets it) or is the input of an operation | `getTemplate()` — returns a blank prototype for Create forms and operation forms (endpoint `<TO>/~template`; the REST client generator emits it when the TO `isTemplateable`). | **`template`** |
 
 **Resolution:** rename the member and keep `binding` unchanged so the underlying entity relation is not disturbed (e.g. `name="template"` → `name="letterTemplate"`).
 

@@ -1,3 +1,8 @@
+---
+title: namespace Package
+description: Reference of the ESM namespace package: model, packages and naming.
+---
+
 # `namespace` Package
 
 **[◄ Back to Index](./README.md)**
