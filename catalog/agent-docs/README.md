@@ -1,3 +1,7 @@
+---
+title: Technical Documentation
+description: "This directory contains all technical documentation for the JUDO framework, organized by domain."
+---
 # Technical Documentation
 
 This directory contains all technical documentation for the JUDO framework, organized by domain. AI assistants should reference these files directly when working on domain-specific tasks.

@@ -1,13 +1,13 @@
 ---
-name: judo-integration-testing-docs
+title: Integration Testing Guide
 description: Integration testing guide for JUDO backend. Covers testkit usage, test patterns, and custom operation testing.
+name: judo-integration-testing-docs
 disable-model-invocation: false
 user-invocable: false
 model: inherit
 context: fork
 agent: general-purpose
 ---
-
 # Integration Testing Guide
 
 ## Overview

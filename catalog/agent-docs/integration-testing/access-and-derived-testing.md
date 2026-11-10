@@ -1,13 +1,13 @@
 ---
-name: judo-integration-testing-access-and-derived
+title: Testing Access Rules and DERIVED Attributes
 description: Integration-test patterns for Access.getterExpression and DERIVED attribute getters in JUDO models. Covers DAO-level derived projection, dispatcher-driven per-actor access scoping, and ACTOR-context-dependent derived getters.
+name: judo-integration-testing-access-and-derived
 disable-model-invocation: false
 user-invocable: false
 model: inherit
 context: fork
 agent: general-purpose
 ---
-
 # Testing Access Rules and DERIVED Attributes
 
 **[◄ Back to Integration Testing index](./README.md)**

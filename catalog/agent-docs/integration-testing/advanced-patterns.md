@@ -1,3 +1,7 @@
+---
+title: Integration Testing - Advanced Patterns and Workarounds
+description: "Part of: Integration Testing Documentation(./README.md)"
+---
 # Integration Testing - Advanced Patterns and Workarounds
 
 **Part of**: [Integration Testing Documentation](./README.md)

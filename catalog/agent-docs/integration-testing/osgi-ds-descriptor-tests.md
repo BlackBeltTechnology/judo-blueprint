@@ -1,3 +1,7 @@
+---
+title: Integration Testing - OSGi DS Descriptor Contract Tests
+description: "Part of: Integration Testing Documentation(./README.md)"
+---
 # Integration Testing - OSGi DS Descriptor Contract Tests
 
 **Part of**: [Integration Testing Documentation](./README.md)

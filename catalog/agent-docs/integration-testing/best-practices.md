@@ -1,3 +1,7 @@
+---
+title: Integration Testing - Best Practices and Anti-Patterns
+description: "Part of: Integration Testing Documentation(./README.md)"
+---
 # Integration Testing - Best Practices and Anti-Patterns
 
 **Part of**: [Integration Testing Documentation](./README.md)

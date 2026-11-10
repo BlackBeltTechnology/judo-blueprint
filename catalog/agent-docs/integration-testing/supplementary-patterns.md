@@ -1,3 +1,7 @@
+---
+title: Integration Testing - Supplementary Patterns
+description: "Part of: Integration Testing Documentation(./README.md)"
+---
 # Integration Testing - Supplementary Patterns
 
 **Part of**: [Integration Testing Documentation](./README.md)

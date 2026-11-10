@@ -1,3 +1,7 @@
+---
+title: Interceptor Testing with the JUDO Testkit
+description: "This page covers testing OperationCallInterceptor implementations with @JudoTest(interceptors = …) and JudoRuntimeFixture.addInterceptor(…)."
+---
 # Interceptor Testing with the JUDO Testkit
 
 This page covers testing `OperationCallInterceptor` implementations with `@JudoTest(interceptors = …)` and `JudoRuntimeFixture.addInterceptor(…)`. For the production side (what interceptors are, when to write them) see [Interceptors](../backend/interceptors.md).

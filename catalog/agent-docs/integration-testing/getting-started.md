@@ -1,3 +1,7 @@
+---
+title: Integration Testing - Getting Started Guide
+description: "Target Audience: Beginners, new developers starting with JUDO integration tests"
+---
 # Integration Testing - Getting Started Guide
 
 **Target Audience**: Beginners, new developers starting with JUDO integration tests
