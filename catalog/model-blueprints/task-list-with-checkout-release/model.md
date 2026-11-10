@@ -1,19 +1,39 @@
-## Examples
+## Model shape
 
-### workflow-poc
-- **TaskList TO**: `workflow::transfers::TaskList`
-  - Attributes: userTasksCount, unassignedTasksCount, supervisedAssignedTasksCount, supervisedUnassignedTasksCount
-  - Relations: allTasks (0..* ASSOC), myTasks (0..* ASSOC)
-  - Operations: startWorkflow (MAPPED)
-  - Provides a dashboard-like view of all pending work items with category counts
-- **Task TO**: `workflow::transfers::Task`
-  - Display attributes: status, subject, task, workflow, creationTime, assignee
-  - Guard attributes: isUnassigned, isAssigned, isCheckoutEnabled, isReleaseEnabled, isAssigneeLogged, isSupervisorLogged, isNavigable
-  - Relations: assignables (0..* ASSOC to User), authorizedUsers (0..* ASSOC to User), logEntries (0..* ASSOC to LogEntry)
-  - Operations: checkout (MAPPED), release (MAPPED), assign (MAPPED), execute (MAPPED), navigate (MAPPED)
-- **Supporting TOs**:
-  - `workflow::transfers::User` -- email (for display in assignables/authorizedUsers)
-  - `workflow::transfers::LogEntry` -- timestamp, type, userEmail, message, level (for audit trail display)
-  - `workflow::transfers::ActionInput` -- tokenID (req), correlationID (for execute operation input)
-  - `workflow::transfers::Identifier` -- value (req) (for assign operation input)
-- The Task TO maps to Token entities, presenting workflow execution positions as human-readable tasks with lifecycle operations
+The shape has two views over the same records. The Token entity holds one workflow position with its assignee and status. The Task transfer object maps to Token and shows it as a work item with guard flags and the checkout, release and execute operations, each bound to the Token operation of the same name. The User entity holds the people who can claim work. The TaskList transfer object maps to User and exposes the counts and the user's own tasks. A LogEntry entity records each completed step.
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=task-list-with-checkout-release cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class LogEntry {
+    <<Entity>>
+    +String message
+  }
+  class Task {
+    <<Transfer>>
+    +String status
+    +Boolean /isAssignee
+    +checkout()
+    +release()
+    +execute()
+  }
+  class TaskList {
+    <<Transfer>>
+  }
+  class Token {
+    <<Entity>>
+    +String status
+    +checkout()
+    +release()
+    +execute()
+  }
+  class User {
+    <<Entity>>
+  }
+  Task ..> Token : maps
+  TaskList ..> User : maps
+  TaskList o-- "*" Task : myTasks
+```
+<!-- /mermaid:generated -->

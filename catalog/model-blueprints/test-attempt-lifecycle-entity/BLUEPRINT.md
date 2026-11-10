@@ -1,45 +1,66 @@
 ---
 id: test-attempt-lifecycle-entity
-title: Test/Attempt Lifecycle Entity with Status Tracking
-description: "A Test (or Attempt) entity that represents a user's participation in a timed activity, with a multi-stage lifecycle status enum tracking progress from creation through completion or failure."
-aliases: []
-keywords: [test, attempt, lifecycle, status, tracking]
-tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:trivia", "status:single-project"]
+title: Test Attempt Lifecycle Entity with Status Tracking
+description: An Attempt entity that records one participant's run through a timed activity, with a status enumeration from creation to completion, failure or exclusion and a timestamp per stage.
+aliases: [test attempt, timed attempt]
+keywords: [test, attempt, lifecycle, status, timestamps, timed]
+tags: [domain:model, layer:model, layer:backend, layer:frontend, project:trivia, status:single-project]
 category: pattern
 status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [work-status-lifecycle-enum, campaign-lifecycle-status-enum]
+related: [scoreboard-personal-best-pattern, accept-reject-operations, work-status-lifecycle-enum, campaign-lifecycle-status-enum]
+fragment: test-attempt-lifecycle-entity
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A Test (or Attempt) entity that represents a user's participation in a timed activity, with a multi-stage lifecycle status enum tracking progress from creation through completion or failure. The entity carries:
+Record one participant's run through a timed activity, from the moment the attempt is created to the moment it is finished, failed or removed by an administrator. The status enumeration says where the run is. Each stage has its own timestamp, so the duration can be computed exactly.
 
-- **Status attribute**: typed to a lifecycle enum with members like CREATED (not yet started), STARTED (in progress), FINISHED (completed successfully), FAILED (exceeded time or other failure), and EXCLUDED (administratively removed). The default is CREATED.
-- **Timestamp tracking**: separate timestamps for each lifecycle stage (timestampOfCreation, timestampOfStarted, timestampOfFinished) rather than a single createdAt/updatedAt pair, enabling precise duration calculations.
-- **Score and duration**: computed results stored as attributes (score, duration) after completion.
-- **Player reference**: association (1..1) to the user who took the test, plus a denormalized `playerEmail` string for quick display.
-- **Context reference**: association (1..1) to the contest/exam/activity that the test belongs to.
-- **Composed items**: composition (0..*) to individual prompt/answer items within the test.
-- **Personal best flag**: a boolean `personalBest` attribute (default: false) for marking the user's best score on this contest.
-- **Identifier**: a unique `id` for external reference (e.g., sharing test results via URL).
+### Each stage has its own timestamp
 
-State transition operations: `start` (CREATED -> STARTED), `submit` (STARTED -> FINISHED or FAILED based on results), `exclude` (admin operation to mark a test as EXCLUDED).
+Creation, start and finish are stored as separate timestamps. A single created or updated pair cannot give the exact duration of the timed part.
 
-This pattern is suitable for any scenario where users take timed assessments, quizzes, exams, or challenges: the lifecycle tracks the full attempt from entry through completion, with administrative override capability.
+### Operations move the status, not the caller
 
-## Model Definition
+Start, submit and exclude are custom operations that check the current status before they change it. The status is the only source of truth for which step is allowed.
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+## Structure
 
-## Backend Implementation
+The Attempt entity has a required status (AttemptStatus enumeration, default Created), three timestamps (creation, start, finish), a score, a personal-best flag (default false), and a required link to its Participant. It has a required link to a Session (the timed activity) and a list of Item entities, one per question or step. The AttemptStatus enumeration lists Created, Started, Finished, Failed and Excluded.
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+## Constraints
 
-## Frontend Implementation
+- A new attempt starts in the Created status.
+- Start is allowed only from Created. Submit is allowed only from Started. Exclude is allowed from any status.
+- Custom operations must check the status themselves. Interceptors do not run for custom operations, so an interceptor cannot enforce these transitions.
+- An invalid transition must raise a modeled fault (HTTP 422). A bad field value is a validation exception (HTTP 400).
+- The personal-best flag belongs to one attempt per participant and session. Excluding the attempt that holds it must recompute the flag for the remaining attempts.
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+## Variations
+
+- **Fixed status set.** Five statuses, as in the example. Drop Excluded if administrators never remove attempts.
+- **Score and duration stored.** The example stores the score and the duration after finishing. Compute them on read instead if the scoring rule changes often.
+- **Shared status enumeration.** Use [[work-status-lifecycle-enum]] or [[campaign-lifecycle-status-enum]] when a generic work or campaign status fits and the stage timestamps are not needed.
+
+## When to use
+
+- A participant runs a timed activity once or several times, and each run needs its own record.
+- The duration must be exact, so each stage needs its own timestamp.
+- Administrators must be able to remove a run without deleting it.
+
+## When to avoid
+
+- The record is just the current value of one entity. Use a plain status attribute instead.
+- Runs have no time limit and no stages to track. A simpler status enum is enough.
+- Runs must be scored by a process that is not part of this model. Keep the scoring outside the entity.
+
+## Related
+
+- [[scoreboard-personal-best-pattern]] — the personal-best flag and its recomputation on exclude
+- [[accept-reject-operations]] — status guards on custom operations, the same rule this entity follows
+- [[work-status-lifecycle-enum]] — a generic status enumeration without stage timestamps
+- [[campaign-lifecycle-status-enum]] — a three-state status for campaign-like entities

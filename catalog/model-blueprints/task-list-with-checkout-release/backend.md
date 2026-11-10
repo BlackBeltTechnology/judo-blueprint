@@ -1,21 +1,21 @@
 ## Overview
 
-The task list with checkout/release pattern is backed by a shared `WorkflowUtils` utility service that implements the auto-assignment, assignee management, and guard evaluation logic that powers the checkout, release, assign, and execute task lifecycle operations. While the individual token operations (checkout, release, assign, execute, navigate) are model-defined in this project, the underlying engine logic -- state transitions, auto-assignment with preference-based selection, and authorization checks -- is implemented in custom Java.
+The checkout, release, assign and execute operations are model-defined mapped operations on the Task transfer object. They bind to the Token operations of the same name. The state transitions, the automatic assignment and the authorization checks are in custom code, because they depend on the workflow engine and not on the model.
 
-## Implementation Pattern
+## Implementation pattern
 
-- **Auto-assignment**: The `WorkflowUtils.autoAssign()` method is called on every state entry (`setCurrentState`). It filters assignable users against authorized users (intersection of context-level assignables and token-level authorized users), then selects a preferred assignee based on completion log history (most recent completer who is not already assigned elsewhere) with random fallback if no preference match is found.
-- **Authorization check**: The `TriggerCustomImplementation.isTransitionAllowed()` method checks `transition.getIsHuman()` against `token.getIsAssigneeLogged()` -- human transitions require an assignee to be logged in, enforcing the checkout-before-execute constraint.
-- **Assignee clearing on transition**: `WorkflowUtils.setCurrentState()` calls `tokenDao.unsetAssignee()` on every state change, ensuring the checkout/release cycle resets when a task moves to a new state.
-- **Completion logging**: `WorkflowUtils.logCompletion()` records the assignee's email in a `LogEntry` of type `COMPLETION` after each transition, providing the audit trail visible through the Task TO's `logEntries` relation and enabling the preference-based auto-assignment algorithm.
-- **Guard evaluation for task operations**: Transition guards are evaluated via Spring SpEL before any `step()` call, using `ContextAttribute` key-value pairs as expression variables. This controls which execute actions are available on a given task.
-- **Model-defined task operations**: The checkout, release, assign, execute, and navigate operations on Token are model-defined (not custom Java), but they delegate to the model-level scripts that interact with the entities managed by the custom Java engine (e.g., setting/unsetting assignee, triggering transitions).
-- **DI wiring**: `WorkflowUtils` is an OSGi `@Component` injecting `ContextDao`, `TokenDao`, `StateDao`, `TransitionDao`, `LogEntryDao`, `ActionOperation`, and `WorkflowVersionDao`.
+- **Mapped operations.** Each Task operation is a MAPPED operation whose binding is the name of the Token operation ([mapped operation rules](../../agent-docs/model/esm_metamodel/operation.md#mapped-operation-rules)). The Token operation holds the custom code. Interceptors never fire for mapped or custom operations, so permission checks go inside the implementation ([interceptors](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). A modeled fault thrown from the implementation must be declared on the operation in the model ([custom operations](../../agent-docs/backend/custom-operations.md#rules-for-custom-operations)).
+- **Authorization before a human step.** A human transition is allowed only when an assignee is logged in on the token. The check is in the custom execute path, not in a guard flag.
+- **Automatic assignment on entering a state.** When a token enters a state, the engine filters the eligible users against the users authorized for that token. It then picks the user who last completed a similar step, if that user is not already assigned elsewhere. If there is no match, it picks at random.
+- **Clearing the assignee on transition.** Each state change clears the assignee, so a checkout belongs to one state only.
+- **Completion logging.** After each transition the engine writes a completion log entry with the assignee's email. The entries feed the audit view and the assignment preference.
+- **Guard evaluation.** Transition guards are evaluated before a step runs. The result controls which execute actions are shown.
+- **Errors.** A business rule violation is a modeled fault (HTTP 422). A bad field value is a validation exception (HTTP 400). `WorkflowUtils` and the utility classes named below are example project code, not platform API.
 
 ## Examples
 
 ### workflow-poc
-- Key files: `custom/workflow/utils/WorkflowUtils.java` (auto-assign, step, completion logging), `custom/.../entities/token/TriggerCustomImplementation.java` (authorization check, event processing)
-- Pattern: `WorkflowUtils` provides `autoAssign()` with a two-stage selection algorithm: (1) filter assignable users against authorized users, (2) find preferred assignee from completion log history ordered by descending timestamp, excluding already-assigned users, with random fallback. `TriggerCustomImplementation` enforces `isHuman`/`isAssigneeLogged` authorization before allowing transitions.
-- Notable: The auto-assignment preference algorithm queries `LogEntry` entities filtered by `COMPLETION` type and `isUserEmailDefined=true`, ordered by descending timestamp, to find the most recently active user who is eligible but not currently assigned to another task in the same context. This enables "sticky assignment" where returning users get their familiar tasks.
-- DI: `WorkflowUtils` injects 7 services; `TriggerCustomImplementation` injects `TokenDao`, `StateDao`, `EventDao`, and `WorkflowUtils`.
+
+- Key files: `custom/workflow/utils/WorkflowUtils.java` (automatic assignment, stepping, completion logging) and `custom/.../entities/token/TriggerCustomImplementation.java` (authorization and transition handling). Both are example project code.
+- Automatic assignment: the utility first filters the context's assignable users against the token's authorized users. It then looks up the most recent completion entries for that workflow and picks the user who is eligible and not already assigned in the same context. A random eligible user is the fallback.
+- The utilities are wired into the operation classes through the platform's component wiring. The example does not use a separate service layer.

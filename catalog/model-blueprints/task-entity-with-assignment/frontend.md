@@ -1,16 +1,19 @@
 ## Overview
 
-The task entity with assignment blueprint has a targeted React frontend customization: a dialog action hook that filters the CloseTask input form's result enum options to remove invalid choices, plus comprehensive Hungarian i18n translations for task-related forms, enums, and menu items.
+The task has a close form in the author and approver views. The example project changes the result choices in that form so the initial state cannot be chosen when closing a task. The example also adds Hungarian labels for the task forms, enumerations and menu items.
 
-## Implementation Pattern
+## Implementation pattern
 
-- **Dialog form action hooks for enum filtering**: A Pandino action hook registered for the CloseTask input form dialog overrides the `filterResultOptions` function to remove the `TODO` value from the `TaskState` enum options. This ensures that when an author or approver closes a task, they can only select `APPROVED` or `REJECTED` as the result -- not reset it back to `TODO`.
-- **i18n for task workflow**: The translations file provides Hungarian labels for all task-related UI elements: CloseTaskInput form title ("Feladat leazarasa"), result field ("Eredmeny"), ApprovalTaskInput form for selecting approvers ("Jovahagyasi Feladat Urlap"), TaskState enum values (Jovahagyott/Approved, Visszautasitott/Rejected, Elvegzendo/TODO), TaskType enum values (Jovahagyasi/Approval), and menu navigation items ("Feladataim"/"My Tasks", "Feladatok"/"Tasks").
+- **Hook keys are generated per page or container.** The hook that customizes the close form is registered under an interface key that the generator creates for that page. The key is not a fixed platform constant, so look it up in the generated code of the page you customize.
+- **Filtering enumeration options.** The hook returns a `filterResultOptions` function that removes the initial state from the result list. Without it the form shows every state, including the initial one, which makes no sense when closing a task.
+- **Per-view coverage.** The filter is registered only for the author view in the example. The approver view uses the generated defaults unless a second hook is registered for its own page.
+- **Localization.** The translation file gives labels for the close form, the approval form, the enumeration values and the menu items.
 
 ## Examples
 
 ### alba
-- Framework: React
-- Key files: `custom/hooks/dialogs/registerServicesAuthorTaskAuthorTask_View_EditCloseTaskInputFormActionsHook.ts`
-- Pattern: A Pandino dialog action hook registered with the `SERVICES_AUTHOR_TASK_AUTHOR_TASK_VIEW_EDIT_CLOSE_TASK_INPUT_FORM_ACTIONS_HOOK_INTERFACE_KEY` provides a `filterResultOptions` override that filters out `TaskState.TODO` from the enum dropdown options. The hook receives `(ownerData, data, editMode, storeDiff, submit, onSubmit)` parameters and returns `{ filterResultOptions: (data, options) => options.filter(o => o.value !== TaskState.TODO) }`.
-- Notable: This is a minimal but important UX refinement -- without this hook, the generated form would display all three TaskState options including TODO, which would not make sense when closing a task. The hook is registered only for the AuthorTask view; the ApproverTask view uses the same CloseTask pattern but appears to rely on the generated defaults (or a separate hook could be registered for it using a different interface key).
+
+- Framework: React with a plugin-based hook registry (example project code).
+- Key file: `custom/hooks/dialogs/` (the close form hook for the author task view).
+- The hook receives the owner data, the form data, the edit mode, the store diff, the submit function and the submit callback. It returns `filterResultOptions`, which filters out the initial value of the TaskState enumeration.
+- The Hungarian file translates the close form title and result field, the approval form title, the TaskState and TaskType values, and the "My tasks" and "Tasks" menu entries.

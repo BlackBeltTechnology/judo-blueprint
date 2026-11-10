@@ -1,42 +1,67 @@
 ---
 id: task-entity-with-assignment
-title: "Task Entity with Assignee, Type, and State Enums"
-description: A Task entity that models assignable work items within an approval or review workflow.
-aliases: []
-keywords: [task, assignee, type, state, enums, assignment]
-tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:alba", "status:single-project"]
+title: Task Entity with Assignment, Type and State Enums
+description: A Task entity with a creator, an assignee and a target entity, typed by an enumeration and closed by a custom operation, for approval or review work that lives inside a domain model.
+aliases: [assignable task, approval task]
+keywords: [task, assignee, type, state, enumeration, assignment, approval]
+tags: [domain:model, layer:model, layer:backend, layer:frontend, project:alba, status:single-project]
 category: pattern
 status: single-project
 projects: [alba]
 evidence: ["alba:unrecorded"]
 alternatives: []
-fragment: pending
+related: [task-list-with-checkout-release, accept-reject-operations, toggle-active-operation]
+fragment: task-entity-with-assignment
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A Task entity that models assignable work items within an approval or review workflow. Each task has a type (TaskType enum categorizing the kind of work, e.g., APPROVAL), a state (TaskState enum tracking progress: TODO/APPROVED/REJECTED), a createdAt timestamp, and an isActive boolean flag (default: false). The task links to a createdBy user (1..1 ASSOC), an assignee user (1..1 ASSOC) responsible for completing the task, and a targetProduct or target entity (0..1 ASSOC) that the task relates to. Denormalized display fields (createdByName, assigneeName, productTitle) provide quick rendering without joins. A derived isAssigneeCurrentUser flag enables UI personalization.
+Model work items that one user creates and another user must complete, such as an approval or a review, as plain domain entities. The task has a type, a state and an assignee. It is created as a side effect of a domain operation, not from a generic workflow engine.
 
-Operations on the Task include:
-- **closeTask** (custom) -- resolves the task, typically setting state to APPROVED or REJECTED
-- **activate** / **deactivate** -- toggle the isActive flag for task visibility
+### Task is a domain entity, not a workflow token
 
-The CloseTaskInput unmapped TO carries a `result` attribute (the TaskState value) for the closeTask operation. The ApprovalTaskInput unmapped TO carries a `users` relation (0..* AGGREGATION) for selecting which users to assign approval tasks to.
+The task carries its own type and state enumerations. There is no state machine engine and no generic process definition. The domain operation that needs the approval decides when tasks are created.
 
-Transfer objects provide role-specific task views: AuthorTask (for the product author, with closeTask operation), ApproverTask (for the assigned approver, with closeTask), AdminTask (for administrators, with activate/deactivate operations to manage task visibility).
+### Each task has a creator, an assignee and a target
 
-This pattern is distinct from the workflow-engine Task/Token pattern in that it is a simple, domain-embedded task model without a full state machine engine. Tasks are created as side effects of product operations (assignApproval) rather than being driven by a generic workflow definition.
+The creator and the assignee are both required links to User. The target is an optional link to the entity the task is about, so one task can be listed from the user side and from the target side.
 
-## Model Definition
+## Structure
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+The Task entity has a required creation timestamp, a required type (TaskType enumeration), a required state (TaskState enumeration) and an active flag that defaults to false. It has two required links to User (created by, and assignee) and an optional link to a target entity (Product in the example). The User entity gets the reverse links automatically. The TaskType enumeration lists the kinds of work. The TaskState enumeration lists the progress values.
 
-## Backend Implementation
+## Constraints
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+- The creator and the assignee are required. A task without either cannot be stored.
+- The state and the type must be values of their enumerations.
+- The active flag defaults to false. Visibility rules are a separate concern handled by the operations that set the flag.
+- Interceptors do not run for custom operations. Any check that must hold when a task is closed (for example, that the result is not the initial state) has to live in the custom operation or in the service it calls.
+- Built-in operations on the entity can be guarded by interceptors, but only with the exception type `InterceptorCallBusinessException`.
 
-## Frontend Implementation
+## Variations
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+- **Created inside a domain operation.** A domain operation (for example, one that starts an approval) creates one task per selected assignee. The task is linked to the domain entity as its target. This is the example project's approach.
+- **Role-specific task views.** Separate transfer objects expose the same task to the author, the approver and the administrator. Each view shows only the operations that role may use. Use this when different roles need different actions on one task.
+- **Result input transfer object.** A transfer object carries the chosen result (a TaskState value) into the close operation. The example also filters the value list in the form so the initial state cannot be chosen.
+
+## When to use
+
+- A user must complete work that another user assigned, and the work has a small, fixed set of types and states.
+- The task is a side effect of one domain operation and does not need its own process definition.
+- Several roles need different views of the same task.
+
+## When to avoid
+
+- The work needs several steps with guards, timers or parallel branches. Use a workflow engine instead, see [[workflow-engine-state-machine-cluster]].
+- Tasks must be checked out, released and handed over between users. See [[task-list-with-checkout-release]].
+- The status of the target must be changed only through accept or reject steps. See [[accept-reject-operations]] for the guard pattern.
+
+## Related
+
+- [[task-list-with-checkout-release]] — a task list with checkout and release, for a pool of work instead of a fixed assignee
+- [[accept-reject-operations]] — guards for accept and reject steps on a target entity
+- [[toggle-active-operation]] — the active flag that this entity sets and clears
+- [[workflow-engine-state-machine-cluster]] — the workflow engine alternative for multi-step processes
+- [[audit-log-entity]] — records who created and closed a task

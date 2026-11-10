@@ -1,20 +1,21 @@
 ## Overview
 
-The test/attempt lifecycle entity manifests in the React frontend as a custom state machine managed entirely within the player `App.tsx`, orchestrating the enter-start-submit flow across multiple dialogs with localStorage-based state persistence for crash recovery.
+The player screen drives the attempt through its lifecycle. It enters the session, starts the attempt, collects the answers and submits them. It keeps the attempt state in local storage so a reload during the run does not lose the answers.
 
-## Implementation Pattern
+## Implementation pattern
 
-- **Lifecycle orchestration in App.tsx**: The custom `App.tsx` manages the full test lifecycle through a sequence of service calls: `ActorsplayerContestServiceImpl.enter()` (creates the test), `PlayerServiceForTestsImpl.start()` (transitions to STARTED and returns the prompt list), and `PlayerServiceForTestsImpl.submit()` (sends answers and returns results).
-- **State persistence**: The test ID, contest data, prompt list, answer list, and test duration are all persisted to `localStorage` during the flow, enabling the player to recover their session if the browser is refreshed mid-test.
-- **Answer list generation**: On test start, the app generates an initial answer list with `Choice.NONE` for each prompt, which is progressively filled as the player answers questions in the `PromptListDialog`.
-- **Error handling across lifecycle stages**: The `startClicked` handler chains `enter` and `start` calls, with error handling that parses `ErrorCode` from the response (e.g., `INVALID_CODE` triggers re-registration, `CONTEST_NOT_OPEN` / `TEST_ALREADY_STARTED` show error snacks).
-- **Results processing**: After `submit`, the response is sorted by prompt number and displayed in the `ResultsDialog`. The dialog then offers navigation to the `ScoreboardDialog`.
-- **Page state management**: A `PageType` union type (`'contests' | 'contest' | 'prompt' | 'scoreboard' | 'none'`) tracks the current view, with transitions driven by user actions and lifecycle events.
+- **Calls in order.** The start button chains the enter, list and start calls. The submit action sends the answers and shows the result.
+- **Persisting the run.** The attempt identifier, the session data, the item list, the answers and the remaining time are kept in local storage. A reload restores the screen from this copy.
+- **Initial answers.** When the attempt starts, the screen creates an answer list with a "no answer" value for each item, and fills it in as the participant answers.
+- **Errors.** The screen reads the error code from a failed call and shows a message. Some codes trigger a fresh registration, others only show a notice.
+- **Results.** After submit, the results are sorted by item number and shown in a results view.
+- **Screen state.** A union type tracks the current page (contests, a contest, a prompt, a scoreboard, or none).
 
 ## Examples
 
 ### trivia
-- Framework: React
-- Key files: `src/App.tsx`, `src/trivia/commons.ts`
-- Pattern: Custom `App.tsx` manages the enter->start->submit lifecycle via three service classes. State is persisted to `localStorage` for crash recovery. The `startClicked` handler chains `enter` + `list` + `start` calls, then opens `PromptListDialog`. On completion, `onSubmit` calls `submit` and displays `ResultsDialog`.
-- Notable: The test duration (`responseTime`) is sourced from the test's `responseTime` attribute (fetched after enter) and passed to `PromptListDialog` for per-question timing. The answer list is pre-generated with `Choice.NONE` defaults.
+
+- Framework: React (example project code).
+- Key files: `src/App.tsx` (the lifecycle orchestration) and `src/trivia/commons.ts` (shared types).
+- The start handler opens the prompt dialog after the three calls succeed. The submit handler opens the results view.
+- The per-item timer uses the response time returned after enter.

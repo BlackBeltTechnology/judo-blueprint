@@ -1,31 +1,64 @@
 ---
 id: standard-type-and-measure-library
 title: Standard Type and Measure Library (Shared Type System)
-description: A standardized type system and comprehensive SI measurement unit library embedded in a JUDO model.
+description: "A shared types package (string, numeric, temporal primitives with fixed limits) and a measures package (SI measures and units) that every entity of a JUDO model draws its attribute types from."
 aliases: []
-keywords: [standard, type, measure, library, shared, system]
+keywords: [standard, type, measure, unit, library, shared, primitive, precision, maxLength]
 tags: ["domain:model", "layer:model", "project:bhs-global-operation", "project:viterra_demo", "project:InterfaceRegister", "project:mjsz", "project:sanctuary-backend", "project:doors-model", "project:ams-model", "project:skillmatrix-model", "status:established"]
 category: pattern
 status: established
 projects: [bhs-global-operation, viterra_demo, InterfaceRegister, mjsz, sanctuary-backend, doors-model, ams-model, skillmatrix-model]
 evidence: ["bhs-global-operation:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "mjsz:unrecorded", "sanctuary-backend:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
 alternatives: []
-fragment: pending
+fragment: standard-type-and-measure-library
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
+diagram: { kinds: [entity], members: types }
 ---
-## Description
+## Intent
 
-A standardized type system and comprehensive SI measurement unit library embedded in a JUDO model. The structure consists of:
+Give every project attribute the same vocabulary of types and units. One `types` package fixes string lengths and numeric precision. One `measures` package supplies physical measures and units for measured quantities. Entities reference these and never define their own primitives.
 
-- **types package** -- defines primitive data types: numeric types (Long, Integer, Double, Float) with specific precision/scale, string types (String, Phone, Text, URL, Email) with varying maxLength constraints, a Boolean type, a Date type, a Timestamp type, and a Time type. Some projects add domain-specific string types (e.g., IPV4Address, IPV6Address, FinancialCode, LegalCode, CompanyCode, DivisionCode, ContractTypeTemplate, ContractTemplate, SignedContract, CampaignDocument).
-- **measures package** -- defines physical measure categories (Mass, Length, Time, Temperature, Area, Volume, Velocity, Acceleration, Momentum, Force, Work, Power, Frequency, Pressure, Density, ElectricCurrent, ThermodynamicTemperature, AmountOfSubstance, LuminousIntensity, ElectricCharge, ElectricPotential, Capacitance, ElectricalResistance, ElectricalConductance, MagneticFlux, MagneticFluxDensity, Inductance, Illuminance) with a full set of SI units (79 total) including metric prefixes (milli, centi, deci, kilo, mega, etc.) and derived units (km/h, m/s, kg/m3, etc.).
+### One place for limits
 
-This pattern provides a standardized type vocabulary across an organization's JUDO projects, ensuring consistent precision, scale, string length constraints, and measurement units. In some projects (bhs-global-operation) it exists as a standalone type-only model for import. In others (viterra_demo, InterfaceRegister, mjsz, sanctuary-backend, doors-model, ams-model, kozut-eugyfel-client, skillmatrix-model) it is embedded directly within the application model alongside domain entities. The type and measure definitions are virtually identical across projects, indicating a shared organizational standard.
+String length, numeric precision and scale are decided once in the types package. A change applies to every attribute of that type. The platform requires `maxLength` on strings and `precision` / `scale` on numerics ([type reference](../../agent-docs/model/esm_metamodel/type.md#behaviour-rules)). The concrete values here are an organization convention, not platform defaults.
 
-The string types include domain-aware subtypes: Phone (maxLength: 20) for phone numbers, Email (maxLength: 255) for email addresses, URL (maxLength: 1024) for web addresses, and Text (maxLength: 250, 1000, or 2000) for short text fields, in addition to a general-purpose String (maxLength: 255).
+### Units are modelled, not stored as text
 
-## Model Definition
+A physical quantity is a numeric attribute of a measured type with a stored unit. Conversion between units of one measure is done by the platform from the unit rates ([Measures](../../agent-docs/model/model-validation-and-transformation.md#measures)).
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+## Structure
+
+Two packages under the model root. `types` holds the primitives: several string types with different limits (general, long text, phone, URL, e-mail), numeric types of different precision (integer, long, double, float), boolean, date, timestamp and optionally time. `measures` holds about 28 measures, each with its units and conversion rates. Application models add measured types and entities that point at these. The library is either a stand-alone model imported by other models, or a pair of packages embedded in the application model.
+
+## Constraints
+
+- Entities use only types from the `types` package. No inline primitives.
+- Every string type has a maximum length; every numeric type a precision and scale.
+- A measure has exactly one base unit; other units convert to it with rates.
+- A measured type names its stored unit. Values are stored in that unit.
+- Keep one definition per name. When a library is imported and also embedded, the two copies drift.
+
+## Variations
+
+- **Stand-alone library model.** Imported by application models, so the whole organization shares one copy.
+- **Embedded copy.** The packages sit inside each application model. Simpler to build, but copies drift.
+- **Project-specific string types.** Network addresses, identifier formats or code types are added next to the standard ones.
+- **Different long-text limit.** `Text` limits of 250, 1000, 2000 or 4000 are all in use. Choose one per organization.
+- **Without `Time`.** Several projects omit the time type.
+
+## When to use
+
+- Any JUDO model with more than a handful of attributes.
+- Several models of one organization that should agree on limits.
+- A domain with physical quantities that need unit conversion.
+
+## When to avoid
+
+- A tiny throw-away model where the default types are enough.
+- A model that never uses measured quantities and does not want the unused measures package. It can be left out or trimmed.
+
+## Related
+
+- [[standard-type-library]] — the best-practice version of the type rules
+- [[active-inactive-status-enum]] — a typical enumeration used alongside the types

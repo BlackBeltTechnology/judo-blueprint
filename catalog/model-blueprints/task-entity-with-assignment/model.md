@@ -1,17 +1,39 @@
-## Examples
+## Model shape
 
-### alba
-- **Task entity**: `Alba::entities::Task` (non-CRUD)
-  - Attributes: createdAt (req), type (req, TaskType), state (req, TaskState), isActive (default: false), createdByName, assigneeName, productTitle, isAssigneeCurrentUser
-  - Relations: createdBy (1..1 ASSOC to User), assignee (1..1 ASSOC to User), targetProduct (0..1 ASSOC to Product)
-  - Operations: closeTask (custom INSTANCE), activate (INSTANCE), deactivate (INSTANCE)
-- **TaskType enum**: `Alba::entities::TaskType` -- APPROVAL(1)
-- **TaskState enum**: `Alba::entities::TaskState` -- APPROVED(1), REJECTED(2), TODO(3)
-- **Input TOs**:
-  - `Alba::entities::CloseTaskInput` (unmapped) -- result (req, TaskState) -- used as input for closeTask operation
-  - `Alba::entities::ApprovalTaskInput` (unmapped) -- users (0..* AGGREGATION) -- used for assignApproval to select reviewers
-- **Role-specific Task TOs**:
-  - `AuthorTask` -- createdAt, createdByName, productTitle, type, state, isTrue (guard), isCloseDisabled (guard); relation: authorProduct (0..1 AGGREGATION); op: closeTask
-  - `ApproverTask` -- assigneeName, createdAt, createdByName, productTitle, state, type, isTrue (guard); relation: approverProduct (0..1 AGGREGATION); op: closeTask
-  - `AdminTask` -- assigneeName, createdAt, createdByName, productTitle, state, type, isActive, isNotActive (guard); relation: targetProduct (0..1 AGGREGATION); ops: activate, deactivate
-- User entity has both `tasks` (0..* ASSOC, tasks assigned to user) and `createdTasks` (0..* ASSOC, tasks created by user) relations
+The Task entity sits in one package with its two enumerations, the User entity that owns the assignee link, and a Product target entity. Each task links to its creator and its assignee (both required, both to User), and to an optional target. The type and state are enumerations, so the set of allowed values is fixed in the model. The active flag defaults to false and is changed by operations, not by the creator.
+
+Transfer objects and UI: the example exposes the entity through role-specific transfer objects (author, approver, administrator). Each maps the task's attributes, shows the target as an aggregation, and carries only the operations that role may call, such as the close operation. A small unmapped input transfer object carries the chosen result into the close operation. Generated pages: keep the Table and View of the role views, hide the generated create and delete actions (tasks are created by a domain operation), and customize the close form. Closing is a custom operation, so access checks go inside it ([interceptors](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=task-entity-with-assignment cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Product {
+    <<Entity>>
+  }
+  class Task {
+    <<Entity>>
+    +Timestamp createdAt [1]
+    +TaskType type [1]
+    +TaskState state [1]
+    +Boolean isActive
+  }
+  class TaskState {
+    <<Enumeration>>
+  }
+  class TaskType {
+    <<Enumeration>>
+    Approval
+  }
+  class User {
+    <<Entity>>
+    +String label
+  }
+  Task "0..1" -- "1" User : assignee / task_2
+  Task "0..1" -- "1" User : createdBy / task
+  Task --> "0..1" Product : targetProduct
+  Task ..> TaskState : state
+  Task ..> TaskType : type
+```
+<!-- /mermaid:generated -->

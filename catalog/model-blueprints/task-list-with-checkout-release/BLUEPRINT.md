@@ -1,39 +1,64 @@
 ---
 id: task-list-with-checkout-release
-title: Task List with Checkout/Release Assignment Pattern
-description: A transfer object pattern for human task management where tasks (derived from workflow tokens) are presented in a task list with checkout/release semantics for task ownership.
-aliases: []
-keywords: [task, list, checkout, release, assignment]
-tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:workflow-poc", "status:single-project"]
+title: Task List with Checkout and Release
+description: A task list transfer object over a pool of work items, where a user claims an unassigned item with checkout, returns it with release, and sees the list split into my tasks and all tasks.
+aliases: [checkout release task list, claimable task pool]
+keywords: [task, list, checkout, release, assignment, claim, pool]
+tags: [domain:model, layer:model, layer:backend, layer:frontend, project:workflow-poc, status:single-project]
 category: pattern
 status: single-project
 projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [task-entity-with-assignment]
+related: [workflow-engine-state-machine-cluster, task-entity-with-assignment]
+fragment: task-list-with-checkout-release
+diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A transfer object pattern for human task management where tasks (derived from workflow tokens) are presented in a task list with checkout/release semantics for task ownership. The pattern consists of:
+Let a team work from a shared pool of tasks. Unassigned items sit in the pool. A user claims one with checkout, works on it, and either finishes it or returns it with release. The list shows the user's own items separately from the full pool, so the next action is easy to find.
 
-- **TaskList TO** -- a container transfer object aggregating categorized task collections with computed counts. It holds separate relations for different task views: myTasks (tasks assigned to the current user) and allTasks (all accessible tasks including unassigned ones). Count attributes (userTasksCount, unassignedTasksCount, supervisedAssignedTasksCount, supervisedUnassignedTasksCount) provide at-a-glance metrics without loading all task data. A startWorkflow operation initiates new workflow instances.
-- **Task TO** -- a rich projection of a workflow token with human-task attributes: status (textual state label), subject (workflow context label), task (human task name from state definition), workflow (workflow name), creationTime, and assignee (email of current owner). Boolean guard attributes control which operations are available: isUnassigned, isAssigned, isCheckoutEnabled, isReleaseEnabled, isAssigneeLogged, isSupervisorLogged, isNavigable. Relations include assignables (users eligible for assignment), authorizedUsers (users permitted to interact), and logEntries (audit trail). Operations implement the task lifecycle: checkout (claim an unassigned task), release (unclaim a task back to the pool), assign (delegate to a specific user), execute (trigger an event/transition on the task), navigate (open the associated domain entity).
+### Unassigned work sits in a shared pool
 
-The checkout/release pattern is a collaborative task management approach: unassigned tasks sit in a shared pool; a user "checks out" a task to claim it; if unable to complete, they "release" it back for others. The assign operation allows supervisors to directly delegate. Execute fires the workflow transition, advancing the state machine. Navigate provides a link back to the domain entity the workflow is tracking.
+An item with no assignee is visible to every user who may act on it. Claiming it is an explicit action, so two users cannot both take the same item.
 
-This pattern is independent of the specific workflow engine implementation and can be applied to any system with assignable work items.
+### The list is a view, not the storage
 
-## Model Definition
+The task list and the task are transfer objects over existing entities. The list counts and filters the items. The task exposes the operations and the guard flags that decide which buttons are available.
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+## Structure
 
-## Frontend Implementation
+The model has a Task transfer object mapped to the Token entity and a TaskList transfer object mapped to the User entity. Task has display attributes, boolean guard attributes (for example whether the current user is the assignee), and mapped operations for checkout, release and execute. TaskList has count attributes and a relation to the user's own tasks. The Token entity owns the assignee and status attributes. A LogEntry entity records who completed each step.
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+## Constraints
 
-## Backend Implementation
+- Checkout is allowed only on an unassigned item. Release is allowed only for the current assignee.
+- Each mapped operation on Task must bind to an operation of the same name on Token. The binding is the operation name, not an FQN.
+- Guard attributes control which operations are shown. They do not replace checks inside the operation.
+- Interceptors do not run for custom operations. A check that must hold on checkout or release has to be in the operation.
+- Operations that change state must be in the transaction that writes the log entry, so a failed transition does not leave a log row behind.
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+## Variations
+
+- **Pool with preference.** When an item is returned to the pool, the next assignee can be chosen from the completion history. This keeps work with the user who last touched it. The example project does this in its shared workflow utilities.
+- **Assign by a supervisor.** A supervisor can assign an item to a named user. This adds an assign operation with its own guard. Use it only when managers must direct work.
+- **Pool without release.** If items never return to the pool, drop the release operation and keep checkout only.
+
+## When to use
+
+- Several people draw from one pool, and each item needs one owner at a time.
+- The list needs separate counts for my items and the pool.
+- Items move through workflow steps driven by an engine.
+
+## When to avoid
+
+- Each task has a fixed, known assignee from the start. Use [[task-entity-with-assignment]].
+- The work is a single approval with a fixed set of states. A plain entity with a state enumeration is simpler.
+- Items must be claimed by a system process, not by users. The pool and the guard flags have no meaning there.
+
+## Related
+
+- [[workflow-engine-state-machine-cluster]] — the workflow engine that produces the tokens this list shows
+- [[task-entity-with-assignment]] — a task with a fixed assignee, without a pool

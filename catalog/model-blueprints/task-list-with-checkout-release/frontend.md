@@ -1,17 +1,19 @@
 ## Overview
 
-The Task List with Checkout/Release pattern manifests in the React frontend through an OperationFlowManager that handles redirect results from task operations (especially `navigate`), and a generator override that processes redirect-annotated operation outputs to route the user to the associated domain entity page.
+The task list and the task pages are generated. The example project adds one navigation handler, so that the result of a navigate operation opens the related domain entity. It also adds a template change, so that operations with a redirect output move the user after the action completes.
 
-## Implementation Pattern
+## Implementation pattern
 
-- **OperationFlowManager**: Registered in `application-customizer.tsx` via `OPERATION_FLOW_MANAGER_INTERFACE_KEY`. The `handleResult` callback inspects operation results for `idName`/`idValue` pairs (used by `navigate` to redirect to domain entities) and `operation` references (used by `execute`/`startWorkflow` to reload or redirect after state transitions). It constructs `filterRecords` for entity lookup or passes through `access`/`actor` for page resolution.
-- **Generator override for operation output handling**: A Handlebars template override (`operation-primary-output-handler.fragment.hbs`) injects a `processRedirect(result)` call when the operation output TO has a `redirect` annotation. This enables the generated action button handlers to automatically navigate after checkout, release, assign, execute, or navigate operations.
-- **Generated task UI pages**: The generated frontend renders TaskList and Task pages with tables for myTasks/allTasks, count badges, and action buttons for checkout/release/assign/execute/navigate. Boolean guard attributes (isCheckoutEnabled, isReleaseEnabled, isNavigable, etc.) control button visibility without custom hooks.
+- **Generated pages.** The list page shows the user's own tasks and the full pool. Count badges come from the TaskList counts. Action buttons for checkout, release, assign, execute and navigate are generated. Their visibility comes from the guard attributes, so no hook is needed for that.
+- **Operation flow handler.** The example registers a flow handler that reads the result of an operation. When a result carries an identifier pair, the handler builds a filter for the target entity and opens its page. When a result refers to another operation, the handler reloads or redirects after the transition.
+- **Redirect after an action.** The example overrides one generator fragment, so that operations whose output carries a redirect annotation call a redirect handler after the action completes.
+- **Hook keys are generated per page or container.** Any custom hook that targets these pages must use the key that the generator produces for that page. Do not copy a key between pages.
 
 ## Examples
 
 ### workflow-poc
-- Framework: React
-- Key files: `custom/application-customizer.tsx`, `generator-overrides/ui-react/actor/src/fragments/operations/operation-primary-output-handler.fragment.hbs`
-- Pattern: The OperationFlowManager handles `navigate` results by extracting `idName`/`idValue` from the response (CreateRedirect/UpdateRedirect TOs) and building a filter query to open the target domain entity page. The generator override adds `processRedirect` calls for redirect-annotated outputs.
-- Notable: The task lifecycle operations (checkout, release, assign, execute, navigate) are fully generated -- only the redirect/navigation flow after operations requires custom code via the OperationFlowManager and generator override.
+
+- Framework: React (example project code).
+- Key files: `custom/application-customizer.tsx` (registers the flow handler) and `generator-overrides/ui-react/actor/src/fragments/operations/operation-primary-output-handler.fragment.hbs` (adds the redirect call).
+- Navigate: the response carries the identifier name and value, and the handler turns them into a filter on the target page.
+- Execute and start: the response refers to an operation, and the handler reloads the list or opens the next page.

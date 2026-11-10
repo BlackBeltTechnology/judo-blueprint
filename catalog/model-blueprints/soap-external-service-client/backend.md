@@ -2,6 +2,8 @@
 
 Wraps an external SOAP web service behind a clean OSGi service interface using CXF-generated JAX-WS stubs. The WSDL is included in the module resources, stubs are generated at build time, and the service is initialized via `JaxWsProxyFactoryBean` in the OSGi `@Activate` lifecycle.
 
+All classes below (service interface, implementation, DTOs) are example project code, not platform API. The only platform rule used is that an implementation is registered as an OSGi component (`@Component(immediate = true, service = ...)`), see [custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern). Callers do their own permission checks, because interceptors do not fire for custom operations.
+
 ## Implementation Pattern
 
 **Module structure:**
