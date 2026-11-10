@@ -1,9 +1,9 @@
 ---
 id: seek-based-table-pagination
 title: Seek-Based (Keyset) Table Pagination
-description: Table pages in JUDO frontends use seek-based (keyset) pagination instead of offset-based pagination.
-aliases: []
-keywords: [seek, based, keyset, table, pagination]
+description: "Page table data with the _seek keyset cursor (last or first visible row plus a reverse flag) instead of offsets; load limit+1 rows to know whether a next page exists. Frontend project practice on top of the opt-in platform seek."
+aliases: [keyset pagination, cursor table paging, next/previous pagination]
+keywords: [seek, keyset, cursor, pagination, table, lastItem, reverse, limit, next previous, sublist, query customizer]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
 category: table
 status: single-project
@@ -13,60 +13,52 @@ alternatives: []
 related: [session-storage-table-state]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Table pages in JUDO frontends use seek-based (keyset) pagination instead of offset-based pagination. The client sends the last or first visible item as a cursor along with a `reverse` flag to fetch the next or previous page. This approach performs better than offset pagination on large datasets because the backend can use index seeks rather than counting rows. Embedded tables in view pages use a simpler client-side `sublist()` approach.
+Page large tables without counting rows or using offsets, so deep pages cost the same as the first.
 
-## Structure
+## Practice
 
-```dart
-// Page store seek pagination (Flutter)
-@action
-Future<void> getEntities({int? queryLimit, bool? isNext}) async {
-  var result = await _repo.listEntities(
-    lastItem: isNext == true ? items.last : items.first,
-    reverse: isNext == false,
-    queryLimit: queryLimit ?? defaultPageSize,
-    sortColumn: sortColumnName,
-    sortAscending: sortAscending,
-    filters: activeFilters,
-  );
-  // Update next/previous enable flags based on result count
-  hasNext = result.length == queryLimit;
-  hasPrevious = pageCounter > 0;
-}
+### Platform base
+
+- A list call with no explicit seek returns all matching rows; pagination is opt-in ([pagination](../../agent-docs/backend/data-access-guide.md)).
+- List queries combine `_orderBy`, a `_seek` keyset cursor (`lastItem` with the signed identifier and sort key, `limit`, `offset`, `reverse`) and per-attribute filter operators ([resource verbs and list queries](../../agent-docs/backend/platform-behavior-reference.md)). On the backend, the low-level `QueryCustomizer` carries the same `seek` ([data access guide](../../agent-docs/backend/data-access-guide.md)).
+
+### Project practice: next/previous paging in the table page (frontends in four projects)
+
+This client-side handling is project practice; the platform only provides the seek parameters:
+
+- **Server-side seek paging for table pages.** To go forward send the last visible row as `lastItem` with `reverse` false; to go back send the first visible row with `reverse` true. Send the page size as `limit` together with the current sort column, direction and filters.
+- **Detect a next page with limit + 1.** Request one more row than the page size; if the extra row arrives, enable Next and drop it (React, actiongroup-test-react). The Flutter stores instead compare the result count to the limit.
+- **No random access.** Only Next and Previous are offered; no jump to page N and no total count.
+- **Embedded tables in view pages** load all their rows once and page them on the client with a sublist. This is fine for small related sets; use seek for large ones.
+- Reset the cursor when sort or filters change, and keep the table state across navigation ([[session-storage-table-state]]).
+
+```typescript
+// Illustrative: limit + 1 to detect the next page
+const rows = await listItems({ _seek: { lastItem, limit: pageSize + 1, reverse: false } });
+const hasNext = rows.length > pageSize;
+const page = hasNext ? rows.slice(0, pageSize) : rows;
 ```
 
-Two strategies:
-1. **Server-side seek paging** (table pages): cursor-based with `lastItem` + `reverse`
-2. **Client-side sublist paging** (embedded tables): loads all items, paginates with `sublist()`
+## Rationale
 
-## Examples
+Keyset paging avoids count queries and offset scans, so it stays fast on deep pages and sorted data. The cost is sequential navigation and cursor handling in every table page.
 
-### SkillMatrix
-All 14 table pages (Admin Users, HR Employee's 11 entity tables, Professional Subordinates, Report Executions) use server-side seek pagination. Embedded tables in view pages (e.g., Search > Competences, Tags, Result) use client-side `sublist()` pagination loading all items at once.
+## Example
 
-### ActionGroupTestReact
-React implementation fetches `limit + 1` items (e.g., 11 for page size 10). If result length exceeds page size, `isNextButtonEnabled` is set true and the extra item is popped. Custom `CustomTablePagination` component renders Previous/Next buttons with `firstItem`/`lastItem` cursors passed to `_seek` in the query customizer.
+- actiongroup-test-react: fetches `limit + 1` rows, pops the extra one, and a custom pagination component renders Previous and Next with `firstItem` and `lastItem` cursors passed in the seek.
+- skill-matrix: all table pages use server-side seek paging; embedded tables in view pages page on the client.
+- kozut-eugyfel-client: about forty table pages across three Flutter actors use cursor paging, with next and previous enabled flags per page store.
+- ams-frontend: the applications, campaigns, users, approval and subordinates tables use cursor paging; embedded tables in the campaign view use client paging.
 
-### kozut-eugyfel-client
-~40 table pages across 3 Flutter actors use cursor-based seek pagination. Each page store tracks `nextPageCounter` and exposes `@computed` getters `nextButtonEnable` and `previousButtonEnable`. Filter types include string, dateTime, numeric, boolean, and enum with `selectableFilters` and `availableFilterList` observable patterns.
+## When to avoid
 
-### ams-frontend
-Applications table (10 rows, computed as `12.0 - 2`), Campaigns table, Users table, Approval List table, and Subordinates table all use cursor-based seek pagination. Embedded tables in Campaign View use client-side pagination: Confirmation Requests at 100 items per page, Applications at 1 item per page.
-
-## Trade-offs
-
-- **Pros**: Consistent O(1) performance regardless of page depth; no count(*) queries; works well with sorted results; generated automatically
-- **Cons**: No random page access (jump to page N); must traverse sequentially; more complex cursor management than offset
-- **When to use**: Standard JUDO table pattern -- used in both React and Flutter frontends for server-side paginated tables
+- Users need to jump to an arbitrary page or see a total count.
+- The data set is small; a plain full list is enough.
 
 ## Related
 
-- [flutter-frontend-framework](flutter-frontend-framework.md)
-- [three-layout-responsive-pattern](three-layout-responsive-pattern.md)
-- [[session-storage-table-state]]
-
+- [[session-storage-table-state]] — keeping the page, sort and filters across navigation

@@ -1,65 +1,66 @@
 ---
 id: single-access-entity-pattern
 title: Single Access Entity Fetch and Create-If-Missing
-description: "Fetch a singleton entity (single access pattern) using `godServiceForEntity.get('{}')` with an empty JSON key."
-aliases: []
-keywords: [single, access, fetch, create, if, missing]
+description: "For an actor access that holds at most one instance (settings, a single planet), fetch the instance first and send the user to a create page when it does not exist, then refresh the full view with a mask using the returned signed identifier."
+aliases: [singleton fetch or create, create-if-missing page]
+keywords: [single access, singleton, signed identifier, create if missing, refresh with mask, two-phase fetch, view page, empty key, hand-built frontend]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
 category: page
 status: single-project
 projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: []
-related: [action-group-input-output-routing, view-edit-mode-toggle]
+related: [singleton-entity, action-group-input-output-routing, view-edit-mode-toggle]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Fetch a singleton entity (single access pattern) using `godServiceForEntity.get('{}')` with an empty JSON key. If the entity exists, proceed to the view page. If not, redirect to a create page. This handles the case where a domain model has exactly one instance of an entity type (e.g., "Earth" in a universe model, or application settings). The "god" service provides root-level access to the single instance.
+Handle an access that yields zero or one instance: show it when it exists, offer creation when it does not.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The platform has no singleton construct. A single-instance access is a model access with upper bound 1, often a derived getter ending in `!any()`; nothing enforces that a row exists, so reading code must handle the missing case ([[singleton-entity]]).
+- Every instance the REST layer returns carries `__identifier` and `__signedIdentifier`. Bound operations and instance updates take the signed identifier, not the plain id. The signed identifier changes after every update (the version is part of it), and client code cannot mint one, so take the current one from a response ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
+- Loading related data for a detail view is done with a mask ([masks for detail views](../../agent-docs/backend/data-access-guide.md)). The generated frontend builds this page for you from the access; the steps below matter for hand-built pages.
+
+### Project practice: fetch, then refresh with a mask (actiongroup-test-react)
+
+The names below belong to that project's generated service layer, not to the platform docs:
+
+1. Ask the root access service for the instance with an empty key (`godServiceForEarthImpl.get('{}')` in the example; the empty-key call is a convention of that generated service layer, so check yours).
+2. If an instance with a signed identifier comes back, keep the identifier and load the full entity with the view service's `refresh`, passing the identifier and a query customizer with the mask for relations. Two steps: existence check first, data second.
+3. If none exists, navigate to the create page; the create call goes through the same root service. Provide a way back from the create page.
+4. Catch errors in one handler (snackbar), and drive the action buttons of the view from entity state.
+5. Re-read the signed identifier after each update before the next bound call, since it changes.
 
 ```typescript
-const init = async () => {
-  try {
-    const { __signedIdentifier } = await godServiceForEarthImpl.get('{}');
-    if (__signedIdentifier) {
-      setSignedIdentifier(__signedIdentifier);
-      await fetchData(); // Load full entity with relations
-    } else {
-      navigate('/earth/create'); // Redirect to create
-    }
-  } catch (error) {
-    errorHandling(error, enqueueSnackbar);
-  }
-};
-
-// Two-phase fetch: get identifier first, then refresh with mask
-const fetchData = async () => {
-  const res = await viewPlanetServiceImpl.refresh(
-    { __signedIdentifier } as JudoIdentifiable<ViewPlanetStored>,
-    queryCustomizer
-  );
-  setData(res);
-};
+const { __signedIdentifier } = await godServiceForEarthImpl.get('{}');
+if (__signedIdentifier) {
+  setData(await viewPlanetServiceImpl.refresh({ __signedIdentifier }, queryCustomizer));
+} else {
+  navigate('/earth/create');
+}
 ```
 
-## Examples
+## Rationale
 
-### ActionGroupTestReact
-Earth entity uses `godServiceForEarthImpl.get('{}')` to check existence. If found, loads full entity via `viewPlanetServiceImpl.refresh()` with relations (creatures table). If not found, navigates to `/earth/create`. Create page uses `godServiceForEarthImpl.create()`. View page supports conditional action buttons based on entity state (habitable, inhabited, peaceful).
+The user always lands on the right screen for an optional single instance, and the cheap existence check is separate from the heavier mask load. The cost is one extra call and a convention that can surprise developers.
 
-## Trade-offs
+## Example
 
-- **Pros**: Clean handling of singleton entities; automatic redirect to create; two-phase fetch separates existence check from data loading
-- **Cons**: Extra API call for existence check; empty key `'{}'` is a JUDO convention that may confuse developers; create flow needs back navigation
-- **When to use**: Any entity that follows the single-access pattern in the JUDO model (exactly one instance per actor)
+actiongroup-test-react: the Earth entity is checked with the empty-key get. When found, the planet view loads with its creatures table; otherwise the user goes to `/earth/create`. The view shows action buttons depending on state (habitable, inhabited, peaceful).
+
+## When to avoid
+
+- The generated frontend is used; its pages already handle a single-instance access.
+- Several instances are possible; use a table access.
 
 ## Related
 
-- [[action-group-input-output-routing]]
-- [[view-edit-mode-toggle]]
-
+- [[singleton-entity]] — the model side of the single-instance access
+- [[action-group-input-output-routing]] — routing after the operations on this entity
+- [[view-edit-mode-toggle]] — the view and edit behaviour of such a page

@@ -1,9 +1,9 @@
 ---
 id: promise-based-dialog-system
 title: Promise-Based Dialog System with Context Provider
-description: "Implement a centralized dialog system using React Context where each dialog type (Filter, Range, Confirmation, Page) is exposed via a custom hook that returns a Promise."
-aliases: []
-keywords: [promise, based, dialog, system, context, provider]
+description: "In a hand-built JUDO frontend, expose filter, range selection, confirmation and page-in-dialog as React Context dialogs opened through hooks that return a Promise, so callers use await instead of callbacks."
+aliases: [async dialog hooks, awaitable dialogs, DialogProvider]
+keywords: [promise, dialog, react context, dialog provider, openConfirmDialog, range dialog, filter dialog, page dialog, async await, hand-built frontend]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
 category: component
 status: single-project
@@ -13,56 +13,51 @@ alternatives: []
 related: [complete-frontend-replacement, action-group-input-output-routing]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Implement a centralized dialog system using React Context where each dialog type (Filter, Range, Confirmation, Page) is exposed via a custom hook that returns a Promise. Callers use `await openDialog(...)` to show a dialog and receive the result when the user confirms or cancels. This replaces callback-based dialog patterns with cleaner async/await flows and supports 4 dialog types: server-side filtering, entity range selection (single/multi), yes/no confirmation, and full page-in-dialog rendering.
+Replace callback-style dialogs with `await openXDialog(...)` calls in a frontend that does not use the generated dialogs.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The generated frontend already creates its dialogs from the model: input forms for operations and create or edit, range selection dialogs for relations, with hook extension points for the dialog's behaviour ([UI model to frontend mapping](../../agent-docs/frontend/model-screen-layout.md), [action hooks](../../agent-docs/frontend/hooks/action-hooks.md)). Use those first.
+- A hand-built UI that consumes only the generated service layer and transfer object types has to supply its own dialogs; see [[complete-frontend-replacement]]. This pattern is for that case.
+
+### Project practice: a context-provided Promise dialog set
+
+This is project code, not a platform feature:
+
+- A `DialogProvider` wraps the app and renders four dialogs once: filter, range, confirmation and page.
+- Each dialog is opened by its own hook returning a function that returns a Promise: `openFilterDialog(options, current)` resolves with the chosen filters, `openRangeDialog({ columns, rangeCall, single, alreadySelectedItems, filterOptions })` with the selected entities, `openConfirmDialog(message, title)` with a boolean, and `openPageDialog(component)` renders an output component in a modal.
+- The range dialog is generic over the stored transfer object type and the query customizer, and pages through the range call of the service layer on the server side.
+- The filter dialog covers boolean, numeric, string, enumeration, date, dateTime and trinary-logic filters.
+- Cancel must be handled: decide whether the Promise resolves with nothing or rejects, and make every caller handle it.
 
 ```typescript
-// DialogContext.tsx - Provider wrapping all 4 dialog types
-export const DialogProvider: FC = ({ children }) => (
-  <>
-    {children}
-    <FilterDialog />
-    <RangeDialog />
-    <ConfirmationDialog />
-    <PageDialog />
-  </>
-);
-
-// Each dialog exposed via hook returning Promise
-const { openFilterDialog } = useFilterDialog();
-const filters = await openFilterDialog(filterOptions, currentFilters);
-
-const { openRangeDialog } = useRangeDialog();
-const selected = await openRangeDialog<EntityStored, QueryCustomizer>({
-  columns, rangeCall, single: true, alreadySelectedItems, filterOptions
-});
-
+// Illustrative caller code
 const { openConfirmDialog } = useConfirmDialog();
-const confirmed = await openConfirmDialog('Are you sure?', 'Title');
-
-const { openPageDialog } = usePageDialog();
-await openPageDialog(<OutputComponent data={result} />);
+if (await openConfirmDialog('Are you sure?', 'Title')) {
+  await service.remove(row);
+}
 ```
 
-## Examples
+## Rationale
 
-### ActionGroupTestReact
-`DialogProvider` in `src/components/dialog/DialogContext.tsx` combines 4 dialog types. `FilterDialog` supports 7 filter types (boolean, numeric, string, enumeration, date, dateTime, trinaryLogic). `RangeDialog` is generic with `<T extends JudoStored<T>>` for entity selection with server-side pagination. `PageDialog` renders action group output components in modals.
+Linear async/await flows are easier to read than nested callbacks, and dialog state lives in one place with a consistent look. The cost is one shared state container, no stacked dialogs, and cancel handling at each call site.
 
-## Trade-offs
+## Example
 
-- **Pros**: Clean async/await pattern replaces callbacks; centralized dialog management; type-safe generic range dialog; consistent UX across all dialogs
-- **Cons**: All dialog state lives in a single context provider; cannot compose dialogs (no dialog-within-dialog); Promise rejection must be handled for cancel
-- **When to use**: Any JUDO frontend needing reusable filter, selection, confirmation, or page-embedded dialogs
+actiongroup-test-react: `DialogProvider` in `src/components/dialog/DialogContext.tsx` combines the four dialogs. `PageDialog` renders action group output components in modals.
+
+## When to avoid
+
+- The generated frontend is used; customize its dialog hooks instead.
+- Dialogs must open from within other dialogs; the single-context design does not nest them.
 
 ## Related
 
-- [[complete-frontend-replacement]]
-- [[action-group-input-output-routing]]
-
+- [[complete-frontend-replacement]] — the hand-built frontend this belongs to
+- [[action-group-input-output-routing]] — output pages shown through the page dialog

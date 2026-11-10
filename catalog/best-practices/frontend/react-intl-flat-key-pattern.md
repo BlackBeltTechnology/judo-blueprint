@@ -1,62 +1,63 @@
 ---
 id: react-intl-flat-key-pattern
 title: React-Intl Flat Key Translation Pattern
-description: "Use `react-intl` (FormatJS) with flat dot-separated key strings in a single TypeScript locale file."
-aliases: []
-keywords: [react, intl, flat, key, translation]
+description: "In a hand-built JUDO frontend, keep UI strings as flat dot-separated keys in one TypeScript locale file used with react-intl, with a defaultMessage on every lookup; the generated frontend uses react-i18next JSON files instead."
+aliases: [react-intl flat keys, FormatJS locale file]
+keywords: [react-intl, formatjs, flat keys, translation, locale file, defaultMessage, useIntl, i18n, hand-built frontend, react-i18next]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
 category: i18n
 status: single-project
 projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: [i18n-custom-translation-keys]
-related: [i18n-custom-translation-keys, hungarian-full-localization]
+related: [i18n-custom-translation-keys, hungarian-full-localization, complete-frontend-replacement]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Use `react-intl` (FormatJS) with flat dot-separated key strings in a single TypeScript locale file. Keys follow the convention `pages.{page}.{element}.{property}` for page-specific strings and `navigator.{item}` for navigation. Messages are defined as a plain object in a `.ts` file (not JSON), exported as `{ locale, messages }`. Each `intl.formatMessage()` call includes a `defaultMessage` fallback. This is simpler than the JSON-based i18next approach used in generator-produced frontends.
+Give a hand-built frontend a simple, typed translation setup that uses the same flat dot-notation key style as the generated one.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The generated frontend uses react-i18next with flat translation files in `public/i18n/` named `application_<locale>.json` (generated from the model) and `system_<locale>.json` (platform strings) ([i18n](../../agent-docs/frontend/i18n.md)).
+- Generated keys are flat dot-notation strings, not nested objects, for example `entities.User.User_View_Edit.firstName`, `enumerations.StatusType.ACTIVE`, `menuTree.<label>`; the full key is passed to `t` ([key naming conventions and flat keys](../../agent-docs/frontend/i18n.md)).
+- Do not use react-intl inside the generated frontend; this pattern is for a hand-built frontend that replaces it ([[complete-frontend-replacement]]). To add keys to the generated frontend, see [[i18n-custom-translation-keys]].
+
+### Project practice: react-intl with a TypeScript message file (actiongroup-test-react)
+
+- One `src/i18n/en.ts` exports `{ locale, messages }`, with messages as a plain object of flat keys (a `.ts` file, so keys are checked by the compiler, unlike JSON).
+- Key convention: `pages.<page>.<element>.<property>` for page strings, `navigator.<item>` for navigation, and `judo.const.<text>` for common constants.
+- Every lookup passes a `defaultMessage` to `intl.formatMessage`, so a missing key shows readable text.
+- `IntlProvider` wraps the application once, in `App.tsx`.
 
 ```typescript
-// src/i18n/en.ts
 export const i18nEN = {
   locale: 'en',
-  messages: {
-    'navigator.Build': 'Build',
-    'navigator.Storage': 'Storage',
-    'pages.galaxies.table.Name': 'Name',
-    'pages.galaxies.table.Real': 'Real',
-    'pages.galaxies.table.Delete': 'Delete',
-    'judo.const.Set filters': 'Set filters',
-  },
+  messages: { 'navigator.Build': 'Build', 'pages.galaxies.table.Name': 'Name' },
 };
-
-// Usage in components
 const intl = useIntl();
-const label = intl.formatMessage({
-  id: 'pages.galaxies.table.Name',
-  defaultMessage: 'Name',
-});
+const label = intl.formatMessage({ id: 'pages.galaxies.table.Name', defaultMessage: 'Name' });
 ```
 
-## Examples
+## Rationale
 
-### ActionGroupTestReact
-Single `src/i18n/en.ts` file with flat key-value messages. Keys cover navigator labels, table column headers, table actions, and common UI constants. Used with `useIntl()` hook in column definitions and page headers. `defaultMessage` provides fallback if key is missing. IntlProvider wraps the entire app in `App.tsx`.
+Flat keys are simple and the TypeScript file adds type checking. The cost is a single file for all strings, no namespaces, long keys, and one locale in the sample.
 
-## Trade-offs
+## Example
 
-- **Pros**: Simple flat structure; TypeScript file provides type checking; defaultMessage ensures fallback; react-intl is well-maintained
-- **Cons**: All translations in one file (no splitting by feature); no namespace separation; flat keys can get long; only one locale file shown
-- **When to use**: Custom JUDO frontends with simple i18n needs and a single primary locale
+actiongroup-test-react: `src/i18n/en.ts` holds navigator labels, table column headers, table actions and common constants; components read them with `useIntl()`, and the fallback text covers missing keys.
+
+## When to avoid
+
+- The generated frontend is used; extend its JSON translations instead.
+- Several locales with feature-based splitting are needed; use a catalog-per-feature or the generated JSON structure.
 
 ## Related
 
-- [[i18n-custom-translation-keys]]
-- [[hungarian-full-localization]]
-
+- [[i18n-custom-translation-keys]] — extra keys in the generated frontend
+- [[hungarian-full-localization]] — a second locale in the generated format
+- [[complete-frontend-replacement]] — the hand-built frontend this applies to

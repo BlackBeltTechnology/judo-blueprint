@@ -1,66 +1,68 @@
 ---
 id: pin-code-auto-submit-input
 title: PIN Code Multi-Field Auto-Submit Input
-description: "A multi-field PIN code input component where each digit gets its own `TextField`."
-aliases: []
-keywords: [pin, code, multi, field, auto, submit, input]
+description: "A multi-field PIN code input where each digit has its own text field: focus advances on entry, backspace goes back, and the last digit submits automatically. Built as a custom component, not a generated widget."
+aliases: [OTP input, activation code input, multi-digit code field]
+keywords: [pin, code, otp, multi field, auto submit, auto advance, focus, custom component, mobile numeric keyboard]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
 category: form
 status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
-related: [timed-quiz-auto-advance, dialog-based-navigation]
+related: [timed-quiz-auto-advance, dialog-based-navigation, input-masking-react-imask]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A multi-field PIN code input component where each digit gets its own `TextField`. Focus auto-advances to the next field on digit entry and auto-submits the form when the last digit is entered. Supports backspace to return to the previous field. Uses `type="tel"` to trigger the numeric keyboard on mobile devices. Auto-focuses the first field on mount.
+Let users enter a short numeric code (activation code, PIN, one-time code) digit by digit on a phone without pressing a submit button.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The generated UI has no multi-field code widget; a text attribute is one `TextField` ([widgets](../../agent-docs/frontend/esm-to-ui-mappings/widgets.md)). Such an input is a custom component.
+- A model element that the generator exposes as an extension point is replaced by registering an `FC` under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` with the per-element `component` key from the container's `customization.ts`. The register function comes from the generated `register<Container>CustomImplementations.tsx.default` scaffold and is called from `application-customizer.tsx` ([custom component replacement](../../agent-docs/frontend/advanced-patterns.md)). The real props are the proxy props type of that scaffold.
+
+### Project practice: the PIN component (trivia)
+
+The component below is project code, not a platform feature:
+
+- One `TextField` per digit with `type="tel"`, so phones show the numeric keyboard.
+- Entering a digit moves focus to the next field. Backspace in a field moves focus to the previous one.
+- When the last field is filled, the component calls an `onAutoSubmit(code)` callback; no submit button.
+- The first field gets focus on mount, after a short delay (trivia uses 300 ms) so the dialog or page has rendered.
+- The digit count is fixed in the component (four in trivia).
 
 ```typescript
-// NumberInputAutoFocus - 4 separate single-digit inputs
-const refs = [useRef(), useRef(), useRef(), useRef()];
-
-const handleChange = (index, value) => {
-  if (value.length === 1 && index < 3) {
-    refs[index + 1].current.focus();  // Auto-advance
-  }
-  const newCode = updateDigit(index, value);
-  if (newCode.length === 4) {
-    onAutoSubmit(newCode);  // Auto-submit on 4th digit
-  }
+// Illustrative; names are project code
+const handleChange = (index: number, value: string) => {
+  if (value.length === 1 && index < 3) refs[index + 1].current?.focus();
+  const code = updateDigit(index, value);
+  if (code.length === 4) onAutoSubmit(code);
 };
-
-const handleKeyDown = (index, e) => {
-  if (e.key === 'Backspace' && index > 0) {
-    refs[index - 1].current.focus();  // Back on delete
-  }
+const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+  if (e.key === 'Backspace' && index > 0) refs[index - 1].current?.focus();
 };
-
-// Auto-focus first field after 300ms delay
-useEffect(() => {
-  setTimeout(() => refs[0].current?.focus(), 300);
-}, []);
 ```
 
-## Examples
+## Rationale
 
-### Trivia
-`NumberInputAutoFocus` in `CustomComponents.tsx` provides 4-digit activation code entry for the Player frontend. Each digit is a separate `TextField` with `type="tel"` for mobile numeric keyboard. Auto-advances focus on entry, auto-submits `playerServiceForApplicationImpl.activate()` when 4th digit is entered. 300ms delayed auto-focus on mount.
+The input suits mobile entry and needs no extra tap to submit. The cost is a fixed digit count, a hand-written component to maintain, and extra ARIA work for accessibility.
 
-## Trade-offs
+## Example
 
-- **Pros**: Excellent mobile UX; no submit button needed; numeric keyboard on mobile; intuitive digit-by-digit entry
-- **Cons**: Fixed to a specific digit count; custom implementation (not a library); accessibility may require additional ARIA attributes
-- **When to use**: Activation codes, OTP verification, PIN entry, any short numeric code input
+trivia: `NumberInputAutoFocus` in `CustomComponents.tsx` collects the 4-digit activation code in the player frontend. Completing the fourth digit calls the player activation operation through the generated service (`playerServiceForApplicationImpl.activate()`).
+
+## When to avoid
+
+- The code length varies or may contain letters; use a normal text field, optionally with a mask ([[input-masking-react-imask]]).
+- Users paste codes from a message; a single field handles paste more simply.
 
 ## Related
 
-- [[timed-quiz-auto-advance]]
-- [[dialog-based-navigation]]
-
+- [[timed-quiz-auto-advance]] — another auto-advancing input flow
+- [[dialog-based-navigation]] — dialogs that host such inputs
+- [[input-masking-react-imask]] — formatted single-field input
