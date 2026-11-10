@@ -12,7 +12,7 @@ evidence: ["mlszksz-platform:unrecorded", "indamedia-adtrack:unrecorded", "park-
 alternatives: [audit-log-entity]
 fragment: none: backend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -20,11 +20,11 @@ Run side effects when a user logs in, such as recording the last login time, wri
 
 ### It runs on principal lookup, not on each call
 
-The interceptor is attached to the authentication pipeline. It acts only when the principal is resolved (the principal operation), so it does not run again on every operation call.
+The interceptor is attached to the authentication pipeline. The platform calls it on the framework-level `#_principal` operation after a successful external login, with the token claims in the `attributes` map. It runs before the framework loads the mapped principal row, so it can insert or update the row that the lookup is about to read. It acts only for that operation; the interceptor itself filters on the operation name. It is not an operation call interceptor and does not see ordinary operation calls.
 
 ### Failures do not block login
 
-A side effect that fails must not stop the user from logging in. The interceptor catches and logs its own errors.
+A side effect that fails must not stop the user from logging in. The interceptor catches and logs its own errors. This is the platform guide's recommended default; throwing from `authenticate` is allowed only when blocking the login is intended.
 
 ## Structure
 
@@ -42,7 +42,7 @@ This is a backend pattern with no model shape. An authentication interceptor is 
 - **Login tracking.** Find the existing user by email and update the last-login time. Nothing is created.
 - **Audit entry.** Write a login entry through an audit service, with the user identifier and email. See [[audit-log-entity]].
 - **Auto-provisioning.** If no user exists for the email, create one from the token name claims. Assign roles from a configured list of administrator emails.
-- **Platform-managed row.** If the actor is mapped and managed and declares claims in the model, the platform inserts and updates the principal row itself. In that case no interceptor is needed for the basic insert.
+- **Platform-managed row (documented, not working).** The model docs describe an actor that is mapped, managed and declares `<claims>` as inserted and updated by the runtime. The agent-docs record that this auto-insert does not happen in the verified runtime versions: the actor lookup throws `AUTHENTICATED_ENTITY_NOT_FOUND` for an unknown user. Until a release ships it, provide this interceptor for the first-login insert even for that actor shape. Keep the existence check, so the interceptor becomes a no-op if the runtime starts inserting. The `<claims>` element covers only email and username; other claims (roles, groups, custom attributes) always need the interceptor.
 
 ## When to use
 
@@ -52,9 +52,10 @@ This is a backend pattern with no model shape. An authentication interceptor is 
 
 ## When to avoid
 
-- The model already creates or updates the principal from the token claims. Use the platform setting first.
+- The runtime itself creates and updates the principal from the declared claims. The agent-docs say this does not work in the verified versions, so check it on your runtime version before dropping the interceptor.
+- The rule is an authorization decision. Use the access model, not an authentication interceptor.
 - The side effect must succeed for the login to be valid. A failed side effect would then have to block login, which this pattern does not do.
-- The rule applies to business operations, not to login. Use an operation call interceptor or an operation of its own.
+- The rule applies to business operations, not to login. Use an operation call interceptor, which sees built-in operations only, or put the logic inside the custom operation: custom, mapped and script operations are never intercepted.
 
 ## Related
 

@@ -7,7 +7,7 @@ The shape has one lookup entity, Capability, and the entities that tag themselve
 
 Other entities can take the same association. Each one adds its own 0..* association to Capability and does not change Capability.
 
-Generated UI pages follow from the entities: View, Form and Table pages for Capability. Organization and Offer get a multi-select of capabilities on their Form. Capability's Form is managed by administrators; the isActive flag is a toggle, not a free-text field.
+Pages come from the transfer objects and access points a project defines over these entities, not from the entities. An administrator's transfer object over Capability gets the table and forms, and the isActive flag is changed through a toggle operation. Transfer objects over Organization and Offer that map the capabilities relation let users pick capabilities in a selector.
 
 ## Structure diagram
 

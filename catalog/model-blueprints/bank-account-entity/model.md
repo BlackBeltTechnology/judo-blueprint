@@ -8,7 +8,7 @@ The shape has three entities. BankAccount holds the account number and an option
 
 Other owner types, such as Company, can hold accounts the same way. Each account still has a single owner.
 
-Generated UI pages follow from the entities: a View, Form and Table page for BankAccount and Bank, and the owner's detail page shows its accounts. Bank is usually a reference list managed by an administrator, so its Form page stays and its Table page is the main view.
+Entities have no UI of their own. Pages appear only for the transfer objects and access points that a project defines over these entities (the platform generates View, Form and Table pages from those). Bank is usually a reference list managed by an administrator, so a project exposes it through a transfer object with a table.
 
 ## Structure diagram
 

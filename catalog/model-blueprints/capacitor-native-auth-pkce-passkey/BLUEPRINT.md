@@ -12,7 +12,7 @@ evidence: ["mlszksz-platform:unrecorded"]
 alternatives: [keycloak-magic-link-passkey-authentication]
 fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -37,10 +37,11 @@ The pattern is a frontend layer. It has a native auth provider that wraps the ap
 ## Constraints
 
 - The native path runs only when the app is on a native platform. The web path must not change.
-- A password grant is a project choice for the native login. Do not expose it on the web.
+- A password grant is a project choice for the native login. The platform's generated actor client has direct access grants enabled, so the grant itself needs no extra Keycloak setting for that client; a separate native client must enable it. Do not expose it on the web.
 - PKCE state expires after a few minutes and blocks a second start while one is pending.
 - A server rejection clears tokens; a network failure keeps them.
-- The deep-link redirect URI is registered with the identity provider for the native client. A different redirect URI fails the exchange.
+- The deep-link redirect URI is registered with the identity provider for the native client. A different redirect URI fails the exchange. The platform's generated Keycloak client uses `redirectUris=["*"]`; a separate native client needs its own redirect URIs.
+- The backend derives the actor from the token's `azp` claim (dashes become dots, and the result must equal an actor FQN). A native client with another id is rejected unless it is whitelisted in `acceptableClients` (`ActorFQN=client1,client2`) or mapped with the Keycloak login interceptor's `clientToActorMap`.
 
 ## Variations
 

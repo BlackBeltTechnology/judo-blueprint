@@ -13,7 +13,7 @@ alternatives: [reference-data-lookup-entity]
 fragment: capability-lookup-entity
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -34,9 +34,9 @@ The Capability entity has a required name identifier, an optional description te
 ## Constraints
 
 - A capability is a shared lookup. It is never composed inside an organization or an offer.
-- The name is the identifier and is required. Uniqueness is enforced by project logic, not by the model.
+- The name is the identifier and is required. Uniqueness is enforced by project logic in a service, not by the model (project practice).
 - Choice lists show only active capabilities. Existing tags show all of them.
-- Administrators manage the list. Other actors see it as a read-only projection.
+- Administrators manage the list. Other actors see it through a read-only transfer object. Create, update and delete are flags on transfer-object relations, so the entity itself carries no CRUD rule.
 
 ## Variations
 

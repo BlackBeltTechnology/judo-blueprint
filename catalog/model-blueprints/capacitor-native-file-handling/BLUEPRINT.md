@@ -12,7 +12,7 @@ evidence: ["mlszksz-platform:unrecorded"]
 alternatives: [inline-pdf-preview-post-action]
 fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -32,7 +32,7 @@ The pattern is a frontend layer. A generator-ignore entry marks the generated fi
 
 ## Constraints
 
-- Only the save step changes. The override keeps the generated utility's exports.
+- Only the save step changes. The override keeps the generated utility's exports (`downloadFile`, `uploadFile`, `exportFile`, `extractFileNameFromToken`). `uploadFile` and the two-phase token flow (`~upload-token`, then multipart with `X-Token`) stay as generated; `downloadFile` calls the download path with `?disposition=inline|attachment` and `X-Token`.
 - The native branch runs only on a native platform. The web download path must not change.
 - The filesystem plugin writes base64 text. Convert binary data with an array buffer, not a string.
 - On Android 10 and later, scoped storage needs no extra storage permission for the download folder.

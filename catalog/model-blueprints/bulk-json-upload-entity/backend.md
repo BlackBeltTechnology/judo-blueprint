@@ -1,10 +1,10 @@
 ## Backend guidance
 
-The import and export are custom operations. The platform does not generate them, so their logic lives in project code.
+The import and export are custom operations. The platform does not generate their logic, so it lives in project code: a `*CustomImplementation` OSGi component (`@Component(immediate = true, service = <generated interface>.class)`) that implements the generated operation interface. An operation that writes must be modelled stateful. Faults it throws must be declared on the operation in the model.
 
 ### Import is a custom operation
 
-A custom operation implements the generated operation interface and gets its collaborators by injection. Interceptors do not run for it, so a rule that must hold on import belongs in the operation itself.
+A custom operation implements the generated operation interface and gets its collaborators by injection. Interceptors never run for custom, mapped or script operations, so a rule that must hold on import belongs in the operation itself.
 
 ```java
 public class UploadCustomImplementation implements UploadOperation {
@@ -32,7 +32,7 @@ The sketch is illustrative. `FileStoreService`, the `Q` record and the DAO names
 
 ### Write the batch row first
 
-The Upload row is written before the items, so each item can refer to it. The count is set at the end. Because the operation runs in one transaction, a failure rolls back the batch row and the items together.
+The Upload row is written before the items, so each item can refer to it. The count is set at the end. The operation runs in one transaction, so an exception thrown out of it rolls back the batch row and the items together (project expectation).
 
 ### Skip duplicates, do not fail
 
@@ -48,4 +48,4 @@ A static download operation reads the items through the DAO, serializes them wit
 
 ### Binary input
 
-When the JSON is uploaded as a binary file, the client first requests an upload token for the attribute and then posts the file with it. Only the operation's input type changes; the record handling is the same.
+When the JSON is uploaded as a binary file, the transfer field that maps the binary on a create-capable transfer gets a generated `getUploadTokenFor<Field>` operation. The client requests the token, uploads the content to the file store with it, and sends the token as the attribute value; an invalid token fails with `INVALID_FILE_TOKEN`. Only the operation's input type changes; the record handling is the same.

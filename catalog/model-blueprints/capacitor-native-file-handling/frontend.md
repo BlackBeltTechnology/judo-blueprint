@@ -1,10 +1,10 @@
 ## Frontend guidance
 
-The platform's file utility resolves a download token to a URL and lets the browser open or save it. In a Capacitor app the browser path does not give the user a visible file, so this pattern replaces the save step on native platforms only. The helper modules are project code; their names are examples.
+The platform's generated `fileHandling` utility wraps a two-phase token flow: `downloadFile` calls the download path with `?disposition=inline|attachment` and the `X-Token` header, and an inline download renders in a dialog frame. In a browser this lets the user open or save the file. In a Capacitor app the browser path does not give the user a visible file, so this pattern replaces the save step on native platforms only. The helper modules are project code; their names are examples.
 
 ### Replace only the file utility module
 
-The generated file utility is overridden by listing it in the generator-ignore file. The override keeps the same exports, so screens that import the utility keep working. A second module can re-export the override under a project path for custom views.
+The generated file utility is overridden by listing it in `.generator-ignore` (generated files are checksum-protected, so an edited file that is not listed fails the build). Files under the gitignored `src/custom/` need no entry, but the generated utility is outside it. The override keeps the same exports, so screens that import the utility keep working. A second module can re-export the override under a project path for custom views.
 
 ### Branch on the platform
 
@@ -33,4 +33,4 @@ On Android 10 and later, writing to the download folder through scoped storage n
 
 ### Inline preview is separate
 
-A PDF preview that uses the inline mode of the platform utility is not a native save. Keep the inline preview on the web and in native apps alike, and use the save path only for a download action.
+A PDF preview that uses the inline disposition of the platform utility is not a native save. Keep the inline preview on the web and in native apps alike, and use the save path only for a download action.

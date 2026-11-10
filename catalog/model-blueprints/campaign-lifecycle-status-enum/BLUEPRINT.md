@@ -13,7 +13,7 @@ alternatives: [content-lifecycle-status-enum, active-suspended-deactivated-statu
 fragment: campaign-lifecycle-status-enum
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -33,10 +33,10 @@ The CampaignStatus enumeration has three members: ONGOING (ordinal 0), FINISHED 
 
 ## Constraints
 
-- Values are stored as ordinals. Reordering the members changes the stored meaning, so new members are appended.
+- Values are stored as ordinals. Each member has an explicit ordinal that must be unique within the enumeration and between 0 and 9999 (JSL models). Changing an ordinal changes the stored meaning, so new members get a new, unused ordinal.
 - The status is required on both Campaign and TrackedCampaign.
 - The enumeration has no operations or relations. Transition rules live in project services.
-- Interceptors do not run for custom operations, so a transition's rule must be checked inside the operation or service that performs it.
+- Interceptors run only for built-in operations. Custom, mapped and script operations are never intercepted, so a transition's rule must be checked inside the operation or service that performs it.
 
 ## Variations
 

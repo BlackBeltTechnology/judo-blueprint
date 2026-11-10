@@ -13,7 +13,7 @@ alternatives: []
 fragment: bank-account-entity
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -35,13 +35,13 @@ The owning entity, Partner in the fragment, holds the accounts as a composition 
 
 ## Constraints
 
-- A composition has exactly one owner. A bidirectional relation cannot be a composition on both sides.
-- The main-account association should reference only the owner's own accounts. This is enforced by a range expression on the owner side, where the platform allows it. Otherwise it is checked by the operation that sets the main account.
+- A composition has exactly one owner. The platform validator rejects a bidirectional relation with a composition end: if the account must point back to its owner, make the owner end an aggregation and the back-pointer an association. The fragment uses a one-way composition, so it has no back-pointer.
+- The main-account association should reference only the owner's own accounts. Range expressions belong to transfer-object relations, not to entity relations. Restrict the candidates with a range expression on the owner's transfer-object relation that exposes the main account, for example the owner's own accounts. Otherwise check it in the operation that sets the main account. This is project practice, not an entity-level platform rule.
 - Account number, bank name and giro code are required.
 
 ## Variations
 
-- **Owner-side main account.** The owner holds the main account as a single association. This is the form in the fragment.
+- **Owner-side main account.** The owner (an entity) holds the main account as a single association. This is the form in the fragment.
 - **Bank lookup by number prefix.** An operation on BankAccount sets the bank by matching the first digits of the account number against the bank's giro code. This is project logic inside a model-defined instance operation, not a platform feature.
 - **Derived bank access.** A derived member on a related entity reads the owner's main account, for example a contract that exposes its contractor's main account. The derived member is read-only.
 

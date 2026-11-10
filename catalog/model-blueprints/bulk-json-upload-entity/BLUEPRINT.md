@@ -13,7 +13,7 @@ alternatives: []
 fragment: bulk-json-upload-entity
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -31,12 +31,13 @@ Each created item holds a reference to its Upload. Tracing an item to its source
 
 The Upload entity has three required attributes: json (text), timestampOfUpload (timestamp) and nrOfUploadedQuestions (integer). Upload has a 0..* association to Question. Question has a required text identifier, an optional back-reference to Upload (0..1) and an optional Category (0..1). Category has a required name identifier.
 
-The import and download operations are not part of the entity shape. They are static operations that take the JSON as an unmapped transfer object input and return a file reference or the export payload.
+The import and download operations are not part of the entity shape. They are static operations on a transfer object (a project choice) that take the JSON as an unmapped transfer object input and return a file reference or the export payload.
 
 ## Constraints
 
-- Upload rows are created only by the import operation. Generated create, update and delete are turned off.
-- The import writes the Upload row and its items in the same transaction. If an item fails, the whole batch rolls back, including the Upload row.
+- Upload rows are created only by the import operation. Create, update and delete flags are set on transfer-object relations, not on the entity: expose Upload through a transfer object without the create, update and delete flags (read-only), so no generated REST create exists for it.
+- The import writes the Upload row and its items in one operation call. If the operation throws, the writes of that transaction roll back, including the Upload row (project expectation; the agent-docs state this explicitly only for interceptors).
+- The import operation is a custom operation that writes, so it must be modelled stateful. A stateless call context makes the DAO writes throw `IllegalStateException`.
 - Items that match an existing identifier are skipped, not updated.
 - The JSON text is stored whole. Its size is bounded by the database text column, so large files need the file-store path.
 

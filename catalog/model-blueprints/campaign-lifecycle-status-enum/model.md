@@ -8,7 +8,7 @@ The shape has one enumeration with three members, used as the status attribute o
 
 The enumeration has no operations and no relations. The transitions are written in the owner's operations or in project services, not in the model.
 
-Generated UI pages follow from the entities: View, Form and Table pages for Campaign and TrackedCampaign. The status shows as a choice on the Form, so the Form lets a user pick any state. If only the owner's operations may change status, hide the status choice on the Form and expose transitions as actions instead.
+Pages come from the transfer objects and access points a project defines over these entities, not from the entities. If a transfer object maps the status as a writable attribute, its form lets a user pick any state. If only operations may change status, map it read-only on the transfer object and expose transitions as operations (actions) instead.
 
 ## Structure diagram
 
