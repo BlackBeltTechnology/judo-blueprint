@@ -1,20 +1,19 @@
-## Overview
+## Backend guidance
 
-The personal best flag is maintained by custom backend operations that compare a newly submitted test score against the player's existing best for the same contest, updating the `personalBest` boolean flag accordingly. The exclude operation recalculates the personal best when a test is administratively removed.
+The flag is kept by custom operations. Their bodies, and the helper names below, are project code, not platform API. Custom operations are never intercepted, so the rule lives in the operation. See [interceptors](../../agent-docs/backend/interceptors.md).
 
-## Implementation Pattern
+### Submit sets the flag
 
-- The `SubmitCustomImplementation` class handles personal best calculation during test submission
-- After scoring the test (counting correct answers and computing duration), it queries for the player's current personal best using `contestDao.queryTests()` filtered by `filterByPlayerEmail()` and `filterByPersonalBest(BooleanFilter.isTrue())`
-- If no previous personal best exists, the current test is marked as personal best
-- If a previous best exists, the new test replaces it when: (a) the new score is higher, or (b) the scores are equal but the new duration is shorter (tiebreaker by speed)
-- The previous best's `personalBest` flag is set to false before the new one is set to true, maintaining the invariant of exactly one personal best per player per contest
-- The `ExcludeCustomImplementation` handles personal best recalculation when a test is excluded: it clears the flag on the excluded test, then iterates all remaining FINISHED tests for that player/contest to find and mark the new best
-- Both operations use `testDao.update()` to persist flag changes on both the old and new personal best records
+After scoring an attempt (counting correct answers, computing duration), the submit operation looks up the player's current best for the contest with the generated DAO query: filter on the player, filter on `personalBest` with a boolean filter set to true. See [data access guide](../../agent-docs/backend/data-access-guide.md).
 
-## Examples
+- No previous best: the new attempt becomes the best.
+- Previous best exists: the new attempt wins when its score is higher, or when the score is equal and the duration is shorter.
+- On a win, clear the flag on the old attempt first, then set it on the new one, so exactly one attempt carries it. Persist both with the DAO update.
 
-### trivia
-- Key files: `custom/.../_default_transferobjecttypes/entities/test/SubmitCustomImplementation.java`, `custom/.../_default_transferobjecttypes/entities/test/ExcludeCustomImplementation.java`
-- Pattern: Submit calculates score from correct prompts via `BooleanFilter.isTrue()` count, queries existing personal best with `filterByPersonalBest(BooleanFilter.isTrue())`, compares score (higher wins) then duration (shorter wins as tiebreaker), atomically swaps the flag between old and new best
-- Notable: Exclude performs a full recalculation by iterating all FINISHED tests for the player (filtered by `EnumerationFilter.equalTo(TestStatus.FINISHED)`) to find the new best, handling the edge case where the excluded test was the only attempt (no new best set)
+### Exclude recalculates
+
+When an administrator excludes an attempt, clear its flag, then scan the player's remaining finished attempts for that contest (filter on status with an enumeration filter), pick the best by the same rule and set its flag. If the excluded attempt was the only one, no new best is set.
+
+### Do both writes in one operation
+
+Clear and set the flag in the same operation, so one call leaves one flagged attempt. This is project practice; the platform does not enforce the single-best rule.

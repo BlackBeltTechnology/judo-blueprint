@@ -1,23 +1,34 @@
-## Overview
+## Frontend guidance
 
-The reservation/booking entity pattern manifests in the React frontend through extensive custom card components, dialog action hooks, and shared service utility modules. Reservations are displayed as styled MUI cards (instead of default data grid tables) with timeline-based time visualization, and reservation creation/modification forms are heavily customized with business logic for date/time defaults, type-based field visibility, and parking slot auto-selection.
+The source project replaces the default list tables and customizes the create form. All hooks below are project code, registered under the keys the framework generates for each page and container. Do not copy keys from another page.
 
-## Implementation Pattern
+### Cards instead of tables
 
-- **Custom card components via CardsContainerConfigHook**: The default table-based rendering of reservation lists is replaced with custom MUI Card components. A `CardsContainerConfigHook` is registered via Pandino for each reservation table (active reservations, previous reservations), providing a `CardElement` that renders each reservation as a styled card with shadow, hover effects, and responsive grid sizing.
-- **Active reservation card with Timeline**: The `UserActiveReservationsCard` uses MUI Lab `Timeline` component to display startTime, currentTime (live), and endTime vertically. It shows parking slot info, conditionally renders guest name or car ID based on `isGuest` flag, and provides delete/cancel/modify action buttons gated by `isNotDeletable` and `isNotCancelable` guard attributes. Disabled cards (both guards true) are rendered with reduced opacity and no pointer events.
-- **Previous reservation card**: The `UserPreviousReservationsCard` renders as a horizontal list layout showing date+time range, parking slot info, reserver name with car ID, and reservation status (with i18n-translated enum value).
-- **Dialog action hooks for ReservationInput form**: Pandino-registered `FormActionsHook` overrides provide extensive field behavior: `onUserBlurAction` auto-sets reservation type, time defaults, and preferred parking slot; `filterReservationTypeOptions` filters the enum dropdown based on user permissions; `onReservationTypeBlurAction` toggles guest/long reservation field visibility; `onDateBlurAction` recalculates start/end times; `onStartTimeBlurAction` shows warning text for near-half-hour bookings; `postGetTemplateAction` initializes form defaults from template data; `getDateValidationProps`/`getEndDateValidationProps`/`getStartTimeValidationProps`/`getEndTimeValidationProps` provide dynamic min/max constraints.
-- **Dialog action hooks for ReservationModificationInput form**: A simpler hook that pre-fills startTime and endTime from the ownerData (current reservation values) via `postGetTemplateAction`.
-- **Shared service utility module**: Business logic is extracted into `custom/services/ReservationInputServices.ts` with functions like `autoSetReservationTimeBasedOnCurrent` (sets start 3 minutes ahead, end at user's end-of-working-time), `updateReservationTypeFromUserData` (selects reservation type based on user permission booleans), `filterAvailableReservationTypes` (filters enum options), `setFavoriteParkingSlot` (queries the range API to validate preferred slot availability), and `getMinimumTimeConstraint` (enforces noon minimum for QUICK reservations).
-- **Post-action auto-close**: Relation view page hooks (today/future/previous/active reservations) implement `postCancelReservationForUserReservationAction` and `postDeleteReservationForUserReservationAction` to auto-close the dialog after the operation completes.
-- **Custom data mask**: The `AccessViewPageActionsHook` provides a `getActiveReservationsMask` returning a specific field mask including `isGuest`, `reserverName`, `reserverCarId`, and `currentTime` for the active reservations card.
-- **i18n**: Hungarian translations cover all ReservationType and ReservationStatus enum members, reservation form field labels, confirmation dialog messages, and custom warning texts (`extra.message.warningText`, `extra.message.warningNextToText`).
+Register a cards configuration hook for each reservation list (active, previous). The card element renders one reservation. See [[cards-container-configuration-hook]].
 
-## Examples
+- The active card shows start, live current time and end on a timeline, the resource, the guest name or the vehicle id, and the delete, cancel and modify buttons.
+- Show a button only when the row's guard attributes allow it. A card with both guards true is shown dimmed and inert.
+- The previous card is a compact row: date and time range, resource, reserver and the translated status.
 
-### park-here
-- Framework: React
-- Key files: `custom/hooks/components/UserActiveReservationsCard.tsx`, `custom/hooks/components/UserPreviousReservationsCard.tsx`, `custom/hooks/components/cards/registerServicesUserReservationPanelUserReservationPanel_View_EditUserReservationsComponentConfigurationHook.tsx`, `custom/hooks/components/cards/registerServicesUserReservationPanelUserReservationPanel_View_EditPreviousReservationComponentConfigurationHook.tsx`, `custom/hooks/dialogs/registerServicesReservationsPanelReservationsPanel_View_EditReservationInputFormActionsHook.ts`, `custom/hooks/dialogs/registerServicesUserReservationPanelUserReservationPanel_View_EditReservationInputFormActionsHook.ts`, `custom/hooks/dialogs/registerServicesReservationsPanelReservationsPanel_View_EditModificateReservationInputFormActionsHook.ts`, `custom/hooks/pages/registerServicesActorUserReservationsAccessViewPageActionsHook.ts`, `custom/services/ReservationInputServices.ts`
-- Pattern: Replaces default data grid tables with custom MUI card components for active and previous reservations. Active cards feature a Timeline visualization of start/current/end times. Reservation creation forms are heavily customized: user selection auto-sets reservation type from permission flags, date selection auto-calculates start/end times based on current time and working hours, parking slot auto-populates from user's preferred slot, and field visibility toggles based on reservation type (GUEST shows guest fields, LONG hides reminder fields). Modification forms pre-fill current time values.
-- Notable: The `ReservationInputServices.ts` shared module centralizes all form business logic, reused by both the admin ReservationsPanel and user-facing UserReservationPanel hook registrations. This avoids code duplication across the two contexts that share the same ReservationInput form.
+### Create form behavior
+
+A dialog form action hook on the input form sets the defaults and the field behavior:
+
+- on user change, pick the booking type and the preferred resource, and set the default times;
+- filter the type options to the types the user may book;
+- show or hide the guest and long-booking fields by type;
+- recompute start and end when the date changes, and warn on odd start times;
+- fill the form from the template data after it loads;
+- return min and max constraints for the date and time pickers.
+
+See [action hooks](../../agent-docs/frontend/hooks/action-hooks.md) and [validation hooks](../../agent-docs/frontend/hooks/validation-hooks.md). These checks are a convenience. The service enforces the same rules on the server.
+
+### Modify form
+
+A simpler hook pre-fills start and end from the owner data (the current reservation).
+
+### Shared helpers
+
+Keep the date and type logic in one helper module (for example `ReservationInputServices.ts`, an example name): default times, type choice from permissions, type-option filtering, favorite-resource check through the range API, and the noon minimum for quick bookings. The hooks stay thin and call the helpers.
+
+Framework in the source project: React.

@@ -1,21 +1,41 @@
-## Overview
+## Frontend guidance
 
-A custom visual element component that masks a sensitive numeric input after blur and requires re-entry in a confirmation field to prevent data entry errors. Used for exchange rate entry where incorrect values have financial impact. Framework: React.
+The component is project code. Names below are illustrative; the real props type and registration key come from the generated code of the form.
 
-## Implementation Pattern
+### Register a custom visual element
 
-- **Registration**: Via `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` targeting a specific group component (e.g., `CREATE_EXCHANGE_RATE_INPUT_FORM_RATE_GROUP_COMPONENT`)
-- **Component shape**: React FC receiving `GenericProxyProps<TStored, TActionDefs>` with `data`, `validation`, `editMode`, `storeDiff`, `isLoading`, `actions`
-- **Input type toggling**: Uses React `useState<'text' | 'password'>('text')` to control the primary field's input type. On `onBlur`, switches to `'password'` if the field has a value. On clear/null, resets to `'text'`
-- **Confirmation field**: A second NumericInput field (`rateRepeat`) is disabled when the primary field is empty (`disabled={isLoading || !data.rate || data.rate === null}`); clears automatically when the primary field is emptied
-- **Value sync**: In the primary field's `onValueChange`, if the new value is null, `storeDiff('rateRepeat', undefined)` clears the repeat field
-- **Validation**: Server-side validation (via the form action hook's `getDateValidationProps` or custom validators) can compare the two values; field-level errors display via `validation.get('rate')` and `validation.get('rateRepeat')`
-- **Form action hook companion**: A separate form action hook (registered for the same dialog) provides additional customization like `getDateValidationProps({ disableFuture: true })` for date fields on the same form
+Replace the generated group for the sensitive field with a custom visual element. The platform exposes the group as an extension point: register a function component under the custom visual element key, with the group's generated component key as service property. Call the register function from the application customizer. See [advanced patterns](../../agent-docs/frontend/advanced-patterns.md) and [[custom-visual-element-override]].
 
-## Examples
+### Toggle the input type
 
-### rackinspect
-- Framework: React
-- Key files: `custom/hooks/custom-implementations/registerServicesPartner_serviceCreateExchangeRateInputCreateExchangeRateInput_FormCustomImplementations.tsx`, `custom/hooks/FormPageActionHooks/customServicesPartner_serviceCreateExchangeRateInputCreateExchangeRateInput_FormActionsHook.tsx`
-- Pattern: The "RateGroup" visual element replaces the generated exchange rate input form section. The `rate` field uses NumericInput with `decimalScale={4}` and switches between `text`/`password` input types. The `rateRepeat` field is conditionally enabled. Both fields have `readOnly: false` patched to override the generated `isFormUpdateable()` check.
-- Notable: The accompanying form action hook adds `getDateValidationProps({ disableFuture: true })` to prevent future-dated exchange rates; the password masking approach is unconventional for numeric fields but effectively prevents the user from copy-pasting between the two fields
+Keep the type in component state: `text` while editing, `password` after blur when the field has a value, and back to `text` when the value is cleared.
+
+```tsx
+const [type, setType] = useState<'text' | 'password'>('text');
+<NumericInput
+  type={type}
+  value={data.rate}
+  onFocus={() => setType('text')}
+  onBlur={() => setType(data.rate != null ? 'password' : 'text')}
+  onValueChange={(v) => {
+    storeDiff('rate', v);
+    if (v == null) storeDiff('rateRepeat', undefined); // clear the repeat field too
+  }}
+/>
+```
+
+### Enable the repeat field late
+
+Disable the repeat field while loading or while the primary value is empty. Show field errors from the validation object for both fields.
+
+### Patch the read-only flag
+
+The generated form computes read-only state. A replacement component does not get that for free, so set read-only to false (or compute it from the edit mode) on both inputs. In the source project both fields are patched this way.
+
+### Validation
+
+A form action hook on the same dialog may return extra validation props, for example disabling future dates for a date field. Checking that the two values match is done by a validator or on the server. The UI check does not replace the server check. See [validation hooks](../../agent-docs/frontend/hooks/validation-hooks.md) and [action hooks](../../agent-docs/frontend/hooks/action-hooks.md).
+
+### Source project
+
+React. One custom element replaces the rate group on a create form (decimal scale of four places). A separate form action hook on the same dialog blocks future dates. Masking also stops copy and paste between the two fields.

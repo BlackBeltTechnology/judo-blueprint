@@ -2,35 +2,72 @@
 id: reservation-booking-entity
 title: Reservation/Booking Entity with Time Slots and Status
 description: A Reservation (or Booking) entity that models time-bounded resource reservations.
-aliases: []
-keywords: [reservation, booking, time, slots, status]
+aliases: [booking entity, time slot reservation, appointment]
+keywords: [reservation, booking, time, slots, status, quota, guest, reminder]
 tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:park-here", "project:reserve-app", "status:emerging"]
 category: pattern
 status: emerging
 projects: [park-here, reserve-app]
 evidence: ["park-here:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: pending
+fragment: reservation-booking-entity
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A Reservation (or Booking) entity that models time-bounded resource reservations. It captures a date, startTime, endTime for the time slot, a reservationStatus enum (ACTIVE/DELETED/EXPIRED) for lifecycle management, and a reservationType enum to distinguish different booking categories (e.g., NORMAL, QUICK, GUEST, LONG). The entity carries audit trail attributes (created, createdBy, modified, modifiedBy) for tracking who made and last changed the booking. It associates to an owner User (1..1), the reserved resource (e.g., ParkingSlot 1..1), and optionally to a guest entity (0..1 COMPOSITION) for third-party bookings and a vehicle/asset reference (0..1). Denormalized display fields (reserverName, reserverEmail, reserverCarId) enable quick display without joining. Reminder tracking fields (hasToNotify, reminderTimer, remindedBeforeStart, remindedBeforeEnd) support notification workflows. The entity is typically non-CRUD, managed entirely through custom operations on transfer objects.
+Model a time-bounded claim on a resource: who reserved what, for which time slot, in which state. The entity carries the slot, a lifecycle status, a type that selects the booking rules, and the audit fields. Users create and change reservations through custom operations, not through generic edit forms.
 
-Some variants model freight/logistics reservations with richer status lifecycles (NOT_SUBMITTED -> SUBMITTED -> APPROVED/REJECTED -> ARRIVED -> FINISHED with delay states) and associations to logistics resources (gates, spots, loading types, vehicle types) instead of simple parking slots.
+### Status is a lifecycle, not a delete
 
-The ReservationStatus enum follows a lifecycle from active through completion or cancellation. The ReservationType or state enum categorizes bookings by their nature, privilege level, or workflow stage.
+A reservation is never removed in normal use. Cancelling ends it early (status expired, end time set to now). Deleting marks it deleted. Modifying marks the old one deleted and creates a new one. History stays readable.
 
-## Model Definition
+### The type selects the rules
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+A type enumeration (normal, quick, guest, long) decides how a booking is created, which fields apply and which quota counts it. The rules sit in project code; the model only records the type.
 
-## Frontend Implementation
+## Structure
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+- `Reservation` with `date`, `startTime`, `endTime` (timestamps), `reservationStatus` (required enumeration: ACTIVE, DELETED, EXPIRED) and `reservationType` (required enumeration: NORMAL, QUICK, GUEST, LONG).
+- Audit attributes: `created`, `createdBy`, `modified`, `modifiedBy`.
+- Reminder flags: `hasToNotify`, `remindedBeforeStart`, `remindedBeforeEnd`. A scheduled job reads them to send reminders.
+- Associations: `owner` (1..1 to the user entity), `resource` (1..1 to the reserved thing, for example a parking slot) and optionally a vehicle or asset reference (0..1).
+- `guest`: a composition (0..1) to a `Guest` part for bookings made for a third party. The guest is owned by the reservation.
+- Denormalized display attributes (reserver name, e-mail, vehicle id) may be kept on the reservation so lists need no joins. They are project practice; see [[aggregated-stored-field]].
+- The entity's createable, updateable and deleteable flags are off. Transfer objects and custom operations do the writing.
 
-## Backend Implementation
+## Constraints
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+- The slot must be valid: not in the past, end after start, a minimum length. The model has no such rule; the creating operation validates it (project practice).
+- Overlap detection per resource and per-user quotas per type are project logic, done with DAO query filters inside the service behind the operations. See [data access guide](../../agent-docs/backend/data-access-guide.md) and [[token-based-quota-limit]].
+- Custom operations are not intercepted by the platform. Permission checks and validation belong in the operation or its service, not in an interceptor. See [interceptors](../../agent-docs/backend/interceptors.md).
+- Status values persist as ordinals. Do not renumber them.
+- Audit fields are set by the operations, using a UTC clock and the acting user.
+
+## Variations
+
+- **Freight or logistics booking.** A longer lifecycle: not submitted, submitted, approved or rejected, arrived, finished, with delay states, and associations to gates, spots, loading types and vehicle types instead of one slot. See [[freight-logistics-state-enum]]. Interceptors on the built-in create can wire the acting partner into the new reservation instead of a custom operation.
+- **Long booking.** One reservation per working day in a date range, created together.
+- **Copy-on-write modify.** Modify keeps the old row as deleted and adds a new row.
+- **Guest booking.** The composed guest holds the third party's name and vehicle data.
+
+## When to use
+
+- Resources are booked for time slots and a booking has a lifecycle.
+- Several booking types follow different rules and quotas.
+- Users must see history and changes must be audited.
+
+## When to avoid
+
+- Bookings never change after creation and need no lifecycle. A plain dated record is enough.
+- Booking is open-ended with no slot and no conflict check.
+- The workflow is a multi-step approval. Use a state machine, see [[workflow-engine-state-machine-cluster]].
+
+## Related
+
+- [[freight-logistics-state-enum]] — the richer status enumeration for logistics bookings
+- [[token-based-quota-limit]] — limit how many active bookings a user may hold
+- [[platform-email-template-service]] — e-mail on create, delete, modify and reminder
+- [[audit-log-entity]] — a separate audit trail instead of audit attributes
+- [[active-inactive-status-enum]] — a simpler two-state status

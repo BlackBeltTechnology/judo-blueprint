@@ -1,27 +1,38 @@
-## Overview
+## Frontend guidance
 
-A pattern for extracting reusable form business logic into standalone TypeScript modules under `src/custom/services/`, consumed by multiple Pandino dialog/page action hooks to avoid duplicating field computation, validation, and initialization logic. Framework: React.
+All names here are examples from the source project, not platform API.
 
-## Implementation Pattern
+### Function shape
 
-- **File location**: `src/custom/services/<EntityName>Services.ts` -- one module per input transfer object or domain concept
-- **Function signature**: Exported functions typically follow the pattern `functionName(data: TInput, storeDiff: (key: keyof TInput, value: any) => void, ...extras)` where `storeDiff` is the JUDO form state updater
-- **Common function categories**:
-  - **Field auto-computation**: Functions that compute derived field values from other fields (e.g., auto-setting start/end times based on current time and working hours)
-  - **Enum-driven visibility**: Functions that toggle boolean visibility flags (`storeDiff('hiddenByCustom', true)`) based on enum field values
-  - **Default initialization**: `postGetTemplateAction`-style functions called after form template loads to set initial defaults from user preferences or related data
-  - **Validation constraints**: Functions returning `BaseDateValidationProps` objects (`{ minDate, maxDate }`) for date picker constraints
-  - **Enum option filtering**: Functions filtering available enum options based on user permissions/flags
-  - **Warning text computation**: Functions computing and toggling warning messages based on temporal proximity or data conditions
-  - **Relation-based defaults**: Async functions that query related services to resolve default values (e.g., fetching a user's preferred parking slot)
-- **Consumer pattern**: Dialog/page action hooks import these functions and wire them to hook callbacks: `onUserBlurAction(data, storeDiff, editMode, submit) { onUserFieldBlurSetDefaults(data, storeDiff, editMode, submit); }`
-- **Service instantiation**: Modules may instantiate service implementation classes (e.g., `new ServicesReservationInputServiceImpl(judoAxiosProvider)`) for async operations like range queries
-- **Reuse**: A single service module is imported by multiple hook registrations (e.g., both `ReservationsPanel` and `UserReservationPanel` hooks import from the same `ReservationInputServices.ts`)
+```ts
+export function autoSetTimes(data: Input, storeDiff: (key: keyof Input, value: unknown) => void, workEnd: string) {
+  if (!data.startTime) {
+    storeDiff('startTime', new Date(Date.now() + 3 * 60_000));
+    storeDiff('endTime', toTimeToday(workEnd));
+  }
+}
+```
 
-## Examples
+A hook calls it: `onUserBlurAction(data, storeDiff, editMode, submit) { onUserFieldBlurSetDefaults(data, storeDiff, editMode, submit); }`. The hook callback names and arguments come from the generated hook type of the page. See [action hooks](../../agent-docs/frontend/hooks/action-hooks.md).
 
-### park-here
-- Framework: React
-- Key files: `custom/services/ReservationInputServices.ts` (14 exported functions), `custom/services/HolidayInputServices.ts` (4 exported functions)
-- Pattern: `ReservationInputServices.ts` provides shared reservation form logic consumed by 4+ dialog action hooks: auto-sets start/end times from current time (`autoSetReservationTimeBasedOnCurrent`), resolves reservation type from user flags (`updateReservationTypeFromUserData`), filters enum options by user permissions (`filterAvailableReservationTypes`), computes date validation props, and resolves favorite parking slot via async service call. `HolidayInputServices.ts` handles holiday form defaults and dynamically queries affected reservations.
-- Notable: `getUserFieldsForReservation()` returns a custom `_mask` string for the user relation to eagerly fetch nested fields (cars, working times, preferred parking slot) needed by form logic; `updateReservationWarningText` computes a time-based warning showing minutes until the next half-hour boundary
+### Function groups
+
+- Field auto-computation, such as default times from the current time and working hours.
+- Visibility flags set from an enumeration value (`storeDiff('hiddenByCustom', true)`; the flag is a project attribute).
+- Defaults after the template loads, from preferences or related data.
+- Date picker constraints returned as `{ minDate, maxDate }`.
+- Enumeration option filtering by user permissions or flags.
+- Warning text based on time proximity.
+- Async defaults that call the REST client, for example a preferred resource whose availability is checked through the range call.
+
+### Reuse across hooks
+
+One module can be imported by several hook registrations, for example the panel for all reservations and the panel for one user's reservations. Keep the module free of page-specific keys.
+
+### Async helpers
+
+An async helper may create a client for the generated service with the project's HTTP provider. It may pass a mask so the related user comes back with nested data (cars, working times, preferred resource) in one request. A hook that awaits it must handle failure and return a safe default. See [[generated-service-layer-reuse]].
+
+### Source project
+
+React. One module has about fourteen exported functions and is used by four or more dialog hooks (reservation form logic). A second module handles holiday form defaults and looks up the affected reservations. See [[reservation-booking-entity]].

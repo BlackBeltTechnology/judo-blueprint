@@ -1,28 +1,48 @@
-## Examples
+## Model shape
 
-### skillmatrix-model
-- **report::Definition entity**: `SkillMatrix::report::Definition`
-  - Attributes: name (req)
-  - Relations: selectedUnits (0..* OneWay ASSOC Unit), results (0..* COMPOSITION Result), selectedUsers (0..* OneWay ASSOC User)
-  - Operations: run (INSTANCE) -- executes the report and creates a new Result entry
+Three entities and two instance operations.
 
-- **report::Result entity**: `SkillMatrix::report::Result`
-  - Attributes: time (Timestamp), excel (Binary), reportName (DERIVED: `self!container(SkillMatrix::report::Definition).name`)
-  - Relations: users (0..* OneWay ASSOC User)
-  - Operations: createExcel (INSTANCE, customImplementation=true) -- generates an Excel export file from the report data
-  - The `reportName` derived attribute navigates up to the parent Definition via `!container()` to display the report name
+- `ReportDefinition`: required `name`; association `subjects` (0..*) to `Subject`; composition `results` (0..*) to `ReportResult`; instance operation `run` (stateful, custom implementation).
+- `ReportResult`: timestamp `executedAt`; binary `file` (the export; not drawn in the diagram because the sandbox has no binary type); association `subjects` (0..*) to `Subject`; derived `reportName`, defined by navigating to the container `ReportDefinition` and reading its name; instance operation `createExcel` (stateful, custom implementation).
+- `Subject`: the reported entity, for example a user or unit. It stands for any domain entity the report covers.
 
-- **Report transfer objects**:
-  - report::ReportDefinition TO -- name (MAPPED) + executions (0..* ASSOC ReportResult), units (0..* AGGREGATION Unit), professionals (0..* AGGREGATION Professional); operations: run (MAPPED)
-  - report::ReportResult TO -- time (DERIVED), reportName (MAPPED), excel (DERIVED)
-  - report::ResultHelper TO -- time (MAPPED), reportName (MAPPED), excel (MAPPED) + competences (0..* AGGREGATION Competence), users (0..* AGGREGATION ReportedUser); operations: createExcel (MAPPED)
-  - report::ReportedUser TO -- fullName (MAPPED), unitName (DERIVED) + skills (0..* AGGREGATION Skill)
-  - report::Skill TO -- competenceName (MAPPED), competenceScore (MAPPED), approvedLevelName (MAPPED), userFullName (MAPPED), unitName (MAPPED) + tags (0..* AGGREGATION Tag)
-  - report::Competence TO -- user (TRANSIENT), unit (TRANSIENT), competence (TRANSIENT), tag (TRANSIENT), score (TRANSIENT), level (TRANSIENT) -- all transient attributes for tabular flattening
+### Transfer objects and access
 
-- **Report data flow**:
-  1. HR Employee creates a report::Definition, selecting units and/or users
-  2. HR Employee runs the report (Definition.run operation)
-  3. The run operation creates a Result, snapshots the matching users, and stores a timestamp
-  4. The createExcel operation (custom Java implementation) generates an Excel file from the result data
-  5. The report::Competence TO with all-transient attributes serves as a flattened row structure for Excel generation
+Not part of the diagram. In the source project the report package holds these transfer objects:
+
+- a definition view: `name` mapped, `results` as an association to a result view, subjects as aggregations, and `run` as a mapped operation;
+- a result view: timestamp and report name, and the file;
+- a helper view for the export, with `createExcel` as a mapped operation;
+- row views that flatten the subjects, with mapped, derived and transient attributes. The all-transient row view is the flat structure used to write the export.
+
+The actor reaches the definition view through an access point; the results come with it.
+
+### Generated UI pages
+
+The definition view page lists its results in a table and shows the `run` action as a button. The result page shows the timestamp and a download link for the file. Keep these generated pages; add a button for `createExcel` only if the export is a separate step.
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=report-definition-with-run-operation cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class ReportDefinition {
+    <<Entity>>
+    +String name [1]
+    +run()
+  }
+  class ReportResult {
+    <<Entity>>
+    +Timestamp executedAt
+    +String /reportName
+    +createExcel()
+  }
+  class Subject {
+    <<Entity>>
+    +String name [1]
+  }
+  ReportDefinition *-- "*" ReportResult : results
+  ReportDefinition --> "*" Subject : subjects
+  ReportResult --> "*" Subject : subjects
+```
+<!-- /mermaid:generated -->

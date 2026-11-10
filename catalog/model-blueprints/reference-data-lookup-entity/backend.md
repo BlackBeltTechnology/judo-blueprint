@@ -1,25 +1,15 @@
-## Overview
+## Backend guidance
 
-Reference data lookup entities (City, PostalCode, Capability) are seeded by the Initializer's init operation and managed through a `MasterDataService` that handles CRUD operations and toggle-active. Admin custom operations for creating and updating reference data delegate to this shared service.
+Plain lookups need no custom backend code. The generated DAO covers read, and the project's access and transfer objects decide who may write. Backend code appears only for seeding, name checks and bulk management.
 
-## Implementation Pattern
+### Seeding at startup
 
-- The `MasterDataService` interface defines `createCity()`, `updateCity()`, `toggleCityActive()`, `createCapability()`, `updateCapability()`, `toggleCapabilityActive()` methods
-- The `MasterDataServiceImpl` OSGi `@Component` injects `CityDao`, `PostalCodeDao`, `CapabilityDao` and validates uniqueness (e.g., duplicate city/capability names) before creating
-- City creation also links PostalCodes via `cityDao.addPostalCodes()` after creation
-- The Initializer seeds reference data in bulk: ~250 cities with postal code associations, 20+ capabilities with descriptions
-- Custom operations: `CreateCityCustomImplementation` and `CreateCapabilityCustomImplementation` (AdminDashboard), `UpdateCityCustomImplementation` and `UpdateCapabilityCustomImplementation` (instance operations)
-- All reference data operations log via `AuditLogService`
-- In simpler variants (no dedicated management operations), lookup entities are consumed by product-creation operations via DAO `findAllById()` to resolve selected lookup items by identifier
+Initial rows are created once by a static initializer operation with the generated DAO. In the source projects the initializer seeds cities (about 250, with postal code links), capabilities and similar lists. The initializer is project code, not a platform hook. See [[init-data-seeding]].
 
-## Examples
+### Management through a shared service
 
-### mlszksz-platform
-- Key files: `common/services/MasterDataService.java`, `common/services/impl/MasterDataServiceImpl.java`, `custom/.../admindashboard/CreateCityCustomImplementation.java`, `custom/.../admin/city/UpdateCityCustomImplementation.java`
-- Pattern: Centralized `MasterDataService` for City and Capability CRUD; Initializer bulk-seeds reference data; dashboard-level create + instance-level update/toggle operations
-- Notable: City-PostalCode many-to-many relationships are managed via DAO `addPostalCodes()` and `removeCities()` methods; PostalCode-City validation is reused across registration and organization address update flows
+One project service (in the source project `MasterDataService`, an example name) holds create, update and toggle-active for the lookups. The custom operations are thin wrappers that delegate to it. Its main job is the rule the model does not express: name uniqueness checked before create and update. The service and operation classes are project code, not platform API. Interceptors do not run for custom operations, so the rule lives in the service. See [[capability-lookup-entity]] for the same shape with a flag.
 
-### alba
-- Key files: `custom/.../services/adminproduct/CreateProductCustomImplementation.java`, `custom/.../services/authorproduct/CreateProductCustomImplementation.java`
-- Pattern: No dedicated management operations for lookup entities (Audience, Curriculum, ResultType). Instead, `AudienceDao.findAllById()`, `CurriculumDao.findAllById()`, `ResultTypeDao.findAllById()` are called within product-creation custom operations to resolve user-selected lookup items by UUID
-- Notable: Lookup entity names are aggregated into denormalized comma-separated strings (e.g., `audienceAggregated`, `curriculumAggregated`, `resultTypesAggregated`) using `stream().map(Audience::getName).sorted().collect(Collectors.joining(", "))` for display without joins
+### Resolving selected entries
+
+An operation that receives a multi-select resolves the chosen entries by identifier through the generated DAO. The DAO's `getById` fetches one entry. In the source project the selected names are then joined into one denormalized string for display, which is project practice, see [[aggregated-stored-field]]. Many-to-many links are changed with the generated per-relation `add` and `remove` methods. Remember the generated DAO rules: `add` and `remove` fail on a null element, and an optional single relation is cleared with `unset`, not `set(null)`. See [data access guide](../../agent-docs/backend/data-access-guide.md).

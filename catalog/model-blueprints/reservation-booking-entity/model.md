@@ -1,33 +1,76 @@
-## Examples
+## Model shape
 
-### park-here
-- **Reservation entity**: `ParkHere::entities::Reservation` (non-CRUD)
-  - Time slot attributes: date (req), startTime (req), endTime (req)
-  - Status/type: reservationStatus (req, ReservationStatus enum), reservationType (req, ReservationType enum)
-  - Audit: created (req), createdBy (req), modified, modifiedBy
-  - Notification: hasToNotify (req, default: true), reminderTimer, remindedBeforeStart (default: false), remindedBeforeEnd (default: false)
-  - Denormalized display: reserverName, reserverCarId, reserverEmail
-  - Relations: owner (1..1 ASSOC to User), parkingSlot (1..1 ASSOC), car (0..1 ASSOC), guest (0..1 COMPOSITION to Guest), parkingGarage (0..1 DERIVED)
-- **ReservationStatus enum**: `ParkHere::entities::ReservationStatus` -- ACTIVE(1), DELETED(2), EXPIRED(3)
-- **ReservationType enum**: `ParkHere::entities::ReservationType` -- NORMAL(1), QUICK(2), GUEST(3), LONG(4)
-- **Guest entity**: `ParkHere::entities::Guest` -- name (req), email (req), licensePlate (req); composed by Reservation for third-party bookings
-- **Transfer Objects**:
-  - `UserReservation` -- displays reservation details with guard attributes (isNotDeletable, isNotCancelable); operations: deleteReservation, cancelReservation, modificateReservation (all custom INSTANCE)
-  - `ReservationInput` (unmapped) -- 26 attributes including date, startTime, endTime, reservationType, guest fields, warning texts, and UI visibility flags; relations: user (1..1), car (0..1), parkingSlot (1..1)
-  - `ReservationModificationInput` (unmapped) -- startTime, endTime for time-only modifications
-  - `ReservationsPanel` -- groups todayReservations, previousReservations, futureReservations; operations: holiday, reservation
-- **User entity** carries per-type reservation limits: maxNormalReservation (default: 5), maxGuestReservation (default: 5), maxLongReservation (default: 2), and per-type permission booleans: isNormalReservation, isQuickReservation, isGuestReservation, isLongReservation
+Four entities and two enumerations.
 
-### reserve-app
-- **FreightReservation entity**: `ReserveApp::entities::FreightReservation` (non-CRUD)
-  - Time slot attributes: start, end
-  - State: state (FreightState enum -- 9 states covering the full logistics lifecycle)
-  - Vehicle info: vehicleNumberPlate, vehicleDriver, vehiclePhone
-  - Loading info: loadMachine, loadDriver, loadPhone, partialDelivery, fromLocation
-  - Identifier: technicalID
-  - Relations: attachments (0..* COMPOSITION to Attachment), vehicleType (1..1 ASSOC), loadingType (1..1 ASSOC), recipient (1..1 ASSOC to Company), partner (0..1 ASSOC), gate (0..1 ASSOC), project (0..1 ASSOC), spot (0..1 ASSOC), loadingTime (0..1 ASSOC), items (0..* ASSOC to Item), suspendedByPartner (0..1 ASSOC to User), suspendedByLogistician (0..1 ASSOC to User)
-- **FreightState enum**: `ReserveApp::entities::FreightState` -- NOT_SUBMITTED(1), SUBMITTED(2), REJECTED(3), APPROVED(4), SUSPENDED(5), ARRIVED(6), FINISHED(7), DELAYED_UNLOADING(8), DELAYED_ARRIVAL(9)
-  - Full logistics lifecycle: creation -> submission -> approval/rejection -> arrival -> completion, with suspension and delay states
-- **Transfer Objects**: Role-specific projections of the reservation:
-  - `ReservationForPartner` -- 18 attributes including denormalized string fields (projectAsString, recipientAsString, gateAsString, spotAsString, duration, durationHuman); relations via AGGREGATION: recipient, spot, project, gate, partner, loadingType, vehicleType
-- Freight reservations are assigned to specific gates and spots within a project, with vehicle and loading configuration managed via reference data entities
+- `ReservationStatus`: ACTIVE (1), DELETED (2), EXPIRED (3). `ReservationType`: NORMAL (1), QUICK (2), GUEST (3), LONG (4). Ordinals persist; never renumber.
+- `Reservation`: required `date`, `startTime`, `endTime`, `reservationStatus`, `reservationType`; optional `created`, `createdBy`, `modified`, `modifiedBy`, `hasToNotify`, `remindedBeforeStart`, `remindedBeforeEnd`. Association `owner` to `Person` (1..1), association `resource` to `Resource` (1..1), composition `guest` to `Guest` (0..1).
+- `Person` is the owning user entity and `Resource` the reserved thing; both stand for domain entities.
+- `Guest`: required `name`, optional `vehicleNumberPlate`. It lives only inside its reservation.
+
+### Transfer objects and access
+
+Not drawn. The entity flags are off. The actor sees reservations through transfer objects:
+
+- a list view of the user's active reservations and one of previous reservations, each with read-only guard attributes (not deletable, not cancelable) that the page uses to hide buttons;
+- an input transfer object for create, with the owner, resource, type, date and times, and the guest fields. A reference range on its resource relation limits the choices to accessible and free slots (see [interceptors](../../agent-docs/backend/interceptors.md));
+- a modification input with the new times;
+- mapped operations on the list view for cancel, delete and modify.
+
+### Generated UI pages
+
+Keep the generated create dialog (driven by the input transfer object) and the list tables. In the source project the tables are replaced by card views, see [[cards-container-configuration-hook]].
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=reservation-booking-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Guest {
+    <<Entity>>
+    +String name [1]
+    +String vehicleNumberPlate
+  }
+  class Person {
+    <<Entity>>
+    +String name [1]
+    +String email
+  }
+  class Reservation {
+    <<Entity>>
+    +Date date [1]
+    +Timestamp startTime [1]
+    +Timestamp endTime [1]
+    +ReservationStatus reservationStatus [1]
+    +ReservationType reservationType [1]
+    +Timestamp created
+    +String createdBy
+    +Timestamp modified
+    +String modifiedBy
+    +Boolean hasToNotify
+    +Boolean remindedBeforeStart
+    +Boolean remindedBeforeEnd
+  }
+  class ReservationStatus {
+    <<Enumeration>>
+    ACTIVE
+    DELETED
+    EXPIRED
+  }
+  class ReservationType {
+    <<Enumeration>>
+    NORMAL
+    QUICK
+    GUEST
+    LONG
+  }
+  class Resource {
+    <<Entity>>
+    +String name [1]
+  }
+  Reservation *-- "0..1" Guest : guest
+  Reservation --> "1" Person : owner
+  Reservation --> "1" Resource : resource
+  Reservation ..> ReservationStatus : reservationStatus
+  Reservation ..> ReservationType : reservationType
+```
+<!-- /mermaid:generated -->
