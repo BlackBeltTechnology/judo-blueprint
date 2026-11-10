@@ -12,7 +12,7 @@ evidence: ["mlszksz-platform:unrecorded"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -28,7 +28,7 @@ Deleting a notification also lowers the unread count shown in the header, so the
 
 ## Structure
 
-This is a frontend-only component. It has no model of its own: it displays the notification rows the backend already provides, and it does not add entities, attributes or relations.
+This is a frontend component. It adds no entities, attributes or relations: it displays the notification rows the backend already provides. The only model requirement is that the notifications table is declared in the UI model as a custom implementation element, which is what makes it replaceable.
 
 Each row has a type, a message, a time, and an optional reference to a feed entry. The type decides the icon. The reference decides whether the card is tappable.
 

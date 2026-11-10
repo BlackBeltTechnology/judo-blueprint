@@ -1,17 +1,44 @@
-## Examples
+## Model shape
 
-### rackinspect
-**Template layer:**
-- `DimensionTemplate` -- name, type (DimensionTemplateType: RACK/RACK_ELEMENT); composes groups (0..*)
-- `DimensionTemplateGroup` -- name (req), label (req), order (req), attributePerRow (default: 3), multiLine (default: false), isRequired (default: false); composes parameters (0..*)
-- `DimensionTemplateParameter` -- name (req), label (req), order (req), valueType (req, ValueType enum), isRequired (default: false), isInSimpleReviewReport (default: false); relations: unit (0..1 ASSOC to Unit), selectableValues (0..* ASSOC to SelectableValue)
+The shape has a template layer that defines the structure and an instance layer that holds values. This entry covers the template layer, and the enumerations it uses.
 
-**Instance layer:**
-- `DimensionGroup` -- name (req), label (req), order (req), attributePerRow (default: 3), multiLine (default: false), isRequired (default: false); composes parameters (0..*) and rows (0..*); relation: dimensionTemplateGroup (1..1 ASSOC back to template)
-- `DimensionGroupRow` -- order (req); composes parameters (0..*)
-- `DimensionParameter` -- name (req), label (req), order (req), valueType (req), numericValue, stringValue, booleanValue, unitName, isRequired (default: false), isInSimpleReviewReport (default: false); relations: dimensionTemplateParameter (1..1 ASSOC), selectedValue (0..1 ASSOC to SelectableValue)
+- **DimensionTemplate** is a non-CRUD entity with a required `name`. It composes **DimensionTemplateGroup** items (0..*).
+- **DimensionTemplateGroup** has a required `name` and composes **DimensionTemplateParameter** items (0..*).
+- **DimensionTemplateParameter** has a required `name` and a required `valueType` of type **ValueType**. Its `isRequired` flag defaults to false.
+- **ValueType** is an enumeration with four members: NUMERIC, STRING, ENUM and BOOLEAN, with ordinals 1 to 4.
 
-**Supporting entities:**
-- `SelectableValue` -- name (req), order (req) -- predefined dropdown options for ENUM-typed parameters
-- `ValueType` enum -- NUMERIC(1), STRING(2), ENUM(3), BOOLEAN(4)
-- `DimensionTemplateType` enum -- RACK(1), RACK_ELEMENT(2)
+The instance layer (group and parameter instances that hold actual values) is outside this shape. It is modelled on the entities that use the template.
+
+Generated UI pages follow from the entities. The template is managed by administrators, so keep the template pages for administrators. Hide the generated create and edit forms for DimensionTemplate, which is not CRUD. Keep the group and parameter pages for editing, and customize the parameter form when the value type changes which inputs are shown.
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=dimension-template-hierarchy cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class DimensionTemplate {
+    <<Entity>>
+    +String name [1]
+  }
+  class DimensionTemplateGroup {
+    <<Entity>>
+    +String name [1]
+  }
+  class DimensionTemplateParameter {
+    <<Entity>>
+    +String name [1]
+    +ValueType valueType [1]
+    +Boolean isRequired
+  }
+  class ValueType {
+    <<Enumeration>>
+    NUMERIC
+    STRING
+    ENUM
+    BOOLEAN
+  }
+  DimensionTemplate *-- "*" DimensionTemplateGroup : groups
+  DimensionTemplateGroup *-- "*" DimensionTemplateParameter : parameters
+  DimensionTemplateParameter ..> ValueType : valueType
+```
+<!-- /mermaid:generated -->

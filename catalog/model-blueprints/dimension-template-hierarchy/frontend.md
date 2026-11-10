@@ -1,20 +1,32 @@
 ## Overview
 
-The dimension template hierarchy has the most extensive frontend customization in the rackinspect project. It involves custom React components for rendering dynamic dimension parameter forms (both form/edit and view modes), a comprehensive utility library for template-to-instance data transformations, and numerous dialog/page action hooks for managing template groups and parameters. The pattern replaces generated table components with custom accordion-based forms that dynamically render fields based on the template's ValueType (NUMERIC, STRING, ENUM, BOOLEAN).
+A template-driven form is a common frontend case: the generated table for a group is replaced by a custom component that builds its fields from the template's value types. The generator-protected files are project code.
 
 ## Implementation Pattern
 
-- **Custom visual element components**: Two core custom components (`DimensionParametersFormComponent` and `DimensionParametersViewComponent`) replace the generated table views for dimension groups. They are registered via Pandino's `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` and render dimension parameters as accordion panels with dynamic form fields. The view component renders a rich UI with MUI Accordion, TextField, Checkbox, Switch, SingleRelationInput (for ENUM selectable values), and multi-row support for multiLine groups.
-- **Dimension template helper utility**: A shared `dimensionTemplateHelper.ts` provides functions for fetching template parameters (`fetchDimensionTemplateParamater`), populating instance values from templates (`populateDimensionGroupValues`), handling value changes (`onValueChange`, `onBatchValueChangeOnView`), managing multi-row groups (`onRowAdd`, `onRowDelete`), and lazy CRUD operations for persisted rows (`onLazyRowAddForRackView`, `onLazyRowDeleteForRackView`).
-- **Template group form hooks**: Dialog and page action hooks customize the template group creation and viewing experience. The `postGetTemplateAction` in the group form hook sets transient boolean flags (`dimensionTemplateIsRackTransient`, `dimensionTemplateIsRackElementTransient`) based on the parent template's type (RACK vs RACK_ELEMENT), controlling which fields are visible.
-- **Selector filtering**: Custom selector dialog hooks filter dimension template groups in the add-selector to only show groups where `rackDimensionTemplateGroupIsUndefined` is true, preventing already-assigned groups from appearing.
-- **i18n overrides**: Generator-override Handlebars template adds custom i18n keys for dimension UI: row selection dialogs, add/delete row buttons, loading states, and error messages.
-- **Reuse across multiple contexts**: The same `DimensionParametersFormComponent` and `DimensionParametersViewComponent` are registered as custom implementations for RepairCategory (form + view), Rack (view), ElementFault (form + view), and ErrorItemRow (view), each with different data sources but identical rendering logic.
+- **Custom visual element.** A dynamic form component replaces the generated table for a group, in both edit and view mode. This works only where the UI model declares the element as a custom implementation; the component is registered under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` with the element's generated `component` key ([advanced patterns](../../agent-docs/frontend/advanced-patterns.md), Component Replacement Hook), once for each page where the group appears. It renders one accordion per group, and one input per parameter chosen by the parameter's value type: numeric, text, boolean or a selection.
+- **Selection inputs.** An ENUM parameter uses a relation input that lists the selectable values from the template.
+- **Multi-row groups.** A group flagged as multi-line gets add and delete row actions. Each row copies the template parameters.
+- **Helper module (project code).** A helper module holds the template-to-instance mapping: fetch the template parameters, copy them into the instance, and handle value changes.
+- **Hook keys.** Hook and override keys are generated per page or container. Check the generated file for the exact key before writing an override.
+- **Generator protection.** Each file the project overrides must be listed in `.generator-ignore`, or the generator overwrites it.
+
+```tsx
+const ParameterInput = ({ parameter, value, onChange }: Props) => {
+  switch (parameter.valueType) {
+    case 'NUMERIC': return <NumericInput value={value} onChange={onChange} />;
+    case 'BOOLEAN': return <Checkbox checked={!!value} onChange={onChange} />;
+    default: return <TextField value={value ?? ''} onChange={onChange} />;
+  }
+};
+```
+
+`ParameterInput` is project code. The `valueType` values come from the generated enumeration.
 
 ## Examples
 
 ### rackinspect
 - Framework: React
-- Key files: `custom/hooks/custom-implementations/DimensionParametersFormComponent.tsx`, `custom/hooks/custom-implementations/DimensionParametersViewComponent.tsx`, `custom/hooks/utils/dimensionTemplateHelper.ts`, `custom/hooks/dialogs/registerServicesDimension_serviceDimensionTemplateGroupsRelationFormPageActionsHook.ts`, `custom/hooks/dialogs/registerDimensionGroupFormRackElementDimensionTemplateGroupSelectorActions.ts`, `generator-overrides/ui-react/actor/public/i18n/application_default_extra.fragment.hbs`
-- Pattern: The `DimensionParametersViewComponent` (750+ lines) renders accordion panels per DimensionGroup. Each group shows parameters as a dynamic form: NUMERIC fields use NumericInput, STRING uses TextField, BOOLEAN uses Checkbox/Switch, ENUM uses SingleRelationInput with selectable values. Multi-line groups support adding/deleting rows with template parameter cloning. The component is registered via `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` in 6+ different page contexts.
-- Notable: This is the largest custom component in the project. The `dimensionTemplateHelper.ts` utility (1000+ lines) handles the full template-to-instance lifecycle including value population from rack dimension groups, UUID-based row identification, and lazy server-side CRUD for persisted dimension data.
+- Key files: `custom/hooks/custom-implementations/DimensionParametersFormComponent.tsx`, `custom/hooks/custom-implementations/DimensionParametersViewComponent.tsx`, `custom/hooks/utils/dimensionTemplateHelper.ts`, `custom/hooks/dialogs/registerServicesDimension_serviceDimensionTemplateGroupsRelationFormPageActionsHook.ts`, `generator-overrides/ui-react/actor/public/i18n/application_default_extra.fragment.hbs`
+- Pattern: the view component renders an accordion per dimension group with one input per parameter. The same components are registered on several pages, each with its own data source.
+- Notable: the view component is the largest custom component in the project, and the helper module handles the full template-to-instance lifecycle, including row identity and lazy saving of persisted rows.

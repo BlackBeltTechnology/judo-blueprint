@@ -10,6 +10,8 @@ The shape is one abstract base, Credential, with a concrete subtype per platform
 
 The base type is used only for lookup through the account. Each subtype is read and written through its own generated pages.
 
+When an access link targets the abstract base, the platform's generated Create action offers the concrete subtypes to choose from (see the [advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md)). Here the Account's credential is set through a custom operation instead.
+
 Generated UI pages follow from the entities. Keep the View and Table pages for each credential subtype, and hide the generated Form for Credential itself, because it is abstract.
 
 ## Structure diagram

@@ -1,6 +1,6 @@
 ## Overview
 
-A custom admin statistics visual replaces the generated statistics panel with KPI cards, pending-action counters, a content breakdown and a sortable organization table. The visual is registered as a custom implementation of the generated component. Framework in the reference project: React with MUI.
+A custom admin statistics visual replaces the generated statistics panel with KPI cards, pending-action counters, a content breakdown and a sortable organization table. The visual is registered as a custom implementation element of the generated page. Framework in the reference project: React with MUI.
 
 ## Presentation component
 
@@ -29,16 +29,16 @@ Two hosts render the same presentation:
 
 ### Custom implementation hooks
 
-The custom visual is attached through the generated customization hooks. The hook key for the statistics component is generated per page and per container; take the exact name from the generated hook file of the page, do not copy it from another project. Two registrations are involved:
+The platform documents the route for replacing a visual element: the element must be a custom implementation widget in the UI model, and the component is registered under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` with the element's generated `component` key, from the generated custom implementations scaffold ([advanced patterns](../../agent-docs/frontend/advanced-patterns.md), Component Replacement Hook). The statistics panel must therefore be declared as such an element in the UI model. The hook key for the statistics component is generated per page and per container; take the exact name from the generated hook file of the page, do not copy it from another project. Two registrations are involved:
 
 - a custom implementation that replaces the default statistics visual element;
-- a data-mask hook for the relation view page that adds the nested organization statistics to the fetch.
+- a data-mask hook for the relation view page that adds the nested organization statistics to the fetch. This second hook is project practice; the platform docs do not describe it, so take its name and signature from the generated page customization file.
 
 ## Styling
 
 ### Removing the generated card frame
 
-The generated analytics section is wrapped in a card. A style override on that section's data-name attribute removes the box shadow and the background so the custom visual sits on the page directly. Select on the generated attribute, not on a class name, because class names change between generator runs.
+The generated analytics section is wrapped in a card. In the reference project (project practice, not described in the platform docs) a style override on that section's generated attribute removes the box shadow and the background so the custom visual sits on the page directly. Select on the generated attribute, not on a class name, because class names change between generator runs.
 
 ## Examples
 

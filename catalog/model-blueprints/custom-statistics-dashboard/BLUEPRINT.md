@@ -13,7 +13,7 @@ alternatives: []
 related: [custom-post-detail-views, interceptor-derived-statistics-calculation, custom-notification-card-inbox]
 fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 
 ## Intent
@@ -32,7 +32,7 @@ The custom visual is a presentation component fed by a small data wrapper. The p
 - A user visibility split (hidden against visible) with percentages.
 - A sortable table of organization statistics.
 
-No model element is added. The numbers come from an existing read operation whose returned shape includes the nested organization statistics.
+No entity or attribute is added, but the statistics panel must be declared in the UI model as a custom implementation element so that it can be replaced. The numbers come from an existing read operation whose returned shape includes the nested organization statistics.
 
 ## Constraints
 

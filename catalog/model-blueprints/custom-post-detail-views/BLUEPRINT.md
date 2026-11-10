@@ -3,7 +3,7 @@ id: custom-post-detail-views
 title: Custom Post Detail View Components
 description: A set of mobile-first, read-only custom views that replace the generated post detail layouts, with a shared wrapper that colors each post type and integrates contact actions and organization cards.
 aliases: [post detail views, post view components, custom detail pages]
-keywords: [post, detail, view, custom, container hook, mobile, read only, layout]
+keywords: [post, detail, view, custom, custom implementation, mobile, read only, layout]
 tags: ["domain:frontend", "layer:frontend", "project:mlszksz-platform", "status:single-project"]
 category: pattern
 status: single-project
@@ -12,7 +12,7 @@ evidence: ["mlszksz-platform:unrecorded"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -28,7 +28,7 @@ The author's organization is shown as a compact card, and the e-mail and phone a
 
 ## Structure
 
-This is a frontend-only set of views. It has no model of its own: each view displays the data of an existing post or related entity, and it does not add entities, attributes or relations.
+This is a frontend set of views. It adds no entities, attributes or relations: each view displays the data of an existing post or related entity. The pages to replace must be declared in the UI model as custom implementation elements.
 
 The views cover the four post types (news, offer, request and announcement), the organization detail page, and the profile page. Offers and requests add an interest action. Announcements are the simplest, with no organization card and no action.
 
