@@ -1,19 +1,21 @@
 ## Overview
 
-The token-based verification entity manifests in the React frontend through a dedicated registration application with three custom pages: organization registration, email verification, and invitation verification. These pages are fully custom (not generated) and handle the token-based verification workflow.
+The token-based verification flow runs in a separate frontend application. It has three custom pages: organization registration, email verification and invitation verification. These pages are written by hand, not generated, because the flow runs before any user is signed in.
 
-## Implementation Pattern
+## Implementation pattern
 
-- **Separate frontend application**: The registration flow runs in its own React app (`mlszkszplatform__services__registration__registration_point`) with a separate actor (RegistrationPoint), completely independent from the main authenticated app.
-- **RegistrationPage**: A multi-section form collecting organization details, address, contact info, and company admin credentials. Supports both direct registration and invitation-based registration (reads `token` and `email` from URL query params). Uses reCAPTCHA validation before submission.
-- **VerificationPage**: Reads `id` and `token` from URL search params, displays a status-driven UI (idle/loading/success/error/invalid), and calls the `validate` operation on the RegistrationTransfer TO to verify the registration token.
-- **InvitationVerifyPage**: Similar to VerificationPage but for user invitation tokens. Reads `id` and `token` from URL search params and calls `verifyUserInvitation` on the RegistrationTransfer TO.
-- **reCAPTCHA integration**: A custom `useRecaptcha` hook provides `getRecaptchaToken()` for bot protection on all verification actions.
+- **Separate application.** The registration flow has its own application and its own actor, so it does not depend on the main authenticated app.
+- **Registration page.** A multi-section form collects the organization details and the company administrator. It reads a token and an email from the URL when the registration comes from an invitation. It runs a bot check before it submits.
+- **Verification pages.** Each page reads an identifier and a token from the URL, then calls the matching verification operation. The page shows a status-driven state (idle, loading, success, error, invalid).
+- **Bot check.** A shared hook provides a token for the bot check, and each verification action requests one first.
+- **Hook keys are generated per page or container.** Custom hooks on the generated pages must use the key that the generator produces for that page ([Advanced frontend patterns](../../agent-docs/frontend/advanced-patterns.md#page-and-container-action-hooks)). The three custom pages here are not generated, so they do not use generated hook keys.
+- **Localization.** The registration app keeps its own translation file for the registration and verification text.
 
 ## Examples
 
 ### mlszksz-platform
-- Framework: React
-- Key files: `registration_point/src/custom/pages/RegistrationPage.tsx`, `registration_point/src/custom/pages/VerificationPage.tsx`, `registration_point/src/custom/pages/InvitationVerifyPage.tsx`, `registration_point/src/custom/hooks/useRecaptcha.ts`
-- Pattern: Each page is a standalone React component using `RegistrationPointServiceForRegistrationTransferImpl` to call backend operations. The registration form uses controlled inputs with client-side validation (FormErrors). Verification pages use a state machine pattern (idle -> loading -> success/error) to manage the asynchronous verification flow.
-- Notable: The registration app has its own `.generator-ignore` entries for custom pages and `index.html` (with reCAPTCHA script). i18n translations for registration/verification are in a separate `application_hu-HU.json` file in the registration app.
+
+- Framework: React (example project code).
+- Key files: the registration page, the verification page, the invitation verification page and the bot-check hook in the registration app.
+- Each page calls its backend operation through the registration app's generated service client. The registration form uses controlled inputs with client-side validation.
+- The registration app ignores generated output for its custom pages and its HTML entry, so regeneration does not overwrite them.

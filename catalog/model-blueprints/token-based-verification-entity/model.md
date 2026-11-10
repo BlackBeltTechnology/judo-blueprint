@@ -1,16 +1,30 @@
-## Examples
+## Model shape
 
-### mlszksz-platform
-- **RegistrationRequest**: `MLSZKSZPlatform::entities::RegistrationRequest`
-  - Token attributes: verificationToken, verificationExpiresAt, verifiedAt
-  - Status: RegistrationRequestStatus (PENDING, VERIFIED, APPROVED, REJECTED, EXPIRED)
-  - Additional: organizationName, contactName, contactEmail, contactPhone, companyAdminName, companyAdminEmail, fullAddress, rejectionReason
-  - Transfer object exposes accept/reject operations
-- **InvitationRecipient**: `MLSZKSZPlatform::entities::InvitationRecipient`
-  - Token attributes: verificationToken, verificationExpiresAt
-  - Additional: email, sentAt, usedForSuccessfulRegistration
-- **UserInvitationRequest**: `MLSZKSZPlatform::entities::UserInvitationRequest`
-  - Token attributes: invitationToken, expiresAt, verifiedAt
-  - Status: InvitationStatus (PENDING, VERIFIED, APPROVED, REJECTED, EXPIRED)
-  - Transfer object exposes accept/reject operations
-- **InvitationStatus enum**: `MLSZKSZPlatform::types::InvitationStatus` -- same 5 members as RegistrationRequestStatus
+The VerificationRequest entity holds the token hash, the expiry and verified-at timestamps, the email the token was sent to, and a required status. The status is a VerificationStatus enumeration with five values, and it starts in Pending. The plain token is never a stored attribute.
+
+Generated UI pages: the request is created and decided by custom operations, so keep the generated View and Table pages for reviewers and hide or disable the generated create and edit controls. The registration and verification pages are hand-written, see [frontend.md](frontend.md).
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=token-based-verification-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class VerificationRequest {
+    <<Entity>>
+    +String tokenHash
+    +Timestamp expiresAt
+    +Timestamp verifiedAt
+    +VerificationStatus status [1]
+    +String email [1]
+  }
+  class VerificationStatus {
+    <<Enumeration>>
+    Pending
+    Approved
+    Rejected
+    Verified
+    Expired
+  }
+  VerificationRequest ..> VerificationStatus : status
+```
+<!-- /mermaid:generated -->

@@ -1,21 +1,20 @@
 ## Overview
 
-The User entity lifecycle is managed through a `UserService` OSGi service that handles user creation (with Keycloak provisioning), status transitions (activate/suspend/deactivate), visibility toggling, and user invitation workflows. An `AuthenticationInterceptor` updates the user's `lastLogin` timestamp on every authentication event.
+The user lifecycle is handled by a user service. It creates the user with an organization and a role, changes the status, and handles invitations. An authentication interceptor (platform extension point, see [Authentication guide](../../agent-docs/backend/authentication-guide.md)) records the last login on each authentication event.
 
-## Implementation Pattern
+## Implementation pattern
 
-- `UserServiceImpl` is an OSGi `@Component` injecting `UserDao`, `CompanyUserDao`, `KeycloakUserService`, `OrganizationDao`, `PlatformEmailService`, and `ConfigurationTemplateService`
-- `createUser()` creates the User entity with ACTIVE status, the specified UserRole, and organization association, then provisions a Keycloak account via `KeycloakUserService.createUser()` with Hungarian name convention (first word = lastName, rest = firstName)
-- Status transitions: `suspend()` validates ACTIVE status and not-last-platform-admin, `activate()` validates SUSPENDED status, `deactivate()` validates not-last-admin-in-organization
-- `changeVisibility()` toggles the `isVisible` flag for user profile visibility
-- `inviteUser()` creates a `UserInvitationRequest` with hashed token and expiry, sends verification email
-- `verifyUserInvitation()` validates the hashed token, checks expiry, transitions from PENDING to VERIFIED
-- `LogAuthenticationInterceptor` implements `AuthenticationInterceptor`: on `_principal` operations, resolves user by email, updates `lastLogin` timestamp, and logs `USER_LOGIN` audit entry
-- Custom operations: `ActivateCustomImplementation`, `DeactivateCustomImplementation`, `SuspendCustomImplementation`, `ChangeVisibilityCustomImplementation` (companyadmin/companyuser), `CreateUserCustomImplementation`, `InviteUserCustomImplementation` (organizationadminpanel)
+- **Creation.** The service creates the user with the organization association and the role. It then provisions the external identity account.
+- **Status transitions.** Suspend, activate and deactivate each check the current status first. Deactivation and suspension also check that the last administrator in the scope is not removed.
+- **Last-administrator guards.** The guard counts the active users with the administrator role, both platform-wide and inside the organization. The count runs as a query.
+- **Invitations.** An invitation stores a hashed token with an expiry and moves through a pending and then a verified state.
+- **Interceptor.** The authentication interceptor updates the last-login time and writes an audit entry. It is called on authentication events, not on the custom operations.
+- **Custom operations.** Interceptors do not run for custom operations ([Interceptors](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). Activate, suspend, deactivate, visibility change, user creation and invitation are custom, so each carries its own checks.
+- **Errors.** A rule violation is a modeled fault, declared on the operation in the model (HTTP 422; see [Error handling](../../agent-docs/backend/error-handling-guide.md#modeled-faults)). A bad field value is the platform validation exception (HTTP 400). The service and helper classes named below are example project code, not platform API.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `common/services/UserService.java`, `common/services/impl/UserServiceImpl.java`, `interceptors/LogAuthenticationInterceptor.java`, `custom/.../companyadmin/companyuser/SuspendCustomImplementation.java`
-- Pattern: User creation combines JUDO entity creation + Keycloak provisioning; status transitions enforce state machine rules with last-admin guards; authentication interceptor updates lastLogin + logs audit
-- Notable: `validateNotLastPlatformAdmin()` prevents suspending/deactivating the last PLATFORM_ADMIN; `validateNotLastAdmin()` prevents deactivating the last COMPANY_ADMIN in an organization; both count active users by role via `CompanyUserDao` queries
+
+- Key files (example project code): the user service and its implementation, the authentication interceptor, and the suspend operation on the organization admin view.
+- The last-administrator guards are the main rule. They are the reason the role check runs in the organization context.

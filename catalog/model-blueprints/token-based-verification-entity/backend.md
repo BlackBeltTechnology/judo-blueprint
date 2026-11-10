@@ -1,21 +1,21 @@
 ## Overview
 
-The token-based verification pattern is implemented across RegistrationRequest and UserInvitationRequest entities. The `RegistrationService` and `UserService` handle token generation, hashed storage, verification, and the PENDING -> VERIFIED -> APPROVED/REJECTED lifecycle. A `RegistrationCleanupJob` scheduler removes expired and processed requests.
+The verification flow is implemented by custom operations on the request entity. Each one checks the status and the token before it changes anything. A scheduled cleanup (project practice, see [[osgi-scheduled-background-jobs]]) removes requests that are expired or already decided.
 
-## Implementation Pattern
+## Implementation pattern
 
-- Token generation uses `TokenUtils.generateSecureToken()` (UUID-based) and `TokenUtils.hashToken()` (SHA-256 hash) -- the plain token is sent via email while only the hash is stored in the database
-- Submission flow: create entity with PENDING status, hashed verificationToken, and computed expiresAt from `ConfigurationTemplateService.getVerificationExpiryMinutes()`
-- Verification flow: hash the incoming token, query by hashed token, validate status==PENDING, validate token match, validate not expired, then transition to VERIFIED
-- Approval flow: validate status==VERIFIED, create Organization + User + Keycloak account, request magic link for one-click login, send approval email, transition to APPROVED
-- Rejection flow: validate status==VERIFIED, transition to REJECTED
-- The `RegistrationCleanupJob` scheduler periodically removes: expired PENDING requests (verificationExpiresAt < now), and completed APPROVED/REJECTED requests
-- UserInvitationRequest follows the same pattern but with `invitationToken`/`expiresAt` field names and `InvitationStatus` enum
-- Custom operations: `RegistrationCustomImplementation`, `ValidateCustomImplementation`, `VerifyUserInvitationCustomImplementation` (registration actor), `AcceptCustomImplementation`, `RejectCustomImplementation` (admin and companyadmin)
+- **Token creation.** The plain token is generated with a secure random source. Only its hash is stored. The plain token goes to the email.
+- **Submission.** Submission creates the request in Pending with the hash and an expiry computed from a configured number of minutes.
+- **Verification.** The incoming token is hashed and matched against the stored hash. The status must be Pending and the token must not have expired. Success sets Verified and the verified-at time.
+- **Approval.** Approval requires Verified. The example creates the organization, the user and the external identity account, then sends a login link and moves the request to Approved.
+- **Rejection.** Rejection requires Verified and moves the request to Rejected.
+- **Cleanup.** A scheduled job removes expired pending requests and decided requests.
+- **Custom operations.** Interceptors do not run for these ([Interceptors](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)), so every check is in the operation.
+- **Errors.** A failed status or token check raises a modeled fault, which must be declared on the model operation so the generated interface has a `throws` clause (HTTP 422; see [Error handling](../../agent-docs/backend/error-handling-guide.md#modeled-faults)). A bad field value raises the platform validation exception (HTTP 400). The helper classes named below are example project code, not platform API.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `common/services/impl/RegistrationServiceImpl.java`, `common/services/impl/UserServiceImpl.java`, `common/utils/TokenUtils.java`, `scheduler/RegistrationCleanupJob.java`, `custom/.../registrationtransfer/RegistrationCustomImplementation.java`
-- Pattern: SHA-256 hashed tokens stored in DB; plain tokens sent via email; verification validates hash match + expiry + status; approval creates Organization + User + Keycloak + magic link
-- Notable: Two parallel verification workflows (RegistrationRequest for new organizations, UserInvitationRequest for new users in existing organizations) share the same `TokenUtils` and follow identical hash-and-verify logic
+
+- Key files (example project code): the registration and user service implementations, the token utility, and the cleanup job.
+- The two request entities use the same token helper and the same hash-and-verify logic. They differ only in the names of the token and expiry fields and in the status enumeration.

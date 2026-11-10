@@ -1,27 +1,24 @@
-## Examples
+## Model shape
 
-### rackinspect
-Entities with the toggleActive pattern (15 entities):
-- `rackinspect::entities::Address` -- active (default: true), toggleActive + toggleBilling + toggleDelivery + toggleHeadquarters + togglePostal
-- `rackinspect::entities::BankAccount` -- active (default: true), toggleActive + togglePrimary
-- `rackinspect::entities::CompanyAddress` -- active (default: true), toggleActive + toggleBilling + toggleHeadquarters + togglePostal + togglePrimary
-- `rackinspect::entities::CompanyBankAccounts` -- active (default: true), toggleActive
-- `rackinspect::entities::CompanyEmail` -- active (default: true), toggleActive + togglePrimary
-- `rackinspect::entities::CompanyPhone` -- active (default: true), toggleActive + togglePrimary
-- `rackinspect::entities::EmailAddress` -- active (default: true), toggleActive + togglePrimaryContact + toggleEszamla
-- `rackinspect::entities::Partner` -- active (default: true), toggleActive + validate
-- `rackinspect::entities::PaymentDeadline` -- active (default: true), toggleActive
-- `rackinspect::entities::PaymentMethod` -- active (default: true), toggleActive
-- `rackinspect::entities::PhoneNumber` -- active (default: true), toggleActive + togglePrimary
-- `rackinspect::entities::Unit` -- active (default: true), toggleActive + toggleStandaloneStorable
-- `rackinspect::entities::User` -- active (default: true), toggleActive + recalculatePermissions
-- `rackinspect::entities::UserAddress` -- active (default: true), toggleActive + togglePrimary
-- `rackinspect::entities::UserEmail` -- active (default: true), toggleActive + togglePrimary
-- `rackinspect::entities::UserPhone` -- active (default: true), toggleActive + togglePrimary
+One entity holds the flag and the operation that flips it.
 
-### mlszksz-platform
-Transfer objects with the activateToggle pattern (TO-level variant):
-- `MLSZKSZPlatform::services::admin::City` -- isActive attribute on entity `MLSZKSZPlatform::entities::City` (req, default: true); activateToggle INSTANCE operation on the admin City TO
-- `MLSZKSZPlatform::services::admin::Capability` -- isActive attribute on entity `MLSZKSZPlatform::entities::Capability` (req, default: true); activateToggle INSTANCE operation on the admin Capability TO
+- **Account** (neutral name) has a required, stored boolean `active` with default true, plus its own attributes (here a required name).
+- **toggleActive** is an instance operation on the entity with no input and no output. It is declared `customImplementation` and stateful, so the body is Java in the backend ([backend.md](backend.md)). The model does not say what it flips.
 
-This project uses `isActive` (entity-level attribute) and `activateToggle` (TO-level operation) instead of `active` and `toggleActive`. The toggle operation is defined on the transfer object in the admin service package rather than on the entity itself, and is not marked as customImplementation, indicating it uses model-defined behavior to flip the isActive flag.
+Generated UI pages follow from the entity: View, Table and Form pages as usual. The operation appears as an action on the View and Table pages. Keep it there, and hide the generated edit control for `active` if the flag should change only through the operation. Where project naming differs (`isActive` with `activateToggle` on a transfer object), the same applies to the transfer object pages.
+
+Platform note: the operation never passes through interceptors, so no model-level guard protects it. See [Interceptors](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted).
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=toggle-active-operation cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Account {
+    <<Entity>>
+    +String name [1]
+    +Boolean active [1]
+    +toggleActive()
+  }
+```
+<!-- /mermaid:generated -->

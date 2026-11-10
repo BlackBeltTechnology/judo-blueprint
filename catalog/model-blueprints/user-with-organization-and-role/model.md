@@ -1,9 +1,29 @@
-## Examples
+## Model shape
 
-### mlszksz-platform
-- **Entity**: `MLSZKSZPlatform::entities::User`
-  - Attributes: name (req), email (req), role (req), status (req), isVisible (default: true), isSilentMode, emailNotifications, organizationName, notifyOffers (default: true), notifyRequests (default: true), notifyAnnouncements (default: true), notifyNews, lastLogin
-  - Relations: organization (1..1), inquiries (0..*), devices (0..*), notifications (0..*)
-- **UserRole enum**: `MLSZKSZPlatform::types::UserRole` -- COMPANY_ADMIN(0), COMPANY_READER(1), PLATFORM_ADMIN(2), ASSOCIATION_LEADERSHIP(3)
-- **UserStatus enum**: `MLSZKSZPlatform::types::UserStatus` -- ACTIVE(0), SUSPENDED(1), DEACTIVATED(2)
-- Transfer objects project different views: admin::CompanyUser (with activate/deactivate/suspend ops), companyreader::ProfilePanel (notification prefs), technical::User (access control flags)
+The User entity has a name, an email as the identifier, and a required role from the UserRole enumeration (Owner, Member). It has a required association to one Organization. Role checks are made in the context of that organization.
+
+Generated UI pages: the User View, Form and Table pages show the role and a link to the organization. Hide the role control for users who may not change roles, and keep the organization association read-only on the Form once the user exists, since changing it moves the user between organizations. See [frontend.md](frontend.md) for the custom profile panel.
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=user-with-organization-and-role cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Organization {
+    <<Entity>>
+  }
+  class User {
+    <<Entity>>
+    +String name [1]
+    +Email email [1]
+    +UserRole role [1]
+  }
+  class UserRole {
+    <<Enumeration>>
+    Member
+    Owner
+  }
+  User --> "1" Organization : organization
+  User ..> UserRole : role
+```
+<!-- /mermaid:generated -->

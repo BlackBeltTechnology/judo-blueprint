@@ -1,25 +1,45 @@
 ## Overview
 
-The toggleActive operation (and its siblings togglePrimary, toggleBilling, etc.) is implemented as custom operation classes on each entity, each flipping the corresponding boolean flag via the entity DAO and optionally triggering validation on the parent.
+The toggle is a custom operation class per entity. The platform part is the generated interface and the OSGi registration; the rest below is project practice seen in rackinspect and mlszksz-platform. The platform's own toggle example is in [Custom operations](../../agent-docs/backend/custom-operations.md#example-1-simple-toggle-operation).
 
 ## Implementation Pattern
 
-- Each `ToggleActiveCustomImplementation` class is an OSGi `@Component` implementing the generated `ToggleActive` interface for the specific entity
-- The implementation follows a consistent three-step pattern: (1) reload the entity by ID, (2) flip the boolean via `setActive(!getActive())`, (3) update via DAO
-- For child entities (Address, PhoneNumber, EmailAddress), the toggle additionally queries the parent (Partner) via `dao.queryContainer()` and calls `validate.accept(partner)` to re-run business rules
-- Additional toggle operations (togglePrimary, toggleBilling, toggleHeadquarters, togglePostal, toggleDelivery) follow the same pattern but flip different flags
-- A shared `Validate` custom operation is injected via `@Reference` when parent validation is needed after toggling
-- Variant: User.toggleActive includes a safety check preventing deactivation of the current user (via `VariableResolver` to resolve the actor email) and validates that at least one user with ROLES and USERS permission remains active
+### Platform: one class per operation
 
-## Examples
+- Each `ToggleActiveCustomImplementation` is an OSGi `@Component` that implements the interface generated from the model operation, and is registered as a service of that interface.
+- Custom operations are not intercepted. Any permission or consistency rule must be inside the class ([Interceptors](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- A typed business error needs a fault declared on the model operation. Without it the generated interface has no `throws` clause ([Custom operations](../../agent-docs/backend/custom-operations.md#rules-for-custom-operations), [Error handling](../../agent-docs/backend/error-handling-guide.md#modeled-faults)).
 
-### mlszksz-platform
-- Key files: `custom/.../admin/capability/ActivateToggleCustomImplementation.java`, `custom/.../admin/city/ActivateToggleCustomImplementation.java`, `common/services/MasterDataService.java`
-- Pattern: Thin custom operation delegates to `MasterDataService.toggleCapabilityActive()` / `MasterDataService.toggleCityActive()`; service queries entity, flips `isActive`, calls `dao.update()`
-- Notable: Both City and Capability share the same `MasterDataService` and follow an identical toggle pattern; the operation name `activateToggle` (TO-level) maps to `isActive` (entity-level)
+### Project practice: three steps
 
-### rackinspect
-- Key files: `custom/.../_default_transferobjecttypes/entities/address/ToggleActiveCustomImplementation.java`, `custom/.../partner/ToggleActiveCustomImplementation.java`, `custom/.../user/ToggleActiveCustomImplementation.java`, and 13+ more across address, bankaccount, emailaddress, phonenumber, unit, paymentdeadline, paymentmethod, companyaddress, companyemail, companyphone, useraddress, useremail, userphone packages
-- Pattern: Each entity has its own `ToggleActiveCustomImplementation` -- reload by ID, flip `active`, update via DAO with mask; child entities also call `validate.accept(partner)` on the parent
-- Notable: 15+ entities implement `toggleActive` plus additional toggles: `togglePrimary`, `toggleBilling`, `toggleDelivery`, `toggleHeadquarters`, `togglePostal`, `toggleEszamla`, `toggleStandaloneStorable`
-- Safety: `User.toggleActive` uses `VariableResolver` to prevent self-deactivation and `RoleAndUserValidationDao` to ensure at least one user retains ROLES and USERS permissions
+1. Reload the entity by id through its DAO.
+2. Flip the boolean and update through the DAO.
+3. For child entities, query the owner through the DAO container query and run the shared validate operation on it.
+
+```java
+@Component(immediate = true, service = ToggleActive.class)
+public class ToggleActiveCustomImplementation implements ToggleActive {
+    @Reference AccountDao accountDao;
+
+    @Override
+    public void accept(Account _this) {
+        Account account = accountDao.getById(_this.identifier()).orElseThrow();
+        account.setActive(!account.getActive());
+        accountDao.update(account);
+    }
+}
+```
+
+The class and DAO names are illustrative. Use a mask on the update when only the flag changes ([Data access](../../agent-docs/backend/data-access-guide.md#pattern-4-partial-updates)).
+
+### Project practice: sibling toggles
+
+Primary, billing, headquarters, postal and delivery toggles reuse the three steps on different flags. A shared `Validate` operation injected with `@Reference` re-runs owner rules after the flip.
+
+### Project practice: self-lock guard
+
+In rackinspect the user toggle resolves the current actor with `VariableResolver` and refuses to deactivate that user. It also uses a validation DAO to confirm that at least one active user keeps the roles and users permissions. The platform doc shows the same guard ([Custom operations](../../agent-docs/backend/custom-operations.md#example-1-simple-toggle-operation)). Raise a declared fault, not a plain Java exception.
+
+### Project practice: delegating service
+
+In mlszksz-platform the operation class is thin and calls `MasterDataService.toggleCityActive()` or `toggleCapabilityActive()`, an example project service that queries the entity, flips `isActive` and updates through the DAO.

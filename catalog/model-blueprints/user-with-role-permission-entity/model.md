@@ -1,10 +1,47 @@
-## Examples
+## Model shape
 
-### rackinspect
-- **User entity**: `rackinspect::entities::User` (non-CRUD)
-  - Attributes (28): name (req), email (req), active (default: true), notes, rolesString, plus 23 denormalized permission booleans (permissionToCompanyData, permissionToConfiguration, permissionToDocumentRegistry, permissionToExchangeRates, permissionToPartners, permissionToPaymentDeadlines, permissionToPaymentMethods, permissionToRoles, permissionToUnits, permissionToUsers, permissionToFaultRegistries, permissionToOffers, permissionToItems, permissionToRepairCategories, permissionToDimensionTemplates, permissionToErrorCategories, permissionToRackElements, permissionToRackTypes, permissionToBrands, permissionToRepairTypes, permissionToErrorDestinations, permissionToErrorCodes, permissionToErrorQualifications)
-  - Relations: roles (0..* ASSOC to Role), permissions (0..* DERIVED), userAddresses/userEmails/userPhones (0..* COMPOSITION), primaryUserAddress/primaryUserEmail/primaryUserPhone (0..1 ASSOC), tasks (0..* ASSOC)
-  - Operations: toggleActive, recalculatePermissions (custom), createExchangeRate, updateExchangeRateForDateInterval
-- **Role entity**: `rackinspect::entities::Role` -- name (req), permissions (0..* ASSOC to Permission)
-- **Permission entity**: `rackinspect::entities::Permission` -- flag (req), id (req)
-- **PermissionFlag enum**: `rackinspect::entities::PermissionFlag` -- 23 members: FAULT_REGISTRIES(1), OFFERS(2), ITEMS(3), REPAIR_CATEGORIES(4), DIMENSION_TEMPLATES(5), ERROR_CATEGORIES(6), RACK_ELEMENTS(7), RACK_TYPES(8), PARTNERS(9), BRANDS(10), REPAIR_TYPES(11), ERROR_DESTINATIONS(12), EXCHANGE_RATES(13), USERS(14), ERROR_CODES(15), ERROR_QUALIFICATIONS(16), UNITS(17), PAYMENT_METHODS(21), COMPANY_DATA(25), ROLES(26), PAYMENT_DEADLINES(28), CONFIGURATION(29), DOCUMENT_REGISTRY(31)
+Four elements make the permission graph, with a stored copy on the user.
+
+- **PermissionFlag** enumeration: one member per application area.
+- **Permission** entity: a required flag (PermissionFlag).
+- **Role** entity: a required name and `permissions`, a one-way association to Permission (0..*).
+- **User** entity: required name and email, `roles` (one-way association to Role, 0..*), the derived `permissions` collection (`self.roles.permissions`), one required boolean per area with default false, and the custom instance operation `recalculatePermissions`.
+
+The operation is declared `customImplementation` and stateful, so its body is Java in the backend. It reads the derived collection and writes the user's booleans.
+
+Generated UI pages follow from the entities: Table and View pages for users, roles and permissions. The example makes the three entities non-createable, non-updateable and non-deleteable, so edits go through mapped transfer objects exposed to the administrator actor. Keep the role picker on the user Form and the permission picker on the role Form. Hide the denormalized booleans from edit forms: they are written only by the operation. Show the recalculate action on the user View for administrators.
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=user-with-role-permission-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Permission {
+    <<Entity>>
+    +PermissionFlag flag [1]
+  }
+  class PermissionFlag {
+    <<Enumeration>>
+    PARTNERS
+    USERS
+    ROLES
+    CONFIGURATION
+  }
+  class Role {
+    <<Entity>>
+    +String name [1]
+  }
+  class User {
+    <<Entity>>
+    +String name [1]
+    +String email [1]
+    +Boolean permissionToPartners [1]
+    +Boolean permissionToUsers [1]
+    +recalculatePermissions()
+  }
+  Permission ..> PermissionFlag : flag
+  Role --> "*" Permission : permissions
+  User --> "*" Permission : permissions
+  User --> "*" Role : roles
+```
+<!-- /mermaid:generated -->

@@ -1,18 +1,32 @@
-## Examples
+## Model shape
 
-### park-here
-- **Holiday entity**: `ParkHere::entities::Holiday` (non-CRUD)
-  - Attributes: startDate (req), endDate (req)
-  - Relations: holidayOwner (0..1 DERIVED back to User)
-- **User entity** composes holidays (0..* COMPOSITION) and has queryCollidingHolidays (query attribute) for conflict detection
-- **AdditionalDay entity**: `ParkHere::entities::AdditionalDay` (non-CRUD)
-  - Attributes: day (req), typeOfDay (req, DayType enum)
-  - Managed via Configuration entity (additionalDays 0..* ASSOC)
-- **DayType enum**: `ParkHere::entities::DayType` -- WORK(1), HOLIDAY(2)
-  - Allows overriding calendar: marking a Saturday as WORK day, or a weekday as HOLIDAY
-- **Transfer Objects**:
-  - `Holiday` TO -- startDate, endDate, isNotDeletable (guard); operation: deleteHoliday (custom INSTANCE)
-  - `HolidayInput` (unmapped) -- startDate, endDate, hiddenByCustom, userHidden, currentDate; relations: user (1..1 AGGREGATION), reservationsForDeleteInfo (0..* AGGREGATION)
-  - `HolidayPanel` TO -- holidays (0..* ASSOC); operation: holiday (custom INSTANCE for creation)
-  - `UserReservationPanel` TO -- includes holidays (0..* ASSOC) alongside reservation collections
-- Holiday creation checks for colliding reservations via the HolidayInput's reservationsForDeleteInfo relation, enabling the UI to warn users about affected bookings
+The User entity composes its holidays. Each Holiday has a required start date and end date, and a derived relation `owner` back to its owning User (container navigation). The User-to-Holiday relation is a composition. The DayType enumeration (Work, Off) marks single-day calendar overrides. The Reservation entity is next to the holiday because a new holiday can affect existing bookings.
+
+Generated UI pages: the holiday list and form sit on the user's own panel (composition table and form). Keep the generated Table and Form for holidays there. Because creation is a custom operation that also touches reservations, hide the plain generated create control if it would skip the overlap check ([frontend.md](frontend.md)).
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=user-holiday-absence-tracking cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class DayType {
+    <<Enumeration>>
+    Work
+    Off
+  }
+  class Holiday {
+    <<Entity>>
+    +Date startDate [1]
+    +Date endDate [1]
+  }
+  class Reservation {
+    <<Entity>>
+    +String status
+  }
+  class User {
+    <<Entity>>
+  }
+  Holiday --> "0..1" User : owner
+  User *-- "*" Holiday : holidays
+```
+<!-- /mermaid:generated -->
