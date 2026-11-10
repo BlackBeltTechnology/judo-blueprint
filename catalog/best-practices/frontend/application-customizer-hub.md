@@ -4,16 +4,16 @@ title: Application Customizer as Central Hook Registration Hub
 description: All Pandino service registrations of a frontend (hooks, visual elements, interceptors, flow managers) are made from the single customizer file, with one register function per hook file.
 aliases: [customizer hub, central hook registration]
 keywords: [application customizer, pandino, registerService, BundleContext, hook registration, custom folder]
-tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "project:reserve-app", "project:park-here", "status:established"]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:workflow-poc", "project:reserve-app", "project:park-here", "project:indamedia-adtrack", "status:established"]
 category: config
 status: established
-projects: [rackinspect, workflow-poc, reserve-app, park-here]
-evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+projects: [rackinspect, workflow-poc, reserve-app, park-here, indamedia-adtrack]
+evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, hook-scaffold-default-pattern, generator-ignore-app-theme]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-11-10
+last_updated: 2026-11-11
 ---
 ## Intent
 

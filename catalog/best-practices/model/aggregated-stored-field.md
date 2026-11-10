@@ -4,16 +4,16 @@ title: Aggregated Stored Field for Denormalized Collection Data
 description: "Store a summary of a collection relation in a dedicated attribute of the owning entity and refresh it from backend code, trading staleness risk for cheap reads."
 aliases: [denormalized summary, aggregated field, stored aggregate]
 keywords: [aggregated, denormalization, stored attribute, collection, interceptor, summary]
-tags: ["domain:model", "layer:model", "project:alba", "status:single-project"]
+tags: ["domain:model", "layer:model", "project:alba", "project:indamedia-adtrack", "status:emerging"]
 category: entity
-status: single-project
-projects: [alba]
-evidence: ["alba:unrecorded"]
+status: emerging
+projects: [alba, indamedia-adtrack]
+evidence: ["alba:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
 fragment: aggregated-stored-field
 diagram: { kinds: [entity], members: types }
-last_updated: 2026-11-10
+last_updated: 2026-11-11
 ---
 ## Intent
 

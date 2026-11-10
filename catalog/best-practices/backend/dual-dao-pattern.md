@@ -1,23 +1,23 @@
 ---
 id: dual-dao-pattern
 title: Dual DAO Injection (Entity-Level + Actor-Level)
-description: A custom operation may see two generated DAOs with the same simple name, one for the entity and one for an actor's transfer view. Know which one you inject and why.
+description: A custom operation may see two generated DAOs for one entity, one for the entity and one for an actor's transfer view, whose simple names may or may not clash. Know which one you inject and why.
 aliases: [two DAOs same name, actor DAO, entity DAO and transfer DAO]
 keywords: [dao, injection, actor, entity, transfer object, package, reference, service layer, entity layer]
-tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:indamedia-adtrack", "status:emerging"]
 category: di
-status: single-project
-projects: [trivia]
-evidence: ["trivia:unrecorded"]
+status: emerging
+projects: [trivia, indamedia-adtrack]
+evidence: ["trivia:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [custom-operation-osgi-component, identifier-adaptation-pattern]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-11-10
+last_updated: 2026-11-11
 ---
 ## Intent
 
-For one entity the generator can produce more than one DAO type with the same simple name, in different packages: one for the entity itself and one for a transfer object that an actor sees. A custom operation that injects both must keep them apart. In most operations one DAO is enough, and the entity DAO is the right default.
+For one entity the generator can produce more than one DAO type: one for the entity itself and one for a transfer object that an actor sees. Whether their simple names clash depends on how the transfer object is named. If it carries the entity's name, both DAOs share a simple name in different packages. If it has a distinct name, for example one ending in `Transfer`, the DAO name is distinct too (`…TransferDao`). A custom operation that injects both must keep them apart. In most operations one DAO is enough, and the entity DAO is the right default.
 
 ## Practice
 
@@ -27,7 +27,7 @@ The entity DAO has full create, read, update and delete methods and relation acc
 
 ### Inject the actor-side DAO only when you need its view
 
-Inject the actor-side DAO only if the operation must read or return the actor-scoped shape of the data, for example to reuse what the actor can see. Use a fully qualified name for one of the two, because the simple names collide. Do not inject it as a precaution: an injected but unused DAO adds an OSGi dependency and noise.
+Inject the actor-side DAO only if the operation must read or return the actor-scoped shape of the data, for example to reuse what the actor can see. If the simple names collide, use a fully qualified name for one of the two; with distinct transfer object names a plain import is enough. Do not inject it as a precaution: an injected but unused DAO adds an OSGi dependency and noise.
 
 ### Do not rely on the choice of DAO for permissions
 
@@ -40,12 +40,14 @@ When an input carries a service-layer object and the DAO wants an entity-layer o
 ## Rationale
 
 - Using only the DAOs you need keeps the operation readable and its dependency list short.
-- Two same-named types in different packages compile fine and import wrongly. Fully qualified names make the choice visible.
+- Two same-named types in different packages compile fine and import wrongly. Fully qualified names make the choice visible. With distinct names the service-layer DAO is told apart by its name alone.
 - The exact package layout depends on the generator version. This entry records what one project saw, not a platform contract. Check the generated sources of your project.
 
 ## Example
 
 In Trivia, the custom implementation of an operation on `Test` injects the entity DAO for `Test` for all reads and writes. It also injects the DAO generated for the player actor's `Test` view, using its fully qualified name. The player-side DAO is never called in the current code, so the injection is redundant.
+
+In adtrack, an operation on a tracked-campaign transfer object injects the service-layer `…TransferDao` and calls a `query...()` accessor, and scheduled jobs inject the aggregated-campaign transfer DAO. Their names do not clash with the entity DAOs.
 
 ## When to avoid
 
