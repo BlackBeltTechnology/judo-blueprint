@@ -1,35 +1,42 @@
 ---
-id: "component-proxy-placeholder-page"
-title: "ComponentProxy Placeholder Page for Custom Dashboard Entry Points"
-domain: "frontend"
-category: "page"
-score: 72.0
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-05-13"
-last_updated: "2026-05-13"
-projects:
-  - compsychletter
-format: legacy
-fragment: pending
+id: component-proxy-placeholder-page
+title: ComponentProxy Placeholder Page for Custom Dashboard Entry Points
+description: "A dashboard page component that renders a ComponentProxy with a minimal fallback heading, so a menu route works at once and the real dashboard UI is delivered later as a Pandino service."
+aliases: [dashboard placeholder page, custom dashboard route]
+keywords: [ComponentProxy, Pandino, dashboard, placeholder, routes.tsx, menu-items.tsx, MenuItemAccess, custom visual element]
+tags: ["domain:frontend", "layer:frontend", "project:compsychletter", "status:single-project"]
+category: page
+status: single-project
+projects: [compsychletter]
+evidence: ["compsychletter:unrecorded"]
+alternatives: [custom-visual-element-override]
+fragment: "none: frontend-only"
+first_seen: 2026-05-13
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Dashboard transfer objects without an explicit `<view>` UI layout in the ESM model do not get generated page components. When a `MenuItemAccess` entry is wired to such a dashboard, the corresponding route needs a page component. The canonical placeholder uses `ComponentProxy` from `@pandino/react-hooks`: it renders a custom implementation if one is registered in the Pandino service registry, or falls back to a minimal heading. This decouples routing from implementation — the route works immediately, and the real dashboard UI is delivered later via a Pandino bundle without touching the generated file.
+A `MenuItemAccess` points at a dashboard transfer object, but the UI model gives that dashboard no layout (no view), so the generator produces no page component for it. The route still needs something to render. A small page component built on `ComponentProxy` fills the gap: it shows a minimal heading until a custom implementation is registered in the Pandino service registry, and it renders that implementation afterwards. Routing is decoupled from the dashboard content, which can arrive in a later change.
 
-## Structure
+## Practice
 
-- One `default export function XxxPage()` per dashboard, rendering a `ComponentProxy`
-- `filter` attribute targets `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` + a component-specific string key
-- Fallback child is a minimal `<h1>Label</h1>` (visible until Pandino override is registered)
-- Exports a unique `XXX_PAGE_INTERFACE_KEY` string constant — downstream bundles import this to register their implementation
-- Lives in `src/pages/LetterUser/<XxxDashboard>Page/index.tsx`
-- Registered in `routes.tsx` as a lazy-loaded route at the access path (e.g. `/documents`, `/authoring`, `/data`)
+### Platform base
 
-## Code Shape
+- Custom UI is added as a Pandino service. A custom implementation of a model element is registered under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` (from `~/custom`) with the service property `component` set to a per-element key, and the register function is called from `application-customizer.tsx` ([custom component replacement](../../agent-docs/frontend/advanced-patterns.md), [application customizer hub](../../agent-docs/frontend/hooks/AGENTS.md)).
+- Files under `src/custom/` are never regenerated ([action hooks, keep custom hooks under src/custom](../../agent-docs/frontend/hooks/action-hooks.md)).
+- Whether the generator really emits no page for a dashboard without a layout, and the exact `ComponentProxy` props, are *verify* items: check the generated sources of your version.
+
+### Project practice: placeholder page per dashboard (compsychletter)
+
+The agent-docs do not describe this page shape; it is project practice.
+
+- One `default export function <Dashboard>Page()` per dashboard, rendering a `ComponentProxy`.
+- The `filter` matches `OBJECTCLASS` = `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` and a `component` value equal to the page's own exported string constant (`<DASHBOARD>_PAGE_INTERFACE_KEY`). A later bundle imports that constant to register its implementation.
+- The child of the proxy is the fallback: a plain heading with the dashboard label.
+- The route is added to `routes.tsx` as a lazy-loaded route at the access path, and the menu entry to `menu-items.tsx`. In the project both files are listed in `.generator-ignore`, so they are edited by hand.
 
 ```tsx
-// src/pages/LetterUser/DocumentsDashboardPage/index.tsx
+// Example project code: src/pages/<Actor>/DocumentsDashboardPage/index.tsx
 import { OBJECTCLASS } from '@pandino/pandino-api';
 import { ComponentProxy } from '@pandino/react-hooks';
 import { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY } from '~/custom';
@@ -47,41 +54,33 @@ export default function DocumentsDashboardPage() {
 }
 ```
 
-Route registration in `routes.tsx` (generator-ignored — edit manually):
-
 ```tsx
-const DocumentsDashboardPage = lazy(() => import('./pages/LetterUser/DocumentsDashboardPage'));
-
-// ...
-
+// routes.tsx (hand-edited)
+const DocumentsDashboardPage = lazy(() => import('./pages/<Actor>/DocumentsDashboardPage'));
 routes.push({ path: 'documents', exact: true, element: <Suspense><DocumentsDashboardPage /></Suspense> });
+
+// menu-items.tsx (hand-edited)
+{ id: 'documentsMenu', type: 'item', title: 'Documents', url: '/documents', icon: 'mdi:file-document-multiple-outline' }
 ```
 
-Menu entry in `menu-items.tsx` (also generator-ignored — edit manually):
+## Rationale
 
-```tsx
-{
-  id: 'documentsMenu',
-  type: 'item',
-  title: 'Documents',
-  url: '/documents',        // or use exported routeToDocumentsDashboard()
-  icon: 'mdi:file-document-multiple-outline',
-}
-```
+- The route works before the dashboard UI exists, so navigation can ship first.
+- The override mechanism is the normal Pandino one, so the real UI needs no edit of the placeholder.
+- Cost: `routes.tsx` and `menu-items.tsx` are edited by hand, and the fallback heading is minimal (add a spinner or skeleton if needed).
 
-## Examples
+## Example
 
-### CompSychLetter
-Three placeholder pages created for `DocumentsDashboard`, `AuthoringDashboard`, `DataDashboard` after adding `MenuItemAccess` entries to `LetterUser`. Each exports a unique `*_PAGE_INTERFACE_KEY` constant. All three immediately navigable in the browser; real dashboard content delivered via separate Pandino bundles in follow-on changes.
+In compsychletter, three placeholder pages were created for `DocumentsDashboard`, `AuthoringDashboard` and `DataDashboard` after `MenuItemAccess` entries were added to the `LetterUser` actor. Each exports its own `*_PAGE_INTERFACE_KEY`. All three were navigable at once; the real dashboards came later as separate Pandino bundles.
 
-## Trade-offs
+## When to avoid
 
-- Pros: Route works before the full implementation exists; Pandino override mechanism decouples routing from content; consistent with the generated `DashboardPage` pattern
-- Cons: Requires manual edits to `routes.tsx` and `menu-items.tsx` (both generator-ignored); fallback heading is minimal — add a loading spinner or skeleton if needed
-- Prefer when: Dashboard TO has no `<view>` model layout, navigation needs to be available immediately, dashboard implementation will arrive via a separate change or Pandino bundle
+- When the dashboard has a layout in the UI model: the generated page already exists.
+- When the real component exists already: register it directly ([[custom-visual-element-override]]).
 
-## Related Patterns
+## Related
 
-- [access-paired-with-menu-item](../model/access-paired-with-menu-item.md) — menu item wiring that triggers need for this pattern
-- [panel-dashboard-transfer](../model/panel-dashboard-transfer.md) — the dashboard TO this page component represents
-- [application-customizer-hub](application-customizer-hub.md) — Pandino registration point
+- [[access-paired-with-menu-item]] — the menu wiring that creates the need for a page
+- [[panel-dashboard-transfer]] — the dashboard transfer object this page stands for
+- [[application-customizer-hub]] — where the Pandino registration lives
+- [[custom-visual-element-override]] — replacing a model element with a custom component

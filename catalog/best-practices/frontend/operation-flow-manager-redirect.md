@@ -1,114 +1,87 @@
 ---
-id: "operation-flow-manager-redirect"
-title: "OperationFlowManager Redirect to Access-Context View"
-domain: "frontend"
-category: "navigation"
-score: 0.0
-usage_count: 0
-alternative_count: 0
-first_seen: "2026-05-11"
-last_updated: "2026-05-11"
-projects:
-  - compsych-letter-demo
-format: legacy
-fragment: pending
+id: operation-flow-manager-redirect
+title: OperationFlowManager Redirect to Access-Context View
+description: "Register a custom OperationFlowManager so that the result of an operation lands on the access-context view of the row instead of a generated standalone transfer object view, keeping one representation per concept."
+aliases: [post-operation redirect, access-context redirect, flow manager override]
+keywords: [OperationFlowManager, shouldUseCustomFlow, handleResult, filterRecords, access context, redirect, OPERATION_FLOW_MANAGER_INTERFACE_KEY]
+tags: ["domain:frontend", "layer:frontend", "project:compsych-letter-demo", "status:single-project"]
+category: navigation
+status: single-project
+projects: [compsych-letter-demo]
+evidence: ["compsych-letter-demo:unrecorded"]
+alternatives: [operation-flow-redirect-pattern, post-operation-navigation-hook]
+fragment: "none: frontend-only"
+first_seen: 2026-05-11
+last_updated: 2026-11-10
 ---
-## Purpose
+## Intent
 
-Override default mapped-TO navigation. Redirect custom-op results to canonical access-context views. Avoid dual-view modelling.
+By default, the output of a custom operation that returns a mapped transfer object navigates to the generated standalone view of that transfer object. The same row is also reachable through the actor's access (`Actor.access.<area>.<rel>`, then row, then detail), which is a different generated page. Two pages for one row drift apart, bug fixes land in one of them, and the row has two URLs.
 
-## §1 Why redirect
+The rule is one representation per concept: choose the access-context view as canonical and redirect every post-operation landing into it. The standalone routes are still generated but are never visited.
 
-Default mapped-TO output navigation lands on generated standalone `<TO>View` route. Same row also reachable via `Actor.access.<area>.<rel> → row → detail` — a DIFFERENT generated page. Two views drift; bug-fixes land in one. Two URLs for same row.
+## Practice
 
-Rule: **one representation per concept**. Pick access-context view as canonical. Redirect every post-op landing into it. Standalone routes generated but unvisited.
+### Platform base
 
-See [relation-driven-crud-with-custom-input.md — §3 return-type matrix](../model/relation-driven-crud-with-custom-input.md#3-return-type-matrix).
+- `OperationFlowManager` and `OPERATION_FLOW_MANAGER_INTERFACE_KEY` (value `'OperationFlowManager'`) are exported from `~/utilities/application`. You register your implementation as a Pandino service from `application-customizer.tsx` ([OperationFlowManager](../../agent-docs/frontend/hooks/action-hooks.md)).
+- `handleResult(input)` receives the stored result of the operation, with `__entityType`, and returns `{ actor, access, filterRecords?, operation? }`. `shouldUseCustomFlow(input)` limits the manager to chosen result types. Branch on `input.__entityType`; examples in the docs that use `input.operation`, `tab` or `refresh` are illustrative.
+- Files under `src/custom/` are never regenerated ([action hooks, keep custom hooks under src/custom](../../agent-docs/frontend/hooks/action-hooks.md)).
+- The agent-docs state the same design principle and link here for the recipes.
 
-## §2 Extension point
+### Project practice: land on the filtered access table (compsych-letter-demo)
 
-Pandino DI service. Register under `OPERATION_FLOW_MANAGER_INTERFACE_KEY` from `~/generated`.
+The recipes below are project practice on top of that hook. Where the old text used `input.operationName`, `input.result.entityId` or an `id` key, treat those as *verify*: the documented input is the result object itself and the documented return keys are `actor`, `access`, `filterRecords`, `operation`.
 
-```typescript
-// src/custom/hooks/operationFlowManager.tsx
-import { OperationFlowManager, OperationInput } from '~/generated';
-
-export const customFlowManager: OperationFlowManager = {
-  shouldUseCustomFlow: (input: OperationInput) => {
-    return input.operation === 'CREATE' || input.operation === 'UPDATE';
-  },
-
-  handleResult: (input: OperationInput) => {
-    return null; // fall through to default per-op recipe
-  },
-};
-```
-
-`shouldUseCustomFlow` returns `true` → framework calls `handleResult`. Return spec drives navigation.
-
-## §3 Recipes
-
-| Goal | `handleResult` return |
+| Goal | `handleResult` returns |
 |---|---|
-| Access-context detail (canonical view) | `{ actor, access, id: result.__identifier }` |
-| Filtered list landing on specific row | `{ actor, access, filterRecords: { entityId: [{ operator: 'equal', value: result.entityId }] } }` |
-| Stay + refresh caller page | `{ refresh: true }` |
-| Fall through to default `<TO>View` | `null` |
+| Filtered access table landing on a specific row | `{ actor, access, filterRecords: { entityId: [{ operator: 'equal', value: <row entityId> }] } }` |
+| Access-context detail by signed identifier | `{ actor, access, id: <row __identifier> }` (*verify*: `id` is not in the documented return type) |
+| Stay on the caller page and refresh | `{ refresh: true }` (*verify*: appears only in illustrative docs examples) |
+| Default generated view | `null` |
 
-`actor` = actor FQN string (e.g. `'LetterUser'`). `access` = access link name (e.g. `'users'`). `id` = signed `__identifier` from the result payload.
-
-## §4 Worked example — `inviteUser`
-
-Custom op `AdminDashboard.inviteUser(input: UserInvitationInput) : UserTO`. Returns the newly-created `UserTO`. Default behaviour: navigate to standalone `<UserTO>View` route. Desired behaviour: land on new user's row inside `admin.users` access-context detail.
+`actor` is the actor name string and `access` the access name, as generated.
 
 ```typescript
-import { OperationFlowManager, OperationInput } from '~/generated';
+// Example project code: src/custom/hooks/operationFlowManager.tsx
+import { OPERATION_FLOW_MANAGER_INTERFACE_KEY, type OperationFlowManager } from '~/utilities/application';
 
 export const customFlowManager: OperationFlowManager = {
-  shouldUseCustomFlow: (input: OperationInput) =>
-    input.operationName === 'inviteUser',
-
-  handleResult: (input: OperationInput) => {
-    return {
-      actor: 'LetterUser',
-      access: 'users',
-      filterRecords: {
-        entityId: [{ operator: 'equal', value: input.result.entityId }],
-      },
-    };
-  },
+  // inviteUser returns the newly created user transfer object
+  shouldUseCustomFlow: (input) => (input as any)?.__entityType === 'UserTO',
+  handleResult: (input) => ({
+    actor: 'LetterUser',
+    access: 'users',
+    filterRecords: { entityId: [{ operator: 'equal', value: (input as any).entityId }] },
+  }),
 };
-```
 
-Result: `admin.users` table opens, filtered to the new user's row, row selected. Single canonical view. No standalone `<UserTO>View` URL ever visited.
-
-Pair with model-side admin pattern: [managed-actor-admin-pattern.md](../backend/managed-actor-admin-pattern.md).
-
-## §5 Registration boilerplate
-
-```typescript
 // src/custom/application-customizer.tsx
-import {
-  BundleContext,
-  OPERATION_FLOW_MANAGER_INTERFACE_KEY,
-} from '~/generated';
-import { customFlowManager } from './hooks/operationFlowManager';
-
-export const applicationCustomizer = (context: BundleContext) => {
-  context.registerService(
-    OPERATION_FLOW_MANAGER_INTERFACE_KEY,
-    customFlowManager,
-  );
-};
+context.registerService<OperationFlowManager>(OPERATION_FLOW_MANAGER_INTERFACE_KEY, customFlowManager);
 ```
 
-`.generator-ignore` protects `src/custom/application-customizer.tsx` from generator overwrite.
+Registration lives in `application-customizer.tsx`, which the project protects with `.generator-ignore`.
 
-## See also
+## Rationale
 
-- [relation-driven-crud-with-custom-input.md](../model/relation-driven-crud-with-custom-input.md) — §3 return-type matrix; §4 capability ladder
-- [managed-actor-admin-pattern.md](../backend/managed-actor-admin-pattern.md) — admin-surface example combining custom-op + redirect
-- [operation-flow-redirect-pattern.md](operation-flow-redirect-pattern.md) — alternative for `@redirect`-annotated multi-step workflows
-- [post-operation-navigation-hook.md](post-operation-navigation-hook.md) — per-action navigation hook (narrower than `OperationFlowManager`)
-- [application-customizer-hub.md](application-customizer-hub.md) — registration entry point conventions
-- action-hooks.md `OperationFlowManager` section in `judo-frontend-docs` skill — full hook reference
+- One canonical view means one place for fixes and one URL per row.
+- The result opens the `users` table filtered to the new row, so the user sees it in its normal context.
+- Cost: the standalone generated views remain as dead code, and the manager is global, so `shouldUseCustomFlow` must be narrow.
+
+## Example
+
+In compsych-letter-demo a custom operation `AdminDashboard.inviteUser(input)` returns the created user transfer object. Without a custom manager the app opened the standalone user view. With the manager above it opens the admin users table filtered to the new user's row. The model side of this admin surface is described in [[managed-actor-admin-pattern]].
+
+## When to avoid
+
+- When the declarative route is enough: an operation form can navigate to an access whose target type matches the output type.
+- When only one page's operation needs a different landing: use the per-page post-operation hook ([[post-operation-navigation-hook]]).
+- When the backend decides the destination through redirect objects: see [[operation-flow-redirect-pattern]].
+
+## Related
+
+- [[relation-driven-crud-with-custom-input]] — return-type matrix and capability ladder that motivate the redirect
+- [[managed-actor-admin-pattern]] — admin surface combining a custom operation with the redirect
+- [[operation-flow-redirect-pattern]] — backend-driven redirect variant
+- [[post-operation-navigation-hook]] — narrower, per-action navigation hook
+- [[application-customizer-hub]] — registration entry point conventions

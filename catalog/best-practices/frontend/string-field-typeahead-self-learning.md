@@ -1,83 +1,80 @@
 ---
-id: "string-field-typeahead-self-learning"
-title: "String-Field Typeahead with Self-Learning Suggestions and Postal→City Autofill"
-domain: "frontend"
-category: "hook"
-score: 55.0
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-07-12"
-last_updated: "2026-07-12"
-projects:
-  - rackinspect
-format: legacy
-fragment: pending
+id: string-field-typeahead-self-learning
+title: String-Field Typeahead with Self-Learning Suggestions and Postal-to-City Autofill
+description: "Turn a plain string field into a free-solo typeahead with the typeahead flag and fill its suggestions and a dependent field from a container hook, without making the field a relation."
+aliases: [typeahead string field, city postal autofill, freeSolo autocomplete]
+keywords: [typeahead, isTypeAheadField, TextWithTypeAhead, getForm options, getView options, storeDiff, autofill, container hook]
+tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
+category: hook
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: "none: frontend-only"
+first_seen: 2026-07-12
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Add typeahead suggestions to a **plain string** DataField (e.g. address `city` / `postalCode`) **without** turning it into a foreign key. Setting the designer **`typeAhead` flag** (`isTypeAheadField=true`) on a string DataField regenerates it as a **`TextWithTypeAhead`** widget — a `freeSolo` MUI Autocomplete whose stored value stays a plain string — wired to an overridable container-hook option getter:
+A plain string field such as an address city or postal code should offer suggestions without becoming a foreign key. The value stays a string and new values can always be typed, so the suggestions help but never constrain. The suggestion list comes from small reference entities that a backend primitive grows over time ([[self-learning-reference-dictionary]]), so the dictionary fills itself.
 
-- Form contexts → `getForm_<field>Options(searchText, data, editMode, validation) => Promise<string[]>`
-- View/Edit contexts → `getView_<field>Options(...)`
+## Practice
 
-Because it is `freeSolo`, novel values are always enterable — the suggestions are a convenience, not a constraint. The suggestion list is sourced from lightweight **reference entities** that a backend primitive grows over time (see the backend companion pattern `self-learning-reference-dictionary`), so the dictionary is self-populating rather than seeded/rigid.
+### Platform base
 
-This supersedes the older `CUSTOM_ATTRIBUTE_RENDERER_HOOK` approach for field-level typeahead — no custom input component or form fork is required; the widget and hook are generated from the flag.
+- `StringType` has the attribute `isTypeAheadField`, documented as autocomplete from previously entered values ([widget mapping](../../agent-docs/frontend/esm-to-ui-mappings/widgets.md), [UI behaviour rules](../../agent-docs/model/esm_metamodel/ui-behaviour.md)).
+- A container hook can supply typeahead options through a getter that takes the search text and returns the suggestions ([typeahead in action hooks](../../agent-docs/frontend/hooks/action-hooks.md)). Hooks receive `(data, editMode, storeDiff, context)`, and `context.actions.getRangeAction` fetches related data.
+- Custom hooks under `src/custom/` are never regenerated, and the register function is called from `application-customizer.tsx`.
+- The agent-docs do not name the `TextWithTypeAhead` widget, the `freeSolo` behaviour, the `getForm_<field>Options` / `getView_<field>Options` getter names or the extra `(searchText, data, editMode, validation)` arguments. These come from the project (rackinspect): *verify* them in the regenerated container's `customization.ts` and `types.ts` before writing the hook.
 
-## Structure
+### Project practice: flag, getters and one shared helper (rackinspect)
 
-Register the option getters in a container-actions hook under `src/custom/` (protected by `.generator-ignore`), keyed by the generated interface constant + typed hook for that page container:
-
-```typescript
-// src/custom/hooks/containers/registerServicesUser_serviceUserUser_FormContainerActionsHook.ts
-import {
-  SERVICES_USER_SERVICE_USER_USER_FORM_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
-  type ServicesUser_serviceUserUser_FormContainerHook,
-} from '~/containers/Services/User_service/User/User_Form/customization';
-import { autofillCityFromPostal, postalCodeOptions, scopedCityOptions } from '~/custom/hooks/utils/cityPostalCodeTypeahead';
-
-export function registerServicesUser_serviceUserUser_FormContainerActionsHook(context: BundleContext) {
-  context.registerService<ServicesUser_serviceUserUser_FormContainerHook>(
-    SERVICES_USER_SERVICE_USER_USER_FORM_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
-    (data, editMode, storeDiff) => ({
-      async getForm_primaryAddressCityOptions(searchText, currentData) {
-        // multiple cities on the same postal → dropdown scoped to that postal's linked cities
-        return scopedCityOptions(searchText, (currentData as any)?.form_primaryAddressPostalCode);
-      },
-      async getForm_primaryAddressPostalCodeOptions(searchText, currentData) {
-        // postal→city autofill: exactly-one linked city → write it via the closed-over storeDiff
-        await autofillCityFromPostal(searchText, (currentData as any)?.form_primaryAddressCity, 'form_primaryAddressCity', storeDiff);
-        return postalCodeOptions(searchText);
-      },
-    }),
-  );
-}
-```
-
-The shared helper (`src/custom/hooks/utils/cityPostalCodeTypeahead.ts`) queries the generated `*ServiceForX` data-axios services with a `StringOperation.like` filter + `_mask` + `_seek: { limit }`, dedupes/sorts, and implements the autofill:
+- With the flag set on a string field, the project's generated UI used a free-solo autocomplete whose value stays a string, wired to an overridable getter: form contexts `getForm_<field>Options`, view and edit contexts `getView_<field>Options`.
+- This replaced a custom attribute renderer for field-level typeahead: no custom input component and no form fork.
+- Implement the getters in a container hook, keeping every address surface on the same two-getter shape and one shared helper.
+- The helper queries the generated data services with a "like" string filter, a mask and a seek limit, then removes duplicates and sorts.
+- Postal-to-city autofill: the postal-code getter looks up the cities linked to the exact code. If exactly one exists and the city field is empty, it writes the city through the hook's `storeDiff`. A manually typed city is never overwritten. When several cities share the code, the city getter narrows its dropdown to them.
+- After setting the flag, regenerate the frontend with the project's build tooling; the generator refuses to run over manual changes in generated files unless the checksum check is skipped (project experience, *verify* for your version).
 
 ```typescript
-export async function autofillCityFromPostal(postalCode, currentCity, cityFieldName, storeDiff) {
+// Example project code: container hook registered in src/custom, helper names are project code
+context.registerService<ServicesUser_FormContainerHook>(
+  USER_FORM_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
+  (data, editMode, storeDiff) => ({
+    async getForm_primaryAddressCityOptions(searchText, currentData) {
+      return scopedCityOptions(searchText, currentData?.form_primaryAddressPostalCode);
+    },
+    async getForm_primaryAddressPostalCodeOptions(searchText, currentData) {
+      await autofillCityFromPostal(searchText, currentData?.form_primaryAddressCity, 'form_primaryAddressCity', storeDiff);
+      return postalCodeOptions(searchText);
+    },
+  }),
+);
+
+export async function autofillCityFromPostal(postalCode, currentCity, cityField, storeDiff) {
   const code = (postalCode ?? '').trim();
-  if (!code || (currentCity ?? '').trim()) return;      // never clobber a manually-typed city
-  const linked = await citiesForPostalCode(code);        // exact-code → linked cities (n:m traversal)
-  if (linked.length === 1) storeDiff(cityFieldName, linked[0]);
+  if (!code || (currentCity ?? '').trim()) return;   // never clobber a typed city
+  const linked = await citiesForPostalCode(code);     // exact code -> linked cities
+  if (linked.length === 1) storeDiff(cityField, linked[0]);
 }
 ```
 
-Register the hook in `application-customizer.tsx` alongside the other container hooks. Apply the same two-getter shape to every address surface (Form and View), reusing the one helper (DRY).
+## Rationale
 
-## When To Use
+- The value stays a plain string, so no string-to-relation migration is needed and novel entries remain possible.
+- Autofill and dropdown scoping use the hook's `storeDiff` closure; one helper serves all contexts.
+- Cost: suggestions are only as good as the dictionary, autofill must guard manual input, and typos create new dictionary entries (softened because the suggestions surface existing spellings).
 
-- A free-text field where users repeatedly type the same values (city, postal code, tags) and you want suggestions + light cross-field autofill, but must keep the value a string (novel entries always allowed).
-- Any "suggest-don't-constrain" field backed by a growing reference list.
+## Example
 
-## Pros / Cons
+In rackinspect the address `city` and `postalCode` fields of the user form and the view pages carry the flag. Typing a postal code suggests codes and fills the city when one city is linked; with several linked cities, the city dropdown offers only those. Both getters use the same helper in every address surface.
 
-- **Pros**: no custom renderer/input component (flag-driven); value stays a plain string (`freeSolo`) so no string→relation migration; postal→city autofill and dropdown-scoping via the container hook's `storeDiff` closure; one shared helper across all contexts.
-- **Cons**: suggestions only as good as the reference dictionary; autofill must guard against clobbering manual input; typos create new dictionary entries (free-text tradeoff — mitigated because the autofill/scoping surfaces existing spellings for selection).
+## When to avoid
 
-## Gotchas
+- When the value must be one of a fixed set: use a relation with a range instead.
+- When there is no growing reference list to source suggestions from.
 
-- After setting the `typeAhead` flag in the model, regenerate the frontend with **`./judo.sh build -f -q -i`** — the `-i` (ignore-checksum) is required or the UI generator aborts with *"There are manual changes in the generated files."*
-- The generated getter name is `getForm_<fieldName>Options` / `getView_<fieldName>Options`; confirm the exact name and the container interface key in the regenerated `.../<Container>/customization.ts` + `types.ts` before writing the hook.
+## Related
+
+- [[self-learning-reference-dictionary]] — backend primitive that grows the suggestion source
+- [[application-customizer-hub]] — where container hooks are registered
