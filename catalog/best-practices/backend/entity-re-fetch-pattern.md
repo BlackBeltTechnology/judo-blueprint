@@ -1,9 +1,9 @@
 ---
 id: entity-re-fetch-pattern
 title: Entity Re-fetch at Operation Start
-description: "In bound custom operations, the `_this` parameter is re-fetched from the database at the very start of the method."
-aliases: []
-keywords: [re, fetch, at, operation, start]
+description: In a bound custom operation, load the entity again through its DAO with a mask before using it, and fail clearly when it is gone.
+aliases: [re-fetch this, reload bound instance, getById at start]
+keywords: [re-fetch, getById, bound operation, _this, identifier, mask, Optional, orElseThrow, NotFoundException, stale]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "project:judo-partner", "project:workflow-poc", "status:established"]
 category: operation
 status: established
@@ -13,60 +13,60 @@ alternatives: []
 related: [dao-fluent-query-filter, state-lifecycle-operation]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-In bound custom operations, the `_this` parameter is re-fetched from the database at the very start of the method. This ensures the operation works with the latest persisted state rather than potentially stale data from the caller. This is a recurring pattern across every bound operation in the trivia project.
+A bound custom operation receives `_this` as a transfer object of the declaring type. Business logic usually needs persisted entity state: current values, a state field, related data. Load the entity again from the DAO by the identifier of `_this` at the start, work on that, and handle "not found" deliberately.
 
-## Structure
+## Practice
 
-```java
-@Override
-public ReturnType apply(EntityType _this, InputType input) {
-    // Re-fetch from DB to get fresh data
-    _this = entityDao.getById(_this.identifier()).get();
-    // ... proceed with business logic on fresh entity
-}
-```
+### Load the entity from `_this.identifier()`
 
-The pattern always appears as the first line of bound operations. It uses `identifier()` to extract the entity's ID and `getById()` to load the full current state.
+Call `dao.getById(_this.identifier(), mask)` first. The identifier of `_this` is the reliable part of the bound instance. When `_this` is a service-layer type, the entity DAO wants an entity-layer type, and `getById` is also the conversion (see [Converting Between Layers](../../agent-docs/backend/type-system-guide.md#converting-between-layers)). Use `adaptTo` only when you need no check and no data (see [[identifier-adaptation-pattern]]).
 
-## Examples
+### Pass a mask
 
-### Trivia
-All 4 bound operations (Enter, Start, Submit, Exclude) re-fetch at start: `_this = testDao.getById(_this.identifier()).get()` or `contest = contestDao.getById(contest.identifier()).get()`. EnterCustomImplementation re-fetches the Contest; Start/Submit/Exclude re-fetch the Test.
+`getById` without a mask loads all fields. List only what the logic reads and writes. Fields outside the mask come back `null` or empty, so read only masked fields (see [Using Masks](../../agent-docs/backend/data-access-guide.md#using-masks-projections)). An empty mask is the cheapest existence check.
 
-### RackInspect
-All 24 toggle operations re-fetch with `orElseThrow()`: `Address thiss = addressDao.getById(_this.identifier()).orElseThrow();`. RackInspect prefers `orElseThrow()` over `.get()`, providing a safer null-handling approach compared to Trivia's `.get()`.
+### Treat the Optional properly
 
-### ALBA
-All bound product operations re-fetch with mask and `adaptTo()`: `productDao.getById(_this.identifier().adaptTo(ProductIdentifier.class), ProductMask.productMask().withState()).orElseThrow()`. Combines re-fetch with identifier adaptation and mask projection in a single call for efficiency.
+`getById` returns an `Optional`. A bare `.get()` throws `NoSuchElementException`, which the dispatcher wraps as a generic 500 (see [How the Runtime Maps Exceptions to HTTP](../../agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http)). Choose the outcome on purpose:
 
-### mlszksz-platform
-Organization lookups use `organizationDao.getById(_this.identifier().getIdentifier()).orElseThrow()`. Post operations use `_this.adaptTo(Offer.class)` to convert transfer objects for service delegation. The re-fetch is often done inside the delegated service rather than in the custom operation itself, as part of the service-delegation pattern.
+- `orElseThrow()` when a missing instance is a programming error.
+- A `NotFoundException` built with a `ValidationResult` (code, level, location) for a 404 the client can read.
+- A fault declared on the operation, if the UI should show a typed message. Declare it on the model operation or the generated interface has no `throws` clause (see [Modeled Faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)).
 
-### ParkHere
-Re-fetch done at service level: `reservationDao.getById(preservation.identifier().getIdentifier()).orElseThrow()` in `ReservationService.reservationIsCancelable()`, `reservationIsDeletable()`, and `reservationIsModifiable()`. `userDao.getById(_this.identifier().getIdentifier()).orElseThrow()` in `CreateCarCustomImplementation`. All use `.orElseThrow()` with typed `BusinessErrorException` for safe null handling.
+Project helpers such as an `ExceptionUtils` or a `BusinessErrorException` are example project code, not platform API. Translate them to the mechanisms above.
 
-### Indamedia-AdTrack
-Re-fetch done at service level: `accountTransferDao.getById(accountInstance.identifier().getIdentifier()).orElseThrow()` in `AccountServiceImpl.getAccount()`. `clientTransferDao.getById(clientInstance.identifier().getIdentifier()).orElseThrow()` in `ClientServiceImpl`. All service methods re-fetch entities and throw `BusinessErrorException` with localized i18n messages on not-found via `ExceptionUtils.createBusinessErrorException()`.
+### Re-fetch again after your own writes
 
-### judo-partner
-Re-fetch done in service methods: `partnerDao.getById(partner.identifier()).get()` in `PartnerServices.deletePartner()`. `taxpayerDao.getById(taxpayer.identifier().getIdentifier()).orElseThrow()` in `PartnerServices.getPartnerByTaxpayer()`. `taxpayerAddressDao.getById(taxpayerAddress.identifier()).orElseThrow()` in `addAddressToPartner()`. Also in interceptor: `partnerDao.getById(UUID.fromString(payload.get("__identifier").toString())).orElseThrow()` in `PartnerUpdateInterceptor.postCall()`.
+A loaded DTO is a copy. After code of yours changes the persisted entity (deleting a child, a service call), the copy you hold no longer shows it. Load again before further decisions, and use the object returned by `update` rather than the old one.
 
-### workflow-poc
-Re-fetch used in multiple contexts: `workflowDao.getById(_this.identifier()).get()` in `UploadCustomImplementation` (twice -- once at start and once after version deletion to refresh state). `tokenDao.getById(_this.identifier()).get()` in `TriggerCustomImplementation` before processing events. `workflowVersionDao.getById(_this.identifier()).get()` in `DiagramUtils` at start of diagram generation. All use `.get()` rather than `.orElseThrow()`.
+### Concurrency is a separate concern
 
-## Trade-offs
+The re-fetch gives current data at the moment of reading, not protection against a concurrent writer. The platform's optimistic lock checks the version only when the update payload contains `__version`, so omitting it disables the guard (see [Optimistic Locking and `__version`](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)). Do not describe the re-fetch as a lock.
 
-- Pros: Guarantees fresh data, prevents stale-state bugs, simple one-liner
-- Cons: Adds an extra database round-trip per operation call, `.get()` on Optional without guard can throw NoSuchElementException
-- Alternative: Trust the dispatcher-provided data (risky if other operations mutate concurrently)
+## Rationale
+
+- Logic runs on persisted state, whatever the caller's object contained.
+- The mask keeps the extra read small. The cost is one more query per call.
+- Limit: when the operation delegates to a service that loads the entity itself, a second re-fetch in the operation is waste. Re-fetch where the data is used.
+
+## Example
+
+- Trivia: every bound operation starts with `_this = testDao.getById(_this.identifier()).get()`.
+- RackInspect: 24 toggle operations use `orElseThrow()` and then flip a flag.
+- ALBA: the product operations load with a mask for the state attribute and convert the identifier to the entity type in the same call.
+- ParkHere, Indamedia-AdTrack, judo-partner: the re-fetch sits in service methods the operations delegate to.
+- workflow-poc: the upload operation re-fetches at the start and again after deleting an old version.
+
+## When to avoid
+
+- The operation needs only the identifier, for example it passes `_this` to a service that loads what it needs.
+- A list operation touching many instances: query with a mask once instead of calling `getById` per row.
 
 ## Related
 
-- [[dao-fluent-query-filter]]
-- [[state-lifecycle-operation]]
-
+- [[dao-fluent-query-filter]] — query builder for loading related data
+- [[state-lifecycle-operation]] — the state-changing operations that start with a re-fetch

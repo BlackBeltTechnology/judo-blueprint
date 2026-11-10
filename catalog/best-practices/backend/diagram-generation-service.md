@@ -1,9 +1,9 @@
 ---
 id: diagram-generation-service
 title: Automatic Diagram Generation from Entity Data
-description: "A utility service pattern that generates visual diagram representations (e.g., Mermaid state diagrams) from persistent entity data."
-aliases: []
-keywords: [automatic, diagram, generation, from, data, service]
+description: A project service renders a Mermaid diagram from persisted entity data and stores it as text on the parent entity, so the UI can show it without extra tooling.
+aliases: [mermaid from data, generated state diagram, diagram utils]
+keywords: [diagram, mermaid, handlebars, template, service, state diagram, osgi component, text field]
 tags: ["domain:backend", "layer:backend", "project:workflow-poc", "status:single-project"]
 category: service
 status: single-project
@@ -13,71 +13,48 @@ alternatives: []
 related: [handlebars-email-template, token-based-workflow-execution, data-snapshot-versioning]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A utility service pattern that generates visual diagram representations (e.g., Mermaid state diagrams) from persistent entity data. The service is registered as an OSGi component and injected into operations that create or modify the source data. Diagrams are generated using Handlebars templates and stored as text on the parent entity, enabling immediate visualization in the UI without external tooling. The service handles special diagram elements like fork/join stereotypes, initial/final state markers, and annotated transitions.
+Some entities describe a graph (a workflow of states and transitions). Users understand it faster as a picture. Render a Mermaid diagram text from the stored data whenever that data changes, keep it in a text attribute of the parent entity, and let the frontend render it.
 
-## Structure
+## Practice
 
-```java
-@Component(immediate = true, service = DiagramUtils.class)
-public class DiagramUtils {
-    @Reference StateDao stateDao;
-    @Reference TransitionDao transitionDao;
-    @Reference WorkflowVersionDao workflowVersionDao;
+### A project service builds the text
 
-    public String getDiagram(WorkflowVersion version) {
-        String mermaidTemplate = """
-            stateDiagram
-            {{#each states}}
-            state {{#if name}}"{{name}}" as {{/if}} {{id}} {{{stereotype}}}
-            {{/each}}
-            {{#each transitions}}
-            {{from}} --> {{to}} {{#if event}} : {{event}}{{/if}}
-            {{/each}}
-            """;
+The renderer is project code (in the source project a class called `DiagramUtils`), not a platform feature. It is an OSGi component that custom operations inject with `@Reference`, like any other service (see [Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)).
 
-        // Build context maps from entities
-        List<Map<String, String>> states = new ArrayList<>();
-        List<Map<String, String>> transitions = new ArrayList<>();
+- Read the source entities through the generated DAO relation queries (`queryStates(version).selectList()`). Use a mask limited to the attributes the diagram shows.
+- Turn them into plain maps or lists and feed a template engine (Handlebars in the example) with an inline Mermaid template. Keeping the template as text makes the output easy to test without the platform.
+- Single-valued relations return the entity directly, multi-valued ones return a query customizer. Relation queries cannot be ordered, so sort the results in Java if the diagram needs a stable order (see [Relationship Navigation Queries](../../agent-docs/backend/data-access-guide.md#relationship-navigation-queries)).
 
-        for (State state : workflowVersionDao.queryStates(version).selectList()) {
-            // Map state to diagram element (handle join/fork/final stereotypes)
-            // Map transitions with event and role annotations
-        }
+### Store the result on the parent
 
-        Handlebars handlebars = new Handlebars();
-        Template template = handlebars.compileInline(mermaidTemplate);
-        return template.apply(context);
-    }
-}
-```
+The operation that creates or changes the source data calls the service and writes the string to a text attribute of the parent (`diagram` in the example) with a normal DAO `update` and a mask for that one field. Do it in the same operation, so data and picture are saved or rolled back together.
 
-Key elements:
-- OSGi component registered as self-service (`service = DiagramUtils.class`)
-- Handlebars inline template for Mermaid syntax generation
-- Entity traversal via DAO relation queries (states, transitions, next states)
-- Special handling for fork (`<<fork>>`), join (`<<join>>`), and final states (`[*]`)
-- Transition annotations with event names and role names
-- Diagram stored as string field on parent entity for UI rendering
+### Handle special nodes explicitly
 
-## Examples
+Fork and join stereotypes, start and end markers and annotated transitions need their own branches in the mapping code. Escape names that contain characters Mermaid treats as syntax by quoting them with an alias.
 
-### workflow-poc
-`DiagramUtils.getDiagram()` generates Mermaid stateDiagram syntax from a `WorkflowVersion`. Iterates all states, creating Mermaid state declarations with optional stereotypes (join states get `<<join>>` with a secondary labeled state, fork states are auto-generated for multi-target transitions with `<<fork>>`). Final states get an arrow to `[*]`. Transitions are annotated with event IDs and role names. The initial state gets an arrow from `[*]`. The generated diagram is stored on `WorkflowVersion.diagram` after each upload.
+## Rationale
 
-## Trade-offs
+- The diagram is always consistent with the data, because it is regenerated in the operation that changed the data.
+- Storing text avoids rendering on every read and needs no external service.
+- Limit: Mermaid decides the layout. Large graphs get hard to read, and string-based generation breaks on unescaped names, so cover the mapping with tests.
 
-- Pros: Immediate visual documentation, no external tooling required, Mermaid renders in many UIs, auto-updated on every definition change
-- Cons: Limited to Mermaid syntax capabilities, complex diagrams may be hard to read, no layout control (Mermaid auto-layouts), string-based generation is fragile
-- Alternative: External diagram generation service, client-side rendering only (no server storage), PlantUML (more feature-rich), custom SVG generation
+## Example
+
+In workflow-poc a workflow upload creates a version with states, transitions, events and role assignments. The service walks the states of the version, declares each one (join and fork get stereotypes, final states get an arrow to the end marker), adds one arrow per transition labelled with the event and role, and the result is stored in the version's `diagram` attribute. The frontend renders that text as a state diagram.
+
+## When to avoid
+
+- The graph is large or needs layout control: render client-side with a dedicated library or use a richer diagram tool.
+- The diagram is only needed occasionally: compute it on demand instead of storing it.
+- The source data is edited through many paths: one regeneration point is hard to guarantee, so do not store a copy that can go stale.
 
 ## Related
 
-- [[handlebars-email-template]]
-- [[token-based-workflow-execution]]
-- [[data-snapshot-versioning]]
-
+- [[handlebars-email-template]] — the same template technique applied to e-mail bodies
+- [[token-based-workflow-execution]] — the workflow data this diagram visualises
+- [[data-snapshot-versioning]] — versions of the data the diagram belongs to

@@ -1,9 +1,9 @@
 ---
 id: email-service-integration
 title: Email Service Integration via OSGi
-description: "Sending emails from custom operations using the `hu.blackbelt.email.api.EmailService` OSGi service."
-aliases: []
-keywords: [email, service, integration, osgi]
+description: Send application e-mail from custom operations through an injected mail service, keep the SMTP settings in platform configuration, and keep sending out of the business transaction.
+aliases: [sending email, SMTP, EmailService, mail from operation]
+keywords: [email, SMTP, EmailService, OSGi, reference, template, Handlebars, attachment, configuration, mailpit, transaction]
 tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect", "project:alba", "project:mlszksz-platform", "project:ubives", "project:park-here", "status:established"]
 category: integration
 status: established
@@ -13,66 +13,63 @@ alternatives: []
 related: [two-phase-registration, filestore-mediated-file-transfer, document-generation-pipeline, handlebars-email-template]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Sending emails from custom operations using the `hu.blackbelt.email.api.EmailService` OSGi service. The service is injected via `@Reference` and provides a builder-based API for constructing email messages with from, to, subject, and body fields. SMTP configuration is externalized to environment variables.
+Custom operations send e-mail (activation codes, reports, reminders). Inject a mail service, build the message in a small project service, and take sender, server and templates from configuration rather than code.
 
-## Structure
+## Practice
 
-```java
-@Reference
-EmailService emailService;
+### Inject a mail service and wrap it
 
-// Send email
-emailService.sendMessage(
-    EmailService.EmailMessage.emailBuilder()
-        .from("no-reply@example.com")
-        .to(recipientEmail)
-        .subject("Subject line")
-        .plaintTemplate(bodyText)
-        .build()
-);
-```
+Custom operations get OSGi services with `@Reference` (see [Injecting DAOs and Services](../../agent-docs/backend/data-access-guide.md#injecting-daos-and-services)). Five of six source projects used the `EmailService` of the `hu.blackbelt.email.api` module with a builder-style message (from, to, subject, body). The agent-docs do not describe that API, so check the artifact version in your project. One project used a vendor SDK directly instead.
 
-Configuration via environment variables:
-- `JUDO_PLATFORM_MAIL_SMTP_HOST` -- SMTP server
-- `JUDO_PLATFORM_MAIL_SMTP_PORT` -- SMTP port
-- `JUDO_PLATFORM_MAIL_SMTP_USER` / `PASSWORD` -- credentials
-- `JUDO_PLATFORM_MAIL_SMTP_STARTTLS_ENABLE` -- TLS
+Put the call in one project service (`EmailSenderService` in the examples) with a method per mail type. Operations then call the service, and tests replace it with a no-op implementation.
 
-## Examples
+### Take server settings from platform configuration
 
-### Trivia
-`RegisterCustomImplementation` injects `EmailService` and sends activation code emails via Mailjet SMTP. Email includes the 4-digit code, a link to the app, and a full GDPR privacy notice. From address is hardcoded as `no-reply@judo.technology`.
+The platform's own SMTP settings are the `JUDO_PLATFORM_MAIL_SMTP_*` variables: host, port, user, password, auth, STARTTLS, from, plus the transport protocol and SSL trust (see [Email (SMTP)](../../agent-docs/deployment/application-config.md#6-email-smtp)). A vendor SDK needs its own parameters. Custom application parameters can use the OSGi Configuration Mapper or Config Admin (see [Configuration Mapper for Custom Parameters](../../agent-docs/backend/platform-behavior-reference.md#configuration-mapper-for-custom-parameters)). Never hard-code the sender or API keys.
 
-### RackInspect
-`EmailSenderServiceImpl` wraps `EmailService` with Handlebars HTML templating. Sends assessment sheets, review reports, and offers as binary attachments from FileStoreService. Sender email and company name are loaded from Configuration/CompanyData entities rather than hardcoded.
+### Invitation mail is a different path
 
-### ALBA
-SendGrid SMTP relay configured via environment variables (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`). Email API dependency (`osgi-email-api:1.0.1`) included in the application POM. Domain authentication configured via DNS records in SendGrid dashboard. Secrets stored in GCP Secret Manager.
+E-mail for user invitations is sent by Keycloak, not by the application. On every Karaf start the Keycloak connector rewrites the default realm's SMTP settings from the `JUDO_PLATFORM_MAIL_SMTP_*` values. Do not build your own invitation sender unless you need a different flow (see [Keycloak Users and the Entity Store](../../agent-docs/backend/platform-behavior-reference.md#keycloak-users-and-the-entity-store)).
 
-### mlszksz-platform
-`PlatformEmailService` interface with 5 email types: invitation, verification, approval notification, user invitation verification, and post-published notification. Email templates stored in Configuration entity (DB-configurable). Template variables like `${recipientEmail}`, `${token}`, `${organizationName}` are substituted at runtime. No-op mock used in tests.
+### Render bodies from templates
 
-### Ubives
-`MailServices` uses SendGrid Java SDK directly (not via OSGi EmailService) with Handlebars template rendering. OSGi Config Admin provides `baseUrl`, `fromAddress`, and `sendGridApiKey` via `@ObjectClassDefinition`. Sends invitation emails with magic link URLs. `configurationPolicy = ConfigurationPolicy.REQUIRE` ensures the service only activates when config is present. Template loaded from `email-inline-template.html.hbs` classpath resource.
+Plain strings do not scale. Render HTML bodies from templates (Handlebars in four projects), stored in a configuration entity or as files, with variables substituted at send time (see [[handlebars-email-template]]). Attachments such as generated reports come from the file store (see [[filestore-mediated-file-transfer]] and [[document-generation-pipeline]]).
 
-### ParkHere
-`EmailSenderServiceImpl` wraps `EmailService` with Handlebars template rendering and FileStore-backed templates. Sends 5 email types: reservation creation (per-garage template with embedded floor plan as base64 inline image), modification, deletion, reminder, and doorman daily summary. Sender/contact emails loaded from Configuration entity. Tracks doorman notifications via `DoormanNotified` entity to prevent duplicates.
+### Keep sending out of the business change
 
-## Trade-offs
+A send error must not leave half-done business data, and a rolled-back operation must not have sent mail. Operations run in a transaction, and an exception rolls back the DAO write. Send after the change is complete, catch send errors and log them (see [[two-phase-registration]]). Do not send from an `async()` interceptor if you need the transaction's data: it runs outside the transaction and without context variables.
 
-- Pros: Clean OSGi service injection, externalized SMTP config, simple builder API
-- Cons: No templating engine (body is plain string), no HTML email support shown, hardcoded from address
-- Alternative: Template-based email with Thymeleaf/Freemarker, or external email service API (SendGrid, etc.)
+### Test locally with a mail catcher
+
+Run a mail catcher such as mailpit (SMTP 1025, web inbox 8025) and point `JUDO_PLATFORM_MAIL_SMTP_*` at it.
+
+## Rationale
+
+- One service isolates the mail API, so a change of provider or a test double touches one class.
+- Configuration through platform variables keeps secrets out of the model and the code.
+- Limit: the injected service is project infrastructure, not part of the model. The model cannot see or test it.
+
+## Example
+
+- Trivia: the registration operation sends a four-digit activation code through the injected service over a hosted SMTP relay.
+- RackInspect and ParkHere: an `EmailSenderService` wraps the mail service, renders Handlebars templates, attaches stored files and loads sender data from a configuration entity.
+- ALBA: SMTP relay settings come from environment variables, secrets from a secret manager.
+- mlszksz-platform: an interface with five mail types, templates stored in a configuration entity, and a no-op implementation in tests.
+- Ubives: a vendor SDK is called directly, with its settings from Config Admin and the component activated only when configured.
+
+## When to avoid
+
+- Only user invitations are needed: the Keycloak mail already does that.
+- Mail volume or deliverability needs queueing, retries or bounce handling: use a mail provider API behind the same wrapper.
+- Sending must be atomic with the business change: use an outbox entity that a separate job sends.
 
 ## Related
 
-- [[two-phase-registration]]
-- [[filestore-mediated-file-transfer]]
-- [[document-generation-pipeline]]
-- [[handlebars-email-template]]
-
+- [[two-phase-registration]] — registration flow that sends a code
+- [[filestore-mediated-file-transfer]] — attachments from the file store
+- [[document-generation-pipeline]] — generated documents sent by mail
+- [[handlebars-email-template]] — templated mail bodies

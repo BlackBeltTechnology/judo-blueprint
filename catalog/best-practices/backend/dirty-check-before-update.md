@@ -1,9 +1,9 @@
 ---
 id: dirty-check-before-update
 title: Dirty-Check Before Update to Avoid Unnecessary Writes
-description: "Before persisting an entity update, snapshot the entity state, perform modifications, then compare the before and after states."
-aliases: []
-keywords: [dirty, check, before, update, avoid, unnecessary, writes]
+description: When code recomputes many fields of an entity, compare the new values with the loaded ones and call the DAO update only if something changed.
+aliases: [skip unchanged update, change detection, avoid redundant write]
+keywords: [dirty check, update, DAO, toMap, compare, mask, recursion, interceptor, unnecessary write]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba", "status:emerging"]
 category: data-access
 status: emerging
@@ -13,46 +13,53 @@ alternatives: []
 related: [mutable-entity-update-pattern, permission-denormalization]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Before persisting an entity update, snapshot the entity state, perform modifications, then compare the before and after states. Only issue the DAO update if the entity actually changed. This avoids unnecessary database writes when cascading operations may not actually modify the entity. Uses `entity.toMap()` for snapshot comparison or simple field-level equality checks.
+Bulk recalculations and aggregation hooks often set many derived fields, most of which end up with their old value. Every DAO update still increments the entity's `__version` and writes rows. Skip the update when nothing changed.
 
-## Structure
+## Practice
 
-```java
-// Snapshot before modifications
-Map<String, Object> before = new HashMap<>(entity.toMap());
+### Compare before writing
 
-// Perform modifications
-entity.setField1(computedValue1);
-entity.setField2(computedValue2);
-// ... potentially many fields set conditionally
+Load the entity once, remember its values, apply the computed values, and call `update` only when at least one value differs. Two forms are in use:
 
-// Only persist if something changed
-if (!before.equals(entity.toMap())) {
-    entityDao.update(entity, EntityMask.entityMask());
-}
-```
+- Snapshot compare: copy `entity.toMap()` into a new map before the changes and compare it with `entity.toMap()` afterwards. Short for many fields.
+- Field compare: for each computed field, set it and raise a `changed` flag only when the new value differs from the current one. Read optional attributes through their `Optional` getter (`getX().orElse("")`), because attributes that are not `required` are `Optional` in the generated DTO (see [Absent, Null and Empty Are Different](../../agent-docs/backend/data-access-guide.md#absent-null-and-empty-are-different)).
 
-## Examples
+Pass a mask to both the load and the `update`, listing only the fields the code touches. Without a mask the call loads and writes everything (see [Using Masks](../../agent-docs/backend/data-access-guide.md#using-masks-projections)).
 
-### RackInspect
-`RecalculatePermissionsCustomImplementation` iterates all users and recalculates 22 permission boolean fields from roles. Uses `new HashMap<>(user.toMap())` snapshot before setting flags, then `!userState.equals(user.toMap())` guard before `userDao.update()`. Avoids unnecessary writes when role changes do not affect a particular user's permissions.
+### Mind the `toMap` edge cases
 
-### ALBA
-`ProductUpdateInterceptor` computes aggregated strings from related entities then checks field-by-field: `if (!product.getAudienceAggregated().orElse("").equals(audienceAggregated)) { product.setAudienceAggregated(audienceAggregated); shouldUpdate = true; }`. Only calls `productDao.update()` if at least one aggregated field changed.
+`toMap()` makes a full copy. Compare maps only after loading with a mask, so absent attributes are absent on both sides. A key that is missing is not the same as a key with `null`, so make sure the load and the comparison use the same mask.
 
-## Trade-offs
+### Inside interceptors
 
-- Pros: Reduces database writes in cascade scenarios, simple Map comparison, works with any entity type
-- Cons: `toMap()` creates a full copy (memory overhead), Map equality may have edge cases with null vs absent keys
-- Alternative: Track individual field changes manually, or rely on database-level change detection
+The pattern is used in `postCall` hooks that write derived values back (aggregation, denormalization, see [Data Denormalization and Aggregation](../../agent-docs/backend/interceptors.md#data-denormalization-and-aggregation)). The interceptor runs inside the operation's transaction, so an exception in `preCall` or `postCall` rolls back the operation's write as well. Interceptors fire only for built-in operations (see [Which Operations Are Intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)); a custom operation that recalculates data must run the comparison itself.
+
+### Version handling
+
+Each write increments `__version`, and the signed identifier of the entity changes with it. Clients that hold the old identifier see a stale-update error on their next write. Skipping needless writes keeps identifiers stable (see [Signed Identifiers](../../agent-docs/backend/platform-behavior-reference.md#signed-identifiers) and [Optimistic Locking](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)).
+
+## Rationale
+
+- Fewer writes and fewer version bumps in cascades.
+- Limit: the comparison costs memory and code. For a single field that is always set, an unconditional update is simpler.
+- This is project practice. The platform does not detect unchanged payloads for you.
+
+## Example
+
+- RackInspect: a permission recalculation iterates all users and recomputes 22 boolean flags from roles. It copies each user's map first and updates only the users whose map changed.
+- ALBA: a product update interceptor builds aggregated strings from related entities, compares each with the stored value, and calls update only if one differs.
+
+## When to avoid
+
+- The write itself is the point, for example you want the version bumped or a timestamp refreshed.
+- The entity is cheap to write and rarely recalculated: the check adds code without benefit.
+- Concurrency is the concern: a dirty check is not a lock. Optimistic locking handles that (see [[mutable-entity-update-pattern]]).
 
 ## Related
 
-- [[mutable-entity-update-pattern]]
-- [[permission-denormalization]]
-
+- [[mutable-entity-update-pattern]] — how updates are issued
+- [[permission-denormalization]] — the recalculation that benefits most

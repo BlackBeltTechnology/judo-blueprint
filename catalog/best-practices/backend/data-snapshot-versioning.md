@@ -1,9 +1,9 @@
 ---
 id: data-snapshot-versioning
 title: Data Snapshot Versioning (Immutable History Records)
-description: An audit/versioning pattern where the current state of a collection of child entities is copied into immutable snapshot records before a significant state transition.
-aliases: []
-keywords: [data, snapshot, versioning, immutable, history, records]
+description: Before a significant state transition, copy the current child records into a version entity so the state at that moment stays readable later.
+aliases: [snapshot before approval, history copy, version record]
+keywords: [snapshot, versioning, history, audit, version entity, child copy, approval]
 tags: ["domain:backend", "layer:backend", "project:itracker", "project:indamedia-adtrack", "project:workflow-poc", "status:emerging"]
 category: operation
 status: emerging
@@ -13,60 +13,59 @@ alternatives: [product-versioning-container]
 related: [state-lifecycle-operation, builder-pattern-entity-creation, product-versioning-container]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An audit/versioning pattern where the current state of a collection of child entities is copied into immutable snapshot records before a significant state transition. A version entity is created with a timestamp and aggregated summary values, and each child entity is duplicated into a version-specific copy. The snapshots are appended to a versions collection on the parent entity, enabling historical tracking of how data evolved over time.
+A parent entity owns a set of mutable child records (for example monthly forecasts). At a significant moment (approval, publication, every change) the owner needs to keep what the data looked like. Copy the children into a version entity with a timestamp and summary values, and never change that copy afterwards.
 
-## Structure
+## Practice
 
-```
-// Pseudocode for snapshot creation
-var version = new VersionEntity(
-    timestamp = Timestamp!now(),
-    summaryField1 = this.children!sum(c | c.field1),
-    summaryField2 = this.children!filter(c | c.field2!isDefined())!sum(c | c.field2)
-)
+### Copy in the same operation as the transition
 
-for (child in this.children) {
-    var copy = new ChildVersionEntity(
-        field1 = child.field1,
-        field2 = child.field2,
-        field3 = child.field3
-    )
-    version.children += copy
-}
+The snapshot is plain custom code in a custom operation (or a service it calls). It uses generated DAOs only; the platform has no snapshot feature of its own.
 
-this.versions += version
-```
+1. Read the parent and its children through the relation query of the DAO. Pass a mask that lists only the fields you copy.
+2. Create the version entity through the generated `ForCreate` builder, with the timestamp and the aggregated summary values.
+3. Create one copy entity per child, linked to the version. The copies are separate entities with their own identifiers, not references to the live children.
+4. Only then change the parent's state.
 
-Entity structure:
-- `Parent` -> `children[]` (current mutable data)
-- `Parent` -> `versions[]` -> `Version` (immutable snapshots)
-- `Version` -> `childCopies[]` -> `ChildVersion` (point-in-time copies)
+All of this runs in the transaction of the operation, so an exception in step 4 also rolls back the snapshot. Do not put the snapshot into an `async()` interceptor: it runs outside the transaction and loses its exceptions (see [Interceptors](../../agent-docs/backend/interceptors.md#the-interceptor-contract)).
 
-## Examples
+### Make the history immutable by design
 
-### itracker
-`ArchiveForecast` operation creates a `ForecastVersion` with timestamp and summed saving potentials/savings from current `MonthlyForecast` records. Each `MonthlyForecast` is copied into a `MonthlyForecastVersion` with savingPotential, date, and saving fields. Called automatically by `Approve` before status transition to APPROVED, creating an immutable record of forecast state at approval time.
+"Immutable" is a project rule, not a platform guarantee. Model the version and copy entities without update or delete operations and do not expose them for modification to any actor. Remember that only built-in operations pass interceptors, so a guard that rejects writes to version entities does not cover your own custom operations (see [Which Operations Are Intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 
-### Indamedia-AdTrack
-`AggregatedCampaignService.updateAggregatedCampaign()` creates an `AggregatedCampaignHistory` snapshot on every update, recording name, start, end, totalBudget, dailyBudget, remainingBudget, and remainingDays at the time of the change. History entries track how campaign configuration evolved over time. Used for budget change audit and reporting.
+### Use one clock for the timestamp
 
-### workflow-poc
-`WorkflowVersion` entities represent versioned snapshots of a workflow definition. Each upload creates a new `WorkflowVersion` with an incremented version number, containing states, transitions, events, and role assignments. Uncommitted head versions are replaced on re-upload. Published versions become the active definition. The `Workflow` entity maintains a `head` reference to the latest version and a `published` reference to the active one.
+`Timestamp!now()` in model expressions follows the platform parameter `defaultZoneId`, while `LocalDateTime.now()` in custom Java follows the JVM time zone. Take the snapshot timestamp from the same clock that later queries compare it with (see [Time and Time Zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)).
 
-## Trade-offs
+### Decide how summaries are stored
 
-- Pros: Complete audit trail, immutable history, enables comparison between versions, simple to query historical state
-- Cons: Data duplication grows with each snapshot, no delta/diff storage (full copies), aggregation must be recalculated or stored redundantly
-- Alternative: Version container pattern with full entity cloning (see `product-versioning-container`), event sourcing, temporal database tables
+Store the aggregates on the version when readers need them without loading the copies. They duplicate data that could be recomputed, so keep the code that fills them in one place.
+
+## Rationale
+
+- A complete copy makes the historical state cheap to read and to compare with the current one, without replaying changes.
+- Doing the copy before the transition, in one transaction, means no version exists for a transition that failed, and no transition without a version.
+- Limit: every snapshot is a full copy, so storage grows with each version. There is no delta storage. A mask on the read keeps the copy step from loading unrelated fields.
+
+## Example
+
+Three projects use the idea; names are project code.
+
+- itracker: an `ArchiveForecast` operation creates a `ForecastVersion` with a timestamp and summed values, and copies each monthly forecast into a version copy. `Approve` calls it before setting the status to approved.
+- Indamedia-AdTrack: the aggregated-campaign service writes an `AggregatedCampaignHistory` record on every update (name, dates, budgets, remaining days) for budget audit.
+- workflow-poc: every upload creates a new `WorkflowVersion` holding states, transitions and roles; the workflow keeps references to its head version and to the published one.
+
+## When to avoid
+
+- A full history of every field change is needed: use an audit log entity that records changes instead.
+- The child set is large and snapshots are frequent: store deltas or snapshot only the changed children.
+- The versions must be editable drafts that later become live: see [[product-versioning-container]].
 
 ## Related
 
-- [[state-lifecycle-operation]]
-- [[builder-pattern-entity-creation]]
-- [[product-versioning-container]]
-
+- [[state-lifecycle-operation]] — the transition that triggers the snapshot
+- [[builder-pattern-entity-creation]] — creating the version and copies with generated builders
+- [[product-versioning-container]] — alternative: a version container that clones whole entities

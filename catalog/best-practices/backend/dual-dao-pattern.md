@@ -1,9 +1,9 @@
 ---
 id: dual-dao-pattern
 title: Dual DAO Injection (Entity-Level + Actor-Level)
-description: Some custom operations inject both entity-level DAOs (full entity representation with all fields/relations) and actor-level DAOs (restricted view with only actor-visible fields).
-aliases: []
-keywords: [dual, dao, injection, level, actor]
+description: A custom operation may see two generated DAOs with the same simple name, one for the entity and one for an actor's transfer view. Know which one you inject and why.
+aliases: [two DAOs same name, actor DAO, entity DAO and transfer DAO]
+keywords: [dao, injection, actor, entity, transfer object, package, reference, service layer, entity layer]
 tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
 category: di
 status: single-project
@@ -13,39 +13,46 @@ alternatives: []
 related: [custom-operation-osgi-component, identifier-adaptation-pattern]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Some custom operations inject both entity-level DAOs (full entity representation with all fields/relations) and actor-level DAOs (restricted view with only actor-visible fields). This provides access to both the complete entity data for backend processing and the actor-specific mapped view for returning constrained results to callers.
+For one entity the generator can produce more than one DAO type with the same simple name, in different packages: one for the entity itself and one for a transfer object that an actor sees. A custom operation that injects both must keep them apart. In most operations one DAO is enough, and the entity DAO is the right default.
 
-## Structure
+## Practice
 
-```java
-@Reference
-TestDao testDao;  // Entity-level DAO (full access)
+### Default to the entity DAO
 
-@Reference
-hu.blackbelt.app.api.app.actors.player.test.TestDao playerTestDao;  // Actor-level DAO (restricted view)
-```
+The entity DAO has full create, read, update and delete methods and relation accessors. The generated DAO interface gives full CRUD only for mapped, non-abstract transfer object types, and unmapped transfer objects get only `query...()` accessors (see [Which Types Get a Full DAO](../../agent-docs/backend/data-access-guide.md#which-types-get-a-full-dao)). The platform describes two type layers, a service layer used in operation inputs and outputs and an entity layer used by DAOs for persistence (see [Backend Type System Guide](../../agent-docs/backend/type-system-guide.md)). Persist and query through the entity layer.
 
-Entity-level DAOs reside in `api.[app]._default_transferobjecttypes.entities.[entity]` package.
-Actor-level DAOs reside in `api.[app].actors.[actor].[entity]` package.
+### Inject the actor-side DAO only when you need its view
 
-## Examples
+Inject the actor-side DAO only if the operation must read or return the actor-scoped shape of the data, for example to reuse what the actor can see. Use a fully qualified name for one of the two, because the simple names collide. Do not inject it as a precaution: an injected but unused DAO adds an OSGi dependency and noise.
 
-### Trivia
-`EnterCustomImplementation` injects both `TestDao` (entity-level, for full CRUD operations) and `hu.blackbelt.trivia.api.trivia.actors.player.test.TestDao` (player-level, for actor-scoped view). The actor-level DAO is injected but not actively used in the current implementation.
+### Do not rely on the choice of DAO for permissions
 
-## Trade-offs
+The agent-docs do not describe the DAO type as an access control mechanism. Permission scope comes from the actor's transfer objects and access paths in the model. Interceptors never fire for custom operations, so a permission check for a custom operation belongs inside the implementation (see [Which Operations Are Intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 
-- Pros: Access to both full entity and actor-constrained views, respects model-level access control
-- Cons: Can be confusing with same class name from different packages, unused injection adds noise
-- Alternative: Use only entity-level DAO and manually filter/restrict fields before returning
+### Convert instead of double-fetching
+
+When an input carries a service-layer object and the DAO wants an entity-layer one, convert with `getById(input.getX().identifier())` or `adaptTo`, rather than injecting a second DAO to fetch it. `getById` also checks that the instance exists (see [Converting Between Layers](../../agent-docs/backend/type-system-guide.md#converting-between-layers)).
+
+## Rationale
+
+- Using only the DAOs you need keeps the operation readable and its dependency list short.
+- Two same-named types in different packages compile fine and import wrongly. Fully qualified names make the choice visible.
+- The exact package layout depends on the generator version. This entry records what one project saw, not a platform contract. Check the generated sources of your project.
+
+## Example
+
+In Trivia, the custom implementation of an operation on `Test` injects the entity DAO for `Test` for all reads and writes. It also injects the DAO generated for the player actor's `Test` view, using its fully qualified name. The player-side DAO is never called in the current code, so the injection is redundant.
+
+## When to avoid
+
+- The operation needs only entity data: inject the entity DAO alone.
+- You want field-level restriction for the caller: model it in the actor's transfer object and access, or filter in the operation, instead of relying on a second DAO.
 
 ## Related
 
-- [[custom-operation-osgi-component]]
-- [[identifier-adaptation-pattern]]
-
+- [[custom-operation-osgi-component]] — how DAOs reach a custom operation through `@Reference`
+- [[identifier-adaptation-pattern]] — converting identifiers between the two types

@@ -1,0 +1,396 @@
+{
+ "batch": "pb02",
+ "entries": {
+  "data-snapshot-versioning": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "added transaction/async-interceptor caveat",
+    "immutability is project rule, not platform",
+    "clock note defaultZoneId vs JVM"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "diagram-generation-service": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "labelled DiagramUtils as project code",
+    "relation query single vs multi, no ordering",
+    "same-transaction storage"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "dirty-check-before-update": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "__version bump/signed identifier change",
+    "mask on load/update; Optional getters",
+    "interceptor: only built-in ops, rollback"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "document-generation-pipeline": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "binary attributes travel as file-store tokens",
+    "exception->500 mapping for converter failures",
+    "modeled EXPORT is separate JXLS SPI",
+    "custom ops not intercepted"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "dual-dao-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "service layer vs entity layer types",
+    "DAO choice is not access control",
+    "package layout is generator-dependent, not contract"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "dual-operation-layer": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "each declaration yields own interface/.default; package convention",
+    "stateful/inherited rule",
+    "interceptors do not guard custom ops",
+    "mapped delegation link"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "duplicate-detection-normalization": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "BooleanFilter isTrue/isFalse; JQL no navigation",
+    "IllegalStateException -> 500, use ValidationException",
+    "interceptors only built-in ops; stale old group"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "email-service-integration": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "JUDO_PLATFORM_MAIL_SMTP_* full list",
+    "invitation mail is sent by Keycloak; realm SMTP rewritten at start",
+    "mailpit testing",
+    "transaction/async caveats"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "entity-re-fetch-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "getById also converts layers",
+    "Optional.get -> 500; NotFoundException/fault",
+    "re-fetch is not a lock; __version only if in payload",
+    "helpers labelled project code"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "excel-data-seed-import": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "init is project convention, not platform hook",
+    "unset vs set(null)",
+    "Keycloak/entity drift",
+    "transaction rollback, interceptors not fired"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  },
+  "external-api-adapter-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "interceptor before update operation DAO",
+    "actor-level DAO package transfer object mapped entity operation bound",
+    "Generator-Emitted Package Convention",
+    "_this bound operation instance payload identifier getById fresh",
+    "EmailService SMTP send mail custom operation",
+    "FileStore token upload download binary custom code",
+    "adaptTo identifier transfer object entity DAO",
+    "Init operation initializer startup seed data",
+    "MAPPED operation transfer object entity operation delegate custom implementation",
+    "updateAll batch update DAO uniqueness validation query",
+    "OSGi Reference configuration Config Admin ObjectClassDefinition custom service"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/backend/type-system-guide.md",
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "external failures -> 500 unless fault/ValidationException",
+    "declared fault requirement",
+    "no outbound call in interceptor",
+    "ExceptionUtils labelled project code"
+   ],
+   "inventory": {},
+   "lint": "entry-lint pass; spec-check fails only on required heading Example (script conflict: entry-lint requires ## Example, spec-check GENERIC rejects it)"
+  }
+ }
+}

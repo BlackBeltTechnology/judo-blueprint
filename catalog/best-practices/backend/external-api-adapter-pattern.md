@@ -1,9 +1,9 @@
 ---
 id: external-api-adapter-pattern
 title: External API Adapter with Factory Provider
-description: A multi-layer adapter pattern for integrating with external REST/gRPC APIs in a platform-agnostic way.
-aliases: []
-keywords: [external, api, adapter, factory, provider]
+description: Call an external REST or gRPC API behind a platform-neutral Java interface with one adapter per provider and a provider service that picks the adapter from configuration.
+aliases: [API adapter, provider factory, third-party API client, ads API adapter]
+keywords: [adapter, external API, factory, provider, interface, DTO, credentials, filestore, OSGi service, REST client, fault]
 tags: ["domain:backend", "layer:backend", "project:indamedia-adtrack", "status:single-project"]
 category: integration
 status: single-project
@@ -13,76 +13,63 @@ alternatives: []
 related: [service-delegation-pattern, filestore-mediated-file-transfer, facade-service-pattern]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A multi-layer adapter pattern for integrating with external REST/gRPC APIs in a platform-agnostic way. Consists of: (1) a platform-agnostic business API interface defining operations, (2) platform-specific adapter implementations (e.g., Google Ads, Meta Ads), (3) a factory/provider service that selects the correct adapter based on configuration (e.g., account platform type), and (4) DTOs for transferring external data into the application domain. This cleanly separates external API concerns from business logic and supports adding new platforms without modifying existing code.
+An application talks to several external services that do the same job (several advertising platforms, several payment providers). Business code should not know which one. Define one Java interface in business terms, write one adapter per provider, and let a provider service return the right adapter for an entity's configuration.
 
-## Structure
+## Practice
 
-```java
-// 1. Platform-agnostic interface
-public interface AdsBusinessApi {
-    boolean isConnected(String customerId);
-    List<CampaignInfo> getAllCampaignForCustomer(String customerId);
-    CampaignCostInfo getCampaignCostToDate(String customerId, String campaignId, LocalDate upToDate);
-}
+### Four parts
 
-// 2. Platform-specific implementation
-public class GoogleAdsApiImpl implements AdsBusinessApi {
-    public GoogleAdsApiImpl(String developerToken, String delegatedAccount,
-                            Optional<String> loginCustomerId, String jsonKey) {
-        // Initialize Google Ads client with credentials
-    }
+1. An interface in business terms (connection check, list campaigns, read cost to date). It uses plain DTOs, not provider types and not generated entity types.
+2. One adapter class per provider. It is the only place with provider SDK calls, query languages, unit conversions (for example micro-currency) and paging or streaming of big results.
+3. A provider service, an OSGi component, that reads the entity's platform attribute (an enumeration), loads the credentials and returns a new adapter instance.
+4. DTOs for the data crossing the boundary, mapped to entities by the calling service.
 
-    @Override
-    public List<CampaignInfo> getAllCampaignForCustomer(String customerId) {
-        // Execute GAQL query, map to DTOs
-    }
-}
+The interface, adapters and provider service are project code. The platform only supplies the OSGi wiring (`@Reference`, `@Component`) used to reach the provider service from a custom operation (see [Example 3: External Service Integration](../../agent-docs/backend/custom-operations.md#example-3-external-service-integration) and [The Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)).
 
-// 3. Factory/provider service
-@Component(immediate = true, service = AdsBusinessApiProviderService.class)
-public class AdsBusinessApiProviderServiceImpl implements AdsBusinessApiProviderService {
-    @Reference FileStoreService fileStoreService;
-    @Reference GoogleCredentialDao credentialDao;
+### Keep credentials out of code
 
-    public AdsBusinessApi getAdsBusinessApi(Account account) throws BusinessErrorException {
-        Platform platform = account.getPlatform();
-        if (platform == Platform.GOOGLE) {
-            // Retrieve credentials, create GoogleAdsApiImpl
-            return new GoogleAdsApiImpl(developerToken, delegatedAccount, loginCustomerId, jsonKey);
-        } else if (platform == Platform.META) {
-            throw ExceptionUtils.createBusinessErrorException(PLATFORM_NOT_IMPLEMENTED, ...);
-        }
-    }
-}
+Credentials live in entities or files, not constants. The source project kept the provider key as a stored file and read it through the file store (see [[filestore-mediated-file-transfer]]); an entity row can hold the other settings. Protect the entities with actor access and do not return them through any transfer object that an ordinary actor can read.
 
-// 4. DTOs
-public class CampaignCostInfo {
-    String campaignId;
-    BigDecimal totalSpendToDate;
-    BigDecimal spendToday;
-    LocalDateTime lastFetched;
-}
-```
+### Map failures on purpose
 
-## Examples
+An external failure is a runtime exception to the platform and becomes a generic 500 (see [How the Runtime Maps Exceptions to HTTP](../../agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http)). Catch provider errors in the adapter, then raise one of:
 
-### Indamedia-AdTrack
-`AdsBusinessApi` interface defines 7 methods for campaign discovery, connection testing, cost retrieval, and budget monitoring. `GoogleAdsApiImpl` implements it using Google Ads API v20 with GAQL queries, micro-currency conversion (`MICROS_IN_CURRENCY = 1_000_000L`), and streaming for large result sets. `AdsBusinessApiProviderServiceImpl` factory retrieves credentials from FileStore, creates `GoogleAdsApiImpl` instances, and returns platform-specific customer IDs. Supports Google (implemented) and Meta (placeholder with `PLATFORM_NOT_IMPLEMENTED` error). Three DTOs: `CampaignInfo`, `CampaignCostInfo`, `CampaignDailyInfo`.
+- a modeled fault declared on the operation, if the UI should show a typed message (declare it on the model operation or the generated interface has no `throws` clause, see [Modeled Faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults));
+- a `ValidationException` with a code, for an input-related failure;
+- a clear "platform not implemented" fault for a provider that has no adapter yet.
 
-## Trade-offs
+Helpers such as an `ExceptionUtils.createBusinessErrorException` in the source project are project code, not platform API.
 
-- Pros: Clean separation of external API concerns, supports multiple platforms via single interface, testable (mock the interface), credential management isolated in provider
-- Cons: Extra abstraction layers, new DTOs to maintain alongside model entities, provider factory grows with each platform
-- Alternative: Direct API client usage in services (simpler but couples business logic to specific platform), OSGi service registry for automatic platform discovery
+### Time, money and idempotency
+
+Convert provider currency units once in the adapter. Use one clock for stored and compared timestamps (see [Time and Time Zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)). Calls from a scheduled sync should be repeatable: query what exists with typed filters before creating (see [SDK Query Filters Reference](../../agent-docs/backend/data-access-guide.md#sdk-query-filters-reference)).
+
+### Do not call out from inside an interceptor
+
+Interceptors run in the transaction of the operation. A slow external call holds the transaction open, and an exception rolls back the write. A call from an `async()` interceptor is outside the transaction but loses its exceptions (see [The Interceptor Contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)). Call the provider from a custom operation.
+
+## Rationale
+
+- Business code stays the same when a provider is added: a new adapter and one more branch in the provider service.
+- The interface can be mocked in tests.
+- Limit: more layers and DTOs, and the provider service grows with each platform.
+
+## Example
+
+Indamedia-AdTrack: an ads interface with seven methods covers campaign discovery, connection testing, cost retrieval and budget monitoring. The Google adapter uses the provider's query language, converts micro-currency units and streams large result sets. The provider service loads the stored key through the file store and returns the adapter for the account's platform. Meta is a placeholder that raises a "platform not implemented" error. Three DTOs carry campaign data.
+
+## When to avoid
+
+- Only one provider exists and will ever exist: call it from a service directly.
+- The integration is a one-off file exchange: use a plain operation.
+- The calls must be part of the same transaction as the data change: an outbox entity and a separate job fit better.
 
 ## Related
 
-- [[service-delegation-pattern]]
-- [[filestore-mediated-file-transfer]]
-- [[facade-service-pattern]]
-
+- [[service-delegation-pattern]] — thin operations calling services
+- [[filestore-mediated-file-transfer]] — stored credential files
+- [[facade-service-pattern]] — a single facade over several services

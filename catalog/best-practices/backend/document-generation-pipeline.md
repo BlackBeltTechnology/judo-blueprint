@@ -1,9 +1,9 @@
 ---
 id: document-generation-pipeline
 title: Document Generation Pipeline (XDocReport + PDF Conversion)
-description: "A multi-stage document generation pipeline: (1) load DOCX template from Configuration entity via FileStoreService, (2) build a data model using deeply nested Mask queries, (3) generate DOCX using XDocReport with Freemarker templating eng..."
-aliases: []
-keywords: [document, generation, pipeline, xdocreport, pdf, conversion]
+description: A custom operation builds a document from a stored template and a deeply masked data model, optionally converts it to PDF and watermarks it, and stores the result in the file store.
+aliases: [report generation, DOCX template, PDF export, document from template]
+keywords: [document, DOCX, PDF, XDocReport, Freemarker, template, mask, filestore, watermark, JODConverter, report, export]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:doors-model", "status:emerging"]
 category: integration
 status: emerging
@@ -13,55 +13,56 @@ alternatives: []
 related: [filestore-mediated-file-transfer, email-service-integration]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A multi-stage document generation pipeline: (1) load DOCX template from Configuration entity via FileStoreService, (2) build a data model using deeply nested Mask queries, (3) generate DOCX using XDocReport with Freemarker templating engine, (4) optionally convert to PDF via external JODConverter REST API, (5) optionally watermark PDF via PDFBox, (6) store the result in FileStoreService. Supports both final documents and preview (watermarked) versions.
+Business users want a Word or PDF document filled with application data (offer, report, contract) and want to change the layout without a release. Keep the template as a stored file, load the data through DAOs, merge them in a custom operation, and store the result in the file store.
 
-## Structure
+## Practice
 
-```java
-// 1. Load template
-InputStream template = fileStoreService.get(config.getTemplateFileId());
+### Stages
 
-// 2. Build data model with deep masks
-Entity data = entityDao.getById(id, deepMask).orElseThrow();
+1. Load the template. It lives in a configuration entity as a binary attribute or file-store token, so an administrator can replace it.
+2. Build the data model. Query the entity with a mask that names exactly the fields and nested relations the template uses. Masks control loading depth, and fields outside the mask are null (see [Pattern 3: Detail Views](../../agent-docs/backend/data-access-guide.md#pattern-3-detail-views-nested-masks)). Prepare derived values in a per-document helper class rather than in the template.
+3. Merge. XDocReport with Freemarker fills a DOCX template (the libraries are project dependencies, not platform ones).
+4. Convert to PDF if needed. The source project posted the DOCX to an external JODConverter REST service.
+5. Watermark preview versions with a PDF library.
+6. Store the output in the file store and return or attach the reference.
 
-// 3. Generate DOCX via XDocReport/Freemarker
-IXDocReport report = XDocReportRegistry.getRegistry().loadReport(template, TemplateEngineKind.Freemarker);
-IContext context = report.createContext();
-context.put("entity", data);
-ByteArrayOutputStream docx = new ByteArrayOutputStream();
-report.process(context, docx);
+### Do it in a custom operation
 
-// 4. Convert to PDF via JODConverter REST
-byte[] pdf = documentConversionService.convertToPdf(docx.toByteArray());
+The generator is a custom operation implementation or a service it delegates to (see [The Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)). A preview and a final version can share the stages and differ in the watermark. An operation that only reads data and returns a file has a typed output: a transfer object with a binary attribute, which travels as a file-store token, not as bytes in the response (see [Response Metadata and Wire Conversion](../../agent-docs/backend/platform-behavior-reference.md#response-metadata-and-wire-conversion)).
 
-// 5. Watermark for preview
-byte[] watermarked = pdfWatermarkService.addWatermark(pdf, "PREVIEW");
+### Files reach the client through tokens
 
-// 6. Store result
-String fileId = fileStoreService.put(new ByteArrayInputStream(result), "document.pdf", "application/pdf");
-```
+Upload and download are token based: the client asks for an upload token for the binary attribute, uploads the content to the file store, and sends the token as the attribute value on create or update (see [Binary Upload Tokens](../../agent-docs/backend/platform-behavior-reference.md#binary-upload-tokens)). A template uploaded through the UI therefore reaches the operation as a stored file.
 
-## Examples
+### Keep it safe and bounded
 
-### RackInspect
-`ReportServiceImpl` (~1240 lines) generates 6 document types: assessment sheets, review reports, offers, job sheets, work reports, completion certificates. Each has a dedicated `*ReportUtil` for data model preparation. Preview operations add "PREVIEW" watermark via PDFBox (80pt, 15% opacity, 45-degree rotation). `DocumentConversionServiceImpl` calls JODConverter via HTTP multipart POST.
+- The external converter is a network dependency. Set timeouts and map its failures to a declared fault or `ValidationException`, because an unmapped runtime exception becomes a generic 500 (see [How the Runtime Maps Exceptions to HTTP](../../agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http)).
+- Template engines and some PDF libraries are not thread safe. The source project serialized the generation methods.
+- A custom operation is not protected by interceptors, so check the caller's right to the document inside the operation (see [Which Operations Are Intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- Modeled EXPORT operations are a different feature: the platform's Excel export uses a JXLS-based SPI (see [Excel Export Operations](../../agent-docs/backend/platform-behavior-reference.md#excel-export-operations)). This pipeline is for DOCX and PDF.
 
-### doors-model
-`generateDocument` custom operation on Contract entity retrieves the contract type's DOCX template and applies templating to produce the contract document. The templated content replaces the contract's DOCX file. `uploadFile` also generates DOCX values and prints the contract registration number on PDF uploads. Implementations reside in the external `doors-backend` repository.
+## Rationale
 
-## Trade-offs
+- Templates stored as data let non-developers change layout.
+- Masks keep the data query bounded even for a document that needs many levels.
+- Limit: large masks load a lot, template errors are hard to debug, and PDF conversion needs an extra service to run.
 
-- Pros: Template-driven document generation, non-technical users can modify templates, supports both DOCX and PDF output
-- Cons: External JODConverter dependency for PDF, complex template debugging, large mask queries for data, thread-safety requires synchronized methods
-- Alternative: Pure Java PDF generation (iText, Apache PDFBox), or cloud document APIs
+## Example
+
+- RackInspect: a report service of about 1,200 lines produces six document types (assessment sheets, review reports, offers, job sheets, work reports, completion certificates). Each has a helper preparing its data model. Preview operations add a PREVIEW watermark. A conversion service calls JODConverter over HTTP.
+- doors-model: a `generateDocument` operation on a contract loads the DOCX template of the contract type, applies it, and replaces the stored document. The implementation lives in a separate backend repository.
+
+## When to avoid
+
+- The layout is fixed and simple: generate the PDF directly with a PDF library.
+- Only a spreadsheet is needed: use a modeled export operation.
+- Documents are very frequent or large: generate asynchronously and store the result, rather than in a request.
 
 ## Related
 
-- [[filestore-mediated-file-transfer]]
-- [[email-service-integration]]
-
+- [[filestore-mediated-file-transfer]] — storing templates and results
+- [[email-service-integration]] — sending generated documents by mail
