@@ -11,7 +11,7 @@
 | `advanced-patterns.md` | Part of: Integration Testing Documentation(./README.md) |
 | `best-practices.md` | Part of: Integration Testing Documentation(./README.md) |
 | `getting-started.md` | Target Audience: Beginners, new developers starting with JUDO integration tests |
-| `interceptor-testing.md` | This page covers testing OperationCallInterceptor implementations with @JudoTest(interceptors = …) and JudoRuntimeFixture.addInterceptor(…). |
+| `interceptor-testing.md` | Integration test for an interceptor: testing OperationCallInterceptor implementations with @JudoTest(interceptors = …), JudoRuntimeFixture.addInterceptor(…), spy interceptors and execution order. |
 | `osgi-ds-descriptor-tests.md` | Part of: Integration Testing Documentation(./README.md) |
 | `runtime-fixture-and-test-scope.md` | This page explains how the testkit builds the runtime for a test, and how to keep integration tests small and fast. |
 | `supplementary-patterns.md` | Part of: Integration Testing Documentation(./README.md) |

@@ -7,13 +7,13 @@
 | File | Purpose |
 |---|---|
 | `README.md` | Backend development guide for JUDO applications. |
-| `architectural-patterns.md` | Multi-tenancy filtering, custom service layer and state machine patterns for JUDO backends. |
+| `architectural-patterns.md` | Multi-tenancy filtering, actor access getter rules (entity FQN base, no self in scope, reference-returning expression), custom service layer and state machine patterns for JUDO backends. |
 | `authentication-guide.md` | AuthenticationInterceptor, the principal operation, token attribute extraction and just-in-time user provisioning. |
 | `custom-operations.md` | Implementing custom operation logic: .default files, OSGi registration, rules and examples. |
 | `data-access-guide.md` | DAO queries, filters, masks, generated DAO behaviour and known issues. |
 | `debugging-and-monitoring-guide.md` | Hot deployment, logging, X-Exchange-Id correlation, remote debugging and health checks. |
-| `error-handling-guide.md` | Platform exceptions versus modeled faults, what interceptors may throw, HTTP mapping and error codes. |
-| `interceptors.md` | OperationCallInterceptor contract, which operations are intercepted, ordering, throwing business errors and examples. |
+| `error-handling-guide.md` | Backend errors: ValidationException with field location (400), modeled business faults declared on the operation (422), platform exceptions (403, 404), what interceptors may throw, and HTTP mapping. |
+| `interceptors.md` | OperationCallInterceptor contract: which operations interceptors run around (built-in CRUD only, never custom, mapped or script operations), preCall and postCall ordering, throwing business errors fro |
 | `internationalization-guide.md` | Backend i18n service, localized validation messages and translation files. |
 | `patterns-and-best-practices.md` | OSGi patterns, request context, custom data types, validation and query patterns. |
 | `platform-behavior-reference.md` | Signed identifiers, optimistic locking, reserved payload keys, REST wire contract, time zones, variables and sequences. |

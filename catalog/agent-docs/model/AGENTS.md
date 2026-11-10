@@ -7,7 +7,7 @@
 | File | Purpose |
 |---|---|
 | `README.md` | Model documentation for JUDO applications: ESM metamodel, JUDO Model CLI, JQL, modeling patterns, validation and transformation. |
-| `advanced-modeling-patterns.md` | Reusable advanced JUDO modeling patterns: actors and principals, role flags, polymorphism, JQL concepts and validator-enforced structures. |
+| `advanced-modeling-patterns.md` | Advanced JUDO modeling patterns: view model panel transfer objects with derived relations (dashboards), actors and principals, role flags, polymorphism and polymorphic creation for abstract entities,  |
 | `generalization-guide.md` | Placeholder conventions and generic code examples used across the JUDO agent documentation, so it applies to any application. |
 | `jcl-operation-scripts.md` | Syntax, restrictions and validation of JCL operation body scripts in JUDO models. |
 | `jsl-language-notes.md` | JSL identifiers, built-in libraries, actor grammar limits and the validator rules that fail a model build. |
@@ -15,5 +15,5 @@
 | `model-development.md` | Primary reference for JUDO model development: layers, workflow, patterns, the JQL expression language reference, pitfalls and best practices. |
 | `model-validation-and-transformation.md` | EVL validation entry points, ETL versus ZETA transformation engines, Maven workflow options, measures, static data and known model issues. |
 | `transformation-pipeline.md` | The JUDO transformation pipeline from ESM to PSM, ASM, RDBMS and Liquibase, server versus client regeneration, in-memory CLI state and the git-restore hazard. |
-| `ui-authoring-guide.md` | How to compose form, table and view scaffolds on transfer objects and wire them onto an actor menu in the ESM, with bindings, layout rules, pitfalls and audits. |
+| `ui-authoring-guide.md` | How to compose form, table and view scaffolds on transfer objects and wire them onto an actor menu: bindings, hiddenBy/enabledBy/requiredBy booleans on the same transfer object, layout rules, pitfalls |
 | `xmi-id-traceability.md` | How xmi:id values are composed and linked so a model element can be traced through the PSM, ASM, RDBMS and UI models. |
