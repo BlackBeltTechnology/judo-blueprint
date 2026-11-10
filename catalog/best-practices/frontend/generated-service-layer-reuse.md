@@ -1,9 +1,9 @@
 ---
 id: generated-service-layer-reuse
 title: Reusing Generated TypeScript Service Layer in Custom UI
-description: "When replacing the generated JUDO UI with a custom frontend, continue to import and use the generated TypeScript service implementations (Axios-based REST clients) and transfer object type definitions."
-aliases: []
-keywords: [reusing, generated, typescript, service, layer, custom, ui, reuse]
+description: "When replacing the generated JUDO UI with a custom frontend, keep importing the generated TypeScript service implementations (Axios-based REST clients) and transfer object types instead of writing your own API layer."
+aliases: [generated service reuse, judoAxiosProvider reuse]
+keywords: [generated services, ServiceImpl, judoAxiosProvider, QueryCustomizer, transfer object types, custom UI, data-axios]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:actiongroup-test-react", "status:emerging"]
 category: mapping
 status: emerging
@@ -13,49 +13,50 @@ alternatives: []
 related: [complete-frontend-replacement, error-code-mapping-pattern]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-When replacing the generated JUDO UI with a custom frontend, continue to import and use the generated TypeScript service implementations (Axios-based REST clients) and transfer object type definitions. This gives custom UIs type-safe API access, consistent error handling, and query customizer support without reimplementing the API layer.
+A custom UI should talk to the backend through the REST client code the generator already produces, so the API stays type-safe and follows model changes.
 
-## Structure
+## Practice
+
+### Platform base
+
+- For each page and relation the generator emits services under `src/services/data-axios/`: `{Entity}ServiceImpl.ts` and `{Entity}ServiceFor{Relation}Impl.ts`. They are constructed with the generated `judoAxiosProvider` (`~/services/data-axios/JudoAxiosProvider`) ([service generation](../../agent-docs/frontend/model-screen-layout.md), [accessing generated services](../../agent-docs/frontend/development-workflow.md)).
+- Because the services come from the UI model, regenerating after a model change updates them and the transfer object types together. Add the needed elements to the model's views instead of hand-writing replacements ([model features instead of custom components](../../agent-docs/frontend/ui-model-pitfalls.md)).
+
+### Project practice: use them from custom components
+
+Instantiate the generated service once per component (for example with `useMemo`) and call its methods with generated types. The project also passes a `QueryCustomizer` with a `_mask` string to limit returned fields (see [[getmask-data-optimization]]).
 
 ```typescript
-// Instantiate generated service in custom component
-const playerServiceForContestsImpl = useMemo(
-  () => new PlayerServiceForContestsImpl(judoAxiosProvider), []
-);
+const contestService = useMemo(() => new ContestServiceImpl(judoAxiosProvider), []);
+const [contests, setContests] = useState<ContestStored[]>([]);
 
-// Use generated transfer object types
-const [contests, setContests] = useState<ActorsplayerContestStored[]>([]);
-
-// Call service methods with type-safe parameters
-const data = await playerServiceForContestsImpl.list(
+const data = await contestService.list(
   undefined,
-  { _mask: '{title,description}' } as QueryCustomizer<ActorsplayerContest>
+  { _mask: '{title,description}' } as QueryCustomizer<Contest>,
 );
 ```
 
-Services are generated under `src/services/` and remain in the generator's scope (not ignored).
+Names here are illustrative; the real class and method names derive from your UI model. Do not add the `src/services/` files to `.generator-ignore`; leave them regenerated.
 
-## Examples
+## Rationale
 
-### Trivia
-Player frontend instantiates 4 generated services via `useMemo`: `ActorsplayerContestServiceImpl` (contest entry), `PlayerServiceForContestsImpl` (listing, scoreboard), `PlayerServiceForTestsImpl` (quiz flow), and `PlayerServiceForApplicationImpl` (registration/activation). All use `judoAxiosProvider` for HTTP transport.
+The generated layer already handles transport, typing and the query customizer. Bypassing it duplicates that code and drifts from the backend after the next model change.
 
-### ActionGroupTestReact
-Imports generated Axios services directly: `godServiceForGalaxiesImpl` (root CRUD), `viewGalaxyServiceImpl` (entity view), `viewGalaxyServiceForStarsImpl` (nested entity), `viewGalaxyServiceForMatterImpl` (many-aggregation). Also uses generated types (`ViewGalaxyStored`, `ViewGalaxyQueryCustomizer`) and mask builders (`ViewGalaxyMaskBuilder`).
+## Example
 
-## Trade-offs
+- trivia, player frontend: four generated services created via `useMemo` (contest entry, contest listing and scoreboard, quiz flow, registration), all on `judoAxiosProvider`.
+- actiongroup-test-react: imports generated services directly for root CRUD, entity view, nested entity and many-aggregation access, plus the generated types and mask builders.
 
-- **Pros**: Type-safe API calls; no manual REST client code; consistent with backend API changes; query customizer support for filtering/sorting
-- **Cons**: Couples custom UI to generated service interfaces; service API changes require regeneration
-- **When to use**: Always, when building custom UI within a JUDO project -- there is no reason to bypass the generated service layer
+## When to avoid
+
+There is no reason to bypass the generated layer inside a JUDO project. If a custom UI must run outside the generated build, consider whether the model should expose the data instead.
 
 ## Related
 
-- [[complete-frontend-replacement]]
-- [[error-code-mapping-pattern]]
-
+- [[complete-frontend-replacement]] — the custom SPA that reuses these services
+- [[error-code-mapping-pattern]] — mapping backend errors the services return
+- [[getmask-data-optimization]] — limiting fields with `_mask`

@@ -2,8 +2,8 @@
 id: getmask-data-optimization
 title: Custom getMask() Override for Data Fetch Optimization
 description: "Override the `getMask()` action in page hooks to specify exactly which fields to fetch from the backend, optimizing network payload for list views."
-aliases: []
-keywords: [custom, getmask, override, data, fetch, optimization]
+aliases: [custom getMask, list mask override]
+keywords: [getMask, _mask, X-Judo-Mask, mask, page action hook, list view, payload, projection]
 tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
 category: hook
 status: single-project
@@ -13,14 +13,24 @@ alternatives: []
 related: [pandino-action-hook-override]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Override the `getMask()` action in page hooks to specify exactly which fields to fetch from the backend, optimizing network payload for list views. The JUDO framework uses a `_mask` query customizer that follows a JSON-like syntax to select specific fields and nested relations. By default, generated pages fetch all visible fields, but custom masks can reduce this to only the fields needed for a specific view.
+A list page with a complex entity should request only the fields it displays, so payload and backend query stay small.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The transport carries a projection: the REST operations read the `X-Judo-Mask` request header (`__mask`) as "projection of the response", and the React client declares it in `headers.ts` ([protocol headers](../../agent-docs/backend/platform-behavior-reference.md)). The frontend client sends it from a `_mask` string on the `QueryCustomizer`.
+- On the backend side, masks decide which attributes and relations are loaded, and narrow masks are the documented performance lever ([masks](../../agent-docs/backend/data-access-guide.md)).
+- Page behavior is customised with page action hooks: a per-page key `<PAGE>_ACTIONS_HOOK_INTERFACE_KEY`, a hook receiving `(data, editMode, storeDiff, ...)` and returning handlers, registered from the application customizer ([page actions](../../agent-docs/frontend/hooks/action-hooks.md)).
+- Not covered by the agent-docs: the `getMask()` handler itself and the exact `_mask` string syntax. The pieces below are project practice from the example project; check the generated hook type of your page for `getMask`.
+
+### Project practice: return a narrow mask from the page hook
+
+Implement `getMask()` in the page actions hook and return only the list's columns and the needed nested relations:
 
 ```typescript
 const hookImpl = (data, editMode, storeDiff, refresh, submit) => ({
@@ -33,23 +43,24 @@ const hookImpl = (data, editMode, storeDiff, refresh, submit) => ({
 });
 ```
 
-Mask syntax:
-- Simple fields: `{field1,field2,field3}`
-- Nested relations: `{relation{nestedField1,nestedField2}}`
-- Multiple nesting levels: `{rel1{rel2{deepField}}}`
+- Plain fields: `{a,b}`; nested relation: `{rel{x,y}}`; deeper nesting as `{r1{r2{f}}}`.
+- Update the mask whenever columns change. A missing field shows as empty data and nothing validates the string at compile time.
+- Keep the mask next to the page's other hook logic so both change together.
 
-## Examples
+## Rationale
 
-### RackInspect
-FaultRegistryPanel list hook overrides `getMask()` to fetch only fields needed for the list view: `closedDate`, `created`, `registryNumber`, status flags, `assignedTo{email,name}`, `facility{facilityName}`, and `faultHeaders{rackName,rackTypeName}`. This avoids loading full fault header details, dimension parameters, and element fault data that the list view does not display.
+Generated pages fetch all visible fields; relations the list never shows still cost network and database work. A hand-written mask trades maintenance for smaller, faster lists.
 
-## Trade-offs
+## Example
 
-- **Pros**: Significant reduction in network payload; faster list loading; backend only queries needed relations
-- **Cons**: Must be manually maintained when page columns change; incorrect masks cause missing data; no compile-time validation of mask strings
-- **When to use**: List views or panels with complex entities where the default mask fetches too much data
+rackinspect, fault registry list: the hook fetches dates, registry number, status flags, `assignedTo{email,name}`, `facility{facilityName}` and `faultHeaders{rackName,rackTypeName}`, and skips the heavy fault header details, dimension parameters and element fault data the list does not show.
+
+## When to avoid
+
+- Small entities or pages whose default fields are already what the list shows.
+- Fields that change often: the mask becomes a source of silent missing data.
 
 ## Related
 
-- [[pandino-action-hook-override]]
-
+- [[pandino-action-hook-override]] — how page action hooks are registered
+- [[generated-service-layer-reuse]] — the same `_mask` customizer in custom UIs

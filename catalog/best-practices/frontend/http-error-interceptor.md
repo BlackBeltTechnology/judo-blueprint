@@ -1,9 +1,9 @@
 ---
 id: http-error-interceptor
 title: HTTP Error Interceptor for Global Error Handling
-description: "Register a global HTTP error interceptor via Pandino that catches specific HTTP status codes (e.g., 422 Unprocessable Entity) and displays error messages from the response body as snackbars."
-aliases: []
-keywords: [http, error, interceptor, global, handling]
+description: "Register the platform's error handler interceptor hook to show HTTP 422 business messages as a snackbar instead of the default fault dialog."
+aliases: [422 snackbar interceptor, global error snack]
+keywords: [error handler interceptor, ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY, 422, snackbar, shouldInterceptError, interceptError, fault dialog, Pandino]
 tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
 category: component
 status: single-project
@@ -13,49 +13,59 @@ alternatives: [centralized-error-handling-validation-map]
 related: [error-code-mapping-pattern, application-customizer-hub, centralized-error-handling-validation-map]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Register a global HTTP error interceptor via Pandino that catches specific HTTP status codes (e.g., 422 Unprocessable Entity) and displays error messages from the response body as snackbars. This provides centralized error handling that applies to all service calls without requiring per-call try/catch blocks. The interceptor is registered in `application-customizer.tsx` and implemented in a separate file.
+Show a short message for business errors everywhere, instead of the default fault dialog, without try/catch in every service call.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The generated `src/utilities/error-handling.ts` (`useErrorHandler`) maps HTTP statuses to feedback, by status code only: 400 validation toast (inline field errors only when `errorList[0].location` exists), 401 clears security storage and reloads, 403/404/500 toasts, other statuses `error.unknown`, and 422 opens the operation fault dialog ([handling matrix](../../agent-docs/frontend/error-handling.md)).
+- A custom error handler interceptor runs before the default handling and can take over a response. It is registered with `registerErrorHandlerInterceptorHook` under `ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY`, from the scaffold `src/custom/hooks/register-error-handler-interceptor.ts.default` ([interceptor hook](../../agent-docs/frontend/advanced-patterns.md)).
+- The hook is a React hook (it may call `useSnacks`, `useFaultDialog`, `useTranslation`) returning `{ shouldInterceptError(error, options), interceptError(error, options, payload, dataPath) }`. The 422 body is keyed by the modeled fault object: `{ <faultKey>: { <attribute>: value } }`. The 400 body is a list of `{ code, message, location }`.
+- Replacing the 422 handling skips the fault dialog, but the batch/CRUD dialog (`useCRUDDialog`) still renders `faults.*` messages itself, so test both paths ([customizing 422](../../agent-docs/frontend/error-handling.md)).
+
+### Project practice: 422 as a snackbar
+
+The project intercepts every 422 and shows the `message` of the first fault key:
 
 ```typescript
-// register-error-handler-interceptor.ts
-export const errorHandlerInterceptor = {
-  shouldInterceptError: (error) => error.response?.status === 422,
-  interceptError: (error) => {
-    const key = Object.keys(error.response.data)[0];
-    showErrorSnack(
-      error.response.data[key].message,
-      { autoHideDuration: 3000 }
-    );
-  },
+const hook: ErrorHandlerInterceptorHook = () => {
+  const { showErrorSnack } = useSnacks();
+  return {
+    shouldInterceptError: (error) => error.response?.status === 422,
+    interceptError: (error) => {
+      const data = error.response.data;
+      const key = Object.keys(data)[0];
+      showErrorSnack(data[key].message, { autoHideDuration: 3000 });
+    },
+  };
 };
-
-// Registration in application-customizer.tsx
-context.registerService(
-  ERROR_HANDLER_INTERCEPTOR_KEY,
-  errorHandlerInterceptor
-);
+// register in application-customizer.tsx via registerErrorHandlerInterceptorHook(context)
 ```
 
-## Examples
+- This works only if the modeled fault carries a `message` attribute; otherwise show a translated text per fault key.
+- Intercept narrowly. Do not turn every 5xx into one subsystem message, the docs flag that as an anti-pattern.
+- The snackbar cannot start special UI flows such as re-registration; leave those statuses to the default handling.
 
-### RackInspect
-Intercepts HTTP 422 responses globally. Extracts the first error key from `error.response.data`, reads the `message` property, and shows it as an error snackbar that auto-hides after 3 seconds. This handles backend validation errors from all service calls without per-call error handling.
+## Rationale
 
-## Trade-offs
+One interceptor gives uniform error display and no per-call boilerplate. It replaces the default dialog, which lists all fault attributes, with one line of text.
 
-- **Pros**: Centralized error handling; consistent error display; no boilerplate per service call; catches errors across the entire application
-- **Cons**: Generic handling may not suit all error types; cannot trigger specific UI flows (like re-registration); may conflict with per-call error handling
-- **When to use**: As a safety net for common error scenarios (validation failures, business rule violations) that should show a message
+## Example
+
+rackinspect: intercepts HTTP 422 globally, takes the first key of the response body, reads its `message` and shows an error snackbar that hides after 3 seconds. Backend validation and business rule errors from all service calls appear this way.
+
+## When to avoid
+
+- The default fault dialog with translated `faults.*` attribute labels is what users should see.
+- Errors need field mapping or code-specific flows: see [[error-code-mapping-pattern]] and [[centralized-error-handling-validation-map]].
 
 ## Related
 
-- [[error-code-mapping-pattern]]
-- [[application-customizer-hub]]
-- [[centralized-error-handling-validation-map]]
-
+- [[error-code-mapping-pattern]] — mapping codes to messages
+- [[application-customizer-hub]] — where the hook is registered
+- [[centralized-error-handling-validation-map]] — the per-field alternative

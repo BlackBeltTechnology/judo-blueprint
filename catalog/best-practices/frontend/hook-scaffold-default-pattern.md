@@ -1,9 +1,9 @@
 ---
 id: hook-scaffold-default-pattern
 title: Hook Scaffold .ts.default Convention
-description: "The JUDO generator creates hook scaffold files with `.ts.default` extension under `src/custom/hooks/`."
-aliases: []
-keywords: [hook, scaffold, ts, default, convention]
+description: "The generator emits inactive `.default` hook scaffolds under `src/custom/hooks/`; activate one by copying it to a normal file, implementing it and registering it in the application customizer."
+aliases: [.default scaffold, hook scaffold activation]
+keywords: [hook scaffold, .default, src/custom/hooks, application-customizer, generateActionsHook, activation, regeneration]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspect", "project:itracker", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: hook
 status: established
@@ -13,66 +13,65 @@ alternatives: []
 related: [pandino-action-hook-override, application-customizer-hub]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-The JUDO generator creates hook scaffold files with `.ts.default` extension under `src/custom/hooks/`. These files contain the hook function signature, useful imports, and an empty return object. To activate a hook, the developer renames it from `.ts.default` to `.ts` and adds action implementations. This convention lets the generator produce starter code without overwriting active customizations.
+Start every frontend customization from the generated scaffold of the hook, so the signature and imports are right and the hook point is easy to find.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The generator creates `.default` scaffold files for hook registrations under `src/custom/hooks/`: error handler interceptor, `pages/`, `dialogs/`, `containers/`, `custom-implementations/`, `components/cards/`, `sub-themes/`, `registerMenuActionsHook.ts.default` and the guest page registration. A scaffold exists only when the hook is enabled in the model (for example `generateActionsHook`) ([scaffold files](../../agent-docs/frontend/hooks/README.md), [hook files](../../agent-docs/frontend/extension-points.md)).
+- `src/custom/application-customizer.tsx` is a plain generated file with an empty `customize(context)`; it is where `register...Hook(context)` calls go. It is not a `.default` file.
+- A `.default` file is not compiled. Copy it to the same name without `.default`, implement it, and register it. Do not edit the `.default` file: it is regenerated on every build. `src/custom/` is gitignored in the frontend module, so the copy survives regeneration and needs no `.generator-ignore` entry ([activating a scaffold](../../agent-docs/frontend/hooks/README.md)).
+
+### Project practice: leave the scaffolds, activate on demand
 
 ```
 src/custom/hooks/
   pages/
-    registerSomePageActionsHook.ts.default      # Scaffold (inactive)
-    registerOtherPageActionsHook.ts             # Activated (renamed)
-  containers/
-    registerSomeContainerActionsHook.ts.default  # Scaffold
-  dialogs/
-    registerSomeDialogActionsHook.ts.default     # Scaffold
+    registerSomePageActionsHook.ts.default   # scaffold, inactive
+    registerOtherPageActionsHook.ts          # activated copy
+  containers/ ...
+  dialogs/ ...
 ```
 
-Scaffold file content:
+The scaffold body is the hook function with its generated arguments and an empty return, to which you add the action handlers:
 
 ```typescript
 const HookImplementation = (data, editMode, storeDiff, refresh, submit) => {
   const { t } = useTranslation();
-  const { navigate, back } = useJudoNavigation();
-  const { getLatestViewData } = useViewData();
   const someService = new SomeServiceImpl(judoAxiosProvider);
-
   return {
     // implement actions here
   };
 };
 ```
 
-## Examples
+- Activate only the hooks you need; leave the others as scaffolds. An unused scaffold costs nothing at runtime.
+- Name hooks by the generated scaffold name, so the hook point can be found from the page it belongs to.
+- Old notes of this pattern speak of renaming; the docs say copy, which leaves the regenerated `.default` for comparison after model changes.
 
-### Trivia
-Admin frontend has 24 `.ts.default` scaffolds: 9 page hooks, 11 container hooks, and 4 dialog hooks. None have been activated -- all return empty `{}`. Categories include: `registerActorsAdminAdminCategoriesAccessViewPageActionsHook.ts.default`, `registerActorsAdminTaskTask_FormActionsHook.ts.default`, etc.
+## Rationale
 
-### RackInspect
-All scaffolds have been activated into working hooks. The `src/custom/` directory contains 87 active `.ts`/`.tsx` files (no `.ts.default` files remain). This shows the progression from scaffold to full customization: renaming, implementing action methods, and registering in `application-customizer.tsx`.
+Scaffolds give correct signatures and imports for every hook point the model enables. Because they live in a gitignored folder and are copied rather than edited, the generator can keep updating the originals.
 
-### itracker
-60 total hook scaffolds across two actors (UserActor: 24 container + 8 dialog + 10 page; Admin: 9 container + 3 dialog + 6 page), all remaining as `.ts.default` inactive. Demonstrates a project that relies entirely on model-driven behavior without activating any hooks.
+## Example
 
-### workflow-poc
-2 hook scaffolds generated (WorkflowVersion View_Edit custom implementations, guest page hook registration), both left as `.ts.default` inactive. Despite the complex workflow domain with operations and redirects, the project uses a generator override (HBS fragment) and OperationFlowManager instead of individual hook overrides.
+- trivia admin: 24 scaffolds (page, container, dialog), none activated.
+- itracker: about 60 scaffolds over two actors, none activated; behavior comes from the model.
+- workflow-poc: 2 scaffolds, left inactive; it uses a generator fragment override and `OperationFlowManager` instead.
+- reserve-app: one activated (a dialog hook for conditional field validation) among scaffolds for five actors.
+- rackinspect: all scaffolds activated into about 87 working files under `src/custom/`.
 
-### reserve-app
-Scaffolds generated across 5 actor frontends. Only 1 scaffold activated in AdminActor: `registerServicesAdminActorStorageTypesAccessViewPageActionsHook.ts` (dialog hook for conditional field validation). All other scaffolds across all 5 actors remain as `.ts.default`. Demonstrates minimal activation in a multi-actor project.
+## When to avoid
 
-## Trade-offs
-
-- **Pros**: Ready-made starting points for customization; preserves generator capability to update scaffolds; clear naming convention for finding hook points
-- **Cons**: Large number of scaffolds can be overwhelming; no documentation on which hooks are most useful; inactive hooks add directory clutter
-- **When to use**: This is the standard JUDO pattern for all generated frontends -- hooks are automatically scaffolded
+- The model setting or a built-in widget already gives the behavior; do not add a hook by habit.
+- For a hook type with no scaffold, enable the hook flag in the model first instead of writing registration code from scratch.
 
 ## Related
 
-- [[pandino-action-hook-override]]
-- [[application-customizer-hub]]
-
+- [[pandino-action-hook-override]] — how an activated hook is registered
+- [[application-customizer-hub]] — the file where registrations are collected

@@ -1,9 +1,9 @@
 ---
 id: i18n-custom-translation-keys
 title: "Custom Translation Keys with custom.* Prefix"
-description: "Add project-specific translation keys using a `custom.*` prefix convention in both the locale-specific JSON files (e.g., `application_hu-HU.json`) and the generator override extra fragment (for English defaults)."
-aliases: []
-keywords: [custom, translation, keys, prefix, i18n]
+description: "Name project-specific translation keys with a `custom.*` prefix, give English defaults through the generator override fragment and other locales in the locale files."
+aliases: [custom.* keys, project translation keys]
+keywords: [custom translation keys, custom.* prefix, defaultValue, i18next, application_default.json, extra fragment, locale files]
 tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
 category: i18n
 status: single-project
@@ -13,47 +13,54 @@ alternatives: [react-intl-flat-key-pattern]
 related: [i18n-generator-override-extra-fragment, react-intl-flat-key-pattern]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Add project-specific translation keys using a `custom.*` prefix convention in both the locale-specific JSON files (e.g., `application_hu-HU.json`) and the generator override extra fragment (for English defaults). Custom keys cover UI text for hand-built components that the generator does not produce translations for. The `defaultValue` parameter in `t()` calls provides a fallback when translation files are not loaded.
+Hand-built components need translated texts that the model does not produce. A fixed prefix keeps them apart from generated keys.
 
-## Structure
+## Practice
 
-Translation key prefixes:
-- `custom.dimension.*` - Dimension parameter UI strings
-- `custom.dialog.*` - Custom dialog titles and descriptions
-- `custom.loading.*` - Loading state messages
-- `custom.error.*` - Error messages for custom operations
-- `extra.localization.operation.*` - Custom operation labels
-- `judo.error.validation-failed.*` - Custom validation error messages
+### Platform base
 
-Usage in code:
+- Translation files are flat dot-notation keys under a `translation` root; `t()` takes the full key ([flat keys](../../agent-docs/frontend/i18n.md)).
+- The platform's own key patterns are `entities.*`, `enumerations.*`, `menuTree.*`, `services.*`, `faults.<prefix>.*` and `extra.localization.operation.<name>` for custom operation labels ([key conventions](../../agent-docs/frontend/i18n.md)).
+- `application_<locale>.json` files are generated and regenerate unless listed in `.generator-ignore`; keep a `_default` fallback ([best practices](../../agent-docs/frontend/i18n.md)).
+
+### Project practice: `custom.*` plus defaults
+
+The project puts every non-generated string under `custom.*`, grouped by area:
+
+- `custom.dimension.*` for a feature's UI strings, `custom.dialog.*` for dialog titles and texts, `custom.loading.*`, `custom.error.*`.
+- English defaults go into the generator override extra fragment ([[i18n-generator-override-extra-fragment]]); other locales go into the locale file, protected as in [[generator-ignore-i18n-layout]].
+- Always pass a `defaultValue` so the text still shows when a key is missing.
+
 ```typescript
-// Direct import (non-React)
-import { t } from 'i18next';
+import { t } from 'i18next';            // outside React
 t('custom.dimension.select-row', { defaultValue: 'Select row' });
 
-// React hook
-const { t } = useTranslation();
+const { t } = useTranslation();         // inside a component
 t('custom.dialog.row-selection.title', { groupLabel, defaultValue: `Select Row from "${groupLabel}"` });
 ```
 
-## Examples
+- Check periodically for unused custom keys; nothing validates them automatically.
+- Two files must be updated per new key (fragment and locale file).
 
-### RackInspect
-15+ custom keys for dimension parameter UI (`custom.dimension.select-row`, `custom.dimension.add-new-row`, `custom.dimension.no-selection`), row selection dialog (`custom.dialog.row-selection.title` with `{{groupLabel}}` interpolation), loading states (`custom.loading.parameters`), and error messages (`custom.error.fetch-parameters-failed`). All have Hungarian translations in `application_hu-HU.json` and English defaults via the generator override fragment.
+## Rationale
 
-## Trade-offs
+The prefix cannot clash with generated keys, so regeneration and model changes do not touch them, and a reader sees at once which texts are hand-written.
 
-- **Pros**: Consistent key naming convention; generator does not conflict with custom.* prefix; defaultValue ensures fallback
-- **Cons**: Two places to maintain (locale JSON + generator fragment); no automated key validation; can accumulate unused keys
-- **When to use**: Any custom component that displays user-facing text
+## Example
+
+rackinspect: about 15 `custom.*` keys for a dimension-parameter UI (select row, add new row, no selection), a row-selection dialog with a `groupLabel` placeholder, loading states and fetch-error messages. English defaults come from the override fragment; Hungarian ones from `application_hu-HU.json`.
+
+## When to avoid
+
+- The text belongs to a model element: set the label in the model and let the generator emit the key.
+- Custom operation labels already fit `extra.localization.operation.<name>`.
 
 ## Related
 
-- [[i18n-generator-override-extra-fragment]]
-- [[react-intl-flat-key-pattern]]
-
+- [[i18n-generator-override-extra-fragment]] — the English defaults mechanism
+- [[react-intl-flat-key-pattern]] — flat key usage in components
+- [[generator-ignore-i18n-layout]] — protecting locale files
