@@ -1,3 +1,8 @@
+---
+title: Model to screen layout for E2E
+description: How model elements map to rendered screen components and VisualElementIds.
+---
+
 # Model-to-Screen Layout Mapping
 
 This document describes how JUDO UI model elements map to screen components and how to use the generated `VisualElementIds.ts` for E2E testing.
@@ -427,6 +432,7 @@ tabBar: {
     label: "push this button"
   }
 }
+```
 
 ### Relation Types
 
@@ -1238,8 +1244,9 @@ test('Add existing entity to association', async ({ page }) => {
   await page.getByTestId(EntityName_View_Edit.associations.pageActions.add.id).click();
   
   // Select entities in the modal table
-  await tableHelper.getRowCheckbox(selectorTable, 1).click();
-  await tableHelper.getRowCheckbox(selectorTable, 2).click();
+  // TableHelper has no checkbox helper; use the row's checkbox role
+  await tableHelper.getRow(selectorTable, 1).getByRole('checkbox').click();
+  await tableHelper.getRow(selectorTable, 2).getByRole('checkbox').click();
   
   // Confirm selection
   await page.getByRole('button', { name: 'Add' }).click();

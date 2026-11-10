@@ -1,3 +1,8 @@
+---
+title: E2E testing patterns
+description: Reusable Playwright test patterns for JUDO React frontends.
+---
+
 # E2E Testing Patterns
 
 ## Test Organization

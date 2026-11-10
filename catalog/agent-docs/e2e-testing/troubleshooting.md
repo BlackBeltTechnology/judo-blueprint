@@ -1,3 +1,8 @@
+---
+title: E2E test troubleshooting
+description: Common Playwright E2E failures and fixes.
+---
+
 # E2E Test Troubleshooting
 
 ## Common Issues and Solutions
@@ -312,11 +317,12 @@ await apiHelper.triggerAndWaitWithRegex(
 3. Different browser versions
 
 **Solutions**:
-1. Add retries in config:
+1. Retries: the generated `playwright.config.ts` already sets `retries: 4` unconditionally (the template comment says "Retry on CI only", but the value is not conditional), so failing tests are retried 4 times locally as well. To retry only on CI, change it yourself:
 ```typescript
 // playwright.config.ts
 retries: process.env.CI ? 4 : 0,
 ```
+Note that `workers` is already CI-dependent (`process.env.CI ? 2 : undefined`) and `trace` is `on-first-retry`.
 
 2. Increase timeouts for CI:
 ```typescript
@@ -353,6 +359,15 @@ export default defineConfig({
   }
 });
 ```
+
+#### Backend test suite reports green but test classes never ran
+
+**Cause**: The JUDO backend/integration suite forks several JVMs, each with its own heap (configured in `test/pom.xml`). Memory builds up from class to class; when a JVM dies with `Java heap space`, every class still queued on it never runs, yet the aggregate result can still look green (for example "524 tests, 0 failures" while hundreds of classes were never executed).
+
+**Solutions**:
+1. Raise the per-JVM heap (for example to 4 GB) in `test/pom.xml`.
+2. Do not run scenarios in parallel on a local machine; run them one after another or class by class.
+3. Do not trust the aggregate pass count: confirm that all test classes actually ran (compare the number of executed classes with the number of test classes, and check the build exit code and logs for `OutOfMemoryError`).
 
 ## Debugging Techniques
 

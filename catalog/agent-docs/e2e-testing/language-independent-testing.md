@@ -1,3 +1,8 @@
+---
+title: Language-independent E2E testing
+description: Write Playwright tests that do not depend on translated UI labels.
+---
+
 # Language-Independent E2E Testing
 
 ## Overview

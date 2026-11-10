@@ -1,4 +1,5 @@
 ---
+title: E2E testing with Playwright
 name: judo-e2e-testing-docs
 description: E2E testing guide for JUDO React frontends using Playwright. Covers test patterns, helpers, and browser automation.
 disable-model-invocation: false
@@ -95,10 +96,10 @@ APP_URL='http://localhost:8181'
 
 The test base URL is constructed as:
 ```
-${APP_URL}/${ModelName}/${ActorName}
+${APP_URL}/<model-name>/<application-name>
 ```
 
-Example: `http://localhost:8181/{{ model.name \}}/Actor`
+The generated `playwright.config.ts` builds this path from the model name and the application (actor) name. Example: `http://localhost:8181/<app>/Actor`. Check the `baseURL` in your generated `playwright.config.ts` for the exact value.
 
 ## Authentication (Actors with Principal)
 

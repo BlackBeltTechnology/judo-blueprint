@@ -1,3 +1,8 @@
+---
+title: Writing E2E tests
+description: How to write Playwright tests for generated JUDO UIs.
+---
+
 # Writing E2E Tests
 
 ## Test File Structure
@@ -188,7 +193,7 @@ await page.getByRole('button', { name: 'Yes' }).click();
 ```typescript
 const tableHelper = new TableHelper();
 
-// Get specific row (1-indexed)
+// Get specific row (0 is the header row, so the first data row is 1)
 const row = tableHelper.getRow(page, 1);
 
 // Get all data rows (excludes header)

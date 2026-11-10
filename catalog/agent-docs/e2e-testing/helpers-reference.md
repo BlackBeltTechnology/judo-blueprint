@@ -1,3 +1,8 @@
+---
+title: E2E helpers reference
+description: API reference for the generated Playwright helpers (TableHelper, ApiHelper, VisualElementIds).
+---
+
 # Helper Utilities Reference
 
 ## Overview
@@ -558,7 +563,7 @@ export const EntityNamePageType = {
 import { EntityNameForm } from '../helpers/visualElementIds/VisualElementIds';
 
 // Use element IDs for precise selection
-await page.locator(`[data-id="${EntityNameForm.fieldName.id}"]`).fill('Value');
+await page.getByTestId(EntityNameForm.fieldName.id).fill('Value');
 
 // Or use labels
 await page.getByLabel(EntityNameForm.fieldName.label).fill('Value');
