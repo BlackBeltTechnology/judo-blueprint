@@ -54,13 +54,23 @@ def main():
             i = parent[i]
         return i
 
+    # Join only across lanes (one pattern seen as shape + interceptor + hook), and only on specific keys:
+    # the same neutral name, or a shared model element that few candidates use. Broad elements
+    # (used by > MAX_SHARE candidates, e.g. a central entity) would chain unrelated patterns together.
+    MAX_SHARE = 2
+    use = {}
+    for c in raw:
+        for e in set(c.get("elements", [])):
+            use[e] = use.get(e, 0) + 1
     owner = {}
     for i, c in enumerate(raw):
-        for key in [f"n:{c['name']}"] + [f"e:{e}" for e in c.get("elements", [])]:
-            if key in owner:
-                parent[find(i)] = find(owner[key])
-            else:
+        keys = [f"n:{c['name']}"] + [f"e:{e}" for e in c.get("elements", []) if use[e] <= MAX_SHARE]
+        for key in keys:
+            j = owner.get(key)
+            if j is None:
                 owner[key] = i
+            elif key.startswith("n:") or raw[j]["lanes"][0] != c["lanes"][0]:
+                parent[find(i)] = find(j)
     groups = {}
     for i, c in enumerate(raw):
         groups.setdefault(find(i), []).append(c)
