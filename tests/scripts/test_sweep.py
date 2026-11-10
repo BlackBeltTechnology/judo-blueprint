@@ -11,7 +11,7 @@ class OverlapTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = pathlib.Path(d)
             for proj, entries in (("alpha", ["audit-log-entity", "soft-delete-active-flag"]),
-                                  ("beta", ["audit-log-entity", "enum-state-machine"])):
+                                  ("beta", ["model-blueprints/audit-log-entity", "best-practices/model/enum-state-machine.md"])):
                 w = root / proj / "abc1234"; w.mkdir(parents=True)
                 (w / "decisions.json").write_text(json.dumps({"decisions": [
                     {"name": e, "decision": "add-evidence", "entry": e} for e in entries]}))

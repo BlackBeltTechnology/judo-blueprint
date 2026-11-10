@@ -16,13 +16,18 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from _sweep import SWEEP  # noqa: E402
 
 
+def norm(e):
+    return e.rstrip("/").rsplit("/", 1)[-1].removesuffix(".md").removesuffix("/BLUEPRINT")
+
+
 def entries_of(w):
     for name in ("decisions.json", "candidates.json"):
         p = w / name
         if p.exists():
             d = json.loads(p.read_text())
             items = d.get("decisions") or d.get("candidates") or []
-            return {i.get("entry") or i.get("match") for i in items
+            # ids come as "x", "model-blueprints/x" or "best-practices/<d>/x.md": compare the bare id
+            return {norm(i.get("entry") or i.get("match")) for i in items
                     if (i.get("entry") or i.get("match")) and i.get("decision", "add-evidence") != "reject"}, name
     return set(), None
 
