@@ -1,75 +1,110 @@
 ---
 id: multi-role-single-entity
 title: Multi-Role Single Entity with Boolean Flags
-description: A single entity serves as the unified identity for all actor types in the system.
-aliases: []
-keywords: [multi, role, single, boolean, flags]
+description: "One user entity carries boolean role flags, and each actor type uses the same entity as its principal with an isActiveExpression that reads one flag, so a user can hold several roles at once."
+aliases: [role flags, one user many actors, isActiveExpression roles]
+keywords: [actor, isActiveExpression, role flag, principal, claim, EMAIL, realm, boolean flags, derived negation]
 tags: ["domain:model", "layer:model", "project:skillmatrix-model", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:reserve-app", "status:established"]
 category: entity
 status: established
 projects: [skillmatrix-model, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, InterfaceRegister, reserve-app]
 evidence: ["skillmatrix-model:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [actor-based-transfer-projection, default-value-patterns, derived-access-filtering]
-fragment: pending
+related: [actor-based-transfer-projection, default-value-patterns, derived-access-filtering, generalization-base-entity, enum-state-machine]
+fragment: multi-role-single-entity
+diagram: { kinds: [entity, actor, transfer], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A single entity serves as the unified identity for all actor types in the system. Rather than using separate entities or generalization hierarchies for different roles, the entity uses boolean flags (e.g., `isActiveAdmin`, `isActiveHREmployee`, `isActiveProfessional`) to control which actors a user can authenticate as. Each ActorType uses an `isActiveExpression` that evaluates the corresponding flag. This allows a single user to hold multiple roles simultaneously.
+Users have one identity but several roles, and one person may hold more than one. Keep a single user entity with a boolean flag per role. Each actor type is active only when its flag is true.
 
-## Structure
+## Practice
 
-- Single entity (typically `User`) with boolean role flags, all defaulting to `false`
-- Each ActorType references the same entity as its principal
-- Each actor's `isActiveExpression` checks the corresponding flag: `self.isActiveAdmin`, `self.isActiveProfessional`, etc.
-- A derived attribute computes "no role": `isInactiveUser = not (self.isActiveAdmin or self.isActiveHR or ...)`
-- All actors share the same authentication realm and are identified by a common claim (e.g., EMAIL)
-- Admin actor controls role assignment by toggling the boolean flags on user records
+### One entity, one principal transfer object per actor
 
-## Examples
+- The user entity has stored boolean flags (`isAdmin`, `isApprover`), default false, and an identifier attribute that carries the login claim (for example the e-mail).
+- Each actor type has a principal transfer object that maps the user entity. A `managed` actor needs a mapped principal and at least one claim of type `EMAIL` or `USERNAME` pointing at a mapped identifier attribute; otherwise the validator warns ([actor shapes](../../agent-docs/model/esm_metamodel/accesspoint.md), "Three actor shapes", "ActorType Attribute Rules"). In practice each actor needs its own principal transfer object over the shared entity.
+- Each actor's `isActiveExpression` is a JQL expression that says whether this user may log in as that actor, for example `self.isAdmin`. The expression is evaluated on the principal row.
+- All actors of the application use the same `realm` and the same claim, so one person logs in once and can reach each actor they hold.
 
-### SkillMatrix
-`User` entity with 3 boolean role flags: `isActiveAdmin` (default: false), `isActiveHREmployee` (default: false), `isActiveProfessional` (default: false). 4 actors share realm `SKILL_MATRIX` with EMAIL claim. `HREmployeeActor.isActiveExpression = self.isActiveHREmployee`, `ProfessionalActor.isActiveExpression = self.isActiveProfessional`. Derived: `isInactiveUser = not (self.isActiveAdmin or self.isActiveHREmployee or self.isActiveProfessional)`.
+### How the actor is chosen at login
 
-### SkillMatrix-Model
-Model source confirms 4 ActorTypes: `AdminActor`, `UserActor` (`isActiveExpression="false"`, always disabled), `HREmployeeActor` (`isActiveExpression="self.isActiveHREmployee"`), `ProfessionalActor` (`isActiveExpression="self.isActiveProfessional"`). All share realm `SKILL_MATRIX`. The 32 references to role flag attributes demonstrate pervasive use across access filtering, UI control, and derived relations.
+The runtime derives the actor from the token's `azp` claim (dashes become dots and the result must equal the actor's FQN) and then reads the actor row on every request using the claim attribute (`USERNAME`, then `EMAIL`, then the first identifier) ([authentication guide](../../agent-docs/backend/authentication-guide.md), "Principal-to-Actor Resolution and Multi-Client Mapping"). Which frontend client belongs to which actor is therefore a deployment concern. Whether and how the runtime evaluates `isActiveExpression` is not spelled out in the agent-docs beyond "JQL expression returning true if actor can login"; test it on your runtime.
 
-### KozutEugyfelClient
-`Felhasznalo` entity with `admin: Boolean` stored flag plus 3 derived role booleans: `ugyfelszolgalatiMunkatars = self.munkakorNev == "Ugyfelszolgalati_Munkatars"`, `szervezetiEgysegMunkatars`, `szervezetiEgysegVezeto`. Role is determined by the `Munkakor` (job position) relation rather than stored booleans, demonstrating a variant where roles are derived from organizational data rather than explicitly stored flags.
+### Derived helper flags
 
-### judo-demo-miniworkflow
-`User` entity with 3 boolean flags: `admin` (default: false), `approver` (default: false), `active` (default: true). A single `GenericActor` serves all users; role-based visibility is controlled via `GenericUser` transfer's derived negatives (`isNotAdmin`, `isNotApprover`) used in menu item `hiddenBy` bindings. Admin menu hidden when `isNotAdmin`, approval queue hidden when `isNotApprover`.
+Add derived booleans next to the stored flags: `hasNoRole = not (self.isAdmin or self.isApprover)`. For UI, a negated derived flag on the principal transfer object drives `hiddenBy` on menu items, because `hiddenBy` needs a boolean on the actor's principal and hides when it is true ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md), `hiddenBy` / `enabledBy` / `requiredBy`). Menu structure by role: [Advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), "Dynamic Menu System for Multi-Level Permissions".
 
-### AMS-Model
-`User` entity serves as requester, approver, manager, and issuer through relation-based roles rather than boolean flags. Manager role is activated via `isActiveExpression = self.subordinates!count() > 0` (derived from the self-referencing `User.manager <-> User.subordinates` hierarchy). Admin is a separate entity extending User functionality. The same User holds 6 two-way relations (requests, approvals, applications, subordinates, issues) defining implicit roles.
+### Variants
 
-### ParkHere
-`User` entity with 5 boolean role flags: `isAdministrator` (default: false), `isNormalReservation` (default: false), `isQuickReservation` (default: true), `isGuestReservation` (default: false), `isLongReservation` (default: false). A single Actor serves all users; admin-only features use `hiddenBy` with derived `isNotAdministrator = not self.isAdministrator`. Roles control which reservation types a user can create and are not mutually exclusive, allowing flexible permission combinations.
+- One generic actor for everyone plus derived flags for UI hiding.
+- An enum role attribute when roles are mutually exclusive (an enum attribute, one value per user).
+- Roles derived from data, such as `self.subordinates!count() > 0` for a manager role.
 
-### IndamediaAdTrack
-`User` entity with `isAdmin: Boolean` (required) and `isNotAdmin: Boolean` (optional) as a boolean pair for admin role management. The `isNotAdmin` serves as a query optimization pattern, avoiding negation in filter expressions. Operations check `isAdmin` to enforce `PERMISSION_DENIED` error codes on privileged operations like `createClient`, `updateClient`, and account management.
+### Who assigns roles
 
-### InterfaceRegister
-`User` entity with 4 boolean role flags: `isAdmin`, `isEnterpriseArchitect`, `isDeveloper`, `isOperator`. The single `EnterpriseArchitect` actor uses `isActiveExpression="self.isEnterpriseArchitect"` with EMAIL claim. The `CreateUserInput` DTO renames these to `hasAdminAccess`, `hasEnterpriseArchitectAccess`, `hasDeveloperAccess`, `hasOperatorAccess` (all defaulting to false), demonstrating transfer-level renaming for clearer UI labels.
+An administrator toggles the flags through an admin transfer object. Protect the flag attributes: ordinary actors must not receive them as editable attributes ([[actor-based-transfer-projection]]). A user must not be able to remove the last admin flag: check this in the update path.
 
-### ReserveApp
-`User` entity with a `Role` enum attribute (PARTNER, LOGISTICIAN, DOORMAN, READ_ONLY, ADMIN) instead of boolean flags. Each of 5 ActorTypes uses EMAIL claim for authentication, but roles are determined by the single `role` enum rather than boolean flags. This is a variant where an enum-based role field replaces multiple boolean flags, ensuring users have exactly one role at a time (mutually exclusive).
+## Rationale
 
-### AMS-Frontend
-`User` entity serves multiple implicit roles through relations rather than boolean flags. Manager role dynamically activated via `isActiveExpression = self.subordinates!count() > 0` -- a user becomes a manager when they have subordinates. `Admin` is a separate entity with its own principal. The User entity holds 6 bidirectional relations defining role contexts (requests, approvals, applications, subordinates, issues).
+- One record per person, no duplication, any combination of roles.
+- Role assignment is a simple switch.
+- Cost: role data cannot be separate per role, filters have to be written per actor ([[derived-access-filtering]]), and the flags are plain data, so they are only as safe as the access rules around them.
 
-## Trade-offs
+## Example
 
-- Pros: Single user record, no data duplication, users can hold multiple roles, simple role assignment via boolean toggle
-- Cons: All role data on one entity (may grow large), cannot have role-specific attributes on the entity, requires careful access filtering per role
-- Prefer when: Users can hold multiple roles simultaneously and role assignment is a simple enable/disable
+A User entity has a unique e-mail, the flags `isAdmin` and `isApprover` (default false) and the derived `hasNoRole`. AdminActor and ApproverActor both use the same realm and an e-mail claim, each over its own principal transfer object, each active by its own flag. The source projects used three to five flags (admin, HR, professional; administrator and reservation types; admin, architect, developer, operator). Names here are neutral.
+
+## When to avoid
+
+- Roles carry their own data: use separate entities or [[generalization-base-entity]].
+- Roles are mutually exclusive: an enum role is clearer than several flags.
+- Several independent identity providers per role: model separate actors with their own realms.
 
 ## Related
 
-- [[actor-based-transfer-projection]]
-- [[default-value-patterns]]
-- [[derived-access-filtering]]
+- [[actor-based-transfer-projection]] — one transfer object per actor over the shared entity
+- [[default-value-patterns]] — flags default to false
+- [[derived-access-filtering]] — per-role access filters
+- [[generalization-base-entity]] — roles with their own data
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=multi-role-single-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AdminActor {
+    <<Actor>>
+  }
+  class AdminPrincipal {
+    <<Transfer>>
+    +String email [1]
+    +Boolean isAdmin
+    +Boolean isApprover
+    +Boolean hasNoRole
+  }
+  class ApproverActor {
+    <<Actor>>
+  }
+  class ApproverPrincipal {
+    <<Transfer>>
+    +String email [1]
+    +Boolean isAdmin
+    +Boolean isApprover
+    +Boolean hasNoRole
+  }
+  class User {
+    <<Entity>>
+    +String email [1]
+    +Boolean isAdmin
+    +Boolean isApprover
+    +Boolean /hasNoRole
+  }
+  AdminActor ..> AdminPrincipal : principal
+  AdminPrincipal ..> User : maps
+  ApproverActor ..> ApproverPrincipal : principal
+  ApproverPrincipal ..> User : maps
+```
+<!-- /mermaid:generated -->

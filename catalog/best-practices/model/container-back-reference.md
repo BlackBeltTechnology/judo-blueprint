@@ -10,63 +10,58 @@ status: established
 projects: [rackinspect, skillmatrix-model, mjsz, ams-model, park-here, judo-partner]
 evidence: ["rackinspect:unrecorded", "skillmatrix-model:unrecorded", "mjsz:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-related: [composition-ownership, derived-relation-navigation, derived-access-filtering]
-fragment: pending
+fragment: container-back-reference
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Child entities have a DERIVED ASSOCIATION relation named `container` with cardinality `0..1` pointing back to their parent entity. This provides a computed reverse navigation path from child to parent without storing an explicit foreign key on the child. The getter expression navigates the inverse of the parent's composition or association.
+Let a composed child reach its parent without a stored foreign key, either through a derived relation to the parent or inline with `!container()`.
 
-## Structure
+## Practice
 
-- Child entity defines: `container -> ParentType [0..1] ASSOCIATION DERIVED`
-- The getter expression computes the parent reference (inverse navigation)
-- Cardinality is `0..1` because the child may not yet be attached to a parent
-- Used for both composition and association reverse navigation
-- Commonly named `container` by convention, though the name may vary by context
-- Can also be used inline in derived expressions: `self!container(ParentType).attribute`
+- `!container(type)` returns the container of an instance when it is part of a `COMPOSITION` ([model-development](../../agent-docs/model/model-development.md), *Reference Functions*).
+- Inline form: a derived attribute on the child such as `self!container(Order).number`.
+- Relation form: a derived relation on the child, typed as the parent with cardinality `0..1`, whose getter is `self!container(Order)`. Calling it `container` is only a convention; domain names such as `owner` also occur.
+- Both forms are read-only; both need the child to be composed in the parent. For a non-composition link use an ordinary two-way relation instead ([[bidirectional-relation]]).
+- A derived relation with upper bound 1 needs its getter to end in a single instance; `!container()` already returns one, so no extra narrowing is needed here (collections would need `!any()`, see [model-development](../../agent-docs/model/model-development.md), *Using `!any()` correctly*).
 
-## Examples
+## Rationale
 
-### RackInspect
-14+ entities use the container pattern: `Address.container -> Partner`, `BankAccount.container -> Partner`, `Warehouse.container -> Address`, `Rack.container -> Warehouse`, `CompanyAddress.container -> CompanyData`, `CompanyEmail.container -> CompanyData`, `UserAddress.container -> User`, `UserEmail.container -> User`, `UserPhone.container -> User`, `DimensionTemplateGroup.container -> DimensionTemplate`, `PhoneNumber.container -> Partner`.
+The parent is already known from the composition, so storing it again duplicates data. The derived form costs a small computation on read and cannot be written. For platform-side code the generated DAO has a matching `queryContainer` for the child (see [interceptors](../../agent-docs/backend/interceptors.md)).
 
-### SkillMatrix
-`self!container()` used in derived expressions: `TrainingPlan.incompleteSkillTargets = self!container(SkillMatrix::User).incompleteSkillTargets` navigates from a composed TrainingPlan up to its owning User. `report::Result.reportName = self!container(SkillMatrix::report::Definition).name` navigates from Result up to its parent Definition. `TrainingPlan.subordinateName = self!container(SkillMatrix::User).fullName` in the manager transfer.
+## Example
 
-### SkillMatrix-Model
-3 container references confirmed in model source: `self!container(SkillMatrix::User).fullName` (TrainingPlan back to User for subordinate name), `self!container(SkillMatrix::User).incompleteSkillTargets` (TrainingPlan navigates to User's filtered targets), `self!container(SkillMatrix::report::Definition).name` (Result navigates to parent Definition for report name). All use inline `!container()` syntax rather than explicit container relations.
+`Order` composes `OrderLine` (`lines`). On `OrderLine` a derived relation `order` of cardinality `0..1` points back to the order, and a derived `orderNumber` returns `self!container(Order).number`.
 
-### KozutEugyfelClient
-`Ertesites` (Notification) uses `self!container(e_ugyfelszolgalat::entities::Esemeny)` to navigate from notification up to its parent Esemeny (Event) entity, deriving `idopont`, `kezdemenyezoNev`, and `esemenyTipus` from the containing event without storing them directly on the notification.
+Seen in six projects, often for display of parent context on child rows and for filtering by parent state.
 
-### MJSZ
-Extensive container navigation across composed children. `Team.name = self!container(mjsz::Club).name` derives the team name from its owning club. `Match.season = self!container(mjsz::Tournament).season.year` navigates Match -> Tournament -> Season (multi-hop). `Match.tournament = self!container(mjsz::Tournament).name`. `License.player = self!container(mjsz::Player).firstName` derives the player's name.
+## When to avoid
 
-### AMS-Model
-`ConfirmationRequest.campaignStatus = self!container(ams::entities::Campaign).status` navigates from the composed ConfirmationRequest up to its owning Campaign entity to derive the campaign's current status. This allows the transfer object to display campaign context without a stored relation, since ConfirmationRequest is composed within Campaign via `Campaign.confirmationRequests [0..*] COMPOSITION`.
-
-### ParkHere
-2 explicit container back-references: `Car.carOwner = self!container(ParkHere::entities::User)` navigates from composition child Car to owning User, and `Holiday.holidayOwner = self!container(ParkHere::entities::User)` navigates from composition child Holiday to owning User. Both use domain-specific naming (`carOwner`, `holidayOwner`) rather than the generic `container` convention.
-
-### judo-partner
-`Address.partner [0..1]` and `Contact.partner [0..1]` are DERIVED ASSOCIATION back-references from composition children to their owning Partner. `TaxpayerAddress.taxpayer [0..1]` similarly derives back to the owning Taxpayer. These enable child-to-parent navigation for display purposes (e.g., showing which partner an address belongs to).
-
-### AMS-Frontend
-`ConfirmationRequest.campaignStatus = self!container(ams::entities::Campaign).status` navigates upward from composed child to parent Campaign. This enables the Manager actor's `approvalList` filtering by campaign status without a stored relation: `self.approvals!filter(r | r.campaignStatus == CampaignStatus#OPEN)`.
-
-## Trade-offs
-
-- Pros: No stored foreign key needed, computed on demand, enables child-to-parent navigation in getter expressions
-- Cons: Derived relations are read-only, slight runtime computation cost, naming convention must be followed
-- Prefer when: Child entities need to navigate to their parent for display or computed attributes
+- When the child is not composed: `!container()` does not apply.
+- When the child needs to be re-parented or the parent must be settable; use a stored relation.
 
 ## Related
 
-- [[composition-ownership]]
-- [[derived-relation-navigation]]
-- [[derived-access-filtering]]
+- [[composition-ownership]] — the composition that makes this possible
+- [[derived-relation-navigation]] — other derived relation shapes
+- [[derived-access-filtering]] — access getters over the same data
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=container-back-reference cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Order {
+    <<Entity>>
+    +String number
+  }
+  class OrderLine {
+    <<Entity>>
+    +Integer quantity
+    +String /orderNumber
+  }
+  Order *-- "*" OrderLine : lines
+  OrderLine --> "0..1" Order : order
+```
+<!-- /mermaid:generated -->

@@ -1,0 +1,190 @@
+{
+ "batch": "pm02",
+ "entries": {
+  "collection-lower-bound-zero": {
+   "status": "rewritten",
+   "fragment": "collection-lower-bound-zero",
+   "kb": [
+    "relation cardinality lower upper collection composition"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md#Cardinality Conventions",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#AccessType Behaviour",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md#Relations"
+   ],
+   "fixes": [
+    "old text claimed 1..* is invalid/avoided as platform rule: now stated as project practice, platform allows it",
+    "added UI required-relation reasoning and ALL access fixed 0..*"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "composite-identifier-pattern": {
+   "status": "rewritten",
+   "fragment": "composite-identifier-pattern",
+   "kb": [
+    "identifier attribute unique constraint",
+    "identifier attribute isIdentifier entity"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#DataMember Attribute Rules"
+   ],
+   "fixes": [
+    "removed unsupported uniqueness enforcement claim; identifier only documented as natural key on STORED entity members"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "composition-ownership": {
+   "status": "rewritten",
+   "fragment": "composition-ownership",
+   "kb": [
+    "COMPOSITION relationKind cascade delete container"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/agent-docs/model/model-development.md#Reference Functions",
+    "catalog/agent-docs/model/ui-authoring-guide.md#TabularReferenceField rules by relation shape"
+   ],
+   "fixes": [
+    "cascade delete tied to RelationKind docs",
+    "added UI create/delete actions, !container needs composition"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "conditional-visibility-getter": {
+   "status": "rewritten",
+   "fragment": "conditional-visibility-getter",
+   "kb": [
+    "self!container navigation derived",
+    "container navigation expression JSL derived getter"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#JQL grammar quirks",
+    "catalog/agent-docs/model/ui-authoring-guide.md"
+   ],
+   "fixes": [
+    "ternary typing rules (logical condition, same-kind branches)",
+    "separated data-level masking from hiddenBy/enabledBy"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "container-back-reference": {
+   "status": "rewritten",
+   "fragment": "container-back-reference",
+   "kb": [
+    "self!container navigation derived"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Instance Functions",
+    "catalog/agent-docs/model/model-development.md#Using !any() correctly",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "!container needs COMPOSITION; derived relation single-instance rule; removed claim that cardinality 0..1 is because parent may be absent"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-implementation-placeholder": {
+   "status": "rewritten",
+   "fragment": "custom-implementation-placeholder",
+   "kb": [
+    "custom operation implementation empty body generated stub"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations",
+    "catalog/agent-docs/backend/custom-operations.md#Understanding Generated Default Implementations",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Operation bodies (JCL) and validation"
+   ],
+   "fixes": [
+    "flag customImplementation decides, not body comment; fault declaration required; interceptors skip custom ops; .default stub never edited"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "default-value-patterns": {
+   "status": "rewritten",
+   "fragment": "default-value-patterns",
+   "kb": [
+    "default expression attribute defaultExpression",
+    "sequence default expression getVariable SEQUENCE database sequence"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#DataMember Attribute Rules",
+    "catalog/agent-docs/model/model-development.md#variable categories"
+   ],
+   "fixes": [
+    "defaultExpression availability by memberType; SYSTEM/SEQUENCE variables; undefined variable -> null warning"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "derived-access-filtering": {
+   "status": "rewritten",
+   "fragment": "derived-access-filtering",
+   "kb": [
+    "access DERIVED getter expression actor access filter isActiveExpression"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#AccessType Behaviour",
+    "catalog/agent-docs/backend/architectural-patterns.md#Rules for accesses[*].getterExpression",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Role-scoped access getters"
+   ],
+   "fixes": [
+    "four access getter rules (entity base, no self, reference-returning, scalar getVariable); ALL fixed 0..*; isActiveExpression separate"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "derived-attribute-flattening": {
+   "status": "rewritten",
+   "fragment": "derived-attribute-flattening",
+   "kb": [
+    "DERIVED member getterExpression read-only transfer object attribute"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Collection Functions",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#DataMember Attribute Rules"
+   ],
+   "fixes": [
+    "read-only, chained derived caution, lambda one-variable rule, !sum numeric only"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "derived-relation-navigation": {
+   "status": "rewritten",
+   "fragment": "derived-relation-navigation",
+   "kb": [
+    "derived single-valued relation requires !any() narrowing"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Using !any() correctly",
+    "catalog/agent-docs/model/model-development.md#Lambda scopes do not nest"
+   ],
+   "fixes": [
+    "!any() narrowing for upper 1, at most once; !head only after !sort; no self inside lambdas"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "derived-state-from-history": {
+   "status": "rewritten",
+   "fragment": "derived-state-from-history",
+   "kb": [
+    "COMPOSITION relationKind cascade delete container"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Collection Functions"
+   ],
+   "fixes": [
+    "old !head(h | ...) form replaced by !sort(...)!head() per function table"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

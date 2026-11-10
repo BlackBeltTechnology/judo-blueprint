@@ -10,96 +10,63 @@ status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [conditional-visibility-getter, container-back-reference]
-fragment: pending
+fragment: composition-ownership
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Composition relations are used sparingly and only when child entities are lifecycle-bound to their parent (cascade delete). All other entity relations use association. This pattern keeps the entity graph loosely coupled by default, reserving composition for true parent-child ownership.
+Use `COMPOSITION` only for children whose lifecycle is bound to their parent; every other relation is an association or aggregation.
 
-## Structure
+## Practice
 
-- COMPOSITION: child is owned by parent, destroyed when parent is deleted
-- ASSOCIATION: entities exist independently, no cascade semantics
-- Typical ratio: 1 composition for many associations
-- Composition children can use `self!container(ParentType)` to navigate up to the parent
+- `COMPOSITION`: the parent owns the child, deleting the parent deletes its children ([structure.md](../../agent-docs/model/esm_metamodel/structure.md), *RelationKind Behaviour*).
+- `AGGREGATION`: a reference only, no cascade. `ASSOCIATION`: a simple link without ownership.
+- Typical ratio in the catalog's projects: a few compositions among many associations.
+- A composed child can reach its owner with `self!container(ParentType)` in derived expressions (see [model-development](../../agent-docs/model/model-development.md), *Reference Functions*), see [[container-back-reference]].
+- Composed collections are `0..*` ([[collection-lower-bound-zero]]).
+- On the UI side a composition relation gives create and delete actions without a "remove" (the child cannot be detached), and a compact table is valid for it ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md)); other relation kinds get different action sets (same guide, relation-shape table).
 
-## Examples
+## Rationale
 
-### Trivia
-Only one composition exists: `Test.prompts -> Prompt` (prompts are owned by their test). All other relations (User-Test, Contest-Test, Question-Category, Contest-Category, etc.) use ASSOCIATION, keeping entities independent.
+Cascade delete removes dependent rows with their parent, so no orphans remain and no cleanup code is needed. Over-using composition couples entities: a composed child cannot be shared between parents and is created inside its parent's context. Defaulting to association keeps the graph loosely coupled.
 
-### RackInspect
-Composition used extensively for owned children: `Partner.addresses`, `Partner.bankAccounts`, `Partner.emailAddresses`, `FaultRegistry.faultHeaders`, `Offer.offerItems`, `Task.documents`, `Task.history`, `Rack.groups`, `DimensionGroup.parameters`. Associations used for cross-references: `Item.brand`, `Rack.rackType`, `ErrorCode.rackElements`.
+## Example
 
-### itracker
-3 compositions form a two-level ownership hierarchy: `Initiative.monthlyForecasts -> MonthlyForecast`, `Initiative.forecastVersions -> ForecastVersion`, `ForecastVersion.monthlyForecasts -> MonthlyForecastVersion`. Associations for independent references: `Initiative.region`, `Initiative.category`, `Initiative.user`.
+An `Order` composes its `lines`; each `OrderLine` has an association to a `Product`, which lives independently. Deleting an order deletes its lines but never the product.
 
-### SkillMatrix
-7 compositions for owned children: `User.languageSkills -> LanguageSkill`, `User.resumes -> Resume`, `User.trainingPlans -> TrainingPlan`, `TrainingPlan.notes -> Note`, `TrainingPlan.skillTargets -> SkillTarget`, `Resume.works -> Work`, `report::Definition.results -> Result`. Associations for cross-references: `User.unit`, `Skill.competence`, `Tag.competences`.
+Seen in 17 projects. Typical composed children: addresses of a partner, attachments of a reservation, history entries of a document, recipients of a message.
 
-### ActionGroupTest
-2 compositions forming a celestial hierarchy: `Galaxy.stars -> Star` (stars cannot exist without a galaxy) and `Star.planets -> Planet` (planets cannot exist without a star). All other relations use AGGREGATION (`Planet.creatures`, `Galaxy.astronomer`, `Sign.creatures`) or STATIC ACCESS (`God.galaxies`, `God.creatures`).
+## When to avoid
 
-### Alba
-Single composition: `Product.attachments -> Attachment` (attachments are lifecycle-bound to products). All other relations (Product.author, Product.events, Product.audience, Task.assignee, User.institution, etc.) use ASSOCIATION for independent lifecycles.
-
-### SkillMatrix-Model
-7 COMPOSITION relations confirmed in model source, all with `lower="0"`: `User.languageSkills`, `User.resumes`, `User.trainingPlans`, `TrainingPlan.notes`, `TrainingPlan.skillTargets`, `Resume.works`, `Definition.results`. Container navigation used on children: `TrainingPlan.incompleteSkillTargets = self!container(User).incompleteSkillTargets`, `Result.reportName = self!container(Definition).name`.
-
-### MLSZKSZPlatform
-Single composition: `Organization.address -> Address [0..1]` (address is lifecycle-bound to organization, cascade delete). All other 20+ relations use ASSOCIATION (User->Organization, City->Region, Device<->User, Document<->Announcement, etc.) or AGGREGATION (City->Region, User->Organization). This confirms the sparse-composition pattern.
-
-### Viterra Demo
-Single composition: `Report.stocks -> Stock [0..*]` (stocks are lifecycle-bound to their report). All other relations use ASSOCIATION: `Report.client`, `Report.period` (bidirectional), `Stock.silo`, `Stock.commodity` (one-way). The composed stocks get full CRUD at the transfer level (`ReportTransfer.stocks: createable, updateable, deleteable`), while the report itself is non-deleteable.
-
-### KozutEugyfelClient
-`Bejelentes.kepek -> Kep` (images are lifecycle-bound to the complaint report via composition). Events (`esemenyek`) and participants (`resztvevok`) use two-way association since they may be referenced independently. Notifications (`Ertesites`) are composed within events, navigating back via `self!container(Esemeny)`.
-
-### MJSZ
-4 compositions for lifecycle-bound children: `Player.licenses -> License`, `Player.transfers -> Transfer`, `Tournament.matches -> Match`, `Club.teams -> Team`. All other relations use two-way ASSOCIATION (Player<->Club, Player<->Team, Season<->Tournament, Match<->Team). Container navigation used: `Team.name = self!container(Club).name`, `Match.season = self!container(Tournament).season.year`.
-
-### judo-demo-miniworkflow
-2 compositions on `Document`: `Document.files -> Files [0..*]` (file attachments lifecycle-bound to document) and `Document.documentHistoryEntries -> DocumentHistoryEntry [0..*]` (audit trail lifecycle-bound to document). The `owner -> User` relation uses association since users exist independently. History entries are immutable (no CRUD) and appended via `+=` in workflow operations.
-
-### AMS-Model
-Single composition: `Campaign.confirmationRequests -> ConfirmationRequest [0..*]` (confirmation requests are lifecycle-bound to their campaign). All other relations use ASSOCIATION: `Application.requests`, `User.requests`, `User.subordinates`, `User.applications`, `Request.application`, `Request.user`, `ConfirmationRequest.approver`, `AccessRequest.issuer`. The composed confirmation requests use `self!container(Campaign).status` for container navigation to derive campaignStatus.
-
-### Sanctuary Backend
-2 compositions for settings entities: `User.privacySettings -> UserPrivacySettings [0..1]` and `User.settings -> UserSettings [0..1]`. Both use `targetDefinedCRUD="true"` to delegate CRUD to the child entity. All other relations (User<->Role, User<->RoleGroup, User->PositionTitle) use ASSOCIATION for independent lifecycles.
-
-### ParkHere
-3 compositions: `User.cars -> Car [0..*]` (cars owned by user), `User.holidays -> Holiday [0..*]` (holidays bound to user), `Reservation.guest -> Guest [0..1]` (guest info bound to reservation). All other relations use ASSOCIATION: `Reservation->User`, `Reservation->ParkingSlot`, `User<->ParkingGarage`, `Doorman->ParkingGarage`. Composition children use `!container()` for back-references: `Car.carOwner`, `Holiday.holidayOwner`.
-
-### InterfaceRegister
-5 compositions for owned children: `Email.tos/ccs/bccs -> EmailRecipient [0..*]` (email recipients cascade-delete with their email specification) and `Server.ipv4Addresses/ipv6Addresses -> IPV4Address/IPV6Address [0..*]` (IP addresses cascade-delete with their server). All other 18 relations use ASSOCIATION for independent entities.
-
-### judo-partner
-4 compositions across domains: `Partner.addresses -> Address [0..*]`, `Partner.contacts -> Contact [0..*]` (contact info lifecycle-bound to partner), `Taxpayer.addresses -> TaxpayerAddress [0..*]` (NAV address data), `DocumentType.attributeTypes -> AttributeType [0..*]`. All other relations use ASSOCIATION or TWO-WAY, including `Import.partners` which is ASSOCIATION (not composition) allowing imported partners to be independently managed.
-
-### KozutEugyfelModelTest
-Single composition: `Bejelentes.kepek -> Kep [0..*]` (images lifecycle-bound to complaint reports). All other relations use ASSOCIATION (stored or two-way): `esemenyek`, `bejelentesTipus`, `ugyintezo`, `felelos` (derived), `kezdemenyezo`, `celFelhasznalo`, `ertesitesiLista`. Only `Kep` has full CRUD (createable/updateable/deleteable), reflecting its composed child status.
-
-### workflow-poc
-5 compositions forming a workflow definition hierarchy: `WorkflowVersion.states -> State [0..*]`, `WorkflowVersion.events -> Event [0..*]`, `State.transitions -> Transition [0..*]`, `Transition.guards -> Guard [0..*]`, `Context.attributes -> ContextAttribute [0..*]`. All other relations (Token->State, Token->User, Workflow->WorkflowVersion, Role->User, etc.) use ASSOCIATION. The composition hierarchy mirrors the YAML-based workflow definition structure.
-
-### ReserveApp
-Single composition: `FreightReservation.attachments -> Attachment [0..*]` (attachments are lifecycle-bound to their reservation). All other 11 relations on FreightReservation use ASSOCIATION (e.g., `partner`, `gate`, `project`, `spot`, `items`, `vehicleType`, `loadingType`, `recipient`). This confirms the sparse-composition pattern in a domain with 15 entities and 12 relations on the central aggregate.
-
-### AMS-Frontend
-Single composition: `Campaign.confirmationRequests -> ConfirmationRequest [0..*]`. Confirmation requests are lifecycle-bound to their campaign and use `self!container(Campaign).status` for upward navigation. `Campaign.applications` is a plain ASSOCIATION -- applications exist independently across campaigns.
-
-## Trade-offs
-
-- Pros: Clear ownership semantics, automatic cascade delete for dependent data, composition navigation via `!container()`
-- Cons: Composition children cannot be shared across parents, must be created within parent context
-- Prefer when: Child entities have no meaning outside their parent; prefer association for independent entities
+- Child entities that are referenced from several places or must survive their parent.
+- Children that need their own top-level access or listing; compose only when they are always reached through the parent.
 
 ## Related
 
-- [[conditional-visibility-getter]] (uses `!container()` for composition navigation)
-- [[container-back-reference]]
+- [[container-back-reference]] — navigating from a composed child to its parent
+- [[conditional-visibility-getter]] — uses `!container()` to read parent state
+- [[collection-lower-bound-zero]] — composed collections start empty
+- [[derived-state-from-history]] — history entries composed in their parent
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=composition-ownership cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Order {
+    <<Entity>>
+    +String number [1]
+  }
+  class OrderLine {
+    <<Entity>>
+    +Integer quantity
+  }
+  class Product {
+    <<Entity>>
+    +String name
+  }
+  Order *-- "*" OrderLine : lines
+  OrderLine --> "1" Product : product
+```
+<!-- /mermaid:generated -->

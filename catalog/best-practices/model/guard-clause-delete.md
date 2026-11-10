@@ -1,51 +1,86 @@
 ---
 id: guard-clause-delete
 title: Guard Clause for Conditional Delete Operations
-description: Delete operations include guard clauses that check preconditions before allowing deletion.
-aliases: []
-keywords: [guard, clause, conditional, delete, operations]
+description: "A delete operation on the entity checks its preconditions first, returns without deleting when they fail, and otherwise removes dependent parts and the entity itself."
+aliases: [conditional delete, protected delete]
+keywords: [guard clause, delete, precondition, cascade, early return, JCL, operation body]
 tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
 category: operation
 status: single-project
 projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
 alternatives: []
-related: [soft-delete-active-flag, mapped-operation-delegation]
-fragment: pending
+related: [soft-delete-active-flag, mapped-operation-delegation, ui-control-transfer-fields]
+fragment: guard-clause-delete
+diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Delete operations include guard clauses that check preconditions before allowing deletion. If the entity is in an active state or has dependent references, the operation returns early without performing the delete. This prevents accidental deletion of entities that are still in use, enforcing business rules within the operation body rather than at the framework level.
+Some entities may be deleted only in certain states (not active, no live roles, no dependent data). Put the preconditions at the top of an entity operation named `delete`, and let the operation clean up the dependent parts before it removes the entity.
 
-## Structure
+## Practice
 
-- Instance operation named `delete` or `deleteEntity`
-- Body begins with a guard clause: `if (condition) { return; }`
-- Guard checks typically include:
-  - Active state: `if (this.active) { return; }` -- cannot delete active entities
-  - Active roles: `if (this.isActiveAdmin or this.isActiveHR or ...) { return; }` -- cannot delete users with active roles
-- If guard passes, operation performs cascade cleanup (deleting dependent children) then deletes the entity
-- UI may show conditional confirmation dialogs based on related derived attributes (e.g., `hasReferences`)
+### Guard first, then clean up, then delete
 
-## Examples
+An instance operation `delete` on the entity carries a JCL body (`customImplementation = false`, `stateful = true`; see [Operation script language (JCL)](../../agent-docs/model/jcl-operation-scripts.md) and [operation reference](../../agent-docs/model/esm_metamodel/operation.md)). The body has three steps:
 
-### SkillMatrix
-`User.deleteUser`: guards against deleting active users -- returns early if any of `isActiveAdmin`, `isActiveHREmployee`, or `isActiveProfessional` is true. Otherwise cascades: deletes all skills, then deletes the user. `Competence.delete`: guards against deleting active competences -- returns early if `this.active`. Otherwise cascades: deletes all skills and skillTargets, then deletes the competence.
+1. Guard: `if (this.active) { return }`. Several flags can be joined with `or`, for example "has an active admin role or an active employee role".
+2. Cleanup: `delete this.tasks` removes the composition parts. The `delete <navigation>` statement removes composition parts only; a plain association is cleared with `unset` or `-=` instead of `delete`.
+3. Removal: `delete this` removes the entity itself.
 
-### SkillMatrix-Model
-Model source confirms both guard-clause delete operations. `Competence.delete()`: `if (this.active) { return; }` then cascades delete of skills and skillTargets. `User.deleteUser()`: `if (this.isActiveAdmin or this.isActiveHREmployee or this.isActiveProfessional) { return; }` then cascades delete of skills. Both use early return (silent failure) rather than exception throwing.
+The operation must be `stateful`: the DAO throws `IllegalStateException` for a write inside a stateless operation ([platform behaviour](../../agent-docs/model/esm_metamodel/operation.md), "Statefulness derived from behaviour").
 
-## Trade-offs
+### The guard is project practice, not platform behaviour
 
-- Pros: Prevents accidental deletion of active/referenced entities, business rules in one place, cascade cleanup is explicit
-- Cons: Silent failure (returns without error), no error message to the user about why deletion was blocked
-- Prefer when: Deletion has preconditions that must be checked and dependent data must be cleaned up
+The platform gives `deleteable` flags on accesses and relations and cascades a parent delete over composition relations ([relation kinds](../../agent-docs/model/esm_metamodel/structure.md)). It has no declarative "delete only if" rule. The guard lives in the operation body, so an API client that uses the generated delete without the operation bypasses it. Expose deletion only through this operation (leave `deleteable` off on the accesses) when the rule must hold everywhere.
+
+### Silent return versus a reported error
+
+The original projects return without a message. The caller cannot tell that nothing happened. To report the reason, model a fault on the operation and throw it from a custom Java implementation: a custom operation that throws a business fault must declare it in `faults`, otherwise the build fails ([error handling guide](../../agent-docs/backend/error-handling-guide.md), "Modeled Faults"). The agent-docs describe no way to raise a fault from a JCL body, so a reported error means `customImplementation = true`.
+
+### Mirror the guard in the UI
+
+Expose the guard as a derived boolean (for example `deletable`) on the transfer object and bind the delete button to it ([[ui-control-transfer-fields]]). The operation still repeats the check because the UI flag is only a hint.
+
+## Rationale
+
+- The business rule sits in one place, next to the data it protects.
+- The cleanup is explicit: nothing relies on an implicit cascade that has to be guessed from the model.
+- Cost: a silent return hides the reason from the user. Accept that for internal tools, or pay for a custom implementation with a declared fault.
+
+## Example
+
+A Project entity has a boolean `active` and owns Task entities by composition. Its `delete` operation returns early when `active` is true; otherwise it deletes the tasks and then the project. The diagram shows the model shape; the operation body is described above. In the source project a User had the same guard over three role flags, and a Competence guarded on `active` and also removed its skill targets. Names here are neutral stand-ins.
+
+## When to avoid
+
+- The entity is never really deleted: use [[soft-delete-active-flag]] and keep the row.
+- The only dependents are composition parts and there is no precondition: the platform cascade already removes them, no operation is needed.
+- The user must see why deletion was refused and you do not want a custom Java implementation.
 
 ## Related
 
-- [[soft-delete-active-flag]]
-- [[mapped-operation-delegation]]
+- [[soft-delete-active-flag]] — hide instead of delete
+- [[mapped-operation-delegation]] — transfer objects reach the entity operation through a mapped operation
+- [[ui-control-transfer-fields]] — derived booleans that drive the delete button
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=guard-clause-delete cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Project {
+    <<Entity>>
+    +String name
+    +Boolean active
+    +delete()
+  }
+  class Task {
+    <<Entity>>
+    +String title
+  }
+  Project *-- "*" Task : tasks
+```
+<!-- /mermaid:generated -->

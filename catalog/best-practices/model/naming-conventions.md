@@ -1,117 +1,139 @@
 ---
 id: naming-conventions
 title: JUDO Model Naming Conventions
-description: "Consistent naming conventions across JUDO models for entities, attributes, relations, operations, enumerations, and packages."
-aliases: []
-keywords: [judo, model, naming, conventions]
+description: "Project naming conventions for JUDO model elements (entities, attributes, relations, operations, enums, packages, transfer objects), and the few names the platform or generator reserves."
+aliases: [naming rules, name conventions, PascalCase camelCase, reserved names]
+keywords: [naming, convention, PascalCase, camelCase, UPPER_SNAKE_CASE, transfer object suffix, reserved names, packages, boolean prefix]
 tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:alba", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:bhs-global-operation", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:sanctuary-backend", "project:park-here", "project:indamedia-adtrack", "project:InterfaceRegister", "project:judo-partner", "project:workflow-poc", "project:reserve-app", "status:established"]
 category: namespace
 status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [actor-based-transfer-projection]
-fragment: pending
+related: [actor-based-transfer-projection, transfer-object-multiplicity, unmapped-transfer-dto, attribute-renaming-in-transfer, standard-type-library, derived-attribute-flattening, dual-role-relation, toggle-operation-pattern, ui-control-transfer-fields]
+fragment: naming-conventions
+diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Consistent naming conventions across JUDO models for entities, attributes, relations, operations, enumerations, and packages. These conventions improve readability and maintain consistency across the model-driven architecture.
+Models are read for years by people who did not write them. Following one naming scheme makes element kinds recognisable from the name alone, and avoids the few names the platform and its generators reject.
 
-## Structure
+## Practice
 
-| Element Type | Convention | Examples |
+### What the platform fixes
+
+These are platform rules; everything in the next section is project convention.
+
+- Identifiers are ASCII letters and digits starting with a letter. A reserved word (`void`, `self`, `true`, `not`, ...) may be used as a name only when quoted with backticks in JSL ([JSL language rules](../../agent-docs/model/jsl-language-notes.md), "Identifiers and reserved words").
+- An operation may not be named `set` or `get` plus an attribute or relation name (case-insensitive): those names belong to generated accessors ([operation reference](../../agent-docs/model/esm_metamodel/operation.md), "Operation naming and shape constraints").
+- A transfer object that can be created through a relation or is the input of an operation gets a generated `getTemplate()`; a member named `template` on it collides and fails only at frontend build time. Rename the member and keep the binding ([generator reserved names](../../agent-docs/model/esm_metamodel/generator-reserved-names.md)).
+- Do not use the double-underscore payload keys (`__identifier`, `__version`, ...) as feature names ([platform behaviour](../../agent-docs/backend/platform-behavior-reference.md), "Reserved Payload Keys").
+- A name must be unique within its container: duplicate members are a validation error.
+
+### Project conventions
+
+| Element | Convention | Example |
 |---|---|---|
-| Entities | PascalCase singular nouns | `User`, `Question`, `Contest`, `Application` |
-| Attributes | camelCase | `email`, `choiceA`, `numberOfQuestions`, `timestampOfCreation` |
-| Relations (collection) | camelCase plural | `tests`, `prompts`, `categories`, `fixedQuestions` |
-| Relations (single) | camelCase singular | `contest`, `player`, `question`, `category` |
-| Operations | camelCase verbs | `reset`, `approve`, `submit`, `approveAll`, `register` |
-| Enums (type) | PascalCase | `ContestStatus`, `TestStatus`, `QuestionStatus` |
-| Enums (members) | UPPER_SNAKE_CASE | `CREATED`, `STARTED`, `INVALID_CODE` |
-| Packages | lowercase | `types`, `entities`, `actors`, `admin`, `player` |
-| Actor transfers | Reuse entity name in actor package | `admin::Question` maps to `entities::Question` |
+| Entity | PascalCase, singular noun | `Order`, `OrderLine` |
+| Attribute | camelCase, full words | `createdAt`, `numberOfLines` |
+| Relation, many | camelCase plural | `lines` |
+| Relation, one | camelCase singular, named for the role | `customer`, `homeTeam` |
+| Operation | camelCase verb | `approve`, `approveAll`, `createOrder` |
+| Enum type | PascalCase | `OrderStatus` |
+| Enum member | UPPER_SNAKE_CASE | `IN_PROGRESS` |
+| Package | short lowercase or the project's own consistent style | `entities`, `services`, `admin` |
 
-## Examples
+Refinements seen in many projects:
 
-### Trivia
-Entities: `User`, `Question`, `Contest`, `Test`, `Category`, `Prompt`, `Application`, `Upload`, `Admin`. Relations: singular `contest`, `player` for 1..1; plural `tests`, `prompts`, `categories` for 0..*. Operations: verbs like `approve`, `reject`, `enter`, `submit`.
+- Boolean attributes: `is` or `has` prefix (`isActive`, `hasSkills`); a negated twin `isNot...` for hiding controls ([[ui-control-transfer-fields]]).
+- Timestamps: `...At` suffix (`createdAt`, `expiresAt`); dates `...Date` or `dateOf...`.
+- Flattened derived attributes: relation name plus attribute (`competenceName`) ([[derived-attribute-flattening]]).
+- Dual roles to the same entity: role names (`homeTeam`, `visitorTeam`) ([[dual-role-relation]]).
+- Use the same enum member style within a model: most projects use UPPER_SNAKE_CASE, a few use camelCase.
+- Toggle and lifecycle operations use verbs: `toggleActive`, `publish`, `reject` ([[toggle-operation-pattern]]).
+- The domain language of the project may be any language; the case rules still apply.
 
-### RackInspect
-Entities: `FaultRegistry`, `RegistryHeader`, `ElementFault`, `OfferItem`, `JobSheet`. Packages use snake_case: `fault_registry_services`, `job_task_services`, `offer_services`. Unmapped DTOs use suffixes: `*Input`, `*Update`, `*Data`, `*Panel`. Toggle operations: `toggleActive`, `togglePrimary`, `toggleBilling`.
+### Transfer objects
 
-### itracker
-Entities: `Initiative`, `Region`, `SRTCategory`, `MonthlyForecast`, `ForecastVersion`, `User`, `Application`. Domain-specific compound names: `SRTCategory` (abbreviation prefix), `MonthlyForecastVersion`. Operations: `archiveForecast`, `sendForApproval`, `approve`, `reject`, `createInitiative`. Enums: `InitiativeStatus`, `SavingType`, `ActionType`, `RiskLevel`.
+- Repeat the entity name for the actor's projection and separate actors by package (`admin::Order`) or by a role prefix (`AdminOrder`, `AuthorProduct`) ([[actor-based-transfer-projection]], [[transfer-object-multiplicity]]).
+- Mapped projections: suffix `Transfer` or `TO` when the project does not use packages.
+- Unmapped input and output types ([[unmapped-transfer-dto]]): suffix by purpose: `Input`, `UpdateInput`, `Settings`, `Panel`, `Info`, `Data`.
+- Choose one scheme per model and keep it. Mixing prefix and suffix styles is the most common inconsistency.
 
-### SkillMatrix
-Entities: `User`, `Competence`, `Skill`, `SkillLevel`, `TrainingPlan`, `SkillTarget`. Boolean flags use `is` prefix for role flags (`isActiveAdmin`, `isActiveProfessional`); other booleans use descriptive names (`strategic`, `active`, `approved`). Flattened derived attributes follow `{relation}Name` pattern: `competenceName`, `unitName`, `approvedLevelName`. Purpose-specific transfer names: `MyProfessional`, `Subordinate`, `UnapprovedSkillsView`.
+### Packages
 
-### ActionGroupTest
-Entities: PascalCase (`Galaxy`, `Star`, `Planet`, `Creature`, `Astronomer`). Template/input types suffixed: `CreatureTemplate`, `MatterCreator`. Relations: plural for collections (`galaxies`, `stars`, `planets`, `creatures`), singular for single (`astronomer`, `planet`, `earth`). Operations: verb-prefix (`createCreature`, `destroyLife`, `startWar`, `endWar`, `chooseTheMessiah`). Enum members: camelCase (`interstellarMedium`, `intergalacticDust`).
+Packages are model namespaces. Two layouts occur: one package for entities and one for services or actors, or one package per actor plus one for shared entities. Keep database entities and their API projections apart when both exist, and give shared types and measures their own package ([[standard-type-library]]).
 
-### Alba
-Entities: PascalCase (`Product`, `ProductVersion`, `ProductVersions`, `User`, `Institution`, `Task`, `Event`). Role-based transfer prefixes: `AuthorProduct`, `AdminProduct`, `GuestProduct`, `ApproverProduct`. Suffix-based input DTOs: `ApprovalTaskInput`, `CloseTaskInput`, `AuthorProductForm`. Operations: lifecycle verbs (`finalize`, `approveVersion`, `revokeApproval`, `draftNewVersion`, `closeTask`). Enums: `ProductState`, `UserRole`, `TaskState`, `AccountStatus`.
+## Rationale
 
-### SkillMatrix-Model
-Entities: PascalCase (`Competence`, `SkillTarget`, `TrainingPlan`, `ResumeList`, `ResumeTemplate`). Packages: `competence`, `user`, `report` for domain grouping; `types`, `measures` for infrastructure. Operations: `approveAllSkills`, `approveAllSubordinatesSkills`, `createTrainingPlan`, `completeAllTargets`, `deleteUser`. Derived boolean naming: `has*` (`hasApprovalRequest`, `hasSkills`) for existence checks, `is*` (`isInactiveUser`) for state checks.
+- A reader can tell an entity from a projection, a flag from a status, a collection from a single relation.
+- Generated code follows the model names, so API paths, SDK methods and UI labels inherit the same consistency.
+- Cost: renaming later touches the model, custom Java code and translations. Choose names early. A rename on the transfer side only is possible through attribute binding ([[attribute-renaming-in-transfer]]).
 
-### MLSZKSZPlatform
-Entities: PascalCase (`RegistrationRequest`, `FeedEntry`, `InvitationRecipient`, `UserInvitationRequest`). Boolean `is*` prefix: `isVisible`, `isSensitive`, `isStrategic`, `isActive`. Timestamp `*At` suffix: `createdAt`, `sentAt`, `verifiedAt`, `lastUsedAt`, `expiresAt`. Operations: lifecycle verbs (`publish`, `expired`, `accept`, `reject`), `edit*` prefix for edits (`editNews`, `editOffer`), `create*` for creation (`createCity`, `createCapability`), `activateToggle` for toggles. Packages: `admin`, `companyadmin`, `feed`, `registration` for service organization.
+## Example
 
-### Viterra Demo
-Entities: PascalCase singular (`Period`, `Client`, `Silo`, `Stock`, `Commodity`, `Report`, `Application`). Transfer naming uses `EntityTransfer` suffix (`PeriodTransfer`, `ClientTransfer`, `StockTransfer`) plus actor-prefixed variants (`PartnerOpenReportTransfer`, `PartnerClosedReportTransfer`, `PartnerClientTransfer`). Operations: imperative verbs (`submit`, `accept`, `review`, `init`). Enums: PascalCase types (`ReportStatus`, `Status`), UPPER_CASE members (`PENDING`, `SUBMITTED`, `ACCEPTED`, `REVIEW`). Single flat `viterra` namespace with no sub-packages for entities.
+An Order entity has an `OrderStatus` enum (`IN_PROGRESS`, `REVIEW_REQUESTED`, `ACCEPTED`), a `createdAt` timestamp, an `isActive` flag, a derived `numberOfLines`, a `lines` composition, a `customer` association and an `approve` operation. The transfer objects are `AdminOrder` (the admin's projection) and `ApproveOrderInput` (an input). The diagram shows the names only. The conventions come from about twenty source projects; the source models also used Hungarian names with the same case rules. These names are neutral.
 
-### KozutEugyfelClient
-Hungarian-language naming throughout: entities (`Bejelentes`, `Felhasznalo`, `Esemeny`, `Ertesites`), attributes (`azonosito`, `bejelentoNeve`, `letrehozasIdopont`), relations (`ugyintezo`, `felelos`, `resztvevok`), operations (`tovabbitas`, `lezaras`, `megnyitas`, `megjegyzes`). Permission booleans use `*Engedely` suffix (`tovabbitasEngedely`, `lezarasEngedely`). Demonstrates that JUDO conventions (PascalCase entities, camelCase attributes) are language-agnostic.
+## When to avoid
 
-### BHS Global Operation
-Skeleton project confirming baseline conventions. Model name: PascalCase with abbreviation (`BHSGlobalOperation`). Package names: camelCase (`types`, `measures`). Type names: PascalCase (`String`, `Long`, `Email`). Unit names: camelCase (`milligram`, `kilometrePerHour`, `squareMetre`). Access annotations: camelCase (`dashboard`, `profile`).
-
-### MJSZ
-Entities: PascalCase singular (`Player`, `Team`, `Match`, `Club`, `Season`, `Tournament`, `Transfer`, `License`, `Venue`, `Application`). Attributes: camelCase with full words (`dateOfBirth`, `visitorScore`, `licenseExpiration`, `goalsDifference`). Relations: plural for collections (`players`, `teams`, `licenses`, `transfers`), singular for single (`club`, `season`, `venue`). Role-based relation naming: `homeTeam`/`visitorTeam`, `homeMatches`/`visitorMatches` for dual-role relations to the same entity.
-
-### judo-demo-miniworkflow
-Entities: PascalCase (`Document`, `Files`, `DocumentHistoryEntry`, `User`). Transfer naming uses `EntityTransfer` suffix (`DocumentTransfer`, `FilesTransfer`, `DocumentHistoryEntryTransfer`). Operations: imperative verbs (`requestReview`, `accept`, `reject`, `close`, `createDocument`, `initUsers`). Enum: `DocumentState` with UPPER_SNAKE_CASE members (`IN_PROGRESS`, `REVIEW_REQUESTED`, `ACCEPTED`, `REJECTED`, `CLOSED`). Permission booleans use `is*` prefix: `isAcceptable`, `isClosable`. Negative attributes use `isNot*`: `isNotAdmin`, `isNotClosable`.
-
-### AMS-Model
-Entities: PascalCase (`User`, `Application`, `Request`, `Campaign`, `ConfirmationRequest`, `AccessRequest`, `Admin`). Enums use status/type suffixes: `CampaignStatus`, `RequestType`, `Status`. Relations: plural for collections (`requests`, `subordinates`, `approvals`, `applications`, `confirmationRequests`), singular for single (`manager`, `approver`, `issuer`, `application`). Operations: imperative verbs (`approve`, `reject`, `open`, `close`, `load`, `approveAll`, `reset`, `init`). Transfer objects reuse entity names in actor packages: `manager::Subordinate`, `manager::Request`.
-
-### Sanctuary Backend
-Entities: PascalCase (`User`, `UserPrivacySettings`, `UserSettings`, `PositionTitle`, `Role`, `RoleGroup`). Transfer objects use "TO" suffix: `UserTO`, `RoleTO`, `RoleGroupTO`, `PositionTitleTO`, `UserPrivacySettingsTO`, `UserSettingsTO`. Enums: PascalCase (`PrivacyVisibility`, `ActiveStatus`) with camelCase members (`publicForPeers`, `publicForTeam`, `active`, `archived`). Packages: `types`, `measures`, `user` for domain grouping.
-
-### ParkHere
-Entities: PascalCase (`ParkingGarage`, `ParkingSlot`, `Reservation`, `Doorman`, `DoormanNotified`, `AdditionalDay`). Transfer suffixes: `*Input` (CreateCarInput, HolidayInput, DoormanInput), `*Settings` (UserSettings, ConfigurationSettings, ParkingGarageSettings), `*Panel` (UserReservationPanel, ReservationsPanel, HolidayPanel). Enums: PascalCase types (ReservationStatus, ReservationType, DayType, ErrorCode), UPPER_SNAKE_CASE members (PERMISSION_DENIED, TOO_MANY_RESERVATION). Packages: `entities`, `services`, `measures`.
-
-### IndamediaAdTrack
-Entities: PascalCase (`TrackedCampaign`, `AggregatedCampaign`, `GoogleCredential`, `MetaCredential`, `AvailableCampaign`). Transfer suffixes: `*Transfer` (ClientTransfer, AccountTransfer), `*Input` (ClientInput, AccountInput, GoogleCredentialInput), `*UpdateInput` (ClientUpdateInput, AccountUpdateInput), `*Panel` (ClientPanel, CampaignPanel), `*Info` (CostInfo). Operations: `syncData`, `syncCosts`, `testConnection`, `fetchAvailableCampaigns`, `untrack`. Packages: `entities` and `services` for clear domain/service separation.
-
-### InterfaceRegister
-Entities: PascalCase singular (`Application`, `Vendor`, `InterfaceSpecification`, `ConcreteConnection`, `HighLevelConnection`). Transfer suffixes: `{Entity}Transfer` (ApplicationTransfer, VendorTransfer, HighLevelConnectionTransfer), `Create{Entity}Input` (CreateApplicationInput, CreateUserInput, CreateHighLevelConnectionInput). Enum naming: PascalCase types (ApplicationCategory, BusinessDomain, DirectionOfDataTransmission), UPPER_SNAKE_CASE members. Package: single `enterpriseArchitect` for all TOs and actor.
-
-### judo-partner
-Entities in `::database` sub-packages: `Partner::partner::database::Partner`, `Partner::registry::database::Case`. API transfer objects in parent packages reuse entity names: `Partner::partner::Partner` maps to `Partner::partner::database::Partner`. Unmapped input DTOs use descriptive suffixes: `CreatePartnerInput`, `PartnerImportInput`, `CountryImportInput`. Enums: PascalCase types (`PartnerStatus`, `TaxNumberType`, `ValidationErrorCode`), UPPER_SNAKE_CASE members (`INVALID_TAX_ID`, `NOT_VALIDATED`). Sub-view TOs use entity-purpose naming: `PartnerContacts`, `PartnerAddresses`.
-
-### KozutEugyfelModelTest
-Hungarian naming consistent with related KOZUT projects: entities (`Bejelentes`, `Felhasznalo`, `Esemeny`, `Inicializalo`), attributes (`targy`, `szoveg`, `allapot`, `helyszin`, `bejelentoNeve`), relations (`kepek`, `esemenyek`, `ugyintezo`, `felelos`), operations (`tovabbitas`, `lezaras`, `megjegyzes`, `szinkronizal`). Actor-specific packages mirror actor names: `UgyfelszolgalatiMunkatars`, `SzervezetiEgysegMunkatars`, `SzervezetiEgysegVezeto`. Shared TOs in `KozosTransferObjectek` package.
-
-### workflow-poc
-Entities: PascalCase (`Token`, `WorkflowVersion`, `State`, `Transition`, `Action`, `Guard`, `Context`, `ContextType`, `LogEntry`, `EventType`). Packages: hierarchical with `entities`, `transfers`, `transfers::admin`, `test`, `test::entities`. Transfers use purpose-based naming: `Task` (maps Token), `TaskList` (maps User), `Activity` (maps Transition). Admin TOs in separate `admin` sub-package. Unmapped DTOs use descriptive names: `Event`, `ContextInput`, `ActionInput`, `UploadInput`, `CommitInput`. Operations: imperative verbs (`trigger`, `checkout`, `release`, `execute`, `assign`, `navigate`, `commit`, `upload`, `publish`).
-
-### ReserveApp
-Entities: PascalCase singular (`FreightReservation`, `Partner`, `Gate`, `Spot`, `VehicleType`, `LoadingType`). Actor naming uses "Actor" suffix: `AdminActor`, `PartnerActor`, `LogisticianActor`, `DoormanActor`. Principal TOs use "User" suffix: `AdminUser`, `PartnerUser`, `LogisticianUser`, `DoormanUser`. Role-scoped TOs use `*ForPartner` suffix: `ReservationForPartner`, `GateForPartner`, `SpotForPartner`. Packages: `types`, `measures`, `entities`, `services`.
-
-### AMS-Frontend
-Hierarchical namespace: `ams::types`, `ams::measures`, `ams::entities`, `ams::actors::manager`, `ams::actors::admin`. Transfers named by actor perspective: `manager::Subordinate` (maps User), `manager::ManagerApprovalList` (maps User). Enums: `Status`, `CampaignStatus`, `RequestType` with UPPER_SNAKE_CASE members. Operations: imperative verbs (`approve`, `reject`, `open`, `close`, `load`, `approveAll`).
-
-## Trade-offs
-
-- Pros: Predictable naming across the entire model, generated code follows same conventions
-- Cons: Some names may be verbose (e.g., `timestampOfCreation`), but clarity is preferred
-- Prefer when: Always -- naming conventions should be applied uniformly
+- An existing model with an established, different scheme: stay consistent with it instead of introducing a second one.
+- Names imposed by an external API or a legacy schema: map them with transfer-level renaming and keep the model names clean.
 
 ## Related
 
-- [[actor-based-transfer-projection]] (actor package naming)
+- [[actor-based-transfer-projection]] — actor packages and prefixes
+- [[transfer-object-multiplicity]] — several transfer objects per entity
+- [[unmapped-transfer-dto]] — input and output suffixes
+- [[attribute-renaming-in-transfer]] — rename on the transfer side
+- [[standard-type-library]] — shared types package
+- [[derived-attribute-flattening]] — relation plus attribute names
+- [[dual-role-relation]] — role names for two relations to one entity
+- [[toggle-operation-pattern]] — toggle verbs
+- [[ui-control-transfer-fields]] — boolean twins for UI
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=naming-conventions cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AdminOrder {
+    <<Transfer>>
+    +Timestamp createdAt
+    +OrderStatus status
+    +Boolean isActive
+    +Integer numberOfLines
+  }
+  class ApproveOrderInput {
+    <<Transfer>>
+  }
+  class Customer {
+    <<Entity>>
+    +String name
+  }
+  class Order {
+    <<Entity>>
+    +Timestamp createdAt
+    +OrderStatus status
+    +Boolean isActive
+    +Integer /numberOfLines
+    +approve()
+  }
+  class OrderLine {
+    <<Entity>>
+    +Integer quantity
+  }
+  class OrderStatus {
+    <<Enumeration>>
+    IN_PROGRESS
+    REVIEW_REQUESTED
+    ACCEPTED
+  }
+  AdminOrder ..> Order : maps
+  AdminOrder ..> OrderStatus : status
+  Order *-- "*" OrderLine : lines
+  Order --> "1" Customer : customer
+  Order ..> OrderStatus : status
+```
+<!-- /mermaid:generated -->

@@ -10,44 +10,80 @@ status: emerging
 projects: [trivia, park-here]
 evidence: ["trivia:unrecorded", "park-here:unrecorded"]
 alternatives: []
-related: [enum-state-machine, derived-attribute-flattening]
-fragment: pending
+fragment: conditional-visibility-getter
+diagram: { kinds: [entity, enum, transfer], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Derived attributes on transfer objects use conditional (ternary) getter expressions to reveal or hide data based on the state of a parent or related entity. This provides model-level security by controlling data visibility without requiring custom backend code.
+Reveal or hide a value through a derived attribute with a conditional (ternary) getter on a transfer object, so the rule is evaluated on the server by the model and no custom code is needed.
 
-## Structure
+## Practice
 
-- Uses ternary expression in getter: `condition ? realValue : sentinelValue`
-- Condition typically checks a status enum on a parent/container entity or the presence of a related entity
-- Uses `self!container(ParentType)` for composition navigation to check parent state
-- Uses `self.relation!isDefined()` to check optional relation existence
-- Sentinel value is usually an enum member like `NONE` or a null/empty value
+- A `DERIVED` attribute on a transfer object has a `getterExpression` of the form `condition ? realValue : fallback` ([model-development](../../agent-docs/model/model-development.md), *JQL grammar quirks*).
+- The condition must be a logical expression, and both branches must be of the same kind; entity branches resolve to a common supertype.
+- The condition typically reads the state of a parent, via `self!container(ParentType).status == Status#VALUE` for a composed child, or the presence of an optional relation, via `self.relation!isDefined()`.
+- The fallback is a neutral enum member (`NONE`), an empty value or another source.
+- Do not hang the real value on a second mapped member of the same transfer object: expose only the conditional one to the client, otherwise the value leaks.
 
-```
-answer: self!container(Test).status == TestStatus#FINISHED ? self.answer : Choice#NONE
-```
+## Rationale
 
-## Examples
+The expression runs where the data is computed, so a client cannot bypass it, unlike a hidden UI field. This is data-level masking; it is separate from UI-level enabling and hiding with `hiddenBy` / `enabledBy`, which only change what the generated page shows ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md)). Derived attributes are read-only. Complex conditions that outgrow a single expression belong in an operation or a backend interceptor instead ([interceptors](../../agent-docs/backend/interceptors.md)).
 
-### Trivia
-`player::Prompt.answer` and `player::Prompt.solution` both use conditional getters: they return `Choice#NONE` while the test is active and only reveal actual values when `self!container(Test).status == TestStatus#FINISHED`. This prevents players from seeing answers during the quiz.
+## Example
 
-### ParkHere
-Reservation entity uses ternary expressions to adapt display attributes based on guest presence: `reserverName = self.guest!isDefined() ? self.guest.name : self.owner.name`, `reserverCarId = self.guest!isDefined() ? self.guest.licensePlate : self.car.licensePlate`, `reserverEmail = self.guest!isDefined() ? self.guest.email : self.owner.email`. This creates a polymorphic "view" that shows guest info for guest reservations and owner info for regular reservations, without separate entity types.
+A quiz has questions composed in it. `PlayerQuestion` is a transfer object mapped to the question entity. Its derived `shownAnswer` returns the answer only when the owning quiz is finished and `NONE` otherwise: the getter is `self!container(Quiz).status == QuizStatus#FINISHED ? self.answer : Choice#NONE`.
 
-## Trade-offs
+Another seen variant switches between a guest's and an owner's data depending on whether a guest relation is defined, giving one polymorphic display attribute.
 
-- Pros: Security enforced at the model layer (not just UI), no custom code needed, declarative
-- Cons: Limited to simple conditions in getter expressions, complex logic may need custom operations
-- Prefer when: Data visibility depends on lifecycle state and must be enforced server-side
+## When to avoid
+
+- When the rule depends on who is asking: use access getters or actor variables instead, see [[derived-access-filtering]].
+- When the condition needs several steps or external data.
 
 ## Related
 
-- [[enum-state-machine]]
-- [[derived-attribute-flattening]]
+- [[enum-state-machine]] — the status that usually drives the condition
+- [[derived-attribute-flattening]] — other derived attribute shapes
+- [[composition-ownership]] — `!container()` needs a composition
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=conditional-visibility-getter cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Choice {
+    <<Enumeration>>
+    NONE
+    A
+    B
+  }
+  class PlayerQuestion {
+    <<Transfer>>
+    +Choice answer
+    +String text
+    +Choice /shownAnswer
+  }
+  class Question {
+    <<Entity>>
+    +String text
+    +Choice answer
+  }
+  class Quiz {
+    <<Entity>>
+    +QuizStatus status
+  }
+  class QuizStatus {
+    <<Enumeration>>
+    ACTIVE
+    FINISHED
+  }
+  PlayerQuestion ..> Choice : answer
+  PlayerQuestion ..> Choice : shownAnswer
+  PlayerQuestion ..> Question : maps
+  Question ..> Choice : answer
+  Quiz *-- "*" Question : questions
+  Quiz ..> QuizStatus : status
+```
+<!-- /mermaid:generated -->

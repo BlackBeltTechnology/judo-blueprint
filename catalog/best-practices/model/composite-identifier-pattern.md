@@ -10,40 +10,52 @@ status: emerging
 projects: [InterfaceRegister, judo-partner]
 evidence: ["InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-related: [sequence-based-identifier, naming-conventions]
-fragment: pending
+fragment: composite-identifier-pattern
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An entity uses multiple attributes marked as `identifier=true` to form a composite identifier. This means the entity is uniquely identified by the combination of two or more fields rather than a single primary key. This pattern is useful for entities that have both a system-generated code and a human-readable name, where either could serve as a lookup key.
+Mark more than one stored attribute of an entity as `identifier`, typically a system code plus a human-readable name, so that either can serve as a lookup key.
 
-## Structure
+## Practice
 
-- Two or more attributes on the same entity have `identifier="true"`
-- Both attributes are typically required (`required="true"`)
-- Common combination: `id` (system code) + `name` (human-readable)
-- Both identifier attributes use String type
-- Transfer objects may expose both identifiers for display and lookup
+- `identifier` is a flag on a `DataMember`. It is available only when the container is an entity type and the member is `STORED` ([structure.md](../../agent-docs/model/esm_metamodel/structure.md), *DataMember Attribute Rules*). The docs call it the natural key field.
+- Put the flag on two or more required String attributes, for example `code` and `name`.
+- The `code` is usually produced by a default expression (see [[sequence-based-identifier]] and [[default-value-patterns]]); the name is entered by the user.
+- Transfer objects that need to show or look up the entity expose both attributes as mapped members.
 
-## Examples
+## Rationale
 
-### InterfaceRegister
-Four entities use composite identifiers with dual `id + name` identifier fields: `Application` (id: "APP-0001", name: "SalesForce"), `Vendor` (id: "VND-001", name: "Vendor 1"), `Server` (id + name), `InterfaceSpecification` (id: "IFS-0001", name: human-readable spec name), `HighLevelConnection` (id + name). Both fields are String type, required, and marked `identifier=true`. The `id` field uses count-based auto-generation while `name` is user-provided.
+Entities often have a stable machine code and a label people recognise. Flagging both as identifiers documents both as natural keys in the model.
 
-### judo-partner
-`Country` entity has 4 identifier attributes: `code`, `name`, `alpha2`, `alpha3` -- each a different representation of the same country entity. `Partner` has 2 identifiers: `partnerCode` (system-generated) and `taxIdentifier` (optional, derived). Most other entities use single natural-key identifiers (e.g., `Register.registerCode`, `Case.caseCode`, `Record.recordNumber`).
+The agent-docs only say that `identifier` marks a natural key; they do not state how the flag on several attributes is enforced at runtime. Treat uniqueness of the combination and of each part as something to verify in the generated schema or to enforce in project code, and say so in the model's documentation.
 
-## Trade-offs
+## Example
 
-- Pros: Supports both programmatic lookup (by code) and human-friendly lookup (by name), enforces uniqueness on both dimensions
-- Cons: More complex uniqueness constraints, both fields must be provided and unique, may complicate relation references
-- Prefer when: Entities need both a stable system identifier and a unique human-readable name
+A `Country` entity has two required String attributes flagged as identifiers, `code` and `name`, plus an ordinary `population` attribute. Seen in two projects, where up to four representations of one record (code, name, two ISO alphas) are flagged.
+
+## When to avoid
+
+- When one attribute is enough: a single identifier is simpler to reference and to use in expressions.
+- When the second key is only a label that may change; a mutable name as a key makes renames awkward.
+- When uniqueness must be guaranteed and you have not confirmed that the platform enforces it for your attributes.
 
 ## Related
 
-- [[sequence-based-identifier]]
-- [[naming-conventions]]
+- [[sequence-based-identifier]] — generating the code part
+- [[naming-conventions]] — naming the key attributes
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=composite-identifier-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Country {
+    <<Entity>>
+    +String code [1]
+    +String name [1]
+    +Integer population
+  }
+```
+<!-- /mermaid:generated -->

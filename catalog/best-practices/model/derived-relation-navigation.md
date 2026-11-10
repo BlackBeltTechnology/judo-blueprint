@@ -10,73 +10,80 @@ status: established
 projects: [trivia, rackinspect, alba, skillmatrix-model, sanctuary-backend, park-here, judo-partner, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-related: [derived-attribute-flattening, self-referencing-derived-relation, container-back-reference]
-fragment: pending
+fragment: derived-relation-navigation
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Entity or transfer relations use derived getter expressions to compute their contents by navigating through other relations, applying filters, or combining multiple sources. This avoids storing redundant relation data and keeps computed collections in sync with their source data.
+Define a relation whose content is computed by a getter expression over other relations, so collections stay in step with their sources without storing them.
 
-## Structure
+## Practice
 
-Common derived relation patterns:
-- **Transitive navigation**: `self.relation1.relation2` (aggregates nested collections)
-- **Filter expression**: `self.collection!filter(x | condition)` (subset of existing relation)
-- **Self-reference**: `self` (presents same entity through different transfer projection)
-- **Head expression**: `self.collection!filter(...)!head(x | x.field DESC)` (pick first from sorted filtered set)
-- **Container navigation**: `self!container(ParentType).relation` (navigate up composition then down)
-- **Alias**: `self.relation` (simple alias providing alternative naming or future extension point)
+- The relation has `memberType = DERIVED` and a getter expression; its cardinality is chosen by `upper` (see [type.md](../../agent-docs/model/esm_metamodel/type.md), *Cardinality Conventions*).
+- A derived relation with upper bound 1 must end in `!any()` or another single-instance function; a collection (`upper = -1`) takes no suffix. `!any()` may appear at most once ([model-development](../../agent-docs/model/model-development.md), *Using `!any()` correctly*).
+- Shapes (functions in the same guide, *Reference Functions*):
+  - transitive: `self.categories.questions`
+  - filter: `self.tests!filter(t | t.status == Status#FINISHED and t.best)`
+  - sorted head: `self.tests!sort(t | t.date DESC)!head()`; `!head()` is deterministic only after `!sort`
+  - self: `self`, to present the same entity through another transfer
+  - container: `self!container(Parent).relation` ([[container-back-reference]])
+- Lambdas do not nest and do not see `self` inside; filters comparing to `self` inside a global entity filter fail to build.
+- Avoid derived relations built on other derived relations when a short path exists.
 
-## Examples
+## Rationale
 
-### Trivia
-Entity: `Contest.questions` is derived as `self.categories.questions` -- computes the union of all questions from linked categories. Transfer: `player::Contest.personalBests` uses `self.tests!filter(t | t.status == TestStatus#FINISHED and t.personalBest)` to show only finished personal-best tests.
+A derived relation has no storage, so it cannot go stale. Page tables over it need no extra operations. The cost is read-time work and read-only access: items cannot be added through it. For the single-value case the `!any()` rule is easy to forget and shows up late, at build time.
 
-### RackInspect
-Entity derived relations: `FaultRegistry.racks` (all racks across fault headers), `Offer.serviceOffterItems` (filtered service-type offer items), `User.permissions` (aggregated from all assigned roles), `Partner.deliveryAddresses` (addresses filtered by isDelivery flag). Derived back-references: `container` relations on 14+ entities navigate to parent.
+## Example
 
-### SkillMatrix
-Complex derived relations on `User`: `subordinates = self.managedUnits.members!filter(m | m.isActiveProfessional)` (transitive + filter), `skillTargets = self.trainingPlans.skillTargets` (flattening compositions), `lastTrainingPlan = self.trainingPlans!filter(p | not p.closed)!head(p | p.date DESC)` (filter + head). `TrainingPlan.incompleteSkillTargets = self!container(User).incompleteSkillTargets` (container navigation).
+`Contest` has stored `categories` and `tests`. Its derived `questions` is `self.categories.questions` (union over all categories), `finishedBest` filters tests by status and a flag, and `latestTest` picks the first of tests sorted descending.
 
-### Alba
-`Product.currentVersion` uses head expression: `self.productVersions.versions!head(p | p.version desc)` to derive the latest version by sorting descending. `User.publicApprovedProducts` uses filter: `self.products!filter(p | p.state == ProductState#APPROVED)`. `ProductVersions.allProducts` uses transitive navigation: `self.versions.origin`.
+Seen in 8 projects.
 
-### SkillMatrix-Model
-7+ derived relations confirmed in model source. Key patterns: transitive navigation (`User.skillTargets = self.trainingPlans.skillTargets`), filter + head (`User.lastTrainingPlan = self.trainingPlans!filter(p | not p.closed)!head(p | p.date DESC)`), chained derived (`Tag.users = self.competences.users` reuses `Competence.users` derived relation), and container-based (`TrainingPlan.incompleteSkillTargets = self!container(User).incompleteSkillTargets`).
+## When to avoid
 
-### KozutEugyfelClient
-Filtered event collections on `Bejelentes`: `megjegyzesek` filters `esemenyek` for comments only, `tovabbitasok` filters for forwards. Complex filter: `self.esemenyek!filter(e | e.szoveg!isDefined() and e.szoveg!trim()!length() > 0 and e.szoveg!trim() != "null")!sort(e | e.idopont ASC)` -- filters non-empty text events and sorts chronologically.
-
-### Sanctuary Backend
-`User.effectiveRoles` is a derived relation with `getterExpression="self.roles"`, serving as an alias for the stored roles relation. Currently identical to `self.roles`, this pattern provides a future extension point for filtering or computing effective roles differently from directly assigned roles (e.g., including roles inherited through RoleGroups).
-
-### ParkHere
-`Reservation.parkingGarage` is a derived relation with getter `self.parkingSlot.parkingGarage` -- navigates through the parking slot to reach the garage without storing a direct reference. This single-hop transitive navigation avoids a redundant stored relation while keeping garage information accessible on the reservation.
-
-### judo-partner
-`Partner.primaryContact [0..1]` and `Partner.primaryAddress [0..1]` are derived relations that filter the composed collections by the `isPrimary` Boolean flag. `Taxpayer.headquarter [0..1]` derives from filtering `addresses` by type. `Taxpayer.taxNumber` and `Taxpayer.taxIdentifier` are derived from related `TaxpayerQuery` navigation. The `PartnerList.partners` and `PartnerList.partnerLogs` are derived collections providing user-scoped dashboard data.
-
-### KozutEugyfelModelTest
-`Bejelentes.felelos` is a derived relation using a complex chained expression: `self.esemenyek!asCollection(UgyintezoBeallitas)!filter(e | e.celFelhasznalo!kindof(FelelosFelhasznalo))!head(e | e.idopont DESC).celFelhasznalo`. This computes the current responsible user by finding the most recent handler-assignment event whose target is of type `FelelosFelhasznalo`.
-
-### workflow-poc
-`Token.authorizedUsers` is derived via transitive navigation: `self.state.transitions.role.users` -- navigates through current state to transitions, then to roles, then to users, collecting all authorized users. `Context.assignees` and `Context.lastTransitions` are also derived. Transfer-level: `TaskList.allTasks` and `TaskList.myTasks` use derived relations for filtered task views, and `Task.assignables`, `Task.authorizedUsers`, `Task.logEntries` are all derived from the mapped entity.
-
-### AMS-Frontend
-`ManagerApprovalList.approvals` is a derived relation with a compound filter: `self.approvals!filter(r | r.status == Status#PENDING and r.campaignStatus == CampaignStatus#OPEN)` -- filters the manager's approvals to show only pending requests from open campaigns. This demonstrates layered filtering where the access point filters by campaign status and the transfer relation further filters by request status.
-
-## Trade-offs
-
-- Pros: No data duplication, always consistent with source, supports complex navigation and filtering
-- Cons: Derived relations are read-only, may have performance implications for deep/complex navigation
-- Prefer when: Collection data can be computed from existing relations using navigation or filtering
+- When users must add or remove items directly: use a stored relation.
+- When the path is long and used everywhere: map it once on a transfer object.
+- When the data is only needed in one expression: navigate inline.
 
 ## Related
 
-- [[derived-attribute-flattening]]
-- [[self-referencing-derived-relation]]
-- [[container-back-reference]]
+- [[derived-attribute-flattening]] — attribute counterpart
+- [[self-referencing-derived-relation]] — `self` as a relation
+- [[container-back-reference]] — parent navigation
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=derived-relation-navigation cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Category {
+    <<Entity>>
+  }
+  class Contest {
+    <<Entity>>
+  }
+  class Question {
+    <<Entity>>
+    +String text
+  }
+  class Test {
+    <<Entity>>
+    +TestStatus status
+    +Boolean best
+  }
+  class TestStatus {
+    <<Enumeration>>
+    RUNNING
+    FINISHED
+  }
+  Category --> "*" Question : questions
+  Contest --> "*" Category : categories
+  Contest --> "*" Question : questions
+  Contest --> "*" Test : finishedBest
+  Contest --> "*" Test : tests
+  Contest --> "0..1" Test : latestTest
+  Test ..> TestStatus : status
+```
+<!-- /mermaid:generated -->

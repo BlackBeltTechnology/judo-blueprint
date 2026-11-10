@@ -1,67 +1,102 @@
 ---
 id: generalization-base-entity
 title: Generalization Base Entity for Shared Infrastructure
-description: "A base entity provides shared attributes and relations (timestamps, document management, user assignment, audit history) that are inherited by multiple concrete entity types via generalization."
-aliases: []
-keywords: [generalization, base, shared, infrastructure]
+description: "Hold the attributes and relations that several entities share (timestamps, documents, assignee, history) once on a base entity and let the concrete entities extend it through generalization."
+aliases: [base entity, supertype, abstract base entity, shared infrastructure entity, inheritance]
+keywords: [generalization, base entity, supertype, abstract, inheritance, polymorphism, shared attributes, subtype, transfer object]
 tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-platform", "project:ams-model", "project:indamedia-adtrack", "project:InterfaceRegister", "project:workflow-poc", "status:established"]
 category: entity
 status: established
 projects: [rackinspect, mlszksz-platform, ams-model, indamedia-adtrack, InterfaceRegister, workflow-poc]
 evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ams-model:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "workflow-poc:unrecorded"]
 alternatives: [flat-entity-model]
-related: [flat-entity-model, enum-state-machine]
-fragment: pending
+related: [flat-entity-model, enum-state-machine, transfer-generalization, partner-generalization-hierarchy, post-generalization-hierarchy, credential-generalization-hierarchy, interface-specification-generalization-hierarchy]
+fragment: generalization-base-entity
+diagram: { kinds: [entity], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A base entity provides shared attributes and relations (timestamps, document management, user assignment, audit history) that are inherited by multiple concrete entity types via generalization. This avoids duplicating common infrastructure across entities that share the same workflow base. It is an alternative to the flat entity model where each entity defines its own attributes independently.
+Several entities share the same infrastructure: created and modified times, a registry number, documents, an assignee, a history. Declare it once on a base entity and let each concrete entity extend that base with its own fields.
 
-## Structure
+## Practice
 
-- Base entity defines common attributes (e.g., `created`, `modified`, `registryNumber`)
-- Base entity defines common relations (e.g., `documents [0..*]`, `assignedTo -> User`, `history [0..*]`)
-- Concrete entities extend the base and add domain-specific attributes and relations
-- Base entity may be abstract (`abstract: true`) or non-abstract
-- Typically used for workflow/task entities that share lifecycle infrastructure
+### What the platform provides
 
-## Examples
+- Generalization is a platform feature between **entity** types. A subtype inherits every attribute and relation of its supertype ([model development guide](../../agent-docs/model/model-development.md), "Polymorphism with Inheritance"; [relation and class rules](../../agent-docs/model/esm_metamodel/structure.md)).
+- Inheritance between transfer object types is **not** supported. Each transfer object maps one entity and declares its own members ([[transfer-generalization]]).
+- A base entity can be marked abstract. An abstract entity cannot be created by itself, so a transfer object used for creation must map a concrete subtype ([model validation](../../agent-docs/model/model-validation-and-transformation.md); the generated DAO offers create only for mapped, non-abstract types: [data access guide](../../agent-docs/backend/data-access-guide.md)).
+- When an access targets an abstract base, the generated UI offers the choice of concrete subtypes on create ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), "Platform-Managed Polymorphic Creation"). Distinguish mixed subtypes in a list with separate view definitions per subtype.
 
-### RackInspect
-`Task` base entity (3 attributes: `created`, `modified`, `registryNumber`; 4 relations: `documents`, `lastDocument`, `assignedTo`, `history`) is extended by 6 concrete entities: `FaultRegistry` (status, facility, fault headers), `Offer` (costs, versioning, items), `JobSheet` (work status, items), `WorkReport` (start/end times, workers), `AssessmentSheet` (name, generated date), `ReviewReport` (expire date, pictures).
+### Project practice: what goes on the base
 
-### MLSZKSZPlatform
-`Post` abstract base entity (attributes: `title`, `description`, `status: PostStatus`, `createdAt: Timestamp`) is extended by 4 concrete entities: `News` (no additional attributes), `Offer` (`validFrom`, `validUntil` date range), `Request` (`deadline` date), `Announcement` (`isSensitive`, `isStrategic` boolean flags, `documents` relation). All subtypes share the common `publish`/`delete` operations and PostStatus lifecycle. The abstract base enables polymorphic feed queries via FeedEntry.post [0..1] -> Post.
+- Shared stored attributes (`created`, `modified`, `registryNumber`) and shared relations (`assignedTo`, `documents`, `history`).
+- The base may carry shared operations, for example publish or delete, and a shared status ([[enum-state-machine]]).
+- A subtype adds only what is specific to it.
+- Abstract base when only the subtypes exist in practice; non-abstract when the base itself is also created, as some projects did with an `InterfaceSpecification` that is both a base and a concrete type.
+- A shallow hierarchy (base plus one level) is the norm; one project went to two levels.
+- Use it when the entities really are "is-a" variants. Use it for the shared plumbing of a workflow family, not for unrelated entities that happen to share two fields.
 
-### AMS-Model
-`Request` (abstract) defines 12 shared attributes (`applicationName`, `userName`, `userEmail`, `responsibleName`, `roles`, `status`, `loginName`, `effectiveDate`, `isPending`, `creationTime`, `decisionTime`, `type`) and 2 relations (`application [1..1]`, `user [1..1]`), plus 3 operations (`approve`, `reject`, `reset`). Extended by `ConfirmationRequest` (adds `approver [1..1]` relation and derived `campaignStatus`) and `AccessRequest` (adds `issuer [1..1]` relation). The abstract base holds all common request workflow infrastructure.
+### Known pitfall
 
-### IndamediaAdTrack
-`Credential` base entity (0 attributes, 1 relation: `account [1..1]`) is extended by `GoogleCredential` (4 platform-specific attributes: `customerId`, `delegatedAccount`, `jsonKeyFile`, `developerToken`) and `MetaCredential` (0 attributes -- incomplete). Demonstrates a strategy pattern where the base holds only the shared account association, and subtypes carry platform-specific credential data for multi-platform API integration.
+A derived attribute that navigates through a member inherited from a supertype can generate SQL with a missing join. It works when the member is declared locally ([known issues](../../agent-docs/model/model-validation-and-transformation.md), "Known issues"). Declare such navigation on the subtype, or avoid it, and test derived members that cross the inheritance line.
 
-### InterfaceRegister
-`InterfaceSpecification` as a non-abstract base entity with 6 shared attributes (`id`, `name`, `description`, `linkToTheSpecification`, `specificationDocument`, `directionOfTransmission`). Extended via a 2-level hierarchy: first level `AsynchronCommunication` (extends InterfaceSpecification, no additional attributes), `DBLink`, `Rest` (adds `linkToOpenApiSpecification`, `openApiDocument`), `SOAP` (adds `WSDLDocument`, `linkToWSDLSpecification`). Second level: `Email`, `FileTransfer`, `MessageQueue` all extend `AsynchronCommunication`. This is the deepest generalization hierarchy observed across all projects (3 levels).
+## Rationale
 
-### KozutEugyfelModelTest
-Three parallel generalization hierarchies: **Bejelentes** (base with 5 shared attributes) extended by `JarokeloBejelentes` and `EUgyfelszolgalatBejelentes`. **Esemeny** (abstract event base) extended via intermediate `UgyintezoBeallitas` (abstract, adds `celFelhasznalo`) into `Tovabbitas` and `Letrehozas`, plus direct children `Lezaras` and `Megjegyzes`. **Felhasznalo** (abstract user) with intermediate `FelelosFelhasznalo` (abstract) grouping `SzervezetiEgysegVezeto` and `UgyfelszolgalatiMunkatars`, plus a direct child `SzervezetiEgysegMunkatars`.
+- One definition of the shared fields keeps the entities consistent, and the one place to add a shared field.
+- Polymorphic queries and relations to the base reach all subtypes at once (a feed that points to the base type).
+- Cost: hierarchy rules, all subtypes follow the base contract, and the generated code has the inherited-member pitfall above. The flat model avoids both ([[flat-entity-model]]).
 
-### workflow-poc
-`Action` entity serves as a strategy/plugin base for the workflow engine. It defines a single `actionID` attribute and a `run(input: ActionInput)` instance operation. Three test subtypes extend it: `Action1`, `Action2`, and `InitDocumentWorkflow`, each overriding `run` with specific behavior (e.g., setting context labels). The `actionID` acts as a discriminator for looking up the correct Action implementation at runtime.
+## Example
 
-### AMS-Frontend
-Abstract `Request` base entity with 12 attributes (including 5 derived), 2 mandatory relations, and 3 operations (`approve`, `reject`, `reset`). Extended by `ConfirmationRequest` (adds `approver [1..1]` and derived `campaignStatus` via container navigation) and `AccessRequest` (adds `issuer [1..1]`). Both subtypes inherit the full approval workflow from the base.
+A Task base entity (abstract) holds `created`, `registryNumber`, an `assignedTo` relation to User and a `documents` composition. Offer and JobSheet extend Task; Offer adds a cost, JobSheet a work status. The diagram shows the shape. Source projects used the same idea for workflow tasks (six subtypes), content posts (four subtypes), requests with shared approve and reject operations, credentials per platform, and a two-level interface hierarchy. See [[post-generalization-hierarchy]], [[partner-generalization-hierarchy]], [[credential-generalization-hierarchy]] and [[interface-specification-generalization-hierarchy]]. Names here are neutral.
 
-## Trade-offs
+## When to avoid
 
-- Pros: DRY principle for common infrastructure, consistent audit trail across entities, single place to add shared fields
-- Cons: Inheritance hierarchy adds complexity, all subtypes must conform to base contract, polymorphic queries may be needed
-- Prefer when: Multiple entities share the same workflow infrastructure (timestamps, documents, user assignment)
+- The entities only look similar: keep them flat ([[flat-entity-model]]).
+- Variation is mostly in the UI or per role: use several transfer objects over one entity ([[transfer-generalization]]).
+- Many derived attributes navigate through inherited members, and you cannot test the generated queries.
 
 ## Related
 
-- [[flat-entity-model]] (alternative: no inheritance)
-- [[enum-state-machine]]
+- [[flat-entity-model]] — the alternative without inheritance
+- [[enum-state-machine]] — a shared status on the base
+- [[transfer-generalization]] — transfer objects cannot inherit, so repeat the projections
+- [[post-generalization-hierarchy]] — blueprint: abstract post base
+- [[partner-generalization-hierarchy]] — blueprint: abstract partner base
+- [[credential-generalization-hierarchy]] — blueprint: base with strategy subtypes
+- [[interface-specification-generalization-hierarchy]] — blueprint: two-level hierarchy
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=generalization-base-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Document {
+    <<Entity>>
+    +String fileName
+  }
+  class JobSheet {
+    <<Entity>>
+    +String workStatus
+  }
+  class Offer {
+    <<Entity>>
+    +Integer totalCost
+  }
+  class Task {
+    <<Abstract Entity>>
+    +Timestamp created
+    +String registryNumber
+  }
+  class User {
+    <<Entity>>
+    +String name
+  }
+  Task *-- "*" Document : documents
+  Task --> "0..1" User : assignedTo
+  Task <|-- JobSheet
+  Task <|-- Offer
+```
+<!-- /mermaid:generated -->

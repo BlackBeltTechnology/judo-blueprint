@@ -1,96 +1,78 @@
 ---
 id: initializer-operation
 title: Static Initializer Operation for Data Seeding
-description: A static operation on a singleton entity marked as an initializer runs automatically on application startup.
-aliases: []
-keywords: [static, initializer, operation, data, seeding]
+description: "Declare a static, input-less initializer operation on a dedicated entity that seeds reference data and first accounts, and guard its body so a repeated run does not duplicate rows."
+aliases: [init operation, seed operation, startup seeding]
+keywords: [initializer, static operation, init, seeding, idempotent guard, empty, reference data, JCL]
 tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:actiongroup-test-react", "project:skillmatrix-model", "project:mlszksz-platform", "project:viterra_demo", "project:mjsz", "project:judo-demo-miniworkflow", "project:ams-model", "project:park-here", "project:InterfaceRegister", "project:judo-partner", "project:reserve-app", "status:established"]
 category: operation
 status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, InterfaceRegister, judo-partner, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [singleton-entity, custom-implementation-placeholder]
-fragment: pending
+related: [singleton-entity, custom-implementation-placeholder, init-data-seeding, initializer-entity-with-init-operation]
+fragment: initializer-operation
+diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A static operation on a singleton entity marked as an initializer runs automatically on application startup. It seeds default data (admin users, reference data, sample records) using idempotent checks (e.g., `EntityType!empty()`) to avoid duplicate seeding on subsequent startups.
+A new deployment needs reference data and a first account. Model one initializer operation (or a few small ones) that creates them, and make each run safe to repeat.
 
-## Structure
+## Practice
 
-- Static operation with `initializer=true` on a singleton entity
-- Body checks for existing data before creating: `if (EntityType!empty()) { ... }`
-- Creates default admin/system users, reference data (categories, enums), and optionally sample data
-- May call other instance operations for complex seeding (e.g., `generate()`, `approveAll()`)
+### What the platform defines
 
-## Examples
+- An `INITIALIZER` operation is stored as a `STATIC` operation with the `initializer` flag; it must be static and take no input ([operation reference](../../agent-docs/model/esm_metamodel/operation.md), "INITIALIZER Special Handling" and "Operation naming and shape constraints"). It may sit on an entity or a transfer object, mapped or unmapped.
+- It is `stateful` so it may write: a write in a stateless operation throws `IllegalStateException` ("Statefulness derived from behaviour" in the same reference).
+- The body is a JCL script (`customImplementation = false`, see [JCL](../../agent-docs/model/jcl-operation-scripts.md)) or Java (`customImplementation = true`, see [custom operations](../../agent-docs/backend/custom-operations.md)).
+- The agent-docs do not say that the platform calls an initializer by itself at startup. The older wording "runs automatically on startup" is therefore not a documented guarantee. Verify in your runtime how the call is triggered, or call the operation from your deployment procedure. Backend seeding details: [[init-data-seeding]].
 
-### Trivia
-`Application.init` (static, initializer=true): checks if admin exists, creates default admin (`trivia@blackbelt.hu`). If Application is empty (first run): creates 10 categories, calls `generate()` to create 50+ sample questions, calls `approveAll()` to approve them, creates a default contest.
+### Project practice: where it lives and how it is guarded
 
-### RackInspect
-`Initializer.init` on the `Initializer` entity (a dedicated singleton with a single `initialized` boolean flag, default: true). Separate dedicated entity for initialization rather than using an Application entity.
+- Host: a dedicated entity (`Initializer`, `Application`) kept out of navigation, or an existing singleton entity ([[singleton-entity]]). Placing it on a domain entity also occurs but mixes concerns.
+- Guard: begin with a check so a second run does nothing. Variants seen: `if (Category!empty())`, a count compared with zero, an `!exists(...)` check per record (per-record keys allow adding rows in later releases). The collection functions are JQL functions listed in the [model development guide](../../agent-docs/model/model-development.md).
+- Create rows with `new Type(...)` that lists all required attributes and relations; attach children with `+=` on a reference set.
+- Several small initializers (users, vendors, categories) read better than one large one.
+- Large or conditional seeds: leave the body to a Java implementation ([[custom-implementation-placeholder]]).
+- Do not read the actor: no user is signed in during seeding.
 
-### itracker
-`Application.init` (static, initializer=true): seeds 3 SRTCategories ("SRT-MRO/SER", "SRT-Labor", "Non-SRT"), 2 Regions ("Europe", "US"), and 3 Users (1 finance, 2 regular). No idempotency guard -- creates unconditionally. Creates User instances via actor-level transfer type (`itracker::actors::user::User`) rather than entity type directly.
+## Rationale
 
-### SkillMatrix
-`User.initializer` (static): seeds SkillLevels (JUNIOR/MEDIOR/SENIOR/EXPERT with scores 1-4), Countries (HU), Competences (Java 8/9/11, Python, Oracle, MySQL), Tags (Java, Database, Programming), Units (R&D, PDU, SDU), a default admin, an HR employee, and 7 professional users with pre-assigned skills.
+- Seed data is versioned with the model, so every environment starts equal.
+- The guard makes the operation safe to call at each start.
+- Cost: sample data in the model can leak into production; separate demo seeding from reference data.
 
-### ActionGroupTest
-`Galaxy.init` is a STATIC operation on the Galaxy entity, serving as the sole initializer. Unlike other projects that use a dedicated Application or singleton entity, here the initializer is placed directly on a domain entity. No input or output parameters.
+## Example
 
-### SkillMatrix-Model
-Model source confirms `User.initializer` as STATIC with `initializer="true"`. Seeds comprehensive test data including entity-as-enum instances (`SkillLevel` with name/score pairs), reference data (`Country`, `Competence`, `Tag`, `Unit`), and multiple user accounts with pre-assigned role flags and skills. Also has `createTestData` as a custom-implemented STATIC operation for additional test data generation.
+An Initializer entity has the static operation `init` (initializer, stateful, no input). Its body creates the default Category rows only when no Category exists yet. The diagram shows the entity and the operation. Projects seeded users with role flags, categories, regions, competence catalogs, or whole demo data sets (seasons, clubs, matches); several used a custom Java body instead of a script. Names here are neutral.
 
-### MLSZKSZPlatform
-`Initializer.init` on a dedicated `Initializer` entity (static operation, custom implementation). The Initializer entity has a `createdAt: Timestamp` attribute to track initialization time. Implementation is fully custom (body deferred to backend Java), consistent with the project's pattern of using custom implementations for complex operations. The `Initializer` entity follows the same dedicated-singleton pattern as RackInspect.
+## When to avoid
 
-### Viterra Demo
-`Application.init()` (static, initializer=true, `customImplementation=false`): creates comprehensive demo data -- 7 Commodities, 4 Silos, 4 Periods, 2 Clients, and 4 Reports with attached Stocks. Uses inline JQL body (not custom Java). Seeds reports in various workflow states (PENDING, SUBMITTED) with stock data showing quantity variances for demonstration purposes.
-
-### KozutEugyfelClient
-`init()` operation present on the model, providing application initialization. The `szinkronizal()` (synchronize) and `getLezartNemSzinkronizaltEsemenyek()` (get closed unsynchronized events) operations serve as scheduled/batch initialization and synchronization hooks for external system integration.
-
-### MJSZ
-`Application.init` (static, initializer=true, stateful=true, `customImplementation=false`): uses `Season!empty()` guard for idempotency. Seeds 2 Seasons, 2 Tournaments, 17 Clubs (real Hungarian ice hockey names), 20 Teams, 5 Venues, and 14 Matches with scores. Teams are created and added to clubs via `club.teams += team`. One of the most comprehensive inline initializers across projects.
-
-### judo-demo-miniworkflow
-`User.initUsers` (static, initializer=true): uses `!exists()` guard to check before creating default users. Seeds 2 users: `admin@example.org` (admin + approver) and `user@example.org` (approver, not admin). Uses `if (not GenericUser!exists(d | d.email == "..."))` for per-record idempotency rather than global `!empty()` check.
-
-### AMS-Model
-`User.init` (static, initializer=true): uses `Admin!count() > 0` guard for idempotency. Seeds 1 Admin, 5 Applications (CM, PLM, SAP, PTIC, VITRIN), 4 Users with manager hierarchy, 2 Campaigns with date ranges and OPEN status, and 15 ConfirmationRequests with real-world role data. Confirmation requests are added to campaigns via `campaign.confirmationRequests += new ConfirmationRequest(...)`. Also `Campaign.load` (instance operation) seeds additional confirmation requests referencing existing entities via `!filter(!any()` lookups.
-
-### ParkHere
-`Initializer.init` on a dedicated `Initializer` entity (static operation, `initializer=true`, custom implementation). The Initializer entity has no attributes -- it serves purely as a hook for the `init` operation. Body comment is `// SDK`, indicating implementation is deferred to custom backend Java code for initial data seeding (admin user, default configuration, etc.).
-
-### InterfaceRegister
-Multiple initializer operations on a dedicated `Initializer` entity: `initUsers` (seeds 2 users with role flags, guarded by `User!count() == 0`), `initVendors` (seeds 2 vendors, guarded by `Vendor!count() == 0`), `initBrands` (seeds 2 brands, guarded by `Brand!count() == 0`), `initBusinessDataTypes` (seeds 2 data types, guarded by `BusinessDataType!count() == 0`). All use `!count() == 0` idempotency. Unique in splitting initialization across 4 separate initializer operations rather than one monolithic `init`.
-
-### judo-partner
-`Application.init` on a dedicated `Application` entity (no attributes). Serves as the application initialization hook. The model also includes `NAVConfig.clearCache` as an operational singleton pattern for managing NAV API cache state.
-
-### KozutEugyfelModelTest
-`Inicializalo.init()` (static, initializer=true) on a dedicated `Inicializalo` entity. Seeds 6 test users (2 UgyfelszolgalatiMunkatars, 2 SzervezetiEgysegVezeto, 2 SzervezetiEgysegMunkatars), 2 BejelentesTipus reference data records (JAROKELO, ALTALANOS), then triggers `JarokeloBejelentes.szinkronizal()` for external data sync.
-
-### ReserveApp
-`User.init` (static, initializer=true, stateful=true): seeds 5 test users across all roles -- `norbert.herczeg@blackbelt.hu` (ADMIN), `logistician@bb.hu` (LOGISTICIAN), `partner@bb.hu` (PARTNER), `doorman@bb.hu` (DOORMAN), `readonly@bb.hu` (READ_ONLY). Demonstrates one-user-per-role seeding for development/testing.
-
-### AMS-Frontend
-`User.init` (static, initializer=true) with `Admin!count() > 0` idempotency guard. Seeds admin, 5 applications (CM, PLM, SAP, PTIC, VITRIN), 4 users with a manager-subordinate hierarchy, and 2 campaigns with 15 confirmation requests. `Campaign.load` instance operation provides additional seeding for demo data.
-
-## Trade-offs
-
-- Pros: Automatic data seeding on first run, idempotent, no manual setup needed
-- Cons: Initializer logic can become complex, sample data may need cleanup in production
-- Prefer when: Application needs reference data or default configuration on first startup
+- The data set is large or file-driven: import it instead (see [[init-data-seeding]]).
+- Data must be changed on running systems: use versioned migration steps, not a repeated seed.
+- Test data in production: keep it in a separate operation that is not called there.
 
 ## Related
 
-- [[singleton-entity]]
-- [[custom-implementation-placeholder]]
+- [[singleton-entity]] — dedicated host entity
+- [[custom-implementation-placeholder]] — Java body for complex seeding
+- [[init-data-seeding]] — backend side: DAOs, guards, runtime
+- [[initializer-entity-with-init-operation]] — the blueprint for the host entity
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=initializer-operation cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Category {
+    <<Entity>>
+    +String name
+  }
+  class Initializer {
+    <<Entity>>
+    +init()
+  }
+```
+<!-- /mermaid:generated -->

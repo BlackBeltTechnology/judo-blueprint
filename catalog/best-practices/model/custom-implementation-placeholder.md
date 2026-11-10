@@ -10,70 +10,66 @@ status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, park-here, indamedia-adtrack, judo-partner, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-related: [singleton-entity]
-fragment: pending
+fragment: custom-implementation-placeholder
+diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Operations that require complex business logic beyond JQL capabilities are defined in the model with empty or comment-only bodies (`// no code`, `// no op`, `// sdk`). These serve as placeholders that declare the operation signature (input, output, faults) in the model while deferring implementation to custom backend Java code.
+Declare an operation in the model with its full signature (input, output, faults) and mark it as custom-implemented when its logic goes beyond what an operation script can express; the behaviour then lives in backend Java.
 
-## Structure
+## Practice
 
-- Operation is defined on entity or transfer with full signature (input type, output type, fault type)
-- Body contains only a comment: `// no code` or `// no op` or `// sdk`
-- Backend Java implementation is provided in a custom OSGi component
-- The `.generator-ignore` file typically includes the custom implementation files
+- The operation carries `customImplementation = true`. With `false` the body is a JCL script, validated at design time; with `true` the operation switches to Java and the script is skipped by validation ([operation.md](../../agent-docs/model/esm_metamodel/operation.md), *Operation bodies (JCL) and validation*).
+- Declare every fault the Java code may throw in the model; without the declaration the generated interface has no `throws` clause and the build fails ([custom operations](../../agent-docs/backend/custom-operations.md), *Rules for Custom Operations*).
+- The generator emits a `.java.default` stub per operation (it throws `UnsupportedOperationException`). Never edit it: create the implementation file next to it and list the stub in `.generator-ignore` ([custom operations](../../agent-docs/backend/custom-operations.md), *Understanding Generated Default Implementations*).
+- Interceptors and write guards do not fire for custom operations, so put permission checks inside the implementation ([interceptors](../../agent-docs/backend/interceptors.md)).
+- Some projects additionally leave a comment-only body (`// no code`, `// sdk`) on such operations. That is a project habit for readers; the flag, not the comment, decides what runs.
 
-Common scenarios requiring custom implementation:
-- Complex scoring/evaluation logic
-- External system integration (JSON parsing, email)
-- Multi-step business workflows
-- Authentication/activation flows
-- Document generation (PDF templates, Excel export)
-- Status transition workflows with side effects
+## Rationale
 
-## Examples
+The model stays the single contract: the generated SDK, REST endpoint and page action exist for the operation, while only the behaviour is hand-written. Typical reasons: scoring or evaluation logic, external system calls, document or spreadsheet generation, multi-step workflows with side effects, registration and activation flows.
 
-### Trivia
-Six operations use placeholders: `Test.submit` (scoring logic), `Test.exclude` (admin exclusion), `admin::Question.upload/download` (JSON import/export), `player::Application.register` (user registration), and `player::Application.activate` (code-based activation).
+The cost is the gap between model and code: a placeholder with an empty body can be mistaken for a finished operation, and the generated header can remain on a file that is already implemented, so compare with the `.default` sibling rather than trusting the header.
 
-### RackInspect
-`.generator-ignore` reveals 12+ custom implementations including: `GenerateJobTask`, `GenerateWorkReport`, `GenerateCompletionCertificate`, `GenerateAssessmentSheetPreview`, `GenerateReviewReportPreview`, `StatusToDone/InProgress/WontFix/WontStart` (job sheet item status transitions), `GetRackOperation`, `GetElementFaultOperation`.
+## Example
 
-### SkillMatrix
-`report::Result.createExcel` is a custom implementation placeholder for Excel report generation (noted as "implemented by Robi"). `admin::User.createTestData` is a STATIC custom implementation for generating test data. Both operations define their signature in the model but defer logic to backend code.
+`Order` has an instance operation `pay`, flagged as custom-implemented, with input `PayInput`, output `PayResult` and fault `PaymentFault`. The model shows only the signature; the payment logic is in a backend implementation class that implements the generated `pay` interface (project code, not platform).
 
-### Alba
-8 custom-implementation operations: `Product.approveVersion()`, `Product.finalize()`, `Product.revokeApproval()`, `Product.assignApproval()` (workflow state transitions with event creation), `User.finalizeProfile()` (profile validation and activation), `Task.closeTask()` (task completion with product state effects), plus static `createProduct` and `finalizeAccount` on service transfers. All have empty bodies requiring backend Java implementation.
+Seen in eight projects: many custom operations in integration-heavy ones (external API sync, email), a handful in others.
 
-### MLSZKSZPlatform
-10 custom operations covering workflow, integration, and admin functions: `Initializer.init` (data seeding), `AdminDashboard.createAnnouncement/createOrganization/syncFeed/inviteBulk/exportAuditLog` (complex admin workflows), `AdminConfigurationTO.updateConfiguration` (platform settings), `FeedPanel.requestPost` (feed interaction), `RegistrationTransfer.registration/validate/verifyUserInvitation/lookupPostalCode` (multi-step registration with email verification). The `.generator-ignore` lists 44 `*CustomImplementation.java.default` files, showing extensive custom backend work.
+## When to avoid
 
-### ParkHere
-All 20+ operations use `customImplementation=true` with `// sdk` or empty body comments. Key operations include: `favoriteCar`, `deleteCar` (car management), `reservation`, `modificateReservation`, `deleteReservation`, `cancelReservation` (reservation lifecycle), `holiday`, `deleteHoliday`, `queryReservationsForHoliday` (holiday management), `configuration`, `createDoorman`, `createDay` (admin configuration). All use `BusinessError` fault type for consistent error handling.
-
-### IndamediaAdTrack
-All 17 operations use `customImplementation=true` for external platform API integration. Operations span 4 domains: client management (`createClient`, `updateClient`, `newAccount`, `createAggregatedCampaign`), campaign tracking (`updateCampaign`, `syncData`, `syncCosts`, `syncCostByDate`, `untrack`), account management (`setGoogleCredential`, `testConnection`, `fetchAvailableCampaigns`, `updateAccount`), and aggregated campaigns (`createTrackedCampaign`, `updateAggregatedCampaign`, `syncData`, `deleteAggregatedCampaign`). All use `BusinessError` fault type.
-
-### judo-partner
-Multiple operations require custom implementations for external system integration and complex logic: `Partner.queryTaxpayer` (NAV tax authority API integration), `Partner.validate`/`Partner.validateTaxNumber` (tax number validation logic), `NAVConfig.clearCache` (API cache management), `Taxpayer.updatePartner`/`TaxpayerAddress.addToPartner` (staging-to-domain data transformation), `Import.validateAll`/`Import.migrateAll` (bulk partner import orchestration), `Country.importCountries`/`Import.partnerImport` (JSON bulk import parsing).
-
-### KozutEugyfelModelTest
-Three custom operations for external integration: `JarokeloBejelentes.szinkronizal()` (static, synchronizes from external pavement system), `Esemeny.emailKuldes(EmailKuldesInput)` (single-recipient email sending), `Esemeny.emailKuldesTobbCimzett(EmailKuldesTobbCimzettInput)` (multi-recipient email sending). All are static operations with `customImplementation=true`.
-
-### workflow-poc
-Several operations use placeholder bodies for custom or deferred implementation: `Token.trigger` (`// TODO` body, workflow event processing), `Context.createContext` (`// NOOP` body, context creation), `Workflow.upload` (`// Java` body, YAML parsing and workflow definition validation with `DeclarationError` fault). The `Action.run` base operation has `// NOOP` body, with concrete subtypes providing actual implementations.
-
-## Trade-offs
-
-- Pros: Model declares the full API contract, generated code provides scaffolding, custom logic is isolated
-- Cons: Disconnect between model and implementation, empty bodies may be missed during review
-- Prefer when: Business logic is too complex for JQL expressions or requires external integrations
+- When the logic fits a JCL script: keep it in the model so it is validated at design time.
+- When the work is only a read or filter: model it as a derived member or access getter.
+- Bulk empty placeholders that nobody schedules: they ship as operations that fail at runtime.
 
 ## Related
 
-- [[singleton-entity]]
+- [[singleton-entity]] — settings and configuration entities often carry such operations
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=custom-implementation-placeholder cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Order {
+    <<Entity>>
+    +Integer total
+    +pay(PayInput) PayResult
+  }
+  class PayInput {
+    <<Transfer>>
+    +String cardToken
+  }
+  class PayResult {
+    <<Transfer>>
+    +String reference
+  }
+  class PaymentFault {
+    <<Transfer>>
+    +String code
+  }
+```
+<!-- /mermaid:generated -->

@@ -1,81 +1,92 @@
 ---
 id: mapped-operation-delegation
 title: Mapped Operation Delegation Pattern
-description: Transfer-level operations use the MAPPED type to delegate to their corresponding entity-level operations.
-aliases: []
-keywords: [mapped, operation, delegation]
+description: "Put the business logic in an entity operation and expose it to each actor through a MAPPED operation on that actor's transfer object, which binds to the entity operation by name."
+aliases: [bound operation, operation binding, entity operation exposure]
+keywords: [MAPPED operation, binding, entity operation, transfer object, delegation, actor, input, output, interceptor]
 tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "project:itracker", "project:alba", "project:skillmatrix-model", "project:viterra_demo", "project:judo-demo-miniworkflow", "project:ams-model", "project:workflow-poc", "status:established"]
 category: operation
 status: established
 projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-related: [actor-based-transfer-projection, custom-implementation-placeholder]
-fragment: pending
+related: [actor-based-transfer-projection, custom-implementation-placeholder, toggle-operation-pattern, guard-clause-delete]
+fragment: mapped-operation-delegation
+diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Transfer-level operations use the MAPPED type to delegate to their corresponding entity-level operations. This creates a clean separation where the entity defines the business logic and the transfer layer defines the API contract visible to each actor, potentially with actor-specific input/output types.
+Business logic belongs on the entity. Each actor still needs its own API surface. Define the operation once on the entity, and expose it on the actor's transfer object as a MAPPED operation that binds to it.
 
-## Structure
+## Practice
 
-- Entity defines INSTANCE operations with business logic
-- Transfer object defines MAPPED operations that bind to entity operations
-- MAPPED operations may use different (actor-specific) input/output transfer types
-- Static operations on transfers may have their own bodies or be custom-implemented
+### Entity operation plus MAPPED operation on the transfer object
 
-## Examples
+- The entity holds an `INSTANCE` operation with the logic (a JCL body, or a custom Java implementation; see [JCL](../../agent-docs/model/jcl-operation-scripts.md) and [[custom-implementation-placeholder]]).
+- A transfer object that maps the entity gets an operation of type `MAPPED`. Its `binding` is the name of the entity operation; candidates are the compatible operations of the mapped entity ([operation reference](../../agent-docs/model/esm_metamodel/operation.md), "Mapped Operation Rules"). `MAPPED` is only available on a mapped transfer object, never on an entity and never on an unmapped transfer object.
+- The mapped operation has no body of its own. It is the entry point for the actor, the entity operation does the work.
 
-### Trivia
-`admin::Question.approve` (MAPPED) delegates to `Question.approve` (INSTANCE). `player::Contest.enter` (MAPPED) delegates to `Contest.enter` with actor-specific types: input `RegisterInput`, output `player::Test`, fault `player::Error`. 11 MAPPED operations total across admin and player actors.
+### One entity operation, several transfer objects
 
-### RackInspect
-116 service-level transfer operations delegate to 40 entity-level operations. Toggle operations like `toggleActive`, `togglePrimary` on service TOs map to entity-level toggles. Complex operations like `generateAssessmentSheet`, `generateOffer` are exposed through `fault_registry_services::FaultRegistry` transfer.
+Each actor sees its own transfer object ([[actor-based-transfer-projection]]). Expose the same entity operation on several transfer objects, and expose it only on the transfer objects of the actors who may call it. An operation missing from an actor's transfer object is not part of that actor's modelled API (the agent-docs do not describe other ways to reach it). The binding name may differ from the transfer operation name (a rename on the transfer side was seen in practice).
 
-### itracker
-4 MAPPED operations on `user::Initiative`: `archiveForecast`, `sendForApproval`, `approve`, `reject` -- all delegate to corresponding entity-level operations with empty transfer-level bodies. Additionally, `createInitiative` is a STATIC operation with its own body (not MAPPED), constructing entities and pre-populating 12 monthly forecasts.
+### Input, output and faults
 
-### SkillMatrix
-9+ MAPPED operations across 3 actors: `Subordinate.approveAllSkills` -> `User.approveAllSkills`, `Skill.approve` -> `Skill.approve`, `TrainingPlan.close/open` -> `TrainingPlan.close/open`, `ReportDefinition.run` -> `Definition.run`. The same entity operation (e.g., `User.approveAllSkills`) is exposed to different actors through different transfer objects.
+Input, output and faults are parameters of the operation and are typed by transfer objects, so a mapped operation can use actor-specific types. Keep the signature compatible with the bound entity operation, or the mapping is invalid (the editor marks an invalid mapping). A custom implementation that throws a business fault must declare it in `faults` ([error handling](../../agent-docs/backend/error-handling-guide.md), "Modeled Faults").
 
-### Alba
-15 service-level operations delegate to 9 entity operations. Same operation exposed to multiple roles: `Product.approveVersion()` mapped via `AdminProduct.approveVersion()`, `ApproverProduct.approveVersion()`, and `AuthorProduct.approve()` (renamed). `Task.closeTask()` mapped via both `AuthorTask.closeTask()` and `ApproverTask.closeTask()`. `Task.activate/deactivate()` mapped only to `AdminTask` (admin-restricted).
+### Statefulness and protection
 
-### SkillMatrix-Model
-Model source confirms MAPPED operations including `deleteUser` (binding="deleteUser"), plus custom-implemented STATIC operations like `createTestData` (`customImplementation="true"`). Entity operations `approve`, `approveAllSkills`, `approveAllSubordinatesSkills`, `createTrainingPlan`, `completeAllTargets` all have corresponding MAPPED transfers across actor packages.
+A writing operation must be `stateful`; the DAO rejects writes in a stateless one ([operation reference](../../agent-docs/model/esm_metamodel/operation.md), "Statefulness derived from behaviour"). Interceptors do not fire for MAPPED, custom or script operations ([interceptors](../../agent-docs/backend/interceptors.md), "Which Operations Are Intercepted"; [custom operations](../../agent-docs/backend/custom-operations.md)). Check permissions and state inside the entity operation, and do not treat a hidden button as protection.
 
-### Viterra Demo
-3 MAPPED operations delegate to 3 entity operations: `ReportTransfer.accept()` -> `Report.accept()`, `ReportTransfer.review()` -> `Report.review()` (both admin), `PartnerOpenReportTransfer.submit()` -> `Report.submit()` (partner). The submit operation returns `PartnerClosedReportTransfer` enabling automatic UI navigation from open to closed report view after state change.
+### Static operations are different
 
-### KozutEugyfelClient
-13 entity operations on `Bejelentes` delegate to transfer-level operations: `tovabbitas` (forward), `lezaras` (close), `megnyitas` (reopen), `megjegyzes` (comment), `hozzaadResztvevo` (add participant), `leiratkozas` (unsubscribe). Input DTOs like `Tovabbitas`, `Lezaras`, `Megjegyzes` wrap operation-specific parameters. The `Ertesites.elolvas` (mark-as-read) maps a simple parameterless entity operation.
+A static operation lives on the transfer object or entity itself and has its own body or custom implementation. It does not delegate.
 
-### judo-demo-miniworkflow
-4 MAPPED operations on `DocumentTransfer` delegate to `Document` entity operations: `accept`, `close`, `reject`, `requestReview`. All take `Message` as input (a transient DTO with optional message text). The mapped operations have empty bodies -- all business logic (creating `DocumentHistoryEntry`, resolving current user, setting state) lives in the entity operations.
+## Rationale
 
-### AMS-Model
-6 MAPPED operations on manager transfer objects: `manager::Request.approve` and `manager::Request.reject` delegate to `Request.approve()` / `Request.reject()` entity operations (which set `status` and `decisionTime`). `manager::Campaign.open` / `manager::Campaign.close` delegate to `Campaign.open()` / `Campaign.close()` (toggle CampaignStatus). `User.approveAll` iterates `this.approvals!filter(r | r.status == Status#PENDING)` and calls `request.approve()` on each.
+- The logic exists once and every actor-specific API reuses it ([[toggle-operation-pattern]], [[guard-clause-delete]] are entity operations exposed this way).
+- Actors receive tailored signatures without duplicating code.
+- Cost: an extra declaration per transfer object, and the signatures must be kept in sync.
+- The generated UI shows MAPPED operations as buttons on the view page or table rows ([screen layout](../../agent-docs/frontend/model-screen-layout.md), "Operation Types").
 
-### KozutEugyfelModelTest
-Each actor's `IntezendoBejelentes` TO exposes 3 MAPPED operations delegating to `Bejelentes` entity operations: `lezaras` (close complaint), `megjegyzes` (add comment), `tovabbitas` (forward complaint). All three actors share the same operation mappings, providing identical functionality through actor-scoped transfer objects with shared input DTOs from `KozosTransferObjectek`.
+## Example
 
-### workflow-poc
-9 MAPPED operations on transfer objects delegate to entity operations: `TaskList.startWorkflow` -> `User.startWorkflow`, `Task.checkout/release/assign/execute/navigate` -> `Token.checkout/release/assign/execute/navigate`, `admin::Workflow.upload` -> `Workflow.upload`, `admin::WorkflowVersion.commit` -> `WorkflowVersion.commit`. The `upload` operation also exposes a fault type `DeclarationError` for invalid workflow definitions.
+A Document entity has an instance operation `accept` with a Message input. The AdminDocument transfer object maps Document and declares a MAPPED operation `accept` bound to the entity operation with the same Message input. A second actor's transfer object could map the same operation or leave it out. Source projects used this for approve and reject operations, state toggles, and workflow transitions, with some operations exposed to several roles. Names are neutral.
 
-### AMS-Frontend
-6 MAPPED operations: `manager::Request.approve/reject` delegate to `Request.approve()/reject()` (set status + decisionTime), `admin::Campaign.open/close/load` delegate to `Campaign.open()/close()/load()`, and `manager::ManagerApprovalList.approveAll` delegates to `User.approveAll()` (iterates pending approvals).
+## When to avoid
 
-## Trade-offs
-
-- Pros: Business logic centralized on entities, actors get tailored API signatures, clean layering
-- Cons: Additional indirection layer, must keep entity and transfer operation signatures in sync
-- Prefer when: Always for operations that have entity-level implementations -- this is the standard delegation pattern
+- The logic is only reachable from one actor and no entity-level reuse is needed: a static operation on the transfer object is simpler.
+- Unmapped transfer objects: they cannot hold MAPPED operations.
+- The entity operation has no implementation yet and only the transfer is wanted: model it as a [[custom-implementation-placeholder]].
 
 ## Related
 
-- [[actor-based-transfer-projection]]
-- [[custom-implementation-placeholder]]
+- [[actor-based-transfer-projection]] — one transfer object per actor role
+- [[custom-implementation-placeholder]] — Java body of the entity operation
+- [[toggle-operation-pattern]] — a typical entity operation exposed this way
+- [[guard-clause-delete]] — guarded delete exposed through a mapped operation
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=mapped-operation-delegation cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AdminDocument {
+    <<Transfer>>
+    +String title
+    +accept(Message)
+  }
+  class Document {
+    <<Entity>>
+    +String title
+    +accept(Message)
+  }
+  class Message {
+    <<Transfer>>
+    +String text
+  }
+  AdminDocument ..> Document : maps
+```
+<!-- /mermaid:generated -->

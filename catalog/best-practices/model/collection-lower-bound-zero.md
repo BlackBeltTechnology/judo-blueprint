@@ -10,98 +10,63 @@ status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-related: [composition-ownership]
-fragment: pending
+fragment: collection-lower-bound-zero
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-All collection relations (multi-valued) in JUDO models use `0` as their lower bound, resulting in cardinality `0..*`. The cardinality `1..*` (required collection) is not used. This is a best practice because entities are created before their relations are populated, so requiring at least one element at creation time would cause validation failures.
+Declare every collection relation with lower bound `0` (cardinality `0..*`) and keep "at least one" rules out of the model structure. The metamodel itself allows `1..*`; avoiding it is a project practice.
 
-## Structure
+## Practice
 
-- All multi-valued relations use cardinality `0..*`
-- Single-valued required relations use `1..1`
-- Single-valued optional relations use `0..1`
-- The `1..*` cardinality is avoided
+- Multi-valued relations use lower `0`, upper `-1`: `0..*`.
+- A single-valued relation that must always point somewhere is `1..1`; an optional one is `0..1`.
+- An actor access of type `ALL` is fixed to `0..*` by the platform, so unfiltered lists follow the same rule for free (see [accesspoint](../../agent-docs/model/esm_metamodel/accesspoint.md)).
+- A rule such as "an order needs at least one line" is checked in an operation (or a project-level validation), not by the cardinality.
 
-## Examples
+## Rationale
 
-### Trivia
-All 12+ collection relations use `0..*`: `User.tests`, `Contest.fixedQuestions`, `Contest.tests`, `Contest.categories`, `Contest.questions`, `Category.questions`, `Test.prompts`, `Upload.questions`, plus all access points. No `1..*` cardinality appears anywhere in the model.
+The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats `lower = 1` as a required relation with a required indicator ([ESM to UI mappings](../../agent-docs/frontend/esm-to-ui-mappings/README.md)). A required collection therefore forces the parent to be created together with at least one child, which breaks the usual create-then-add flow of a form and of generated create operations. Keeping `0` lets the parent exist first and the children be added afterwards (for example in a composition, see [[composition-ownership]]). The cost is that the model cannot state "non-empty"; the check moves into code.
 
-### RackInspect
-Across 72 entities with dozens of collection relations, all use `0..*`: `Partner.addresses`, `Partner.bankAccounts`, `FaultRegistry.faultHeaders`, `Offer.offerItems`, `Configuration.minimumOfferPrices`, `Rack.groups`, `User.roles`, etc. No `1..*` cardinality exists despite complex hierarchical data.
+This is project practice layered on the platform: the platform accepts `1..*`, the catalog's projects consistently do not use it.
 
-### itracker
-All collection relations use `0..*`: `Initiative.forecastVersions`, `Initiative.monthlyForecasts`, `ForecastVersion.monthlyForecasts`, `User.initiatives`. No `1..*` cardinality despite monthly forecasts being logically required for an initiative.
+## Example
 
-### SkillMatrix
-All collection relations across 21 entities use `0..*`: `User.skills`, `User.managedUnits`, `User.languageSkills`, `User.trainingPlans`, `Competence.skills`, `Competence.tags`, `TrainingPlan.skillTargets`, `TrainingPlan.notes`. Required single relations use `1..1` (e.g., `Skill.competence`, `SkillTarget.skillLevel`).
+An `Order` owns its `lines` as a composition with cardinality `0..*`. Its `customer` is a required single relation (`1..1`) and its `approver` an optional one (`0..1`). The inverse `Customer.orders` is again `0..*`. No relation uses `1..*`.
 
-### ActionGroupTest
-All 13 relations use `0..*` for collections: `God.galaxies`, `God.creatures`, `God.matter`, `Galaxy.stars`, `Galaxy.matter`, `Planet.creatures`, `Sign.creatures`, `CreatureTemplate.signs`. Single relations (God.earth, Galaxy.astronomer, Creature.planet) use `0..1`. No `1..*` cardinality found.
+Seen in 18 projects, none of which declares a collection with a lower bound above zero.
 
-### Alba
-All collection relations use `0..*`: `Product.audience`, `Product.curriculum`, `Product.resultTypes`, `Product.attachments`, `Product.events`, `User.products`, `User.tasks`, `Institution.teachers`. Single required relations use `1..1` (e.g., `ProductVersion.origin`, `Task.createdBy`, `Task.assignee`).
+## When to avoid
 
-### SkillMatrix-Model
-69 collection relations confirmed with `lower="0" upper="-1"` in the model source; zero instances of `lower="1" upper="-1"`. Collections span all domains: `User.skills [0..*]`, `Competence.skillTargets [0..*]`, `Definition.results [0..*]`, `Search.results [0..*]`. Required single relations (`1..1`) used for `Skill.competence`, `SkillTarget.competence`, `SkillTarget.skillLevel`.
-
-### MLSZKSZPlatform
-All collection relations use `0..*`: `Announcement.documents [0..*]`, `Invitation.recipients [0..*]`. Optional single relations use `0..1`: `Organization.address [0..1]`, `FeedEntry.post [0..1]`, `AuditLog.user [0..1]`. Required singles use `1..1`: `User.organization`, `City.region`, `Device.user`.
-
-### Viterra Demo
-All collection relations use `0..*`: `Period.reports [0..*]`, `Client.reports [0..*]`, `Report.stocks [0..*]` (composition). Required single relations use `1..1`: `Report.client`, `Report.period`, `Stock.silo`, `Stock.commodity`. The research explicitly calls out these `lower="0"` collections as a notable pattern.
-
-### KozutEugyfelClient
-All collection relations use `0..*`: `Bejelentes.kepek` (images, composition), `Bejelentes.resztvevok` (participants, two-way), `Bejelentes.esemenyek` (events, two-way). The research explicitly confirms these collections follow the standard 0 lower bound pattern.
-
-### MJSZ
-All 11 collection relations use `0..*`: `Player.licenses`, `Player.teams`, `Player.transfers`, `Season.tournaments`, `Tournament.teams`, `Tournament.matches`, `Club.players`, `Club.teams`, `Team.players`, `Team.homeMatches`, `Team.visitorMatches`. No `1..*` cardinality despite teams logically needing players.
-
-### judo-demo-miniworkflow
-All 5 collection relations use `0..*`: `Document.files`, `Document.documentHistoryEntries`, `User.documents`, `DocumentTransfer.files`, `DocumentTransfer.documentHistoryEntries`. Documents can exist without files, and the initial history entry is created atomically in the `createDocument` factory operation. The `+=` operator is used to append to these collections in workflow operations.
-
-### AMS-Model
-All collection relations use `0..*`: `Application.requests [0..*]`, `User.requests [0..*]`, `User.subordinates [0..*]`, `User.applications [0..*]`, `User.approvals [0..*]`, `User.issues [0..*]`, `Campaign.confirmationRequests [0..*]` (composition), `Campaign.applications [0..*]`. Required single relations use `1..1`: `Request.application`, `Request.user`, `ConfirmationRequest.approver`, `AccessRequest.issuer`.
-
-### Sanctuary Backend
-All collection relations use `0..*`: `User.roles [0..*]`, `User.roleGroups [0..*]`, `User.effectiveRoles [0..*]`, `Role.users [0..*]`, `RoleGroup.roles [0..*]`, `RoleGroup.users [0..*]`. Single relations use `0..1`: `User.privacySettings`, `User.settings`, `User.positionTitle`. No mandatory relations exist in the model.
-
-### ParkHere
-All collection relations use `0..*`: `User.cars`, `User.reservations`, `User.holidays`, `ParkingGarage.parkingSlots`, `ParkingGarage.accessedUsers`, `ParkingSlot.reservations`, `Configuration.doormans`, `Configuration.additionalDays`, `Doorman.assignedGarages`. Required single relations use `1..1` (Reservation.owner, ParkingSlot.parkingGarage). Research explicitly notes this as standard JUDO pattern.
-
-### IndamediaAdTrack
-All 8 collection relations use `0..*`: `Client.accounts`, `Client.aggregatedCampaigns`, `Account.trackedCampaigns`, `Account.availableCampaings`, `TrackedCampaign.costs`, `TrackedCampaign.fetchedData`, `AggregatedCampaign.trackedCampaigns`, `AggregatedCampaign.history`. Required singles use `1..1` for parent references (e.g., `Cost.trackedCampaign`, `Account.client`).
-
-### InterfaceRegister
-All 7 entity-level collection relations use `0..*`: `Email.tos/ccs/bccs -> EmailRecipient` (composition), `HighLevelConnection.businessDataTypes/brands` (association), `Server.ipv4Addresses/ipv6Addresses` (composition). Transfer-level collections also use `0..*`: `CreateHighLevelConnectionInput.businessDataTypes`, `CreateHighLevelConnectionInput.brands`.
-
-### judo-partner
-All 13 collection relations use `0..*` across both partner and registry domains: `Partner.addresses`, `Partner.contacts`, `Partner.participants` (TWO-WAY), `Taxpayer.addresses`, `ImportPartner.addresses`, `Import.partners`, `Case.records`, `Case.participants`, `Register.records`, `Register.documentTypes`, `DocumentType.attributeTypes`, `Record.versions`, `RecordVersion.attributes`. Required single relations use `1..1` (e.g., `PartnerLog.partner`, `Record.register`).
-
-### KozutEugyfelModelTest
-All 10+ collection relations use `0..*` across entities and transfers: `Bejelentes.kepek [0..*]` (composition), `Bejelentes.esemenyek [0..*]`, `Felhasznalo.esemenyek [0..*]`, `Felhasznalo.intezendok [0..*]`, `Megjegyzes.ertesitesiLista [0..*]`, plus all actor access points and transfer-level collections like `MegjegyzesInput.ertesitendok [0..*]`.
-
-### workflow-poc
-All 20+ collection relations use `0..*`: `WorkflowVersion.states`, `WorkflowVersion.events`, `WorkflowVersion.observers`, `State.transitions`, `State.incomingTransitions`, `Transition.guards`, `Transition.nextStates`, `Role.users`, `Role.transitions`, `User.roles`, `User.contexts`, `Context.attributes`, `Context.tokens`, `Context.assignables`, `Context.logs`, `ContextType.workflows`, `Workflow.versions`. Required singles use `1..1` only for `Token.context`, `WorkflowVersion.workflow`, `Context.workflow`, `Context.type`.
-
-### ReserveApp
-All collection relations across 15 entities use `0..*`: `FreightReservation.attachments`, `FreightReservation.items`, `Gate.freightReservations`, `Partner.freightReservations`, `Partner.contacts`, `Project.users`, `Project.spots`, `Project.freightReservations`, `Spot.projects`, `Spot.freightReservations`, `Company.contacts`, `User.projects`. Transfer-level collections also follow the pattern: `ManagedUser.projects [0..*]`, `Partner.contacts [0..*]`.
-
-### AMS-Frontend
-Same model as AMS-Model (frontend project shares the model). All 10 collection relations use `0..*`: `Application.requests`, `User.requests/subordinates/applications/approvals/issues`, `Campaign.confirmationRequests` (composition), `Campaign.applications`. Mandatory [1..1] only on child-side references: `Request.application`, `Request.user`, `ConfirmationRequest.approver`, `AccessRequest.issuer`.
-
-## Trade-offs
-
-- Pros: Entities can be created independently and populated later, avoids validation errors during creation
-- Cons: Cannot express "must have at least one" at the model level (must enforce in operations)
-- Prefer when: Always -- this is the standard JUDO best practice for collection cardinalities
+- When the platform's required-relation behaviour is actually wanted: a hard `1..*` makes the generated forms demand at least one element, which is right only if the creating UI always supplies it.
+- Operation parameters have their own `lower`/`upper`; this practice is about relations on entities and transfer objects.
 
 ## Related
 
-- [[composition-ownership]]
+- [[composition-ownership]] — composed children are created after their parent, hence `0..*`
+- [[derived-state-from-history]] — a history collection starts empty
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=collection-lower-bound-zero cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Customer {
+    <<Entity>>
+    +String name
+  }
+  class Order {
+    <<Entity>>
+    +String number [1]
+  }
+  class OrderLine {
+    <<Entity>>
+    +Integer quantity
+  }
+  Customer --> "*" Order : orders
+  Order *-- "*" OrderLine : lines
+  Order --> "0..1" Customer : approver
+  Order --> "1" Customer : customer
+```
+<!-- /mermaid:generated -->

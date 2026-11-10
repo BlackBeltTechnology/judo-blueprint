@@ -1,51 +1,79 @@
 ---
 id: literal-derived-attribute
 title: Literal Constant Derived Attribute
-description: "A derived attribute on a transfer object uses a literal constant string (or value) as its getter expression, always returning the same fixed value regardless of the underlying entity state."
-aliases: []
-keywords: [literal, constant, derived, attribute]
+description: "A derived attribute on a transfer object whose getter expression is a literal (a fixed string or true/false) exposes an application constant or a permanent UI flag without any stored field."
+aliases: [constant attribute, fixed flag, literal getter]
+keywords: [derived attribute, literal, getterExpression, constant, hiddenBy, enabledBy, transfer object, boolean flag]
 tags: ["domain:model", "layer:model", "project:trivia", "project:alba", "project:park-here", "status:emerging"]
 category: transfer
 status: emerging
 projects: [trivia, alba, park-here]
 evidence: ["trivia:unrecorded", "alba:unrecorded", "park-here:unrecorded"]
 alternatives: []
-related: [derived-attribute-flattening, ui-control-transfer-fields]
-fragment: pending
+related: [derived-attribute-flattening, ui-control-transfer-fields, singleton-entity]
+fragment: literal-derived-attribute
+diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A derived attribute on a transfer object uses a literal constant string (or value) as its getter expression, always returning the same fixed value regardless of the underlying entity state. This is used for application-level constants like application names or version strings, and also for boolean constants that serve as UI control flags.
+Some values are the same for every row: an application name, a version label, or a boolean that must always be true or false so that a UI control stays permanently enabled or disabled. Expose them as a derived attribute whose getter expression is a literal.
 
-## Structure
+## Practice
 
-- Transfer attribute with `memberType="DERIVED"`
-- Getter expression is a literal value: `"Constant String"`, `true`, or `false`
-- The underlying entity may have no corresponding attribute
-- Boolean constants are often used with `hiddenBy`/`enabledBy` to permanently enable or disable UI elements
+### Literal getter on a derived attribute
 
-## Examples
+Declare a derived attribute (`memberType = DERIVED`) with a getter expression that is a constant: a quoted string such as `"Example Shop"`, or `true` / `false`. Nothing is stored and the owner needs no matching entity attribute. Derived attributes are read-only for clients.
 
-### Trivia
-`player::Application.name` has getter expression `"BlackBelt Trivia"` -- always returns this literal string. The underlying `Application` entity has no `name` attribute; the value exists only in the transfer layer.
+- Put the constant on the transfer object when only one view needs it. The entity may have no such attribute.
+- Put it on the entity when several transfer objects must expose the same constant.
 
-### Alba
-`AuthorProduct.fixNotEnabled` has getter expression `false` -- always returns false, used to permanently disable a UI control. `PublicAuthorProfile.isTrue` has getter expression `true` -- used as an always-true flag for UI enablement. These boolean constants serve as fixed UI control drivers without entity-level storage.
+### Boolean constants as UI switches
 
-### ParkHere
-`User.trueFlag` has getter expression `true` -- always returns true. Used as an always-enabled flag for UI conditional logic (e.g., `enabledBy` or as the opposite of `hiddenBy` conditions). This is defined at the entity level rather than the transfer level, making the constant available to all transfer projections of User.
+`hiddenBy`, `enabledBy` and `requiredBy` must reference a boolean data member of the same transfer object that owns the widget ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md), `hiddenBy` / `enabledBy` / `requiredBy`). When the control should be on or off unconditionally, an always-true or always-false derived attribute provides that boolean. This is project practice: the platform has no "constant" element for it. Prefer a real condition ([[ui-control-transfer-fields]]) wherever one exists, and remove the control when it can never be on.
 
-## Trade-offs
+### Do not confuse it with an access getter
 
-- Pros: Simple way to expose constants through the API, no database storage needed
-- Cons: Value is hardcoded in the model, requires model change to update
-- Prefer when: A fixed label or constant needs to be exposed to clients through the transfer layer
+An access getter on an actor (a derived access) must return a reference expression; a boolean literal there is invalid ([architectural patterns](../../agent-docs/backend/architectural-patterns.md), "Rules for `accesses[*].getterExpression`"). The literal belongs on a data member, not on an access.
+
+## Rationale
+
+- Constants reach clients through the normal transfer object, with no storage and no backend code.
+- The expression is evaluated when read, so the value follows the model, not a database row.
+- Cost: changing the value means changing the model and redeploying. Values that operators must change (a version label from a build, a configurable name) belong in configuration or data.
+
+## Example
+
+A ProductView transfer object maps a Product title and adds two derived attributes: `appName` with the literal `"Example Shop"`, and `alwaysOn` with the literal `true`, used as the boolean target of a widget's `enabledBy`. In the source projects the constants were an application name on a transfer object and several always-true or always-false flags, one of them defined on the entity. Names here are neutral.
+
+## When to avoid
+
+- The value changes at runtime or per environment: use stored configuration ([[singleton-entity]]).
+- A genuine condition can drive the control: use [[ui-control-transfer-fields]].
+- Mapping a stored attribute instead: see [[derived-attribute-flattening]].
 
 ## Related
 
-- [[derived-attribute-flattening]]
-- [[ui-control-transfer-fields]]
+- [[derived-attribute-flattening]] — derived attributes that read data
+- [[ui-control-transfer-fields]] — fields that drive UI state from real conditions
+- [[singleton-entity]] — stored, editable application settings
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=literal-derived-attribute cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Product {
+    <<Entity>>
+    +String title
+  }
+  class ProductView {
+    <<Transfer>>
+    +String title
+    +String /appName
+    +Boolean /alwaysOn
+  }
+  ProductView ..> Product : maps
+```
+<!-- /mermaid:generated -->
