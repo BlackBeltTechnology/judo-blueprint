@@ -1,3 +1,8 @@
+---
+title: Advanced Frontend Patterns
+description: Production patterns for the generated React frontend: error interceptor, cascade loading, post-refresh, inline dialogs, row highlighting, custom implementations and configuration.
+---
+
 # Advanced Frontend Patterns
 
 This document covers advanced customization patterns identified from production JUDO applications. These patterns extend beyond standard development workflows and demonstrate sophisticated techniques for complex requirements.
@@ -274,10 +279,13 @@ Custom error handling system that intercepts specific error types and provides t
 
 #### Hook Registration
 
+The generator emits the scaffold `src/custom/hooks/register-error-handler-interceptor.ts.default` with `registerErrorHandlerInterceptorHook(context)`. Copy it without `.default` and call it from the customizer. The key is `ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY` (value `'ErrorHandlerInterceptor'`), and the types come from `~/utilities/error-handling`; there is no `@judo/web-react` package.
+
 ```typescript
 // src/custom/application-customizer.tsx
-import { BundleContext } from '@pandino/pandino-api';
-import { ERROR_HANDLER_HOOK_INTERFACE_KEY } from '@judo/web-react';
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+import { registerErrorHandlerInterceptorHook } from './hooks/register-error-handler-interceptor';
 
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
@@ -288,81 +296,56 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 #### Error Interceptor Hook
 
+The hook is a React hook (it may call `useTranslation`, `useSnacks`, `useFaultDialog`) that returns `{ shouldInterceptError, interceptError }`. `shouldInterceptError(error, options)` decides, `interceptError(error, options, payload, dataPath)` handles; the interceptor runs before the default handling.
+
 ```typescript
-// src/custom/hooks/error-handler-interceptor.ts
-import { ErrorHandlerInterceptorHook, ErrorHandlingOption } from '@judo/web-react';
+// src/custom/hooks/register-error-handler-interceptor.ts
+import type { BundleContext } from '@pandino/pandino-api';
+import {
+  ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY,
+  type ErrorHandlerInterceptorHook,
+  type ErrorHandlingOption,
+} from '~/utilities/error-handling';
+import { useFaultDialog } from '~/components/dialog';
+import { useSnacks } from '~/hooks/useSnacks';
 
 export function registerErrorHandlerInterceptorHook(context: BundleContext): void {
-  const hook: ErrorHandlerInterceptorHook = () => {
-    return {
-      shouldInterceptError: (error: any, options?: ErrorHandlingOption<any>) => {
-        // Intercept validation errors (HTTP 422)
-        if (error.response?.status === 422) {
-          return true;
-        }
-
-        // Intercept business errors (HTTP 400 with specific structure)
-        if (error.response?.status === 400 && error.response?.data?.code) {
-          return true;
-        }
-
-        return false;
-      },
-
-      interceptError: (
-        error: any,
-        options?: ErrorHandlingOption<any>,
-        payload?: any,
-        dataPath?: string
-      ) => {
-        const { response } = error;
-
-        // Handle validation errors
-        if (response?.status === 422) {
-          const validationErrors = response.data?.validationResults || [];
-
-          if (validationErrors.length > 0) {
-            const errorMessages = validationErrors
-              .map((result: ValidationResult) => result.message)
-              .join('\n');
-
-            // Show custom snackbar
-            options?.showErrorDialog?.(
-              'Validation Error',
-              errorMessages,
-              'warning'
-            );
-
-            // Prevent default error handling
-            return true;
-          }
-        }
-
-        // Handle business errors
-        if (response?.status === 400 && response?.data?.code) {
-          const { code, title, details } = response.data;
-
-          options?.showErrorDialog?.(
-            title || 'Business Rule Violation',
-            details || `Error code: ${code}`,
-            'error'
-          );
-
-          return true;
-        }
-
-        // Let default handler process other errors
-        return false;
-      },
-    };
-  };
-
-  context.registerService<ErrorHandlerInterceptorHook>(
-    ERROR_HANDLER_HOOK_INTERFACE_KEY,
-    hook
-  );
+  context.registerService<ErrorHandlerInterceptorHook>(ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY, hook);
 }
+
+const hook: ErrorHandlerInterceptorHook = () => {
+  const { showErrorSnack } = useSnacks();
+  const openFaultDialog = useFaultDialog();
+
+  return {
+    shouldInterceptError: (error: any, options?: ErrorHandlingOption<any>) => {
+      // Intercept business faults (HTTP 422) ...
+      if (error.response?.status === 422) {
+        return true;
+      }
+      // ... and 400 responses that carry an explicit code
+      return error.response?.status === 400 && !!error.response?.data?.[0]?.code;
+    },
+
+    interceptError: (error: any, options?: ErrorHandlingOption<any>) => {
+      const { response } = error;
+
+      if (response?.status === 422) {
+        // 422 body: { <faultObjectKey>: { <attribute>: value, ... } }
+        const key = Object.keys(response.data)[0];
+        openFaultDialog(key, response.data[key]);
+        return;
+      }
+
+      // 400 body: [{ code, message, location }, ...]
+      const first = response?.data?.[0];
+      showErrorSnack(first?.message ?? `Error code: ${first?.code}`, { autoHideDuration: 5000 });
+    },
+  };
+};
 ```
+
+See [Frontend Error Handling](./error-handling.md) for the default handling matrix. Note the 422 fault body is keyed by the modeled fault object, not a `validationResults` list.
 
 #### Validation Result Type
 
@@ -370,7 +353,7 @@ export function registerErrorHandlerInterceptorHook(context: BundleContext): voi
 interface ValidationResult {
   location: string;  // Field path
   code: string;      // Error code
-  message: string;   // Translated error message
+  message: string;   // Translated error message (there is no `field` property)
 }
 
 interface BusinessError {
@@ -382,24 +365,13 @@ interface BusinessError {
 
 ### Integration with Backend Errors
 
-The interceptor works seamlessly with backend validation and business errors:
+The interceptor reacts to the response shapes produced by the backend: validation errors as a list of `{ code, message, location }` (HTTP 400) and modeled faults as an object keyed by the fault (HTTP 422). How the backend produces them is project specific: the Java below is an example from one project (its own helper class, not a platform API). Use the platform's modeled faults and validation (see the backend docs) in new code.
 
 ```java
-// Backend: Throwing validation errors
+// Example project code (not platform API): helper that builds validation results
 List<ValidationResult> validationResults = new ArrayList<>();
-validationResults.add(
-    ExceptionUtils.createValidationResult(
-        "dateField",
-        i18n.future_date_not_allowed()
-    )
-);
-throw ExceptionUtils.createValidationException(validationResults);
-
-// Backend: Throwing business errors
-throw ExceptionUtils.createBusinessException(
-    i18n.operation_failed(),
-    i18n.entity_must_be_active()
-);
+validationResults.add(ProjectExceptionUtils.createValidationResult("dateField", i18n.future_date_not_allowed()));
+throw ProjectExceptionUtils.createValidationException(validationResults);
 ```
 
 ### Anti-pattern — do not blanket-classify generic 5xx as a specific subsystem fault
@@ -678,6 +650,7 @@ npm install imask react-imask
 ```typescript
 // src/custom/components/masked-input.tsx
 import React from 'react';
+import IMask from 'imask';
 import { IMaskInput } from 'react-imask';
 import { TextField, TextFieldProps } from '@mui/material';
 
@@ -899,6 +872,8 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 Pattern for triggering dependent data loads when a field loses focus (blur event), commonly used for cascading dropdowns or dependent field updates.
 
+**Real mechanism.** There is no `BlurActionHook` service and no `BLUR_ACTION_HOOK_INTERFACE_KEY`. Blur handling is part of the generated container action type: for each attribute marked for blur handling in the model the container hook type has an optional `on<Attribute>BlurAction(...)` handler (see `types.ts` of the generated container). Return it from the container or page hook created from the `register<Container>ActionsHook` scaffold (see [Action Hooks](./hooks/action-hooks.md)). The examples below show the cascade logic; `createCascadeLoadingHook` should return that handler function, and the `context.actions.*` calls are illustrative.
+
 ### Use Cases
 
 - Cascading dropdowns (Country → State → City)
@@ -912,13 +887,12 @@ Pattern for triggering dependent data loads when a field loses focus (blur event
 
 ```typescript
 // src/custom/hooks/cascade-loading-hook.ts
-import { BlurActionHook } from '@judo/web-react';
-
+// Returns the handler to be used as on<Attribute>BlurAction in a container hook
 export function createCascadeLoadingHook(
   ownerAttributeName: string,
   targetRelation: string,
   loadAction: (context: any) => Promise<void>
-): BlurActionHook<any> {
+): { onBlurAction: (data: any, editMode: boolean, storeDiff: any, context: any) => Promise<void> } {
   return {
     onBlurAction: async (
       data: any,
@@ -945,7 +919,8 @@ export function createCascadeLoadingHook(
 
 ```typescript
 // src/custom/application-customizer.tsx
-import { BLUR_ACTION_HOOK_INTERFACE_KEY } from '@judo/web-react';
+// Use the container hook of the page that contains the field (see Action Hooks):
+// return { onCountryBlurAction: countryBlurHook.onBlurAction, onStateBlurAction: stateBlurHook.onBlurAction };
 
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
@@ -1085,6 +1060,8 @@ const emailBlurHook: BlurActionHook<ServiceUserStored> = {
 
 Hook that executes after data refresh operations, commonly used to synchronize UI state with server-side validation or computed fields.
 
+**Real mechanism.** There is no `POST_REFRESH_ACTION_HOOK_INTERFACE_KEY` or `PostRefreshActionHook` type. The page and dialog hook types (`<Container>PageActionsExtended`) have an optional `post<RefreshAction>` handler (for example `postRefreshAction`), whose parameters are generated for the page. Return it from the page actions hook created from the `register<Page>ActionsHook` scaffold. The `context.actions.*` and snackbar helpers in the examples below are illustrative.
+
 ### Use Cases
 
 - Displaying server-computed validation results
@@ -1097,24 +1074,14 @@ Hook that executes after data refresh operations, commonly used to synchronize U
 #### Hook Registration
 
 ```typescript
-// src/custom/application-customizer.tsx
-import { POST_REFRESH_ACTION_HOOK_INTERFACE_KEY } from '@judo/web-react';
-
-export class DefaultApplicationCustomizer implements ApplicationCustomizer {
-  async customize(context: BundleContext): Promise<void> {
-    const postRefreshHook: PostRefreshActionHook<EntityStored> = {
-      postRefreshAction: async (data, storeDiff, context) => {
-        // Hook logic here
-      },
-    };
-
-    context.registerService(
-      POST_REFRESH_ACTION_HOOK_INTERFACE_KEY,
-      postRefreshHook,
-      { component: 'EntityViewPage' }
-    );
-  }
-}
+// src/custom/hooks/pages/registerEntityViewPageActionsHook.ts (from the scaffold)
+const entityViewPageActionsHook: EntityViewPageActionsHook = (data, editMode, storeDiff, refresh, submit) => {
+  return {
+    postRefreshAction: async (...generatedParams) => {
+      // Hook logic here
+    },
+  };
+};
 ```
 
 #### Display Server Validation Results
@@ -1127,7 +1094,7 @@ const validationPostRefreshHook: PostRefreshActionHook<OrderStored> = {
     // Check if server added validation messages
     if (data.validationResults && data.validationResults.length > 0) {
       const errorMessages = data.validationResults
-        .map((result) => `${result.field}: ${result.message}`)
+        .map((result) => `${result.location}: ${result.message}`)
         .join('\n');
 
       showErrorDialog(
@@ -1138,7 +1105,7 @@ const validationPostRefreshHook: PostRefreshActionHook<OrderStored> = {
 
       // Set field-level errors
       data.validationResults.forEach((result) => {
-        actions.setFieldError(result.field, result.message);
+        actions.setFieldError(result.location, result.message);
       });
     } else {
       // Clear previous validation errors
@@ -1291,7 +1258,10 @@ export function useInlineCreateDialog<T>(config: InlineCreateDialogConfig<T>) {
     }
   };
 
-  const DialogComponent = () => (
+  // NOTE: a component defined inside the hook body gets a new type on every render, so React
+  // unmounts and remounts the dialog (losing focus and internal state) whenever hook state changes.
+  // Return the JSX element instead of a component.
+  const dialogElement = (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>{config.title}</DialogTitle>
       <DialogContent>
@@ -1319,7 +1289,7 @@ export function useInlineCreateDialog<T>(config: InlineCreateDialogConfig<T>) {
 
   return {
     open: handleOpen,
-    Dialog: DialogComponent,
+    dialog: dialogElement, // render as {addressDialog.dialog}, not {addressDialog.dialog}
   };
 }
 ```
@@ -1387,7 +1357,7 @@ const UserEditPage = () => {
         )}
       </Grid>
 
-      <addressDialog.Dialog />
+      {addressDialog.dialog}
     </>
   );
 };
@@ -1459,14 +1429,13 @@ Declarative system for applying conditional styling to table rows based on data 
 
 #### Hook Interface
 
-```typescript
-// src/custom/hooks/table-row-highlighting.ts
-import { TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY } from '@judo/web-react';
+The real API is in `~/theme/table-row-highlighting` (`src/theme/table-row-highlighting.ts`): `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY` and `type TableRowHighlightingHook<T> = () => () => RowStylerConfigured<T>[]`, where each entry is `{ name, label, condition(params: GridRowClassNameParams<T>), backgroundColor?, fontColor? }`. The hook is registered with the service property `component` set to the table component name. Styling is limited to background and font colour (derived per light/dark mode); `shouldHighlight`/`getHighlightStyle` with arbitrary CSS, borders or row index do not exist. See [Table Hooks](./hooks/table-hooks.md).
 
-export interface TableRowHighlightingHook<T> {
-  shouldHighlight: (row: T, index: number) => boolean;
-  getHighlightStyle: (row: T, index: number) => React.CSSProperties;
-}
+```typescript
+import {
+  TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
+  type TableRowHighlightingHook,
+} from '~/theme/table-row-highlighting';
 ```
 
 #### Registration
@@ -1476,45 +1445,30 @@ export interface TableRowHighlightingHook<T> {
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
     // Highlight overdue tasks
-    const overdueHighlightHook: TableRowHighlightingHook<TaskStored> = {
-      shouldHighlight: (row) => {
-        if (!row.dueDate || row.status === 'COMPLETED') return false;
-        const dueDate = new Date(row.dueDate);
-        const today = new Date();
-        return dueDate < today;
-      },
-      getHighlightStyle: (row) => ({
+    const overdueHighlightHook: TableRowHighlightingHook<TaskStored> = () => () => [
+      {
+        name: 'overdue',
+        label: 'Overdue',
         backgroundColor: '#ffebee',
-        borderLeft: '4px solid #f44336',
-      }),
-    };
+        condition: ({ row }) => !!row.dueDate && row.status !== 'COMPLETED' && new Date(row.dueDate) < new Date(),
+      },
+    ];
 
-    context.registerService(
+    context.registerService<TableRowHighlightingHook<TaskStored>>(
       TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
       overdueHighlightHook,
       { component: 'TaskTableComponent' }
     );
 
-    // Highlight by status
-    const statusHighlightHook: TableRowHighlightingHook<OrderStored> = {
-      shouldHighlight: (row) => true, // Always apply style
-      getHighlightStyle: (row) => {
-        switch (row.status) {
-          case 'PENDING':
-            return { backgroundColor: '#fff3e0' };
-          case 'PROCESSING':
-            return { backgroundColor: '#e3f2fd' };
-          case 'COMPLETED':
-            return { backgroundColor: '#e8f5e9' };
-          case 'CANCELLED':
-            return { backgroundColor: '#fce4ec' };
-          default:
-            return {};
-        }
-      },
-    };
+    // Highlight by status: several stylers in one hook
+    const statusHighlightHook: TableRowHighlightingHook<OrderStored> = () => () => [
+      { name: 'pending', label: 'Pending', backgroundColor: '#fff3e0', condition: ({ row }) => row.status === 'PENDING' },
+      { name: 'processing', label: 'Processing', backgroundColor: '#e3f2fd', condition: ({ row }) => row.status === 'PROCESSING' },
+      { name: 'completed', label: 'Completed', backgroundColor: '#e8f5e9', condition: ({ row }) => row.status === 'COMPLETED' },
+      { name: 'cancelled', label: 'Cancelled', backgroundColor: '#fce4ec', condition: ({ row }) => row.status === 'CANCELLED' },
+    ];
 
-    context.registerService(
+    context.registerService<TableRowHighlightingHook<OrderStored>>(
       TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
       statusHighlightHook,
       { component: 'OrderTableComponent' }
@@ -1526,91 +1480,22 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 #### Priority-Based Highlighting
 
 ```typescript
-const priorityHighlightHook: TableRowHighlightingHook<IssueStored> = {
-  shouldHighlight: (row) => row.priority === 'CRITICAL' || row.priority === 'HIGH',
-  getHighlightStyle: (row) => {
-    if (row.priority === 'CRITICAL') {
-      return {
-        backgroundColor: '#ffebee',
-        borderLeft: '4px solid #d32f2f',
-        fontWeight: 'bold',
-      };
-    }
-    if (row.priority === 'HIGH') {
-      return {
-        backgroundColor: '#fff3e0',
-        borderLeft: '4px solid #f57c00',
-      };
-    }
-    return {};
-  },
-};
+const priorityHighlightHook: TableRowHighlightingHook<IssueStored> = () => () => [
+  { name: 'critical', label: 'Critical', backgroundColor: '#ffebee', fontColor: '#d32f2f', condition: ({ row }) => row.priority === 'CRITICAL' },
+  { name: 'high', label: 'High', backgroundColor: '#fff3e0', condition: ({ row }) => row.priority === 'HIGH' },
+];
 ```
 
 #### Threshold-Based Highlighting
 
 ```typescript
-const inventoryHighlightHook: TableRowHighlightingHook<ProductStored> = {
-  shouldHighlight: (row) => {
-    const stockLevel = row.currentStock / row.maxStock;
-    return stockLevel <= 0.2; // 20% or less
-  },
-  getHighlightStyle: (row) => {
-    const stockLevel = row.currentStock / row.maxStock;
-
-    if (stockLevel === 0) {
-      return {
-        backgroundColor: '#ffebee',
-        color: '#c62828',
-        fontWeight: 'bold',
-      };
-    }
-    if (stockLevel <= 0.1) {
-      return {
-        backgroundColor: '#fff3e0',
-        color: '#e65100',
-      };
-    }
-    if (stockLevel <= 0.2) {
-      return {
-        backgroundColor: '#fffde7',
-        color: '#f57f17',
-      };
-    }
-
-    return {};
-  },
-};
+const inventoryHighlightHook: TableRowHighlightingHook<ProductStored> = () => () => [
+  { name: 'out-of-stock', label: 'Out of stock', backgroundColor: '#ffebee', fontColor: '#c62828', condition: ({ row }) => row.currentStock === 0 },
+  { name: 'low-stock', label: 'Low stock', backgroundColor: '#fff3e0', fontColor: '#e65100', condition: ({ row }) => row.currentStock > 0 && row.currentStock / row.maxStock <= 0.2 },
+];
 ```
 
-#### Alternating Row Colors with Highlights
-
-```typescript
-const ratingHighlightHook: TableRowHighlightingHook<RatingStored> = {
-  shouldHighlight: (row, index) => true,
-  getHighlightStyle: (row, index) => {
-    const baseStyle = index % 2 === 0
-      ? { backgroundColor: '#fafafa' }
-      : { backgroundColor: '#ffffff' };
-
-    if (row.score >= 4.5) {
-      return {
-        ...baseStyle,
-        borderLeft: '4px solid #4caf50',
-      };
-    }
-
-    if (row.score <= 2.0) {
-      return {
-        ...baseStyle,
-        borderLeft: '4px solid #f44336',
-      };
-    }
-
-    return baseStyle;
-  },
-};
-```
+Stylers are evaluated per row; define the most specific conditions so only one applies to a row.
 
 ---
 
@@ -1618,7 +1503,7 @@ const ratingHighlightHook: TableRowHighlightingHook<RatingStored> = {
 
 ### Overview
 
-Complete replacement of generated UI components with custom implementations while maintaining JUDO integration.
+Replacement of model-designated UI elements with custom implementations while maintaining JUDO integration.
 
 ### Use Cases
 
@@ -1631,49 +1516,18 @@ Complete replacement of generated UI components with custom implementations whil
 
 #### Component Replacement Hook
 
-```typescript
-// src/custom/hooks/component-replacement.ts
-import { CUSTOM_COMPONENT_HOOK_INTERFACE_KEY } from '@judo/web-react';
+There is no generic `CUSTOM_COMPONENT_HOOK_INTERFACE_KEY` or `CustomComponentHook`. A custom implementation is a visual element of the model that the generator exposes as an extension point: register an `FC` under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` (from `~/custom`) with the service property `component` set to the per-element key generated in the container's `customization.ts`. The scaffold `src/custom/hooks/custom-implementations/register<Container>CustomImplementations.tsx.default` is generated for containers that have such elements and contains one `register<Interface>CustomImplementation(context)` function per element with the correct proxy props type (`GenericProxyProps`, `TableProxyProps`, `LinkProxyProps` from `~/custom`). The element is created in the ESM UI model as a custom implementation widget, not by replacing arbitrary generated components.
 
-export interface CustomComponentHook {
-  shouldReplace: (componentName: string, context: any) => boolean;
-  getComponent: (componentName: string, context: any) => React.ComponentType<any>;
+```typescript
+// from the scaffold
+export function registerMyElementCustomImplementation(context: BundleContext) {
+  context.registerService<FC<GenericProxyProps>>(CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY, myElementCustomImplementation, {
+    component: MY_ELEMENT_COMPONENT_INTERFACE_KEY,
+  });
 }
 ```
 
-#### Registration
-
-```typescript
-// src/custom/application-customizer.tsx
-import { CustomDashboard } from '~/custom/components/custom-dashboard';
-import { CustomGanttChart } from '~/custom/components/custom-gantt-chart';
-
-export class DefaultApplicationCustomizer implements ApplicationCustomizer {
-  async customize(context: BundleContext): Promise<void> {
-    const componentReplacementHook: CustomComponentHook = {
-      shouldReplace: (componentName) => {
-        return componentName === 'DashboardViewComponent' ||
-               componentName === 'ProjectTimelineComponent';
-      },
-      getComponent: (componentName) => {
-        switch (componentName) {
-          case 'DashboardViewComponent':
-            return CustomDashboard;
-          case 'ProjectTimelineComponent':
-            return CustomGanttChart;
-          default:
-            throw new Error(`No custom component for ${componentName}`);
-        }
-      },
-    };
-
-    context.registerService(
-      CUSTOM_COMPONENT_HOOK_INTERFACE_KEY,
-      componentReplacementHook
-    );
-  }
-}
-```
+Call the register function from `application-customizer.tsx`. The examples that follow show the content of such a component; their `actions.*` props are illustrative and the real props are those of the proxy props type in the scaffold.
 
 #### Custom Dashboard Example
 
@@ -1898,8 +1752,8 @@ export const AppConfig = {
 
   // API configurations
   api: {
-    baseUrl: import.meta.env.VITE_API_BASE_URL || '/api',
-    timeout: 30000,
+    baseUrl: import.meta.env.VITE_API_DEFAULT_BASE_URL, // required frontend env var
+    timeout: 30000, // example value for your own client code; the generated service layer sets no request timeout
     retryAttempts: 3,
     retryDelayMs: 1000,
   },
@@ -2135,7 +1989,7 @@ This section describes patterns for customizing UI behavior at a fine-grained le
 ### Page and Container Action Hooks
 
 -   **Overview:** Overrides the business logic of actions (button clicks, lifecycle events) at either a generic "container" level or a more specific "page" level (which takes precedence).
--   **Implementation:** An action hook is registered (e.g., for `VIEW_GALAXY_VIEW_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY`). The hook returns an object with implementations for specific action methods, like `postRefreshAction`.
+-   **Implementation:** An action hook is registered through the generated scaffold (e.g., for `VIEW_GALAXY_VIEW_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY` for a container or `<PAGE>_ACTIONS_HOOK_INTERFACE_KEY` for a page). The hook returns an object with implementations for specific action methods, like `postRefreshAction`.
 
 ### Dynamic Enumeration Filtering
 
@@ -2151,7 +2005,7 @@ These patterns provide fine-grained control over the look and feel of the applic
 ### Component-Scoped Theming (Sub-Themes)
 
 -   **Overview:** Applies a unique set of styling overrides (a "sub-theme") to a specific component or a distinct part of the component tree.
--   **Implementation:** A `SubThemeHook` is registered with a unique name. This hook returns a theme fragment with `styleOverrides` for specific MUI components. A `<SubThemeWrapper name="...">` component is then used in the UI to apply these targeted styles.
+-   **Implementation:** A `SubThemeHook` is registered with a unique name. This hook returns a theme fragment with `styleOverrides` for specific MUI components. The generated widgets that have a `subTheme` set in the model are wrapped in `SubThemeWrapper subTheme="..."`, which looks the hook up by its `name` property (see [Theming](./theming.md)).
 
 ### Table Column Customization
 

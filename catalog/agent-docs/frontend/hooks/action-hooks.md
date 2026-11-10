@@ -1,3 +1,8 @@
+---
+title: Frontend Action Hooks
+description: Container and page action hooks, enumeration filtering, typeahead and the operation flow manager.
+---
+
 # Action Hooks
 
 ## Overview
@@ -10,13 +15,15 @@ Action hooks control operations and user interactions within the application. Th
 
 Customize behavior of forms and tables by hooking into their lifecycle events (save, delete, validate) and providing dynamic options for dropdowns.
 
+**Real names.** Each container generates `<CONTAINER>_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY` and the type `<Container>ContainerHook` in `~/containers/<path>/customization` (the container component name is the PascalCase model name, for example `ServiceEntityViewEdit`). The scaffold `src/custom/hooks/containers/register<Container>ActionsHook.ts.default` already contains the correct imports and `registerService` call; copy it and fill in the returned object. The handler names shown in the examples below (`onSave`, `filter...Options`, `get...Options`) are illustrative: the object you return must match the generated action definition type of your container, so check `customization.ts` and `types.ts` of the generated container for the available handlers. There is no generic `CONTAINER_HOOK_INTERFACE_KEY`.
+
 ### Basic Implementation
 
 ```typescript
 // src/custom/hooks/containerActions.tsx
-import { ViewEntityFormContainerHook } from '~/generated';
+import type { ServiceEntityViewEditContainerHook } from '~/containers/Service/Entity/ServiceEntityViewEdit/customization';
 
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     onSave: async (formData) => {
       // Custom save logic
@@ -39,16 +46,19 @@ export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, stor
 
 ### Registration
 
-```typescript
-// src/custom/application-customizer.tsx
-import { CONTAINER_HOOK_INTERFACE_KEY } from '~/generated';
-import { entityFormHook } from './hooks/containerActions';
+Registration lives in the scaffold function `register<Container>ActionsHook(context)`, which you call from `application-customizer.tsx`:
 
-context.registerService(
-  CONTAINER_HOOK_INTERFACE_KEY,
-  entityFormHook,
-  { component: 'ServiceEntityForm' }
-);
+```typescript
+// src/custom/hooks/containers/registerServiceEntityViewEditActionsHook.ts
+import type { BundleContext } from '@pandino/pandino-api';
+import {
+  SERVICE_ENTITY_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
+} from '~/containers/Service/Entity/ServiceEntityViewEdit/customization';
+import { entityFormHook } from '../containerActions';
+
+export function registerServiceEntityViewEditActionsHook(context: BundleContext) {
+  context.registerService(SERVICE_ENTITY_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY, entityFormHook);
+}
 ```
 
 ### Advanced Examples
@@ -56,7 +66,7 @@ context.registerService(
 #### Custom Validation on Save
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     onBeforeSave: async (formData) => {
       // Validate date range
@@ -93,7 +103,7 @@ export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, stor
 #### Conditional Delete
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     onBeforeDelete: async (id) => {
       // Check if entity has items
@@ -129,7 +139,7 @@ Dynamically filter dropdown options based on form state or other criteria.
 ### Basic Implementation
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     // Filter user options based on entity status
     filterUserOptions: (formData, options) => {
@@ -148,7 +158,7 @@ export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, stor
 #### Cascading Dropdowns
 
 ```typescript
-export const locationFormHook: ViewLocationFormContainerHook = (data, editMode, storeDiff) => {
+export const locationFormHook: ServiceLocationViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     // Filter regions based on selected country
     filterRegionOptions: (formData, options) => {
@@ -176,9 +186,9 @@ export const locationFormHook: ViewLocationFormContainerHook = (data, editMode, 
 #### Role-Based Filtering
 
 ```typescript
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
+import { usePrincipal } from '~/auth/principal-context';
 
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   const principal = usePrincipal();
 
   return {
@@ -213,7 +223,7 @@ Provide autocomplete suggestions for text fields, often with API calls.
 ### Basic Implementation
 
 ```typescript
-export const locationFormHook: ViewLocationFormContainerHook = (data, editMode, storeDiff) => {
+export const locationFormHook: ServiceLocationViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     // Autocomplete for location input
     getFullLocationOptions: async (searchText: string) => {
@@ -232,7 +242,7 @@ export const locationFormHook: ViewLocationFormContainerHook = (data, editMode, 
 #### API-Based Autocomplete
 
 ```typescript
-export const addressFormHook: ViewAddressFormContainerHook = (data, editMode, storeDiff, context) => {
+export const addressFormHook: ServiceAddressViewEditContainerHook = (data, editMode, storeDiff, context) => {
   return {
     getSettlementOptions: async (searchText: string) => {
       if (searchText.length < 2) return [];
@@ -258,8 +268,10 @@ export const addressFormHook: ViewAddressFormContainerHook = (data, editMode, st
 ```typescript
 import { debounce } from 'lodash';
 
-export const addressFormHook: ViewAddressFormContainerHook = (data, editMode, storeDiff, context) => {
-  // ✅ CORRECT: Debounce using range action from context
+export const addressFormHook: ServiceAddressViewEditContainerHook = (data, editMode, storeDiff, context) => {
+  // Note: lodash debounce returns the result of the LAST completed call and
+  // undefined while a call is pending, so early calls resolve to undefined.
+  // Treat undefined as "no suggestions yet" or use a promise-based debounce.
   const debouncedSearch = debounce(async (searchText: string) => {
     return await context.actions.getRangeAction('publicSpaceName')({
       query: searchText,
@@ -272,7 +284,7 @@ export const addressFormHook: ViewAddressFormContainerHook = (data, editMode, st
     getPublicSpaceNameOptions: async (searchText: string) => {
       if (searchText.length < 3) return [];
       const result = await debouncedSearch(searchText);
-      return result.data;
+      return result?.data ?? [];
     },
   };
 };
@@ -286,34 +298,31 @@ Handle custom button clicks on pages, add custom action buttons, or override def
 
 ### Basic Implementation
 
-```typescript
-// src/custom/hooks/pageActions.tsx
-import { PageActionHook } from '~/generated';
+Page hooks use the per-page key `<PAGE>_ACTIONS_HOOK_INTERFACE_KEY` (value `'<camelCaseName>_ACTIONS_HOOK'`) and the type `<Container>ActionsHook`, both generated in the page's `customization.ts` (dialogs: `~/dialogs/<path>/customization`). The hook receives `(data, editMode, storeDiff, [selectionDiff], [refresh], [submit])` depending on the page kind and returns the page action handlers. Use the scaffold `src/custom/hooks/pages/register<Page>ActionsHook.ts.default`. The `context.getData()` / `context.getSelectedIds()` style in the examples below is illustrative; use the arguments of the generated hook type (`data`, `refresh`, `submit`) and the services you instantiate in the scaffold.
 
-export const entityPageActions: PageActionHook = () => {
-  return {
-    'export-data': async (context) => {
-      // Custom export logic
-      const data = context.getData();
-      downloadCSV(data);
-    },
-  };
-};
+```typescript
+// src/custom/hooks/pages/registerServiceEntityViewPageActionsHook.ts
+import type { BundleContext } from '@pandino/pandino-api';
+import {
+  SERVICE_ENTITY_VIEW_PAGE_ACTIONS_HOOK_INTERFACE_KEY,
+  type ServiceEntityViewEditActionsHook,
+} from '~/pages/Service/Entity/ServiceEntityViewPage/customization';
+
+export function registerServiceEntityViewPageActionsHook(context: BundleContext) {
+  context.registerService<ServiceEntityViewEditActionsHook>(
+    SERVICE_ENTITY_VIEW_PAGE_ACTIONS_HOOK_INTERFACE_KEY,
+    entityPageActions,
+  );
+}
+
+const entityPageActions: ServiceEntityViewEditActionsHook = (data, editMode, storeDiff, refresh, submit) => ({
+  // implement actions here
+});
 ```
 
 ### Registration
 
-```typescript
-// src/custom/application-customizer.tsx
-import { PAGE_ACTION_HOOK_INTERFACE_KEY } from '~/generated';
-import { entityPageActions } from './hooks/pageActions';
-
-context.registerService(
-  PAGE_ACTION_HOOK_INTERFACE_KEY,
-  entityPageActions,
-  { page: 'ServiceEntityView' }
-);
-```
+Call `registerServiceEntityViewPageActionsHook(context)` from `DefaultApplicationCustomizer.customize`. There is no `page` service property; the key itself is page specific.
 
 ### Advanced Examples
 
@@ -378,7 +387,7 @@ export const entityPageActions: PageActionHook = () => {
       );
 
       // Refresh view
-      context.refresh();
+      await refresh();
       showNotification(`${selectedIds.length} entities activated`);
     },
 
@@ -400,7 +409,7 @@ export const entityPageActions: PageActionHook = () => {
         selectedIds.map(id => entityService.delete(id))
       );
 
-      context.refresh();
+      await refresh();
       showNotification(`${selectedIds.length} entities deleted`);
     },
   };
@@ -451,48 +460,28 @@ Control navigation and behavior after operations (create, update, delete). Custo
 
 ### Basic Implementation
 
-```typescript
-// src/custom/hooks/operationFlowManager.tsx
-import { OperationFlowManager, OperationInput } from '~/generated';
-
-export const customFlowManager: OperationFlowManager = {
-  shouldUseCustomFlow: (input: OperationInput) => {
-    // Use custom flow for create operations
-    return input.operation === 'CREATE';
-  },
-
-  handleResult: (input: OperationInput) => {
-    if (input.operation === 'CREATE' && input.entityType === 'Item') {
-      // After creating item, navigate to item view
-      return {
-        actor: 'ServiceActor',
-        access: 'ServiceItemsTable',
-        filterRecords: {
-          entityId: [{
-            operator: 'equal',
-            value: input.result.entityId
-          }]
-        }
-      };
-    }
-
-    // Default behavior
-    return null;
-  }
-};
-```
-
-### Registration
+`OperationFlowManager` and `OPERATION_FLOW_MANAGER_INTERFACE_KEY` (value `'OperationFlowManager'`) are exported from `~/utilities/application`. `handleResult(input)` receives the stored result of the operation (with `__entityType`) and returns `ProcessProps`: `{ actor, access, filterRecords?, operation? }`. The examples below that use `input.operation`, `entityType`, `id` or `tab` show an illustrative shape; real inputs are the operation result object, so branch on `input.__entityType`.
 
 ```typescript
 // src/custom/application-customizer.tsx
-import { OPERATION_FLOW_MANAGER_INTERFACE_KEY } from '~/generated';
-import { customFlowManager } from './hooks/operationFlowManager';
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+import { OPERATION_FLOW_MANAGER_INTERFACE_KEY, type OperationFlowManager } from '~/utilities/application';
 
-context.registerService(
-  OPERATION_FLOW_MANAGER_INTERFACE_KEY,
-  customFlowManager
-);
+const customFlowManager: OperationFlowManager = {
+  shouldUseCustomFlow: (input) => ['entities.Item'].includes(input?.__entityType || ''),
+  handleResult: (input) => ({
+    actor: 'ServiceActor',
+    access: 'ServiceItemsTable',
+    filterRecords: { entityId: [{ operator: 'equal', value: (input as any).entityId }] },
+  }),
+};
+
+export class DefaultApplicationCustomizer implements ApplicationCustomizer {
+  async customize(context: BundleContext): Promise<void> {
+    context.registerService<OperationFlowManager>(OPERATION_FLOW_MANAGER_INTERFACE_KEY, customFlowManager);
+  }
+}
 ```
 
 ### Advanced Examples
@@ -633,19 +622,16 @@ filterUserOptions: (formData, options) => {
 }
 ```
 
-### 4. Protect Custom Hooks
+### 4. Keep Custom Hooks Under src/custom
 
 ```bash
-# Add to .generator-ignore
-echo "src/custom/hooks/containerActions.tsx" >> .generator-ignore
-echo "src/custom/hooks/pageActions.tsx" >> .generator-ignore
-echo "src/custom/hooks/operationFlowManager.tsx" >> .generator-ignore
+# Nothing to do for files under src/custom/: the folder is gitignored and never regenerated.
 ```
 
 ### 5. Debounce Autocomplete
 
 ```typescript
-// ✅ Good - Debounced
+// ✅ Good - Debounced (lodash debounce yields undefined while a call is pending)
 const debouncedSearch = debounce(searchAPI, 300);
 
 // ❌ Bad - No debouncing
@@ -656,38 +642,18 @@ getOptions: async (text) => await searchAPI(text);
 
 ```typescript
 // src/custom/application-customizer.tsx
-import {
-  ApplicationCustomizer,
-  BundleContext,
-  CONTAINER_HOOK_INTERFACE_KEY,
-  PAGE_ACTION_HOOK_INTERFACE_KEY,
-  OPERATION_FLOW_MANAGER_INTERFACE_KEY
-} from '~/generated';
-import { entityFormHook } from './hooks/containerActions';
-import { entityPageActions } from './hooks/pageActions';
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+import { OPERATION_FLOW_MANAGER_INTERFACE_KEY, type OperationFlowManager } from '~/utilities/application';
+import { registerServiceEntityViewEditActionsHook } from './hooks/containers/registerServiceEntityViewEditActionsHook';
+import { registerServiceEntityViewPageActionsHook } from './hooks/pages/registerServiceEntityViewPageActionsHook';
 import { customFlowManager } from './hooks/operationFlowManager';
 
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
-    // Register container actions
-    context.registerService(
-      CONTAINER_HOOK_INTERFACE_KEY,
-      entityFormHook,
-      { component: 'ServiceEntityForm' }
-    );
-
-    // Register page actions
-    context.registerService(
-      PAGE_ACTION_HOOK_INTERFACE_KEY,
-      entityPageActions,
-      { page: 'ServiceEntityView' }
-    );
-
-    // Register operation flow manager
-    context.registerService(
-      OPERATION_FLOW_MANAGER_INTERFACE_KEY,
-      customFlowManager
-    );
+    registerServiceEntityViewEditActionsHook(context);   // container actions
+    registerServiceEntityViewPageActionsHook(context);   // page actions
+    context.registerService<OperationFlowManager>(OPERATION_FLOW_MANAGER_INTERFACE_KEY, customFlowManager);
   }
 }
 ```
@@ -700,16 +666,15 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 ```typescript
 console.log('Registering container hook');
 context.registerService(
-  CONTAINER_HOOK_INTERFACE_KEY,
+  SERVICE_CAMPAIGN_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
   campaignFormHook,
-  { component: 'ServiceCampaignForm' }
 );
 ```
 
 **Verify component name:**
 ```bash
 # Check generated component names
-grep -r "export const.*Form" src/generated/pages/
+grep -rn "_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY =" src/containers | head
 ```
 
 ### "Filtering not working"

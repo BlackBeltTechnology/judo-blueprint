@@ -1,3 +1,8 @@
+---
+title: UI Model to Frontend Mapping
+description: Mapping between UI model elements and generated React components, element ids, file paths, access control and ESM to UI traceability.
+---
+
 # UI Model to Frontend Mapping
 
 This document describes the comprehensive mapping between JUDO UI model elements (JSON) and the generated React frontend components. Use this reference when customizing the frontend, understanding generated code, or implementing hooks.
@@ -234,12 +239,12 @@ Actor/(esm/_xxx)/TransferObjectViewVisualElement
 }
 ```
 
-**Generated React:**
+**Generated React** (the label key follows `entities.[Entity].[Component].[field]`, see [i18n](./i18n.md)):
 ```tsx
 <TextField
   name="field"
   data-testid="Actor/(esm/_2u6pIIF3Ee-M3fhNedgt-g)/StringTypeTextInput"
-  label={t('Entity.View.field', { defaultValue: 'Field' })}
+  label={t('entities.Entity.Entity_View_Edit.field', { defaultValue: 'Field' })}
   value={data.field ?? ''}
   disabled={isLoading}
   error={!!validation.get('field')}
@@ -418,7 +423,7 @@ The navigation menu is driven by the **Actor's accesses**. Each access defined o
 
 **ESM Actor Access Definition:**
 ```xml
-<elements xsi:type="accesspoint:ActorType" name="Actor" realm="MYAPP" principal="_UserEntity">
+<elements xsi:type="accesspoint:ActorType" name="Actor" realm="<APP>" principal="_UserEntity">
   <!-- Each access becomes a menu item -->
   <accesses name="Administration" target="_AdministrationInfo"/>
   <accesses name="Reports" target="_ReportsInfo"/>
@@ -973,7 +978,7 @@ Actor types define access points and available menus:
 ```xml
 <elements xsi:type="accesspoint:ActorType"
   name="Customer"
-  realm="MYAPP"
+  realm="<APP>"
   principal="_UserEntity">
   <accesses name="orders" target="_OrderInfo"/>
   <accesses name="profile" target="_ProfileInfo"/>

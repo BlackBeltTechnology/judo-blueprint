@@ -1,16 +1,13 @@
 ---
-name: judo-frontend-hooks-docs
-description: Frontend hook system documentation. Covers data, UI, table, action, navigation, and validation hooks.
-disable-model-invocation: false
-user-invocable: false
-agent: general-purpose
+title: Frontend Hook System Overview
+description: Pandino-based hook system of the generated React frontend: hook categories, .default scaffolds, registration patterns and .generator-ignore guidance.
 ---
 
 # Hook System Overview
 
 ## Introduction
 
-The JUDO frontend uses a **hook-based customization system** that allows you to extend and modify generated behavior without editing generated code. Hooks are registered through the central `application-customizer.tsx` file and use the **Pandino** dependency injection framework.
+The JUDO frontend uses a **hook-based customization system** that allows you to extend and modify generated behavior without editing generated code. Hooks are registered from the central `src/custom/application-customizer.tsx` file and use the **Pandino** dependency injection framework.
 
 ## Core Concepts
 
@@ -47,12 +44,12 @@ All hooks register through the **Pandino** dependency injection framework:
 
 ```typescript
 // src/custom/application-customizer.tsx
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
 import {
-  ApplicationCustomizer,
-  BundleContext,
-  TableRowHighlightingHook,
-  TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY
-} from '~/generated';
+  type TableRowHighlightingHook,
+  TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
+} from '~/theme/table-row-highlighting';
 
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
@@ -71,7 +68,7 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 **Interface Keys:**
 - String identifiers for each customizable feature
 - Example: `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY`
-- Exported from `~/generated`
+- Exported from the module that owns the hook (for example `~/theme/table-row-highlighting`, `~/layout/Footer`) or from the generated `~/containers/<path>/customization` module for container hooks; there is no `~/generated` barrel
 
 **Service Properties:**
 - Configuration objects: `{ component, column, page }`
@@ -97,7 +94,7 @@ Access and manage application data:
 [Learn more →](./data-hooks.md)
 
 ### 2. UI Hooks
-Customize visual components:
+Customize visual components (also guest page, sub-theme hooks and menu actions, see [Extension Points](../extension-points.md)):
 - AppBar extra components
 - Hero and logo customization
 - Footer text
@@ -140,93 +137,44 @@ Customize input validation:
 
 [Learn more →](./validation-hooks.md)
 
-## Using .default Template Files
+## Using .default Scaffold Files
 
-The generator creates `.default` template files as blueprints for customization.
+The generator creates `.default` scaffold files for hook registrations under `src/custom/hooks/` (error handler interceptor, `pages/`, `dialogs/`, `containers/`, `custom-implementations/`, `components/cards/`, `sub-themes/`, `registerMenuActionsHook.ts.default`, `default-guest-page-hook-registration.tsx.default`). Only hooks enabled in the model get a scaffold (for example `generateActionsHook`).
 
-### Understanding .default Files
+`src/custom/application-customizer.tsx` is **not** a `.default` file: it is a plain generated file with an empty `customize(context)` method, and it is where you call your `register...Hook(context)` functions.
 
-**Important:** `.default` files (`.tsx.default`, `.ts.default`) are **compiled** by the build system.
+### Activating a Scaffold
 
-**Two Options:**
-
-#### Option 1: Keep .default Extension (Recommended)
+A `.default` file is not compiled. To use it, copy it to the same name without `.default`, implement it and call its register function from `application-customizer.tsx`:
 
 ```bash
-# Find generated templates
-find src/custom -name "*.default"
-
-# Edit the .default file directly
-vim src/custom/application-customizer.tsx.default
-
-# File is compiled as-is - no additional steps needed
+cd src/custom/hooks/pages
+cp registerServiceUsersViewPageActionsHook.ts.default registerServiceUsersViewPageActionsHook.ts
 ```
 
-**Advantages:**
-- ✅ No file copying needed
-- ✅ Generator updates blueprint without overwriting your changes
-- ✅ Clear that file originated from template
+`src/custom/` is gitignored in the frontend module, so the copy is not touched by regeneration and needs no `.generator-ignore` entry. Do not edit the `.default` file itself; it is regenerated on every build.
 
-#### Option 2: Remove .default Extension
+### Example Registration
 
-```bash
-# Copy/rename to remove .default
-cp src/custom/application-customizer.tsx.default src/custom/application-customizer.tsx
-
-# Protect from regeneration
-echo "src/custom/application-customizer.tsx" >> .generator-ignore
-
-# Edit the file
-vim src/custom/application-customizer.tsx
-```
-
-**Advantages:**
-- ✅ Clean filenames
-- ✅ Standard convention
-
-### Example .default File
-
-**Generated `src/custom/application-customizer.tsx.default`:**
 ```typescript
-import { ApplicationCustomizer, BundleContext } from '~/generated';
-
-/**
- * Default application customizer.
- * Either:
- * 1. Keep this .default file and edit it directly (recommended)
- * 2. Rename to application-customizer.tsx and add to .generator-ignore
- */
-export class DefaultApplicationCustomizer implements ApplicationCustomizer {
-  async customize(context: BundleContext): Promise<void> {
-    // Register your customizations here
-
-    // Example: Register table row highlighting
-    // context.registerService<TableRowHighlightingHook>(
-    //   TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
-    //   myHighlightingHook,
-    //   { component: 'ServiceCanvassingEventsTable' }
-    // );
-  }
-}
-```
-
-**After customization:**
-```typescript
+// src/custom/application-customizer.tsx
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+import { registerServiceUsersViewPageActionsHook } from './hooks/pages/registerServiceUsersViewPageActionsHook';
 import {
-  ApplicationCustomizer,
-  BundleContext,
-  TableRowHighlightingHook,
-  TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY
-} from '~/generated';
+  type TableRowHighlightingHook,
+  TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
+} from '~/theme/table-row-highlighting';
 import { canvassingEventHighlighting } from './hooks/tableRowHighlighting';
 
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
-    // Register table row highlighting
-    context.registerService<TableRowHighlightingHook>(
+    registerServiceUsersViewPageActionsHook(context);
+
+    context.registerService<TableRowHighlightingHook<any>>(
       TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
       canvassingEventHighlighting,
-      { component: 'ServiceCanvassingEventsTable' }
+      { component: 'ServiceCanvassingEventsTable' },
     );
   }
 }
@@ -236,10 +184,11 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 | Pattern | Purpose | Recommendation |
 |---------|---------|----------------|
-| `*-customizer.tsx.default` | Component customization entry points | Keep .default |
-| `hooks/*.tsx.default` | Custom hook implementations | Either works |
-| `theme/*.ts.default` | Theme and styling customizations | Usually rename |
-| `pages/*-hook-registration.tsx.default` | Page-level hook registrations | Keep .default |
+| `src/custom/hooks/pages/register<Page>ActionsHook.ts.default` | Page-level action hook registrations | Copy without `.default` |
+| `src/custom/hooks/containers/register<Container>ActionsHook.ts.default` | Container action hooks | Copy without `.default` |
+| `src/custom/hooks/dialogs/register<Dialog>ActionsHook.ts.default` | Dialog action hooks | Copy without `.default` |
+| `src/custom/hooks/sub-themes/register<Name>SubThemeHook.tsx.default` | Sub-theme hooks | Copy without `.default` |
+| `src/theme/*.ts` (palette, typography, table-row-highlighting) | Plain generated theme files | Edit only with a `.generator-ignore` entry |
 
 ## Complete Workflow Example
 
@@ -249,14 +198,13 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 # Step 1: Check generated templates
 find src/custom -name "*.default"
 
-# Step 2: Choose approach (keeping .default is recommended)
-vim src/custom/application-customizer.tsx.default
+# Step 2: application-customizer.tsx is a plain file, edited in step 4
 
 # Step 3: Create custom hook
 mkdir -p src/custom/hooks
 cat > src/custom/hooks/tableRowHighlighting.tsx << 'EOF'
-import { TableRowHighlightingHook } from '~/generated';
-import { ServiceCanvassingEventStored } from '~/generated/data-api';
+import type { TableRowHighlightingHook } from '~/theme/table-row-highlighting';
+import type { ServiceCanvassingEventStored } from '~/services/data-api/model/ServiceCanvassingEvent';
 
 export const canvassingEventHighlighting: TableRowHighlightingHook<ServiceCanvassingEventStored> = () => {
   return () => ([
@@ -274,12 +222,9 @@ export const canvassingEventHighlighting: TableRowHighlightingHook<ServiceCanvas
 EOF
 
 # Step 4: Register in customizer
-# Edit application-customizer.tsx.default to add registration
+# Edit src/custom/application-customizer.tsx to add the registration
 
-# Step 5: Protect custom hook
-echo "src/custom/hooks/tableRowHighlighting.tsx" >> .generator-ignore
-
-# Step 6: Test
+# Step 5: Test (src/custom/ is gitignored and not regenerated, no .generator-ignore entry needed)
 cd application/frontend-react/<app>__[actor_fqn]
 pnpm run dev
 ```
@@ -358,35 +303,22 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 ### When to Use
 
 **Add to .generator-ignore:**
-- ✅ Custom files you create from scratch
-- ✅ Template files you **renamed** (removed .default)
-- ✅ Generated files you **edited directly** (not preferred)
+- ✅ Generated files outside `src/custom/` that you **edited directly** (not preferred): theme files such as `src/theme/palette.ts`, generated containers
+- ✅ Custom files you add outside `src/custom/` that collide with generated paths
 
 **Don't add to .generator-ignore:**
-- ❌ Template files with .default extension
-- ❌ Generated files you haven't modified
+- ❌ Anything under `src/custom/` (gitignored, never regenerated)
+- ❌ `.default` scaffolds and generated files you have not modified
 
 ### Example .generator-ignore
 
 ```
-# Custom application customizer (if renamed from .default)
-src/custom/application-customizer.tsx
-
-# Custom hooks (created from scratch)
-src/custom/hooks/tableRowHighlighting.tsx
-src/custom/hooks/usePrincipal.tsx
-src/custom/hooks/useCustomAuth.tsx
-
-# Custom components
-src/custom/components/CampaignChart.tsx
-src/custom/components/NotificationBell.tsx
-
-# Theme customizations (if renamed)
+# Theme customizations edited by hand
 src/theme/palette.ts
 src/theme/typography.ts
 
 # Directly edited generated files (not recommended)
-# src/generated/pages/CustomPage.tsx
+# src/containers/Service/Users/Users_View_Edit/ServiceUsersView.tsx
 ```
 
 ### Verify Protection
@@ -417,25 +349,23 @@ context.registerService<TableRowHighlightingHook>(
 );
 
 // ❌ Bad - Edit generated file
-// Editing src/generated/pages/CampaignsTable.tsx
+// Editing src/containers/.../CampaignsTable.tsx
 ```
 
-### 2. Keep .default Extension
+### 2. Activate Scaffolds by Copying
 
 ```bash
-# ✅ Recommended
-vim src/custom/application-customizer.tsx.default
+# ✅ Copy the scaffold to the same name without .default (src/custom/ is not regenerated)
+cp src/custom/hooks/pages/registerFooPageActionsHook.ts.default src/custom/hooks/pages/registerFooPageActionsHook.ts
 
-# ⚠️ Acceptable but requires .generator-ignore
-cp src/custom/application-customizer.tsx.default src/custom/application-customizer.tsx
-echo "src/custom/application-customizer.tsx" >> .generator-ignore
+# ❌ Do not edit the .default file in place
 ```
 
 ### 3. Organize Custom Code
 
 ```
 src/custom/
-├── application-customizer.tsx.default
+├── application-customizer.tsx
 ├── hooks/
 │   ├── tableRowHighlighting.tsx
 │   ├── usePrincipal.tsx
@@ -476,7 +406,7 @@ pnpm run dev
 
 **Check registration:**
 ```typescript
-// Verify in application-customizer.tsx.default
+// Verify in application-customizer.tsx
 console.log('Registering hook');
 context.registerService<TableRowHighlightingHook>(
   TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
@@ -488,7 +418,7 @@ context.registerService<TableRowHighlightingHook>(
 **Verify component name:**
 ```bash
 # Find correct component name in generated code
-grep -r "export const.*Table" src/generated/pages/
+grep -rn "component=" src/containers | head   # component names used in hook service filters
 ```
 
 ### "File overwritten after build"
@@ -502,11 +432,11 @@ echo "src/custom/hooks/myHook.tsx" >> .generator-ignore
 
 **Import correct types:**
 ```typescript
-// ✅ Correct
-import { TableRowHighlightingHook } from '~/generated';
+// ✅ Correct: import from the module that defines the hook
+import type { TableRowHighlightingHook } from '~/theme/table-row-highlighting';
 
-// ❌ Wrong
-import { TableRowHighlightingHook } from '~/generated/hooks';
+// ❌ Wrong: there is no ~/generated barrel
+import { TableRowHighlightingHook } from '~/generated';
 ```
 
 ## Related Documentation

@@ -1,3 +1,8 @@
+---
+title: Frontend UI Hooks
+description: AppBar extra component, hero and logo props, footer text and menu customization hooks.
+---
+
 # UI Hooks
 
 ## Overview
@@ -38,14 +43,25 @@ export const NotificationBell: FC = () => {
 
 ### Registration
 
+The AppBar accepts exactly one extra component, registered as a Pandino service under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` (value `'CustomVisualElement'`, exported from `~/custom`) with the service property `component: 'AppBarExtraComponents'`. The service is an `AppBarExtraComponentsHook` (from `~/layout/Header/HeaderContent`): a function returning `{ Component, spaceRequired? }`. `spaceRequired` (default 1) is the grid space the component claims in addition to the default header content.
+
 ```typescript
 // src/custom/application-customizer.tsx
-import { ApplicationCustomizer } from '~/generated';
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+import { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY } from '~/custom';
+import type { AppBarExtraComponentsHook } from '~/layout/Header/HeaderContent';
 import { NotificationBell } from './components/NotificationBell';
 
-export const applicationCustomizer: ApplicationCustomizer = {
-  appBarComponents: [NotificationBell],
-};
+export class DefaultApplicationCustomizer implements ApplicationCustomizer {
+  async customize(context: BundleContext): Promise<void> {
+    context.registerService<AppBarExtraComponentsHook>(
+      CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY,
+      () => ({ Component: NotificationBell, spaceRequired: 1 }),
+      { component: 'AppBarExtraComponents' },
+    );
+  }
+}
 ```
 
 ### Advanced Examples
@@ -56,7 +72,7 @@ export const applicationCustomizer: ApplicationCustomizer = {
 // src/custom/components/UserProfileMenu.tsx
 import { FC, useState } from 'react';
 import { IconButton, Menu, MenuItem, Avatar, Typography } from '@mui/material';
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
+import { usePrincipal } from '~/auth/principal-context';
 
 export const UserProfileMenu: FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -197,21 +213,23 @@ export const QuickSearch: FC = () => {
 
 #### Multiple AppBar Components
 
-```typescript
-// src/custom/application-customizer.tsx
-import { NotificationBell } from './components/NotificationBell';
-import { ThemeToggle } from './components/ThemeToggle';
-import { QuickSearch } from './components/QuickSearch';
-import { UserProfileMenu } from './components/UserProfileMenu';
+Only one `Component` can be registered, so compose several controls in one wrapper component and claim enough space:
 
-export const applicationCustomizer: ApplicationCustomizer = {
-  appBarComponents: [
-    QuickSearch,
-    NotificationBell,
-    ThemeToggle,
-    UserProfileMenu,
-  ],
-};
+```typescript
+// src/custom/components/AppBarExtras.tsx
+import { QuickSearch } from './QuickSearch';
+import { NotificationBell } from './NotificationBell';
+import { ThemeToggle } from './ThemeToggle';
+
+export const AppBarExtras = () => (
+  <>
+    <QuickSearch />
+    <NotificationBell />
+    <ThemeToggle />
+  </>
+);
+
+// registration: () => ({ Component: AppBarExtras, spaceRequired: 3 })
 ```
 
 ## Hero and Logo Customization
@@ -222,129 +240,31 @@ Customize the hero section (landing page banner) and application logo.
 
 ### Hero Customization
 
+The hero (profile header) properties are customized with a `CustomHeroPropsHook` (`CUSTOM_HERO_PROPS_HOOK_INTERFACE_KEY` = `'CustomHeroPropsHook'`, defined in `~/hooks/useHeroProps`). It is a hook factory that returns a function mapping the defaults to new props. `UseHeroProps` has `imgSrc`, `actorName`, `preferredUsername?` and `email?`.
+
 ```typescript
-// src/custom/application-customizer.tsx
-export const applicationCustomizer: ApplicationCustomizer = {
-  hero: {
-    backgroundImage: '/images/custom-hero.jpg',
-    title: '[Your Application Name]',
-    subtitle: '[Application Purpose]',
-    backgroundColor: '#1976d2',
-    textColor: '#ffffff',
-    height: '400px',
-  },
-};
+context.registerService<CustomHeroPropsHook>(
+  CUSTOM_HERO_PROPS_HOOK_INTERFACE_KEY,
+  () => (defaults) => ({ ...defaults, imgSrc: '/images/custom-hero.png' }),
+);
 ```
 
 ### Logo Customization
 
-```typescript
-// src/custom/application-customizer.tsx
-export const applicationCustomizer: ApplicationCustomizer = {
-  logo: {
-    src: '/images/custom-logo.svg',
-    alt: '[Your Application] Logo',
-    width: '180px',
-    height: '50px',
-  },
-};
-```
-
-### Combined Hero and Logo
+A `CustomLogoPropsHook` (`CUSTOM_LOGO_PROPS_HOOK_INTERFACE_KEY` = `'CustomLogoPropsHook'`, in `~/hooks/useLogoProps`) maps the default `UseLogoProps` (`subTitle`, `imgSrc`, `iconSrc`) to custom values. Image paths are relative to `public/`.
 
 ```typescript
-// src/custom/application-customizer.tsx
-export const applicationCustomizer: ApplicationCustomizer = {
-  hero: {
-    backgroundImage: '/images/hero-background.jpg',
-    title: '[Your Application Name]',
-    subtitle: '[Your Application Tagline]',
-    backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    textColor: '#ffffff',
-    height: '500px',
-    overlay: true, // Add dark overlay over background image
-    overlayOpacity: 0.3,
-  },
-  logo: {
-    src: '/images/logo.svg',
-    alt: '[Your Application Name]',
-    width: '200px',
-    height: '60px',
-    onClick: () => {
-      // Custom click handler
-      window.location.href = '/';
-    },
-  },
-};
+context.registerService<CustomLogoPropsHook>(
+  CUSTOM_LOGO_PROPS_HOOK_INTERFACE_KEY,
+  () => (defaults) => ({ ...defaults, imgSrc: '/images/custom-logo.svg', subTitle: '[Your Application]' }),
+);
 ```
+
+The application logo and icon defaults come from the actor's `applicationLogo` in the model; prefer changing the model for a permanent change.
 
 ### Custom Hero Component
 
-For more complex hero customization, create a custom component:
-
-```typescript
-// src/custom/components/CustomHero.tsx
-import { FC } from 'react';
-import { Box, Typography, Button, Container } from '@mui/material';
-
-export const CustomHero: FC = () => {
-  return (
-    <Box
-      sx={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        py: 8,
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      <Container maxWidth="lg">
-        <Typography variant="h2" gutterBottom>
-          Welcome to [Your Application Name]
-        </Typography>
-        <Typography variant="h5" paragraph>
-          [Description of your application's purpose and benefits]
-        </Typography>
-        <Box sx={{ mt: 4 }}>
-          <Button
-            variant="contained"
-            size="large"
-            sx={{
-              mr: 2,
-              backgroundColor: 'white',
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'rgba(255,255,255,0.9)',
-              }
-            }}
-          >
-            Get Started
-          </Button>
-          <Button
-            variant="outlined"
-            size="large"
-            sx={{
-              borderColor: 'white',
-              color: 'white',
-              '&:hover': {
-                borderColor: 'white',
-                backgroundColor: 'rgba(255,255,255,0.1)',
-              }
-            }}
-          >
-            Learn More
-          </Button>
-        </Box>
-      </Container>
-    </Box>
-  );
-};
-
-// Register in application-customizer.tsx
-export const applicationCustomizer: ApplicationCustomizer = {
-  heroComponent: CustomHero,
-};
-```
+The hero has no component-level hook, only the props hook above. Replacing the hero component requires a template override (see [Template Override Process](../README.md#template-override-process)).
 
 ## Footer Text
 
@@ -354,72 +274,18 @@ Customize the footer text displayed at the bottom of the application.
 
 ### Basic Implementation
 
-```typescript
-// src/custom/application-customizer.tsx
-export const applicationCustomizer: ApplicationCustomizer = {
-  footerText: '© 2025 [Your Application Name]',
-};
-```
-
-### With HTML
+The footer text is provided by a `FooterTextHook` (`FOOTER_TEXT_HOOK_INTERFACE_KEY` = `'FooterTextHook'`, exported from `~/layout/Footer`): a hook factory returning a function that returns a plain string. The string is rendered as text, not HTML, so links are not possible this way. The default is the application title and the current year.
 
 ```typescript
-// src/custom/application-customizer.tsx
-export const applicationCustomizer: ApplicationCustomizer = {
-  footerText: '© 2025 [Your Application Name] | <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a>',
-};
+import { FOOTER_TEXT_HOOK_INTERFACE_KEY, type FooterTextHook } from '~/layout/Footer';
+
+context.registerService<FooterTextHook>(
+  FOOTER_TEXT_HOOK_INTERFACE_KEY,
+  () => () => `© ${new Date().getFullYear()} [Your Application Name]`,
+);
 ```
 
-### Dynamic Footer
-
-```typescript
-// src/custom/components/CustomFooter.tsx
-import { FC } from 'react';
-import { Box, Typography, Link, Container } from '@mui/material';
-
-export const CustomFooter: FC = () => {
-  const currentYear = new Date().getFullYear();
-
-  return (
-    <Box
-      component="footer"
-      sx={{
-        py: 3,
-        px: 2,
-        mt: 'auto',
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'light'
-            ? theme.palette.grey[200]
-            : theme.palette.grey[800],
-      }}
-    >
-      <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="body2" color="text.secondary">
-            © {currentYear} [Your Application Name]
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Link href="/privacy" color="inherit" underline="hover">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" color="inherit" underline="hover">
-              Terms of Service
-            </Link>
-            <Link href="/contact" color="inherit" underline="hover">
-              Contact
-            </Link>
-          </Box>
-        </Box>
-      </Container>
-    </Box>
-  );
-};
-
-// Register in application-customizer.tsx
-export const applicationCustomizer: ApplicationCustomizer = {
-  footerComponent: CustomFooter,
-};
-```
+A footer with links or other markup needs a template override of `actor/src/layout/Footer.tsx`.
 
 ## Menu Manipulation
 
@@ -431,23 +297,26 @@ Modify the generated navigation menu structure.
 
 ```typescript
 // src/custom/hooks/menuCustomizer.tsx
-import { MenuItemsCustomizerHook, MenuItem } from '~/generated';
+import type { MenuItemsCustomizerHook } from '~/layout/Drawer/DrawerContent/Navigation';
+import type { NavItemType } from '~/layout/Drawer/DrawerContent/Navigation/NavItem';
 
 export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
   // Add custom menu item
-  const reportsItem: MenuItem = {
-    label: 'Reports',
-    icon: 'assessment',
-    path: '/reports',
+  // NavItemType: { id, type: 'group' | 'collapse' | 'item', title?, url?, onClick?, icon?, disabled?, hiddenBy?, children? }
+  const reportsItem: NavItemType = {
+    id: 'reports',
+    type: 'collapse',
+    title: 'Reports',
+    icon: 'chart-bar',
     children: [
-      { label: 'Entity Report', path: '/reports/entity' },
-      { label: 'Item Report', path: '/reports/item' },
-      { label: 'Performance Report', path: '/reports/performance' },
+      { id: 'entity-report', type: 'item', title: 'Entity Report', url: '/reports/entity' },
+      { id: 'item-report', type: 'item', title: 'Item Report', url: '/reports/item' },
+      { id: 'performance-report', type: 'item', title: 'Performance Report', url: '/reports/performance' },
     ]
   };
 
   // Insert after specific item
-  const insertIndex = menuItems.findIndex(item => item.label === 'Entities');
+  const insertIndex = menuItems.findIndex(item => item.id === 'entities');
 
   return [
     ...menuItems.slice(0, insertIndex + 1),
@@ -463,7 +332,7 @@ export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
 export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
   // Remove specific items
   return menuItems.filter(item =>
-    item.label !== 'Debug' && item.label !== 'Admin'
+    item.id !== 'debug' && item.id !== 'admin'
   );
 };
 ```
@@ -473,11 +342,12 @@ export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
 ```typescript
 export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
   // Define custom order
-  const order = ['Dashboard', 'Entities', 'Items', 'Reports', 'Settings'];
+  const order = ['dashboard', 'entities', 'items', 'reports', 'settings'];
 
-  return menuItems.sort((a, b) => {
-    const aIndex = order.indexOf(a.label);
-    const bIndex = order.indexOf(b.label);
+  // Copy before sorting: sort() mutates the array owned by the framework
+  return [...menuItems].sort((a, b) => {
+    const aIndex = order.indexOf(a.id);
+    const bIndex = order.indexOf(b.id);
 
     if (aIndex === -1) return 1;
     if (bIndex === -1) return -1;
@@ -490,7 +360,7 @@ export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
 ### Role-Based Menu
 
 ```typescript
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
+import { usePrincipal } from '~/auth/principal-context';
 
 export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
   const principal = usePrincipal();
@@ -498,12 +368,12 @@ export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
   // Filter menu based on roles
   return menuItems.filter(item => {
     // Admin-only items
-    if (item.label === 'Users' || item.label === 'Settings') {
+    if (item.id === 'users' || item.id === 'settings') {
       return principal?.roles?.includes('ADMIN');
     }
 
     // Manager-only items
-    if (item.label === 'Reports') {
+    if (item.id === 'reports') {
       return principal?.roles?.includes('MANAGER') ||
              principal?.roles?.includes('ADMIN');
     }
@@ -518,7 +388,7 @@ export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
 
 ```typescript
 // src/custom/application-customizer.tsx
-import { MENU_ITEMS_CUSTOMIZER_HOOK_INTERFACE_KEY } from '~/generated';
+import { MENU_ITEMS_CUSTOMIZER_HOOK_INTERFACE_KEY, type MenuItemsCustomizerHook } from '~/layout/Drawer/DrawerContent/Navigation';
 import { customMenuHook } from './hooks/menuCustomizer';
 
 context.registerService<MenuItemsCustomizerHook>(
@@ -526,6 +396,10 @@ context.registerService<MenuItemsCustomizerHook>(
   customMenuHook
 );
 ```
+
+### Menu Operation Actions
+
+Menu entries that call model operations are handled by a separate hook, registered with `registerMenuActionsHook(context)` (scaffold `src/custom/hooks/registerMenuActionsHook.ts.default`, generated only when the application has menu operations). It registers a `MenuActionsHook` under `MENU_ACTIONS_HOOK_INTERFACE_KEY` from `~/layout/Drawer/DrawerContent/Navigation/menuCustomization`. Gotcha: its value is `'MENU_ACTIONS_HOOK'`, without the `Hook` suffix of the other keys. The returned `MenuPageActions` object has an optional handler per navigation controller action (and `post<Action>` handlers for actions without input).
 
 ## Best Practices
 
@@ -594,55 +468,34 @@ export const ResponsiveMenu: FC = () => {
 
 ```typescript
 // src/custom/application-customizer.tsx
-import { ApplicationCustomizer, BundleContext } from '~/generated';
-import { NotificationBell } from './components/NotificationBell';
-import { ThemeToggle } from './components/ThemeToggle';
-import { UserProfileMenu } from './components/UserProfileMenu';
-import { CustomFooter } from './components/CustomFooter';
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+import { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY } from '~/custom';
+import type { AppBarExtraComponentsHook } from '~/layout/Header/HeaderContent';
+import { FOOTER_TEXT_HOOK_INTERFACE_KEY, type FooterTextHook } from '~/layout/Footer';
+import { MENU_ITEMS_CUSTOMIZER_HOOK_INTERFACE_KEY, type MenuItemsCustomizerHook } from '~/layout/Drawer/DrawerContent/Navigation';
+import { AppBarExtras } from './components/AppBarExtras';
 import { customMenuHook } from './hooks/menuCustomizer';
-import { MENU_ITEMS_CUSTOMIZER_HOOK_INTERFACE_KEY } from '~/generated';
 
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
-    // Register AppBar components
-    context.registerService(
-      APPBAR_COMPONENTS_INTERFACE_KEY,
-      [NotificationBell, ThemeToggle, UserProfileMenu]
+    context.registerService<AppBarExtraComponentsHook>(
+      CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY,
+      () => ({ Component: AppBarExtras, spaceRequired: 3 }),
+      { component: 'AppBarExtraComponents' },
     );
 
-    // Register menu customizer
-    context.registerService(
+    context.registerService<MenuItemsCustomizerHook>(
       MENU_ITEMS_CUSTOMIZER_HOOK_INTERFACE_KEY,
-      customMenuHook
+      customMenuHook,
+    );
+
+    context.registerService<FooterTextHook>(
+      FOOTER_TEXT_HOOK_INTERFACE_KEY,
+      () => () => `© ${new Date().getFullYear()} [Your Application Name]`,
     );
   }
 }
-
-export const applicationCustomizer: ApplicationCustomizer = {
-  // Hero configuration
-  hero: {
-    backgroundImage: '/images/hero.jpg',
-    title: '[Your Application Name]',
-    subtitle: '[Application Purpose]',
-  },
-
-  // Logo configuration
-  logo: {
-    src: '/images/logo.svg',
-    alt: '[Your Application Name]',
-    width: '200px',
-  },
-
-  // AppBar components
-  appBarComponents: [
-    NotificationBell,
-    ThemeToggle,
-    UserProfileMenu,
-  ],
-
-  // Footer component
-  footerComponent: CustomFooter,
-};
 ```
 
 ## Troubleshooting
@@ -651,8 +504,8 @@ export const applicationCustomizer: ApplicationCustomizer = {
 
 **Verify registration:**
 ```typescript
-// Check application-customizer.tsx
-appBarComponents: [NotificationBell]
+// Check application-customizer.tsx: the service property must be exactly
+{ component: 'AppBarExtraComponents' }
 ```
 
 **Check import:**
@@ -670,10 +523,8 @@ ls -la public/images/logo.svg
 
 **Check configuration:**
 ```typescript
-logo: {
-  src: '/images/logo.svg',  // Path relative to public/
-  alt: 'Logo',
-}
+// CustomLogoPropsHook result
+{ ...defaults, imgSrc: '/images/logo.svg' }  // Path relative to public/
 ```
 
 ### "Menu changes not applying"

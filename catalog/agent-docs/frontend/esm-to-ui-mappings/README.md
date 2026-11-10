@@ -1,3 +1,8 @@
+---
+title: ESM to UI Mapping: Overview
+description: ESM to UI Mapping: Overview: ESM to UI model mapping reference for the generated React frontend.
+---
+
 # ESM to UI Mapping: Overview
 
 **[◄ Frontend](../README.md)** | **[Widgets ►](./widgets.md)**
@@ -178,7 +183,8 @@ When `updateable="true"` on an ASSOCIATION relation, the UI includes:
 
 This is different from COMPOSITION relations where Delete actually removes the entity.
 
-**Parent Flags Affect Child Operations:**
+#### Parent Flags Affect Child Operations
+
 
 When navigating from a grid row, tag, or single relation link to a child element, the parent relation's `updateable` and `deleteable` flags determine which operations are available on the navigated element:
 
@@ -207,7 +213,10 @@ Even if the `Address` entity has `updateable="true"` and `deleteable="true"`, wh
 - Tag component click
 - Single relation link click
 
-**Runtime Override via JSON Data (`__updateable`, `__deleteable`):**
+#### Runtime Override via JSON Data
+
+The flags `__updateable` and `__deleteable` in the JSON data override the model flags at runtime.
+
 
 Even when the model's relation flags are `true`, the backend can disable operations on specific data instances using special JSON attributes:
 

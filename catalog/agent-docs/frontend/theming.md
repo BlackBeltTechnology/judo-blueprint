@@ -1,3 +1,8 @@
+---
+title: Frontend Theming and Styling
+description: MUI theme palette, component override fragments, sub-themes, fonts, dark mode and responsive styling of the generated React frontend.
+---
+
 # Theming and Styling
 
 ## Overview
@@ -7,7 +12,7 @@ The frontend uses Material-UI (MUI) theming system for consistent styling. Theme
 JUDO theming is **two-layered**:
 
 1. **Actor palette (model-driven)** — the `ActorType` in the ESM model carries 7 color attributes (`primaryColor`, `secondaryColor`, `backgroundColor`, `paperBackgroundColor`, `textPrimaryColor`, `textSecondaryColor`, `subtitleColor`) plus `applicationLogo`. The generator renders these into `src/theme/palette.ts`. **To change the app-wide brand palette, edit the ActorType in the ESM model — not `palette.ts` directly** (editing `palette.ts` requires a `.generator-ignore` entry and loses cross-actor consistency).
-2. **Component sub-themes (frontend)** — `applicationCustomizer.subThemes` maps generated component names to partial MUI themes, applied via a nested `ThemeProvider`. Use this for per-card, per-view, per-table color variations.
+2. **Component sub-themes (frontend)** — a `subTheme` name set on a widget in the UI model selects a registered `SubThemeHook` service that returns partial MUI overrides, applied via a nested `ThemeProvider`. Use this for per-card, per-view, per-table color variations.
 
 For the **authoring side** (ESM mutations to set ActorType colors, plan sub-theme keys via consistent Group naming, and enable data-driven `generateVisualPropertiesHook` / `TableRowHighlightingHook`), see the `judo-model-cli` skill's `ui-mutations.md` — specifically the **Visual Language → Theming & colors** section and **Recipes 18 (sub-theme card colors) and 19 (row highlighting)**.
 
@@ -229,67 +234,56 @@ export const customTheme = createTheme({
 });
 ```
 
+## Theme Override Fragments
+
+The generated theme (`src/theme/index.tsx`) is assembled from fixed fragments that you can override by creating a same-named file in the application's `actor/src/theme/` override directory (see [Template Override Process](./README.md#template-override-process)):
+
+- `index.ts.mui-<component>.fragment.hbs` for `app-bar`, `autocomplete`, `avatar`, `button`, `card`, `chip`, `data-grid`, `data-grid-pro`, `dialog`, `divider`, `drawer`, `form-control`, `icon`, `input-base`, `list`, `paper`, `radio`, `select`, `stack`, `tab`, `text-field`, `tooltip`
+- `index.ts.extra-components.fragment.hbs` and `index.ts.theme-options.fragment.hbs`
+- `palette.ts.extra-imports.fragment.hbs`, `palette.ts.extra-attributes.fragment.hbs`, `palette.ts.extra-palette-attributes.fragment.hbs`
+
+Prefer a fragment override over a full `.generator-ignore` of `index.tsx` when you only change one component's styling.
+
 ## Sub-Themes for Components
 
-Apply different themes to specific components using the application customizer.
+A sub-theme applies different MUI styling to widgets that have a `subTheme` name set in the UI model. The generated widget is wrapped in `SubThemeWrapper`, which looks up a Pandino service under `SUB_THEME_HOOK_INTERFACE_KEY` (value `'SubThemeHook'`) with the matching `name` property, calls it with the parent theme and deep-merges the result into the theme for that subtree.
 
 ### Configuration
 
-```typescript
-// src/custom/application-customizer.tsx
-import { ApplicationCustomizer } from '~/generated';
+The generator emits a scaffold per sub-theme name: `src/custom/hooks/sub-themes/register<Name>SubThemeHook.tsx.default`. Copy it, remove the `.default` suffix and call the register function from `application-customizer.tsx`:
 
-export const applicationCustomizer: ApplicationCustomizer = {
-  subThemes: {
-    'ServiceEntityCard': {
-      palette: {
-        primary: { main: '#4caf50' },
-        background: { paper: '#f1f8f4' },
-      },
-    },
-    'ServiceItemsTable': {
-      palette: {
-        primary: { main: '#2196f3' },
-      },
-      components: {
-        MuiDataGrid: {
-          styleOverrides: {
-            root: {
-              border: 'none',
-            },
-          },
+```typescript
+// src/custom/hooks/sub-themes/registerServiceEntityCardSubThemeHook.tsx
+import { type Theme, alpha } from '@mui/material';
+import type { BundleContext } from '@pandino/pandino-api';
+import { type SubThemeHook, SUB_THEME_HOOK_INTERFACE_KEY } from '~/theme/SubThemeWrapper';
+
+export function registerServiceEntityCardSubThemeHook(context: BundleContext) {
+  context.registerService<SubThemeHook>(SUB_THEME_HOOK_INTERFACE_KEY, serviceEntityCardSubTheme, {
+    name: 'serviceEntityCard', // toSafeCamelCase of the sub-theme name from the model
+  });
+}
+
+const serviceEntityCardSubTheme = (parentTheme: Theme, data?: any) => ({
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          background: alpha(parentTheme.palette.secondary.main, 0.97),
+          color: parentTheme.palette.common.white,
         },
       },
     },
   },
-};
+});
 ```
+
+The function receives `(parentTheme: Theme, data?: any)` where `data` is the data of the wrapped widget, so styling can depend on values (for example a status colour).
 
 ### Use Cases
 
-**Entity Dashboard:**
-```typescript
-subThemes: {
-  'ServiceEntityDashboard': {
-    palette: {
-      primary: { main: '#1976d2' },
-      secondary: { main: '#dc004e' },
-    },
-  },
-}
-```
-
-**Admin Section:**
-```typescript
-subThemes: {
-  'ServiceUsersPage': {
-    palette: {
-      primary: { main: '#f44336' },
-      background: { paper: '#fff3e0' },
-    },
-  },
-}
-```
+- Highlight a dashboard card or a status field with a different surface colour.
+- Give an administrative section a different palette or table style (override `MuiDataGrid` `styleOverrides`).
 
 ## CSS-in-JS Styling
 
@@ -529,37 +523,37 @@ const customGlobalStyles = (
 ## Best Practices
 
 1. **Use Theme Variables** - Don't hardcode colors
-   ```typescript
-   // Good
-   sx={{ color: 'primary.main' }}
-   
-   // Bad
-   sx={{ color: '#1976d2' }}
-   ```
+```typescript
+// Good
+sx={{ color: 'primary.main' }}
+
+// Bad
+sx={{ color: '#1976d2' }}
+```
 
 2. **Leverage sx Prop** - For one-off styles
-   ```typescript
-   <Box sx={{ mt: 2, p: 1 }}>Content</Box>
-   ```
+```typescript
+<Box sx={{ mt: 2, p: 1 }}>Content</Box>
+```
 
 3. **Styled Components for Reusable Styles** - When used multiple times
-   ```typescript
-   const StyledCard = styled(Card)(({ theme }) => ({
-     padding: theme.spacing(2),
-   }));
-   ```
+```typescript
+const StyledCard = styled(Card)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+```
 
 4. **Consistent Spacing** - Use theme spacing units
-   ```typescript
-   sx={{ padding: theme.spacing(2) }} // 16px (8px * 2)
-   ```
+```typescript
+sx={{ padding: theme.spacing(2) }} // 16px (8px * 2)
+```
 
 5. **Responsive Design** - Use breakpoints
-   ```typescript
-   sx={{
-     display: { xs: 'block', md: 'flex' }
-   }}
-   ```
+```typescript
+sx={{
+  display: { xs: 'block', md: 'flex' }
+}}
+```
 
 ## Troubleshooting
 
@@ -582,20 +576,8 @@ src: url('./fonts/CustomFont.woff2') // Wrong
 
 ### "Sub-theme not working"
 
-**Verify component name:**
-```bash
-# Check generated component names
-grep -r "export const" src/generated/pages/
-```
-
-**Check registration:**
-```typescript
-// Component name must match exactly
-subThemes: {
-  'ServiceEntityCard': { ... }  // Correct
-  'EntityCard': { ... }         // Wrong
-}
-```
+- The `name` in `registerService(..., { name })` must equal the `toSafeCamelCase` form of the sub-theme name set in the model (see the `Sub Theme Name:` comment in the generated scaffold).
+- The scaffold must be renamed without `.default` and its register function called from `application-customizer.tsx`.
 
 ## Related Documentation
 

@@ -1,9 +1,6 @@
 ---
-name: judo-frontend-docs
-description: Frontend development guide for JUDO React applications. Covers hooks, theming, i18n, and Pandino DI customization patterns.
-disable-model-invocation: false
-user-invocable: false
-agent: general-purpose
+title: Frontend Development Guide
+description: Frontend development guide for JUDO React applications. Covers generated structure, checksum protection, .generator-ignore, template overrides, hooks, theming and i18n.
 ---
 
 # Frontend Development Guide
@@ -16,34 +13,35 @@ The React frontend in <app> is generated from the ESM and UI models using JUDO g
 - `<app>` refers to the application name from `judo.properties` (app_name property)
 - `[actor_fqn]` represents the modeled actor's fully qualified name (without the model name prefix)
   - Generated from ESM model: `[model_name]::[namespace]::[ActorName]` → `[namespace]__[actor_name]` (lowercased, `::` replaced with `_`)
-  - Example: Model name `MyApp` (lowercased: `myapp`), Actor FQN `myapp::service::Admin` → actor path becomes `service__admin`
+  - Example: Model name `<Model>` (lowercased: `<model>`), Actor FQN `<model>::service::Admin` → actor path becomes `service__admin`
 - Frontend module naming pattern: `<app>__[actor_fqn]`
   - Double underscore (`__`) separates app name from actor path
   - Single underscores (`_`) replace namespace separators (`::`) within the actor path
-  - Full example: `application/frontend-react/<app>__[actor_fqn]/` (e.g., `myapp__service__admin/`)
+  - Full example: `application/frontend-react/<app>__[actor_fqn]/` (e.g., `<app>__service__admin/`)
 
 ## Key Concepts
 
 - **Model-Driven Generation**: The entire frontend is generated from the ESM and UI models. This ensures consistency and reduces boilerplate code.
 - **Hook System**: Customizations are achieved through a hook system based on Pandino. Instead of editing generated code, you register custom hooks to override or extend functionality.
 - **Checksum Protection**: To prevent accidental edits to generated files, a checksum system is in place. Modifying a generated file will cause the build to fail unless it's explicitly ignored in `.generator-ignore`.
-- **`.default` Files**: The generator creates `.default` template files for hooks and other customizable components. You copy and rename these files to implement your customizations.
+- **`.default` Files**: The generator creates `.default` scaffold files for hook registrations (under `src/custom/hooks/...`, for example `src/custom/hooks/pages/register<Page>ActionsHook.ts.default`). You copy a scaffold and drop the `.default` suffix to activate it. A hook scaffold is generated only when the matching hook flag is set in the model (for example `generateActionsHook`). `src/custom/application-customizer.tsx` itself is a plain generated file, not a `.default` scaffold.
+- **Gitignored custom folder**: Custom hook code lives in `src/custom/`, which is gitignored in the frontend module, so hook customizations survive regeneration and need no `.generator-ignore` entries.
 
 ## Architecture
 
 ### Generated vs Custom Code
 
 **Generated (Do Not Edit Directly):**
-- `src/generated/` - All React components, pages, services
+- `src/containers/`, `src/pages/`, `src/dialogs/`, `src/components/`, `src/layout/`, `src/utilities/`, `src/auth/` - React containers, pages, dialogs, components and helpers
 - `src/App.tsx` - Main application component
-- `src/routes.tsx` - Route definitions
+- `src/routes.tsx` - Route definitions (custom routes go in `src/extra-routes.tsx`, see below)
 - API client services
 - Model type definitions
 
 **Custom Code (Edit Here):**
 - `src/custom/` - Hooks and customizations
 - `src/theme/` - Theme and styling customizations
-- `src/custom/application-customizer.tsx` - Hook registration
+- `src/custom/application-customizer.tsx` - Hook registration (a plain generated file; the `customize(context)` method is where you register Pandino services)
 
 ### Code Generation and Checksum Protection
 
@@ -58,10 +56,10 @@ The React frontend in <app> is generated from the ESM and UI models using JUDO g
 
 Sometimes there's no hook available for customization, and you must edit generated code directly. This is **NOT the preferred way**, but when necessary:
 
-1. **Edit the generated file** with your changes (e.g., in `src/generated/`)
+1. **Edit the generated file** with your changes (e.g., `src/containers/...`)
 2. **Add to `.generator-ignore`** to protect it from regeneration
    ```bash
-   echo "src/generated/pages/MyCustomPage.tsx" >> .generator-ignore
+   echo "src/pages/MyCustomPage.tsx" >> .generator-ignore
    ```
 3. Place the entry in `.generator-ignore` near related overrides (it's used like `.gitignore`)
 
@@ -93,16 +91,17 @@ application/frontend-react/<app>__[actor_fqn]/
 │   └── target/generated-resources/
 │       └── model/<app>-ui.model
 ├── src/
-│   ├── generated/                      # ⚠️ GENERATED - DO NOT EDIT
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── models/
+│   ├── containers/                     # ⚠️ GENERATED - DO NOT EDIT
+│   ├── pages/                          # ⚠️ GENERATED
+│   ├── dialogs/                        # ⚠️ GENERATED
+│   ├── components/                     # ⚠️ GENERATED
+│   ├── layout/ utilities/ auth/        # ⚠️ GENERATED
+│   ├── extra-routes.tsx                # ✏️ extra React Router routes
 │   ├── custom/                         # ✏️ CUSTOMIZATIONS HERE
 │   │   ├── application-customizer.tsx  # Hook registration
 │   │   ├── hooks/
 │   │   ├── components/
-│   │   └── *.default files            # Templates for hooks
+│   │   └── hooks/**/*.default         # Hook registration scaffolds
 │   ├── theme/                          # ✏️ THEME CUSTOMIZATION
 │   │   └── palette.ts
 │   └── App.tsx                         # Generated entry point
@@ -131,7 +130,7 @@ UI Model (<app>-ui.model)
     ↓
 [React Code Generation] (application/frontend-react/<app>__[actor_fqn]/pom.xml)
     ↓
-Generated React Code (src/generated/)
+Generated React Code (src/containers, src/pages, src/dialogs, ...)
     ↓
 [PNPM Build] (vite)
     ↓
@@ -203,9 +202,8 @@ src/custom/application-customizer.tsx
 # Ignore theme
 src/theme/
 
-# Ignore specific hooks
-src/custom/hooks/usePrincipal.tsx
-src/custom/hooks/useCustomAuth.tsx
+# Ignore a specific generated file you edited by hand
+src/theme/table-row-highlighting.ts
 ```
 
 **Workflow:**
@@ -281,9 +279,9 @@ The JUDO platform uses two main template projects for code generation:
 **Template Technology**: Handlebars (`.hbs` files)
 
 **Typical Generated Files:**
-- `src/generated/models/*.ts` - Type definitions
-- `src/generated/services/*.ts` - API service implementations
-- `src/generated/data-axios/*.ts` - Axios-based HTTP clients
+- `data-api/**/*.ts` - Type definitions and service interfaces
+- `data-service/*.ts` - Service implementations (the typescript-rest template writes to `data-service/`)
+- Axios-based HTTP clients (`data-axios` template, e.g. `accessServiceImpl`)
 
 ### 2. judo-ui-react-template
 
@@ -300,9 +298,10 @@ The JUDO platform uses two main template projects for code generation:
 **Template Technology**: Handlebars (`.hbs` files)
 
 **Typical Generated Files:**
-- `src/generated/pages/*.tsx` - Page components
-- `src/generated/components/*.tsx` - Reusable components
-- `src/generated/dialogs/*.tsx` - Dialog components
+- `src/containers/**/*.tsx` - Container components (views, forms, tables; `ui-react.yaml` path `src/containers/<containerPath>/<Component>.tsx`)
+- `src/pages/*.tsx` - Page components
+- `src/components/**/*.tsx` - Reusable components
+- `src/dialogs/**/*.tsx` - Dialog components
 - `src/App.tsx` - Main application entry
 - `src/routes.tsx` - Route configuration
 
@@ -346,29 +345,20 @@ The JUDO platform uses two main template projects for code generation:
 
 ### Template Variables
 
-Templates have access to model elements:
+Each template is declared in a YAML descriptor (for example `ui-react.yaml`) with these per-template fields:
 
-**Common Variables:**
-- `{{actor}}` - Current actor definition
-- `{{package}}` - Package name
-- `{{entities}}` - List of entities
-- `{{relations}}` - Relationships
-- `{{operations}}` - Available operations
+- `name`, `templateName` - logical name (used for overrides) and the `.hbs` file
+- `pathExpression` - SpEL expression for the output path
+- `factoryExpression` - SpEL expression iterating over model elements (one output per result)
+- `applicationBased` - run once per application instead of once per factory result
+- `conditionExpression` - SpEL condition; the template is skipped when false
+- `copy`, `exclude`, `permission` (POSIX), `templateContext`
 
-**Handlebars Helpers:**
-- `{{#each entities}}` - Iterate collections
-- `{{#if required}}` - Conditional rendering
-- `{{camelCase name}}` - Name transformations
-- `{{pascalCase name}}` - Capitalization
+The template context exposes `#self`, `#application`, `#applications`, `#model`, `#template`, and `#addDebugToTemplate` (set when the `-DtemplateDebug` JVM property is present).
 
-**Example Template Snippet:**
-```handlebars
-export interface {{pascalCase entity.name}} {
-  {{#each entity.attributes}}
-  {{camelCase name}}{{#unless required}}?{{/unless}}: {{toTypeScript type}};
-  {{/each}}
-}
-```
+Override layering: a same-name template with a new `templateName`/`pathExpression` replaces the original; a `<name>.override.hbs` file decorates it (and can include the original as a partial); `exclude: true` removes it. Fragment overrides (for example the theme fragments, see [Theming](./theming.md)) work by creating a same-named file in the override directory.
+
+Handlebars helpers are provided by the generator helper classes (for example `toSafeCamelCase`, `firstToUpperCase`). Use `-DtemplateDebug` to see the context available in a template.
 
 ## Related Documentation
 
@@ -388,6 +378,12 @@ export interface {{pascalCase entity.name}} {
 - [Action Hooks](./hooks/action-hooks.md) - Container actions, page actions, operation flows
 - [Navigation and Access](./hooks/navigation-and-access.md) - Redirects, access filtering, hotkeys
 - [Validation Hooks](./hooks/validation-hooks.md) - Date/DateTime validation
+
+### Platform Topics
+- [Error Handling](./error-handling.md) - 400/422/401/403/404/500 handling, fault dialog, fault i18n keys
+- [Extension Points](./extension-points.md) - Extra routes, guest page, sub-themes, menu actions hook, application switcher, table state
+- [Build and Deployment](./build-and-deployment.md) - Maven build modes, MUI license plan, base href, checksum handling
+- [UI Model Pitfalls](./ui-model-pitfalls.md) - Model values that break the generator, renames, E2E guidance
 
 ## External Documentation
 
@@ -416,11 +412,11 @@ export interface {{pascalCase entity.name}} {
 ### "Build fails with checksum mismatch error"
 ```bash
 # Option 1: Add the file to .generator-ignore (keep your changes)
-echo "src/generated/pages/MyPage.tsx" >> .generator-ignore
+echo "src/pages/MyPage.tsx" >> .generator-ignore
 mvn clean install
 
 # Option 2: Discard your changes (let it regenerate)
-git checkout src/generated/pages/MyPage.tsx
+git checkout src/pages/MyPage.tsx
 mvn clean install
 
 # Option 3: Formatting-only changes - ignore checksums
@@ -440,7 +436,7 @@ mvn clean install -Dignore-checksums
 ## File Locations Reference
 
 - UI Model: `application/frontend-react/model/target/generated-resources/model/<app>-ui.model`
-- Generated React: `application/frontend-react/<app>__[actor_fqn]/src/generated/`
+- Generated React: `application/frontend-react/<app>__[actor_fqn]/src/` (everything outside `src/custom/` and the files you protect in `.generator-ignore`)
 - Custom hooks: `application/frontend-react/<app>__[actor_fqn]/src/custom/`
 - Build output: `application/frontend-react/<app>__[actor_fqn]/target/*.jar`
 - Vite config: `application/frontend-react/<app>__[actor_fqn]/vite.config.ts`

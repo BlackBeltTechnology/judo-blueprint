@@ -1,3 +1,8 @@
+---
+title: ESM to UI Mapping: Tables & Navigation
+description: ESM to UI Mapping: Tables & Navigation: ESM to UI model mapping reference for the generated React frontend.
+---
+
 # ESM to UI Mapping: Tables & Navigation
 
 **[◄ Widgets](./widgets.md)** | **[Overview](./README.md)**
@@ -390,9 +395,9 @@ Helper functions for working with annotations:
 
 | ESM Attribute | Generated Hook | Purpose |
 |---------------|----------------|---------|
-| `generateActionsHook="true"` | `use{Container}Actions` | [Custom action implementations](hooks/action-hooks.md#generated-action-hooks) |
-| `generateVisualPropertiesHook="true"` | `use{Container}VisualProps` | [Dynamic visibility/enabled](hooks/ui-hooks.md#visual-property-hooks) |
-| Widget `onBlur="true"` | `on{Field}BlurAction` | Field blur event handler |
+| `generateActionsHook="true"` | scaffold `src/custom/hooks/{pages,dialogs,containers}/register<Name>ActionsHook.ts.default` | [Custom action implementations](../hooks/action-hooks.md#container-actions) |
+| `generateVisualPropertiesHook="true"` | `is<Field>Hidden`, `is<Field>Disabled`, `is<Field>Readonly`, `is<Field>Required` handlers in the generated container hook type | [Hook scaffolds and container hook names](../hooks/action-hooks.md#container-actions) |
+| Widget `onBlur="true"` | `on{Field}BlurAction` handler in the container hook type | Field blur event handler |
 
 ## Supertype Inheritance and Behaviour
 

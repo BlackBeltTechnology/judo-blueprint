@@ -1,6 +1,13 @@
+---
+title: Frontend Table Hooks
+description: Table row highlighting, column customizer and sidekick components of the generated React frontend.
+---
+
 # Table Hooks
 
 ## Overview
+
+**Where the names come from.** `TableRowHighlightingHook` and its key live in `~/theme/table-row-highlighting`; `ColumnCustomizerHook`, `TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY` and `SidekickComponentProps` live in `~/utilities`; the sidekick key is generated per table component. The `component` service property is the generated table component name (see `data-testid`/component names under `src/containers/**/components/`). There is no `~/generated` barrel.
 
 Table hooks allow you to customize the behavior and appearance of data tables. These hooks enable row highlighting, custom columns, sidekick components (above-table UI), and column customization.
 
@@ -14,8 +21,8 @@ Apply conditional background colors to table rows based on data values. Useful f
 
 ```typescript
 // src/custom/hooks/tableRowHighlighting.tsx
-import { TableRowHighlightingHook } from '~/generated';
-import { ServiceItemStored } from '~/generated/data-api';
+import type { TableRowHighlightingHook } from '~/theme/table-row-highlighting';
+import type { ServiceItemStored } from '~/services/data-api/model/ServiceItem';
 
 export const itemHighlighting: TableRowHighlightingHook<ServiceItemStored> = () => {
   return () => ([
@@ -38,8 +45,8 @@ export const itemHighlighting: TableRowHighlightingHook<ServiceItemStored> = () 
 // src/custom/application-customizer.tsx
 import {
   TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
-  TableRowHighlightingHook
-} from '~/generated';
+  type TableRowHighlightingHook,
+} from '~/theme/table-row-highlighting';
 import { itemHighlighting } from './hooks/tableRowHighlighting';
 
 context.registerService<TableRowHighlightingHook>(
@@ -54,8 +61,8 @@ context.registerService<TableRowHighlightingHook>(
 #### Multiple Highlighting Rules
 
 ```typescript
-import { TableRowHighlightingHook } from '~/generated';
-import { ServiceItemStored } from '~/generated/data-api';
+import type { TableRowHighlightingHook } from '~/theme/table-row-highlighting';
+import type { ServiceItemStored } from '~/services/data-api/model/ServiceItem';
 
 export const itemHighlighting: TableRowHighlightingHook<ServiceItemStored> = () => {
   return () => ([
@@ -165,10 +172,10 @@ Add custom columns to tables with custom rendering logic. Useful for computed va
 
 ```typescript
 // src/custom/hooks/columnCustomizer.tsx
-import { ColumnCustomizerHook } from '~/generated';
+import type { ColumnCustomizerHook } from '~/utilities';
 import { GridRenderCellParams } from '@mui/x-data-grid';
 import { Chip } from '@mui/material';
-import { ServiceLocationStored } from '~/generated/data-api';
+import type { ServiceLocationStored } from '~/services/data-api/model/ServiceLocation';
 
 export const locationStatusColumn: ColumnCustomizerHook<ServiceLocationStored> = (original) => ({
   ...original,
@@ -201,11 +208,11 @@ export const locationStatusColumn: ColumnCustomizerHook<ServiceLocationStored> =
 // src/custom/application-customizer.tsx
 import {
   TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY,
-  ColumnCustomizerHook
-} from '~/generated';
+  type ColumnCustomizerHook,
+} from '~/utilities';
 import { locationStatusColumn } from './hooks/columnCustomizer';
 
-context.registerService<ColumnCustomizerHook>(
+context.registerService<ColumnCustomizerHook<ServiceLocationStored>>(
   TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY,
   locationStatusColumn,
   { component: 'ServiceLocationsTable', column: 'qualityScore' }
@@ -329,7 +336,7 @@ Add custom UI components above tables (but within the table container). Useful f
 // src/custom/components/EntityChartSidekick.tsx
 import { FC } from 'react';
 import { Paper, Typography } from '@mui/material';
-import { ServiceEntityStored } from '~/generated/data-api';
+import type { ServiceEntityStored } from '~/services/data-api/model/ServiceEntity';
 
 interface EntityChartSidekickProps {
   data: ServiceEntityStored[];
@@ -351,17 +358,24 @@ export const EntityChartSidekick: FC<EntityChartSidekickProps> = ({ data }) => {
 
 ### Registration
 
+A sidekick is a custom visual element: it is registered under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` (from `~/custom`) with the service property `component` set to the per-table key `<TABLE>_SIDEKICK_COMPONENT_INTERFACE_KEY` exported by the generated table component (its value is `'<componentName>SidekickComponent'`). The component receives `SidekickComponentProps<T>` from `~/utilities`: `data`, `editMode`, `isLoading`, `filters`, `onFiltersChange` (and `filterModel`/`onFilterModelChange` when inline column filters are on). Use `onFiltersChange` to drive the table filters from a sidekick.
+
 ```typescript
 // src/custom/application-customizer.tsx
-import { SIDEKICK_COMPONENT_INTERFACE_KEY } from '~/generated';
+import type { FC } from 'react';
+import { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY } from '~/custom';
+import { SERVICE_ENTITIES_TABLE_SIDEKICK_COMPONENT_INTERFACE_KEY } from '~/containers/Service/Entity/ServiceEntitiesTable/components/ServiceEntitiesTableComponent';
+import type { SidekickComponentProps } from '~/utilities';
 import { EntityChartSidekick } from './components/EntityChartSidekick';
 
-context.registerService<FC>(
-  SIDEKICK_COMPONENT_INTERFACE_KEY,
+context.registerService<FC<SidekickComponentProps<ServiceEntityStored>>>(
+  CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY,
   EntityChartSidekick,
-  { component: 'ServiceEntitiesTable' }
+  { component: SERVICE_ENTITIES_TABLE_SIDEKICK_COMPONENT_INTERFACE_KEY },
 );
 ```
+
+(The exact module path and constant name are generated from the table component name; find them with `grep -rn "_SIDEKICK_COMPONENT_INTERFACE_KEY =" src/containers`.)
 
 ### Advanced Examples
 
@@ -593,13 +607,9 @@ renderCell: (params) => {
 }
 ```
 
-### 4. Protect Custom Files
+### 4. Keep Custom Files Under src/custom
 
-```bash
-# Add to .generator-ignore
-echo "src/custom/hooks/tableRowHighlighting.tsx" >> .generator-ignore
-echo "src/custom/components/EntityChartSidekick.tsx" >> .generator-ignore
-```
+Files in `src/custom/` are gitignored and never regenerated, so no `.generator-ignore` entry is needed.
 
 ### 5. Use Theme Colors
 
@@ -615,40 +625,35 @@ backgroundColor: '#ffebee'
 
 ```typescript
 // src/custom/application-customizer.tsx
-import {
-  ApplicationCustomizer,
-  BundleContext,
-  TableRowHighlightingHook,
-  ColumnCustomizerHook,
-  TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
-  TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY,
-  SIDEKICK_COMPONENT_INTERFACE_KEY
-} from '~/generated';
+import type { FC } from 'react';
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+import { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY } from '~/custom';
+import { TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY, type TableRowHighlightingHook } from '~/theme/table-row-highlighting';
+import { TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY, type ColumnCustomizerHook } from '~/utilities';
+import { SERVICE_ENTITIES_TABLE_SIDEKICK_COMPONENT_INTERFACE_KEY } from '~/containers/Service/Entity/ServiceEntitiesTable/components/ServiceEntitiesTableComponent';
 import { itemHighlighting } from './hooks/tableRowHighlighting';
 import { locationStatusColumn } from './hooks/columnCustomizer';
 import { EntityChartSidekick } from './components/EntityChartSidekick';
 
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
-    // Register row highlighting
-    context.registerService<TableRowHighlightingHook>(
+    context.registerService<TableRowHighlightingHook<any>>(
       TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
       itemHighlighting,
       { component: 'ServiceItemsTable' }
     );
 
-    // Register custom column
-    context.registerService<ColumnCustomizerHook>(
+    context.registerService<ColumnCustomizerHook<any>>(
       TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY,
       locationStatusColumn,
       { component: 'ServiceLocationsTable', column: 'qualityScore' }
     );
 
-    // Register sidekick component
-    context.registerService<FC>(
-      SIDEKICK_COMPONENT_INTERFACE_KEY,
+    context.registerService<FC<any>>(
+      CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY,
       EntityChartSidekick,
-      { component: 'ServiceEntitiesTable' }
+      { component: SERVICE_ENTITIES_TABLE_SIDEKICK_COMPONENT_INTERFACE_KEY }
     );
   }
 }
@@ -668,7 +673,7 @@ condition: (params) => {
 
 **Verify component name:**
 ```bash
-grep -r "export const.*Table" src/generated/pages/
+grep -rn "component=" src/containers/components 2>/dev/null | head   # or check the generated table component name
 ```
 
 ### "Custom column not showing"

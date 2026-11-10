@@ -1,3 +1,8 @@
+---
+title: Frontend Data Hooks
+description: usePrincipal and useViewData of the generated React frontend and how hooks receive page data.
+---
+
 # Data Hooks
 
 ## Overview
@@ -8,463 +13,142 @@ Data hooks provide access to application data and state. These hooks allow you t
 
 ### Purpose
 
-Access the currently logged-in user's information throughout the application.
+Access the logged-in user (the principal of the actor) anywhere in the frontend.
 
-### Basic Implementation
+### API
 
-**IMPORTANT**: The JUDO framework provides principal data through generated context. You typically access it via hook parameters, not by creating custom hooks.
+`usePrincipal()` is generated in `src/auth/principal-context.tsx` (only when the application has a principal). Import it from `~/auth/principal-context`; do not write your own `usePrincipal`, `PrincipalProvider` or fetch the principal manually. It returns:
 
-```typescript
-// ⚠️ NOTE: In JUDO, principal is typically accessed through hook context parameters
-// Example: Using principal in a container hook
+| Member | Description |
+|--------|-------------|
+| `principal` | the principal transfer object (`<Actor>Stored`); an empty object until loaded or when not authenticated |
+| `setPrincipal(p)` | replace the cached principal |
+| `getPrincipal()` | calls the access service again and returns the REST response |
+| `refreshPrincipal()` | reloads the principal into the context |
+| `errorCode` | error code when loading the principal failed with 403 |
 
-export const entityFormHook: ViewEntityFormContainerHook = (
-  data,
-  editMode,
-  storeDiff,
-  // Principal is available in the context
-  context
-) => {
-  // Access current user info from context
-  const currentUser = context.principal;
-
-  console.log('Current user:', currentUser);
-  console.log('User email:', currentUser?.email);
-  console.log('User name:', currentUser?.name);
-
-  return {};
-};
-```
-
-**If you need principal data outside hooks** (e.g., in a standalone component), use the generated access service:
+The shape of `principal` is the modeled principal transfer object, not a fixed `roles`/`permissions` structure. Use the attributes you modeled on the actor.
 
 ```typescript
-import { useEffect, useState } from 'react';
-import { accessServiceImpl } from '~/services/data-axios/AccessServiceImpl';
-import type { ServiceUserStored } from '~/services/data-api/model/ServiceUser';
-
-export const usePrincipal = () => {
-  const [principal, setPrincipal] = useState<ServiceUserStored | undefined>();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Use generated service, NOT direct fetch()
-    accessServiceImpl.getPrincipal()
-      .then(response => {
-        setPrincipal(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Failed to load principal:', error);
-        setLoading(false);
-      });
-  }, []);
-
-  return { principal, loading };
-};
-```
-
-### Advanced Implementation with Context
-
-```typescript
-// src/custom/context/PrincipalContext.tsx
-import { createContext, useContext, useState, useEffect, FC, ReactNode } from 'react';
-import { accessServiceImpl } from '~/services/data-axios/AccessServiceImpl';
-import type { ServiceUserStored } from '~/services/data-api/model/ServiceUser';
-
-interface PrincipalContextType {
-  principal?: ServiceUserStored;
-  loading: boolean;
-  error?: Error;
-  refresh: () => Promise<void>;
-}
-
-const PrincipalContext = createContext<PrincipalContextType | undefined>(undefined);
-
-export const PrincipalProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [principal, setPrincipal] = useState<ServiceUserStored>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error>();
-
-  const fetchPrincipal = async () => {
-    try {
-      setLoading(true);
-      // ✅ CORRECT: Use generated access service
-      const response = await accessServiceImpl.getPrincipal();
-      setPrincipal(response.data);
-      setError(undefined);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPrincipal();
-  }, []);
-
-  return (
-    <PrincipalContext.Provider
-      value={{
-        principal,
-        loading,
-        error,
-        refresh: fetchPrincipal
-      }}
-    >
-      {children}
-    </PrincipalContext.Provider>
-  );
-};
-
-// Hook implementation
-export const usePrincipal = (): ServiceUserStored | undefined => {
-  const context = useContext(PrincipalContext);
-  if (!context) {
-    throw new Error('usePrincipal must be used within PrincipalProvider');
-  }
-  return context.principal;
-};
-```
-
-### Usage Examples
-
-#### Display User Information
-
-```typescript
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
-import { Avatar, Typography, Box } from '@mui/material';
+import { usePrincipal } from '~/auth/principal-context';
 
 export const UserGreeting: FC = () => {
-  const principal = usePrincipal();
+  const { principal } = usePrincipal();
 
-  if (!principal) {
-    return <div>Loading...</div>;
+  if (!principal?.__identifier) {
+    return <CircularProgress size={24} />;
   }
 
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-      <Avatar src={principal.avatar} alt={principal.name} />
-      <div>
-        <Typography variant="h6">
-          Welcome, {principal.firstName} {principal.lastName}!
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {principal.email}
-        </Typography>
-      </div>
-    </Box>
-  );
+  return <Typography variant="h6">Welcome, {principal.email}</Typography>;
 };
 ```
 
-#### Role-Based Rendering
+### Usage in Hooks
+
+Hooks created from the scaffolds are called as React hooks, so you can call `usePrincipal()` inside them:
 
 ```typescript
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
-import { Button } from '@mui/material';
+const entityPageActions: ServiceEntityViewEditActionsHook = (data, editMode, storeDiff) => {
+  const { principal } = usePrincipal();
+  return {
+    // use principal here
+  };
+};
+```
 
+### Role-Based Rendering
+
+Authorization of data and operations is enforced by the backend; the frontend can only hide controls. Model the information you need (for example a derived `isAdmin` attribute on the principal) and read it from `principal`:
+
+```typescript
 export const AdminActions: FC = () => {
-  const principal = usePrincipal();
-
-  if (!principal?.roles?.includes('ADMIN')) {
-    return null;
-  }
-
-  return (
-    <div>
-      <Button variant="contained">Manage Users</Button>
-      <Button variant="contained">System Settings</Button>
-    </div>
-  );
+  const { principal } = usePrincipal();
+  if (!principal.isAdmin) return null;
+  return <Button variant="contained">Manage Users</Button>;
 };
 ```
 
-#### Conditional Features
+### Refreshing the Principal
 
 ```typescript
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
-
-export const EntityList: FC = () => {
-  const principal = usePrincipal();
-
-  const canCreateEntity = principal?.permissions?.includes('entity:create');
-  const canDeleteEntity = principal?.permissions?.includes('entity:delete');
-
-  return (
-    <div>
-      {canCreateEntity && (
-        <Button onClick={handleCreate}>Create Entity</Button>
-      )}
-      {/* Entity list */}
-      {canDeleteEntity && (
-        <Button color="error" onClick={handleDelete}>Delete</Button>
-      )}
-    </div>
-  );
-};
-```
-
-### Principal Data Structure
-
-```typescript
-interface Principal {
-  __identifier: string;
-  name: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  roles?: string[];
-  permissions?: string[];
-  avatar?: string;
-  metadata?: Record<string, any>;
-}
+const { refreshPrincipal } = usePrincipal();
+await refreshPrincipal();
 ```
 
 ## useViewData Hook
 
 ### Purpose
 
-Access and manipulate data in the current page or dialog through JUDO's hook context.
+`useViewData()` (from `~/hooks`) gives access to the data of the view you navigated from, which is useful in hooks of dialogs and pages that need the data of the page behind them. It does not load data and has no `data`, `isLoading` or `refresh` members.
 
-**IMPORTANT**: In JUDO, you DON'T create a `useViewData` hook yourself. Instead, view/page data is accessed through hook parameters provided by the framework.
+### API
 
-### Accessing View Data in Hooks
-
-```typescript
-// ✅ CORRECT: Access data through hook parameters
-export const entityViewHook: ViewEntityViewContainerHook = (
-  data,        // ← Current view data
-  editMode,
-  storeDiff,
-  context      // ← Context with actions, principal, etc.
-) => {
-  // Access current view data
-  console.log('Current entity:', data);
-  console.log('Entity title:', data?.title);
-  console.log('Entity ID:', data?.__identifier);
-
-  // Check if data has changed
-  if (storeDiff?.current !== storeDiff?.original) {
-    console.log('Data was modified');
-  }
-
-  return {};
-};
-```
-
-### Refreshing View Data
-
-Use the `actions` object provided in hook context:
+| Member | Description |
+|--------|-------------|
+| `getLatestViewData()` | data of the view we navigated from, or `null` |
+| `getRouterPageData()` | data of the page in the background, regardless of the dialog chain |
+| `setLatestViewData(data)` | set by generated pages |
+| `setRouterPageData(data)` | set by generated pages |
 
 ```typescript
-export const entityViewHook: ViewEntityViewContainerHook = (
-  data,
-  editMode,
-  storeDiff,
-  context
-) => {
-  const refreshData = async () => {
-    try {
-      // ✅ CORRECT: Use framework-provided refresh action
-      await context.actions.refresh();
-      console.log('Data refreshed');
-    } catch (error) {
-      console.error('Refresh failed:', error);
-    }
+import { useViewData } from '~/hooks';
+
+const dialogActions: SomeDialogActionsHook = (data, editMode, storeDiff) => {
+  const { getLatestViewData, getRouterPageData } = useViewData();
+
+  return {
+    // example: read the owner when an action runs
+    onSomething: async () => {
+      const owner = getLatestViewData();
+      console.log('Opened from', owner?.__identifier);
+    },
   };
-
-  useEffect(() => {
-    if (viewId) {
-      refresh();
-    }
-  }, [viewId]);
-
-  return { data, isLoading, error, refresh };
 };
 ```
 
-### Usage Examples
+The call must be inside a `ViewDataProvider` (generated in the application root). Never create your own `useViewData`.
 
-#### Display Page Data
+### Current Page Data in Hooks
 
-```typescript
-import { useViewData } from '~/custom/hooks/useViewData';
-import { ServiceEntityStored } from '~/generated/data-api';
-import { Card, CardContent, Typography, CircularProgress } from '@mui/material';
-
-export const EntityStats: FC = () => {
-  const { data, isLoading } = useViewData<ServiceEntityStored>();
-
-  if (isLoading) {
-    return <CircularProgress />;
-  }
-
-  if (!data) {
-    return <Typography>No data available</Typography>;
-  }
-
-  return (
-    <Card>
-      <CardContent>
-        <Typography variant="h5">{data.title}</Typography>
-        <Typography>
-          Items: {data.items?.length || 0}
-        </Typography>
-        <Typography>
-          Status: {data.statusField}
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-};
-```
-
-#### Refresh Data
+The data of the page or container being customized is the first argument of the hook (`data`), followed by `editMode` and `storeDiff(attributeName, value)`; page hooks may also receive `selectionDiff`, `refresh()` and `submit()` depending on the page kind (see [Action Hooks](./action-hooks.md)). Reload the page with the `refresh` argument:
 
 ```typescript
-import { useViewData } from '~/custom/hooks/useViewData';
-import { Button, Alert } from '@mui/material';
-
-export const RefreshableView: FC = () => {
-  const { data, isLoading, error, refresh } = useViewData();
-
-  return (
-    <div>
-      {error && (
-        <Alert severity="error" onClose={() => refresh()}>
-          Error loading data. Click to retry.
-        </Alert>
-      )}
-
-      <Button
-        onClick={refresh}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Refreshing...' : 'Refresh Data'}
-      </Button>
-
-      {/* Display data */}
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </div>
-  );
-};
-```
-
-#### Custom Data Processing
-
-```typescript
-import { useViewData } from '~/custom/hooks/useViewData';
-import { ServiceItemStored } from '~/generated/data-api';
-import { useMemo } from 'react';
-
-export const ItemStatistics: FC = () => {
-  const { data } = useViewData<ServiceItemStored[]>();
-
-  const statistics = useMemo(() => {
-    if (!data) return null;
-
-    const total = data.length;
-    const completed = data.filter(i => i.completed).length;
-    const overdue = data.filter(i =>
-      new Date(i.dateField) < new Date() && !i.completed
-    ).length;
-
-    return { total, completed, overdue };
-  }, [data]);
-
-  if (!statistics) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div>
-      <Typography>Total Items: {statistics.total}</Typography>
-      <Typography>Completed: {statistics.completed}</Typography>
-      <Typography color="error">Overdue: {statistics.overdue}</Typography>
-    </div>
-  );
+const entityViewHook: ServiceEntityViewEditActionsHook = (data, editMode, storeDiff, refresh) => {
+  return {
+    onSomething: async () => {
+      await refresh();
+    },
+  };
 };
 ```
 
 ## Combining Data Hooks
 
-### User-Specific Data
-
 ```typescript
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
-import { useViewData } from '~/custom/hooks/useViewData';
-import { ServiceEntityStored } from '~/generated/data-api';
+const entityPageActions: ServiceEntityViewEditActionsHook = (data, editMode, storeDiff) => {
+  const { principal } = usePrincipal();
+  const { getLatestViewData } = useViewData();
 
-export const MyEntities: FC = () => {
-  const principal = usePrincipal();
-  const { data: entities } = useViewData<ServiceEntityStored[]>();
-
-  const myEntities = useMemo(() => {
-    if (!entities || !principal) return [];
-
-    return entities.filter(e =>
-      e.owner?.__identifier === principal.__identifier
-    );
-  }, [entities, principal]);
-
-  return (
-    <div>
-      <Typography variant="h5">My Entities</Typography>
-      {myEntities.map(entity => (
-        <EntityCard key={entity.__identifier} entity={entity} />
-      ))}
-    </div>
-  );
-};
-```
-
-### Permission-Based Data Filtering
-
-```typescript
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
-import { useViewData } from '~/custom/hooks/useViewData';
-
-export const FilteredDataView: FC = () => {
-  const principal = usePrincipal();
-  const { data, isLoading } = useViewData();
-
-  const visibleData = useMemo(() => {
-    if (!data || !principal) return [];
-
-    // Filter based on user role
-    if (principal.roles?.includes('ADMIN')) {
-      return data; // Admins see everything
-    }
-
-    // Regular users see only their own data
-    return data.filter(item =>
-      item.createdBy === principal.__identifier
-    );
-  }, [data, principal]);
-
-  return (
-    <div>
-      {isLoading ? (
-        <CircularProgress />
-      ) : (
-        visibleData.map(item => <DataItem key={item.id} data={item} />)
-      )}
-    </div>
-  );
+  return {
+    // combine principal, page data and the view we came from
+  };
 };
 ```
 
 ## Custom Data Hooks
+
+Service class and method names follow the model (see `src/services/data-axios/`); the names below are illustrative.
 
 ### useCurrentEntity
 
 ```typescript
 // src/custom/hooks/useCurrentEntity.tsx
 import { useState, useEffect } from 'react';
-import { ServiceEntityStored } from '~/generated/data-api';
-import { entityServiceImpl } from '~/generated/data-axios';
+import type { ServiceEntityStored } from '~/services/data-api/model/ServiceEntity';
+import { ServiceEntityServiceImpl } from '~/services/data-axios/ServiceEntityServiceImpl';
+import { judoAxiosProvider } from '~/services/data-axios/JudoAxiosProvider';
+
+const entityServiceImpl = new ServiceEntityServiceImpl(judoAxiosProvider);
 
 export const useCurrentEntity = (entityId: string) => {
   const [entity, setEntity] = useState<ServiceEntityStored>();
@@ -496,8 +180,11 @@ export const useCurrentEntity = (entityId: string) => {
 ```typescript
 // src/custom/hooks/useFilteredItems.tsx
 import { useState, useEffect } from 'react';
-import { ServiceItemStored } from '~/generated/data-api';
-import { itemServiceImpl } from '~/generated/data-axios';
+import type { ServiceItemStored } from '~/services/data-api/model/ServiceItem';
+import { ServiceItemServiceImpl } from '~/services/data-axios/ServiceItemServiceImpl';
+import { judoAxiosProvider } from '~/services/data-axios/JudoAxiosProvider';
+
+const itemServiceImpl = new ServiceItemServiceImpl(judoAxiosProvider);
 
 interface ItemFilters {
   entityId?: string;
@@ -546,96 +233,61 @@ const { items } = useFilteredItems({
 
 ## Best Practices
 
-### 1. Type Safety
+### 1. Use the Generated Principal Context
 
 ```typescript
-// ✅ Good - Specify type
-const { data } = useViewData<ServiceEntityStored>();
+// ✅ Good
+const { principal } = usePrincipal();   // from ~/auth/principal-context
 
-// ❌ Bad - No type
-const { data } = useViewData();
+// ❌ Bad - own fetch of the principal, own provider
 ```
 
-### 2. Error Handling
+### 2. Use Hook Arguments for Current Page Data
 
 ```typescript
-// ✅ Good - Handle errors
-const { data, error } = useViewData();
-if (error) {
-  return <Alert severity="error">{error.message}</Alert>;
-}
-
-// ❌ Bad - Ignore errors
-const { data } = useViewData();
+// ✅ Good - data, editMode, storeDiff, refresh come from the generated hook type
+const hook: ServiceEntityViewEditActionsHook = (data, editMode, storeDiff, refresh) => ({ });
 ```
 
-### 3. Loading States
+### 3. Update Page State with storeDiff
 
 ```typescript
-// ✅ Good - Show loading state
-const { data, isLoading } = useViewData();
-if (isLoading) return <CircularProgress />;
+// ✅ Good - keeps validation and diff tracking consistent
+storeDiff('title', 'New title');
 
-// ❌ Bad - No loading indicator
-const { data } = useViewData();
+// ❌ Bad - mutating data directly
+data.title = 'New title';
 ```
 
 ### 4. Memoization
 
 ```typescript
 // ✅ Good - Memoize computed values
-const statistics = useMemo(() => {
-  return computeStats(data);
-}, [data]);
-
-// ❌ Bad - Recompute on every render
-const statistics = computeStats(data);
+const statistics = useMemo(() => computeStats(data), [data]);
 ```
 
-### 5. Protect Custom Hooks
+### 5. Custom Hooks Live in src/custom
 
-```bash
-# Always add custom hooks to .generator-ignore
-echo "src/custom/hooks/usePrincipal.tsx" >> .generator-ignore
-echo "src/custom/hooks/useViewData.tsx" >> .generator-ignore
-```
+Files in `src/custom/` are gitignored in the frontend module and never regenerated, so no `.generator-ignore` entry is needed.
 
 ## Troubleshooting
 
-### "Principal is undefined"
+### "Principal is undefined or empty"
 
-**Check authentication:**
+`principal` is an empty object until the principal request has finished and stays empty when the user is not authenticated. Check `principal?.__identifier` and `errorCode` (set when the backend answered 403):
+
 ```typescript
-const principal = usePrincipal();
-console.log('Principal:', principal);
-
-if (!principal) {
-  return <div>Please log in</div>;
-}
+const { principal, errorCode } = usePrincipal();
+console.log('Principal:', principal, 'error:', errorCode);
 ```
 
-### "ViewData not loading"
+### "getLatestViewData returns null"
 
-**Verify viewId:**
-```typescript
-const { data, isLoading, error } = useViewData('entityView');
-console.log('Loading:', isLoading);
-console.log('Error:', error);
-console.log('Data:', data);
-```
+It only holds data after a generated page navigated away from a view. Dialogs opened from the dashboard have no parent view data.
 
 ### "Stale data"
 
-**Use refresh function:**
-```typescript
-const { data, refresh } = useViewData();
-
-// Refresh after mutation
-const handleSave = async () => {
-  await saveEntity();
-  refresh(); // Update view data
-};
-```
+Call the `refresh` argument of the page hook after a mutation (`await refresh()`), or `refreshPrincipal()` for the principal.
 
 ## Related Documentation
 

@@ -1,3 +1,8 @@
+---
+title: Frontend Navigation and Access Hooks
+description: Redirect service, access filter, hotkeys, navigation interceptor and navigation helpers of the generated React frontend.
+---
+
 # Navigation and Access Control Hooks
 
 ## Overview
@@ -20,7 +25,7 @@ ESM Actor Definition:
 
 The generated menu is in:
 ```
-src/layout/Drawer/DrawerContent/Navigation/menu-items.tsx
+src/layout/Drawer/DrawerContent/Navigation/ (menu items are built from the application navigation controller)
 ```
 
 ### Access Control via Boolean Attributes
@@ -78,21 +83,26 @@ Access control applies to:
 
 ### Purpose
 
-Customize redirect logic throughout the application. Control where users navigate after operations or when accessing certain routes.
+The generated `Redirect` page (`src/pages/Redirect.tsx`) calls a registered redirect service with the URL search parameters. Use it for deep links that must resolve at runtime (for example redirect to an entity found by an external id).
+
+Real shape (from `~/pages/Redirect`): `REDIRECT_HOOK_INTERFACE_KEY = 'RedirectServiceHook'` and `type RedirectServiceHook = () => (searchParams: URLSearchParams) => Promise<void>`. The hook factory is called as a React hook, the returned function receives the search parameters and navigates itself. If it throws, the page shows the translated error `judo.pages.redirect.error`.
 
 ### Basic Implementation
 
 ```typescript
 // src/custom/hooks/redirectService.tsx
-import { useNavigate } from 'react-router-dom';
+import { useJudoNavigation } from '~/components';
+import type { RedirectServiceHook } from '~/pages/Redirect';
 
-export const RedirectServiceHook = () => {
-  const navigate = useNavigate();
+export const redirectServiceHook: RedirectServiceHook = () => {
+  const { navigate } = useJudoNavigation();
 
-  return (path: string, params?: any) => {
-    // Custom redirect logic
-    console.log('Redirecting to:', path, params);
-    navigate(path, { state: params });
+  return async (searchParams) => {
+    const id = searchParams.get('id');
+    if (!id) {
+      throw new Error('Missing id');
+    }
+    navigate(`/some/route/${id}`);
   };
 };
 ```
@@ -101,120 +111,56 @@ export const RedirectServiceHook = () => {
 
 ```typescript
 // src/custom/application-customizer.tsx
-import { REDIRECT_SERVICE_HOOK_INTERFACE_KEY } from '~/generated';
-import { RedirectServiceHook } from './hooks/redirectService';
+import { REDIRECT_HOOK_INTERFACE_KEY, type RedirectServiceHook } from '~/pages/Redirect';
+import { redirectServiceHook } from './hooks/redirectService';
 
-context.registerService(
-  REDIRECT_SERVICE_HOOK_INTERFACE_KEY,
-  RedirectServiceHook
-);
+context.registerService<RedirectServiceHook>(REDIRECT_HOOK_INTERFACE_KEY, redirectServiceHook);
 ```
 
 ### Advanced Examples
 
-#### With Query Parameters
+#### Resolving a Target with a Generated Service
 
 ```typescript
-export const RedirectServiceHook = () => {
-  const navigate = useNavigate();
+export const redirectServiceHook: RedirectServiceHook = () => {
+  const { navigate } = useJudoNavigation();
 
-  return (path: string, params?: any) => {
-    // Build query string from params
-    const queryParams = new URLSearchParams();
-
-    if (params?.filter) {
-      queryParams.set('filter', JSON.stringify(params.filter));
-    }
-
-    if (params?.tab) {
-      queryParams.set('tab', params.tab);
-    }
-
-    const queryString = queryParams.toString();
-    const fullPath = queryString ? `${path}?${queryString}` : path;
-
-    navigate(fullPath, { state: params });
+  return async (searchParams) => {
+    const externalId = searchParams.get('externalId');
+    // Use a generated service (new XServiceImpl(judoAxiosProvider)) or a modeled
+    // operation to resolve the target; do not use raw fetch().
+    const target = await resolveTarget(externalId);
+    navigate(`/orders/${target.__identifier}`);
   };
 };
 ```
 
-#### With Authentication Check
+#### Authentication-Aware Redirect
 
-```typescript
-import { usePrincipal } from '~/custom/hooks/usePrincipal';
-
-export const RedirectServiceHook = () => {
-  const navigate = useNavigate();
-  const principal = usePrincipal();
-
-  return (path: string, params?: any) => {
-    // Check if user is authenticated
-    if (!principal) {
-      navigate('/login', {
-        state: { returnUrl: path }
-      });
-      return;
-    }
-
-    // Check if user has access to path
-    if (path.includes('/admin') && !principal.roles?.includes('ADMIN')) {
-      navigate('/unauthorized');
-      return;
-    }
-
-    navigate(path, { state: params });
-  };
-};
-```
-
-#### With Analytics Tracking
-
-```typescript
-export const RedirectServiceHook = () => {
-  const navigate = useNavigate();
-
-  return (path: string, params?: any) => {
-    // Track navigation client-side
-    console.log('Navigation:', {
-      from: window.location.pathname,
-      to: path,
-      params,
-    });
-
-    // ℹ️ NOTE: If you need server-side tracking, implement a custom
-    // operation in your backend and call it via context.actions.getAction()
-    // Do NOT use direct fetch() calls
-
-    navigate(path, { state: params });
-  };
-};
-```
+Unauthenticated users are sent to the identity provider by the auth gate before the redirect page renders, so the hook does not need its own login redirect. Read the principal with `usePrincipal()` from `~/auth/principal-context` when the target depends on the user.
 
 ## Access Filtering
 
 ### Purpose
 
-Control page-level access based on user roles, permissions, or custom logic. Hide or restrict access to specific pages.
+Wrap the whole authenticated layout with a component that can block or replace the UI, for example to show an "access denied" screen when the principal lacks a modeled flag. Only one filter is used (the best matching service); it is not selected per page.
+
+Real shape (from `~/auth`): `ACCESS_FILTER_COMPONENT_INTERFACE_KEY = 'AccessFilterComponent'` and `AccessFilterComponentProps { principal: <Actor>Stored; children?: ReactNode }`. It exists only when the application has authentication. The layout renders `<AuthProxyComponent filter="(objectClass=AccessFilterComponent)" principal={principal}>`; without a registered service the children render unchanged.
 
 ### Basic Implementation
 
 ```typescript
 // src/custom/components/AccessFilter.tsx
-import { FC } from 'react';
-import { AccessFilterComponentProps } from '~/generated';
+import type { FC } from 'react';
 import { Alert, Container } from '@mui/material';
+import type { AccessFilterComponentProps } from '~/auth';
 
-export const AdminAccessFilter: FC<AccessFilterComponentProps> = ({
-  principal,
-  children
-}) => {
-  // Check if user has admin role
-  if (!principal?.roles?.includes('ADMIN')) {
+export const AdminAccessFilter: FC<AccessFilterComponentProps> = ({ principal, children }) => {
+  // isAdmin is an attribute modeled on the principal transfer object
+  if (!principal?.isAdmin) {
     return (
       <Container>
-        <Alert severity="error">
-          Access Denied: Administrator privileges required
-        </Alert>
+        <Alert severity="error">Access Denied: Administrator privileges required</Alert>
       </Container>
     );
   }
@@ -227,163 +173,45 @@ export const AdminAccessFilter: FC<AccessFilterComponentProps> = ({
 
 ```typescript
 // src/custom/application-customizer.tsx
-import { ACCESS_FILTER_COMPONENT_INTERFACE_KEY } from '~/generated';
+import type { FC } from 'react';
+import { ACCESS_FILTER_COMPONENT_INTERFACE_KEY, type AccessFilterComponentProps } from '~/auth';
 import { AdminAccessFilter } from './components/AccessFilter';
 
 context.registerService<FC<AccessFilterComponentProps>>(
   ACCESS_FILTER_COMPONENT_INTERFACE_KEY,
   AdminAccessFilter,
-  { component: 'ServiceUsersPage' }
 );
 ```
 
 ### Advanced Examples
 
-#### Permission-Based Access
+#### Per-Page and Per-Role Rules
+
+The filter has no `component` filter property and no extra props, so page-level rules must be decided inside the component (for example with `useLocation()`), or, better, modeled: use `hiddenBy`/`enabledBy` on the actor accesses, relations and attributes (see the top of this document) so the backend decides.
 
 ```typescript
-export const PermissionAccessFilter: FC<AccessFilterComponentProps> = ({
-  principal,
-  children,
-  requiredPermission
-}) => {
-  const hasPermission = principal?.permissions?.includes(requiredPermission);
+import { useLocation } from 'react-router-dom';
 
-  if (!hasPermission) {
-    return (
-      <Container>
-        <Alert severity="error">
-          You don't have permission to access this page.
-          <br />
-          Required permission: {requiredPermission}
-        </Alert>
-      </Container>
-    );
-  }
-
-  return <>{children}</>;
-};
-
-// Register with specific permission
-context.registerService<FC<AccessFilterComponentProps>>(
-  ACCESS_FILTER_COMPONENT_INTERFACE_KEY,
-  PermissionAccessFilter,
-  {
-    component: 'ServiceCampaignsPage',
-    requiredPermission: 'campaigns:view'
-  }
-);
-```
-
-#### Feature Flag Access
-
-```typescript
-// ℹ️ NOTE: Feature flags should be managed through your backend model
-// and accessed via principal permissions or metadata, not external API calls
-
-export const FeatureFlagAccessFilter: FC<AccessFilterComponentProps> = ({
-  principal,
-  children
-}) => {
-  // ✅ CORRECT: Check feature flags from principal metadata
-  const canAccessAdvancedFeatures = principal?.metadata?.features?.advancedReporting === true;
-
-  if (!canAccessAdvancedFeatures) {
-    return (
-      <Container>
-        <Alert severity="info">
-          This feature is currently not available for your account.
-        </Alert>
-      </Container>
-    );
-  }
-
-  return <>{children}</>;
+export const RouteAccessFilter: FC<AccessFilterComponentProps> = ({ principal, children }) => {
+  const { pathname } = useLocation();
+  const blocked = pathname.startsWith('/admin') && !principal?.isAdmin;
+  return blocked ? <Alert severity="error">Access denied</Alert> : <>{children}</>;
 };
 ```
 
 #### Time-Based Access
 
 ```typescript
-export const TimeBasedAccessFilter: FC<AccessFilterComponentProps> = ({
-  principal,
-  children,
-  allowedHours
-}) => {
-  const currentHour = new Date().getHours();
-  const isAllowed = allowedHours.includes(currentHour);
-
-  if (!isAllowed) {
-    return (
-      <Container>
-        <Alert severity="warning">
-          This page is only accessible during business hours (9 AM - 5 PM).
-        </Alert>
-      </Container>
-    );
+export const BusinessHoursFilter: FC<AccessFilterComponentProps> = ({ children }) => {
+  const hour = new Date().getHours();
+  if (hour < 9 || hour >= 17) {
+    return <Alert severity="warning">The application is available 9 AM - 5 PM.</Alert>;
   }
-
   return <>{children}</>;
 };
-
-// Register with time restriction
-context.registerService<FC<AccessFilterComponentProps>>(
-  ACCESS_FILTER_COMPONENT_INTERFACE_KEY,
-  TimeBasedAccessFilter,
-  {
-    component: 'ServiceReportsPage',
-    allowedHours: [9, 10, 11, 12, 13, 14, 15, 16, 17]
-  }
-);
 ```
 
-#### Custom Loading State
-
-```typescript
-// ℹ️ NOTE: For complex async access checks, implement a custom
-// operation in your backend and call it on page load
-export const AsyncAccessFilter: FC<AccessFilterComponentProps> = ({
-  principal,
-  children
-}) => {
-  // ✅ CORRECT: Access control should primarily be based on principal
-  // data (roles, permissions) already loaded in the session
-
-  // Simple role-based check (synchronous)
-  const hasRequiredRole = principal?.roles?.includes('CAMPAIGN_MANAGER');
-
-  if (!hasRequiredRole) {
-    return (
-      <Container>
-        <Alert severity="error">
-          Access Denied: Campaign Manager role required
-        </Alert>
-      </Container>
-    );
-  }
-
-  return <>{children}</>;
-};
-
-// If you truly need async access validation, use a container hook instead:
-export const pageContainerHook: ViewPageContainerHook = (data, editMode, storeDiff, context) => {
-  useEffect(() => {
-    // ✅ CORRECT: Call custom access check operation
-    context.actions.getAction('checkPageAccess')()
-      .then(result => {
-        if (!result.data?.canAccess) {
-          context.navigate('/access-denied');
-        }
-      })
-      .catch(error => {
-        console.error('Access check failed:', error);
-        context.navigate('/error');
-      });
-  }, []);
-
-  return {};
-};
-```
+A client-side filter is only a UX layer. Enforce real authorization in the backend (interceptors and model access rules).
 
 ## Hotkey Support
 
@@ -433,18 +261,21 @@ export const useHotkeys = () => {
 
 ### Registration
 
+Global hotkeys are generated in `src/hotkeys.tsx` (`registerGlobalHotkeys`, built on `react-hotkeys-hook`). There is no `hotkeys` entry in the application customizer. To add global hotkeys, override the two fragments (see [Template Override Process](../README.md#template-override-process)):
+
+- `actor/src/hotkeys.tsx.imports.fragment.hbs` for imports
+- `actor/src/hotkeys.tsx.body.fragment.hbs` for the `useHotkeys(...)` calls
+
+The generated function already provides `t` and the dialog helpers `[createDialog, closeDialog] = useDialog()`:
+
 ```typescript
-// src/custom/application-customizer.tsx
-export const applicationCustomizer: ApplicationCustomizer = {
-  hotkeys: {
-    'ctrl+n': () => navigate('/entities/create'),
-    'ctrl+shift+s': () => openSearchDialog(),
-    'ctrl+h': () => navigate('/'),
-    'ctrl+shift+e': () => navigate('/entities'),
-    'ctrl+shift+i': () => navigate('/items'),
-  },
-};
+// body fragment
+useHotkeys('ctrl+shift+e', () => {
+  // open your dialog or navigate
+}, { preventDefault: true });
 ```
+
+The `window.addEventListener('keydown', ...)` hooks below work for component-local shortcuts and need no override.
 
 ### Advanced Examples
 
@@ -560,13 +391,17 @@ Intercept navigation to add custom behavior, such as sticky parameters or confir
 
 ### Basic Implementation
 
+Real shape (from `~/components`): `NAVIGATION_INTERCEPTOR_INTERFACE_KEY = 'JudoNavigationInterceptor'`; `NavigationInterceptorHook = ({ stringifyPath }) => NavigationInterceptor` with `NavigationInterceptor { decorateNavigation(to): string | Partial<Path>; onBeforeInitialLoad?(): void }`. There is no `beforeNavigate`; the interceptor can only rewrite the target (for example add sticky query parameters).
+
 ```typescript
 // src/custom/hooks/navigationInterceptor.tsx
-import { NavigationInterceptorHook } from '~/generated';
+import {
+  NAVIGATION_INTERCEPTOR_INTERFACE_KEY,
+  type NavigationInterceptorHook,
+} from '~/components';
 
 export const navigationHook: NavigationInterceptorHook = ({ stringifyPath }) => ({
   decorateNavigation: (to) => {
-    // Add campaign filter to all navigations
     const currentCampaign = localStorage.getItem('selectedCampaign');
 
     if (currentCampaign && typeof to === 'string') {
@@ -577,78 +412,26 @@ export const navigationHook: NavigationInterceptorHook = ({ stringifyPath }) => 
   },
 
   onBeforeInitialLoad: () => {
-    // Initialize campaign selection from URL
-    const params = new URLSearchParams(window.location.search);
-    const campaign = params.get('campaign');
-
+    const campaign = new URLSearchParams(window.location.search).get('campaign');
     if (campaign) {
       localStorage.setItem('selectedCampaign', campaign);
     }
-  }
+  },
 });
+
+// registration
+// context.registerService<NavigationInterceptorHook>(NAVIGATION_INTERCEPTOR_INTERFACE_KEY, navigationHook);
 ```
 
 ### Advanced Examples
 
 #### Unsaved Changes Warning
 
-```typescript
-export const navigationHook: NavigationInterceptorHook = ({ stringifyPath }) => {
-  const hasUnsavedChanges = () => {
-    return localStorage.getItem('formDirty') === 'true';
-  };
+Interceptors cannot cancel navigation. For unsaved-changes confirmation use the generated `useNavigationConfirmation` hook (`~/hooks`, see [Extension Points](../extension-points.md)), which generated forms already use.
 
-  return {
-    beforeNavigate: (to) => {
-      if (hasUnsavedChanges()) {
-        const confirmed = window.confirm(
-          'You have unsaved changes. Do you want to leave?'
-        );
+#### Session Handling
 
-        if (!confirmed) {
-          return false; // Cancel navigation
-        }
-
-        // Clear dirty flag
-        localStorage.removeItem('formDirty');
-      }
-
-      return true; // Allow navigation
-    },
-  };
-};
-```
-
-#### Session Timeout Check
-
-```typescript
-// ℹ️ NOTE: Session management is handled by JUDO/Keycloak automatically
-// The framework will redirect to login when the session expires
-// You typically don't need to implement custom session checks
-
-export const navigationHook: NavigationInterceptorHook = ({ stringifyPath }) => ({
-  beforeNavigate: async (to) => {
-    // Session validation is handled by the framework
-    // You can add custom logic here if needed, but avoid direct API calls
-
-    // Example: Log navigation for debugging
-    console.log('Navigating to:', to);
-
-    return true; // Allow navigation
-  },
-});
-
-// If you need to check auth state, use the principal from context:
-export const pageHook: ViewPageContainerHook = (data, editMode, storeDiff, context) => {
-  // ✅ CORRECT: Check if user is authenticated via principal
-  if (!context.principal) {
-    // User not authenticated - framework will handle redirect
-    console.warn('No principal found');
-  }
-
-  return {};
-};
-```
+Session expiry is handled by the generated auth layer: a 401 response clears the security storage and reloads the page, which redirects to the identity provider. Do not implement custom session checks in the interceptor.
 
 ## Type-Safe Navigation
 
@@ -658,28 +441,18 @@ Use generated navigation helpers for type-safe routing.
 
 ### Basic Usage
 
+`useJudoNavigation()` is exported from `~/components`. It returns `{ navigate, clearNavigate, externalNavigate, navigateBackTo, back, isBackDisabled, setTitle }`. `navigate(to)` takes a react-router `To` (a path string or `{ pathname, search }`) and applies the registered navigation interceptor; the generated route helpers from `~/routes` (for example `routeToServiceEntityView(...)`) build the paths.
+
 ```typescript
-import { useJudoNavigation } from '~/generated';
+import { useJudoNavigation } from '~/components';
 
 export const QuickActions: FC = () => {
-  const navigation = useJudoNavigation();
-
-  const goToNewCampaign = () => {
-    navigation.navigate('ServiceCampaignCreate', {
-      prefill: { status: 'DRAFT' }
-    });
-  };
-
-  const goToReports = () => {
-    navigation.navigate('ServiceReportsTable', {
-      filter: { year: 2025 }
-    });
-  };
+  const { navigate, back } = useJudoNavigation();
 
   return (
     <Box>
-      <Button onClick={goToNewCampaign}>New Campaign</Button>
-      <Button onClick={goToReports}>View Reports</Button>
+      <Button onClick={() => navigate('/service/campaigns/create')}>New Campaign</Button>
+      <Button onClick={back}>Back</Button>
     </Box>
   );
 };
@@ -687,42 +460,19 @@ export const QuickActions: FC = () => {
 
 ### Advanced Examples
 
-#### With Parameters
+#### Query Parameters
 
 ```typescript
-const navigation = useJudoNavigation();
+const { navigate } = useJudoNavigation();
 
-// Navigate to entity view with ID
-navigation.navigate('ServiceEntityView', {
-  id: entity.__identifier,
-  tab: 'items',
-});
-
-// Navigate with filters
-navigation.navigate('ServiceItemsTable', {
-  filter: {
-    entityId: entity.__identifier,
-    statusField: 'ACTIVE',
-  },
-});
+navigate({ pathname: '/service/items', search: `?entityId=${entity.__identifier}` });
 ```
 
-#### Dynamic Navigation
+#### External Navigation
 
 ```typescript
-const navigateToEntity = (entityId: string, action?: string) => {
-  const routes = {
-    view: 'ServiceEntityView',
-    edit: 'ServiceEntityEdit',
-    delete: 'ServiceEntityDelete',
-  };
-
-  const route = action ? routes[action] : routes.view;
-
-  navigation.navigate(route, {
-    id: entityId,
-  });
-};
+const { externalNavigate } = useJudoNavigation();
+externalNavigate('https://example.com/docs');
 ```
 
 ## Best Practices
@@ -769,52 +519,33 @@ if (!principal) {
 // Assume user is always logged in
 ```
 
-### 4. Protect Custom Components
+### 4. Keep Custom Components Under src/custom
 
 ```bash
-# Add to .generator-ignore
-echo "src/custom/hooks/redirectService.tsx" >> .generator-ignore
-echo "src/custom/components/AccessFilter.tsx" >> .generator-ignore
+# Nothing to do: src/custom/ is gitignored and never regenerated, no .generator-ignore entry is needed
 ```
 
 ## Complete Example
 
 ```typescript
 // src/custom/application-customizer.tsx
-import {
-  ApplicationCustomizer,
-  BundleContext,
-  REDIRECT_SERVICE_HOOK_INTERFACE_KEY,
-  ACCESS_FILTER_COMPONENT_INTERFACE_KEY
-} from '~/generated';
-import { RedirectServiceHook } from './hooks/redirectService';
+import type { FC } from 'react';
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+import { ACCESS_FILTER_COMPONENT_INTERFACE_KEY, type AccessFilterComponentProps } from '~/auth';
+import { REDIRECT_HOOK_INTERFACE_KEY, type RedirectServiceHook } from '~/pages/Redirect';
+import { NAVIGATION_INTERCEPTOR_INTERFACE_KEY, type NavigationInterceptorHook } from '~/components';
+import { redirectServiceHook } from './hooks/redirectService';
+import { navigationHook } from './hooks/navigationInterceptor';
 import { AdminAccessFilter } from './components/AccessFilter';
 
 export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   async customize(context: BundleContext): Promise<void> {
-    // Register redirect service
-    context.registerService(
-      REDIRECT_SERVICE_HOOK_INTERFACE_KEY,
-      RedirectServiceHook
-    );
-
-    // Register access filter
-    context.registerService<FC<AccessFilterComponentProps>>(
-      ACCESS_FILTER_COMPONENT_INTERFACE_KEY,
-      AdminAccessFilter,
-      { component: 'ServiceUsersPage' }
-    );
+    context.registerService<RedirectServiceHook>(REDIRECT_HOOK_INTERFACE_KEY, redirectServiceHook);
+    context.registerService<NavigationInterceptorHook>(NAVIGATION_INTERCEPTOR_INTERFACE_KEY, navigationHook);
+    context.registerService<FC<AccessFilterComponentProps>>(ACCESS_FILTER_COMPONENT_INTERFACE_KEY, AdminAccessFilter);
   }
 }
-
-export const applicationCustomizer: ApplicationCustomizer = {
-  // Hotkeys
-  hotkeys: {
-    'ctrl+n': () => navigate('/campaigns/create'),
-    'ctrl+shift+s': () => openSearchDialog(),
-    'ctrl+h': () => navigate('/'),
-  },
-};
 ```
 
 ## Troubleshooting
@@ -839,8 +570,8 @@ useEffect(() => {
 context.registerService<FC<AccessFilterComponentProps>>(
   ACCESS_FILTER_COMPONENT_INTERFACE_KEY,
   AdminAccessFilter,
-  { component: 'ServiceUsersPage' } // Exact component name
 );
+// Only the best-ranked registration is used; check that no second filter is registered
 ```
 
 ### "Navigation not redirecting"

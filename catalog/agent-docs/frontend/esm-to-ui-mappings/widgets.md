@@ -1,3 +1,8 @@
+---
+title: ESM to UI Mapping: Widget Components
+description: ESM to UI Mapping: Widget Components: ESM to UI model mapping reference for the generated React frontend.
+---
+
 # ESM to UI Mapping: Widget Components
 
 **[◄ Overview](./README.md)** | **[Tables & Navigation ►](./tables-navigation.md)**
@@ -30,7 +35,9 @@ This document covers widget components that display and edit data within contain
 | `ui:DataField` | `minValueBy` (ref) | Minimum value | DataFeature for min validation |
 | `ui:DataField` | `maxValueBy` (ref) | Maximum value | DataFeature for max validation |
 
-**Widget Type Attributes (type-specific):**
+#### Widget Type Attributes
+
+Type-specific attributes:
 
 | Attribute | Applies To | Values | Frontend Effect |
 |-----------|------------|--------|-----------------|
@@ -113,7 +120,8 @@ A complex widget for managing relationships (to-one or to-many).
 | `ui:TabularReferenceField` | `hiddenBy` (ref) | Dynamic visibility | DataFeature controlling hidden state |
 | `ui:TabularReferenceField` | `enabledBy` (ref) | Dynamic enabled | DataFeature controlling enabled state |
 
-**Conditional Behaviour (from ui-behaviour.md):**
+#### Conditional Behaviour
+
 
 | Condition | Enabled Attributes |
 |-----------|-------------------|

@@ -1,6 +1,13 @@
+---
+title: Frontend Validation Hooks
+description: Date, field, async and cross-field validation customization in container hooks of the generated React frontend.
+---
+
 # Validation Hooks
 
 ## Overview
+
+**Naming note.** The hook type names (`ServiceItemViewEditContainerHook`, ...) are generated per container in `~/containers/<path>/customization`, and the handler names in the examples (`get...ValidationProps`, `validate...`, `validateForm`) are illustrative: your returned object must match the generated container action type. Registration uses `<CONTAINER>_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY` from the same module, normally through the scaffold `register<Container>ActionsHook` (see [Action Hooks](./action-hooks.md)). Server-side validation results use `{ location, code, message }` (see [Frontend Error Handling](../error-handling.md)).
 
 Validation hooks allow you to customize input validation for forms. These hooks enable date/datetime validation, field-specific rules, custom error messages, and complex validation logic.
 
@@ -14,9 +21,9 @@ Customize date and datetime picker constraints, such as minimum/maximum dates, d
 
 ```typescript
 // src/custom/hooks/containerActions.tsx
-import { ViewItemFormContainerHook } from '~/generated';
+import type { ServiceItemViewEditContainerHook } from '~/containers/Service/Item/ServiceItemViewEdit/customization';
 
-export const itemFormHook: ViewItemFormContainerHook = (data, editMode, storeDiff) => {
+export const itemFormHook: ServiceItemViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     // Date field must be in the future
     getDateFieldValidationProps: (data) => {
@@ -36,15 +43,14 @@ export const itemFormHook: ViewItemFormContainerHook = (data, editMode, storeDif
 ### Registration
 
 ```typescript
-// src/custom/application-customizer.tsx
-import { CONTAINER_HOOK_INTERFACE_KEY } from '~/generated';
-import { itemFormHook } from './hooks/containerActions';
+// src/custom/hooks/containers/registerServiceItemViewEditActionsHook.ts
+import type { BundleContext } from '@pandino/pandino-api';
+import { SERVICE_ITEM_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY } from '~/containers/Service/Item/ServiceItemViewEdit/customization';
+import { itemFormHook } from '../containerActions';
 
-context.registerService(
-  CONTAINER_HOOK_INTERFACE_KEY,
-  itemFormHook,
-  { component: 'ServiceItemForm' }
-);
+export function registerServiceItemViewEditActionsHook(context: BundleContext) {
+  context.registerService(SERVICE_ITEM_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY, itemFormHook);
+}
 ```
 
 ### Advanced Examples
@@ -52,7 +58,7 @@ context.registerService(
 #### Entity Date Range
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     // From date validation
     getFromDateValidationProps: (formData) => {
@@ -87,7 +93,7 @@ export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, stor
 #### Item Within Entity Period
 
 ```typescript
-export const itemFormHook: ViewItemFormContainerHook = (data, editMode, storeDiff) => {
+export const itemFormHook: ServiceItemViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     getDateFieldValidationProps: (formData) => {
       if (formData.entity) {
@@ -117,7 +123,7 @@ export const itemFormHook: ViewItemFormContainerHook = (data, editMode, storeDif
 #### Business Days Only
 
 ```typescript
-export const formHook: ViewFormContainerHook = (data, editMode, storeDiff) => {
+export const formHook: ServiceFormViewEditContainerHook = (data, editMode, storeDiff) => {
   const isBusinessDay = (date: Date) => {
     const day = date.getDay();
     // Not weekend
@@ -130,7 +136,10 @@ export const formHook: ViewFormContainerHook = (data, editMode, storeDiff) => {
       // Add more holidays
     ];
 
-    const dateStr = date.toISOString().split('T')[0];
+    // Format with LOCAL date parts: toISOString() is UTC and shifts the day
+    // for users east or west of UTC, while getDay() above is local.
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const dateStr = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
     return !holidays.includes(dateStr);
   };
 
@@ -148,7 +157,7 @@ export const formHook: ViewFormContainerHook = (data, editMode, storeDiff) => {
 #### Time-Based Validation
 
 ```typescript
-export const itemFormHook: ViewItemFormContainerHook = (data, editMode, storeDiff) => {
+export const itemFormHook: ServiceItemViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     getDateFieldTimeValidationProps: (formData) => {
       return {
@@ -314,7 +323,7 @@ export const applicationCustomizer: ApplicationCustomizer = {
 #### Conditional Validation
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     validateField: (fieldName, value, formData) => {
       // Amount required for ACTIVE entities
@@ -353,7 +362,7 @@ Validate fields by calling external APIs or performing database checks.
 **IMPORTANT**: For async validation in JUDO, you can call custom validation operations through the `context.actions` object.
 
 ```typescript
-export const campaignFormHook: ViewCampaignFormContainerHook = (data, editMode, storeDiff, context) => {
+export const campaignFormHook: ServiceCampaignViewEditContainerHook = (data, editMode, storeDiff, context) => {
   return {
     validateTitle: async (title: string) => {
       if (!title || title.length < 3) {
@@ -380,12 +389,23 @@ export const campaignFormHook: ViewCampaignFormContainerHook = (data, editMode, 
 
 #### Debounced Async Validation
 
-```typescript
-import { debounce } from 'lodash';
+Put `debounceAsync` in `src/custom/utils/debounceAsync.ts` and import it where needed.
 
-export const campaignFormHook: ViewCampaignFormContainerHook = (data, editMode, storeDiff, context) => {
-  // ✅ CORRECT: Debounce using context actions
-  const checkTitleAvailability = debounce(async (title: string) => {
+```typescript
+// lodash debounce() is NOT suitable here: it returns the result of the previous
+// call (undefined for the first one) instead of a promise for the current call.
+// Use a promise-based debounce that resolves every call with its own result.
+function debounceAsync<A extends unknown[], R>(fn: (...args: A) => Promise<R>, wait: number) {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  return (...args: A): Promise<R> =>
+    new Promise((resolve, reject) => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => fn(...args).then(resolve, reject), wait);
+    });
+}
+
+export const campaignFormHook: ServiceCampaignViewEditContainerHook = (data, editMode, storeDiff, context) => {
+  const checkTitleAvailability = debounceAsync(async (title: string) => {
     return await context.actions.getAction('validateTitle')({ title });
   }, 500);
 
@@ -412,7 +432,7 @@ export const campaignFormHook: ViewCampaignFormContainerHook = (data, editMode, 
 #### Related Entity Validation
 
 ```typescript
-export const addressFormHook: ViewAddressFormContainerHook = (data, editMode, storeDiff, context) => {
+export const addressFormHook: ServiceAddressViewEditContainerHook = (data, editMode, storeDiff, context) => {
   return {
     validateAddress: async (fullAddress: string) => {
       if (!fullAddress) {
@@ -451,7 +471,7 @@ Validate fields based on values of other fields in the form.
 ### Basic Implementation
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     validateForm: (formData) => {
       const errors: Record<string, string> = {};
@@ -477,7 +497,7 @@ export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, stor
 #### Amount vs Quantity Validation
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     validateForm: (formData) => {
       const errors: Record<string, string> = {};
@@ -504,26 +524,21 @@ export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, stor
 #### Password Confirmation
 
 ```typescript
-export const userFormHook: ViewUserFormContainerHook = (data, editMode, storeDiff) => {
+export const userFormHook: ServiceUserViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     validateForm: (formData) => {
       const errors: Record<string, string> = {};
 
-      // Password strength
+      // Password strength: report the first failing rule only, so a later
+      // check cannot overwrite an earlier message.
       if (formData.password) {
         if (formData.password.length < 8) {
           errors.password = 'Password must be at least 8 characters';
-        }
-
-        if (!/[A-Z]/.test(formData.password)) {
+        } else if (!/[A-Z]/.test(formData.password)) {
           errors.password = 'Password must contain an uppercase letter';
-        }
-
-        if (!/[a-z]/.test(formData.password)) {
+        } else if (!/[a-z]/.test(formData.password)) {
           errors.password = 'Password must contain a lowercase letter';
-        }
-
-        if (!/[0-9]/.test(formData.password)) {
+        } else if (!/[0-9]/.test(formData.password)) {
           errors.password = 'Password must contain a number';
         }
       }
@@ -548,7 +563,7 @@ Validate as user types, providing immediate feedback.
 ### Basic Implementation
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     onFieldChange: (fieldName, value, formData) => {
       if (fieldName === 'title') {
@@ -573,7 +588,7 @@ export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, stor
 #### Character Counter with Validation
 
 ```typescript
-export const entityFormHook: ViewEntityFormContainerHook = (data, editMode, storeDiff) => {
+export const entityFormHook: ServiceEntityViewEditContainerHook = (data, editMode, storeDiff) => {
   return {
     onFieldChange: (fieldName, value, formData) => {
       if (fieldName === 'details') {
@@ -624,7 +639,7 @@ if (value.length < 3) { ... }
 
 ```typescript
 // ✅ Good - Debounce async calls
-const debouncedCheck = debounce(checkAPI, 500);
+const debouncedCheck = debounceAsync(checkAPI, 500);  // not lodash debounce
 
 // ❌ Bad - Call API on every keystroke
 validateName: async (value) => await checkAPI(value);
@@ -644,23 +659,21 @@ try {
 await validateLocation(value);
 ```
 
-### 5. Protect Custom Validators
+### 5. Keep Custom Validators Under src/custom
 
 ```bash
-# Add to .generator-ignore
-echo "src/custom/hooks/containerActions.tsx" >> .generator-ignore
+# Nothing to do: src/custom/ is gitignored and never regenerated, so no .generator-ignore entry is needed
 ```
 
 ## Complete Example
 
 ```typescript
 // src/custom/hooks/containerActions.tsx
-import { ViewCampaignFormContainerHook } from '~/generated';
-import { debounce } from 'lodash';
+import type { ServiceCampaignViewEditContainerHook } from '~/containers/Service/Campaign/ServiceCampaignViewEdit/customization';
+import { debounceAsync } from '~/custom/utils/debounceAsync';
 
-export const campaignFormHook: ViewCampaignFormContainerHook = (data, editMode, storeDiff, context) => {
-  // ✅ CORRECT: Debounced validation using context actions
-  const checkTitleAvailability = debounce(async (title: string) => {
+export const campaignFormHook: ServiceCampaignViewEditContainerHook = (data, editMode, storeDiff, context) => {
+  const checkTitleAvailability = debounceAsync(async (title: string) => {
     return await context.actions.getAction('validateTitle')({ title });
   }, 500);
 
@@ -687,8 +700,8 @@ export const campaignFormHook: ViewCampaignFormContainerHook = (data, editMode, 
         return 'Title must be less than 100 characters';
       }
 
-      const { exists } = await checkTitleAvailability(title);
-      if (exists) {
+      const result = await checkTitleAvailability(title);
+      if (result.data?.exists) {
         return 'Entity title already exists';
       }
     },
@@ -719,17 +732,16 @@ export const campaignFormHook: ViewCampaignFormContainerHook = (data, editMode, 
 **Check hook registration:**
 ```typescript
 context.registerService(
-  CONTAINER_HOOK_INTERFACE_KEY,
+  SERVICE_ENTITY_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
   entityFormHook,
-  { component: 'ServiceEntityForm' }
 );
 ```
 
 ### "Async validation too slow"
 
-**Add debouncing:**
+**Add debouncing** (promise-based, not lodash `debounce`):
 ```typescript
-const debouncedCheck = debounce(async (value) => {
+const debouncedCheck = debounceAsync(async (value) => {
   return await checkAPI(value);
 }, 500); // Wait 500ms after typing stops
 ```
