@@ -13,11 +13,11 @@ alternatives: [token-based-verification-entity, keycloak-magic-link-passkey-auth
 fragment: code-based-player-authentication
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
-Let a user who has no full account enter the application with an e-mail address and a short code. The code is the only credential. Registration and activation are two unmapped transfer-object operations on an application-level actor, so no identity provider is needed.
+Let a user who has no full account enter the application with an e-mail address and a short code. The code is the only credential. Registration and activation are two static operations on an unmapped transfer object that the player actor reaches, so no identity provider is needed. The fragment models the transfer objects only. Which actor exposes them, for example an anonymous actor (`anonymous = true` marks an unauthenticated guest), is a project choice.
 
 ### Activation promotes a pending code
 
@@ -39,6 +39,8 @@ Two unmapped transfer objects carry the flow. RegisterInput has an e-mail (requi
 - The active code is never shown to another user. Only the pending code is sent by e-mail.
 - Activation fails with one generic error for an unknown e-mail and for a wrong code. The two cases must not be distinguishable to the caller.
 - Interceptors run only on built-in operations. Register, activate and reset are custom operations, so each one checks its own rules and writes its own audit trail if needed.
+- Static operations are the only kind an unmapped transfer object allows, which is why register and activate are static.
+- The generic activation fault is a modeled fault transfer object. Every operation that throws it must declare it in `faults`, or the generated interface has no matching `throws` clause.
 
 ## Variations
 

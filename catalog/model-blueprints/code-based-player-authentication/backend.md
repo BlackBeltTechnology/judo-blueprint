@@ -2,12 +2,12 @@
 
 ### Register and activate are custom operations
 
-Register and activate are custom static operations on the Application transfer object. Interceptors do not run for them, so every rule must sit in the operation implementation itself.
+Register and activate are custom static operations on the Application transfer object. Interceptors do not run for custom operations (platform behaviour), so every rule must sit in the operation implementation itself.
 
 - Register looks up the User by e-mail. If none exists it creates one; if one exists it updates the name when one is given. Either way it writes a new pending code, never a second user.
-- Register generates the pending code with a secure random source, stores it on the User, and sends it by e-mail through a platform mail service inside the same operation.
+- Register generates the pending code with a secure random source, stores it on the User, and sends it by e-mail through a mail service (example project code) inside the same operation.
 - Activate looks up the User by e-mail and checks the pending code in the same query. On a match it clears the pending code and sets the active code.
-- On any mismatch activate returns one generic fault, so the caller cannot tell an unknown e-mail from a wrong code.
+- On any mismatch activate throws one generic business fault (declared in the operation's `faults`), so the caller cannot tell an unknown e-mail from a wrong code.
 
 ### Keep the e-mail send out of the business change
 

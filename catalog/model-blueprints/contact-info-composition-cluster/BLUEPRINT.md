@@ -13,7 +13,7 @@ alternatives: [partner-with-contact-details]
 fragment: contact-info-composition-cluster
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -41,11 +41,11 @@ Each contact entity has an instance toggle-active operation. EmailAddress also h
 
 ## Constraints
 
-- Contacts belong to exactly one parent. Deleting the parent deletes its contacts.
+- Contacts belong to exactly one parent. Deleting the parent deletes its contacts, because a composition cascades. The primary link is an association and cascades nothing.
 - The primary association points to one of the parent's own contacts, never to another parent's.
 - The active flag is required and defaults to true. A contact that is switched off stays visible in the parent but is not used for notifications.
 - Creating a contact does not set the primary. Setting the primary is a separate step, so the first contact added is not made primary by accident.
-- Interceptors run only on built-in operations. Toggle operations are custom, so they must check their own rules, such as keeping at least one active primary.
+- Interceptors run only on built-in operations. Toggle operations are custom, so they must check their own rules, such as keeping at least one active primary. A refusal is a business fault, which the operation must declare in its `faults`.
 
 ## Variations
 

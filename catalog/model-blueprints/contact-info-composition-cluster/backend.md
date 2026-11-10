@@ -2,9 +2,9 @@
 
 ### Toggle operations keep the parent valid
 
-Each toggle operation is a custom instance operation. Interceptors do not run for it, so the operation itself must check the rules that matter after a change.
+Each toggle operation is a custom instance operation. Interceptors do not run for custom operations (platform behaviour), so the operation itself must check the rules that matter after a change.
 
-- Toggling a contact off must not leave the parent without an active primary. If the contact is the primary, either refuse the change with a business fault or move the primary to another active contact in the same operation.
+- Toggling a contact off must not leave the parent without an active primary. If the contact is the primary, either refuse the change with a business fault (declared in the operation's `faults`, otherwise the generated interface has no matching `throws`) or move the primary to another active contact in the same operation.
 - Toggling a contact on does not change the primary.
 - Re-read the parent after the change and run its validation again, so the parent's rules see the new flag.
 
@@ -18,7 +18,7 @@ The primary association has an upper bound of one. Setting a new primary replace
 
 ### Project code, not platform API
 
-The example project implements these rules in its own toggle classes and create interceptors, with its own data-access classes. Those names are project code. Copy the pattern, not the names.
+The example project implements these rules in its own toggle classes and create interceptors (interceptors on the built-in create operations, which run inside the operation's transaction), with its own data-access classes. Those names are project code. Copy the pattern, not the names.
 
 ## Examples
 

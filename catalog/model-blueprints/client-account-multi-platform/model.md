@@ -4,7 +4,7 @@ The shape is a small cluster. A Client owns its platform accounts and its budget
 
 - **Client** has a required name identifier and a required isActive flag that defaults to true. It owns Account (0..*, composition) and AggregatedCampaign (0..*, composition).
 - **Account** has a required platform, an enumeration with one value per supported ad platform (GOOGLE and META in the fragment). It links to TrackedCampaign through a 0..* association, so a campaign can be read from its account without owning it.
-- **AggregatedCampaign** has a required name identifier and a required totalBudget. It groups tracked campaigns through a 0..* aggregation.
+- **AggregatedCampaign** has a required name identifier and a required totalBudget. It groups tracked campaigns through a 0..* association, so a campaign can sit in a budget group without being owned by it.
 - **TrackedCampaign** has a required name identifier and a required totalCost.
 
 The fragment shows the core of the cluster only. Cost history, fetched-data snapshots, credentials and discovered-but-untracked campaigns are real parts of such a system, but they are left out here. Model them as further owned children where they are needed.
@@ -23,6 +23,7 @@ classDiagram
   class AggregatedCampaign {
     <<Entity>>
     +String name [1]
+    +Double totalBudget [1]
   }
   class Client {
     <<Entity>>
@@ -37,9 +38,11 @@ classDiagram
   class TrackedCampaign {
     <<Entity>>
     +String name [1]
+    +Double totalCost [1]
   }
   Account --> "*" TrackedCampaign : trackedCampaigns
   Account ..> Platform : platform
+  AggregatedCampaign --> "*" TrackedCampaign : trackedCampaigns
   Client *-- "*" Account : accounts
   Client *-- "*" AggregatedCampaign : aggregatedCampaigns
 ```

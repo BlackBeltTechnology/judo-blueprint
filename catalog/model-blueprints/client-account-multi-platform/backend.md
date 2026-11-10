@@ -1,6 +1,6 @@
 ## Backend guidance
 
-The cluster is a set of operations that call a service layer. Interceptors do not run on the custom operations, so the rules for credentials, budgets and synchronisation sit in the services. Services, DAOs and the external adapter are project code, not platform API.
+The cluster is a set of operations that call a service layer. Interceptors do not run on custom operations (platform behaviour), so the rules for credentials, budgets and synchronisation sit in the services. Services, DAOs and the external adapter are example project code, not platform API.
 
 ### Operations are thin
 
@@ -34,4 +34,4 @@ Background jobs fetch costs, reset daily figures and archive expired budget grou
 
 ### Map external errors to business faults
 
-A failed call to an external platform is a business fault in the operation's contract, not a raw exception. Translate it in the service, and declare the fault on each operation that can raise it.
+A failed call to an external platform is a business fault in the operation's contract, not a raw exception. Translate it in the service. A custom operation that throws a business fault must declare that fault in its `faults`, otherwise the generated interface has no matching `throws` clause and the build fails.

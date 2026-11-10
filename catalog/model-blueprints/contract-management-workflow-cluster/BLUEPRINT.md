@@ -13,7 +13,7 @@ alternatives: [product-with-approval-workflow, approval-workflow-pattern]
 fragment: contract-management-workflow-cluster
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -25,7 +25,7 @@ The workflow owns its stage templates. Starting approval copies each template on
 
 ### Stage kinds share one abstract base
 
-Workflow stages and contract stages both extend one abstract Stage. The common fields (name, order, activity type) are defined once. Each kind adds only what it needs.
+Workflow stages and contract stages both extend one abstract Stage (an entity with `abstract = true` that cannot be instantiated directly and must be subclassed). The common fields (name, order, activity type) are defined once. Each kind adds only what it needs.
 
 ## Structure
 
@@ -42,7 +42,8 @@ The abstract Stage has a name (required), an order (required) and an activity ty
 - A contract stage is created from a workflow stage only when approval starts. The contract never changes the template.
 - Stages are ordered by their order value. Two stages of one workflow do not share an order.
 - The status moves forward through the stages and reaches rejected only from pending. The enumeration does not enforce this; the operations do.
-- Interceptors do not run for the approval operations, which are custom. Each one must check the current status and the caller's role.
+- Interceptors do not run for custom operations (platform behaviour), so they do not run for the approval operations. Each one must check the current status and the caller's role. A refused transition is a business fault, which the operation must declare in its `faults`, or the generated interface has no matching `throws` clause.
+- The contract owns its runtime stages by composition, so deleting a contract deletes its stages. The link to the Workflow is an association and cascades nothing. Copying templates into runtime stages is project practice, not a platform feature.
 - A stage that does not match the contract's conditions is approved automatically and does not wait for a person.
 
 ## Variations

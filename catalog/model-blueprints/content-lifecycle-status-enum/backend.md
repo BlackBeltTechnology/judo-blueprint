@@ -2,11 +2,11 @@
 
 ### Status changes are custom operations
 
-A change of status is a custom operation on the content entity: publish, delete, and optionally expire or moderate. Each operation sets the status and runs its side effects in one place. Interceptors do not run for these operations, so the status rules must sit in the operation.
+A change of status is a custom operation on the content entity: publish, delete, and optionally expire or moderate. Each operation sets the status and runs its side effects in one place. Interceptors do not run for custom operations (platform behaviour), so the status rules must sit in the operation.
 
 - Publish sets the status to PUBLISHED and records the publication time, then runs the publish side effects, such as creating feed entries or notifications.
 - Delete sets the status to DELETED. It is a soft delete: the row stays, so the content can be listed as deleted and audited.
-- Each operation checks the current status first. A transition from DELETED back to PUBLISHED is a rule the operation must enforce, not something the enumeration prevents.
+- Each operation checks the current status first. A transition from DELETED back to PUBLISHED is a rule the operation must enforce, not something the enumeration prevents. A refused transition is a business fault, which the operation must declare in its `faults` so the generated interface has a matching `throws` clause.
 
 ### Put the transition in a shared service
 
@@ -22,7 +22,7 @@ A moderation delete is a status change made by a platform administrator, not by 
 
 ### Project code, not platform API
 
-The example project implements these transitions with its own service classes, operation classes and audit service. Those names are project code. Copy the pattern, not the names.
+The example project implements these transitions with its own service classes, operation classes and audit service (example project code). Those names are project code. Copy the pattern, not the names.
 
 ## Examples
 

@@ -226,8 +226,14 @@
         <view xmi:id="_nayJ0txUEfG5M6jHXJMkIQ" name="Account_View_Edit" label="Account View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
       <elements xsi:type="structure:EntityType" xmi:id="_nho_wNxUEfG5M6jHXJMkIQ" name="AggregatedCampaign" createable="false" updateable="false" deleteable="false">
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_LY6RsNzcEfGQovBokWDqiQ" lower="0" upper="-1" target="_not4INxUEfG5M6jHXJMkIQ" name="trackedCampaigns" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_LY6RsNzcEfGQovBokWDqiQ" getterExpression="">
+          <inherited xmi:id="_LY64wNzcEfGQovBokWDqiQ"/>
+        </relations>
         <attributes xsi:type="structure:DataMember" xmi:id="_pCmcMNxUEfG5M6jHXJMkIQ" name="name" dataType="_nhZUUuOjEeuTFeBuQgBSDg" required="true" defaultExpression="" binding="_pCmcMNxUEfG5M6jHXJMkIQ" getterExpression="" identifier="true" memberType="STORED">
           <inherited xmi:id="_pCmcMdxUEfG5M6jHXJMkIQ"/>
+        </attributes>
+        <attributes xsi:type="structure:DataMember" xmi:id="_IVztENzcEfGQovBokWDqiQ" name="totalBudget" dataType="_nhZUVeOjEeuTFeBuQgBSDg" required="true" defaultExpression="" binding="_IVztENzcEfGQovBokWDqiQ" getterExpression="" identifier="false" memberType="STORED">
+          <inherited xmi:id="_IVztEdzcEfGQovBokWDqiQ"/>
         </attributes>
         <mapping xmi:id="_nho_wdxUEfG5M6jHXJMkIQ" target="_nho_wNxUEfG5M6jHXJMkIQ"/>
         <form xmi:id="_nho_w9xUEfG5M6jHXJMkIQ" name="AggregatedCampaign_Form" label="AggregatedCampaign Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
@@ -237,6 +243,9 @@
       <elements xsi:type="structure:EntityType" xmi:id="_not4INxUEfG5M6jHXJMkIQ" name="TrackedCampaign" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_pPwucNxUEfG5M6jHXJMkIQ" name="name" dataType="_nhZUUuOjEeuTFeBuQgBSDg" required="true" defaultExpression="" binding="_pPwucNxUEfG5M6jHXJMkIQ" getterExpression="" identifier="true" memberType="STORED">
           <inherited xmi:id="_pPxVgNxUEfG5M6jHXJMkIQ"/>
+        </attributes>
+        <attributes xsi:type="structure:DataMember" xmi:id="_IiNxYNzcEfGQovBokWDqiQ" name="totalCost" dataType="_nhZUVeOjEeuTFeBuQgBSDg" required="true" defaultExpression="" binding="_IiNxYNzcEfGQovBokWDqiQ" getterExpression="" identifier="false" memberType="STORED">
+          <inherited xmi:id="_IiNxYdzcEfGQovBokWDqiQ"/>
         </attributes>
         <mapping xmi:id="_not4IdxUEfG5M6jHXJMkIQ" target="_not4INxUEfG5M6jHXJMkIQ"/>
         <form xmi:id="_not4I9xUEfG5M6jHXJMkIQ" name="TrackedCampaign_Form" label="TrackedCampaign Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>

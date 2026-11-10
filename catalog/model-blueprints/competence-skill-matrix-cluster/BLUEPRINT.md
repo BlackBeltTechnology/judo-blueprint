@@ -13,7 +13,7 @@ alternatives: [approval-workflow-pattern]
 fragment: competence-skill-matrix-cluster
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -29,23 +29,24 @@ The approve operation copies the requested level to the approved level. A skill 
 
 ## Structure
 
-The Competence entity has a name (required), a strategic flag (required, default false) and an active flag (required, default true). It is the catalog item that people are assessed on. Its skills and skill targets are its related elements.
+The Competence entity has a name (required), a strategic flag (required, default false) and an active flag (required, default true). It is the catalog item that people are assessed on. Skills and skill targets point to it; it keeps no list of them.
 
 The SkillLevel entity is reference data: a name (required) and a numeric score (required). A Skill refers to two SkillLevel entries, requested and approved, each optional. A SkillTarget refers to one SkillLevel (required).
 
-The Skill entity holds no stored data. It is a junction with a required association to Competence (1..1), an optional association to User (0..1), and two optional associations to SkillLevel. Its approve operation is an instance operation.
+The Skill entity holds no stored data. It is a junction with a required one-way association to Competence (1..1), an optional two-way association to User (0..1, partner User.skills), and two optional associations to SkillLevel. Its approve operation is an instance operation.
 
-The SkillTarget entity is a goal: a completed flag and a deadline date. It refers to a SkillLevel (1..1) and to a Competence (1..1). It is owned by a User through a composition on the User's training plans.
+The SkillTarget entity is a goal: a completed flag and a deadline date. It refers to a SkillLevel (1..1) and to a Competence (1..1), both one-way associations. It is owned by a User through a composition on the User's training plans.
 
 The User entity is the employee. It holds a full name, a many-association to its skills, and the composition of its skill targets. Its operations are a bulk approval of its skills and the creation of a training plan.
 
 ## Constraints
 
-- A Skill refers to exactly one Competence. A Competence can have many skills.
+- A Skill refers to exactly one Competence. Many skills can point to one Competence.
 - The requested and approved levels are optional and independent. Approval is a separate action, not a side effect of setting the requested level.
 - A SkillTarget belongs to exactly one User. Deleting the User deletes its targets, because they are a composition.
 - Reference data (SkillLevel and Competence) is not created or changed through the people-facing actors.
-- Derived names and scores for display are computed on read. They are not stored on the Skill.
+- Derived names and scores for display are derived attributes (`memberType = DERIVED` with a getter expression), computed on read and not stored on the Skill. The fragment leaves them out, so add them where the screens need them.
+- Skill and SkillTarget point to Competence one-way (required association). Competence does not list its skills. A composition cascades deletion, an association does not, so only the User's targets are removed with the User.
 
 ## Variations
 

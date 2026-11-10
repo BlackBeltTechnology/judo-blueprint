@@ -13,7 +13,7 @@ alternatives: [external-api-adapter-provider-pattern]
 fragment: client-account-multi-platform
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -29,11 +29,11 @@ A budget group sums the spend of its tracked campaigns. The sum is recalculated 
 
 ## Structure
 
-The Client entity has a required name identifier and a required isActive flag. It owns Account and AggregatedCampaign through compositions (0..*). Account has a required platform enumeration and a 0..* association to TrackedCampaign. AggregatedCampaign groups tracked campaigns through a 0..* aggregation. TrackedCampaign has a required name and total cost.
+The Client entity has a required name identifier and a required isActive flag. It owns Account and AggregatedCampaign through compositions (0..*). Account has a required platform enumeration and a 0..* association to TrackedCampaign. AggregatedCampaign groups tracked campaigns through a 0..* association (reference only, no cascade). TrackedCampaign has a required name and total cost.
 
 ## Constraints
 
-- A composition has one owner. Accounts and budget groups belong to one client.
+- A composition has one owner and deletes its children with the parent. Accounts and budget groups belong to one client. Associations carry no cascade.
 - A bidirectional association cannot be a composition on either side. Keep the campaign link one-way.
 - The platform is a required enumeration. Adding a platform adds an enumeration value and an adapter, not a new entity.
 - Budget totals are derived from the tracked campaigns in the service, not entered by hand.

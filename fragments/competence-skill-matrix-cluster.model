@@ -192,12 +192,6 @@
   <elements xsi:type="namespace:Package" xmi:id="_s-YSENxQEfGsD7SnMu3WGQ" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_tC_sUNxQEfGsD7SnMu3WGQ" name="competence_skill_matrix_cluster">
       <elements xsi:type="structure:EntityType" xmi:id="_uLgzkNxQEfGsD7SnMu3WGQ" name="Competence" createable="false" updateable="false" deleteable="false">
-        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_v4qR4txQEfGsD7SnMu3WGQ" lower="0" upper="1" target="_uWX_wNxQEfGsD7SnMu3WGQ" name="skill" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_v4qR4NxQEfGsD7SnMu3WGQ" primary="false">
-          <inherited xmi:id="_v4qR49xQEfGsD7SnMu3WGQ"/>
-        </relations>
-        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_xGYpQtxQEfGsD7SnMu3WGQ" lower="0" upper="1" target="_ucZIMNxQEfGsD7SnMu3WGQ" name="skillTarget" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_xGYpQNxQEfGsD7SnMu3WGQ" primary="false">
-          <inherited xmi:id="_xGYpQ9xQEfGsD7SnMu3WGQ"/>
-        </relations>
         <attributes xsi:type="structure:DataMember" xmi:id="_vR4lwNxQEfGsD7SnMu3WGQ" name="name" dataType="_nhZUUuOjEeuTFeBuQgBSDg" required="true" defaultExpression="" binding="_vR4lwNxQEfGsD7SnMu3WGQ" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_vR4lwdxQEfGsD7SnMu3WGQ"/>
         </attributes>
@@ -225,9 +219,6 @@
         <view xmi:id="_uQuqwdxQEfGsD7SnMu3WGQ" name="SkillLevel_View_Edit" label="SkillLevel View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
       <elements xsi:type="structure:EntityType" xmi:id="_uWX_wNxQEfGsD7SnMu3WGQ" name="Skill" createable="false" updateable="false" deleteable="false">
-        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_v4qR4NxQEfGsD7SnMu3WGQ" lower="1" upper="1" target="_uLgzkNxQEfGsD7SnMu3WGQ" name="competence" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_v4qR4txQEfGsD7SnMu3WGQ" primary="true">
-          <inherited xmi:id="_v4qR4dxQEfGsD7SnMu3WGQ"/>
-        </relations>
         <relations xsi:type="structure:OneWayRelationMember" xmi:id="_w3zasNxQEfGsD7SnMu3WGQ" lower="0" upper="1" target="_uQuDsNxQEfGsD7SnMu3WGQ" name="approvedLevel" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_w3zasNxQEfGsD7SnMu3WGQ" getterExpression="">
           <inherited xmi:id="_w3zasdxQEfGsD7SnMu3WGQ"/>
         </relations>
@@ -236,6 +227,9 @@
         </relations>
         <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_xP9cAtxQEfGsD7SnMu3WGQ" lower="0" upper="1" target="_uiBPENxQEfGsD7SnMu3WGQ" name="user" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_xP9cANxQEfGsD7SnMu3WGQ" primary="false">
           <inherited xmi:id="_xP9cA9xQEfGsD7SnMu3WGQ"/>
+        </relations>
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_bPESEdzcEfGE4K1kA7Ob6g" lower="1" upper="1" target="_uLgzkNxQEfGsD7SnMu3WGQ" name="competence" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_bPESEdzcEfGE4K1kA7Ob6g" getterExpression="">
+          <inherited xmi:id="_bPESEtzcEfGE4K1kA7Ob6g"/>
         </relations>
         <mapping xmi:id="_uWYm0NxQEfGsD7SnMu3WGQ" target="_uWX_wNxQEfGsD7SnMu3WGQ"/>
         <operations xmi:id="_zzfIsNxQEfGsD7SnMu3WGQ" name="approve" customImplementation="false" body="// no code" stateful="true" operationType="INSTANCE" binding="" initializer="false">
@@ -249,8 +243,8 @@
         <relations xsi:type="structure:OneWayRelationMember" xmi:id="_xBosINxQEfGsD7SnMu3WGQ" lower="1" upper="1" target="_uQuDsNxQEfGsD7SnMu3WGQ" name="skillLevel" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_xBosINxQEfGsD7SnMu3WGQ" getterExpression="">
           <inherited xmi:id="_xBosIdxQEfGsD7SnMu3WGQ"/>
         </relations>
-        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_xGYpQNxQEfGsD7SnMu3WGQ" lower="1" upper="1" target="_uLgzkNxQEfGsD7SnMu3WGQ" name="competence" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_xGYpQtxQEfGsD7SnMu3WGQ" primary="true">
-          <inherited xmi:id="_xGYpQdxQEfGsD7SnMu3WGQ"/>
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_bYxAoNzcEfGE4K1kA7Ob6g" lower="1" upper="1" target="_uLgzkNxQEfGsD7SnMu3WGQ" name="competence" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_bYxAoNzcEfGE4K1kA7Ob6g" getterExpression="">
+          <inherited xmi:id="_bYxAodzcEfGE4K1kA7Ob6g"/>
         </relations>
         <attributes xsi:type="structure:DataMember" xmi:id="_vqKi4NxQEfGsD7SnMu3WGQ" name="completed" dataType="_nhZUV-OjEeuTFeBuQgBSDg" defaultExpression="" binding="_vqKi4NxQEfGsD7SnMu3WGQ" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_vqKi4dxQEfGsD7SnMu3WGQ"/>

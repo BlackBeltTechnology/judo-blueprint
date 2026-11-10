@@ -13,7 +13,7 @@ alternatives: [draft-done-status-enum, active-suspended-deactivated-status-enum]
 fragment: content-lifecycle-status-enum
 diagram: { kinds: [enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 
@@ -35,11 +35,11 @@ A content entity holds one status attribute typed with this enumeration. Its ope
 
 ## Constraints
 
-- The status field is read-only for the generated edit pages. Only operations change it.
+- The status field is read-only for the generated edit pages. Only operations change it. This is project practice built on the entity's attribute and access flags.
 - A new item starts as DRAFT. Publishing sets PUBLISHED and records a publication time.
 - Deletion is soft: the status becomes DELETED and the row stays in place.
-- Interceptors do not run for the status operations, which are custom. Each one must check the current status and its own permission.
-- Values must keep their ordinals once saved, because stored data refers to them by position.
+- Interceptors do not run for custom operations (platform behaviour), so they do not run for the status operations. Each one must check the current status and its own permission.
+- Each value has a unique ordinal (0 to 9999 in JSL models). The runtime delivers the ordinal, and stored data refers to values by it, so keep the ordinals fixed once data is saved.
 
 ## Variations
 
