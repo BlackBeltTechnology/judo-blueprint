@@ -1,0 +1,141 @@
+{
+ "batch": "bp07",
+ "entries": {
+  "freight-logistics-state-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "enumeration type members ordinal attribute",
+    "enumeration persisted by ordinal renumbering members"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md#EnumerationMember Attribute Rules"
+   ],
+   "fixes": [
+    "model.md had no Model shape section; added with ordinals, uniqueness and persistence",
+    "clarified actor restriction is project logic"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "freight-reservation-cluster": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "OperationCallInterceptor postCall getOperations",
+    "VariableResolver resolve ACTOR email principal",
+    "generated DAO set relation setter"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#OperationCallInterceptor Interface",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "model.md lacked Model shape; added",
+    "backend.md: added platform facts on interceptors (built-in only, tx rollback), labelled project classes",
+    "VariableResolver.resolve signature corrected",
+    "access scoping labelled project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "history-audit-trail-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "crud flags createable updatable deletable",
+    "default value now() timestamp",
+    "composition relation create child DAO",
+    "relation-based-entity-creation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/README.md#CRUD Flags",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Time and Time Zones",
+    "catalog/agent-docs/backend/data-access-guide.md#CRUD Operations"
+   ],
+   "fixes": [
+    "model.md lacked Model shape; added with CRUD flags and composition",
+    "backend.md: platform facts + clock difference, project classes labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "identity-account-organization-cluster": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "AuthenticationInterceptor",
+    "X-Judo-RequestParameters REQUEST variable header",
+    "AppBarExtraComponentsHook hooks guest page",
+    "refreshPrincipal principal guard flags derived"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/authentication-guide.md#AuthenticationInterceptor Interface",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Protocol Headers",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/frontend/extension-points.md#Guest Page"
+   ],
+   "fixes": [
+    "model.md lacked Model shape; added incl. TOs and derived guards",
+    "backend.md: AuthenticationInterceptor vs OperationCallInterceptor, custom ops not intercepted; project services labelled",
+    "frontend.md: platform hooks vs project code; UI hiding not protection"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "idm-realm-keycloak-integration": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "Keycloak realm client claim mapping multi-realm",
+    "Realm and client generation from the model"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/deployment/osgi-runtime-services.md#Realm and client generation from the model",
+    "catalog/agent-docs/backend/authentication-guide.md#Principal-to-Actor Resolution and Multi-Client Mapping"
+   ],
+   "fixes": [
+    "model.md lacked Model shape; added",
+    "backend.md: platform realm/client generation vs project RealmManager code labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "infinite-scroll-feed-component": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "cursor pagination seek limit",
+    "replace generated table component custom visual element",
+    "_seek keyset"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#REST Wire Contract",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook"
+   ],
+   "fixes": [
+    "frontend.md: added platform facts (seek params, component replacement key), labelled project code, server-side enforcement of role gate"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "initializer-entity-with-init-operation": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "initializer operation static stateful startup",
+    "application startup run operation automatically"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#INITIALIZER"
+   ],
+   "fixes": [
+    "claim that init runs automatically at startup/without security context unsupported by docs; reworded as project routine",
+    "added: initializer is static, no input",
+    "backend.md labelled InitializerContext as illustrative"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

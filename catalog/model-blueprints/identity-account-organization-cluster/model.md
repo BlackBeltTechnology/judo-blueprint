@@ -1,38 +1,18 @@
-## Examples
+## Model shape
 
-### ubives
-**Entity cluster:**
-- **IdentityEntity**: `Ubives::entities::IdentityEntity` (non-CRUD)
-  - Attributes: email (req)
-  - Relations: faceIdentifier (0..* ASSOC to FaceIdentifierEntity), user (0..* ASSOC to UserEntity), account (0..* ASSOC to AccountEntity)
-  - Central identity hub: one person has one identity, which can link to multiple accounts and multiple organization-scoped users
-- **AccountEntity**: `Ubives::entities::AccountEntity` (non-CRUD)
-  - Attributes: userName (req), email (req), isSuperAdmin (req, default: false), isNotSuperAdmin (derived), isSingleOrganizationForAccount (req, default: true), isNotSingleOrganizationForAccount (derived)
-  - Relations: identity (1..1 ASSOC to IdentityEntity), organizationAccesses (0..* COMPOSITION to OrganizationAccessEntity)
-  - Operations: createOrganization (INSTANCE)
-  - Guard attributes (isNotSuperAdmin, isNotSingleOrganizationForAccount) control UI visibility
-- **UserEntity**: `Ubives::entities::UserEntity` (non-CRUD)
-  - Attributes: userName (req), email (req), enabled (req, default: true), notEnabled (derived)
-  - Relations: identity (1..1 ASSOC), accounts (0..* DERIVED), organization (0..1 DERIVED)
-  - Operations: enableUser (INSTANCE), disableUser (INSTANCE)
-- **OrganizationEntity**: `Ubives::entities::OrganizationEntity` (non-CRUD)
-  - Attributes: name (req), isRegistrationFeatureSupported (req, default: false), isRegistrationFeatureNotSupported (derived), realmName (optional)
-  - Relations: applications (0..* COMPOSITION), invitations (0..* COMPOSITION), realm (0..1 COMPOSITION to RealmEntity), users (0..* COMPOSITION), organizationAccesses (0..* ASSOC)
-  - Operations: createApplication, inviteAccount, inviteUser, enableOrganizationRegistration, disableOrganizationRegistration, leaveOrganization, deleteOrganization (all INSTANCE)
-- **OrganizationAccessEntity**: `Ubives::entities::OrganizationAccessEntity` (non-CRUD)
-  - Attributes: type (req, OrganizationAccessType enum), enabled (req, default: true), userName (derived), organizationName (derived)
-  - Relations: account (0..1 DERIVED), organization (1..1 ASSOC)
-  - Operations: cancelAccess, changeAccessToAdmin, changeAccessToOwner, disableAccess, enableAccess (all INSTANCE)
-- **OrganizationAccessType enum**: `Ubives::entities::OrganizationAccessType` -- OWNER(1), ADMIN(2)
+All cluster entities are non-CRUD: they are written by custom operations and services, not by generated create pages.
 
-**Transfer objects:**
-- `Account` TO -- mapped to AccountEntity; operations: createOrganization
-- `AccountPrincipal` TO -- mapped to AccountEntity with guard flags: isOrganizationSelected, isNotOrganizationSelected, alwaysTrue, alwaysFalse
-- `Profile` TO -- mapped to AccountEntity; operations: createOrganization, leaveOrganization
-- `Organization` TO -- mapped to OrganizationEntity with users, applications, invitations, organizationAccounts relations; operations: createApplication, inviteAccount, inviteUser, enable/disableOrganizationRegistration, leaveOrganization
-- `DashboardOrganization` TO -- simplified Organization view for dashboard; all operations mapped
-- `OrganizationAccount` TO -- mapped to OrganizationAccessEntity; attributes: type, email, userName, isAdministrator, isOwner, enabled; operations: cancelAccess, changeAccessToAdmin, changeAccessToOwner, disableAccess, enableAccess
-- `PartnerDashboard` TO -- empty access point TO with static operations: createOrganization, createApplication, inviteAccount, inviteUser, etc.
+- `IdentityEntity`: required `email`; associations (0..*) to accounts, organization-scoped users and face identifiers. The identity is the hub for one person.
+- `AccountEntity`: required `userName` and `email`, `isSuperAdmin` (default false) and `isSingleOrganizationForAccount` (default true); association (1..1) to its identity; composition (0..*) of `OrganizationAccessEntity`. Derived negations of the two flags (`isNotSuperAdmin` and so on) are guard attributes for the UI; derived attributes are computed on read, never stored.
+- `UserEntity` (organization-scoped user): required `userName`, `email` and `enabled` (default true); association (1..1) to its identity; derived relations to accounts and to its organization, plus a derived `notEnabled` guard.
+- `OrganizationEntity`: required `name`, `isRegistrationFeatureSupported` (default false), optional `realmName`; compositions of applications (0..*), invitations (0..*), users (0..*) and one optional `RealmEntity`; association (0..*) to the accesses that point at it.
+- `OrganizationAccessEntity`: required `enabled` (default true) and `type`, an `OrganizationAccessType` enumeration with OWNER (1) and ADMIN (2); association (1..1) to the organization; derived `account`, `userName` and `organizationName`.
+
+Instance operations in the reference project, such as `createOrganization`, `inviteUser`, `changeAccessToAdmin` and `enableAccess`, are exposed on transfer objects mapped to these entities. They are custom operations (see the backend notes).
+
+**Transfer objects.** `Account`, `Profile` and the principal transfer object `AccountPrincipal` map to `AccountEntity`; `Organization` and `DashboardOrganization` map to `OrganizationEntity`; `OrganizationAccount` maps to `OrganizationAccessEntity` and flattens the type into `isAdministrator` and `isOwner`; `PartnerDashboard` is an unmapped access point with static operations. The principal's derived flags (`isOrganizationSelected`, `alwaysTrue`, `alwaysFalse`) hide or show UI parts; they are visibility hints only and do not replace access rules.
+
+**Pages.** Generated View and Table pages of `Organization` and `OrganizationAccount` are kept; the dashboard page is a project customization (see the frontend notes). The diagram below omits transfer objects and derived members.
 
 ## Structure diagram
 

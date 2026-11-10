@@ -12,7 +12,7 @@ evidence: ["mlszksz-platform:unrecorded"]
 alternatives: []
 fragment: "none: frontend-only"
 first_seen: 2026-03-09
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 

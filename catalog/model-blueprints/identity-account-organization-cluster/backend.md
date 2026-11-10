@@ -1,5 +1,7 @@
 ## Overview
 
+Platform facts: an `AuthenticationInterceptor` is a different mechanism from `OperationCallInterceptor`. It runs after a successful external login on the framework `#_principal` operation and receives the token claims, so it can create a local record on first login. Custom operations are never intercepted by `OperationCallInterceptor`, so permission checks on operations such as `changeAccessToAdmin` belong inside each custom implementation. Request-scoped values such as the selected organization are read through `VariableResolver` (category REQUEST; the client sends them in the `X-Judo-RequestParameters` header). Service names (`AccountService`, `Variables`, `RealmManager`, `ErrorCode`) below are example project code.
+
 The Identity-Account-Organization entity cluster is backed by a set of OSGi service layer classes that encapsulate multi-tenant account management, organization access control, and user lifecycle operations. Custom operation classes delegate to these services, and authentication interceptors ensure accounts are auto-provisioned on first login.
 
 ## Implementation Pattern

@@ -1,12 +1,12 @@
-## Examples
+## Model shape
 
-### rackinspect
-- **Entity**: `rackinspect::entities::History` (non-CRUD)
-  - Attributes: whoDid (req), whatDid (req), whenDid (req)
-  - No relations on the entity itself
-- Composed by Task entity via `history` (0..* COMPOSITION)
-- Task entity also has: created (default: now()), modified (default: now()), registryNumber; relations: documents (0..* COMPOSITION to Document), lastDocument (0..1 ASSOC), assignedTo (1..1 ASSOC to User)
-- Provides a simple chronological audit log per task without structured enum-based action types
+`History` is an entity whose create, update and delete flags are off, so no generated page or endpoint can write it. It has three required attributes: `whoDid` (string), `whatDid` (string) and `whenDid` (timestamp). It has no relations of its own.
+
+A parent entity (`Task` in the reference project) composes History rows through `history`, a 0..* composition relation, so the rows are deleted with the parent. Because the relation is a composition, a row is created through the parent's relation, not on its own.
+
+The timestamp has no model default in this shape: backend code sets it when it writes the row. A model default expression such as the current timestamp is a possible variation; the platform evaluates it in the platform time zone, not the JVM zone (see the platform time-zone notes in the backend agent-docs).
+
+UI: the generated Table of History rows on the parent's View page is kept read-only. The create, edit and delete actions do not appear because the flags are off.
 
 ## Structure diagram
 

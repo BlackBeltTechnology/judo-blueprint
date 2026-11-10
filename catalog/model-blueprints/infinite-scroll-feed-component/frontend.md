@@ -1,5 +1,7 @@
 ## Overview
 
+Platform facts: a generated visual element is replaced by registering a component under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` with the element's generated component key. The generated list REST call takes an `_orderBy` and a `_seek` keyset cursor (`lastItem`, `limit`, `offset`, `reverse`) plus per-attribute filter operators; a list call without seek returns all rows. Hiding a button by role is a UI convenience only: the server must enforce the create permission through access rules. File names, hook names and the post types below are example project code.
+
 A custom card-based social feed that replaces the generated data grid with an infinite-scrolling, mobile-first feed panel. Uses Pandino's `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` to replace the default table component. Framework: React.
 
 ## Implementation Pattern

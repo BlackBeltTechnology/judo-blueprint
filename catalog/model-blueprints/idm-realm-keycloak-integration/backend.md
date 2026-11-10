@@ -1,5 +1,7 @@
 ## Overview
 
+Platform facts: the platform connects to Keycloak itself through its own configuration (the realm, client and claim mapping generated from the model are described in the deployment and authentication agent-docs). Creating further realms and users at run time through the Keycloak admin API is project code. An authentication interceptor can provision users on first login. The classes below (`RealmManager`, `KeycloakFactoryComponent`, `KeycloakFlowCreator`, `AccountService`, `InviteService`, `ErrorCode`) are example project code, not platform classes.
+
 The IDM/Realm entity cluster is backed by a dedicated `keycloak-client` module that provides a `RealmManager` OSGi service for managing Keycloak realms, users, and clients. The `InitDefaultIdm` initializer operation seeds the default IDM server and platform realm on first startup. All account and invitation operations that create users also provision them in Keycloak through `RealmManager`.
 
 ## Implementation Pattern

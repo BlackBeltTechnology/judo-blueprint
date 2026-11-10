@@ -1,13 +1,10 @@
-## Examples
+## Model shape
 
-### reserve-app
-- **FreightState enum**: `ReserveApp::entities::FreightState`
-  - Members: NOT_SUBMITTED(1), SUBMITTED(2), REJECTED(3), APPROVED(4), SUSPENDED(5), ARRIVED(6), FINISHED(7), DELAYED_UNLOADING(8), DELAYED_ARRIVAL(9)
-  - Used by: FreightReservation entity (state attribute)
-  - Workflow: Partner creates reservation (NOT_SUBMITTED) -> submits to logistician (SUBMITTED) -> logistician approves (APPROVED) or rejects (REJECTED) -> vehicle arrives (ARRIVED) -> unloading completes (FINISHED)
-  - Either party can suspend a reservation (SUSPENDED), tracked via suspendedByPartner and suspendedByLogistician relations to User
-  - Delay states (DELAYED_ARRIVAL, DELAYED_UNLOADING) track schedule deviations
-- Supports 5 actor roles (AdminActor, PartnerActor, LogisticianActor, DoormanActor, Readonly) that participate in different stages of the freight lifecycle
+The shape is one enumeration, `FreightState`, with nine members. The ordinals in the reference project are NOT_SUBMITTED 1, SUBMITTED 2, REJECTED 3, APPROVED 4, SUSPENDED 5, ARRIVED 6, FINISHED 7, DELAYED_UNLOADING 8 and DELAYED_ARRIVAL 9. Ordinals are unique within the enumeration and are persisted, so existing members are never renumbered; a new member takes a new ordinal.
+
+A reservation entity carries one required attribute of type `FreightState`. The entity is not part of this shape. In the reference project the main path is NOT_SUBMITTED, SUBMITTED, APPROVED or REJECTED, ARRIVED, FINISHED. Either party can set SUSPENDED, and who did it is recorded on the reservation as relations to the user, not in the enumeration. DELAYED_ARRIVAL and DELAYED_UNLOADING record schedule deviations.
+
+Five actor roles take part in different stages in the reference project: admin, partner, logistician, doorman and a read-only role. The enumeration itself does not restrict which actor may move a reservation to which state; that is project logic on the reservation (access rules or operations), not a platform feature of the enumeration.
 
 ## Structure diagram
 

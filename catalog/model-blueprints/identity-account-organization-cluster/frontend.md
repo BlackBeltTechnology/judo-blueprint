@@ -1,5 +1,7 @@
 ## Overview
 
+Platform facts: the React frontend extends through registered hooks (AppBar extra components, navigation interceptor, guest page, axios customization) and generated pages are overridden by listing them in `.generator-ignore`. Principal flags are derived attributes of the principal transfer object; the page re-reads them after `refreshPrincipal()`. Hiding UI does not protect operations. The selector, tile dashboard and organization header handling below are example project code.
+
 The identity-account-organization-cluster blueprint has substantial React frontend customization in the account actor application. The key frontend implementation is a custom organization selector in the AppBar that allows users to switch between organizations, combined with an axios interceptor that passes the selected organization as a request header, a navigation interceptor that preserves the organization query parameter across page transitions, a custom landing page with principal-guarded action tiles, and a fully overridden PartnerDashboard page.
 
 ## Implementation Pattern

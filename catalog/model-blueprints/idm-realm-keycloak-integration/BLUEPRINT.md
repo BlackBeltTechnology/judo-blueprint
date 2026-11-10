@@ -13,7 +13,7 @@ alternatives: []
 fragment: idm-realm-keycloak-integration
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-11-09
+last_updated: 2026-11-10
 ---
 ## Intent
 

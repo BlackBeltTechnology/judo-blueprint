@@ -1,5 +1,7 @@
 ## Overview
 
+Platform facts: an `OperationCallInterceptor` fires only for built-in operations such as create, update, delete, list and set/add/remove reference. Custom, mapped and script operations are never intercepted. A create on an actor's collection is built-in, so it can be intercepted. `postCall` receives the input payload and the return payload; the value it returns becomes the result. Synchronous interceptors run in the operation's transaction, so an exception rolls the write back. The classes and names below (`PartnerActorInterceptor`, `InterceptorOperationLogger`, the reservation and user DAOs) are example project code, not platform classes.
+
 The freight reservation cluster uses an interceptor-based backend pattern where the platform's built-in CRUD operations handle core entity lifecycle, and targeted `OperationCallInterceptor` implementations auto-wire actor-specific relations (e.g., partner association) during entity creation.
 
 ## Implementation Pattern
@@ -7,7 +9,7 @@ The freight reservation cluster uses an interceptor-based backend pattern where 
 - No custom operation classes (`customImplementation: true`) are defined on the FreightReservation or related entities -- all CRUD is handled by the JUDO platform's standard dispatch
 - A `PartnerActorInterceptor` (OSGi `@Component` implementing `OperationCallInterceptor`) intercepts specific actor-level create operations to augment the default CRUD behavior
 - The interceptor targets `PartnerActor#_createInstanceReservationsForPartner` and uses `postCall` to auto-assign the partner relation after the platform creates the FreightReservation
-- Actor identity resolution: `VariableResolver.resolve("ACTOR", "email")` retrieves the current user's email, then `UserDao.query().filterByEmail()` fetches the User entity, and `userDao.queryPartner()` with a `PartnerMask` retrieves the associated Partner
+- Actor identity resolution: `VariableResolver.resolve(String.class, "ACTOR", "email")` retrieves the current user's email, then `UserDao.query().filterByEmail()` fetches the User entity, and `userDao.queryPartner()` with a `PartnerMask` retrieves the associated Partner
 - Relation wiring: `FreightReservationDao.setPartner(fr, partner)` links the new reservation to the partner via the generated DAO's relation setter
 - Reference data entities (Gate, Spot, VehicleType, LoadingType, LoadingTime, ProductCategory, Unit, StorageType) and organizational entities (Partner, Company, Project) are seeded by the `User.init` static operation using model expressions (not custom Java code)
 - An `InterceptorOperationLogger` provides cross-cutting operation logging for debugging all intercepted operations

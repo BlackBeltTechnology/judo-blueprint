@@ -1,5 +1,7 @@
 ## Overview
 
+Platform facts: the generated parent DAO offers a create method per composition relation (taking the generated create payload of the child), so a child row is written through the parent. Backend code writes History rows because the entity's own create flag is off. Clocks differ: `Timestamp!now()` in model expressions follows the platform default zone parameter, `LocalDateTime.now()` in Java follows the JVM zone. Use one of them consistently when the log is compared with other timestamps. The service, interface and i18n class names below are example project code.
+
 The History entity is populated by a `HistoryService` that records audit trail entries (whoDid, whatDid, whenDid) on Task entities whenever significant operations occur (creation, modification, deletion, generation, delegation, status change).
 
 ## Implementation Pattern
