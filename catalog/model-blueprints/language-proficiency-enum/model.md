@@ -1,21 +1,40 @@
-## Examples
+## Model shape
 
-### skillmatrix-model
-- **LanguageSkillLevel enum**: `SkillMatrix::LanguageSkillLevel`
-  - Members: BEGINNER(1), CONVERSATIONAL(2), FLUENT(3), NATIVE(4)
-  - Ordinals increase with proficiency level
+The shape has one enumeration, one reference entity and one entity that links a user to a language.
 
-- **LanguageSkill entity**: `SkillMatrix::LanguageSkill` (non-CRUD)
-  - Attributes: level (LanguageSkillLevel, req), note (Text, optional)
-  - Relations: language (1..1 OneWay ASSOC Language)
-  - Owned by User via `languageSkills` [0..*] COMPOSITION
+- **LanguageSkillLevel** is the enumeration. It has four members in order: BEGINNER (ordinal 1), CONVERSATIONAL (2), FLUENT (3) and NATIVE (4).
+- **Language** is a reference record with one required identifier, code. It has no operations.
+- **LanguageSkill** is the link. It is non-CRUD. Its attributes are level (required, LanguageSkillLevel) and note (text, optional). It has one required association to a Language.
+- **User** composes zero or more LanguageSkill entities, so skills are removed with their user.
 
-- **Language entity**: `SkillMatrix::Language` (reference data)
-  - Attributes: code (String, req, identifier)
-  - No relations, no operations
-  - Represents ISO language codes (e.g., "en", "hu", "de")
+Generated UI pages follow from the entities: a view and table for the language reference, and the skill is shown inside the user's view. The LanguageSkill entity is non-CRUD, so it has no direct create or edit page. Skills are written by a custom operation or through the owning user.
 
-- **Transfer object projections**:
-  - hrEmployee::LanguageSkill -- languageCode (DERIVED from language.code), level (MAPPED), note (MAPPED) + language relation (1..1 AGGREGATION Language)
-  - hrEmployee::Language -- code (MAPPED)
-  - The HR employee can manage language skills for professionals through the Professional TO's `languages` relation
+## Structure diagram
+
+<!-- mermaid:generated fragment=language-proficiency-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Language {
+    <<Entity>>
+    +String code [1]
+  }
+  class LanguageSkill {
+    <<Entity>>
+    +LanguageSkillLevel level [1]
+    +Text note
+  }
+  class LanguageSkillLevel {
+    <<Enumeration>>
+    BEGINNER
+    CONVERSATIONAL
+    FLUENT
+    NATIVE
+  }
+  class User {
+    <<Entity>>
+  }
+  LanguageSkill --> "1" Language : language
+  LanguageSkill ..> LanguageSkillLevel : level
+  User *-- "*" LanguageSkill : languageSkills
+```
+<!-- /mermaid:generated -->

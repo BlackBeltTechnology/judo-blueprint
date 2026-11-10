@@ -1,33 +1,47 @@
-## Overview
+## Backend guidance
 
-Uses `OperationCallInterceptor.postCall()` to compute derived statistics fields that require date arithmetic (e.g., "active users in last 30 days"), which cannot be expressed in JUEL. The interceptor runs after list/refresh operations on statistics transfer objects and injects computed values into the response payload.
+### Attach the interceptor to built-in operations only
 
-## Implementation Pattern
+Register the interceptor, in `getOperations`, for the built-in list and refresh operations of the statistics transfer object. The platform never runs interceptors around custom, MAPPED or script operations, whatever `getOperations` returns. Do not expect it to run for a custom operation that returns the same data. If a custom operation needs the counts, it must compute them in its own body.
 
-**Interceptor structure:**
-- `@Component(property = { "judo.model.name=<ModelName>" })` implementing `OperationCallInterceptor`
-- `getOperations()` returns the specific `_list*` and `_refreshInstance*` operations to intercept (resolved via `AsmUtils.resolveOperation()`)
-- `postCall()` receives the return payload, executes DAO count queries, and puts computed values into the `Payload` map
+```java
+@Override
+public Object postCall(EOperation op, Object paramPayload, Object returnPayload)
+        throws InterceptorCallBusinessException {
+    if (returnPayload instanceof Payload single) {
+        single.put("activeAccounts", countActiveAccounts(clock));
+    }
+    return OperationCallInterceptor.super.postCall(op, paramPayload, returnPayload);
+}
+```
 
-**Calculation pattern:**
-1. Define a threshold: `LocalDateTime.now(Clock.systemUTC()).minusDays(ACTIVE_DAYS_THRESHOLD)`
-2. Query DAOs with combined filters: `dao.query().filterByStatus(equalTo(ACTIVE)).filterByLastLogin(greaterOrEqualThan(threshold)).count()`
-3. Put the result into the payload: `payload.put("activeUsers", (int) count)`
-4. Handle both single-payload (`Payload`) and collection-payload (`Collection<Payload>`) return types
+The postCall hook returns the (possibly modified) payload; that return value becomes the result. Calling the super method at the end is project style; the platform default simply returns the payload.
 
-**When to use this pattern:**
-- Model-level derived attributes need date arithmetic that JUEL cannot express
-- Statistics/dashboard fields need counts with relative date filters ("last N days")
-- Per-entity statistics need navigated count queries (e.g., active users per organization via `organizationDao.queryUsers(orgId).filterByLastLogin(...)`)
+### Throw only the interceptor exception
 
-**Alternatives:**
-- If the expression can be written in JUEL, prefer a model-level derived attribute
-- If the calculation is expensive and does not need real-time accuracy, consider a scheduled job that pre-computes and stores the values
+If the count fails, throw `InterceptorCallBusinessException`, the only business exception an interceptor may throw. Pass the FQN of a modeled fault transfer object as its type and put the message in the details (never null). A generated fault exception is checked and cannot be thrown from an interceptor, and a raw `RuntimeException` reaches the client as a generic 500.
+
+### Compute the threshold from an injected clock
+
+Project practice: build the date threshold once per call from a clock that the interceptor receives (the `clock` and the count helper in the sample are example project code). Tests can then fix the time.
+
+```java
+LocalDateTime threshold = LocalDateTime.now(clock).minusDays(ACTIVE_DAYS);
+```
+
+### Handle both payload shapes
+
+A list returns a collection of payloads, a refresh returns one payload. Handle both, and read the identifier from the payload when a per-parent count is needed.
+
+### Keep the count query cheap
+
+Each call runs the count again. Filter on indexed columns, and keep the number of counted entities small. If the count is slow, switch to a stored value updated by a job. An entity-level stored value is also the choice when the value must be filterable or sortable at the DAO layer, which a transient attribute is not.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `interceptors/StatisticsActiveUsersInterceptor.java`
-- Pattern: Intercepts `_listStatistics`, `_refreshInstanceStatistics`, `_listOrganizationStatistics`, and `_refreshInstanceOrganizationStatistic` operations. In `postCall()`, queries `UserDao`, `NewsDao`, `OfferDao`, `RequestDao`, `AnnouncementDao` with `TimestampFilter.greaterOrEqualThan(now - 30 days)` and puts computed counts (`activeUsers`, `recentNews`, `recentOffers`, `recentRequests`, `recentAnnouncements`) into the response payload.
-- Notable: For per-organization statistics, extracts `__identifier` from the payload and uses `organizationDao.queryUsers(orgId)` with the timestamp filter. Handles both `Collection<Payload>` and single `Payload` return types. Uses `Clock.systemUTC()` for testability.
-- DI wiring: `@Reference` to `UserDao`, `OrganizationDao`, `NewsDao`, `OfferDao`, `RequestDao`, `AnnouncementDao` -- all generated SDK DAOs
+
+- One interceptor is attached to the built-in list and refresh operations of the statistics transfer objects, both global and per-organization.
+- The postCall hook counts users, news, offers, requests and announcements created or active in the last 30 days, and puts the counts into the payload.
+- For per-organization statistics the hook reads the organization identifier from the payload and counts the users under it.
+- The data-access services are generated SDK services for the entities, reached by injected references. Their names are project-specific.

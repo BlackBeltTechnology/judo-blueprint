@@ -1,43 +1,66 @@
 ---
 id: invitation-with-key-based-acceptance
 title: Invitation Entity with Key-Based Acceptance Flow
-description: An Invitation entity that implements an invitation workflow using cryptographic keys (public/private key pair) rather than simple verification tokens.
-aliases: []
-keywords: [invitation, key, based, acceptance, flow]
-tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:ubives", "status:single-project"]
+description: An invitation entity that is accepted through a link carrying an unguessable key, so the invitee can accept without a prior account.
+aliases: [invite link, key invitation, anonymous invitation acceptance]
+keywords: [invitation, key, acceptance, invite link, expiration, anonymous, accept, cancel]
+tags: [domain:model, layer:model, layer:backend, layer:frontend, project:ubives, status:single-project]
 category: pattern
 status: single-project
 projects: [ubives]
 evidence: ["ubives:unrecorded"]
-alternatives: []
-fragment: pending
+alternatives: [invitation-with-recipients]
+fragment: invitation-with-key-based-acceptance
+diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An Invitation entity that implements an invitation workflow using cryptographic keys (public/private key pair) rather than simple verification tokens. The invitation carries:
+Let someone who has no account yet accept an invitation. The invitation is an entity with an email, an expiration and a key. The key is carried in a link, so the invitee can open the link and accept without first signing in. On the platform this is an actor marked anonymous (an unauthenticated guest) whose access reaches the link transfer object; the key scheme itself is project practice, not a platform feature. Accepting or cancelling is an operation on the invitation, and the link itself is a transfer object that exposes only what the invitee needs.
 
-- **invitationType** -- an enum (USER/ACCOUNT) distinguishing whether the invitation is for a new organization-scoped user or an existing platform account to join an organization
-- **email** -- the invitee's email address
-- **expiration** -- when the invitation expires
-- **inviteId** -- a unique identifier for the invitation link
-- **invitePrivateKey / invitePublicKey** -- a cryptographic key pair for secure invitation verification
-- **Feature support flags** -- isApplicationFeatureSupported, isOrganizationFeatureSupported (with defaults of false) that determine what the invitee can access after joining
+### The key is the access credential
 
-The invitation is composed by an Organization (0..* COMPOSITION) and has a derived back-reference to it. Operations include acceptInvitation (triggered when the invitee clicks the link and provides credentials) and cancelInvitation (for revoking pending invitations). The accept operation takes an AcceptInvitationLinkParameter unmapped TO with userName, firstName, lastName, password, and passwordAgain fields for account creation.
+Possession of the key is what allows acceptance. The key is random and long enough that it cannot be guessed. The invitation expires, so an old link stops working.
 
-An InvitationType enum (USER/ACCOUNT) discriminates the two invitation flows: USER invitations create a new user scoped to the organization, while ACCOUNT invitations grant an existing platform account access to the organization.
+### Acceptance is an operation on the invitation
 
-## Model Definition
+Accept and cancel are operations on the invitation entity. The invitee reaches them through the link transfer object, not through a generic create form.
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+## Structure
 
-## Backend Implementation
+The Invitation entity is non-CRUD (not createable, updateable or deleteable through generated actions). It holds a required invitation type (an enumeration with USER and ACCOUNT values), a required email, a required expiration timestamp, and an optional invite identifier. Two operations sit on it, accept and cancel. Two transfer objects shape the access: a link transfer object that maps the invitation's fields for the invitee, and an accept parameter transfer object that carries the new user's password and its confirmation. The enumeration says whether the invitation adds a new user or an existing account to an organization.
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+## Constraints
 
-## Frontend Implementation
+- The invitation is non-CRUD: create, update and delete do not happen through generated actions. Invitations are created by dedicated operations.
+- The invitation type is required and must be one of the enumeration values.
+- The password and its confirmation are transient parameters, not stored attributes.
+- The key must be random and unguessable. A short or sequential key lets anyone accept invitations.
+- Accept and cancel are custom operations. The platform runs interceptors only for built-in operations (create, update, delete, list, refresh and the like), never for custom, MAPPED or script operations, so any audit, permission check or side effect must be written inside the operation. Hiding a button protects nothing.
+- The anonymous actor reaches the invitation only through the link transfer object. The key and expiration checks are the only protection, and they run in the operation, not in the platform.
+- The invitation has an expiration. An expired invitation must be refused at accept time.
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+## Variations
+
+- **Accept for a new user.** The invitation type is USER. Acceptance creates a user with the password from the accept parameter.
+- **Accept for an existing account.** The invitation type is ACCOUNT. Acceptance adds the existing account to the organization and needs no new password.
+- **Cancel.** The inviter or an administrator cancels a pending invitation. Cancel deletes it.
+
+## When to use
+
+- A new user or a partner must join without an account first.
+- An invitation link is sent by email and must work from the email alone.
+- Invitations must expire and be cancellable.
+
+## When to avoid
+
+- Recipients are known users who can sign in and accept from inside the app. A simpler flow fits.
+- The invitation must be sent to a list of recipients with per-recipient state. See [[invitation-with-recipients]].
+- The key would be sent in a place where others can read it, such as a shared log.
+
+## Related
+
+- [[invitation-with-recipients]] — invitations to a recipient list with per-recipient status
+- [[code-based-player-authentication]] — key-based acceptance of an invitation for a player
+- [Two-phase registration](../../best-practices/backend/two-phase-registration.md) — registration with email verification, the same link-based idea

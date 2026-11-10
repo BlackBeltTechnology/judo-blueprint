@@ -1,39 +1,49 @@
-## Overview
+## Backend guidance
 
-Implements passwordless authentication via Keycloak magic link emails and WebAuthn passkey support. Spans two Maven modules: a `keycloak-client` (OSGi services wrapping the Keycloak Admin API) and `keycloak-extensions` (Keycloak SPI deployed into the Keycloak server for custom authenticators and action tokens).
+### Keep the Keycloak extension separate
 
-## Implementation Pattern
+Put the magic-link authenticator, its action token handler and its REST endpoint in one extension module that is deployed into the Keycloak server. Keep the client module, which calls the administration interface, in another module. The two have different runtimes and different class loaders.
 
-The pattern is split across three architectural layers:
+### Set up the realm once, with retries
 
-**1. Keycloak Extensions Module (SPI)** -- deployed into the Keycloak server as a JAR:
-- `MagicLinkAuthenticator` / `MagicLinkAuthenticatorFactory` -- custom Keycloak `Authenticator` SPI that sends a magic link email containing an action token
-- `MagicLinkActionToken` / `MagicLinkActionTokenHandler` -- custom `ActionToken` SPI that establishes a session when the user clicks the magic link
-- `MagicLinkResource` / `MagicLinkResourceProvider` -- custom REST resource endpoint (`/realms/{realm}/magic-link`) that generates magic links programmatically (called by the backend)
-- `MagicLink` utility class -- shared logic for creating action tokens, validating emails, sending emails, and setting up default flows
+Keep it consistent with what the platform generates from the model: the realm and one client per actor type with a `realm` annotation, the client named after the actor FQN with dots replaced by dashes. Configure the extra realm settings on startup: the email settings, the browser flows, the native app client, the passkey policy and the branding. Run the setup on a background thread with exponential backoff, so a Keycloak that starts late does not stop the application. Log every failed attempt.
 
-**2. Keycloak Client Module (OSGi)** -- backend services that call the Keycloak Admin API:
-- `KeycloakFactory` -- builder-pattern factory that creates `Keycloak` admin client instances with `CompositeClassLoader` for OSGi compatibility
-- `KeycloakConnectorActivator` -- `@Component(immediate=true)` that configures the realm on startup with retry logic (resilience4j): creates realm, SMTP, browser flows, native client, WebAuthn policy, branding
-- `KeycloakFlowCreator` -- static utility for programmatic authentication flow creation (magic link browser flow, native app passkey-first flow, WebAuthn configuration)
-- `RealmManager` -- `@Component(service=RealmManager.class)` that provides user CRUD, magic link generation, passkey registration link, and forgot-password email via the Keycloak Admin REST API
-- `KeycloakUserServiceImpl` / `MagicLinkServiceImpl` / `ForgotPasswordServiceImpl` -- thin OSGi service wrappers that delegate to `RealmManager` with the platform's default realm name
+```java
+Retry retry = Retry.of("realm-setup", RetryConfig.custom()
+    .maxAttempts(5)
+    .waitDuration(Duration.ofSeconds(2))
+    .build());
+```
 
-**3. Common Module Service Interfaces** -- consumed by custom operations across the app:
-- `KeycloakUserService` -- `createUser(email, firstName, lastName)`, `updateUser(email, firstName, lastName)`
-- `MagicLinkService` -- `requestMagicLink(realm, email, clientId, redirectUri, expirationSeconds)` with built-in retry logic
-- `ForgotPasswordService` -- `sendForgotPasswordEmail(realm, email, clientId)`
+### Let the platform map the principal to the actor
 
-**Key technical details:**
-- All Keycloak Admin API calls use `CompositeClassLoader` to bridge the OSGi bundle class loader with the system class loader (required for RestEasy/JAX-RS in OSGi)
-- Startup initialization uses resilience4j `Retry` with exponential backoff, running on a daemon thread
-- The native app authentication flow is passkey-first: WebAuthn discoverable credentials (resident keys) trigger automatically; password form is a fallback sub-flow
-- Magic link generation calls a custom REST endpoint deployed in the Keycloak extensions module (not the Admin API)
+This entry only changes how a user proves who they are. The platform still maps the validated token to an actor by its claims; the actor is derived from the token's `azp` claim (dashes become dots and the result must equal an actor FQN). A client with another name, such as a separate native-app client, must be whitelisted through the acceptable-clients setting, and an ambiguous client-to-actor mapping is rejected. Do not add a second mapping of your own.
+
+### Wrap the administration calls behind a service
+
+Expose user creation, the magic-link request and the forgot-password email as services. Callers depend on the service interface, not on the Keycloak client. The service holds the realm name, so callers do not pass it.
+
+### Use the class loader the client needs
+
+In a bundle runtime, the JAX-RS client needs a class loader that can see both the bundle and the system libraries. Build the Keycloak client with that combined loader.
+
+### Mark passkey registration as a required action
+
+To register a passkey for a user, add the passwordless WebAuthn registration as a required action on the user, then issue a magic link. The link opens a browser session that starts the registration.
+
+### Do not put the magic link in logs
+
+A magic link is a credential. Do not log it, and do not return it to a caller that did not request it.
+
+### Project classes are not platform API
+
+The client, the activator, the realm manager, the retry helper and the service implementations in the example are example project code, not JUDO platform API. Copy the approach, not the class names.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `keycloak-client/osgi/KeycloakConnectorActivator.java`, `keycloak-client/osgi/RealmManager.java`, `keycloak-client/osgi/KeycloakFlowCreator.java`, `keycloak-extensions/MagicLink.java`, `keycloak-extensions/auth/MagicLinkAuthenticator.java`
-- Pattern: Two-module Keycloak integration -- OSGi client module manages realm config + user operations; Keycloak SPI extension module provides custom magic link authenticator and action token handler
-- Notable: `KeycloakConnectorActivator` runs async realm setup with resilience4j retry on startup. `KeycloakFlowCreator.createNativeAppBrowserFlow()` builds a passkey-first flow with WebAuthn discoverable credentials as primary and username+password as fallback. `RealmManager.requestPasskeyRegistrationLink()` adds `webauthn-register-passwordless` required action then generates a magic link that opens a browser session triggering the WebAuthn registration ceremony.
-- DI wiring: `KeycloakFactory` (OSGi @Component) -> `RealmManager` (@Reference KeycloakFactory) -> `KeycloakUserServiceImpl` / `MagicLinkServiceImpl` (@Reference RealmManager) -> consumed by custom operations via `@Reference KeycloakUserService`
+
+- The client module runs the realm setup at startup with retries, then serves the user and link services.
+- The extension module adds the magic-link authenticator and the action token that starts a session.
+- The native app browser flow is passkey first. The password form is a fallback sub-flow.
+- Passkey registration adds the required action, then requests a magic link to open the registration in a browser.

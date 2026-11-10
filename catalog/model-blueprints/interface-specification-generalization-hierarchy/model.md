@@ -1,42 +1,56 @@
-## Examples
+## Model shape
 
-### InterfaceRegister
-- **Base entity**: `InterfaceRegister::entities::InterfaceSpecification` (non-CRUD)
-  - Attributes: id (req, identifier), name (req, identifier), description (Text), linkToTheSpecification (URL), specificationDocument (BinaryType), directionOfTransmission (DirectionOfDataTransmission, req)
-  - No relations, no operations
+The shape is a generalization hierarchy with one base entity and six concrete subtypes. The base entity carries the attributes every interface shares. Each subtype adds only what its protocol needs.
 
-- **Synchronous subtypes** (generalize InterfaceSpecification directly):
-  - `Rest` -- adds linkToOpenApiSpecification (URL), openApiDocument (BinaryType)
-  - `SOAP` -- adds WSDLDocument (BinaryType), linkToWSDLSpecification (URL)
-  - `DBLink` -- no additional attributes
+- **InterfaceSpecification** is the base entity. It is not createable, updateable or deleteable. It holds a required identifier name, a description, a link to the specification, a binary specification document, and a required direction of transmission.
+- **Synchronous subtypes** generalize the base directly: **Rest**, **Soap** and **DbLink**. Rest adds a link to an OpenAPI specification and an OpenAPI document. Soap adds a WSDL document and a link to the WSDL specification. DbLink adds nothing.
+- **AsynchronCommunication** is an intermediate subtype that groups the asynchronous protocols. It adds no attributes of its own.
+- **Asynchronous subtypes** generalize AsynchronCommunication: **Email**, **FileTransfer** and **MessageQueue**. Email composes its recipients, and each recipient is an **EmailRecipient** with a required address. FileTransfer adds a transfer method and a character encoding, both enumerations, and an extension. MessageQueue adds nothing.
 
-- **Asynchronous intermediate type**:
-  - `AsynchronCommunication` -- generalizes InterfaceSpecification; no additional attributes of its own but serves as grouping parent
+The hierarchy is a polymorphic view. A read-only transfer object over the base entity lists every specification, and each concrete subtype gets its own transfer object for create and update. Transfer objects cannot inherit from each other, so none of them is part of a hierarchy; only the entities are. Generated pages follow from the entities: a read-only list for the base, and a view, form and table for each subtype.
 
-- **Asynchronous subtypes** (generalize AsynchronCommunication):
-  - `Email` -- adds bodyTemplate (Text, req), attachmentSpecification (Text); composes tos/ccs/bccs (0..* COMPOSITION -> EmailRecipient)
-  - `FileTransfer` -- adds fileTransferMethod (FileTransferMethod enum: FTP/SFTP/FTPS/SSH/FOLDER, req), encoding (CharacterEncoding enum: ANSI/UTF8/UTF8_BOM, req), extension (String, req)
-  - `MessageQueue` -- no additional attributes
+## Structure diagram
 
-- **EmailRecipient entity**: `InterfaceRegister::entities::EmailRecipient` -- address (Email, req); composed by Email entity
-
-- **Transfer objects**: Each subtype has a corresponding TO in `InterfaceRegister::enterpriseArchitect`:
-  - `InterfaceSpecification` TO -- base attributes only (read-only polymorphic view)
-  - `Rest` TO -- base attributes + linkToOpenApiSpecification, openApiDocument
-  - `SOAP` TO -- base attributes + WSDLDocument, linkToWSDLSpecification
-  - `DBLink` TO -- base attributes only
-  - `Email` TO -- base attributes + bodyTemplate, attachmentSpecification + tos/ccs/bccs relations to EmailRecipient TO
-  - `MessageQueue` TO -- base attributes only
-
-- **Actor access pattern**: EnterpriseArchitect actor has:
-  - `interfaceSpecifications` [0..*] -> InterfaceSpecification TO (read-only, no CRUD) -- polymorphic view of all specifications
-  - `restSpecifications` [0..*] -> Rest TO (createable, updateable)
-  - `soapInterfaceSpecifications` [0..*] -> SOAP TO (createable, updateable)
-  - `dblinkInterfaceSpecifications` [0..*] -> DBLink TO (createable, updateable)
-  - `messageQueueInterfaceSpecifications` [0..*] -> MessageQueue TO (createable, updateable)
-  - `emailInterfaceSpecifications` [0..*] -> Email TO (createable, updateable)
-
-- **Supporting enums**:
-  - `DirectionOfDataTransmission` -- SERVER_TO_CLIENT(1), CLIENT_TO_SERVER(2)
-  - `CharacterEncoding` -- ANSI(1), UTF8(2), UTF8_BOM(3)
-  - `FileTransferMethod` -- FTP(1), SFTP(2), FTPS(3), SSH(4), FOLDER(5)
+<!-- mermaid:generated fragment=interface-specification-generalization-hierarchy cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AsynchronCommunication {
+    <<Entity>>
+  }
+  class DbLink {
+    <<Entity>>
+  }
+  class Email {
+    <<Entity>>
+  }
+  class EmailRecipient {
+    <<Entity>>
+    +String address [1]
+  }
+  class FileTransfer {
+    <<Entity>>
+  }
+  class InterfaceSpecification {
+    <<Entity>>
+    +String name [1]
+    +Text description
+  }
+  class MessageQueue {
+    <<Entity>>
+  }
+  class Rest {
+    <<Entity>>
+  }
+  class Soap {
+    <<Entity>>
+  }
+  AsynchronCommunication <|-- Email
+  AsynchronCommunication <|-- FileTransfer
+  AsynchronCommunication <|-- MessageQueue
+  Email *-- "*" EmailRecipient : recipients
+  InterfaceSpecification <|-- AsynchronCommunication
+  InterfaceSpecification <|-- DbLink
+  InterfaceSpecification <|-- Rest
+  InterfaceSpecification <|-- Soap
+```
+<!-- /mermaid:generated -->

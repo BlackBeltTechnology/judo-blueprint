@@ -1,20 +1,29 @@
-## Overview
+## Frontend guidance
 
-The invitation-with-key-based-acceptance blueprint has extensive React frontend customization across the anonymous actor application. The anonymous actor handles the unauthenticated invitation acceptance flow: a custom axios interceptor extracts the `invitationKey` query parameter from the URL and passes it as a request header, custom Pandino action hooks redirect the user to the authenticated actor after accepting or canceling an invitation, and the AcceptInvitationLinkParamater form is overridden via generator-ignore to mask password fields.
+### Let the anonymous page read the key from the link
 
-## Implementation Pattern
+The acceptance page belongs to an anonymous actor, so it is reached without signing in. The platform's guest-page hook (`supportGuestAccess`) only governs what an unauthenticated visitor sees at the root; this entry's page is an anonymous actor's own app. It reads the key from the query parameter of the link, and sends the key with each API call so the backend can find the invitation. Register one request interceptor for this (the generated frontend uses an axios request interceptor for header enrichment, see the platform's advanced patterns), not one per call. The key-in-URL scheme is project practice.
 
-- **Axios interceptor for invitation key**: The anonymous actor's `application-customizer.tsx` registers an axios request interceptor that extracts the `invitationKey` query parameter from `window.location` and injects it as `X-Judo-RequestParameters` header on every API call. This allows the backend to identify which invitation is being accessed from the URL alone.
-- **Navigation interceptor**: A `NavigationInterceptorHook` is registered to preserve search parameters (including the invitationKey) across internal navigation, so the key is not lost during page transitions.
-- **Post-action redirect hooks**: Two custom Pandino action hooks handle post-operation flow:
-  - `registerServicesAnonymousActorInvitationAccessViewPageActionsHook` -- overrides `postCancelInvitationForInviteLinkAction` to redirect to the AccountActor app after cancellation.
-  - `registerServicesInviteLinkInviteLink_View_EditAcceptInvitationInputFormActionsHook` -- overrides `postAcceptInvitationForInviteLinkAction` to redirect to the AccountActor app after successful acceptance.
-- **Password field masking**: The generated `AcceptInvitationLinkParamater_Form` container is listed in `.generator-ignore` and overridden to add `type="password"` to the password and passwordAgain TextField components, ensuring credentials are masked during input.
+### Redirect after accept or cancel
+
+After a successful accept or cancel, leave the anonymous page and send the user to the signed-in area. Do this in a post-operation action hook for the page. Use the hook key the framework generates for that page and container.
+
+### Keep the key across navigation
+
+If the anonymous page navigates between its own screens, carry the key through the navigation with a navigation interceptor (`decorateNavigation`), which can rewrite the target path but cannot cancel navigation. Otherwise the second screen loses the key and the accept call fails.
+
+### Mask the password fields
+
+The accept form holds the password and its confirmation. Render both as password inputs. The generated form is the default; override it only for this masking, and keep the override in the custom folder so a regeneration does not overwrite it.
+
+### Show the expired state
+
+When the backend refuses an expired or unknown key, show a clear message and no form. Do not show the accept form for an invitation the backend has already refused.
 
 ## Examples
 
 ### ubives
-- Framework: React
-- Key files: `ubives__services__anonymous_actor/src/custom/application-customizer.tsx`, `ubives__services__anonymous_actor/src/custom/hooks/pages/registerServicesAnonymousActorInvitationAccessViewPageActionsHook.ts`, `ubives__services__anonymous_actor/src/custom/hooks/dialogs/registerServicesInviteLinkInviteLink_View_EditAcceptInvitationInputFormActionsHook.ts`, `ubives__services__anonymous_actor/src/containers/Entities/AcceptInvitationLinkParamater/AcceptInvitationLinkParamater_Form/EntitiesAcceptInvitationLinkParamaterAcceptInvitationLinkParamater_Form.tsx`
-- Pattern: The anonymous actor's application-customizer registers an axios interceptor to extract `invitationKey` from the URL and pass it as a request header. Two Pandino action hooks redirect to `/Ubives/AccountActor/` after accept/cancel operations. The AcceptInvitationLinkParamater form is overridden to mask password and passwordAgain fields with `type="password"`.
-- Notable: The invitation acceptance flow is entirely anonymous (no authentication required). The URL structure carries the invitation key as a query parameter, and the axios interceptor ensures it reaches the backend on every request.
+
+- The anonymous actor's app registers the key-forwarding interceptor and a navigation interceptor so the key is kept.
+- Two post-operation hooks redirect to the signed-in account app after accept and after cancel.
+- The accept parameter form masks the password and its confirmation.

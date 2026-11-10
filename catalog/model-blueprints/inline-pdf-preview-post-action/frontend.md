@@ -1,20 +1,45 @@
-## Overview
+## Frontend guidance
 
-Dialog form action hooks that intercept post-operation output from document generation operations and display the resulting PDF inline in the browser using `fileHandling().downloadFile()` with `'inline'` mode, bypassing the default output view dialog. Framework: React.
+### Register the hook for the dialog that starts the operation
 
-## Implementation Pattern
+Write a dialog form action hook for the input dialog of the document operation. Use the hook key the framework generates for that page and container. Do not copy a key from another page.
 
-- **Hook type**: Dialog form action hooks (e.g., `*InputFormActionsHook`) registered via Pandino in `application-customizer.tsx`
-- **Key callback**: `postOperationAction(output, onSubmit, onClose)` -- called after the backend operation returns successfully
-- **Flow**: (1) Check if `output.file` exists, (2) call `await onClose()` to dismiss the input dialog, (3) extract the file token (handles both string JWT and object with `.id`), (4) call `downloadFile({ file: fileToken }, 'file', 'inline')` to open PDF in browser
-- **File handling utility**: Uses `fileHandling()` from `~/utilities/file-handling` which resolves the file token to a download URL and opens it inline
-- **Error handling**: Wraps the download call in try/catch with console.error fallback; closes the dialog even if no file is present
-- **Naming convention**: The post-action callback follows the pattern `post<OperationName>Action` (e.g., `postGenerateAssessmentSheetPreviewForFaultRegistryAction`)
+```tsx
+// Shape of the callback, generic names. The generated hook interface gives the exact types.
+const postOperationAction = async (output, onSubmit, onClose) => {
+  if (!output.file) {
+    await onClose();
+    return;
+  }
+  await onClose();
+  const fileToken = typeof output.file === 'string' ? output.file : output.file.id ?? output.file;
+  try {
+    await openInline(fileToken);
+  } catch (error) {
+    console.error('Could not open the document', error);
+  }
+};
+```
+
+### Close the dialog before opening the file
+
+Call the close callback first. Then open the file. This keeps the dialog from staying open behind the PDF tab.
+
+### Open the file in inline mode
+
+The generated `fileHandling.downloadFile` helper requests the file with the token (`X-Token` header) and a disposition. Pass `inline` to render it instead of saving it; `attachment` saves it. Per the platform docs an inline download renders in a dialog frame; rackinspect (project practice) opens it in a new browser tab, so check what your generated version does.
+
+### Handle both token shapes
+
+An operation may return the token as a string, or as an object that holds the identifier. Accept both, as the example above does.
+
+### Keep the fallback
+
+If the output has no file, close the dialog and stop. Do not show an error for a successful operation that produced nothing to open.
 
 ## Examples
 
 ### rackinspect
-- Framework: React
-- Key files: `custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditGenerateAssessmentSheetPreviewInputFormActionsHook.tsx`, `custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditGenerateReviewReportPreviewInputFormActionsHook.tsx`
-- Pattern: Two dialog hooks implement the same pattern for different document types (assessment sheet preview and review report preview). Both close the input dialog first, then open the generated PDF inline in the browser tab.
-- Notable: File token extraction handles both string JWT tokens and object wrappers (`typeof output.file === 'string' ? output.file : output.file.id || output.file`); the `'inline'` parameter to `downloadFile` triggers browser-native PDF viewer instead of a file download
+
+- Two dialog hooks implement this pattern: one for an assessment sheet preview, one for a review report preview. Each closes its input dialog, then opens the PDF inline in a new browser tab.
+- Both hooks accept the file as a string token or an object with an identifier.

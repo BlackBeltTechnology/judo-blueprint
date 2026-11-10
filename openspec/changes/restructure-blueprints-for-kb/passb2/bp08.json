@@ -1,0 +1,165 @@
+{
+ "batch": "bp08",
+ "entries": {
+  "inline-pdf-preview-post-action": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "dialog action hook after operation output file download inline"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Custom Attachments: Token Flow",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Client Side of the Upload Token Flow",
+    "catalog/agent-docs/frontend/hooks/README.md"
+   ],
+   "fixes": [
+    "platform file utility named as generated fileHandling.downloadFile with X-Token and ?disposition=inline",
+    "inline renders in a dialog frame per docs vs project new-tab; labelled project practice",
+    "dialog hook scaffold only exists when hook enabled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "interceptor-derived-statistics-calculation": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "interceptors built-in operations only custom operations not intercepted",
+    "JQL date arithmetic now() derived attribute",
+    "transient transfer object attribute no binding"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/interceptors.md#Pattern: Backend-Computed TO Attribute",
+    "catalog/agent-docs/backend/interceptors.md#Throwing a Business Error from an Interceptor",
+    "catalog/agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors",
+    "catalog/agent-docs/model/model-development.md#Temporal functions"
+   ],
+   "fixes": [
+    "claim JQL cannot do date arithmetic was wrong: !now()/!plusDays exist; derived attribute first, interceptor as escape hatch",
+    "full built-in operation list and custom/MAPPED/script never intercepted",
+    "exception rule precise (fault exception checked, RuntimeException->500, FQN type)",
+    "registration order for preCall and postCall, transaction rollback",
+    "postCall signature fixed to Object parameterPayload",
+    "transient attribute with no binding"
+   ],
+   "inventory": {
+    "Interceptors only see built-in operations": "applied"
+   },
+   "lint": "pass"
+  },
+  "interface-specification-generalization-hierarchy": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "generalization inheritance supertype abstract entity polymorphic transfer object",
+    "abstract entity not createable subtype transfer object mapping inherited"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Pattern: Polymorphism with Inheritance",
+    "catalog/agent-docs/model/model-validation-and-transformation.md#Creatable transfer objects",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: Platform-Managed Polymorphic Creation"
+   ],
+   "fixes": [
+    "added: generalization only between entity types, transfer objects cannot inherit",
+    "added: create target must not map to abstract entity; base is concrete non-createable in the project",
+    "added variation: platform-managed polymorphic creation",
+    "removed misleading wording on generalization as own element"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "invitation-with-key-based-acceptance": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "anonymous guest actor public access unauthenticated page operation",
+    "custom operation transaction rollback validation exception field error",
+    "frontend request interceptor query parameter header navigation interceptor"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations",
+    "catalog/agent-docs/backend/error-handling-guide.md#How the Runtime Maps Exceptions to HTTP",
+    "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+    "catalog/agent-docs/frontend/extension-points.md#Guest Page",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md"
+   ],
+   "fixes": [
+    "interceptor claim made precise (built-in only; no write guards for custom ops)",
+    "password mismatch -> ValidationException 400 spelled out",
+    "navigation interceptor cannot cancel, decorateNavigation",
+    "anonymous actor vs guest page distinction",
+    "project helpers labelled example code",
+    "key scheme labelled project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "invitation-with-recipients": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "enumeration filtering hook dropdown values role",
+    "containment composition deleted with parent cascade delete aggregation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Enumeration Filtering",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations"
+   ],
+   "fixes": [
+    "composition cascade explained per platform",
+    "custom op not intercepted: permission checks inside op",
+    "transaction claim softened to verify",
+    "UI role filter is not enforcement; range interceptor note",
+    "token hashing labelled project practice, helpers example code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "keycloak-magic-link-passkey-authentication": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "Keycloak realm setup admin client principal actor mapping authentication",
+    "OSGi bundle class loader JAX-RS client Keycloak admin"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/authentication-guide.md#Several Keycloak clients in one realm",
+    "catalog/agent-docs/deployment/osgi-runtime-services.md#Realm and client generation from the model"
+   ],
+   "fixes": [
+    "separated platform (token trust, principal-to-actor via azp, generated realm/client) from project practice",
+    "added acceptable-clients whitelist for native client",
+    "project helpers labelled example code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "language-proficiency-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "enumeration ordinal stored database value member order",
+    "enum payload string name enumeration member REST JSON"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#REST Wire Contract",
+    "catalog/agent-docs/backend/data-access-guide.md (enum query ClassCastException)",
+    "catalog/agent-docs/model/model-development.md#Enumeration",
+    "catalog/agent-docs/model/esm_metamodel/type.md#EnumerationMember"
+   ],
+   "fixes": [
+    "JQL enumerations only ==/!= so minimum-level ordering is Java/project practice",
+    "ordinals are wire contract; uniqueness 0-9999",
+    "query<Attribute>() enum ClassCastException note",
+    "out-of-range validation softened",
+    "custom op not intercepted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

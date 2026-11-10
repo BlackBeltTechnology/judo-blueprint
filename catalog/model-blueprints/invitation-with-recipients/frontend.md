@@ -1,17 +1,32 @@
-## Overview
+## Frontend guidance
 
-The invitation with recipients pattern manifests in the React frontend through a dialog-level action hook that filters the available UserRole options in the invite user form based on the current user's role and organization context.
+### Filter the role choices in the invite dialog
 
-## Implementation Pattern
+An invite form often lets the inviter pick a role. Not every inviter may grant every role. Filter the role choices in a dialog form action hook (the platform's enumeration filtering hook filters dropdown options from the form data), using the inviter's role and the organization context from the owner data.
 
-- **Dialog actions hook**: A Pandino-registered hook on the InviteUser input form dialog provides `filterRoleOptions` callback. The hook fetches `userRole` and `isAdminOrganization` from the OrganizationAdminPanel owner data, then filters the UserRole enum dropdown options.
-- **Role-based invitation rules**: The hook implements a role-to-invitable-roles mapping: COMPANY_ADMIN can invite COMPANY_ADMIN/COMPANY_READER; PLATFORM_ADMIN on admin org can invite PLATFORM_ADMIN/ASSOCIATION_LEADERSHIP; PLATFORM_ADMIN on non-admin org can invite COMPANY_ADMIN/COMPANY_READER; ASSOCIATION_LEADERSHIP can invite ASSOCIATION_LEADERSHIP.
-- **Container actions hook**: A secondary container-level hook is registered for the UserInvitationRequestInput form, though the actual filtering logic has been moved to the dialog-level hook which has access to ownerData.
+### Use a role-to-invitable-roles mapping
+
+Keep the rule in one mapping from the inviter's role to the roles that role may grant. The filter function then reads the mapping. Keeping the rule in data makes it easy to review.
+
+### Distinguish the admin organization from others
+
+The same role can have different rights in its own admin organization and in another organization. Pass the organization flag into the filter, and check it before applying the mapping.
+
+### Filtering is a UI convenience, not enforcement
+
+The hook only narrows what the dropdown offers. A client can still send any value. The invite operation is a custom operation, so no interceptor guards it: check the inviter's right to grant the chosen role inside the operation. For relation-valued choices a range interceptor (it fires only for reference range operations) is the platform's server-side filter.
+
+### Use the generated hook key
+
+Register the hook with the key the framework generates for the dialog and its page. Do not copy the key from another page.
+
+### Keep the container hook thin
+
+A container-level hook for the same form may be needed for a second field. Keep it thin, and move the decision to the dialog-level hook, which has the owner data.
 
 ## Examples
 
 ### mlszksz-platform
-- Framework: React
-- Key files: `custom/hooks/dialogs/registerServicesCompanyadminOrganizationAdminPanelOrganizationAdminPanel_View_EditInviteUserInputFormActionsHook.ts`, `custom/hooks/containers/registerServicesCompanyadminUserInvitationRequestInputContainerActionsHook.tsx`
-- Pattern: The dialog hook fetches the OrganizationAdminPanel with `_mask: '{userRole,isAdminOrganization}'`, then returns a `filterRoleOptions` function that filters `EnumOption[]` based on the `INVITABLE_ROLES_BY_ROLE` mapping and the `isAdminOrganization` flag.
-- Notable: The hook distinguishes between a PLATFORM_ADMIN viewing their own admin organization (can invite platform-level roles) versus viewing another company's panel (can only invite company-level roles).
+
+- A dialog form action hook on the organization admin panel's invite form filters the role dropdown. It reads the inviter's role and the admin-organization flag from the owner data, then applies a role-to-invitable-roles mapping.
+- The filter separates a platform admin inviting into their own admin organization from a platform admin inviting into another company's panel.
