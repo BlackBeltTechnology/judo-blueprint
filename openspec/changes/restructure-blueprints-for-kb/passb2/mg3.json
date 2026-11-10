@@ -1,0 +1,161 @@
+{
+ "batch": "mg3",
+ "entries": {
+  "business-error-vs-generic-operation-error": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "business fault exception operation error",
+    "frontend 500 response operation fault dialog",
+    "modeled fault declared throws clause generated exception"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/error-handling-guide.md#How the Runtime Maps Exceptions to HTTP",
+    "catalog/agent-docs/backend/error-handling-guide.md#Exceptions Thrown from Interceptors",
+    "catalog/agent-docs/backend/error-handling-guide.md#Example Project Helpers (Not Platform API)"
+   ],
+   "fixes": [
+    "BusinessErrorException/GenericOperationErrorException are project-generated, not platform",
+    "modeled fault is always 422; old 500 claim flagged verify",
+    "ExceptionUtils labelled project code",
+    "interceptor fault rule added",
+    "constructor/null error code flagged verify"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "cancel-replace-cascade-service": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "OSGi component Activate Deactivate @Reference background thread transaction",
+    "DAO outside transaction scheduled executor thread context",
+    "cancel replace cascade"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#OSGi Component Registration Pattern",
+    "catalog/agent-docs/backend/interceptors.md#The interceptor contract"
+   ],
+   "fixes": [
+    "split platform base vs project practice",
+    "worker thread transaction/context behaviour flagged verify",
+    "interceptors never around custom ops noted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-jaxrs-sse-endpoint": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "JAX-RS custom REST resource CXF cxf-rt-rs-sse Application applicationPath",
+    "Karaf feature fragment customization generator-ignore",
+    "custom REST endpoints BasicApplication jaxrs.resource.components"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Custom REST Endpoints and CXF",
+    "catalog/agent-docs/deployment/build-process.md#Extending Generated Files via Fragment Overrides"
+   ],
+   "fixes": [
+    "platform path is BasicApplication+jaxrs.resource.components; old Application-component route labelled project observation",
+    "SSE/CXF version claims flagged verify",
+    "hot-reload BusinessErrorException labelled project fault class",
+    "removed judo.sh/curl recipe, kept smoke checks in prose"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "guarded-delete-with-deactivate-fallback": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "DAO delete composition cascade getById queryRelation selectList",
+    "delete operation access deletable instance operation generated CRUD",
+    "modeled fault business error 422"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults"
+   ],
+   "fixes": [
+    "custom delete not intercepted; guard must live in implementation",
+    "cascade delete flagged verify",
+    "helpers labelled project code",
+    "deleteable access flagged verify"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "karaf-customization-via-fragments": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "Karaf feature fragment customization generator-ignore",
+    "feature.xml inline config env substitution configurationPolicy REQUIRE PID karaf etc cfg",
+    "generator-ignore judo.sh generate -i checksum hand edits overwritten"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/deployment/build-process.md#Extending Generated Files via Fragment Overrides",
+    "catalog/agent-docs/deployment/build-process.md#Available Fragment Extension Points",
+    "catalog/agent-docs/deployment/generator-plugins.md#Surviving Regeneration: checksum ignore and normalisation",
+    "catalog/agent-docs/backend/README.md#.generator-ignore \u2014 One Rule"
+   ],
+   "fixes": [
+    "slot list aligned to documented extension points (root pom slots, model-bundles)",
+    "inline <config> practice labelled project, not documented",
+    "prefer fragments over generator-ignore cited",
+    "-i destructive claim kept as project plus doc",
+    "removed verification recipe commands"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "managed-actor-admin-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "managed actor Keycloak realm sync trigger principal back-link",
+    "actor access mapped enabledBy updateable createable view-model self-elevation",
+    "Principal back-link exclusivity actorType"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Managed-realm sync trigger",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Principal back-link exclusivity",
+    "catalog/agent-docs/backend/authentication-guide.md#Keycloak managed-realm sync \u2014 trigger surface"
+   ],
+   "fixes": [
+    "actor access target must be mapped noted",
+    "custom ops not intercepted / outside ladder",
+    "DAO names labelled project code",
+    "@Service annotation replaced by DS @Component, interface name verify",
+    "anti-patterns moved to Example"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "self-learning-reference-dictionary": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "composition parent create nested child interceptor fires per-child operation",
+    "DAO createAll bulk selectList unique identifier concurrent create",
+    "Interceptors fire only for built-in behaviour operations"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors",
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO"
+   ],
+   "fixes": [
+    "parent-create gap not in docs: labelled project observation, verify",
+    "DAO calls are not operations; custom ops not intercepted",
+    "bulk import createAll practice labelled project",
+    "helpers labelled project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}
