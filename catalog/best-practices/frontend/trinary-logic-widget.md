@@ -1,9 +1,9 @@
 ---
 id: trinary-logic-widget
 title: Trinary Logic Combobox for Nullable Booleans
-description: "A custom form widget for nullable boolean fields that maps three values: `true` (\"Yes\"), `false` (\"No\"), and `null` (\"Unknown\")."
-aliases: []
-keywords: [trinary, logic, combobox, nullable, booleans, widget]
+description: "A dropdown widget that shows a nullable boolean as Yes, No or Unknown, for hand-built forms and filters; the generated frontend offers a checkbox or a Yes/No combo."
+aliases: [nullable boolean select, three-state boolean]
+keywords: [trinary, nullable, boolean, combobox, null, unknown, booleanWidget, filter, widget]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
 category: form
 status: single-project
@@ -13,48 +13,55 @@ alternatives: []
 related: [view-edit-mode-toggle, promise-based-dialog-system]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A custom form widget for nullable boolean fields that maps three values: `true` ("Yes"), `false` ("No"), and `null` ("Unknown"). Implemented as a Select/Combobox dropdown rather than a checkbox, since checkboxes cannot represent the null/unknown state. Supports read-only mode, validation state, and icon decoration. Uses a Map for value-to-label mapping.
+An optional boolean attribute has three states: true, false and not set. A checkbox shows only two. This practice renders the field as a three-option dropdown so "not set" is visible and can be chosen, in forms and in table filters.
 
-## Structure
+## Practice
+
+### Platform base
+
+- A boolean attribute in the UI model has a `booleanWidget` setting with two values: `CHECKBOX` and `COMBO`, a dropdown with Yes/No options ([boolean type rules](../../agent-docs/model/esm_metamodel/ui-behaviour.md), [BooleanWidget](../../agent-docs/model/esm_metamodel/ui.md)). Neither documentation page describes a dedicated "unknown" option for the generated widgets, so check the generated form in the target version before building a custom one.
+- A model-level alternative is to avoid the third state: make the attribute required with a default, or use a small enumeration with an explicit "unknown" member, which the generated frontend renders natively.
+
+### Project practice: a custom three-option combobox
+
+This is project code (actiongroup-test-react), written for a frontend with hand-built pages:
+
+- A value-to-label map: `null` is "Unknown", `true` is "Yes", `false` is "No".
+- A select component with the usual form props: name, label, value, change handler, `readOnly`, error and helper text.
+- The same component serves as the `trinaryLogic` filter type of the filter dialog for boolean columns.
 
 ```typescript
-const TRINARY_LOGIC = new Map([
-  [null, 'Unknown'],
-  [true, 'Yes'],
-  [false, 'No'],
+// Example project code
+const TRINARY_LOGIC = new Map<boolean | null, string>([
+  [null, 'Unknown'], [true, 'Yes'], [false, 'No'],
 ]);
 
 <TrinaryLogicCombobox
-  name="real"
-  label="Real"
-  readOnly={!editMode}
+  name="real" label="Real" readOnly={!editMode}
   value={data?.real}
-  error={!!validation.get('real')}
-  helperText={validation.get('real')}
+  error={!!validation.get('real')} helperText={validation.get('real')}
   onChange={(value) => setData({ ...data, real: value })}
 />
 ```
 
-Also used in FilterDialog as `trinaryLogic` filter type for boolean column filtering.
+## Rationale
 
-## Examples
+The widget maps one to one onto what the database and the REST layer carry for a nullable boolean, and it behaves the same in forms and filters. The cost is a custom component to maintain, and "Unknown" may read oddly where users expect "Not set"; the label should be i18n-driven.
 
-### ActionGroupTestReact
-`TrinaryLogicCombobox` component at `src/components/TrinaryLogicCombobox.tsx` renders a MUI Select with 3 options. Used for Galaxy fields (`real`, `nakedEye`) and Earth fields (`habitable`, `inhabited`, `peaceful`). Also used as a filter type in the FilterDialog for filtering boolean columns in tables.
+## Example
 
-## Trade-offs
+actiongroup-test-react uses the component for several boolean fields of its Galaxy and Earth forms and for boolean column filters. It honours the read-only flag of [[view-edit-mode-toggle]].
 
-- **Pros**: Handles nullable booleans cleanly; clear user-facing labels; consistent with 3-value logic in database; works in both forms and filters
-- **Cons**: Custom widget not part of standard MUI; must be maintained separately; "Unknown" label may confuse users expecting "Not Set"
-- **When to use**: Any form or filter that needs to represent a nullable boolean (true/false/null) field
+## When to avoid
+
+- On generated forms: use the model's `booleanWidget` setting, or an enumeration with an explicit unknown member.
+- When the attribute is required: a checkbox or Yes/No combo is enough.
 
 ## Related
 
-- [[view-edit-mode-toggle]]
-- [[promise-based-dialog-system]]
-
+- [[view-edit-mode-toggle]] — the read-only mode this widget respects
+- [[promise-based-dialog-system]] — dialog handling around the same forms and filters

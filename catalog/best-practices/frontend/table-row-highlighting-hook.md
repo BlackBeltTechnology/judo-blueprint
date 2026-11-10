@@ -1,63 +1,76 @@
 ---
 id: table-row-highlighting-hook
 title: Table Row Highlighting Hook for Conditional Colors
-description: "Apply conditional background colors to table rows based on data values using the `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY` Pandino service."
-aliases: []
-keywords: [table, row, highlighting, hook, conditional, colors]
+description: "Colour rows of a generated table by data values with the platform's table row highlighting hook, registered per table component."
+aliases: [row colouring, conditional row colors]
+keywords: [table, row highlighting, hook, conditional colors, TableRowHighlightingHook, pandino, application-customizer]
 tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
 category: table
 status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:unrecorded"]
 alternatives: []
-related: [pandino-action-hook-override, custom-visual-element-override]
+related: [pandino-action-hook-override, custom-visual-element-override, application-customizer-hub]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Apply conditional background colors to table rows based on data values using the `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY` Pandino service. Each hook returns an array of highlighting rules with a name, background color, and boolean condition evaluated per row. Multiple rules can be defined per table, and each rule targets a specific data condition.
+Rows of a table should be visually distinguished by an enum value, a status or a threshold, without editing the generated table. The platform offers a table row highlighting hook for exactly this; this practice describes how a project uses it.
 
-## Structure
+## Practice
+
+### Platform base
+
+The hook is a platform extension point ([table hooks](../../agent-docs/frontend/hooks/table-hooks.md)):
+
+- `TableRowHighlightingHook` and `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY` come from `~/theme/table-row-highlighting`.
+- The hook is a function that returns a function that returns an array of rules. Each rule has `name`, `label` (legend text), `backgroundColor` and `condition`, a predicate over the grid row params (`params.row`).
+- It is registered in `src/custom/application-customizer.tsx` with `registerService`, and the service property `component` is the generated table component name; read that name from the generated components under `src/containers`.
+- `src/custom/` is gitignored in the frontend module, so the hook survives regeneration without `.generator-ignore` entries ([extension points](../../agent-docs/frontend/extension-points.md)).
 
 ```typescript
-// Hook implementation
-const highlightHook = (row: RowType) => [
-  {
-    name: 'fq-row-theme-material',
-    backgroundColor: '#0095ff',
-    condition: row.itemType === ItemType.MATERIAL,
-  },
-  {
-    name: 'fq-row-theme-service',
-    backgroundColor: '#e88f00',
-    condition: row.itemType === ItemType.SERVICE,
-  },
-];
+// Platform shape; the row type and enum come from the project's generated code
+export const itemHighlighting: TableRowHighlightingHook<ItemStored> = () => {
+  return () => ([
+    { name: 'row-material', label: 'Material', backgroundColor: '#0095ff',
+      condition: (params) => params.row.itemType === 'MATERIAL' },
+    { name: 'row-service', label: 'Service', backgroundColor: '#e88f00',
+      condition: (params) => params.row.itemType === 'SERVICE' },
+  ]);
+};
 
-// Registration in application-customizer.tsx
-context.registerService(
+context.registerService<TableRowHighlightingHook>(
   TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
-  highlightHook,
-  { component: 'ServicesEntityEntity_View_EditTableComponent' }
+  itemHighlighting,
+  { component: 'OfferItemsTable' } // the generated table component name
 );
 ```
 
-## Examples
+### Project practice: one hook per table, rules keyed by enum
 
-### RackInspect
-Two highlighting hooks: (1) Offer items table uses blue (`#0095ff`) for MATERIAL rows and orange (`#e88f00`) for SERVICE rows. (2) Partner ratings table uses green (`#00cc00`) for RatingResult.A (excellent) and red (`#cc0000`) for RatingResult.C (non-acceptable), with no highlight for RatingResult.B.
+This layer is project practice (rackinspect):
 
-## Trade-offs
+- One hook per table, each registered with its own `component` so a rule set never leaks onto another table.
+- Rules test an enum attribute of the row; a value without a rule stays unhighlighted (a rating table coloured green for the best grade and red for the worst, with the middle grade plain).
+- Rule colours are written in the hook; the platform docs recommend theme palette colours over hard-coded hex where the theme has a matching one.
 
-- **Pros**: Non-invasive visual enhancement; no generated code modification; clear data-driven styling rules
-- **Cons**: Limited to background color; more complex styling (icons, badges) requires custom visual element override; colors are hardcoded
-- **When to use**: When table rows need visual differentiation based on enum values, status, or data thresholds
+## Rationale
+
+The hook changes only the background, so the generated table, its actions and its access rules stay untouched. The cost is that hex colours are duplicated in code and need review when the theme changes.
+
+## Example
+
+rackinspect registers two hooks in `application-customizer.tsx`: the offer items table (blue for material rows, orange for service rows) and the partner rating table (green for the top grade, red for the lowest).
+
+## When to avoid
+
+- When the row needs more than a background (icons, badges, chips): use a column customizer hook for that column or a custom visual element.
+- When the state is better shown by data: add a status column from the model and let the generated table render it.
 
 ## Related
 
-- [[pandino-action-hook-override]]
-- [[custom-visual-element-override]]
-
+- [[pandino-action-hook-override]] — the same registration mechanism for action hooks
+- [[custom-visual-element-override]] — richer per-element rendering
+- [[application-customizer-hub]] — where these registrations are collected

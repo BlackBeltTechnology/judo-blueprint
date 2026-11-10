@@ -1,0 +1,135 @@
+{
+ "batch": "pf06",
+ "entries": {
+  "table-row-actions-utility": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "DataGrid row actions table page customization",
+    "OperationFormTableRowCallOperationButton row operation table",
+    "table-row-actions column customizer hook"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/model-screen-layout.md#Row Actions",
+    "catalog/agent-docs/frontend/hooks/table-hooks.md#Custom Columns",
+    "catalog/agent-docs/frontend/extension-points.md#Hook Files and the Custom Folder"
+   ],
+   "fixes": [
+    "legacy rewrite; added platform base (model row actions, column customizer hook), labeled helper as project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "table-row-highlighting-hook": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "table row highlighting hook",
+    "Registration TableRowHighlightingHook component property",
+    "generated frontend customization hooks"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/table-hooks.md#Table Row Highlighting",
+    "catalog/agent-docs/frontend/extension-points.md#Hook Files and the Custom Folder"
+   ],
+   "fixes": [
+    "legacy rewrite; hook shape is function returning function returning rules with label; import from ~/theme/table-row-highlighting; component = generated table name; theme colours advice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "timed-quiz-auto-advance": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "timer countdown quiz auto-submit operation call",
+    "custom visual element implementation extension point component",
+    "Component Replacement Hook CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook",
+    "catalog/agent-docs/frontend/extension-points.md#Hook Files and the Custom Folder"
+   ],
+   "fixes": [
+    "legacy rewrite; platform base for custom component, server-side check caveat"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "trinary-logic-widget": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "nullable boolean trinary checkbox",
+    "BooleanWidget CHECKBOX COMBO",
+    "booleanWidget ui-behaviour"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/ui.md#BooleanWidget",
+    "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md#Boolean Type"
+   ],
+   "fixes": [
+    "legacy rewrite; added platform booleanWidget CHECKBOX/COMBO, noted docs do not describe an unknown option"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "view-edit-mode-toggle": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "editMode view edit read-only form",
+    "editMode container actions hook storeDiff validation",
+    "useNavigationConfirmation unsaved changes"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Container Actions",
+    "catalog/agent-docs/frontend/extension-points.md#Unsaved-Changes Navigation Confirmation",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers"
+   ],
+   "fixes": [
+    "legacy rewrite; generated edit mode and hook params, useNavigationConfirmation, signed identifier note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "viewmodel-context-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "ViewModel context page generated index.tsx customization.ts types.ts",
+    "ViewModel",
+    "hook-scaffold-default-pattern generated hook flag generateActionsHook"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/model-screen-layout.md#File Path Generation Patterns",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Container Actions",
+    "catalog/agent-docs/frontend/extension-points.md#Hook Files and the Custom Folder"
+   ],
+   "fixes": [
+    "legacy rewrite; flagged that docs only document index.tsx/context.tsx, rest observed; hook scaffolds only with flag"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "zero-customization-generated-frontend": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "generator-ignore src/custom gitignore hook scaffold .default",
+    "hidden-by-default Flutter handlebars template override",
+    "hidden-by-default derived boolean visibility column width sort order page size model configuration"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/extension-points.md#Hook Files and the Custom Folder",
+    "catalog/agent-docs/frontend/README.md#Key Concepts",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md#Hook Generation"
+   ],
+   "fixes": [
+    "legacy rewrite; src/custom gitignored, scaffolds only with hook flag, checksum protection"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

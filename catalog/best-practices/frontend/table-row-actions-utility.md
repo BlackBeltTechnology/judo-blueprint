@@ -1,63 +1,78 @@
 ---
 id: table-row-actions-utility
 title: Table Row Actions Utility with Configurable Display
-description: "A utility function `columnsActionCalculator()` that generates a DataGrid action column from an array of `TableRowAction` definitions."
-aliases: []
-keywords: [table, row, actions, utility, configurable, display]
+description: "A project utility that builds a DataGrid action column from a list of row action definitions, with a setting for how many show as buttons and how many collapse into a dropdown."
+aliases: [row action column, action column calculator]
+keywords: [table, row actions, datagrid, action column, dropdown, utility, rowOperations]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
 category: table
 status: single-project
 projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: []
-related: [seek-based-table-pagination, session-storage-table-state]
+related: [seek-based-table-pagination, session-storage-table-state, custom-visual-element-override]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A utility function `columnsActionCalculator()` that generates a DataGrid action column from an array of `TableRowAction` definitions. Each action has a label, icon, and callback. The `shownActions` option controls how many actions appear as standalone buttons versus being collected into a dropdown menu. This creates a consistent action column pattern across all tables with configurable density.
+Tables with several row-level actions need one consistent action column whose density can be tuned per table: all buttons, one button plus a dropdown, or everything in a dropdown. This practice wraps that in one helper that turns a list of action definitions into a DataGrid column.
 
-## Structure
+## Practice
+
+### Platform base
+
+- The generated React table is an MUI DataGrid. Row-level actions come from the model: row action definitions such as view, remove and delete (`*RowViewButton`, `*RowRemoveButton`, `*RowDeleteButton`) and custom operations placed in a table's `rowOperations` (`OperationFormTableRowCallOperationButton`). See [row actions](../../agent-docs/frontend/model-screen-layout.md) and [table operations](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md).
+- The platform has a supported way to add or replace a single column on a generated table without replacing the table: a column customizer hook registered under `TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY` with the table component name and the column as service properties. Its documented example is an action button column with `renderCell` ([table hooks](../../agent-docs/frontend/hooks/table-hooks.md)).
+- Hooks and custom code live under `src/custom/`, which is gitignored in the frontend module, so they survive regeneration ([extension points](../../agent-docs/frontend/extension-points.md)).
+
+### Project practice: configurable action column helper
+
+This layer is project code (actiongroup-test-react, a frontend that builds its own tables), not a platform feature. A helper takes an array of `{ label, action, icon }` definitions and returns a column definition, with a `shownActions` option:
+
+- `0`: no action column
+- `1`: every action in the dropdown
+- `n` (2 or more): `n-1` standalone buttons, the rest in the dropdown
+- `-1`: every action as a button
 
 ```typescript
+// Example project code, not a platform API
 interface TableRowAction<R> {
   label: string;
   action: (row: R) => void;
   icon: ReactNode;
 }
 
-interface ColumnsActionsOptions {
-  shownActions?: number;  // -1: all buttons, 0: none, 1: all in dropdown, n: n-1 buttons + dropdown
-  showLabel?: boolean;
-}
-
-// Usage
-const rowActions: TableRowAction<ViewGalaxyStored>[] = [
+const rowActions: TableRowAction<GalaxyStored>[] = [
   { label: 'Delete', action: (row) => deleteRow(row), icon: <Delete /> },
-  { label: 'Create Dark Matter', action: (row) => navigate(`/${row.id}/createDarkMatter`), icon: <Icon /> },
+  { label: 'Create item', action: (row) => navigate(`/${row.id}/createItem`), icon: <Icon /> },
 ];
 
 const columns = [...baseColumns, ...columnsActionCalculator(rowActions, { shownActions: 1 })];
 ```
 
-Display modes: `shownActions: 0` (hidden), `1` (all in dropdown), `2` (1 button + dropdown), `n` (n-1 buttons + dropdown), `-1` (all as buttons).
+In the source project, a table with four actions shows them all in the dropdown, while a table with a single Remove action shows it as a button.
 
-## Examples
+## Rationale
 
-### ActionGroupTestReact
-`columnsActionCalculator()` in `src/utilities/table_row_actions.tsx` generates action columns. Galaxies table has 4 row actions (Delete + 3 matter creation actions) with `shownActions: 1` (all in dropdown). Galaxy Matter table has 1 row action (Remove) shown as a button. DropdownButton renders overflow actions with icon + label menu items.
+One helper gives every table the same action column and one place to change spacing, icons or overflow behaviour. The dropdown keeps narrow tables usable when a row carries many actions.
 
-## Trade-offs
+Limits: the column has a fixed width that may not fit long labels, the dropdown adds a click, and the definitions carry no per-row visibility rule. Per-row visibility needs a condition added to the action definition or a derived boolean in the transfer object.
 
-- **Pros**: Consistent action column pattern across tables; configurable density; supports icon + label; handles overflow gracefully
-- **Cons**: Fixed column width may not fit all labels; dropdown adds click overhead; no per-row action visibility control
-- **When to use**: Any DataGrid table that needs row-level actions (delete, navigate, custom operations)
+## Example
+
+In actiongroup-test-react the helper lives in a utilities file and builds the action column for the Galaxy table (Delete plus three create-item actions, `shownActions: 1`) and for the join table (one Remove action as a button).
+
+When the generated table is kept, prefer model row actions and the column customizer hook. The helper fits a frontend that already builds its own DataGrids.
+
+## When to avoid
+
+- On generated tables: declare the row actions in the model, or use the column customizer hook for a single custom column.
+- When actions must appear or disappear per row; model that with a derived boolean and a hidden-by rule instead.
 
 ## Related
 
-- [[seek-based-table-pagination]]
-- [[session-storage-table-state]]
-
+- [[seek-based-table-pagination]] — pagination of the same DataGrid tables
+- [[session-storage-table-state]] — persisted sort and filter state per table
+- [[custom-visual-element-override]] — replacing a generated element instead of adding a column
