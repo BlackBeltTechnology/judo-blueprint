@@ -1,6 +1,6 @@
 ---
 title: Operation Call Interceptors Guide
-description: OperationCallInterceptor contract, which operations are intercepted, ordering, throwing business errors and examples.
+description: "OperationCallInterceptor contract: which operations interceptors run around (built-in CRUD only, never custom, mapped or script operations), preCall and postCall ordering, throwing business errors from interceptors, and examples."
 ---
 
 # Operation Call Interceptors Guide

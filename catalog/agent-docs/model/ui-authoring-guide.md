@@ -1,6 +1,6 @@
 ---
 title: UI Authoring Guide
-description: How to compose form, table and view scaffolds on transfer objects and wire them onto an actor menu in the ESM, with bindings, layout rules, pitfalls and audits.
+description: "How to compose form, table and view scaffolds on transfer objects and wire them onto an actor menu: bindings, hiddenBy/enabledBy/requiredBy booleans on the same transfer object, layout rules, pitfalls and audits."
 ---
 
 # UI Authoring Guide

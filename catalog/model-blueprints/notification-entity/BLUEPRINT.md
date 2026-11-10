@@ -2,8 +2,8 @@
 id: notification-entity
 title: Notification Entity with Status and Type Enums
 description: "A non-CRUD Notification entity for one user, with a type enumeration, a delivery status enumeration and a reference to the content it is about."
-aliases: [user notification, push notification record]
-keywords: [notification, status, type, delivery, retry, reference]
+aliases: [user notification, push notification record, notification inbox, read unread notification]
+keywords: [notification, status, type, delivery, retry, reference, read, unread]
 tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz-platform, status:single-project]
 category: pattern
 status: single-project

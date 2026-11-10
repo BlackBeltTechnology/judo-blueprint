@@ -1,6 +1,6 @@
 ---
 title: Advanced JUDO Modeling Patterns
-description: Reusable advanced JUDO modeling patterns: actors and principals, role flags, polymorphism, JQL concepts and validator-enforced structures.
+description: "Advanced JUDO modeling patterns: view model panel transfer objects with derived relations (dashboards), actors and principals, role flags, polymorphism and polymorphic creation for abstract entities, relation kinds, JQL concepts and validator-enforced structures."
 ---
 
 # Advanced JUDO Modeling Patterns

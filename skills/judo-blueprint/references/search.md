@@ -7,6 +7,10 @@
 - **Ask for the rule, then the pattern.** "custom operation interceptor scope" finds the agent-docs rule; "audit event entity" finds the blueprint.
 - **Two short queries beat one long query.** BM25 ranks by term match; long questions dilute it.
 
+## Filter out index rows
+
+For a content question, pass `doc_type: "doc"` to `kb_search`. It drops the directory `AGENTS.md` index rows, which otherwise take top slots. On the catalog test sets this raises top-5 hits from 92% to 97% (tuned set) and from 80% to 87% (held-out set). Leave it unset when you are looking for *which file* covers a topic.
+
 ## Reading results
 
 - Each hit is `<path> :: <heading>`. A hit on `AGENTS.md` is a directory index: its rows name the files, so open the file the row points to.

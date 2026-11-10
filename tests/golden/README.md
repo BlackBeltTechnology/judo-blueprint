@@ -6,24 +6,11 @@
 
 ## Baseline (2026-11-10, catalog-only index)
 
-| P@1 | P@5 | Recall@10 | MRR |
-|---|---|---|---|
-| 0.629 | 0.839 | 0.871 | 0.695 |
+| Set | n | P@1 | P@5 | MRR |
+|---|---|---|---|---|
+| golden (tuned against) | 62 | 0.726 | 0.919 | 0.789 |
+| holdout (never tuned) | 15 | 0.467 | 0.800 | 0.570 |
 
-Indexing the whole repo drops P@5 to 0.758, because openspec sweep files compete. Consumers index `catalog/` only, so the gate measures that.
+The golden misses were fixed through doc `description` fields and entry aliases, not by editing queries (one golden target was wrong: `generalization-guide.md` is about doc placeholders, so that query now expects `advanced-modeling-patterns.md`). The holdout set was written afterwards to measure whether those fixes generalise; trust it more.
 
-## Known misses (top 5)
-
-Most misses are agent-docs rules outranked by a practice entry or a directory `AGENTS.md` on the same topic:
-
-- interceptor scope → `backend/interceptors.md` (got a practice)
-- business error 422 / ValidationException 400 → `backend/error-handling-guide.md` (got `error-code-enum`)
-- `@JudoTest` transaction modes → `backend/custom-operations.md` (got integration-testing docs, arguably fine)
-- actor access getter has no `self` → `backend/architectural-patterns.md`
-- view model panel → `model/advanced-modeling-patterns.md` (got the practice, which links it)
-- abstract entity polymorphic create → `model/generalization-guide.md`
-- `hiddenBy`/`enabledBy` → `model/ui-authoring-guide.md` (got the practice)
-- interceptor testing → `integration-testing/interceptor-testing.md` (got the `AGENTS.md` index)
-- notification read/unread → `model-blueprints/notification-entity`
-
-Improve these through the docs (headings, aliases), not by editing the queries.
+**Biggest remaining lever:** directory `AGENTS.md` index rows take top-5 slots. Searching with `--doc-type doc` (kb_search `doc_type: "doc"`) gives golden P@5 0.968 and holdout 0.867. The consumer skill tells agents to use it for content questions.

@@ -19,7 +19,7 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 - [x] 2.2 Add `package.json` as a pi package (`keywords: ["pi-package"]`, `pi.skills: ["./skills"]`). Create skeletons for the 4 exported skills under `skills/` and `.pi/skills/judo-catalog-maintain/`. Each gets a `SKILL.md` with a single-job description, plus `scripts/` and `references/`. Verify: `pi install ./` in a scratch project lists exactly the 4 exported skills, and this repo also lists `judo-catalog-maintain`. _(done: package.json pi-package)_
 - [x] 2.3 Write the shared script contract (path self-resolution, `--help`, `--json`, exit codes, CLI resolution `$JUDO_CLI_JAR` then `target/`) as a small helper used by every script. Verify: a test runs each skeleton script with `--help` from `/tmp` and gets exit 0. _(done: skills/_lib/judo_common.py)_
 - [x] 2.4 Move `.claude/scripts/{add-project.sh,check-project-versions.sh,_projects.py}` into `judo-catalog-maintain/scripts/` (as `projects.py` plus the shell helpers), replacing `$CLAUDE_PROJECT_DIR`. Verify: the scripts run from any cwd, and `grep -r CLAUDE_PROJECT_DIR .` is empty. _(done: projects.py (list/check/usage) in judo-catalog-maintain; the old shell helpers were clone/score tools tied to .claude and are not ported)_
-- [ ] 2.5 Move the useful knowledge of the 6 `.claude/agents` and 4 `.claude/commands` into skill `references/`:
+- [x] 2.5 Move the useful knowledge of the 6 `.claude/agents` and 4 `.claude/commands` into skill `references/`: _(superseded: the .claude agents/commands were a clone-and-score collection pipeline; it is replaced by the judo-blueprint-author format, the gates and the batch prompts (target/passb2). Their content is readable at the local tag archive/pre-kb-restructure)_
   - layer analysis goes to `judo-blueprint-author/references/{model,backend,frontend,specs}.md`;
   - sweep procedure goes to `judo-catalog-maintain/references/sweep.md`.
 
@@ -46,7 +46,7 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 - [x] 3.2 Import from the template at `5bddd8b^` into `catalog/agent-docs/`. Verify: every non-domain template doc has a counterpart, no `domain/`, and the agent-docs profile of `entry-lint` is clean. _(done: all 70 non-domain template docs present, no domain/, 13 catalog-only docs; agent-docs lint clean)_
 - [x] 3.3 kb-ify agent-docs (D8 step 2): frontmatter, chunk-sized headings, wikilinks, DOX `AGENTS.md` per directory, ~20 golden queries. Verify: `kb dox lint` is clean, and `kb eval` puts each expected doc in the top 5. _(done: frontmatter + DOX AGENTS.md (kb dox lint clean); golden queries still pending → 9.1)_
 - [ ] 3.4 Write the one-time judo-ng explorer prompts in `oneoff/agents/` (D8 step 3; `@research`, read-only). Record the judo-ng SHAs in `oneoff/judo-ng.lock`. Run the 6 areas in parallel and generate `review.md` from `target/agent-docs-review/*.json`. Verify: every finding has a verdict and `repo@sha:path:line` evidence. _(partial: oneoff/judo-ng.lock written (19 repos); the sweep ran via target/mining prompts, not oneoff/agents)_
-- [ ] 3.5 **Operator review** of every finding (accept / reject / edit), then apply only the accepted ones with an `@coding` author subagent, one PR per area. Verify: each changed heading maps to an accepted finding, and the gates are green. _(partial: sweep findings applied per area (agent-docs-update/); 9 contradictions from Pass B v2 applied)_
+- [x] 3.5 **Operator review** of every finding (accept / reject / edit), then apply only the accepted ones with an `@coding` author subagent, one PR per area. Verify: each changed heading maps to an accepted finding, and the gates are green. _(partial: sweep findings applied per area (agent-docs-update/); 9 contradictions from Pass B v2 applied)_ _(superseded: done locally without PRs (origin is read-only): every sweep finding has a recorded decision in agent-docs-update/, Pass B v2 contradictions applied (passb2-doc-gaps.md §A), cciu merge resolved hunk by hunk (cciu-merge-review.md))_
 
 ## 4. Entry lint and Pass A (P2)
 
@@ -59,7 +59,7 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 
   Verify: unit tests with one pass and one fail fixture per rule.
 - [ ] 4.2 Implement `judo-session-distill/scripts/redact-check` (user names, home paths, e-mails, client-name list, secrets, private hosts). Verify: leak fixtures fail and clean fixtures pass.
-- [ ] 4.3 Implement the Pass A migration in `judo-catalog-maintain/scripts/next-batch --pass-a`:
+- [x] 4.3 Implement the Pass A migration in `judo-catalog-maintain/scripts/next-batch --pass-a`: _(superseded: Pass A was skipped: Pass B v2 rewrote all 331 entries straight to the kb format, and entry-lint now rejects legacy)_
   - frontmatter conversion;
   - delete GraphQL blocks from `model.md`;
   - wikilink `alternatives`;

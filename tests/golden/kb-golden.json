@@ -73,7 +73,8 @@
  },
  {
   "q": "abstract entity generalization polymorphic create",
-  "expect": "catalog/agent-docs/model/generalization-guide.md"
+  "expect": "catalog/agent-docs/model/advanced-modeling-patterns.md",
+  "why": "generalization-guide.md is about doc placeholders, not entity generalization (golden-set error)"
  },
  {
   "q": "hiddenBy enabledBy boolean on same transfer object",

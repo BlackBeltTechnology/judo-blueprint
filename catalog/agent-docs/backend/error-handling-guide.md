@@ -1,6 +1,6 @@
 ---
 title: Backend Error Handling Guide
-description: Platform exceptions versus modeled faults, what interceptors may throw, HTTP mapping and error codes.
+description: "Backend errors: ValidationException with field location (400), modeled business faults declared on the operation (422), platform exceptions (403, 404), what interceptors may throw, and HTTP mapping."
 ---
 
 # Backend Error Handling Guide

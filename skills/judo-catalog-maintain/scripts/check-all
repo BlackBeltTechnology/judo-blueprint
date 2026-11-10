@@ -52,13 +52,14 @@ if [ -f "$KBCLI" ] && [ -f tests/golden/kb-golden.json ]; then
   kb_eval() {
     local d; d="$(mktemp -d)"; mkdir -p "$d/.pi/dashboard"; cp -R catalog "$d/catalog"
     printf '{"sources":[{"kind":"filesystem","ref":".","priority":0}],"include":["catalog/**/*.md"],"dbPath":".pi/dashboard/kb/index.db"}' > "$d/.pi/dashboard/knowledge_base.json"
-    local out; out="$(cd "$d" && node "$KBCLI" index >/dev/null 2>&1 && node "$KBCLI" eval --golden "$ROOT/tests/golden/kb-golden.json" --limit 10 --no-reindex 2>&1 | tail -1)"
+    local out out2; out="$(cd "$d" && node "$KBCLI" index >/dev/null 2>&1 && node "$KBCLI" eval --golden "$ROOT/tests/golden/kb-golden.json" --limit 10 --no-reindex 2>&1 | tail -1)"
+    out2="$(cd "$d" && node "$KBCLI" eval --golden "$ROOT/tests/golden/kb-holdout.json" --limit 10 --no-reindex 2>&1 | tail -1)"
     rm -rf "$d"
-    python3 - "$out" "$ROOT/tests/golden/threshold.json" <<'PY'
+    python3 - "$out" "$out2" "$ROOT/tests/golden/threshold.json" <<'PY'
 import json,sys
-r=json.loads(sys.argv[1]); th=json.load(open(sys.argv[2]))
-bad=[k for k,v in th["min"].items() if r.get(k,0)<v]
-print(f"n={r['n']} P@1={r['P@1']} P@5={r['P@5']} MRR={r['MRR']}"+(f"  below floor: {bad}" if bad else ""))
+r=json.loads(sys.argv[1]); h=json.loads(sys.argv[2]); th=json.load(open(sys.argv[3]))
+bad=[f"golden {k}" for k,v in th["min"].items() if r.get(k,0)<v]+[f"holdout {k}" for k,v in th["holdout_min"].items() if h.get(k,0)<v]
+print(f"golden P@5={r['P@5']} MRR={r['MRR']} | holdout P@5={h['P@5']} MRR={h['MRR']}"+(f"  below floor: {bad}" if bad else ""))
 sys.exit(1 if bad else 0)
 PY
   }

@@ -1,5 +1,8 @@
 {
-  "baseline": {"date": "2026-11-10", "index": "catalog/ only", "n": 62, "P@1": 0.629, "P@5": 0.839, "Recall@K": 0.871, "MRR": 0.695},
-  "min": {"P@5": 0.80, "MRR": 0.65},
-  "note": "Floor sits just under the baseline. Raise it when search improves; never lower it to make a change pass."
+  "baseline": {"date": "2026-11-10", "index": "catalog/ only",
+    "golden": {"n": 62, "P@1": 0.726, "P@5": 0.919, "MRR": 0.789},
+    "holdout": {"n": 15, "P@1": 0.467, "P@5": 0.8, "MRR": 0.57}},
+  "min": {"P@5": 0.88, "MRR": 0.75},
+  "holdout_min": {"P@5": 0.73, "MRR": 0.52},
+  "note": "golden was tuned against (descriptions/aliases improved for its misses); holdout was written after tuning and never tuned to. With --doc-type doc (skip AGENTS.md index rows) golden P@5=0.968, holdout P@5=0.867. Raise floors when search improves; never lower them to pass."
 }
