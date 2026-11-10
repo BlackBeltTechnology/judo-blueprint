@@ -25,7 +25,7 @@ Start every frontend customization from the generated scaffold of the hook, so t
 
 - The generator creates `.default` scaffold files for hook registrations under `src/custom/hooks/`: error handler interceptor, `pages/`, `dialogs/`, `containers/`, `custom-implementations/`, `components/cards/`, `sub-themes/`, `registerMenuActionsHook.ts.default` and the guest page registration. A scaffold exists only when the hook is enabled in the model (for example `generateActionsHook`) ([scaffold files](../../agent-docs/frontend/hooks/README.md), [hook files](../../agent-docs/frontend/extension-points.md)).
 - `src/custom/application-customizer.tsx` is a plain generated file with an empty `customize(context)`; it is where `register...Hook(context)` calls go. It is not a `.default` file.
-- A `.default` file is not compiled. Copy it to the same name without `.default`, implement it, and register it. Do not edit the `.default` file: it is regenerated on every build. `src/custom/` is gitignored in the frontend module, so the copy survives regeneration and needs no `.generator-ignore` entry ([activating a scaffold](../../agent-docs/frontend/hooks/README.md)).
+- A `.default` file is not compiled. Copy it to the same name without `.default`, implement it, and register it. Do not edit the `.default` file: it is regenerated on every build. The copy is not generated (the frontend `.gitignore` ignores only the `.default` files), so it survives regeneration and needs no `.generator-ignore` entry ([activating a scaffold](../../agent-docs/frontend/hooks/README.md)).
 
 ### Project practice: leave the scaffolds, activate on demand
 
@@ -56,7 +56,7 @@ const HookImplementation = (data, editMode, storeDiff, refresh, submit) => {
 
 ## Rationale
 
-Scaffolds give correct signatures and imports for every hook point the model enables. Because they live in a gitignored folder and are copied rather than edited, the generator can keep updating the originals.
+Scaffolds give correct signatures and imports for every hook point the model enables. Because the `.default` files are gitignored and copied rather than edited, the generator can keep updating the originals.
 
 ## Example
 

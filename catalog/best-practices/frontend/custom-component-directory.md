@@ -23,7 +23,7 @@ Hand-written components (pages, dialogs, shared widgets) need a home that regene
 
 ### Platform base
 
-- `src/custom/` in the frontend module is gitignored and never regenerated; files there need no `.generator-ignore` entry ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md), [frontend guide](../../agent-docs/frontend/README.md)).
+- Files you add in `src/custom/` are not generated, so they need no `.generator-ignore` entry (the folder is committed; only `.default` scaffolds are gitignored) ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md), [frontend guide](../../agent-docs/frontend/README.md)).
 - The generator creates hook scaffolds as `.default` files under `src/custom/hooks/` (`pages/`, `dialogs/`, `containers/`, `custom-implementations/`, `components/cards/`, `sub-themes/`). Custom components registered through Pandino (custom visual element implementations) live next to them ([extension points](../../agent-docs/frontend/extension-points.md)).
 - Files outside `src/custom/` that the generator owns carry a generated header and are checksum-protected: editing them fails the build unless they are listed in `.generator-ignore`, which also stops generator updates for that file. Keeping hand-written code in a separate directory avoids that trade-off.
 - `src/custom/application-customizer.tsx` is a plain generated file with an empty `customize(context)` method; register custom hooks and components from there.
@@ -41,7 +41,7 @@ src/custom/
 
 - Put every hand-written file under one root and import generated code through the `~/` alias; never put custom files into generated folders such as `pages/`, `containers/` or `services/`.
 - Mirror the generator's subfolders (`hooks/dialogs`, `hooks/pages`) so scaffold copies stay discoverable.
-- Trivia used a different root, `src/trivia/`, for custom pages and dialogs. This also works because the generator does not produce files there, but unlike `src/custom/` it is not gitignored by the platform, so check version control state yourself.
+- Trivia used a different root, `src/trivia/`, for custom pages and dialogs. This also works because the generator does not produce files there; like `src/custom/`, the folder is committed to version control.
 
 ## Rationale
 

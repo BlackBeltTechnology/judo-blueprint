@@ -268,7 +268,7 @@ const statistics = useMemo(() => computeStats(data), [data]);
 
 ### 5. Custom Hooks Live in src/custom
 
-Files in `src/custom/` are gitignored in the frontend module and never regenerated, so no `.generator-ignore` entry is needed.
+Your hook files in `src/custom/` are not generated (only their `.default` twins are), so no `.generator-ignore` entry is needed.
 
 ## Troubleshooting
 

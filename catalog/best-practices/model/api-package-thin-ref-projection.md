@@ -1,90 +1,95 @@
 ---
-id: "api-package-thin-ref-projection"
-title: "Thin ApiRef TO for Cross-Package Input Picker Relations"
-domain: "model"
-category: "transfer-object"
-score: 55.0
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-05-13"
-last_updated: "2026-05-13"
-projects:
-  - compsych-letter-demo
-format: legacy
-fragment: pending
+id: api-package-thin-ref-projection
+title: Thin Reference Transfer Object for API Input Pickers
+description: "When an API input transfer object needs a typed picker relation to an entity, point it at a small mapped read-only projection in the API package instead of the UI dashboard transfer object."
+aliases: [ApiRef, thin ref transfer object, api reference projection, stable api picker]
+keywords: [transfer object, mapping, MAPPED, transient relation, AGGREGATION, API package, picker, input]
+tags: ["domain:model", "layer:model", "project:compsych-letter-demo", "status:single-project"]
+category: transfer-object
+status: single-project
+projects: [compsych-letter-demo]
+evidence: ["compsych-letter-demo:unrecorded"]
+alternatives: []
+first_seen: 2026-05-13
+fragment: api-package-thin-ref-projection
+diagram: { kinds: [entity, transfer], members: types }
+last_updated: 2026-11-10
 ---
+## Intent
 
-## Description
+An input transfer object in a stable API package needs a typed picker relation to an entity that the UI already projects in a dashboard package. Two shapes work: reuse the dashboard transfer object as the relation target, or declare a thin reference projection in the API package. This entry covers the thin variant and when it is worth the extra transfer object.
 
-When an input TO in a stable API package needs a typed picker relation to an entity that is already projected in a dashboard package, two valid shapes exist: **reuse the dashboard TO** as the relation target (minimal surface, cross-package coupling) or **declare a thin ApiRef projection** in the API package itself (stable API surface, +1 TO per target type). This best-practice covers the thin-ref variant and the tradeoff against direct reuse.
+Dashboard projections grow derived attributes, lifecycle flags and embedded grids as the UI evolves. The API contract should not move with them.
 
-The thin-ref shape preserves the boundary that an API-versioning discipline wants: dashboard projections grow derived attrs, lifecycle flags, and embedded grids over time as the UI evolves; the API contract should not move with them. The thin ApiRef carries the minimum the API caller needs to identify and label the target — typically `name` and one or two stable scalars.
+## Practice
 
-## Structure
+For each entity reachable from a stable API input, declare in the API package a reference transfer object (project naming: `<Entity>ApiRef`):
 
-For each entity `X` reachable from a stable API input, declare in the `services::api::` package (or whichever package hosts the API DTOs):
+- It maps the entity (a mapped transfer object; see the mapped transfer object rules in [architectural patterns](../../agent-docs/backend/architectural-patterns.md) and the [structure reference](../../agent-docs/model/esm_metamodel/structure.md)).
+- It is not createable, updateable or deleteable.
+- It projects one to three mapped members: the identifying and display attributes (usually a name, sometimes one stable classifier such as a language or state). No mutable lifecycle attributes, derived counts or embedded relations; those stay on the dashboard transfer object.
 
-- `services::api::XApiRef` — `TransferObjectType`, `createable=false`, `updateable=false`, `deleteable=false`.
-- A `mapping` child targeting `entities::X`.
-- 1–3 MAPPED data members projecting only the stable identification / display attrs (usually `name`, sometimes a single classifier like `originalLanguage` or `state`). Do **not** project mutable lifecycle attrs, derived counts, or embedded relations — those belong on the dashboard TO.
+The API input transfer object, which is unmapped, then holds a TRANSIENT relation to the reference transfer object. Rules that apply:
 
-Then declare the relation on the API input TO:
+- A relation target is always a transfer object, never an entity; the link to the entity lives only in the reference's mapping.
+- An unmapped transfer object may only have `AGGREGATION` relations, enforced by the validator ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), *Relation kinds per layer and the bidirectional rules*). The CLI cannot set `AGGREGATION`; it is the default on an unmapped transfer object's transient relation, or the modeling tool sets it.
+- The transient relation mechanism, its range and default expressions: see [[transient-relation-single-select-input]] and [[transient-relation-parameter]].
 
-```
-services::api::SomeInput
-├── relation: target → services::api::XApiRef [1..1]
-│   memberType: transient
-│   relationKind: AGGREGATION
-```
+Choose between the two shapes:
 
-Targets must be `TransferObjectType`s (never `EntityType`s) — TO→Entity coupling lives only inside each TO's `mapping` child.
-
-## Examples
-
-### CompSychLetter — three ApiRef TOs for the document-generation API
-
-The `services::api::StartGenerationInput` and `ConfirmGenerationInput` TOs needed typed picker relations to Template, DataObject, Design, and GenerationHandle. Three of these had only dashboard projections (`TemplateTO`, `DesignTO`, `GenerationHandleTO`) carrying derived attrs (`variantCount`, `tokens`, embedded `variants` grid) irrelevant to API consumers; `DataObjectApiTO` already existed as a thin API projection from Wave 2.4.
-
-The change `add-document-generation-operations` §1.5 adds:
-
-- `services::api::TemplateApiRef` — maps `entities::Template`, attrs: `name`, `originalLanguage`.
-- `services::api::DesignApiRef` — maps `entities::Design`, attrs: `name`.
-- `services::api::GenerationHandleApiRef` — maps `entities::GenerationHandle`, attrs: `handleId`, `documentId`, `state`.
-
-And four TRANSIENT AGGREGATION 1..1 relations on the input TOs targeting the four refs. The dashboard `*TO` projections remain free to grow without breaking the API contract.
-
-## Trade-offs
-
-| Concern | Thin ApiRef (this pattern) | Reuse dashboard TO |
+| Concern | Thin reference | Reuse dashboard transfer object |
 |---|---|---|
-| Model surface | +1 TO per target entity type (with mapping + 1–3 MAPPED members) | 0 new TOs |
-| API ABI stability | dashboard projection changes don't move API contract | every dashboard attr addition shows up in API responses |
-| Picker behaviour | generator emits `getRangeFor<rel>()` against the ApiRef; range queries hit the same backing entity DAO | identical (generator only needs a mapped TO) |
-| Implementation cost in operation body | `mutable input.<rel>` resolves to the same entity reference regardless of which TO mediates | identical |
-| Test data builders | one extra factory per ApiRef | none |
+| Model surface | one more transfer object per target entity (mapping plus 1–3 members) | none |
+| API stability | dashboard changes do not move the API contract | every dashboard attribute added shows in API responses |
+| Picker | picker range runs against the reference; same backing entity | same (the picker needs only a mapped transfer object) |
+| Test data | one more builder per reference | none |
 
-Use reuse when the API surface and the UI are explicitly co-versioned (MVP, internal-only APIs, prototype phases). Switch to thin ApiRef when an external HTTP client exists or when the dashboard TO has grown past the attrs the API caller needs (a TO with 20+ attrs and 3 embedded grids is too much for a picker reference).
+The picker and body-access rows come from the old project notes; the agent-docs do not describe them, so treat them as *verify*.
 
-## Anti-Patterns
+## Rationale
 
-- **Mapping the same entity through both a dashboard TO and an ApiRef without an explicit reason.** Adds a TO for no benefit if the dashboard TO is already minimal.
-- **Projecting derived attrs or embedded relations on the ApiRef.** Defeats the whole point — the ApiRef becomes a parallel dashboard TO.
-- **Targeting `entities::X` directly from the input TO relation.** TO→Entity relations are not how JUDO models cross-type references on transfer objects; the relation target must be a `TransferObjectType`.
+- Cross-package coupling is avoided: the API package does not depend on the dashboard package.
+- Reuse is fine when API and UI are co-versioned (MVP, internal-only APIs, prototypes). Switch to thin references when an external HTTP client exists or the dashboard transfer object has grown beyond what a picker needs (project note: 20+ attributes and three embedded grids is too much for a reference).
+- Review check: a healthy reference has a mapping, at most three attributes and no relations. A reference with embedded relations or more attributes has drifted into a second dashboard transfer object.
 
-## Verification
+## Example
 
-```bash
-# List ApiRef-style TOs (thin mapped projections in an API package)
-judo_cli graphql '{ esm { transferobjecttypes(where: {fqn: {startsWith: "<NAMESPACE>::services::api::"}}, limit: 50) {
-  items { fqn mapping { target { fqn } }
-    attributes { totalCount items { name } }
-    relations { totalCount items { name } } } } } }'
+Observed in compsych-letter-demo: the document-generation API inputs (start and confirm generation) needed pickers for template, data object, design and generation handle. Three of these had only dashboard projections with derived attributes (variant count, tokens, an embedded variants grid) that API consumers do not need; the data-object projection was already thin. The change added three reference transfer objects in the API package (template: name and original language; design: name; generation handle: handle id, document id and state) and four transient one-to-one relations on the input transfer objects pointing at the four references.
+
+In the diagram, a template entity is mapped by a reference transfer object with two members, and an unmapped input holds a transient relation to it.
+
+## When to avoid
+
+- The dashboard transfer object is already minimal: a second mapping of the same entity adds a transfer object for no benefit.
+- The reference would need derived attributes or relations: then it is not thin; reconsider the split.
+- The relation target is the entity itself: not allowed on transfer objects.
+
+## Related
+
+- [[transient-relation-single-select-input]] — the relation mechanism these targets serve
+- [[identifier-attribute-vs-relation]] — the decision rule that creates the need for a reference
+- [[actor-based-transfer-projection]] — actor-scoped projections, the companion to API-scoped ones
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=api-package-thin-ref-projection cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class StartGenerationInput {
+    <<Transfer>>
+  }
+  class Template {
+    <<Entity>>
+    +String name
+    +String language
+    +Integer variantCount
+  }
+  class TemplateApiRef {
+    <<Transfer>>
+    +String name
+    +String language
+  }
+  StartGenerationInput o-- "1" TemplateApiRef : template
+  TemplateApiRef ..> Template : maps
 ```
-
-A healthy ApiRef has: `mapping.target` set, `attributes.totalCount` ≤ 3, `relations.totalCount = 0`. Any ApiRef with embedded relations or > 3 attrs has drifted toward dashboard-shape and should be reviewed.
-
-## Related Patterns
-
-- [transient-relation-single-select-input](../../model-blueprints/transient-relation-single-select-input/BLUEPRINT.md) — the relation mechanism this pattern's targets serve.
-- [identifier-attribute-vs-relation](identifier-attribute-vs-relation.md) — the decision rule that drives needing an ApiRef in the first place.
-- [actor-based-transfer-projection](actor-based-transfer-projection.md) — companion pattern for actor-scoped projections vs API-scoped projections.
+<!-- /mermaid:generated -->

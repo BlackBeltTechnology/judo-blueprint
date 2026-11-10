@@ -1,84 +1,104 @@
 ---
-id: "identifier-attribute-vs-relation"
-title: "Identifier as Attribute vs. Identifier as Relation — Decision Heuristic"
-domain: "model"
-category: "relation"
-score: 60.0
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-05-13"
-last_updated: "2026-05-13"
-projects:
-  - compsych-letter-demo
-format: legacy
-fragment: pending
+id: identifier-attribute-vs-relation
+title: Identifier as Attribute or as Relation, a Decision Rule
+description: "Decide when a String identifier member is a legitimate domain value and stays an attribute, and when it stands in for a typed relation and should be replaced."
+aliases: [string id vs relation, surrogate key string, id attribute antipattern, foreign key by string]
+keywords: [identifier, attribute, relation, transient relation, picker, referential integrity, polymorphic target, business key]
+tags: ["domain:model", "layer:model", "project:compsych-letter-demo", "status:single-project"]
+category: relation
+status: single-project
+projects: [compsych-letter-demo]
+evidence: ["compsych-letter-demo:unrecorded"]
+alternatives: []
+first_seen: 2026-05-13
+fragment: identifier-attribute-vs-relation
+diagram: { kinds: [entity, enum, transfer], members: types }
+last_updated: 2026-11-10
 ---
+## Intent
 
-## Description
+Members named like `templateId` or `targetIdentifier` look the same in the model but fall into two groups. Some are real domain identifiers: business values with meaning beyond uniqueness. Others are strings standing in for what should be a typed relation. This rule says which to keep and which to replace.
 
-Identifier-shaped attributes on Transfer Objects fall into two distinct categories: **legitimate domain identifiers** (business values that carry meaning beyond uniqueness) and **antipattern surrogate keys** (opaque strings standing in for what should be a typed relation). The two are visually identical in the model — both look like `*Id : String` — but their downstream behaviour diverges sharply: the first survives every transformation cleanly; the second silently disables the JUDO framework's referential integrity, picker generation, and `mutable input.<rel>` conversion.
+## Practice
 
-This best-practice gives the decision rule: when to keep an `*Id` String attribute, when to replace it with a relation to a typed TO.
+### Keep as an attribute when one of these holds
 
-## Structure
+- **Business identifier:** the externally visible identity of the entity itself (a printed barcode, ISBN, invoice number). There is no other entity to relate to; the string is the thing. For generated codes see [[sequence-based-identifier]].
+- **Opaque session token:** a system-issued handle whose only job is to retrieve its bearer (upload token, generation handle, OAuth state value).
+- **Pre-allocated future identifier:** the value names something that does not exist yet when it is written (a barcode reserved at session start for a document created at confirmation). A relation cannot point at a missing target.
+- **Polymorphic target:** the target's type varies. The relation target must be one class, so the shape is an identifier string plus a type enumeration. This gives up type safety to keep one log entity for mixed targets; the alternative is one log entity per target type. See [[audit-event-entity]].
 
-### Keep as attribute when at least one of these holds
+### Replace with a relation when one of these holds
 
-- **Business identifier.** The value is the externally visible identity carried by the entity itself (printed barcode, ISBN, invoice number, NHS number). Replacing with a relation loses the *meaning* — there is no separate entity to relate to; the string IS the thing.
-- **Ephemeral / opaque session token.** The value is a system-generated handle whose only purpose is to retrieve the bearer entity (REST session id, OAuth state nonce, generation handle, upload token). No business object exists independently of the bearer.
-- **Pre-allocated future identifier.** The value names an entity that does not yet exist at the time the attribute is written (a barcode value reserved at session start before the document materializes at session confirm). A relation cannot point at a non-existent target.
-- **Polymorphic target reference.** The value identifies a target whose type varies (an audit-event target could be a Template, a Rule, or a DataObject). ESM has no clean polymorphic association; the canonical shape is a `targetIdentifier : String` plus a `targetType : Enum` pair.
+- **Input picker for an existing typed entity:** the value identifies a row the user picks. Declare a transient relation on the unmapped input transfer object, target a mapped transfer object, and cardinality exactly one. Choice and range lookups are generated per relation (`getRangeFor<Name>` operations, [platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md), *Range and Choice Operations*), and a value outside the range is rejected with `NOT_ACCEPTED_BY_RANGE`. A string attribute gives you none of that. See [[transient-relation-single-select-input]] and [[transient-relation-parameter]].
+- **Foreign key by string between two stored entities:** use a relation (an `ASSOCIATION`, with `COMPOSITION` where one owns the other, [structure reference](../../agent-docs/model/esm_metamodel/structure.md), *RelationKind Behaviour*). A string defers integrity checking to operation code.
+- For an input in an API package, the target can be a thin reference transfer object; see [[api-package-thin-ref-projection]]. A transient relation on an unmapped transfer object has kind `AGGREGATION` (validator rule); the CLI cannot set that kind ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), *Relation kinds per layer and the bidirectional rules*).
 
-### Replace with relation when at least one of these holds
+Project observations the agent-docs do not state (treat as *verify*): the React form renders a typed picker for such a relation but a plain text field for a string; with strings the operation had to look up each id itself and raise its own not-found faults.
 
-- **Input picker for an existing typed entity.** The value identifies a row the user picks from an existing collection (selecting a Template / Design / DataObject for a generation operation). The JUDO contract here is a TRANSIENT relation `[1..1]` to a mapped TO; the generator emits a `getRangeFor<rel>()` service method and the React frontend renders an `AggregationInput` picker. A String here disables all of that.
-- **Foreign-key-by-string between two stored entities.** The model already carries one entity that needs to reference another; expressing the link as a string defers referential integrity to operation impls and re-resolves on every read. Use an `ASSOCIATION` relation instead.
+### Triage
 
-## Examples
+Review every member named `*Id`, `*Identifier`, `*Ref` or `*Uuid` against the lists above. Entity-level hits are usually legitimate domain identifiers; hits on input transfer objects are usually fixable. For each replace-hit, decide the target transfer object (existing or thin reference) first.
 
-### CompSychLetter — legitimate domain identifiers (kept as attributes)
+## Rationale
 
-| Member | Why it stays |
-|---|---|
-| `entities::Document.documentId` (`BarcodeCode128Type`) | The printed barcode value. It IS the domain identifier — Documents are referenced externally by this string. |
-| `entities::GenerationHandle.handleId` (`StringType128`) | Opaque session token; ephemeral. The handle entity is reached *only* by this id. |
-| `entities::GenerationHandle.documentId` (`StringType128`) | Pre-allocated barcode value reserved at `startGeneration` time. The Document entity does not exist yet at the moment this attribute is written — no relation possible. |
-| `entities::LlmAuditEvent.targetIdentifier` | Polymorphic — target could be Template, Rule, or DataObject. Companion `targetType : LlmAuditEventKind` enum disambiguates. |
+- A relation brings referential integrity and a generated picker; a string silently loses both.
+- Wrapping a real business identifier in a relation invents an entity that does not exist, and loses the meaning of the value.
+- Do not apply "no string ids" as a blanket rule.
 
-### CompSychLetter — antipattern fixed (replaced with relations)
+## Example
 
-`services::api::StartGenerationInput` and `services::api::ConfirmGenerationInput` originally carried four TRANSIENT String attributes (`objectId`, `templateId`, `designId`, `generationHandle`) as picker-style inputs to the start/confirm operations. The operations had to re-resolve each string by ID lookup in custom Java and raise `*_NOT_FOUND` faults manually; the React form rendered four plain text fields with no validation and no `AggregationInput` widget. The fix (change `add-document-generation-operations` §1.5) replaces the four String attrs with four TRANSIENT `AGGREGATION 1..1` relations targeting mapped TOs (`DataObjectApiTO`, `TemplateApiRef`, `DesignApiRef`, `GenerationHandleApiRef`). The framework now rejects unresolvable references at the binding layer; operation impls drop the `*_NOT_FOUND` paths; the form renders four typed pickers.
+The diagram shows both groups. A document keeps its barcode as an identifying string attribute. An audit event keeps a target identifier string plus a target type enumeration. A start input holds a transient relation to a template reference, instead of a string template id.
 
-## Trade-offs
+Observed in compsych-letter-demo:
 
-- **Relation on input TO** adds one TO per target type if the API package wants a stable shape independent of dashboard projections (see [`api-package-thin-ref-projection`](api-package-thin-ref-projection.md) for the thin-ref variant). For a fully UI-internal input, reusing an existing dashboard TO costs nothing.
-- **Keeping String for a true business identifier** is not "less safe" — it is the correct shape. Trying to wrap a barcode value in a relation introduces a phantom entity and breaks the printed-on-paper semantic.
-- **Polymorphic target via String + Type enum** sacrifices type safety in the model to gain a single audit / event log entity that covers heterogeneous targets. Alternative is one log entity per target type (cleaner types, more model surface). Pick based on how often new target types are added.
+- Kept: the document barcode (BarcodeCode128 type), the generation handle's own id (opaque token), the handle's reserved document barcode (pre-allocated), and an LLM audit event's target identifier with a companion kind enumeration (polymorphic).
+- Replaced: the start and confirm generation inputs had four transient String attributes (object, template, design, generation handle). The operations resolved each by lookup in custom Java and raised not-found faults by hand, and the form showed four plain text fields. Four transient one-to-one relations to mapped transfer objects replaced them, so the unresolvable references are rejected by the framework and the form shows typed pickers.
 
-## Anti-Patterns
+## When to avoid
 
-- **`*Id : String` on an input TO that is consumed by an operation creating or updating an entity with a corresponding relation.** Silent loss of referential integrity, no generated picker, manual `*_NOT_FOUND` everywhere.
-- **`*Id : String` on a TO when the target is a single stable entity type and the cardinality is `0..1` or `1..1`.** Should be a relation; the String form gains nothing.
-- **Replacing a legitimate domain identifier (barcode, session token) with a relation just to satisfy a "no String IDs" rule.** Cargo-culting; loses semantic content.
+- The identifier really is a business value, token, future value or polymorphic reference (the keep list): leave it as an attribute.
+- A fully UI-internal input where reuse of an existing dashboard transfer object is simpler: the thin reference is optional (see [[api-package-thin-ref-projection]]).
 
-## Verification
+## Related
 
-```bash
-# Find suspicious *Id / *Identifier members across the project, separating
-# the entity-level domain identifiers (likely legitimate) from the input-TO
-# antipatterns (likely fixable).
-judo_cli graphql '{ esm { datamembers(where: {fqn: {startsWith: "<NAMESPACE>::"}}, limit: 300) {
-  items { fqn name memberType dataType { fqn } } } } }' \
-  | jq -r '.data.esm.datamembers.items[]
-      | select(.name | test("(Id$|Identifier$|Ref$|Uuid$)"))
-      | "\(.memberType)\t\(.fqn)\t\(.dataType.fqn)"'
+- [[api-package-thin-ref-projection]] — reference transfer object for input pickers in an API package
+- [[transient-relation-single-select-input]] — the relation shape that replaces a string id on an input
+- [[audit-event-entity]] — polymorphic target identifier and type pair
+- [[sequence-based-identifier]] — when the string identifier is the domain (generated codes, document numbers)
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=identifier-attribute-vs-relation cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class AuditEvent {
+    <<Entity>>
+    +String targetIdentifier
+    +TargetType targetType
+  }
+  class Document {
+    <<Entity>>
+    +String barcode [1]
+  }
+  class StartInput {
+    <<Transfer>>
+  }
+  class TargetType {
+    <<Enumeration>>
+    TEMPLATE
+    RULE
+  }
+  class Template {
+    <<Entity>>
+    +String name
+  }
+  class TemplateRef {
+    <<Transfer>>
+    +String name
+  }
+  AuditEvent ..> TargetType : targetType
+  StartInput o-- "1" TemplateRef : template
+  TemplateRef ..> Template : maps
 ```
-
-Triage each hit against the *Keep* / *Replace* criteria above. For each *Replace* hit, plan the relation target TO (existing or thin ApiRef) before mutating.
-
-## Related Patterns
-
-- [api-package-thin-ref-projection](api-package-thin-ref-projection.md) — when an input TO is in an API package and you don't want to leak dashboard projection through to API consumers.
-- [transient-relation-single-select-input](../../model-blueprints/transient-relation-single-select-input/BLUEPRINT.md) — the relation shape that replaces an `*Id` String on an input TO.
-- [audit-event-entity](audit-event-entity.md) — the polymorphic `targetIdentifier` + `targetType` shape for cross-type event logging.
-- [sequence-based-identifier](sequence-based-identifier.md) — when a String identifier IS the domain (sequence-generated codes, document numbers, barcodes).
+<!-- /mermaid:generated -->

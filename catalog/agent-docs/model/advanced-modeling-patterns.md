@@ -204,22 +204,29 @@ JQL provides **three** categories for accessing user/session data. They have cri
 
 These patterns capture rules the JUDO ESM EVL validator enforces but that neither the YAML spec vocabulary nor the CLI error messages make obvious. They surface only under the full `./judo.sh build` pipeline, and ignoring them is a large source of model-authoring churn.
 
-### Pattern: Asymmetric bidirectional relations (AGGREGATION × ASSOCIATION)
+### Pattern: Relation kinds per layer and the bidirectional rules
 
-*   **Use Case**: A parent-child relationship between two entities that must be navigable from both sides (e.g. `Partner` has many `PartnerSupportedLanguage`, and each `PartnerSupportedLanguage` points back at its `Partner`).
-*   **Problem**: The UML-intuitive answer — declare both ends as `COMPOSITION`, or both as `AGGREGATION` — fails EVL (`twoWayRelationMember.evl`): *"Bidirectional association: X cannot be composition"* (`TwoWayRelationIsNotComposition`) and *"Partner of bidirectional association: X cannot be aggregation"* (the partner of an `AGGREGATION` end must be an `ASSOCIATION`).
-*   **Pattern**: Make the two ends asymmetric:
-    *   Owner end (the `upper ≠ 1` end, i.e. the collection side) = `AGGREGATION`
-    *   Child end (the `upper = 1` end, i.e. the back-pointer) = `ASSOCIATION`
-*   **Authoring with `judo-cli`**: the CLI rejects `relationKind=AGGREGATION` on `create` and `update` (`'AGGREGATION' is not valid`, valid: `ASSOCIATION · COMPOSITION`) for both one-way and two-way relation members. Set the owner end's kind in the modeling tool or in the XMI; with the CLI alone, model both ends as `ASSOCIATION`.
-*   **Cardinality companion rule**: EVL additionally emits *"At least one reference of a bidirectional association should have lower bound with zero"*. Relax the owner-collection end (`1..*` → `0..*`); relaxing the child end breaks referential integrity.
-*   **Scope**: These rules apply to bidirectional (`TwoWayRelationMember`) relations. `ASSOCIATION` is **not** forbidden on entities: an `ASSOCIATION` end is valid, and unidirectional entity relations are not required to be `AGGREGATION` or `COMPOSITION`. Which relation kinds an application uses is a design choice; check the project's own models before generalising.
+*   **Rule (EVL, `judo-meta-esm` `structure/*.evl`)**:
+    *   A two-way relation can never be `COMPOSITION` (`TwoWayRelationIsNotComposition`: *"Bidirectional association: X cannot be composition"*).
+    *   If one end of a two-way relation is `AGGREGATION`, its partner must be `ASSOCIATION` (`AggregationOnBothSidesAreNotAllowed`: *"Partner of bidirectional association: X cannot be aggregation"*).
+    *   At least one end of a two-way relation should have lower bound 0 (a critique, i.e. a warning: *"At least one reference of a bidirectional association should have lower bound with zero"*).
+    *   An **unmapped** transfer object may only have `AGGREGATION` relations (`AggregationIfContainerIsUnmapped`).
+*   **Usual shape**: both ends of a bidirectional **entity** relation are `ASSOCIATION`. An `AGGREGATION` owner end with an `ASSOCIATION` back-pointer is also legal, but it is not required. Across nine project models (cciu corpus count, project data, not platform behaviour) all 130 bidirectional entity relations were `ASSOCIATION` on both ends; one-way entity relations were `ASSOCIATION` or `COMPOSITION`; transfer object relations were `AGGREGATION` or `ASSOCIATION`, never `COMPOSITION`.
+*   **Diagnostic — do not change the relation kind to silence this**: *"Unmapped transfer object type: X can only have aggregation kind relations. Y is not aggregation."* on an **entity** means the entity is missing its mandatory self-mapping (see [structure.md](./esm_metamodel/structure.md), *Mandatory self-mapping on `EntityType`*): without it, EVL treats the entity as an unmapped transfer object. Add the self-mapping; switching the relation to `AGGREGATION` only hides the missing mapping.
+*   **Authoring with `judo-cli`**: the CLI rejects `relationKind=AGGREGATION` on `create` and `update` (`'AGGREGATION' is not valid`, valid: `ASSOCIATION · COMPOSITION`) for both one-way and two-way relation members. For entities that matches the usual shape. Transfer object relations that must be `AGGREGATION` get it from the modeling tool or the XMI.
+*   **Cardinality companion rule**: when the lower-bound critique fires, relax the collection end (`1..*` → `0..*`); relaxing the single-valued back-pointer breaks referential integrity.
 
 ### Pattern: Derived-member self-binding
 
 *   **Use Case**: Any `DataMember` whose `memberType` is `DERIVED`.
-*   **Convention**: Every derived `DataMember` sets `binding="<self-id>"` pointing at its own `xmi:id`. This is a modelling convention: the EVL validator does **not** emit a "must bind itself" error when it is missing (verified with a create → `validate --strict` → `discard` probe), so no validator will tell you if you omit it.
+*   **Convention**: Every derived `DataMember` sets `binding="<self-id>"` pointing at its own `xmi:id`. For a derived member of an **entity**, EVL has a *critique* (a warning, not an error) for this: *"Derived data member: X (in entity type: Y) must bind itself."* (`BindingIsSelfIfDerivedAndOwnerIsEntityType`). A `validate --strict` probe passed without the binding, so do not rely on validation to catch it. The CLI sets the self-binding automatically for `STORED` members but leaves it empty for `DERIVED` ones (cciu observation), so set it yourself.
 *   **Authoring**: This is distinct from — and complements — the mandatory self-mapping on every `EntityType` (see [structure.md](./esm_metamodel/structure.md), *Mandatory self-mapping on `EntityType`*). Code generators that emit YAML→XMI must set both.
+
+### Pattern: A MAPPED member's `required` flag must match its binding
+
+*   **Rule (EVL constraint `MappedAttributeRequiredMatchesBindingRequired`)**: a `MAPPED` data member on a mapped transfer object must have the same `required` flag as the entity attribute it binds: *"Required flag of data member: X (in: TO) must match the required flag of its binding"*.
+*   **Also**: give the mapped member the same `dataType` as the bound attribute; `dataType` is a mandatory feature of `DataMember`.
+*   **Authoring**: when projecting an entity attribute into a transfer object (including the principal transfer object), copy `required` and `dataType` from the entity attribute. A default `required=false` on the transfer object member against a `required=true` entity attribute is the common slip.
 
 ### Pattern: Mandatory UI scaffolding for operation-I/O TOs
 

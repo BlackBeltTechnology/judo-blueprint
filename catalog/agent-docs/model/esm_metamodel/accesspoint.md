@@ -66,6 +66,30 @@ With the chain in place, JUDO's behaviour at runtime:
 
 Which claim type to choose is an IdP / deployment decision, not a modelling one: use `USERNAME` when the IdP guarantees a stable, unique `preferred_username`; use `EMAIL` when email is the canonical identifier; declare both when the app needs to filter on either (e.g. operator search-by-email on top of username-keyed provisioning).
 
+### Principal back-link exclusivity
+
+`TransferObjectType.actorType` = eOpposite of `ActorType.principal`. Single-valued on both sides. Only ONE TO per actor holds `actorType=<Actor>`.
+
+Setting `TO.actorType` transparently reassigns `ActorType.principal` to that TO. Previously-linked TO loses back-link (cleared to null).
+
+Consequence: cannot keep lean principal TO AND separate full admin TO both carrying `actorType=<Actor>`. Pick one. Other TOs mapping same entity exist as plain mapped TOs without the back-link.
+
+**Source**: `esm.ecore` declares `TransferObjectType.actorType` and `ActorType.principal` as `eOpposite` of each other, both single-valued. **Observed in one project**: pointing a second, wider transfer object at the actor moved the principal to it, and the build then failed in `esm2ui/claim.etl` (*"Could not find attribute: userName"*) because the claims referenced attributes of the original principal.
+
+### Managed-realm sync trigger
+
+When `ActorType.managed=true`, framework delegates CUD on principal TO to Keycloak managed realm (create / update / delete realm user matching the row).
+
+Sync trigger bound to **principal TO's DAO metadata**: `UserManagedWrappedDao` (`judo-runtime-core-security`) syncs only when `KeycloakUserManager.getManagedActorOfPrincipal(clazz)` resolves the DAO call's class to a managed actor. Sync follows TO metadata, not entity.
+
+Other TOs mapping same principal entity (e.g. admin user-management `UserTO`, list `UserListTO`) do NOT auto-sync to Keycloak. Entity row updates; Keycloak realm user does not.
+
+Multiple TOs CAN map same principal entity — admin user-management coexists with lean principal TO. Metamodel allows it; only `actorType` back-link is exclusive (see *Principal back-link exclusivity* above).
+
+**Pattern.** For Keycloak sync from admin user-management surface: custom operation on admin TO that delegates through **principal TO's DAO** (re-dispatch with principal-TO metadata). Direct CUD on admin TOs skips Keycloak.
+
+**Design rule.** Keep ONE lean principal TO owning `actorType` AND framework-managed Keycloak sync. Use other mapped TOs for admin / list projections. Route admin mutations through a custom op calling principal TO's DAO when realm sync required; otherwise accept admin TO mutations are DB-only.
+
 ### Three actor shapes (authoring reference)
 
 Three shapes for `ActorType.principal` are supported (there is no `claimPrincipal` flag: the shape follows from `principal`, `managed` and `claims`). The shape dictates which JQL category surfaces the identity data and what the framework persists:

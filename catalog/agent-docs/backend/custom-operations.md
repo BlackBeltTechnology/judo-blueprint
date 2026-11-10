@@ -167,8 +167,20 @@ application/app/src/main/java/<generated-root-package>/<app>/custom/
 
 **Do:**
 - ✅ Put your `.java` file in the **same package as its `.default` twin**.
-- ✅ Add the `.default` path (at its real generator-emitted location) to the root `.generator-ignore`.
+- (No `.generator-ignore` entry — see the One Rule section below.)
 - ✅ When in doubt, run `find application/app/src/main/java -name '*.java.default'` and mirror those packages.
+
+### `.generator-ignore` — One Rule
+
+`.generator-ignore` uses `.gitignore`-style matching, scoped to generator output. Single purpose: stop the generator from re-emitting a file at path X because you have hand-edited that exact generated file in place. It is **not** a "this file is custom" marker, and it is **not** needed for files the generator never produces.
+
+Three cases:
+
+1. **Generator emits file at path X, and you hand-edit X in place.** → Add `X` to `.generator-ignore`. This is the only legitimate case. Example: `application/pom.xml`, `integration-test/pom.xml`.
+2. **`.default` rename pattern** (custom operations, interceptors, validators). Generator emits `X.java.default`. Rename to `X.java` once, fill in the body. The generator re-emits `X.java.default` next round as a reference and never touches `X.java`. → `X.java` is OUTSIDE generator scope. **No entry needed.** Do NOT add `X.java.default` either — you want it to keep regenerating as a read-only reference.
+3. **Brand-new hand-written file the generator never emits at that path** (new helper classes in fresh packages, new factories like `ExceptionUtils.java`). → OUTSIDE generator scope. **No entry needed.**
+
+Adding purely-custom files or `.default` paths to `.generator-ignore` is noise; remove such entries.
 
 ### Best Practices
 

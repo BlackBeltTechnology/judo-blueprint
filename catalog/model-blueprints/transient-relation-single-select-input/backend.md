@@ -1,39 +1,31 @@
-## Overview
+## Backend guidance
 
-The operation body that consumes the `*Input` TO converts the transient picker selection into a stored relation on the target entity using JQL's `mutable` keyword. Without `mutable`, the reference is treated as transient and is **silently discarded** when the operation returns — the created/updated entity is persisted without the link, with no compile-time or runtime error.
+### The operation body links the picked record
 
-## Implementation Pattern
-
-The operation is bound to a JQL body that creates (or updates) the owning entity and assigns the transient picker selection through `mutable input.<rel>`:
+The operation that consumes the input transfer object creates (or updates) the owning entity and assigns the transient picker selection to a stored relation. The source project (itracker) wrote this in the operation body with `mutable input.<relation>`:
 
 ```
-operation createInitiative(input: InititativeInput): Initiative {
+operation createInitiative(input: InitiativeInput): Initiative {
   body: Initiative!create(new Initiative(
     title := input.title,
     region := mutable input.region,
-    category := mutable input.category,
-    // ...other fields...
+    category := mutable input.category
   ))
 }
 ```
 
-Key points:
-- `input.region` is a **transient** reference to a mapped TO instance.
-- `mutable input.region` promotes that transient reference to the corresponding stored entity reference — usable as the value of a stored relation on `Initiative`.
-- The exact JQL surface (`mutable`, `!create`, the assignment operator `:=`) is part of the model-side body; the Java custom implementation does not need to do anything special if the body handles the conversion declaratively.
-- If the operation body is implemented in Java (custom operation), the same conversion happens via the generated DAO API — the developer assigns the resolved entity reference returned by the DAO lookup of the input's transient reference.
+This sketch is the old project's form. Check it against the [JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md) reference before use: JCL bodies refer to the instance as `this` (not `self`), `input` is immutable unless declared mutable, and `mutable` is a unary prefix operator. The agent-docs do not say what a transient reference means when assigned to a stored relation, so the claims below are project experience, *verify* them.
 
-## Footgun: silent discard
+- `input.region` is a transient reference to an instance of the mapped transfer object.
+- `mutable input.region` turned it into the reference to the stored entity, usable as the value of the stored relation on the new entity.
+- A body without `mutable` produced an entity without the link and no compile or runtime error in the source project.
 
-> ⚠️ **If the operation body forgets `mutable`, the transient reference is discarded silently.** The created entity ends up with no link to the picker selection. No compile error. No runtime error. The bug is invisible until QA notices the field is empty in the listing.
+### Custom Java implementation
 
-This is the single most expensive mistake the pattern invites. Always:
-1. Check the body's right-hand side for `mutable` whenever the left-hand side is a stored relation.
-2. Write an integration test that creates an instance via the operation and asserts the persisted relation is non-null and points to the expected target.
+When the operation has `customImplementation = true`, no JCL body exists and the editor does not parse the Java ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md), validation). Resolve the picked record yourself through the generated DAO and assign it to the stored relation of the new entity ([data access guide](../../agent-docs/backend/data-access-guide.md)). The exact API calls are not in the agent-docs, *verify*.
 
-## Examples
+Interceptors never run around custom, mapped or script operations, so any eligibility check beyond the range expression belongs in the body.
 
-### itracker
-- **Operation**: `createInitiative`
-- **Body**: assigns `region := mutable input.region` and `category := mutable input.category` on the new `Initiative`. Both transient single-select pickers persist correctly because the body uses `mutable`.
-- **Failure mode**: dropping `mutable` on either assignment is the canonical reproduction of the silent-discard bug.
+### Test it
+
+Write an integration test that calls the operation with a picked record and asserts that the persisted relation is set and points to that record. See [[integration-test-reflection-injection]] for how such tests are built.

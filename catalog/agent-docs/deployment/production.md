@@ -418,7 +418,7 @@ The `/system/health` endpoint, its formats, status-to-HTTP mapping and custom he
 
 ### Environment provisioning notes
 
-Keep prod/test/demo environments distinct and wire the init-time admin-user variables through your startup template and infrastructure config, see [Application Configuration](./application-config.md#provisioning-a-new-environment-prod-test-demo). Signed identifiers need a stable `JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET` on every node.
+Keep prod/test/demo environments distinct and wire the init-time admin-user variables through your startup template and infrastructure config, see [Application Configuration](./application-config.md#provisioning-a-new-environment-prod--test--demo). Signed identifiers need a stable `JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET` on every node.
 
 ## Related Documentation
 

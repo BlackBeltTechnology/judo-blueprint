@@ -522,7 +522,7 @@ if (!principal) {
 ### 4. Keep Custom Components Under src/custom
 
 ```bash
-# Nothing to do: src/custom/ is gitignored and never regenerated, no .generator-ignore entry is needed
+# Nothing to do: your hook file is not generated (only its .default twin is), no .generator-ignore entry is needed
 ```
 
 ## Complete Example

@@ -1,58 +1,70 @@
 ---
-id: "business-error-vs-generic-operation-error"
-title: "Business Error Fault for UI-Visible Failures (422 vs 500)"
-domain: "backend"
-category: "error"
-score: 31.0
-usage_count: 1
-alternative_count: 1
-first_seen: "2026-07-09"
-last_updated: "2026-07-09"
-projects:
-  - rackinspect
-alternatives:
-  - typed-exception-error-handling
-format: legacy
-fragment: pending
+id: business-error-vs-generic-operation-error
+title: Business Error Fault for UI-Visible Failures (422 vs 500)
+description: "A failure the user must see and act on is raised as a modeled business fault (HTTP 422) declared on the operation; anything else surfaces as a generic 500 toast."
+aliases: [422 vs 500, business fault, UI-visible error]
+keywords: [fault, business error, 422, 500, X-Fault, custom operation, error code, throws]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
+category: error
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: [typed-exception-error-handling]
+fragment: "none: backend-only"
+first_seen: 2026-07-09
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Only a **modeled business fault** reaches the frontend as a displayable message. JUDO maps exception types to HTTP status codes, and the generated React client treats them very differently:
+Only a failure that reaches the frontend as a structured fault is rendered as a message the user can act on. This practice decides, per custom operation, whether a failure is a modeled business fault (shown to the user) or an unexpected internal error (generic toast).
 
-| Thrown from custom op | HTTP | Frontend behavior |
-| --- | --- | --- |
-| `GenericOperationErrorException` | **500** | Generic "something went wrong" crash toast; `code`/`details` payload is **not** surfaced |
-| modeled `BusinessErrorException` | **422** (+ `X-Fault` header) | Structured fault rendered to the user (code + message) |
+## Practice
 
-**Rule:** if a custom operation's failure must be *shown to the user* (a business rule violation they can act on), the operation MUST declare a modeled business-error `fault` (e.g. `BusinessError`) and throw `BusinessErrorException`. `GenericOperationError` is only for truly internal/unexpected failures where a 500 is acceptable. This choice is made **in the model** (the operation's `faults` parameter target) and then regenerated — the operation interface's `throws` clause follows the model.
+### Platform base
 
-## Structure
+- A modeled fault is a transfer object attached to an operation as a fault. The generator turns it into a checked `<Fault>Exception` with the constructors `(details)`, `(errorCode, details)` and `(errorCode, details, cause)`; the error code is the exception message ([error handling guide](../../agent-docs/backend/error-handling-guide.md#modeled-faults)).
+- The operation must declare the fault in the model. Without it the generated interface has no `throws` clause and the build fails when the implementation throws it.
+- On the wire a modeled fault is HTTP 422 with header `X-Fault: <fault FQN>` and body `{ "<fault FQN>": {details}, "code": "<errorCode>" }`. Any other `RuntimeException` becomes a 500 with the fixed code `INTERNAL_SERVER_ERROR` and empty details ([HTTP mapping](../../agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http)).
+- The generated React client shows a 500 as a generic internal-error toast; a 422 goes to the operation fault dialog, which translates attributes by `faults.<fault FQN>.<attribute>` ([frontend error handling](../../agent-docs/frontend/error-handling.md)).
+- `BusinessErrorException` and `GenericOperationErrorException` are not platform classes. They exist only when the project's own model defines faults named `BusinessError` or `GenericOperationError`.
 
-```
-# Model: set the operation fault target to the business-error TO (regenerate after)
-update(fqn: "…::Rack.deleteRack/faults[fault]",
-       input: { parameter: { target: "…::services::error_services::BusinessError" } })
-```
+### Project practice: pick the fault by audience
+
+This layer is project practice (rackinspect):
+
+- If the failure is a business rule violation the user can act on, the operation declares a modeled business-error fault and the implementation throws its exception with a machine code and a localized message.
+- A generic operation-error fault is only for truly internal failures where a 500 is acceptable.
+- The choice is made in the model (the operation's fault target) and then regenerated; the `throws` clause of the operation interface follows the model.
+- Project code, not platform API: a shared `ExceptionUtils.createBusinessErrorException(code, i18nMessage)` factory wrapped the generated exception.
+
 ```java
-// Impl throws the modeled fault via the shared factory
+// Example project code: ExceptionUtils is a project helper, BusinessErrorException is generated from the project's BusinessError fault
 throw ExceptionUtils.createBusinessErrorException("RACK_IN_USE", i18n.rack_in_use());
-// -> new BusinessErrorException(BusinessError.builder().withCode(code).withMessage(msg).build())
+// which builds: new BusinessErrorException(BusinessError.builder().withCode(code).withMessage(msg).build())
 ```
-Note: the 1-arg `BusinessErrorException(BusinessError)` leaves `getErrorCode()`/`getMessage()` null — the machine code lives in the body, so assert `ex.getDetails().getCode()` in tests.
 
-## Examples
+- The one-argument constructor leaves `getErrorCode()` and the exception message null: the machine code lives in the details body, so tests should assert `ex.getDetails().getCode()` (observed in the project; *verify* against your generated class, the platform docs describe an `(errorCode, details)` constructor that sets the message).
 
-### RackInspect
-`deleteRack`/`deleteWarehouse` were first modeled with `fault GenericOperationError` → the `RACK_IN_USE`/`WAREHOUSE_IN_USE` reason surfaced only as an opaque 500 and never appeared in the UI. Switching the operation fault to the modeled `BusinessError` (then regenerating) made the guard message render as a proper 422 business fault, matching the established `DeleteFaultRegistry` prior art and the app-wide `ExceptionUtils.createBusinessErrorException(code, i18nMessage)` idiom.
+## Rationale
 
-## Trade-offs
+- Users get actionable, localized business messages from a type-safe, model-driven error contract.
+- Expected business failures (422) stay separate from bugs (500).
+- Cost: a modeled `BusinessError` transfer object, plus a model change and regeneration to switch an operation's fault.
 
-- Pros: users get actionable, localized business messages; type-safe, model-driven error contract; clean separation of "expected business failure" (422) vs "bug" (500).
-- Cons: requires a modeled `BusinessError` transfer object and a model change + regen to switch an operation's fault.
-- Prefer when: the failure is a business-rule violation the end user should see and act on.
+## Example
 
-## Related Patterns
+`deleteRack` and `deleteWarehouse` were first modeled with a generic operation-error fault. The `RACK_IN_USE` / `WAREHOUSE_IN_USE` reasons reached the client only as an opaque 500 and never appeared in the UI. Switching the operation fault to the modeled business error and regenerating rendered the guard message as a proper 422 fault, in line with the existing delete-fault registry and the app-wide factory idiom.
 
-- [typed-exception-error-handling](typed-exception-error-handling.md) — the broader modeled-fault mechanism
-- [validation-exception-hierarchy](validation-exception-hierarchy.md) — field-level (400) validation errors
-- [guarded-delete-with-deactivate-fallback](guarded-delete-with-deactivate-fallback.md) — a guard that relies on this
+The old text states that the generic fault yields 500. The platform docs say any modeled fault is a 422, so that 500 most likely came from how the project's generic fault was thrown or declared: *verify* which of the two in your project.
+
+## When to avoid
+
+- Failures tied to an input field or addressable path: a `ValidationException` with machine-code prefixes renders at the field (400, see [[validation-exception-hierarchy]]).
+- Interceptors: a generated checked fault exception cannot be thrown from an interceptor; use `InterceptorCallBusinessException` with the fault FQN as `type` instead ([error handling guide](../../agent-docs/backend/error-handling-guide.md#exceptions-thrown-from-interceptors)). Interceptors also never run around custom operations.
+- Failures where a 500 is acceptable because the user cannot act on them.
+
+## Related
+
+- [[typed-exception-error-handling]] — the broader modeled-fault mechanism
+- [[validation-exception-hierarchy]] — field-level (400) validation errors
+- [[guarded-delete-with-deactivate-fallback]] — a guard that relies on this

@@ -26,7 +26,7 @@ Branding and static media (logos, background images, QR codes, icons) belong in 
 - `public/` of the React frontend holds static files served as-is; it also holds `i18n/` and `manifest.json` ([frontend guide: project layout](../../agent-docs/frontend/README.md)).
 - Logo and icon defaults come from the actor's `applicationLogo` in the model; prefer changing the model for a permanent change. A `CustomLogoPropsHook` can instead map the default logo props (`subTitle`, `imgSrc`, `iconSrc`) to custom values, with image paths relative to `public/` ([UI hooks: logo customization](../../agent-docs/frontend/hooks/ui-hooks.md)).
 - A generated file you edit by hand fails the checksum check on the next build unless it is listed in `.generator-ignore`, which stops the generator from writing it at all. `.generator-checksum-ignore` is the alternative: such files skip validation but are always regenerated ([build and deployment: checksum handling](../../agent-docs/frontend/build-and-deployment.md), [.generator-ignore](../../agent-docs/frontend/README.md)).
-- `src/custom/` is gitignored; `public/` is not, so `public/` additions are normal tracked files.
+- Files you add to `public/` are normal tracked files; only the generated i18n and asset files there are overwritten on regeneration.
 
 ### Project practice: unique names, ignore only overrides
 

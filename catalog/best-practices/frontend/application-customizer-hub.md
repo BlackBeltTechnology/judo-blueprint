@@ -25,7 +25,7 @@ A JUDO frontend has many customization points. Calling every registration from o
 
 - All hooks register as Pandino services through `context.registerService<T>(INTERFACE_KEY, implementation, properties)`. Properties such as `{ component }` limit a hook to one page or container ([Pandino service registration](../../agent-docs/frontend/hooks/README.md)).
 - `src/custom/application-customizer.tsx` is a plain generated file with an empty `customize(context)` method inside a class implementing `ApplicationCustomizer`. It is not a `.default` scaffold and is the place that calls your `register...Hook(context)` functions ([using .default scaffolds](../../agent-docs/frontend/hooks/README.md)).
-- `src/custom/` is gitignored in the frontend module, so the file and the hook files beside it survive regeneration and need no `.generator-ignore` entry ([frontend guide](../../agent-docs/frontend/README.md), [hook files and the custom folder](../../agent-docs/frontend/extension-points.md)).
+- `application-customizer.tsx` is itself generated, so once you edit it, list it in `.generator-ignore`; your own hook files beside it are not generated and need no entry ([frontend guide](../../agent-docs/frontend/README.md), [hook files and the custom folder](../../agent-docs/frontend/extension-points.md)).
 - The same file registers non-hook services too, for example an `OperationFlowManager` ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 
 ```typescript

@@ -38,6 +38,7 @@ checks=[
  ("old: init runs on startup", r"(?i)initiali[sz]er[^\n]{0,60}(runs?|called|executed) (automatically )?(on|at) (startup|boot)", None, "B3 undocumented", r"not documented|project|verify|does not say|undocumented|claim"),
  ("old: findAllById platform", r"findAllById", None, "not in agent-docs", r"project|not in|unverified|verify|isn't"),
  ("old: judo.sh command", r"\bjudo\.sh\s+(build|start|generate|stop|clean|prune|reckless|run|test|install)", lambda p:'agent-docs' not in str(p), "no CLI commands in entries", None),
+ ("src/custom gitignored", r"src/custom/?`?[^\n]{0,40}\bis gitignored|gitignored in the frontend module|gitignored folder", None, "only *.default files are gitignored (judo-ui-react actor/gitignore); src/custom is committed", r"not gitignored|only the `?\.default"),
  ("old: Decimal Sandbox", r"Sandbox::types::Decimal", None, "not a Sandbox type", None),
 ]
 bad=0
@@ -52,5 +53,21 @@ for cid,rx,pred,why,allow in checks:
     print(f"[{len(hits):3}] {cid} — {why}")
     for h in hits[:int(sys.argv[1]) if len(sys.argv)>1 else 6]: print("      ",h)
     bad+=len(hits)
+# broken #anchors (a link whose file exists but heading does not)
+def _slug(h):
+    h=h.strip().lower(); h=re.sub(r'[`*]','',h); h=re.sub(r'[^\w\- ]','',h); return h.replace(' ','-')
+_heads={}
+for _p in ROOT.rglob('*.md'):
+    _t=re.sub(r'```.*?```','',_p.read_text(),flags=re.S)
+    _heads[_p.resolve()]={_slug(m) for m in re.findall(r'^#{1,6} (.+)$',_t,re.M)}
+_anch=[]
+for _p in ROOT.rglob('*.md'):
+    _t=re.sub(r'```.*?```','',_p.read_text(),flags=re.S)
+    for _m in re.finditer(r'\]\(([^)\s]*)#([^)\s]+)\)',_t):
+        _f=(_p.parent/_m.group(1)).resolve() if _m.group(1) else _p.resolve()
+        if _f in _heads and _m.group(2).lower() not in _heads[_f]: _anch.append(f"{_p}: {_m.group(1) or '(self)'}#{_m.group(2)}")
+print(f"[{len(_anch):3}] broken anchors — link target heading does not exist")
+for h in _anch[:int(sys.argv[1]) if len(sys.argv)>1 else 6]: print("      ",h)
+bad+=len(_anch)
 print("TOTAL",bad)
 sys.exit(1 if bad else 0)

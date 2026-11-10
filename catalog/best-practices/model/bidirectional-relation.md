@@ -29,7 +29,7 @@ Two entities need to navigate to each other and the platform should keep both en
 
 ### Relation kinds and the validator
 
-The platform's validator enforces these rules (see [Asymmetric bidirectional relations](../../agent-docs/model/advanced-modeling-patterns.md#pattern-asymmetric-bidirectional-relations-aggregation--association) in the agent-docs):
+The platform's validator enforces these rules (see [Relation kinds per layer and the bidirectional rules](../../agent-docs/model/advanced-modeling-patterns.md#pattern-relation-kinds-per-layer-and-the-bidirectional-rules) in the agent-docs):
 
 - A two-way relation cannot be a COMPOSITION on either end.
 - The partner of an AGGREGATION end must be an ASSOCIATION. If you use AGGREGATION, put it on the collection (owner) end and ASSOCIATION on the back-pointer. ASSOCIATION on both ends is also valid.

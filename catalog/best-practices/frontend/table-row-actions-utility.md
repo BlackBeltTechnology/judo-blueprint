@@ -25,7 +25,7 @@ Tables with several row-level actions need one consistent action column whose de
 
 - The generated React table is an MUI DataGrid. Row-level actions come from the model: row action definitions such as view, remove and delete (`*RowViewButton`, `*RowRemoveButton`, `*RowDeleteButton`) and custom operations placed in a table's `rowOperations` (`OperationFormTableRowCallOperationButton`). See [row actions](../../agent-docs/frontend/model-screen-layout.md) and [table operations](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md).
 - The platform has a supported way to add or replace a single column on a generated table without replacing the table: a column customizer hook registered under `TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY` with the table component name and the column as service properties. Its documented example is an action button column with `renderCell` ([table hooks](../../agent-docs/frontend/hooks/table-hooks.md)).
-- Hooks and custom code live under `src/custom/`, which is gitignored in the frontend module, so they survive regeneration ([extension points](../../agent-docs/frontend/extension-points.md)).
+- Hooks and custom code you add under `src/custom/` are not generated, so they survive regeneration ([extension points](../../agent-docs/frontend/extension-points.md)).
 
 ### Project practice: configurable action column helper
 

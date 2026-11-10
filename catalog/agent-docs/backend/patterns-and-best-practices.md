@@ -18,10 +18,10 @@ This document provides a catalog of common and advanced design patterns for back
 
 - [Core Technologies: OSGi and Declarative Services](#core-technologies-osgi-and-declarative-services)
 - [1. Manual Polymorphic Factory](#1-manual-polymorphic-factory)
-- [2. Accessing User & Request Context](#2-accessing-user--request-context)
-- [3. Implementing a Custom Data Type](#3-implementing-a-custom-data-type)
-- [4. Implementing Custom Validation](#4-implementing-custom-validation)
-- [5. Utility Patterns](#5-utility-patterns)
+- [4. Accessing User & Request Context](#4-pattern-accessing-user--request-context)
+- [5. Implementing a Custom Data Type](#5-pattern-implementing-a-custom-data-type)
+- [6. Implementing Custom Validation](#6-pattern-implementing-custom-validation)
+- [Utility Patterns](#utility-patterns)
   - [ValidationUtils](#validationutils)
   - [TypeConverter](#typeconverter)
 - [Query Patterns](#query-patterns)
@@ -610,7 +610,7 @@ entityDao.update(
 - Prevents N+1 query problems
 - Explicit control over database access
 
-**See also:** [Custom Operations - Using Masks](custom-operations.md#using-masks-projections) for comprehensive examples.
+**See also:** [Data Access Guide - Using Masks](data-access-guide.md#using-masks-projections) for comprehensive examples.
 
 ## General Best Practices
 

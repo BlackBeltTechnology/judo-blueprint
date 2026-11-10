@@ -25,7 +25,7 @@ Some UX requirements fundamentally diverge from the generated CRUD pages: games,
 
 - The generator produces data-access services (`data-axios` templates, one service implementation per page and relation, with `refresh`, `update`, `delete` and operation calls) and transfer object types ([service generation](../../agent-docs/frontend/model-screen-layout.md)). These are independent of the generated pages.
 - Generated files are tracked by checksum. A manually edited generated file fails the build unless it is listed in `.generator-ignore`, which works like `.gitignore` ([code generation and checksum protection](../../agent-docs/frontend/README.md)).
-- Code under `src/custom/` is gitignored in the frontend module and survives regeneration without `.generator-ignore` entries. Extra routes can be added in `src/extra-routes.tsx` ([extension points](../../agent-docs/frontend/extension-points.md)). Prefer these supported extension points and hooks when they are enough.
+- Your own code under `src/custom/` is not generated, so it survives regeneration without `.generator-ignore` entries (`src/custom/` is committed, not gitignored). Extra routes can be added in `src/extra-routes.tsx` ([extension points](../../agent-docs/frontend/extension-points.md)). Prefer these supported extension points and hooks when they are enough.
 - The generated frontend authenticates, applies access control and registers hooks; a replacement must handle sign-in and the signed identifiers of instances itself (they change after every update of an entity, see [signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
 
 ### Project practice: hand-built app over generated services

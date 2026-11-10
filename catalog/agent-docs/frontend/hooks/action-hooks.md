@@ -627,7 +627,7 @@ filterUserOptions: (formData, options) => {
 ### 4. Keep Custom Hooks Under src/custom
 
 ```bash
-# Nothing to do for files under src/custom/: the folder is gitignored and never regenerated.
+# Nothing to do: your hook file is not generated (only its .default twin is), so no .generator-ignore entry is needed.
 ```
 
 ### 5. Debounce Autocomplete

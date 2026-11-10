@@ -26,7 +26,7 @@ For back-office actors that only need CRUD over master data, the generated front
 - Each access of the actor determines a generated page: a table access becomes a table page, a view access a view page, with create and edit forms as dialogs; relations get their own table and view pages ([UI model to frontend mapping](../../agent-docs/frontend/model-screen-layout.md)). Menu items come from the actor's menu entries ([navigation elements](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md)).
 - Layout gaps are model problems: an access whose target has no table or view cannot get a page from the generator, so complete the UI in the model first ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md)).
 - Hook scaffolds are generated as `.default` files under `src/custom/hooks/`. A `.default` file is not compiled; it only takes effect when copied to a name without `.default` and registered from `application-customizer.tsx` ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md)).
-- `src/custom/` is gitignored in the frontend module, so nothing there needs a `.generator-ignore` entry ([frontend guide](../../agent-docs/frontend/README.md)).
+- Your own files in `src/custom/` are not generated (only `.default` scaffolds and four base files are), so they need no `.generator-ignore` entry ([frontend guide](../../agent-docs/frontend/README.md)).
 
 ### Project practice: leave the admin UI alone
 

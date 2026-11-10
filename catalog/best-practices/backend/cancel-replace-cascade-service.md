@@ -1,43 +1,50 @@
 ---
-id: "cancel-replace-cascade-service"
-title: "Cancel-and-Replace Async Cascade Service (OSGi)"
-domain: "backend"
-category: "async"
-score: 62.0
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-05-13"
-last_updated: "2026-05-13"
-projects:
-  - compsychletter
-format: legacy
-fragment: pending
+id: cancel-replace-cascade-service
+title: Cancel-and-Replace Async Cascade Service (OSGi)
+description: "An OSGi component keeps one background cascade per entity and cancels the in-flight one when a newer trigger arrives, so only the latest state is processed."
+aliases: [latest-wins background work, cancel and replace, async cascade]
+keywords: [cascade, Future.cancel, ConcurrentHashMap, executor, OSGi component, Activate, Deactivate, latest wins]
+tags: ["domain:backend", "layer:backend", "project:compsychletter", "status:single-project"]
+category: async
+status: single-project
+projects: [compsychletter]
+evidence: ["compsychletter:unrecorded"]
+alternatives: []
+fragment: "none: backend-only"
+first_seen: 2026-05-13
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An OSGi `@Component` that manages per-entity background work queues with cancel-and-replace semantics. When a new trigger arrives for the same entity while a previous cascade is in-flight, the service cancels the in-flight futures (`Future.cancel(true)`, best-effort) and immediately starts a fresh cascade from the new state. Useful for re-translation cascades, re-computation pipelines, or any "latest-wins" background fan-out.
+When a new trigger arrives for an entity while background work for the same entity is still running, cancel the in-flight work and start a fresh cascade from the new state ("latest wins"). Fits re-translation cascades, re-computation pipelines and any expensive fan-out where only the newest input matters.
 
-Precedent in this project: `ChatSessionStore` (sweep eviction pattern using `ScheduledExecutorService` + `ConcurrentHashMap` + `ScheduledFuture`).
+## Practice
 
-## Structure
+### Platform base
+
+- The service is an ordinary OSGi Declarative Services component; custom operations call it by injecting it with `@Reference` ([OSGi component registration](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern), [injecting DAOs and services](../../agent-docs/backend/data-access-guide.md#injecting-daos-and-services)).
+- Code on other threads runs outside the operation's transaction and without request context variables ([interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)). The cascade workers therefore cannot rely on the caller's transaction or actor; the docs do not describe the DAO transaction behaviour of a plain executor thread, so open and manage the transaction in the worker (*verify*, see [[quartz-scheduled-job]]).
+- Interceptors never run around custom operations, so none of them guards the trigger operation.
+
+### Project practice: per-entity cascade registry
+
+This layer is project practice (compsychletter), not a platform feature. Example project code:
 
 ```java
+// Example project code: TemplateDao, LanguageVariantDao, LlmProvider are project/generated types
 @Component(service = TranslationCascadeService.class, immediate = true)
 public class TranslationCascadeService {
 
     @Reference TemplateDao templateDao;
     @Reference LanguageVariantDao languageVariantDao;
     @Reference LlmProvider llmProvider;
-    @Reference LlmAuditService llmAuditService;
 
     private ScheduledExecutorService executor;
     // Key: entity identifier; Value: active cascade with its in-flight futures
     private final ConcurrentHashMap<UUID, Cascade> active = new ConcurrentHashMap<>();
 
     @Activate
-    void activate() {
-        executor = Executors.newScheduledThreadPool(2);
-    }
+    void activate() { executor = Executors.newScheduledThreadPool(2); }
 
     @Deactivate
     void deactivate() {
@@ -51,63 +58,51 @@ public class TranslationCascadeService {
         if (prev != null) prev.cancelAll();          // cancel-and-replace
         Cascade fresh = new Cascade(template.identifier());
         active.put(id, fresh);
-        fresh.start(executor, templateDao, languageVariantDao, llmProvider, llmAuditService);
+        fresh.start(executor);
     }
 
     private class Cascade {
-        final TemplateIdentifier templateId;
         final List<Future<?>> futures = new CopyOnWriteArrayList<>();
-
-        Cascade(TemplateIdentifier id) { this.templateId = id; }
-
-        void start(ScheduledExecutorService exec, ...) {
-            // Load variants fresh from DB (template handle may be stale)
-            // For each variant, submit a Future that:
-            //   1. Set status=TRANSLATING; persist
-            //   2. Call llmProvider.translateMarkdown(...)
-            //   3. On success: body=translated, status=OK; persist; audit success
-            //      On InterruptedException / cancellation: skip (do NOT persist FAILED)
-            //      On other failure: status=FAILED; persist; audit failure
-            //   4. On completion, remove from registry if this is still the active cascade
+        void start(ScheduledExecutorService exec) {
+            // Load variants fresh from the DB (the template handle may be stale).
+            // For each variant submit a Future that:
+            //  1. sets status TRANSLATING and persists
+            //  2. calls the LLM provider
+            //  3. success: store body, status OK, audit; interruption/cancel: skip, do NOT persist FAILED;
+            //     other failure: status FAILED, audit
+            //  4. on completion removes itself from the registry if still the active cascade
             futures.add(exec.submit(() -> { /* per-variant logic */ }));
         }
-
-        void cancelAll() {
-            futures.forEach(f -> f.cancel(true));
-        }
+        void cancelAll() { futures.forEach(f -> f.cancel(true)); }
     }
 }
 ```
 
-Key structural elements:
-- `@Activate` / `@Deactivate`: lifecycle hooks manage the executor and cancel all in-flight work on bundle stop.
-- `ConcurrentHashMap<EntityId, Cascade>`: per-entity registry; `remove` + `put` is the cancel-and-replace sequence (not `replace`; `remove` lets us call `cancelAll` on the displaced cascade before inserting the new one).
-- `CopyOnWriteArrayList<Future<?>>`: safe iteration from the deactivate path while workers append.
-- `Future.cancel(true)`: interrupts running threads; underlying HTTP/LLM calls may still complete server-side — the result is simply discarded.
-- Cascade workers MUST check `Thread.interrupted()` or catch `InterruptedException` and exit cleanly — do NOT set `status=FAILED` on cancellation (the new cascade will overwrite the status).
-- `immediate = true` on `@Component` ensures the service is available before the first operation fires.
+- `@Activate` / `@Deactivate` own the executor and cancel in-flight work when the bundle stops.
+- A `ConcurrentHashMap` holds one cascade per entity. Use `remove` then `put`, not `replace`: `remove` returns the displaced cascade so it can be cancelled before the new one is inserted.
+- `CopyOnWriteArrayList<Future<?>>` lets the deactivate path iterate while workers append.
+- `Future.cancel(true)` is best effort: the thread is interrupted, but an HTTP/LLM call may still finish server side and its result is simply discarded.
+- Workers check for interruption and exit cleanly. They never write `FAILED` on cancellation, because the new cascade overwrites the status.
+- `immediate = true` makes the service available before the first operation fires.
 
-## Examples
+## Rationale
 
-### compsychletter
-`TranslationCascadeService` in `application/services/.../operations/templates/`. Triggered by `editOriginalBody` and `changeOriginalLanguage` operations. Each trigger re-translates all `LanguageVariant` rows of a `Template` from the new original body. Per-variant states: `OK → PENDING → TRANSLATING → OK / FAILED`. Cancel-and-replace: second `editOriginalBody` on the same template cancels any in-progress variant futures and starts fresh from the new body. Audit: `LlmAuditService.record(VARIANT_RETRANSLATE_CASCADE, ...)` per variant on completion (safe-failure wrapped).
+- Avoids redundant expensive calls (LLM, external API) for superseded edits; the user sees the newest edit's result as early as possible; per-variant status stays visible.
+- Cost: cancellation is best effort, and variants may briefly show stale content from an in-progress cascade until the new one overwrites it.
+- Do not set `FAILED` on `InterruptedException` (a false failure the user would see), do not use `replace` instead of `remove` + `put`, do not share one executor across unrelated services (`shutdownNow` would kill other work), and do not omit `immediate = true` (the first operation can race with activation).
 
-## Trade-offs
+## Example
 
-- Pros: Prevents redundant LLM calls for superseded edits; user sees the latest edit's result as soon as possible; clean per-variant status surfacing
-- Cons: `Future.cancel(true)` is best-effort — the underlying HTTP call may complete server-side even after cancellation; variants briefly show stale translated content from an in-progress cascade before being overwritten by the new one
-- Prefer when: Background fan-out work is expensive (LLM calls, external API), entities are edited frequently, and only the latest state matters (last-edit-wins)
-- Avoid when: All intermediate results must be preserved (use a proper queue/event-log instead); strict ordering guarantees needed across cascades
+compsychletter's `TranslationCascadeService` is triggered by the `editOriginalBody` and `changeOriginalLanguage` operations. Each trigger re-translates every `LanguageVariant` of a `Template` from the new original body. Variant states move `OK → PENDING → TRANSLATING → OK / FAILED`. A second `editOriginalBody` on the same template cancels the running variant futures and starts again from the new body. Each completed variant writes an audit record (`VARIANT_RETRANSLATE_CASCADE`), wrapped so audit failure never breaks the cascade ([[safe-failure-pattern]]). The project's `ChatSessionStore` uses the same scheduled-executor + concurrent-map idiom for sweep eviction.
 
-## Anti-Patterns
+## When to avoid
 
-- **Setting `status=FAILED` on `InterruptedException`** — Cancellation is not failure; the new cascade will handle the variant. Setting FAILED on cancel creates a false failure state that the user sees before the new cascade completes.
-- **Using `replace` instead of `remove`+`put`** — `ConcurrentHashMap.replace` does not allow the cancel-on-displacement action in between.
-- **Sharing one executor across unrelated services** — Each cascade service should own its executor; `shutdownNow` in `@Deactivate` must not kill other services' work.
-- **Not declaring `immediate = true`** — Without it the OSGi container may delay instantiation until the service is first looked up; the first operation invocation may race with component activation.
+- Every intermediate result must be preserved: use a proper queue or event log.
+- Strict ordering across cascades is required.
+- Work is cheap enough that cancelling gains nothing.
 
-## Related Patterns
+## Related
 
-- [safe-failure-pattern](safe-failure-pattern.md)
-- [custom-operation-osgi-component](custom-operation-osgi-component.md)
-- [quartz-scheduled-job](quartz-scheduled-job.md)
+- [[safe-failure-pattern]] — audit and side effects that must not break the cascade
+- [[custom-operation-osgi-component]] — the operation that triggers the service
+- [[quartz-scheduled-job]] — other background work outside the request transaction

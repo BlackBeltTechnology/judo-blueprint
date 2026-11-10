@@ -2,11 +2,22 @@
 
 `origin/feature/cciu-model-patterns` (2a27d6a) was merged locally. For agent-docs, each file was merged three-way into `catalog/agent-docs/`. Where both sides changed the same lines, the **catalog version was kept** (it was verified against judo-ng in the sweep). The cciu text is listed below so it can be checked and applied where it adds verified knowledge.
 
+
+## Result
+
+- rejected: 42
+- already-covered: 41
+- applied in spirit: cciu was right that src/custom is NOT gitignored: 11
+- applied: 5
+- unverified: 1
+
+The real fixes came from **checking**, not copying: cciu was right that `src/custom/` is not gitignored, which corrected 8 agent-docs and 17 entries. The Keycloak managed-realm sync and the principal back-link exclusivity were verified in judo-runtime-core and esm.ecore and restored. The two-way relation rules are real EVL constraints. cciu was wrong about `claimPrincipal` (does not exist), `getOperations()` returning strings, CLI lists being append-only, and `subThemes` on the customizer.
+
 Status values: `open` (not reviewed), `applied`, `rejected` (with reason), `already-covered`.
 
 ## catalog/agent-docs/backend/architectural-patterns.md
 
-### CM-001 (both changed) — open
+### CM-001 (both changed) — already-covered (every cciu sentence is already in the catalog file)
 
 <details><summary>catalog (kept)</summary>
 
@@ -24,7 +35,7 @@ cciu:
 
 ## catalog/agent-docs/backend/authentication-guide.md
 
-### CM-002 (both changed) — open
+### CM-002 (both changed) — applied (Keycloak managed-realm sync section restored; verified against judo-runtime-core-security UserManagedWrappedDao + KeycloakUserManager.getManagedActorOfPrincipal; skill links → kb links)
 
 <details><summary>catalog (kept)</summary>
 
@@ -57,7 +68,7 @@ See Managed-realm sync trigger and Principal back-link exclusivity in accesspoin
 For the canonical admin-surface shape and the custom-op delegation pattern that routes admin mutations through the principal TO's DAO, see `judo-blueprint/best-practices/backend/managed-actor-admin-pattern.md`.
 ````
 
-### CM-003 (both changed) — open
+### CM-003 (both changed) — already-covered (every cciu sentence is already in the catalog file)
 
 <details><summary>catalog (kept)</summary>
 
@@ -73,7 +84,7 @@ cciu:
 > If the `ActorType` in your ESM is **mapped + `managed="true"` + has `<claims>`** (see Mapped Managed Principal with Claim Mapping (see `judo-model-docs` skill)), the JUDO runtime is *intended* to insert the principal row on first login and update it on every subsequent `#_principal` call, directly from the JWT claims declared in `<claims>`. In that intended case you do not need an `AuthenticationInterceptor` for the baseline insert.
 ````
 
-### CM-004 (cciu removes) — open
+### CM-004 (cciu removes) — rejected (cciu deletes catalog text that was verified against judo-ng in the sweep)
 
 <details><summary>catalog (kept)</summary>
 
@@ -92,7 +103,7 @@ cciu:
 
 ## catalog/agent-docs/backend/custom-operations.md
 
-### CM-005 (both changed) — open
+### CM-005 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -108,7 +119,7 @@ cciu:
 <generated-root-package>.webshop.custom
 ````
 
-### CM-006 (both changed) — open
+### CM-006 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -124,7 +135,7 @@ cciu:
 application/app/src/main/java/<generated-root-package>/webshop/custom/
 ````
 
-### CM-007 (both changed) — open
+### CM-007 (both changed) — rejected (example package name only; catalog example kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -140,7 +151,7 @@ cciu:
 **Concrete example (real project):** `hu.blackbelt.webshop.webshop.custom/` — derived from the root package `hu.blackbelt.webshop` plus the lower-cased model name `webshop` plus the fixed `.custom` suffix.
 ````
 
-### CM-008 (both changed) — open
+### CM-008 (both changed) — already-covered (every cciu sentence is already in the catalog file)
 
 <details><summary>catalog (kept)</summary>
 
@@ -156,7 +167,7 @@ cciu:
 > The build's `resetChecksum` goal periodically clears `application/app/src/main/java/.generated-files/`. After that the `.default` blueprints and the checksum registry are gone until the next full generator run — which can break incremental builds.
 ````
 
-### CM-009 (both changed) — open
+### CM-009 (both changed) — applied (catalog contradicted itself: line 39 already said no entry and linked a missing One Rule section; cciu One Rule restored, the "add .default to .generator-ignore" bullet removed)
 
 <details><summary>catalog (kept)</summary>
 
@@ -186,7 +197,7 @@ Adding purely-custom files or `.default` paths to `.generator-ignore` is noise; 
 
 ## catalog/agent-docs/backend/error-handling-guide.md
 
-### CM-010 (both changed) — open
+### CM-010 (both changed) — rejected (catalog error-handling-guide already lists the runtime-core exceptions with constructors and per-project generated faults; cciu table presents GenericOperationErrorException/BusinessErrorException as fixed platform classes, which they are not)
 
 <details><summary>catalog (kept)</summary>
 
@@ -212,7 +223,7 @@ cciu:
 
 ## catalog/agent-docs/backend/interceptors.md
 
-### CM-011 (both changed) — open
+### CM-011 (both changed) — rejected (judo-runtime-core-dispatcher OperationCallInterceptor: `Collection<EOperation> getOperations(AsmModel)`, `preCall(EOperation, Object)`; cciu `List<String> getOperations()` is wrong)
 
 <details><summary>catalog (kept)</summary>
 
@@ -252,7 +263,7 @@ cciu:
 
 ## catalog/agent-docs/deployment/build-process.md
 
-### CM-012 (cciu removes) — open
+### CM-012 (cciu removes) — rejected (cciu deletes catalog text that was verified against judo-ng in the sweep)
 
 <details><summary>catalog (kept)</summary>
 
@@ -268,7 +279,7 @@ cciu:
 (removed)
 ````
 
-### CM-013 (both changed) — open
+### CM-013 (both changed) — rejected (escaped Handlebars wording; catalog form is the rendered-docs convention)
 
 <details><summary>catalog (kept)</summary>
 
@@ -288,7 +299,7 @@ cciu:
 Fragments are Handlebars templates, so you can use `{{ }}` expressions and generator parameters (for example `{{ lowerCase model.name }}`) inside them.
 ````
 
-### CM-014 (cciu removes) — open
+### CM-014 (cciu removes) — rejected (cciu deletes catalog text that was verified against judo-ng in the sweep)
 
 <details><summary>catalog (kept)</summary>
 
@@ -342,7 +353,7 @@ cciu:
 (removed)
 ````
 
-### CM-015 (cciu removes) — open
+### CM-015 (cciu removes) — rejected (cciu deletes catalog text that was verified against judo-ng in the sweep)
 
 <details><summary>catalog (kept)</summary>
 
@@ -398,7 +409,7 @@ cciu:
 
 ## catalog/agent-docs/frontend/README.md
 
-### CM-016 (both changed) — open
+### CM-016 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -416,7 +427,7 @@ cciu:
 2. **Add to `.generator-ignore`** to protect it from regeneration. Only this case (case 1 below) belongs in `.generator-ignore`:
 ````
 
-### CM-017 (both changed) — open
+### CM-017 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -432,7 +443,7 @@ cciu:
 **Authoring vs customizing.** This skill covers **customizing the generated React frontend** (hooks, theming, i18n, overrides). The UI layout itself — Form / Table / View scaffolds on each `TransferObjectType`, the menu on each `ActorType` — is **authored in the ESM model**. For that, see the model skill's UI Authoring Guide (see `judo-model-docs` skill).
 ````
 
-### CM-018 (both changed) — open
+### CM-018 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -452,7 +463,7 @@ echo "src/generated/pages/MyPage.tsx" >> .generator-ignore
 
 ## catalog/agent-docs/frontend/advanced-patterns.md
 
-### CM-019 (both changed) — open
+### CM-019 (both changed) — already-covered (every cciu sentence is already in the catalog file)
 
 <details><summary>catalog (kept)</summary>
 
@@ -513,7 +524,7 @@ interceptError: (error, opts) => {
 
 ## catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md
 
-### CM-020 (both changed) — open
+### CM-020 (both changed) — rejected (cciu skill/SKILL.md harness wording; catalog uses kb links)
 
 <details><summary>catalog (kept)</summary>
 
@@ -529,7 +540,7 @@ cciu:
 Reserve `RelationColumn` for embedded relation tables inside detail screens where relation-navigation semantics are explicitly expected. See also UI Authoring Guide — Pitfalls (see `judo-model-docs` skill).
 ````
 
-### CM-021 (both changed) — open
+### CM-021 (both changed) — rejected (skill-link wording; catalog uses kb links)
 
 <details><summary>catalog (kept)</summary>
 
@@ -551,7 +562,7 @@ cciu:
 
 ## catalog/agent-docs/frontend/hooks/README.md
 
-### CM-022 (both changed) — open
+### CM-022 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -580,7 +591,7 @@ cp src/custom/application-customizer.tsx.default src/custom/application-customiz
 echo "src/custom/application-customizer.tsx" >> .generator-ignore
 ````
 
-### CM-023 (both changed) — open
+### CM-023 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -602,7 +613,7 @@ cciu:
 cd application/frontend-react/webshop__[actor_fqn]
 ````
 
-### CM-024 (both changed) — open
+### CM-024 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -631,7 +642,7 @@ cciu:
 - ❌ Files renamed away from `.default` — outside generator scope
 ````
 
-### CM-025 (both changed) — open
+### CM-025 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -665,7 +676,7 @@ src/theme/typography.ts
 # Do NOT list *.default — keep them regenerating as a reference.
 ````
 
-### CM-026 (both changed) — open
+### CM-026 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -686,7 +697,7 @@ echo "src/custom/application-customizer.tsx" >> .generator-ignore
 
 ## catalog/agent-docs/frontend/hooks/action-hooks.md
 
-### CM-027 (both changed) — open
+### CM-027 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -712,7 +723,7 @@ cciu:
 
 ## catalog/agent-docs/frontend/hooks/data-hooks.md
 
-### CM-028 (both changed) — open
+### CM-028 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -741,7 +752,7 @@ cciu:
 
 ## catalog/agent-docs/frontend/hooks/navigation-and-access.md
 
-### CM-029 (both changed) — open
+### CM-029 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -765,7 +776,7 @@ cciu:
 
 ## catalog/agent-docs/frontend/hooks/table-hooks.md
 
-### CM-030 (both changed) — open
+### CM-030 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -788,7 +799,7 @@ cciu:
 
 ## catalog/agent-docs/frontend/hooks/validation-hooks.md
 
-### CM-031 (both changed) — open
+### CM-031 (both changed) — applied in spirit: cciu was right that src/custom is NOT gitignored (judo-ui-react-template ad0848bc actor/gitignore ignores only *.ts.default/*.tsx.default; ui-react.yaml generates application-customizer.tsx, index.tsx, custom-element-types.ts, interfaces.ts in src/custom). Catalog wording fixed in 8 agent-docs + 17 entries; claim-check pattern added. cciu text not copied (its project names and option lists are superseded)
 
 <details><summary>catalog (kept)</summary>
 
@@ -810,7 +821,7 @@ cciu:
 
 ## catalog/agent-docs/frontend/theming.md
 
-### CM-032 (both changed) — open
+### CM-032 (both changed) — rejected (catalog matches judo-ui-react-template SubThemeWrapper.tsx.hbs: a `SubThemeHook` service selected by the widget `subTheme` name; cciu `applicationCustomizer.subThemes` map does not exist in the template)
 
 <details><summary>catalog (kept)</summary>
 
@@ -828,7 +839,7 @@ cciu:
 
 ## catalog/agent-docs/integration-testing/access-and-derived-testing.md
 
-### CM-033 (both changed) — open
+### CM-033 (both changed) — already-covered (every cciu sentence is already in the catalog file)
 
 <details><summary>catalog (kept)</summary>
 
@@ -847,7 +858,7 @@ name: judo-integration-testing-access-and-derived
 description: Integration-test patterns for Access.getterExpression and DERIVED attribute getters in JUDO models. Covers DAO-level derived projection, dispatcher-driven per-actor access scoping, and ACTOR-context-dependent derived getters.
 ````
 
-### CM-034 (both changed) — open
+### CM-034 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -868,7 +879,7 @@ cciu:
 **[◄ Back to Integration Testing index](./SKILL.md)**
 ````
 
-### CM-035 (both changed) — open
+### CM-035 (both changed) — already-covered (every cciu sentence is already in the catalog file)
 
 <details><summary>catalog (kept)</summary>
 
@@ -884,7 +895,7 @@ cciu:
 *   **`managed=true` first-login auto-insert is not implemented in the current runtime** (see Authentication Guide (see `judo-backend-docs` skill)). For Pattern B and Pattern C the test must `dao.create(...)` the principal row itself before calling the dispatcher with a matching `JudoPrincipal`.
 ````
 
-### CM-036 (both changed) — open
+### CM-036 (both changed) — rejected (cciu uses a concrete project name; catalog keeps the <app> placeholder)
 
 <details><summary>catalog (kept)</summary>
 
@@ -900,7 +911,7 @@ cciu:
         modelName = "webshop",
 ````
 
-### CM-037 (both changed) — open
+### CM-037 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -932,7 +943,7 @@ That the value is correct under an authenticated actor context. If the getter ex
 ## Pattern B \u2014 Testing `Access.getterExpression` per actor via the Dispatcher
 ````
 
-### CM-038 (both changed) — open
+### CM-038 (both changed) — already-covered (every cciu sentence is already in the catalog file)
 
 <details><summary>catalog (kept)</summary>
 
@@ -948,7 +959,7 @@ cciu:
 1.  Seed the principal entity row via the entity DAO (since `managed=true` auto-insert is not implemented \u2014 see Limitations above).
 ````
 
-### CM-039 (both changed) — open
+### CM-039 (both changed) — rejected (cciu uses a concrete project name; catalog keeps the <app> placeholder)
 
 <details><summary>catalog (kept)</summary>
 
@@ -964,7 +975,7 @@ cciu:
         modelName = "webshop",
 ````
 
-### CM-040 (both changed) — open
+### CM-040 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -980,7 +991,7 @@ cciu:
             "webshop::accesspoint::GenericUser::orders::__get";
 ````
 
-### CM-041 (both changed) — open
+### CM-041 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1028,7 +1039,7 @@ When a `DERIVED` attribute's getter references `!getVariable("ACTOR", "...")`, i
 The mechanics are the same as Pattern B: build a `JudoPrincipal`, put it in the exchange under `Dispatcher.PRINCIPAL_KEY`, and call the access-point query through the dispatcher. The difference is the assertion target \u2014 you read a `DERIVED` field off the *projected TO returned by the dispatcher response*, not a row count.
 ````
 
-### CM-042 (both changed) — open
+### CM-042 (both changed) — rejected (cciu uses a concrete project name; catalog keeps the <app> placeholder)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1044,7 +1055,7 @@ cciu:
         modelName = "webshop",
 ````
 
-### CM-043 (both changed) — open
+### CM-043 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1060,7 +1071,7 @@ cciu:
             "webshop::accesspoint::GenericUser::orders::__get",
 ````
 
-### CM-044 (both changed) — open
+### CM-044 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1076,7 +1087,7 @@ cciu:
 If you tried to assert `ownedByMe` via `orderDao.query().selectList()`, every row would come back with `ownedByMe = empty Optional` (or `false`, depending on coercion) regardless of the data, because there is no `__principal` in scope to populate `getVariable("ACTOR", "userName")`. The DAO test would either always fail or always trivially "pass" \u2014 neither catches the real bug. **Always route ACTOR-dependent derived getters through the dispatcher.**
 ````
 
-### CM-045 (both changed) — open
+### CM-045 (both changed) — already-covered (same link; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1098,7 +1109,7 @@ cciu:
 
 ## catalog/agent-docs/integration-testing/osgi-ds-descriptor-tests.md
 
-### CM-046 (both changed) — open
+### CM-046 (both changed) — rejected (cciu drops the kb frontmatter and links ./SKILL.md)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1122,7 +1133,7 @@ cciu:
 **Part of**: [Integration Testing Documentation](./SKILL.md)
 ````
 
-### CM-047 (both changed) — open
+### CM-047 (both changed) — rejected (cciu skill/SKILL.md harness wording; catalog uses kb links)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1138,7 +1149,7 @@ cciu:
 - [Back to Main Hub](./SKILL.md)
 ````
 
-### CM-048 (both changed) — open
+### CM-048 (both changed) — rejected (cciu uses a concrete project name; catalog keeps the <app> placeholder)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1154,7 +1165,7 @@ cciu:
 application/app/target/webshop-application-app-<version>.jar
 ````
 
-### CM-049 (both changed) — open
+### CM-049 (both changed) — already-covered (same paragraph; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1186,7 +1197,7 @@ Below is a self-contained descriptor contract test that asserts four `@Reference
 package com.example.webshop.integration.dscomponent;
 ````
 
-### CM-050 (both changed) — open
+### CM-050 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1206,7 +1217,7 @@ cciu:
             "OSGI-INF/com.example.webshop.custom.….OperationBCustomImplementation.xml";
 ````
 
-### CM-051 (both changed) — open
+### CM-051 (both changed) — rejected (judo-runtime-core-guice-testkit JudoTest is meta-annotated @ExtendWith(JudoTestExtension.class); catalog wording is right, no extra @RegisterExtension needed)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1224,7 +1235,7 @@ cciu:
 
 ## catalog/agent-docs/model/README.md
 
-### CM-052 (cciu removes) — open
+### CM-052 (cciu removes) — rejected (cciu deletes catalog text that was verified against judo-ng in the sweep)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1241,7 +1252,7 @@ cciu:
 (removed)
 ````
 
-### CM-053 (both changed) — open
+### CM-053 (both changed) — rejected (cciu links ./esm_metamodel/SKILL.md; catalog links README files)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1260,7 +1271,7 @@ cciu:
 - **[ESM Metamodel](./esm_metamodel/SKILL.md)**: Detailed breakdown of every component in `esm.ecore`.
 ````
 
-### CM-054 (cciu adds) — open
+### CM-054 (cciu adds) — rejected (cciu adds a YAML entity template; catalog entries never carry generator YAML, and the YAML format is project tooling)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1299,7 +1310,7 @@ relations:
 
 ## catalog/agent-docs/model/advanced-modeling-patterns.md
 
-### CM-055 (both changed) — open
+### CM-055 (both changed) — unverified, not applied (realm = schema_name and the keycloak-disable-ssl-required.sh timeout: the script is not in the judo-ng clones; esm.ecore confirms only realm defaultValueLiteral="DEFAULT"). Candidate for passb2-doc-gaps B list
 
 <details><summary>catalog (kept)</summary>
 
@@ -1353,7 +1364,7 @@ cciu:
 *   **Verified runtime gap (judo-runtime-core-dispatcher 1.0.6.20241030 / 1.0.6.20251205 / 1.0.6.20260313).** `DefaultActorResolver.getActorByClaims` is lookup-only — it calls `dao.search(actorType, …)` and throws `AccessDeniedException("AUTHENTICATED_ENTITY_NOT_FOUND")` when the row is missing. No insertion code path exists for `managed=true` actors in these versions. The `INFO` log `"Operation failed, authenticated entity not found in database"` on every first login is the symptom. Reproduced 2026-05-11 on `compsych-letter-demo` against `compsych-letter-framework`'s actor shape: `GET /api/<schema>/actors/<Actor>/actors/<Actor>/~principal` returns HTTP 403 with body `{"code":"AUTHENTICATED_ENTITY_NOT_FOUND","level":"ERROR","details":{"ACTOR":"<fqn>"}}` on the first call; after `INSERT INTO t_entities_user (…)` by hand the next call returns 200 with the principal projection. **Mitigation:** add the *Just-in-Time User Provisioning* `AuthenticationInterceptor` from the Authentication Guide (see `judo-backend-docs` skill), even for the textbook mapped + managed + `<claims>` shape. The interceptor's `authenticate()` hook runs **before** `getActorByClaims`, so inserting there satisfies the upcoming lookup. Reference implementation: `com.compsych.letterframework.auth.CompsychAuthInterceptor` in compsych-letter-framework, paralleling `LogAuthenticationInterceptor` in alba / mlszksz-platform / ubives / park-here / indamedia-adtrack (see `best-practices/backend/keycloak-jit-user-provisioning.md`).
 ````
 
-### CM-056 (cciu removes) — open
+### CM-056 (cciu removes) — rejected (cciu deletes catalog text that was verified against judo-ng in the sweep)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1369,7 +1380,7 @@ cciu:
 (removed)
 ````
 
-### CM-057 (both changed) — open
+### CM-057 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1385,7 +1396,7 @@ cciu:
     MyApp::types::Boolean!getVariable("ACTOR", "isAdmin")
 ````
 
-### CM-058 (both changed) — open
+### CM-058 (both changed) — rejected (no `claimPrincipal` attribute exists in judo-meta-esm esm.ecore or anywhere in the judo-ng clones; catalog wording "token-only actor, no principal TO" kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1401,7 +1412,7 @@ cciu:
 *   **Fallback form** when the `ACTOR` category is **not** available (e.g., a `claimPrincipal: true` actor without `<claims>` / `managed=true`, where only `USER` is populated). Re-derive the user row from a JWT claim, then test the flag:
 ````
 
-### CM-059 (both changed) — open
+### CM-059 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1419,7 +1430,7 @@ cciu:
       !filter(u | u.userName == MyApp::types::String!getVariable("USER", "userName")
 ````
 
-### CM-060 (both changed) — open
+### CM-060 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1455,7 +1466,7 @@ cciu:
 *   **Wiring the flag into a `hiddenBy` on a `MenuItemAccess`.** `hiddenBy` must reference a **boolean `DataMember` on the principal TO** (see [UI Authoring Guide §6](./ui-authoring-guide.md)). Since `hiddenBy` hides when *true*, model the negation as a derived attribute on the principal TO itself — inside that getter `self` already **is** the actor's row, so no `!getVariable` call is needed:
 ````
 
-### CM-061 (both changed) — open
+### CM-061 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1471,7 +1482,7 @@ cciu:
 *   **Testing**. Every site this pattern produces has a corresponding integration-test recipe: the `isNotAdmin` derived mirror is covered by Pattern A (DAO projection), the role-scoped `Access.getterExpression` by Pattern B (dispatcher with a `JudoPrincipal`), and any `ownedByMe`-style derived flag by Pattern C. See Testing Access Rules and DERIVED Attributes (see `judo-integration-testing-docs` skill).
 ````
 
-### CM-062 (both changed) — open
+### CM-062 (both changed) — rejected (no `claimPrincipal` attribute exists in judo-meta-esm esm.ecore or anywhere in the judo-ng clones; catalog wording "token-only actor, no principal TO" kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1499,7 +1510,7 @@ cciu:
     *   The `Actor`'s `principal` is an **unmapped `TransferObjectType`** and the actor is **not** `claimPrincipal: true`.
 ````
 
-### CM-063 (both changed) — open
+### CM-063 (both changed) — rejected (no `claimPrincipal` attribute exists in judo-meta-esm esm.ecore or anywhere in the judo-ng clones; catalog wording "token-only actor, no principal TO" kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1515,7 +1526,7 @@ cciu:
 > Access `Derived` filters and custom-op helpers that reference `PRINCIPAL.*` on a `claimPrincipal: true` actor compile and deploy, but evaluate to empty at runtime. Symptoms: empty result sets, `null` audit-user fields, or "access denied" despite valid tokens. Fix by switching those call sites to `USER.*`. Audit every access-filter and interceptor whenever an actor is migrated to or from `claimPrincipal: true`.
 ````
 
-### CM-064 (both changed) — open
+### CM-064 (both changed) — applied, merged with corrections (judo-meta-esm b78cc703 structure/twoWayRelationMember.evl + relationFeature.evl: the two bidirectional rules ARE real EVL constraints, so cciu "unverified" is wrong; the self-mapping diagnostic and the both-ASSOCIATION usual shape are kept; the corpus counts are labelled project data)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1589,7 +1600,7 @@ cciu:
     not as a mandate for `AGGREGATION`.
 ````
 
-### CM-065 (both changed) — open
+### CM-065 (both changed) — applied, merged with corrections (dataMember.evl: "must bind itself" exists as a critique (warning), so neither "error" nor "no check" is right; MAPPED required-flag constraint MappedAttributeRequiredMatchesBindingRequired confirmed and added as its own pattern; the self-mapping section was already in structure.md)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1639,7 +1650,7 @@ cciu:
 *   **⚠️ Do not "fix" the second error by changing the relation kind.** *"can only have aggregation kind relations"* names `aggregation`, so switching the relation to `AGGREGATION` silences it — and leaves the missing self-mapping in place. That workaround is visible in the corpus: `compsych-letter-demo` holds **all ten** entity-level `AGGREGATION` relations found across nine models, and **none** of its entities carries a self-mapping. See *Relation kind is layer-dependent* above; entity relations are `ASSOCIATION` or `COMPOSITION` everywhere else.
 ````
 
-### CM-066 (both changed) — open
+### CM-066 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1657,7 +1668,7 @@ cciu:
 
 ## catalog/agent-docs/model/esm_metamodel/accesspoint.md
 
-### CM-067 (both changed) — open
+### CM-067 (both changed) — rejected (cciu skill/SKILL.md harness wording; catalog uses kb links)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1673,7 +1684,7 @@ cciu:
 | `managed` | Boolean | `[1]` | If `true`, the framework is *intended* to synchronise the `principal` row in the DB from the IdP token during the `#_principal` operation. Requires `principal` to be a **mapped** `TransferObjectType` (projecting an `EntityType`) and at least one `<claims>` element that marks which `DataMember` is the identity key. **Empirical caveat:** in `judo-runtime-core-dispatcher` 1.0.6.20241030 / 1.0.6.20251205 only the *lookup* side is implemented — the first-login *insert* is not, and `DefaultActorResolver.getActorByClaims` throws `AccessDeniedException("AUTHENTICATED_ENTITY_NOT_FOUND")` when the row is missing. Pair `managed=true` with an `AuthenticationInterceptor` that performs the insert (see Just-in-Time User Provisioning (see `judo-backend-docs` skill)). See *Three actor shapes* below and Mapped Managed Principal with Claim Mapping (see `judo-advanced-modeling-patterns.md#pattern-mapped-managed-principal-with-claim-mapping-docs` skill). |
 ````
 
-### CM-068 (both changed) — open
+### CM-068 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1689,7 +1700,7 @@ cciu:
 **Pairing rule (`Access` ↔ `MenuItemAccess`).** An `Access` is a *data-permission* grant only; it does **not** create any navigation entry. Every `Access` on an `ActorType` that should be reachable from the UI **must** be paired with a `MenuItemAccess` placed under that same `ActorType.<menuItems>` (directly or inside a `MenuItemGroup`), with its `access` reference pointing back to this `Access`. Without the paired `MenuItemAccess` the target is exposed through the access point API but never appears in the actor's menu. See [ui.md — MenuItemAccess](./ui.md) and UI Authoring Guide (see `judo-ui-authoring-guide.md-docs` skill).
 ````
 
-### CM-069 (both changed) — open
+### CM-069 (both changed) — applied (Principal back-link exclusivity + Managed-realm sync trigger; verified: esm.ecore actorType/principal eOpposite, UserManagedWrappedDao; project names neutralised)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1751,7 +1762,7 @@ See ACTOR vs PRINCIPAL vs USER (see `judo-advanced-modeling-patterns.md#actor-vs
 
 ## catalog/agent-docs/model/esm_metamodel/generator-reserved-names.md
 
-### CM-070 (both changed) — open
+### CM-070 (both changed) — rejected (cciu skill/SKILL.md harness wording; catalog uses kb links)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1780,7 +1791,7 @@ cciu:
 Structural flags on a `TransferObjectType` (`createable`, …) cause the generators to emit methods with fixed names. A relation or attribute whose `name` collides with one of these methods surfaces only at `tsgo` / `vite build` time as `error TS2393: Duplicate function implementation`, several transformation steps away from the root cause.
 ````
 
-### CM-071 (both changed) — open
+### CM-071 (both changed) — rejected (catalog wording is more precise: template is generated when a createable relation targets the TO or it is an operation input)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1798,7 +1809,7 @@ cciu:
 
 ## catalog/agent-docs/model/esm_metamodel/structure.md
 
-### CM-072 (both changed) — open
+### CM-072 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1816,7 +1827,7 @@ cciu:
 
 ## catalog/agent-docs/model/esm_metamodel/ui-behaviour.md
 
-### CM-073 (both changed) — open
+### CM-073 (both changed) — rejected (cciu skill/SKILL.md harness wording; catalog uses kb links)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1834,7 +1845,7 @@ cciu:
 
 ## catalog/agent-docs/model/esm_metamodel/ui.md
 
-### CM-074 (cciu removes) — open
+### CM-074 (cciu removes) — rejected (cciu deletes catalog text that was verified against judo-ng in the sweep)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1850,7 +1861,7 @@ cciu:
 (removed)
 ````
 
-### CM-075 (both changed) — open
+### CM-075 (both changed) — rejected (cciu skill/SKILL.md harness wording; catalog uses kb links)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1868,7 +1879,7 @@ cciu:
 
 ## catalog/agent-docs/model/model-development.md
 
-### CM-076 (both changed) — open
+### CM-076 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1884,7 +1895,7 @@ cciu:
 4.  **Prefer `judo-model-designer` CLI mutations over hand-editing the XMI**, so the set of changes is reproducible from transcripts even if the working copy is lost.
 ````
 
-### CM-077 (both changed) — open
+### CM-077 (both changed) — rejected (no `claimPrincipal` attribute exists in judo-meta-esm esm.ecore or anywhere in the judo-ng clones; catalog wording "token-only actor, no principal TO" kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1902,7 +1913,7 @@ cciu:
     *   **Use Case**: Actors whose `principal` is an `unmapped` `TransferObjectType` populated by the framework from the IdP token and **without** `claimPrincipal: true`. The values come from the principal TO's attributes, not directly from the raw JWT.
 ````
 
-### CM-078 (both changed) — open
+### CM-078 (both changed) — rejected (no `claimPrincipal` attribute exists in judo-meta-esm esm.ecore or anywhere in the judo-ng clones; catalog wording "token-only actor, no principal TO" kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1918,7 +1929,7 @@ cciu:
     *   **Use Case**: **Required** for actors declared with `claimPrincipal: true`. For such actors the JWT claims surface under the `USER` category — `PRINCIPAL.*` returns empty and silently breaks access filters, custom ops, and audit logic. This is the single most common source of "mysterious empty claim" bugs.
 ````
 
-### CM-079 (both changed) — open
+### CM-079 (both changed) — rejected (no `claimPrincipal` attribute exists in judo-meta-esm esm.ecore or anywhere in the judo-ng clones; catalog wording "token-only actor, no principal TO" kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1960,7 +1971,7 @@ cciu:
 > Using `PRINCIPAL.*` against a `claimPrincipal: true` actor is valid JQL but returns empty at runtime. See [ACTOR vs PRINCIPAL vs USER](./advanced-modeling-patterns.md#actor-vs-principal-vs-user-context-variables).
 ````
 
-### CM-080 (both changed) — open
+### CM-080 (both changed) — already-covered (catalog states the same, more precisely: parsed, but the query engine converter throws Not supported yet)
 
 <details><summary>catalog (kept)</summary>
 
@@ -1976,7 +1987,7 @@ cciu:
 | `!join(i \| selector, separator)` | String | ⚠️ **Recognised by the JQL grammar but not implemented at runtime.** The function name is registered in the parser (so expressions using it pass `transform` without an `Unknown function` error), but evaluation fails downstream — there is currently no built-in string-aggregation function. For concatenating a string attribute across a collection, use a **backend-computed `TRANSIENT` TO attribute** populated from an `OperationCallInterceptor` (see Pitfall 5.1 below and the backend Interceptors guide). Do **not** use `!collectAsString` or `!mkString` either — they do not exist at all. |
 ````
 
-### CM-081 (both changed) — open
+### CM-081 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2004,7 +2015,7 @@ webshop::entities::User
   !filter(u | u.userName == webshop::types::String!getVariable('ACTOR', 'userName'))
 ````
 
-### CM-082 (both changed) — open
+### CM-082 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2022,7 +2033,7 @@ webshop::entities::User
   !filter(u | u.userName == webshop::types::String!getVariable('ACTOR', 'userName'))
 ````
 
-### CM-083 (both changed) — open
+### CM-083 (both changed) — already-covered (catalog line 387 already says !collectAsString and !mkString do not exist)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2038,7 +2049,7 @@ cciu:
 Any `!<name>(...)` call whose `<name>` is not in this list fails the builder with `Unknown function: <name>`. In particular `!collectAsString` and `!mkString` **do not exist** — use `!join(lambda, separator)` (with the runtime caveat noted on the `!join` row above).
 ````
 
-### CM-084 (both changed) — open
+### CM-084 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2054,7 +2065,7 @@ cciu:
 When the inner predicate must reach the outer collection, navigate via a relation (e.g. `y.parent.xs`). Bipartite / cross-product predicates of the form "∀ a ∈ A, ∀ b ∈ B, ∃ c ∈ C(a,b)" are **not expressible** as a single JQL expression — compute them in Java via an `OperationCallInterceptor` writing to a `TRANSIENT` TO attribute. See Interceptors Guide (see `judo-backend-docs` skill), *Backend-Computed TO Attribute (JQL Escape Hatch)*.
 ````
 
-### CM-085 (both changed) — open
+### CM-085 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2070,7 +2081,7 @@ cciu:
 webshop::types::String!getVariable('PRINCIPAL', 'claim_name')
 ````
 
-### CM-086 (both changed) — open
+### CM-086 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2086,7 +2097,7 @@ cciu:
 Multi-value claims (e.g. an array `partner_scope` claim) are therefore **not consumable in JQL**. Options: (a) flatten at the IdP and compare with `==`; or (b) compute the scope in Java from `SecurityContext` and narrow via an `OperationCallInterceptor`. See Architectural Patterns (see `judo-backend-docs` skill), §1 *Model-Driven Multi-Tenancy*.
 ````
 
-### CM-087 (both changed) — open
+### CM-087 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2110,7 +2121,7 @@ webshop::entities::Partner!filter(p |
 webshop::services::PartnerTO!filter(…)
 ````
 
-### CM-088 (both changed) — open
+### CM-088 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2126,7 +2137,7 @@ cciu:
 See Architectural Patterns (see `judo-backend-docs` skill), *Rules for `accesses[*].getterExpression`*, for the complete set of four rules.
 ````
 
-### CM-089 (both changed) — open
+### CM-089 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2142,7 +2153,7 @@ cciu:
 The ESM model file (`/model/webshop.model`) is complex XML (XMI). **The primary authoring tool is `judo-model-cli`** (or the Judo Designer GUI). Direct edits should be avoided because they are easy to get wrong and bypass schema validation.
 ````
 
-### CM-090 (both changed) — open
+### CM-090 (both changed) — rejected (cciu uses a concrete project name; catalog keeps the <app> placeholder)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2169,7 +2180,7 @@ cciu:
 
 ## catalog/agent-docs/model/ui-authoring-guide.md
 
-### CM-091 (both changed) — open
+### CM-091 (both changed) — rejected (cciu drops the kb frontmatter and links ./SKILL.md)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2202,7 +2213,7 @@ This guide is the **authoring playbook** for composing ESM UI presentations (For
 **Scope boundary.** This file explains **what to put in the model**. For how to actually mutate the model, see the `judo-model-cli` skill. For per-element attribute definitions, enums, and conditional rules, see [ui.md](./esm_metamodel/ui.md) and [ui-behaviour.md](./esm_metamodel/ui-behaviour.md). For customizing the **generated React** once the UI model is in place, see the frontend skill.
 ````
 
-### CM-092 (cciu adds) — open
+### CM-092 (cciu adds) — rejected (judo-cli in target/ has `move` and create --index/--before/--after; "append-only, no reorder" is wrong for this CLI)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2218,7 +2229,7 @@ cciu:
 9.  **EList children created via `judo-cli` are append-only.** Every multi-valued containment in the UI/structure metamodel — `components`, `columns`, `filters`, `rowOperations`, `tableOperations`, `tabs`, `steps`, `actions`, `menuItems` on the UI side; `attributes`, `relations`, `operations`, `members` on the structure / accesspoint side — is treated by the CLI's `create` mutation as **append to the end**. There is **no insert-at-position and no reorder operation**. The final order of any list therefore equals the order in which `create` calls are issued. Plan the complete ordered list **before** running the first mutation; treat "insert one in the middle later" as a delete-and-rebuild (which invalidates xmi:ids and forces re-pointing every `dataFeature` / `relationFeature` / `hiddenBy` / `access` reference into the affected tail). See [Repairing layout debt at scale §16](#16-repairing-layout-debt-at-scale) and `judo-model-cli/mutations.md` §*EList Append-Only*.
 ````
 
-### CM-093 (cciu adds) — open
+### CM-093 (cciu adds) — rejected (link into .claude/skills, which is not part of the catalog)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2234,7 +2245,7 @@ cciu:
 *See also [ui-mutations.md §Pitfalls and workarounds](../../../.claude/skills/judo-model-cli/ui-mutations.md) for CLI-specific gotchas (ambiguous FQN containers, `git restore` caveat, stale UI queries after `transform --load`).*
 ````
 
-### CM-094 (both changed) — open
+### CM-094 (both changed) — rejected (link into .claude/skills; catalog sentence kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2250,7 +2261,7 @@ cciu:
 If `menuItems.totalCount == 0` but `accesses.totalCount > 0`, every access in that actor is API-only (invisible in the menu). Add `MenuItemAccess` per access — see [ui-mutations.md Recipe 16](../../../.claude/skills/judo-model-cli/ui-mutations.md).
 ````
 
-### CM-095 (both changed) — open
+### CM-095 (both changed) — rejected (append-only ordering claim is wrong, see CM-092; project name)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2298,7 +2309,7 @@ This is the rule that makes OpenSpec task ordering load-bearing for any change t
 If the audit shows multiple TOs sharing `TransferObjectView::View`, `TransferObjectTable::Table`, or `TransferObjectForm::Form` FQNs, rename them all to `<TO>View` / `<TO>Table` / `<TO>Form` **before adding any children**. The CLI's `create` mutation, given an ambiguous container FQN, picks one parent non-deterministically — see [ui-mutations.md Pitfall A](../../../.claude/skills/judo-model-cli/ui-mutations.md).
 ````
 
-### CM-096 (both changed) — open
+### CM-096 (both changed) — already-covered (every cciu sentence is already in the catalog file)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2314,7 +2325,7 @@ cciu:
 - Either `git add && git commit` after each `save` (a "checkpoint commit" per stage), or copy `model/webshop.model` to a `.bak` before any git operation.
 ````
 
-### CM-097 (both changed) — open
+### CM-097 (both changed) — rejected (cciu uses a concrete project name; catalog keeps the <app> placeholder)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2330,7 +2341,7 @@ cciu:
 git add model/webshop.model
 ````
 
-### CM-098 (both changed) — open
+### CM-098 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2346,7 +2357,7 @@ cciu:
 #    git restore model/webshop.model
 ````
 
-### CM-099 (both changed) — open
+### CM-099 (both changed) — rejected (link into .claude/skills)
 
 <details><summary>catalog (kept)</summary>
 
@@ -2398,7 +2409,7 @@ See [ui-mutations.md Recipe 16](../../../.claude/skills/judo-model-cli/ui-mutati
 ## 17. Related documentation
 ````
 
-### CM-100 (both changed) — open
+### CM-100 (both changed) — already-covered (wording-only difference, ratio ≥ 0.85; catalog wording kept)
 
 <details><summary>catalog (kept)</summary>
 

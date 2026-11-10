@@ -1,186 +1,63 @@
-## Detection Query
+## Model shape
 
-```graphql
-{ esm { entitytypes(where: { name: { eq: "Handle" } }) {
-  items { fqn name createable updateable deleteable
-    attributes { items { name dataType } }
-    relations { items { name lower upper relationKind memberType } }
-  }
-} } }
-```
-
-```graphql
-{ esm { entitytypes(where: { name: { eq: "Document" } }) {
-  items { fqn name createable updateable deleteable
-    attributes { items { name dataType } }
-    relations { items { name lower upper relationKind memberType } }
-  }
-} } }
-```
-
-```graphql
-{ esm { enumerationtypes(where: { name: { eq: "HandleState" } }) {
-  items { fqn name literals { items { name } } }
-} } }
-```
-
-## Creation Mutations
-
-### HandleState enum
-
-```graphql
-mutation { create(input: { enumerationType: {
-  container: "{{NAMESPACE}}::types", name: "HandleState"
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationLiteral: {
-  container: "{{NAMESPACE}}::types::HandleState", name: "ACTIVE"
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationLiteral: {
-  container: "{{NAMESPACE}}::types::HandleState", name: "CONFIRMED"
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { enumerationLiteral: {
-  container: "{{NAMESPACE}}::types::HandleState", name: "EXPIRED"
-} }) { success fqn } }
-```
+Three kinds of element: the Handle and Document entities, the HandleState enumeration, and the project's source entities.
 
 ### Handle entity
 
-```graphql
-mutation { create(input: { entityType: {
-  container: "{{NAMESPACE}}", name: "Handle",
-  createable: false, updateable: false, deleteable: false
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { dataMember: {
-  container: "{{NAMESPACE}}::Handle", name: "state",
-  memberType: "{{NAMESPACE}}::types::HandleState", required: true
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { dataMember: {
-  container: "{{NAMESPACE}}::Handle", name: "expiresAt",
-  dataType: "judo::types::TimeStamp", required: true
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { dataMember: {
-  container: "{{NAMESPACE}}::Handle", name: "body",
-  dataType: "judo::types::LongText", required: false
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { dataMember: {
-  container: "{{NAMESPACE}}::Handle", name: "bodyOverflow",
-  dataType: "judo::types::BinaryType", required: false
-} }) { success fqn } }
-```
-
-### Handle → source entity relations (0..1 ASSOCIATION, repeat per source)
-
-```graphql
-mutation { create(input: { oneWayRelationMember: {
-  container: "{{NAMESPACE}}::Handle", name: "{{SOURCE_ENTITY_LCNAME}}",
-  target: "{{NAMESPACE}}::{{SOURCE_ENTITY}}", lower: 0, upper: 1,
-  relationKind: "ASSOCIATION"
-} }) { success fqn } }
-```
+- `state`: `HandleState` (ACTIVE, CONFIRMED, EXPIRED), required.
+- `expiresAt`: timestamp, required. Set at start to now plus a time to live (a project constant or configuration value).
+- `body`: long text, optional inline content.
+- An optional overflow binary for content too large for the inline text.
+- One 0..1 association per source entity (a template, a data object, a design in the source project).
 
 ### Document entity
 
-```graphql
-mutation { create(input: { entityType: {
-  container: "{{NAMESPACE}}", name: "Document",
-  createable: false, updateable: false, deleteable: false
-} }) { success fqn } }
+- `identifier`: string, required. The external reference, generated at confirm.
+- `content`: long text, optional.
+- An optional final file binary, 0..1, for output types that render a separate file (for example a PDF). Text-only output types leave it empty.
+- The same 0..1 associations to the source entities as the Handle.
+
+### Source entities
+
+Each source entity may hold a 0..* association to Document, so the provenance chain can be read from the source side as well. All of these are associations, so deleting a source never deletes its Documents.
+
+### Access and generated UI
+
+Both entities are non-createable, non-updateable and non-deletable. The generated pages for them must be hidden or left out of the actor's menu: clients reach the data only through the start and confirm operations, which are custom operations (see [[custom-operation-osgi-component]]). If the Document should be browsable, expose it through a read-only access on a mapped transfer object and keep create, update and delete off.
+
+The state value is part of the model so the confirm check (state must be ACTIVE) and any admin view can read it. Expiry itself is not a model feature: it is the comparison of `expiresAt` with the current time inside the confirm operation.
+
+The fragment drawn below uses a neutral `SourceItem` and leaves out the binary attributes, because the fragment base model has no binary type.
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=two-call-generation-state cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Document {
+    <<Entity>>
+    +String identifier [1]
+    +Text content
+  }
+  class Handle {
+    <<Entity>>
+    +HandleState state [1]
+    +Timestamp expiresAt [1]
+    +Text body
+  }
+  class HandleState {
+    <<Enumeration>>
+    ACTIVE
+    CONFIRMED
+    EXPIRED
+  }
+  class SourceItem {
+    <<Entity>>
+    +String name [1]
+  }
+  Document --> "0..1" SourceItem : sourceItem
+  Handle --> "0..1" SourceItem : sourceItem
+  Handle ..> HandleState : state
+  SourceItem --> "*" Document : documents
 ```
-
-```graphql
-mutation { create(input: { dataMember: {
-  container: "{{NAMESPACE}}::Document", name: "identifier",
-  dataType: "judo::types::String", required: true
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { dataMember: {
-  container: "{{NAMESPACE}}::Document", name: "content",
-  dataType: "judo::types::LongText", required: false
-} }) { success fqn } }
-```
-
-```graphql
-mutation { create(input: { dataMember: {
-  container: "{{NAMESPACE}}::Document", name: "finalFile",
-  dataType: "judo::types::BinaryType", required: false
-} }) { success fqn } }
-```
-
-### Document → source entity relations (0..1 ASSOCIATION — keeps document alive after source deletion)
-
-```graphql
-mutation { create(input: { oneWayRelationMember: {
-  container: "{{NAMESPACE}}::Document", name: "{{SOURCE_ENTITY_LCNAME}}",
-  target: "{{NAMESPACE}}::{{SOURCE_ENTITY}}", lower: 0, upper: 1,
-  relationKind: "ASSOCIATION"
-} }) { success fqn } }
-```
-
-### Back-reference on source entity → Document (0..* ASSOCIATION, optional but useful)
-
-```graphql
-mutation { create(input: { oneWayRelationMember: {
-  container: "{{NAMESPACE}}::{{SOURCE_ENTITY}}", name: "documents",
-  target: "{{NAMESPACE}}::Document", lower: 0, upper: -1,
-  relationKind: "ASSOCIATION"
-} }) { success fqn } }
-```
-
-## Examples
-
-### compsychletter (add-document-cluster, 2026-05-12)
-
-**Entities:** `GenerationHandle`, `GeneratedDocument`
-
-**HandleState enum** (`compsychletter::entities::types::HandleState`):
-- Literals: `ACTIVE`, `CONFIRMED`, `EXPIRED`
-
-**GenerationHandle** (`compsychletter::entities::GenerationHandle`): non-CRUD
-- Attributes:
-  - `state` (req, HandleState enum) — lifecycle discriminator
-  - `expiresAt` (req, TimeStamp) — lazy-expiry sentinel; no background GC
-  - `body` (opt, LongText) — inline output for text-based outputs (MD, TEXT)
-  - `bodyOverflow` (opt, BinaryType) — overflow for large bodies exceeding in-memory limit
-- Relations (all 0..1 ASSOCIATION):
-  - `template` → Template
-  - `dataObject` → DataObject
-  - `design` → Design
-
-**GeneratedDocument** (`compsychletter::entities::GeneratedDocument`): non-CRUD
-- Attributes:
-  - `identifier` (req, String) — external reference value, e.g. barcode payload or UUID
-  - `content` (opt, LongText) — document body for text output types
-  - `finalFile` (opt, BinaryType) — rendered file for binary output types (PDF, DOCX); null for MD/TEXT
-- Relations (all 0..1 ASSOCIATION — document survives source deletion):
-  - `template` → Template
-  - `dataObject` → DataObject
-  - `design` → Design
-
-**Design rationale:**
-- ASSOCIATION (not COMPOSITION) on all cross-cluster relations ensures Document rows survive if Template / DataObject / Design are deleted.
-- `finalFile` is 0..1 because some output types (MD, TEXT) produce no separate binary file.
-- No GC operation for expired Handles — callers re-check `expiresAt` on the start-operation response; the confirm operation rejects stale Handles without a separate cleanup job.
-- Both entities have createable=false, updateable=false, deleteable=false — all writes go through backend custom operations.
+<!-- /mermaid:generated -->

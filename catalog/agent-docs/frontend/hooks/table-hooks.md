@@ -609,7 +609,7 @@ renderCell: (params) => {
 
 ### 4. Keep Custom Files Under src/custom
 
-Files in `src/custom/` are gitignored and never regenerated, so no `.generator-ignore` entry is needed.
+Your hook files in `src/custom/` are not generated (only their `.default` twins are), so no `.generator-ignore` entry is needed.
 
 ### 5. Use Theme Colors
 

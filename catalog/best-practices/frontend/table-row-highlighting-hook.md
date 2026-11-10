@@ -28,7 +28,7 @@ The hook is a platform extension point ([table hooks](../../agent-docs/frontend/
 - `TableRowHighlightingHook` and `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY` come from `~/theme/table-row-highlighting`.
 - The hook is a function that returns a function that returns an array of rules. Each rule has `name`, `label` (legend text), `backgroundColor` and `condition`, a predicate over the grid row params (`params.row`).
 - It is registered in `src/custom/application-customizer.tsx` with `registerService`, and the service property `component` is the generated table component name; read that name from the generated components under `src/containers`.
-- `src/custom/` is gitignored in the frontend module, so the hook survives regeneration without `.generator-ignore` entries ([extension points](../../agent-docs/frontend/extension-points.md)).
+- The hook file you add in `src/custom/` is not generated, so it survives regeneration without `.generator-ignore` entries ([extension points](../../agent-docs/frontend/extension-points.md)).
 
 ```typescript
 // Platform shape; the row type and enum come from the project's generated code

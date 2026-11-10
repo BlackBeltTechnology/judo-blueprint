@@ -27,7 +27,7 @@ The platform has no timer or quiz widget. What it supplies is the place to put o
 
 - A custom component is attached through a custom implementation visual element of the model and registered as a service under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY`; the scaffold generated under `src/custom/hooks/custom-implementations/` shows the proxy props type ([component replacement hook](../../agent-docs/frontend/advanced-patterns.md)). A dialog or page of your own can be reached by [[dialog-based-navigation]].
 - Submitting the answers is an ordinary call of a bound or unbound operation of the model, through the generated service layer. Whether an answer is correct is decided on the server, not in the component.
-- Custom code lives in `src/custom/`, which is gitignored in the frontend module ([extension points](../../agent-docs/frontend/extension-points.md)).
+- Custom code lives in `src/custom/`; files you add there are not generated ([extension points](../../agent-docs/frontend/extension-points.md)).
 
 ### Project practice: interval-driven question flow
 

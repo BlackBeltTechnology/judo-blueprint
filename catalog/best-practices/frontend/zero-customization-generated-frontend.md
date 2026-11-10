@@ -24,7 +24,7 @@ Ship the frontend as generated: design the model, generate, deploy. Every layout
 ### Platform base
 
 - Generated React frontend files are protected by a checksum; a changed generated file fails the build unless listed in `.generator-ignore` ([frontend guide](../../agent-docs/frontend/README.md)). A fully generated frontend never edits them.
-- Hook scaffolds (`*.ts.default` under `src/custom/hooks/`) are generated only for elements whose hook flag (for example `generateActionsHook`) is set in the model, and stay inactive until copied. `src/custom/` is gitignored in the frontend module, so even activated hooks need no `.generator-ignore` entry ([extension points](../../agent-docs/frontend/extension-points.md), [hook system](../../agent-docs/frontend/hooks/README.md)).
+- Hook scaffolds (`*.ts.default` under `src/custom/hooks/`) are generated only for elements whose hook flag (for example `generateActionsHook`) is set in the model, and stay inactive until copied. Activated hooks are copies the generator does not produce, so they need no `.generator-ignore` entry ([extension points](../../agent-docs/frontend/extension-points.md), [hook system](../../agent-docs/frontend/hooks/README.md)).
 - The UI model decides what a page looks like: grid layout (`col`, `row`), hidden-by, enabled-by and required-by rules, column width, sortable and default sort, rows per page, dialog opening and so on ([ESM to UI mappings](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md)).
 
 ### Project practice: stay inside the model

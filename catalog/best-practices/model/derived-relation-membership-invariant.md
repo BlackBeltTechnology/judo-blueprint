@@ -1,89 +1,99 @@
 ---
-id: "derived-relation-membership-invariant"
-title: "Derived Relation / Access Membership Invariant on Update"
-domain: "model"
-category: "transfer"
-score: 0.0
-usage_count: 0
-alternative_count: 0
-first_seen: "2026-05-11"
-last_updated: "2026-05-11"
-projects:
-  - compsych-letter-demo
-format: legacy
-fragment: pending
+id: derived-relation-membership-invariant
+title: Derived Relation and Access Membership Invariant on Update
+description: "An update through a filtered derived relation or a derived access is rejected when the updated row would no longer match the filter, so state changes need an unfiltered path or a custom operation."
+aliases: [filtered path update rejected, filter attribute read-only, post-update predicate, membership invariant]
+keywords: [derived relation, getterExpression, access, filter, update, validation, signed identifier, state transition, bypass]
+tags: ["domain:model", "layer:model", "project:compsych-letter-demo", "status:single-project"]
+category: transfer
+status: single-project
+projects: [compsych-letter-demo]
+evidence: ["compsych-letter-demo:unrecorded"]
+alternatives: []
+first_seen: 2026-05-11
+fragment: derived-relation-membership-invariant
+diagram: { kinds: [entity, transfer], members: types }
+last_updated: 2026-11-10
 ---
-## Purpose
+## Intent
 
-Derived relations and accesses enforce post-update membership invariant. Filter attributes are read-only through the filtered path.
+Know that a filtered path protects its own membership: you cannot edit a row through a filtered derived relation or derived access in a way that moves it out of the filter. Plan state transitions (draft to published, red to blue) on a path that does not carry the filter.
 
-## §1 The rule
+## Practice
 
-Update through a derived relation or access is rejected with a validation error when the post-update state no longer satisfies the path's predicate.
+### The rule
 
-- Derived relation `X.relY : Y[0..*]` filtered by `Y!filter(y | <predicate>)`. Updating an attribute referenced by `<predicate>` such that the post-update row falls outside the predicate → validation error. Update aborted; row unchanged.
-- `ActorType.access` link with `getterExpression` filter. Updating an attribute referenced by the filter such that the post-update row falls outside → same validation error.
+An update through a derived relation, or through an actor `Access` with a `getterExpression` filter, is rejected with a validation error when the post-update state no longer satisfies the filter predicate. The update is aborted and the row is unchanged. Attributes that the filter reads are therefore read-only through the filtered path. The access reference states this rule ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md), *Access*, `getterExpression`).
 
-Rung 5 of the capability ladder. See [relation-driven-crud-with-custom-input.md — §4](relation-driven-crud-with-custom-input.md#4-capability-ladder).
+- Derived relation on a transfer object, filtered by a predicate on the target's attribute: updating that attribute so that the row falls outside the predicate fails.
+- Derived access with the same kind of filter: same result.
+- Where this sits among the other relation capabilities: see [[relation-driven-crud-with-custom-input]] (project capability ladder, rung 5).
 
-## §2 Distinction from read-side scope enforcement
+### How it differs from read-side scope
 
-Two orthogonal rules govern derived paths:
+Two independent rules apply to the same filtered path:
 
-| Side | Trigger | Mechanism | Bypass surface |
-|---|---|---|---|
-| Read | LIST issuance | Filter evaluated when LIST returns rows. Out-of-scope rows never appear; signed `__identifier` never issued for them. | `_refreshInstance` and `_updateInstance` dereference signed identifier and do NOT re-evaluate filter (caller already proved scope at LIST time). |
-| Write | UPDATE | Post-update predicate satisfaction checked. Filter attribute change that exits the predicate → reject. | Custom op on parent / entity scope bypasses filter; direct entity DAO write bypasses filter. |
+| Side | Trigger | Behaviour |
+|---|---|---|
+| Read | list | The filter is evaluated when the list is built. Out-of-scope rows never appear, so the caller never gets a signed identifier for them. |
+| Write | update | The post-update state must satisfy the filter. |
 
-Pre-update scope NOT re-evaluated. Caller-proven-scope-via-signed-id principle. See [testkit-integration-foundation/backend.md — bypass note](../../model-blueprints/testkit-integration-foundation/backend.md).
+Refresh and update of a single instance take the signed identifier from an earlier response and do not re-evaluate the access getter. Scope is enforced at list time, because a caller never obtains a signed identifier for a row outside the scope ([platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md), *Signed Identifiers*; the testkit blueprint records the same as the "bypass note", see [[testkit-integration-foundation]]). The agent-docs do not say whether a custom operation or a direct entity DAO write is checked against the filter; the project notes say they bypass it (*verify*).
 
-## §3 Worked example — plain TO relation
+### Ways to change the filtered attribute
 
+Project practice, three options:
+
+1. **An unfiltered access.** Add a second access to the same target without the filter (or with a broader one) and write through it. Keep the filtered access for scoped display.
+2. **A custom operation** on the parent or the entity. The operation body writes the row through the entity (or an unfiltered path), and its availability can be guarded with `enabledBy`. Return the transfer object that suits the destination (see [[operation-return-type-navigation]]). Interceptors never run around custom operations, so put required checks in the body.
+3. **State-based partitioning:** one mapped transfer object per state group, with a custom operation that flips the state and returns the destination group's object ([[state-based-transfer-partitioning]]).
+
+## Rationale
+
+- The invariant keeps a filtered view honest: a row cannot vanish from the list because of an edit made in that same list.
+- Knowing it up front avoids a model where a filtered access is the only way to publish, approve or recolour its rows.
+- Filtered derived relations and filtered accesses behave the same way, so one rule covers both.
+
+## Example
+
+A garage has cars. The garage view has a derived relation `redCars` that filters the cars by colour equal to red. The car view is updateable. Editing a red car's colour to blue through `redCars` is rejected, because the post-update colour fails the filter. To recolour, use an unfiltered cars access, or an operation on the garage that takes the car and the colour.
+
+The same applies to a user's drafts access filtered by status equal to draft: setting a draft's status to published through it is rejected. Publishing goes through an unfiltered letters access, or through a custom operation that returns the published letter's own transfer object. (Observed in compsych-letter-demo.)
+
+## When to avoid
+
+- The path is not filtered (an `ALL` access, a plain mapped relation): there is no membership to protect.
+- The filter reads only attributes that are never edited: the rule never triggers, so no workaround is needed.
+
+## Related
+
+- [[state-based-transfer-partitioning]] — write-side state transitions through separate transfer objects
+- [[relation-driven-crud-with-custom-input]] — capability ladder, rung 5
+- [[derived-access-filtering]] — how derived accesses are filtered
+- [[operation-return-type-navigation]] — return type decides where the UI lands after a state change
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=derived-relation-membership-invariant cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Car {
+    <<Entity>>
+    +String color
+  }
+  class CarView {
+    <<Transfer>>
+    +String color
+  }
+  class Garage {
+    <<Entity>>
+  }
+  class GarageView {
+    <<Transfer>>
+  }
+  CarView ..> Car : maps
+  Garage *-- "*" Car : cars
+  GarageView ..> Garage : maps
+  GarageView o-- "*" CarView : redCars
 ```
-EntityType Car { color : String }
-TransferObjectType GarageTO mapped Garage {
-  redCars : CarTO[0..*]  derived  Garage.cars!filter(c | c.color == 'red')
-}
-TransferObjectType CarTO mapped Car { color : String  updateable=true }
-```
-
-`PUT garages/<id>/redCars/<carId>` with `{ color: 'blue' }` → rejected. Post-update `color == 'red'` fails. Validation error.
-
-To recolour a red car blue:
-- Plain access `cars : CarTO[*]` on parent scope (unfiltered) — write through it.
-- Custom op `Garage.repaintCar(target: CarTO, color: String) : CarTO` bypassing the filter.
-- state-based-transfer-partitioning (§5).
-
-## §4 Applies to actor access
-
-`getterExpression` filter on `ActorType.access` enforces the same invariant.
-
-```
-ActorType LetterUser {
-  access myDrafts : LetterTO[0..*]
-    getterExpression = self.letters!filter(l | l.status == LetterStatus#DRAFT)
-}
-TransferObjectType LetterTO mapped Letter { status : LetterStatus  updateable=true }
-```
-
-`PUT users/<actor>/myDrafts/<letterId>` with `{ status: 'PUBLISHED' }` → rejected. Post-update `status == DRAFT` fails. Validation error.
-
-Publish flow needs:
-- Unfiltered access `myLetters : LetterTO[*]`.
-- Or custom op `LetterUser.publish(target: LetterTO) : LetterTO` returning the published letter's TO (typically a different partition's TO).
-
-## §5 Workarounds
-
-Three canonical patterns to perform state transitions through filtered paths:
-
-1. **Unfiltered access containing all states.** Add second access link without `getterExpression` filter (or with broader predicate). Write through it. Read still through filtered access for scoped display.
-2. **Custom op on parent / entity scope.** Op body uses entity DAO (or unfiltered TO DAO) to bypass the predicate. Op signature owns the gate via `enabledBy`. Returns mapped target TO routed via `OperationFlowManager` to the destination partition's view.
-3. **State-based transfer partitioning.** Separate mapped TO per state group. Custom op flips state and returns the destination partition's TO. UI navigates by return-type. See [state-based-transfer-partitioning.md](state-based-transfer-partitioning.md).
-
-## See also
-
-- [state-based-transfer-partitioning.md](state-based-transfer-partitioning.md) — canonical pattern for write-side state transitions
-- [relation-driven-crud-with-custom-input.md](relation-driven-crud-with-custom-input.md) — capability ladder rung 5
-- [testkit-integration-foundation/backend.md](../../model-blueprints/testkit-integration-foundation/backend.md) — read-side bypass via signed `__identifier`
-- [derived-access-filtering.md](derived-access-filtering.md) — derived access link filtering patterns
-- [operation-return-type-navigation.md](operation-return-type-navigation.md) — return-type navigation for partition-crossing ops
+<!-- /mermaid:generated -->

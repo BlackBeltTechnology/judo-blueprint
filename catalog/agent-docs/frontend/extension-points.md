@@ -53,4 +53,4 @@ The generated hook `src/hooks/useNavigationConfirmation.ts` gates navigation awa
 
 ## Hook Files and the Custom Folder
 
-Hook scaffolds are generated only when the corresponding hook flag is set in the model (for example `generateActionsHook`). Code in `src/custom/` is gitignored in the frontend module, so hook customizations survive regeneration and need no `.generator-ignore` entry.
+Hook scaffolds are generated only when the corresponding hook flag is set in the model (for example `generateActionsHook`). Hook scaffolds are generated as `.default` files under `src/custom/` (the frontend `.gitignore` ignores `*.ts.default` / `*.tsx.default`). A copy without `.default`, and any file you add yourself, is outside generator scope and needs no `.generator-ignore` entry. `src/custom/` itself is **not** gitignored: commit your custom code. The generator does write four files there without `.default` (`application-customizer.tsx`, `index.tsx`, `custom-element-types.ts`, `interfaces.ts`); if you hand-edit one of those, list it in `.generator-ignore`.

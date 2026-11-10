@@ -141,7 +141,7 @@ Customize input validation:
 
 The generator creates `.default` scaffold files for hook registrations under `src/custom/hooks/` (error handler interceptor, `pages/`, `dialogs/`, `containers/`, `custom-implementations/`, `components/cards/`, `sub-themes/`, `registerMenuActionsHook.ts.default`, `default-guest-page-hook-registration.tsx.default`). Only hooks enabled in the model get a scaffold (for example `generateActionsHook`).
 
-`src/custom/application-customizer.tsx` is **not** a `.default` file: it is a plain generated file with an empty `customize(context)` method, and it is where you call your `register...Hook(context)` functions.
+`src/custom/application-customizer.tsx` is **not** a `.default` file: it is a plain generated file with an empty `customize(context)` method, and it is where you call your `register...Hook(context)` functions. Because the generator writes it, add it to `.generator-ignore` the first time you edit it (case 1 of the One Rule below); otherwise the build's checksum check fails on the hand edit or the next run regenerates it.
 
 ### Activating a Scaffold
 
@@ -152,7 +152,7 @@ cd src/custom/hooks/pages
 cp registerServiceUsersViewPageActionsHook.ts.default registerServiceUsersViewPageActionsHook.ts
 ```
 
-`src/custom/` is gitignored in the frontend module, so the copy is not touched by regeneration and needs no `.generator-ignore` entry. Do not edit the `.default` file itself; it is regenerated on every build.
+The copy without `.default` is not generated, so regeneration does not touch it and it needs no `.generator-ignore` entry. Do not edit the `.default` file itself; it is regenerated on every build. (`src/custom/` is not gitignored; only the `.default` files are.)
 
 ### Example Registration
 
@@ -224,7 +224,7 @@ EOF
 # Step 4: Register in customizer
 # Edit src/custom/application-customizer.tsx to add the registration
 
-# Step 5: Test (src/custom/ is gitignored and not regenerated, no .generator-ignore entry needed)
+# Step 5: Test (a hand-written file under src/custom/ is not generated, no .generator-ignore entry needed)
 cd application/frontend-react/<app>__[actor_fqn]
 pnpm run dev
 ```
@@ -319,7 +319,7 @@ Adding purely-custom files to `.generator-ignore` is noise; remove such entries.
 - ✅ Custom files you add outside `src/custom/` that collide with generated paths
 
 **Don't add to .generator-ignore:**
-- ❌ Anything under `src/custom/` (gitignored, never regenerated)
+- ❌ Your own files under `src/custom/` (not generated; only `application-customizer.tsx`, `index.tsx`, `custom-element-types.ts` and `interfaces.ts` there are generated)
 - ❌ `.default` scaffolds and generated files you have not modified
 
 ### Example .generator-ignore

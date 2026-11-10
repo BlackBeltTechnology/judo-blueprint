@@ -1,4 +1,6 @@
-# Backend Test Code
+## Backend guidance
+
+Project practice on top of the platform testkit. Class names such as `Calls`, `Seed`, `Roles`, `Layer0Module` are example project code, not platform API.
 
 This layer covers the Java side of the testkit foundation: the eight reusable support classes, the activation-flag protocol, three coverage-grid templates, two docker overlay templates, ten hard-won gotchas, and a verbatim source appendix.
 
@@ -89,7 +91,7 @@ For every `Access` link on the actor, walk this 3×6 grid (admin / scoped-operat
   update(other=P2)     ok               [bypass note]           [bypass note]
 ```
 
-**`[bypass note]`**: JUDO `_refreshInstance` and `_updateInstance` dereference a tamper-proof signed identifier and do **not** re-evaluate the link's `getterExpression`. Cross-scope enforcement lives on `LIST` (filters the row out, so an out-of-scope operator never obtains the signed id). The matrix asserts actual JUDO behaviour and pins the LIST guarantee.
+**`[bypass note]`** (project observation, *verify* against your runtime version; the agent-docs only say that bound operations take the signed identifier, see the [platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md), and describe access getter tests in [access and derived testing](../../agent-docs/integration-testing/access-and-derived-testing.md)): JUDO `_refreshInstance` and `_updateInstance` dereference a tamper-proof signed identifier and do **not** re-evaluate the link's `getterExpression`. Cross-scope enforcement lives on `LIST` (filters the row out, so an out-of-scope operator never obtains the signed id). The matrix asserts actual JUDO behaviour and pins the LIST guarantee.
 
 **Pair this read-side rule with the write-side membership invariant.** Read-side scope = LIST issuance (pre-update scope NOT re-evaluated). Write-side membership = UPDATE predicate satisfaction (post-update state MUST satisfy the filter; filter attributes are read-only through the filtered path). Orthogonal rules — both apply on the same derived relation / access. See [derived-relation-membership-invariant.md](../../best-practices/model/derived-relation-membership-invariant.md).
 
@@ -207,7 +209,7 @@ JUDO's `ReferenceInjector` (testkit util) walks setter-style methods of the form
 
 ### G6. `signedIdentifier` is the only valid input to refresh / update / delete
 
-Every `Calls.list(...)` and `Calls.create(...)` response payload carries a tamper-proof signed identifier under `IdentifierSigner.SIGNED_IDENTIFIER_KEY`. Pass it via `exchange.put(SIGNED_IDENTIFIER_KEY, ...)` for subsequent `_refreshInstance` / `_updateInstance` / `_deleteInstance` calls. Use `Calls.signedIdentifierOf(payload)` to extract it.
+Every `Calls.list(...)` and `Calls.create(...)` response payload carries a tamper-proof signed identifier under `IdentifierSigner.SIGNED_IDENTIFIER_KEY`. Pass it via `exchange.put(SIGNED_IDENTIFIER_KEY, ...)` for subsequent `_refreshInstance` / `_updateInstance` / `_deleteInstance` calls. Use `Calls.signedIdentifierOf(payload)` to extract it. The signed identifier changes after every update of the entity (the version is part of the signature), so re-read it from the latest response; it cannot be minted by test code ([platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md), signed identifiers).
 
 ### G7. `AUTO_ROLLBACK` keeps tests isolated without explicit cleanup
 
@@ -438,7 +440,11 @@ public final class Calls {
         Map<String, Object> out = ctx.dispatcher().callOperation(op, ex);
         return out == null ? Map.of() : (Map<String, Object>) out.getOrDefault("output", Map.of());
     }
+```
 
+### Continued, part 2
+
+```java
     /**
      * Instance-bound op invoked internally (skipping access manager).
      * Mirrors the shape generated *DispatcherWrapper helpers produce.
@@ -670,7 +676,11 @@ public class Layer0Module extends AbstractModule {
             mgr.registerFunction("USER",  new AccessTokenVariableProvider(context), false);
         }
     }
+```
 
+### Continued, part 2
+
+```java
     // --- Pattern 2: AuthenticationInterceptor registrar (Layer-2 only) ---
     static class AuthenticationInterceptorRegistrar {
         @Inject
@@ -736,7 +746,11 @@ public class Layer0Module extends AbstractModule {
         return ReferenceInjector.createAndInject(UserDaoImpl.class, injector);
     }
     // Repeat for every DAO an IT needs (entity-side + service-side TO DAOs).
+```
 
+### Continued, part 3
+
+```java
     // --- Service / custom-op @Provides via FieldInjector ---
     @Provides @Singleton
     AuditService provideAuditService(AuditEntryDao auditEntryDao, VariableResolver judoVariableResolver) {
@@ -952,7 +966,11 @@ public static JudoPrincipal principalFromToken(String jwt, String actorFqn) thro
     List<String> roles = realmAccess == null ? List.of()
             : (List<String>) realmAccess.getOrDefault("roles", List.of());
     boolean isAdmin = roles.contains(ROLE_ADMIN);
+```
 
+### Continued, part 2
+
+```java
     Map<String, Object> attrs = new LinkedHashMap<>();
     attrs.put("userName", preferred);   // actor-claim attribute name
     attrs.put("email",    email);

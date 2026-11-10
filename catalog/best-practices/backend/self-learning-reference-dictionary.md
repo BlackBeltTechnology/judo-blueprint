@@ -1,73 +1,99 @@
 ---
-id: "self-learning-reference-dictionary"
+id: self-learning-reference-dictionary
 title: "Self-Learning Reference Dictionary (learn() Primitive, Parent-Create Gap, Bulk Import)"
-domain: "backend"
-category: "interceptor"
-score: 55.0
-usage_count: 1
-alternative_count: 0
-first_seen: "2026-07-12"
-last_updated: "2026-07-12"
-projects:
-  - rackinspect
-format: legacy
-fragment: pending
+description: "A reference dictionary (city and postal code) grows from user-entered free text through one idempotent learn() primitive wired into every write path, with a bulk path for imports."
+aliases: [auto-learn dictionary, city postal code learning, suggestion source, learn primitive]
+keywords: [learn, dictionary, interceptor, parent create gap, nested create, find-or-create, bulk import, createAll, n:m, idempotent]
+tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
+category: interceptor
+status: single-project
+projects: [rackinspect]
+evidence: ["rackinspect:unrecorded"]
+alternatives: []
+fragment: "none: backend-only"
+first_seen: 2026-07-12
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-Grow a reference dictionary (e.g. `City` ⟷ `PostalCode`, joined **two-way n:m**, never FKs on the address) automatically from the free-text values users enter, converging every write-path on **one primitive**:
+Grow a reference dictionary (for example `City` and `PostalCode`, joined two-way n:m, never as foreign keys on the address) from the free-text values users enter. Every write path converges on one idempotent primitive, so the suggestion list feeds a typeahead while the stored business field stays a string ([[string-field-typeahead-self-learning]]).
+
+## Practice
+
+### Platform base
+
+- Interceptors fire only for the built-in behaviour operations (create, update, delete, reference operations and others). Custom, mapped and script operations never hit them, so a hook for a custom create or import operation has to be called from inside the implementation ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- Synchronous interceptors run inside the operation's transaction; an exception from one rolls back the write ([ordering and combining interceptors](../../agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors)).
+- A DAO call such as `createUserAddresses(...)` is not an operation and fires no operation interceptor. The generated DAO of a mapped type offers `create`, `createAll`, `getById`, `delete` and per-relation queries ([generated DAO behaviour](../../agent-docs/backend/data-access-guide.md#which-types-get-a-full-dao)).
+- Whether creating a parent with a nested child in one call fires the per-child create interceptor is not stated in the docs. The project observed it does not (below), *verify* for your model.
+
+### Project practice: one primitive, all write paths
+
+This layer is project practice (rackinspect). The primitive lives in an OSGi component service in the project's common module, reachable from interceptors and custom operations; interceptor wiring goes in the interceptors module; the import operation is a thin custom implementation in the app module delegating to the service.
 
 ```java
+// Example project code: City, PostalCode and the find/link helpers are project types
 public void learn(String cityName, String code) {
     if (cityName == null || code == null) return;
     final String name = cityName.trim(), postalCode = code.trim();
     if (name.isEmpty() || postalCode.isEmpty()) return;   // blank-safe
     City city = findOrCreateCity(name);                    // find-or-create by identifier
-    PostalCode pc = findOrCreatePostalCode(postalCode);    // + concurrent-create re-query guard
-    linkIfAbsent(city, pc);                                // link n:m only if not already linked → idempotent
+    PostalCode pc = findOrCreatePostalCode(postalCode);    // + re-query guard for concurrent create
+    linkIfAbsent(city, pc);                                // link n:m only if absent: idempotent
 }
 ```
 
-`findOrCreate` handles the concurrent-create race by re-querying the winner if the unique-identifier insert is rejected. `learn()` is idempotent + blank-safe, so it is safe to call on **every** save. Three write-paths converge on it: address create/update interceptors (auto-learn), a CSV import operation, and (optionally) seeding.
+- `findOrCreate` handles the concurrent-create race by re-querying the winner when the unique-identifier insert is rejected.
+- `learn()` is idempotent and blank-safe, so it is safe to call on every save. Three paths converge on it: address create/update interceptors (auto-learn), a CSV import operation, and optionally seeding.
 
-## Critical Gotcha — the Parent-Create Interceptor Gap
+### The parent-create interceptor gap
 
-Wiring `learn()` into the child's `#_createInstance<Children>` operation interceptor (e.g. `Partner#_createInstanceAddresses`) covers only *adding a child to an already-existing parent*. **Creating the parent WITH a nested child in one form does NOT fire the per-child operation interceptor** — the nested aggregate is created inside the parent-create behaviour, which emits no per-child operation. Symptom: a new address (and its city) reaches `T_..._ADDRESS` but the city never reaches `T_..._CITY`, and the child interceptor shows **0 invocations** in `karaf.log`.
+Wiring `learn()` into the child's create-operation interceptor (for example the create-addresses operation on a partner) covers only adding a child to an already existing parent. Creating the parent with a nested child in one form did **not** fire the per-child interceptor in the project: the nested aggregate is created inside the parent-create behaviour, which emitted no per-child operation. Symptom: the address row and its city reach the database, but the city dictionary row never does, and the child interceptor logs zero invocations.
 
-Fix: also wire `learn()` into the **parent-create** interceptors and iterate the created children:
+Fix: also wire `learn()` into the parent-create interceptors and iterate the created children.
 
 ```java
-// GenericUser#_createInstancePartners  → learn each address of the just-created partner
+// Example project code, parent-create interceptor: learn each address of the just-created partner
 for (Address a : partnerDao.queryAddresses(partner).selectList()) {
     cityPostalCodeService.learn(a.getCity(), a.getPostalCode());
 }
-// GenericUser#_createInstanceUsers      → learn from the input form fields (guaranteed populated)
+// Another parent-create interceptor: learn from the input form fields (guaranteed populated)
 cityPostalCodeService.learn(input.getForm_primaryAddressCity(), input.getForm_primaryAddressPostalCode());
 ```
 
-Cover all save paths: parent-create (`_createInstance<Parents>`), child-add (`_createInstance<Children>`), and child update (`#_updateInstance...`). A **singleton** parent (e.g. company data, created once) has no create-with-child path, so its child-add interceptor already suffices. DAO calls like `createUserAddresses(...)` are NOT operations and do not fire operation interceptors — learn from the input payload or the created entity directly.
+- Cover all save paths: parent create, child add, and child update.
+- A singleton parent (company data, created once) has no create-with-child path, so its child-add interceptor suffices.
+- Learn from the input payload or the created entity directly when the save goes through a DAO call.
 
-## Bulk Import — Don't Call learn() Per Pair
+### Bulk import: do not call learn() per pair
 
-Calling `learn()` once per pair costs ~4 DB round-trips/pair (find city, find postal, check link, plus creates) → thousands of tiny JUDO DAO calls (~2 min for ~3.7k pairs). For the CSV import path, keep `learn()` for the single-save interceptor path but persist the import in **bulk**:
+One `learn()` per pair costs about four round trips (find city, find postal code, check link, creates): thousands of small DAO calls, about two minutes for roughly 3.7k pairs. Keep `learn()` for the single-save path and persist imports in bulk:
 
-1. Parse the whole file into an in-memory `Map<parentKey, Set<childKey>>` (dedup); skip blank/`#`/malformed lines while parsing so a skipped line's children never persist.
-2. Preload existing rows into lookup maps — **2 bulk `selectList()` queries**.
-3. `createAll(...)` the missing rows (batched) instead of one `create()` each.
-4. One `addChildren(parent, ...)` per parent, only for not-yet-linked children (freshly created parents skip the link-existence query).
+1. Parse the whole file into an in-memory map from parent key to a set of child keys (deduplicated); skip blank, `#` and malformed lines while parsing so a skipped line's children never persist.
+2. Preload existing rows into lookup maps with two bulk `selectList()` queries.
+3. `createAll(...)` the missing rows in batches instead of one `create()` each.
+4. One add-children call per parent, only for children not yet linked; freshly created parents skip the link-existence query.
 
-→ ~6× fewer round-trips, and the per-pair find-SELECT storm disappears. Idempotent re-import preserved.
+About six times fewer round trips, and the per-pair find storm disappears. Re-import stays idempotent.
 
-## When To Use
+## Rationale
 
-- Any "suggestion source that grows itself" — a reference list fed by user input plus optional bulk import, where the stored business field stays a string (pairs with the frontend `string-field-typeahead-self-learning` pattern).
-- Whenever auto-learn / audit / denormalization must fire on **entity creation that can happen as a nested aggregate** — the parent-create gap applies to any such hook, not just dictionaries.
+- One idempotent primitive shared by all write paths (DRY); free-text business fields never become foreign keys; import and auto-learn stay consistent by construction.
+- Cost: nested creates can bypass child interceptors; free-text learning admits typo duplicates (accept, or add fuzzy matching later); the bulk path is a separate implementation from the single-pair primitive.
+- The parent-create gap applies to any hook that must fire on creation that can happen as a nested aggregate (audit, denormalization), not only dictionaries.
 
-## Pros / Cons
+## Example
 
-- **Pros**: one idempotent primitive shared by all write-paths (DRY); free-text business fields never become FKs; import and auto-learn stay consistent by construction.
-- **Cons**: must remember the parent-create gap (nested creates bypass child interceptors); free-text learning admits typo-duplicates (accept, or add fuzzy-match/dedupe later); bulk path needs a separate implementation from the single-pair primitive.
+rackinspect learns city and postal code pairs from partner and user addresses through create and update interceptors on the child and the parent, and from a CSV import operation that runs the bulk path above.
 
-## Placement
+## When to avoid
 
-`learn()` / import primitive: an OSGi `@Component` service in `application/common/.../services/` (reachable from both interceptors and custom operations). Interceptor wiring: `application/interceptors/`. Import `CustomImplementation`: `application/app/` (thin delegator → the common service). Never in `application/internal/`.
+- The reference data is a closed, curated list: use a plain lookup entity or enumeration.
+- Typo duplicates would be harmful and nobody can dedupe them.
+- Hooks that must also run for custom operations: call the primitive from the operation implementation, interceptors will not fire there.
+
+## Related
+
+- [[string-field-typeahead-self-learning]] — the frontend typeahead fed by this dictionary
+- [[relation-based-entity-creation]] — creating children through relation DAO methods
+- [[form-field-flattening]] — parent-create interceptor that builds nested payloads

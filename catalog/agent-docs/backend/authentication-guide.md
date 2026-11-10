@@ -191,6 +191,24 @@ public class AutoUserCreationAuthenticationInterceptor implements Authentication
 
 ---
 
+## Keycloak managed-realm sync — trigger surface
+
+With `ActorType.managed=true`, the JUDO framework delegates CUD on the principal TO to Keycloak's managed realm (create / update / delete the realm user matching the row). The dispatcher injects this sync **only** when the DAO layer is invoked with the **principal TO's metadata**. Sync follows TO metadata, not the underlying entity.
+
+Consequences:
+
+-  Other TOs mapping the same principal entity (e.g., an admin user-management `UserTO`, a list `UserListTO`) do **NOT** auto-sync when their endpoints mutate the row. The entity row updates; the Keycloak realm user does not.
+-  Multiple TOs CAN map the same principal entity. The metamodel allows it; only the `actorType` back-link is exclusive — at most ONE principal TO per actor. See *Principal back-link exclusivity* in [accesspoint.md](../model/esm_metamodel/accesspoint.md) for why.
+-  To get Keycloak sync from an admin user-management surface, write a custom operation on the admin TO that delegates through the **principal TO's DAO** (re-dispatch with principal-TO metadata). Direct CUD on admin TOs skips Keycloak.
+-  Design rule: keep ONE lean principal TO that owns `actorType` AND framework-managed Keycloak sync. Use other mapped TOs for admin / list projections. Route admin mutations through a custom op calling the principal TO's DAO when realm sync is required; otherwise accept that admin TO mutations are DB-only.
+
+See *Managed-realm sync trigger* and *Principal back-link exclusivity* in [accesspoint.md](../model/esm_metamodel/accesspoint.md) for the metamodel side.
+
+For the canonical admin-surface shape and the custom-op delegation pattern that routes admin mutations through the principal TO's DAO, see the [managed actor admin pattern](../../best-practices/backend/managed-actor-admin-pattern.md).
+
+**Source**: `judo-runtime-core-security` `UserManagedWrappedDao` calls `userManager.createUser/updateUser/deleteUser` only when `KeycloakUserManager.getManagedActorOfPrincipal(clazz)` resolves the DAO call's class to a managed actor, i.e. only for the principal transfer object of an actor with `managed=true`. Sync is skipped when the transaction is marked for rollback.
+
+
 ## Principal-to-Actor Resolution and Multi-Client Mapping
 
 ### Resolution order (`DefaultActorResolver`)

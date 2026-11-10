@@ -25,7 +25,7 @@ Custom pages that need a distinct visual identity beyond theme overrides share o
 
 - The frontend uses MUI with Emotion; styling is done with the `sx` prop, `styled()` components that read the `theme` (palette, spacing, shape, shadows), or `useTheme()` ([CSS-in-JS styling](../../agent-docs/frontend/theming.md)).
 - App-wide colors belong in the actor's palette in the model; one component's styling can be handled by a theme override fragment or a sub-theme. Taking over the theme file is a last resort ([theming](../../agent-docs/frontend/theming.md)).
-- Hand-written code lives in `src/custom/`, which is gitignored in the frontend module ([extension points](../../agent-docs/frontend/extension-points.md)). The documented layout does not prescribe a file for shared styled components.
+- Hand-written code lives in `src/custom/`; files you add there are not generated ([extension points](../../agent-docs/frontend/extension-points.md)). The documented layout does not prescribe a file for shared styled components.
 
 ### Project practice: one glassmorphic component file
 

@@ -1,60 +1,44 @@
-## Overview
+## Backend guidance
 
-Two custom operations implement the two-call flow: a **start** operation that creates a Handle, and a **confirm** operation that validates the Handle and writes the Document. Both are backend-only; neither TO exposes CRUD actions to the client.
+This is project practice on top of the platform. The platform gives you custom operations, DAOs and modeled faults; the start and confirm flow, the expiry check and the identifier strategy are the project's own. Helper names in the examples (`LetterGeneratorService`, `FileStoreService`) are example project code, not platform API.
 
-## Implementation Pattern
+### Two custom operations
 
-### Start operation (creates Handle)
+The two operations are custom implementations, each an OSGi component that gets its DAOs and services injected. See [[custom-operation-osgi-component]] and the [custom operations guide](../../agent-docs/backend/custom-operations.md) and [data access guide](../../agent-docs/backend/data-access-guide.md) for the platform side.
 
-- Registered as an OSGi `@Component` implementing the generated operation interface.
-- Injects `GenerationHandleDao` (or equivalent), plus any DAOs for source entities (TemplateDao, DataObjectDao, DesignDao).
-- Validates inputs (e.g., template exists, data object is complete).
-- Calls the rendering / generation service (injected via `@Reference`).
-- Writes result into `body` (LongText) or `bodyOverflow` (BinaryType via `FileStoreService`) depending on size.
-- Sets `state = ACTIVE` and `expiresAt = now() + TTL` (TTL typically configured via Karaf config or a constant).
-- Creates the Handle record via DAO `.create()` — returns the Handle ID to the client as the "ticket".
-- Does **not** write a Document yet.
+- **Start.** Validates the inputs (the source entities exist and are complete), calls the project's generation service, writes the result to `body` or, when large, to a binary, sets `state` to ACTIVE and `expiresAt` to now plus the time to live, creates the Handle through its DAO and returns the Handle to the client as the ticket. It does not write a Document.
+- **Confirm.** Takes the Handle reference from the client, loads the Handle through the DAO and rejects it when it is missing, not ACTIVE, or expired. It then sets `state` to CONFIRMED, copies body or file and the source relations into a new Document, generates the `identifier`, creates the Document through the DAO and returns it or its identifier.
 
-### Confirm operation (reads Handle → writes Document)
+### Atomic state change
 
-- Takes the Handle ID (passed back by the client as a parameter on the second call).
-- Loads the Handle via DAO; rejects if not found, `state != ACTIVE`, or `expiresAt < now()`.
-- Calls `handleDao.update()` or a state-transition helper to set `state = CONFIRMED` (prevents double-confirm).
-- Copies body / finalFile from Handle into a new `GeneratedDocumentForCreate`, sets `identifier` to the generated reference value (e.g., UUID, barcode payload).
-- Copies source-entity relations (`template`, `dataObject`, `design`) from Handle into Document.
-- Creates Document via `GeneratedDocumentDao.create()`.
-- Returns the Document (or its identifier) to the client.
+Mark the Handle CONFIRMED in the same transaction as the Document creation, or before it. The check "state is ACTIVE" and the update must not be separable, otherwise two concurrent confirms can both pass. Platform optimistic locking helps here: the update fails when the Handle changed in between, provided the version is carried in the update payload, see [platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md) (optimistic locking). If the update omits the version the guard is off.
 
-### Expiry handling
+### Lazy expiry
 
-- No background scheduler or timer-based GC is required.
-- On the confirm call, the operation checks `handle.getExpiresAt().isBefore(now())` and throws `FaultException` / returns an error TO if expired.
-- Expired Handle rows accumulate in the DB; a periodic admin operation or DB job can purge them if storage is a concern, but this is optional.
+No scheduler is needed. The confirm operation compares `expiresAt` with the current time and rejects. Expired rows stay in the table; an optional admin operation or database job can purge them.
 
-### FileStoreService usage (bodyOverflow / finalFile)
+### Rejecting a bad Handle
+
+Reject unknown, expired or already confirmed Handles with a modeled fault declared on the confirm operation, not a silent no-op. A custom operation without a declared fault cannot throw one: the generated interface has no `throws` clause. See the [error handling guide](../../agent-docs/backend/error-handling-guide.md) (modeled faults) and [[typed-exception-error-handling]]. Interceptors do not run around custom operations, so this check belongs in the operation body.
+
+### Overflow and final file
+
+Large content is written to the file store and the Handle keeps a file reference. Binary values travel over REST as file-store tokens, in two phases (see the platform behavior reference, binary upload tokens). Inside the operation, the example project used its own `FileStoreService` wrapper:
 
 ```java
-// Writing large body to overflow
+// Example project code, not platform API: write large body to the file store
 UUID fileId = fileStoreService.put(inputStream, contentLength, "text/plain");
 handleForCreate.setBodyOverflow(FileResponse.builder()
     .fileId(fileId).fileName("body.txt").mimeType("text/plain").build());
 
-// Reading overflow in confirm step
+// Read it back in the confirm step
 FileResponse overflow = handle.getBodyOverflow();
 InputStream bodyStream = fileStoreService.get(overflow.getFileId());
 ```
 
-## Key Rules
+*verify* the exact file store API of your runtime version before copying this.
 
-1. **Both entities are non-CRUD.** All reads and writes go through custom operation implementations — never through generated CRUD endpoints.
-2. **State transition is atomic.** Set `state = CONFIRMED` on the Handle before (or in the same DB transaction as) creating the Document, to prevent double-confirm under concurrent requests.
-3. **Copy relations, do not move them.** Document holds its own ASSOCIATION references to Template / DataObject / Design — independent of the Handle's copies. This lets Handle rows be pruned without affecting Document provenance.
-4. **Identifier generation.** Choose a strategy (UUID, sequential, barcode payload) and generate it in the confirm operation, not the start operation, so the stable external reference only exists once finalized.
-5. **Error handling.** Use the generated `<App>FaultException` (checked) or a domain error enum for invalid state / expired handle rejections. Do not silently swallow stale-handle calls.
+### Example project use
 
-## Examples
-
-### compsychletter (add-document-cluster, 2026-05-12)
-- **Start operation** (`GenerateLetter`): validates Template + DataObject + Design, calls `LetterGeneratorService` to render content, writes `body` (LongText) for text outputs and `finalFile` (via FileStoreService) for PDF, sets `expiresAt = now() + 30 minutes`, creates `GenerationHandle` with `state = ACTIVE`.
-- **Confirm operation** (`ConfirmLetter`): receives Handle ID, checks `state == ACTIVE && expiresAt >= now()`, marks Handle `CONFIRMED`, generates `identifier` (barcode payload string), creates `GeneratedDocument` with same source-entity relations, returns Document TO.
-- Both operations implemented under `custom/src/main/java/.../actors/<actor>/letter/`.
+- **Start** (`GenerateLetter`): validated template, data object and design, rendered the content through a letter generator service, wrote `body` for text outputs and a file for PDF output, set expiry to 30 minutes and created the Handle in state ACTIVE.
+- **Confirm** (`ConfirmLetter`): checked state and expiry, marked the Handle CONFIRMED, generated a barcode payload string as `identifier`, created the Document with the same source relations and returned it.

@@ -24,7 +24,7 @@ The hook replaces the card element and leaves the rest of the container alone. P
 
 ### Each container has its own generated hook
 
-The hook interface and its key are generated for each container (platform behaviour, see the agent-docs on container hook registration). The generator also emits a scaffold `register<Component>ConfigurationHook.tsx.default` under `src/custom/hooks/components/cards/`. A project copies it without `.default`, fills it in and calls its register function from `src/custom/application-customizer.tsx`. `src/custom/` is gitignored in the frontend module, so the copy survives regeneration.
+The hook interface and its key are generated for each container (platform behaviour, see the agent-docs on container hook registration). The generator also emits a scaffold `register<Component>ConfigurationHook.tsx.default` under `src/custom/hooks/components/cards/`. A project copies it without `.default`, fills it in and calls its register function from `src/custom/application-customizer.tsx`. The copy is not generated, so it survives regeneration.
 
 ## Structure
 

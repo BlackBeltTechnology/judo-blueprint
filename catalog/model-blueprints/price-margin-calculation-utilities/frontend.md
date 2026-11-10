@@ -10,7 +10,7 @@ The library lives in the frontend as a plain TypeScript module with no React imp
 - **Rounding.** Results round to two decimal places by default. The rounding factor is a parameter, so a caller can ask for more places.
 - **Unit tests.** A unit test file covers positive and negative margins, zero and missing inputs, the round trip between the forward and inverse functions, and floating-point tolerance.
 - **Hook use.** A form hook calls the function in its blur or value-change handler (the model's `onBlur` widget flag makes the generator produce an `on<Field>BlurAction` handler to hook into) and writes the result into the dependent field. The hook does not repeat the arithmetic.
-- **Generator protection.** Custom code under `src/custom/` is gitignored in the frontend module and survives regeneration with no `.generator-ignore` entry. A test or helper placed in a generated folder such as `src/utilities/` would need a `.generator-ignore` entry, or the checksum check fails the build.
+- **Generator protection.** Custom code you add under `src/custom/` is not generated and survives regeneration with no `.generator-ignore` entry. A test or helper placed in a generated folder such as `src/utilities/` would need a `.generator-ignore` entry, or the checksum check fails the build.
 
 The module and hook names belong to the example project. The pure-function pattern is the part that generalizes.
 

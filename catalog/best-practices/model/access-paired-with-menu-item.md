@@ -1,88 +1,81 @@
 ---
-id: "access-paired-with-menu-item"
-title: "Every UI-Reachable Access Must Be Paired with a MenuItemAccess"
-domain: "model"
-category: "access"
-score: 90.0
-usage_count: 8
-alternative_count: 0
-first_seen: "2026-05-13"
-last_updated: "2026-05-13"
-projects:
-  - judo-demo-miniworkflow
-  - mlszksz-platform
-  - rackinspect
-  - park-here
-  - reserveapp
-  - ams-frontend
-  - indamedia-adtrack
-  - compsychletter
-format: legacy
-fragment: pending
+id: access-paired-with-menu-item
+title: Pair Every UI-Reachable Access with a MenuItemAccess
+description: "An actor Access only defines the data surface; the navigation menu is built from the actor's menu items, so every access meant for end users needs its own MenuItemAccess."
+aliases: [menu item access, access without menu item, empty sidebar, blank menu]
+keywords: [Access, MenuItemAccess, MenuItemGroup, menuItems, navigation, actor, hiddenBy, iconName]
+tags: ["domain:model", "layer:model", "project:judo-demo-miniworkflow", "project:mlszksz-platform", "project:rackinspect", "project:park-here", "project:reserveapp", "project:ams-frontend", "project:indamedia-adtrack", "project:compsychletter", "status:established"]
+category: access
+status: established
+projects: [judo-demo-miniworkflow, mlszksz-platform, rackinspect, park-here, reserveapp, ams-frontend, indamedia-adtrack, compsychletter]
+evidence: ["judo-demo-miniworkflow:unrecorded", "mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded", "reserveapp:unrecorded", "ams-frontend:unrecorded", "indamedia-adtrack:unrecorded", "compsychletter:unrecorded"]
+alternatives: []
+first_seen: 2026-05-13
+fragment: access-paired-with-menu-item
+diagram: { kinds: [entity, transfer, actor], members: types }
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-An `Access` on an `ActorType` defines a REST/data surface only — it does **not** add anything to the navigation menu. The JUDO frontend generator drives the navigation drawer (`menu-items.tsx`) and routing (`routes.tsx`) **exclusively** from `ActorType.menuItems`. An actor with N accesses and zero menu items renders an empty sidebar; the dashboards are reachable by URL/REST but invisible to end users.
+An `Access` on an actor defines a data surface (target transfer object, cardinality, getter, create/update/delete flags). It does not put anything in the navigation. An actor with several accesses and no menu items shows an empty sidebar: the pages exist and can be reached by URL, but nobody finds them.
 
-**Rule:** every `Access` intended to be UI-reachable MUST be paired with a `MenuItemAccess` (directly under `ActorType.menuItems`, or nested in a `MenuItemGroup`). Create the menu item in the same authoring stage as the access. API-only accesses (intentionally hidden from the menu) are the documented exception — flag them in the model with documentation/annotation.
+## Practice
 
-## Structure
+Every access meant to be reached from the UI gets its own `MenuItemAccess`, either directly in the actor's `menuItems` or nested in a `MenuItemGroup`. Create the menu item in the same authoring step as the access. An access that is intentionally API-only is the one exception: say so in the model documentation.
 
-- `Access` carries data semantics (target TO, cardinality, getter, CRUD flags). It has **no** `icon`, `label`, or `showInMenu` field.
-- `MenuItemAccess` carries navigation chrome: `label` (display name), `iconName` (e.g. MDI icon), optional `hidden`/`hiddenBy` for visibility guards, optional `subTheme`. It references one `Access` via its `access` field.
-- `MenuItemGroup` is a container for nested menu items; use when more than ~5 top-level entries or when section grouping is meaningful.
-- `menuOrientation` on the actor (`VERTICAL` / `HORIZONTAL`) controls drawer layout.
-- Authoring order: `Access` first, `MenuItemAccess` after (the `MenuItemAccess.access` reference resolves by xmi:id on the just-created access). EList append-only ordering applies — plan top-to-bottom menu order before issuing creates.
+- **Access** carries data semantics only. It has no icon, label or "show in menu" flag.
+- **MenuItemAccess** carries the navigation chrome: `label`, `iconName`, `hidden`, `hiddenBy` and `enabledBy` (a data feature that drives visibility or enabled state) and a reference to one `Access` ([ui package reference](../../agent-docs/model/esm_metamodel/ui.md), *MenuItemAccess*). Hiding an entry is done on the menu item, never on the access, so a hidden entry still needs its `MenuItemAccess`.
+- **MenuItemGroup** is a container with its own label, icon and `hidden`/`hiddenBy`; use it when there are many top-level entries or the sections are meaningful (*MenuItemGroup* in the same reference). The actor's `menuOrientation` (`VERTICAL` or `HORIZONTAL`) sets the drawer layout.
+- **Order:** menu order is list order. Decide the top-to-bottom order before creating the items.
+- **Table columns:** a list-cardinality access renders a table page, so its target transfer object also needs a table with at least one column, otherwise validation fails ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md), *UI Requirements on the Target TO*).
+- **Audit:** the UI authoring guide checks the wiring by counting, per actor, accesses and menu items; an actor with accesses but zero menu items has only API-only accesses ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md), section 15, step 3).
+- Project practice (the agent-docs do not describe it, treat as *verify* for your generator version): the generated drawer and routing files (`menu-items.tsx`, `routes.tsx`) were protected by `.generator-ignore` in these projects, so adding a menu item to the model did not change them and the entries had to be added by hand there. Custom routes belong in `extra-routes.tsx` ([extension points](../../agent-docs/frontend/extension-points.md), *Extra Routes*), which the docs say to protect in `.generator-ignore`; one project saw it overwritten when unprotected. A frontend `build -f` right after `transform --load` failed on the checksum file in one project (use the ignore-checksum build option; see [build and deployment](../../agent-docs/frontend/build-and-deployment.md), *Checksum Handling*).
 
-## Examples
+## Rationale
 
-### judo-demo-miniworkflow
-`GenericActor` declares accesses (`myDocuments`, `waitingForApproval`, `users`, …) and a parallel set of `MenuItemAccess` entries with MDI icons. Menu visibility on admin entries is gated via `hiddenBy: GenericUser.isNotAdmin`, demonstrating that hidden menu items still need a `MenuItemAccess` — `hidden`/`hiddenBy` is on the menu item, not the access.
+- One rule, "create the access, create the menu item", removes the most common cause of a blank menu after deployment.
+- Data (`Access`) and chrome (`MenuItemAccess`) stay separate.
+- The cost is two model elements per entry and attention to ordering.
 
-### MLSZKSZPlatform (AdminActor)
-13 access points → 13 menu items, each with icon and label ("5 menu items for entity management" in the admin domain). One-to-one access ↔ menu-item correspondence.
+## Example
 
-### ReserveApp (AdminActor)
-13 access points described in the catalog as "13 access points (menu item accesses)" — phrasing reflects the lockstep pairing: every access has a corresponding `MenuItemAccess`. Actors with no accesses yet (Logistician, Doorman, Readonly) have no menu items.
+A staff actor has a `reports` access whose target is a report view with a table and one column. The actor also has a menu item bound to that access, with a label and an icon. Without the menu item, `reports` would exist but not appear.
 
-### AMS-Frontend
-Manager actor has 3 accesses, 3 menu items (people / done_all / done icons). Admin actor has 3 accesses, 3 menu items (people / apps / done_all icons). Lockstep pairing.
+Observed in projects:
 
-### CompSychLetter (anti-example — Phase-0 gap)
-`LetterUser` declares 3 DERIVED accesses (`documents → DocumentsDashboard`, `authoring → AuthoringDashboard`, `data → DataDashboard`) but `menuItems.totalCount = 0`. Generated `menu-items.tsx` is `return []` and `routes.tsx` has only `/`. The user logs in, principal resolves, but the sidebar is blank. Phase-1 of the project is expected to add the three matching `MenuItemAccess` entries. The pattern is well-formed; the menu-pairing step was simply not run yet.
+- **judo-demo-miniworkflow:** the generic actor's accesses (documents, waiting for approval, users and others) each have a menu item with an icon. Admin-only entries are hidden by a `hiddenBy` flag on the menu item.
+- **mlszksz-platform:** the admin actor has 13 accesses and 13 menu items, one-to-one, each with icon and label.
+- **reserveapp:** the admin actor has 13 accesses and 13 menu items; actors that have no accesses yet (logistician, doorman, read-only) have no menu items.
+- **ams-frontend:** manager and admin actors each have 3 accesses and 3 menu items with their own icons.
+- **compsychletter (anti-example):** a user actor declared 3 derived accesses (documents, authoring, data) and 0 menu items. The generated menu was empty and only `/` was routed, so a signed-in user saw a blank sidebar. The pairing step was simply not done yet; a later phase was to add the three menu items.
 
-## Trade-offs
+## When to avoid
 
-- Pros: Single rule "create access → create menu item" eliminates the most common cause of blank-menu post-deployment surprises. Keeps data and UI concerns cleanly separated (`Access` = REST, `MenuItemAccess` = chrome).
-- Cons: Two model elements per dashboard entry; ordering matters (EList append-only).
-- Prefer when: Any access is intended to be user-facing (almost always). Skip only when an access is explicitly API-only (programmatic/internal) — and document the exception.
+- Accesses that are intentionally API-only (programmatic or internal): skip the menu item and document why.
+- Actors with `kind` SYSTEM: no UI is generated for them ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md), *ActorKind Behaviour*).
 
-## Anti-Patterns
+## Related
 
-- **Access without MenuItemAccess** — produces blank sidebar; users cannot reach the dashboard except by direct URL. Verify with `judo_cli graphql '{ esm { actortypes { items { name menuItems(limit:1){totalCount} accesses(limit:1){totalCount} } } } }'` — any actor with `accesses > 0` and `menuItems = 0` is suspect.
-- **Putting `iconName` on Access** — `ESM_Access` has no such field; menu chrome lives only on `MenuItemAccess`.
-- **Relying on a fallback** — there is no "accesses-as-menu" fallback in the React generator. `useMenus()` reads `menuItems` and only `menuItems`.
-- **Expecting `build -f` alone to populate `menu-items.tsx` and `routes.tsx`** — both files are typically in `.generator-ignore` and are never overwritten by the generator. Adding `MenuItemAccess` to the model and rebuilding does NOT auto-populate them. Manual edits to `menu-items.tsx` (add `NavItemType` entries) and `routes.tsx` (add lazy route entries) are always required. `extra-routes.tsx` is NOT generator-ignored and is overwritten every build — do not put custom routes there.
-- **Running `build -f` without `-i` after `transform --load`** — `transform --load` poisons the frontend checksum file. The next `build -f` fails with "There are manual changes in the generated files". Always run `build -f -i` after `transform --load`.
+- [[panel-dashboard-transfer]] — the dashboard transfer object these accesses target
+- [[self-access-point]] — self-getter accesses also need a menu item
+- [[derived-access-filtering]] — derived accesses, with `hiddenBy` on their menu items
 
-## Verification
+## Structure diagram
 
-```bash
-judo_cli graphql '{
-  esm { actortypes(limit:10) {
-    items {
-      fqn
-      accesses(limit:1) { totalCount }
-      menuItems(limit:1) { totalCount }
-    }
-  } }
-}'
+<!-- mermaid:generated fragment=access-paired-with-menu-item cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Report {
+    <<Entity>>
+    +String title
+  }
+  class ReportView {
+    <<Transfer>>
+    +String title
+  }
+  class Staff {
+    <<Actor>>
+  }
+  ReportView ..> Report : maps
 ```
-
-Any actor where `accesses.totalCount > 0 && menuItems.totalCount == 0` is missing its menu wiring (unless every access is intentionally API-only — document the reason).
-
-## Related Patterns
-
-- [panel-dashboard-transfer](panel-dashboard-transfer.md) — the Dashboard TO pattern these accesses target
-- [self-access-point](self-access-point.md) — `self`-getter accesses (still need MenuItemAccess)
-- [derived-access-filtering](derived-access-filtering.md) — derived accesses with `hiddenBy` on menu items
+<!-- /mermaid:generated -->

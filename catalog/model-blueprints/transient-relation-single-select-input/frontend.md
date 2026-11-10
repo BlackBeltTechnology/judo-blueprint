@@ -1,12 +1,14 @@
-## Overview
+## Frontend guidance
 
-The generated React frontend renders the transient single-select relation as an `AggregationInput` widget. The widget shows the currently selected target instance (or an empty state with a Create / Set icon), opens a `RangeDialog` in single-select mode to pick a different instance, and writes the selection back into the form's input state. Data for the dialog is fetched via the generator-emitted `getRangeFor<rel>()` service method on the operation's service implementation.
+### What the generator gives you
 
-For the underlying widget itself see [`aggregation-input-widget`](../../best-practices/frontend/aggregation-input-widget.md); for the action-group / page-routing wrapping see [`action-group-input-output-routing`](../../best-practices/frontend/action-group-input-output-routing.md).
+The generated operation input page renders the transient single relation like any single relation: an autocomplete-style selector with view, set and unset actions, whose options come from the generated range operation ([UI model to frontend mapping](../../agent-docs/frontend/model-screen-layout.md), single relation; [platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md), range and choice operations). In most projects nothing needs customizing.
 
-## Widget Recipe
+### Project practice: a custom picker widget
 
-```typescript
+The source project (itracker) used a custom `AggregationInput` widget that shows the current selection, opens a range dialog in single-select mode and writes the chosen row back into the form state. The widget and the dialog helper are example project code, not platform API. The sketch shows the shape only; see [[aggregation-input-widget]] for the widget itself and [[action-group-input-output-routing]] for how the operation input page is routed.
+
+```tsx
 <AggregationInput
   label="Region"
   labelList={[data.region?.name ?? '']}
@@ -25,49 +27,34 @@ For the underlying widget itself see [`aggregation-input-widget`](../../best-pra
 />
 ```
 
-Key bindings:
-- **Service call**: `getRangeFor<rel>(template, queryCustomizer)` — generator emits one per transient relation with `RANGE` behavior. The first argument carries the current input template (so range expressions can reference other fields on the input); the second carries pagination / filter customizer state.
-- **Dialog mode**: `single: true` — the dialog returns a single row (or null on cancel).
-- **State write-back**: assign the chosen row into `data.<rel>`; on submit, `data` is sent as the operation argument and the body's `mutable input.<rel>` converts it to a stored reference.
+- The service call is the generated `getRangeFor<Relation>`. Its first argument carries the current input (so a range expression can read other input fields), the second the paging and filter state. Keep calling it so server-side paging, filtering and range checks still apply.
+- A single-select dialog returns one row, or nothing on cancel.
+- The chosen row is written into the form state; nothing is stored until the operation is submitted.
 
-## Runtime Sequence
+### Runtime sequence
 
 ```mermaid
 sequenceDiagram
   autonumber
   participant U as User
-  participant V as React view<br/>(operation input page)
-  participant S as Generated service<br/>(*ServiceImpl)
+  participant V as Input page
+  participant S as Generated service
   participant D as Dispatcher
-  participant DAO as DAO / DB
-
-  Note over V: page loaded with empty *Input template<br/>(transient relation = null)
-
-  U->>V: click AggregationInput → Set
-  V->>S: getRangeFor<rel>(template, queryCustomizer)
-  S->>D: range dispatch (filtered by range expr)
-  D->>DAO: SELECT * FROM <mapped_entity><br/>WHERE <range filter>
-  DAO-->>D: page
-  D-->>S: page<TargetTO>
+  U->>V: set the picker
+  V->>S: getRangeFor relation (input, query customizer)
+  S->>D: range call
+  D-->>S: page of target rows
   S-->>V: rows
-  V-->>U: RangeDialog opens (single: true)
-
-  U->>V: select row → setData
-  Note over V: input.<rel> now holds<br/>a JudoIdentifiable reference<br/>(NOT persisted yet)
-
-  U->>V: submit operation
+  V-->>U: dialog (single select)
+  U->>V: choose a row
+  Note over V: input holds a reference, nothing stored yet
+  U->>V: submit
   V->>S: operation(input)
-  S->>D: op call
-  D->>D: body executes:<br/>mutable input.<rel> ⇒ stored ref
-  D->>DAO: INSERT/UPDATE owning entity<br/>with FK to selected target
-  DAO-->>D: ok
-  D-->>S: result
-  S-->>V: navigate / refresh
+  S->>D: operation call
+  D->>D: body links the stored relation
+  D-->>V: result
 ```
 
-## Examples
+### Example
 
-### itracker
-- **Widget**: `InititativeInput.region` rendered as a single `AggregationInput` on the `createInitiative` input page.
-- **Service**: `getRangeForRegion(template, queryCustomizer)` returns the paginated list of `Region` instances (filtered by the optional range expression).
-- **UX**: user clicks the field's Set icon, picks a region, the dialog closes, and `data.region` is populated. On submit, the new `Initiative` is created with the selected region linked via `mutable input.region`.
+In the itracker create-initiative page, the region picker was a single `AggregationInput` and showed the paginated, optionally range-filtered regions in a dialog; submitting created the initiative with the chosen region.

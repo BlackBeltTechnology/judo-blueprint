@@ -662,7 +662,7 @@ await validateLocation(value);
 ### 5. Keep Custom Validators Under src/custom
 
 ```bash
-# Nothing to do: src/custom/ is gitignored and never regenerated, so no .generator-ignore entry is needed
+# Nothing to do: your hook file is not generated (only its .default twin is), so no .generator-ignore entry is needed
 ```
 
 ## Complete Example

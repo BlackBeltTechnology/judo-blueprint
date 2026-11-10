@@ -24,7 +24,7 @@ Get a tailored UX in an enterprise CRUD application without editing generated pa
 ### Platform base
 
 - Hooks register as Pandino services from `src/custom/application-customizer.tsx`, normally by copying the generated `.default` scaffolds under `src/custom/hooks/` to names without `.default` and calling their `register...(context)` functions ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md)).
-- `src/custom/` is gitignored in the frontend module, so all hook code and the customizer survive regeneration without `.generator-ignore` entries ([frontend guide](../../agent-docs/frontend/README.md)).
+- Hook code you add in `src/custom/` is not generated and survives regeneration without `.generator-ignore` entries; the generated `application-customizer.tsx` needs an entry once you edit it ([frontend guide](../../agent-docs/frontend/README.md)).
 - Model elements that the generator exposes as extension points can be replaced by custom visual element implementations registered under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` ([custom component replacement](../../agent-docs/frontend/advanced-patterns.md)). Container, page and dialog hooks have generated, per-container names; always take the names from the generated scaffolds ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 
 ### Project practice: all customization in hooks (rackinspect)

@@ -10,7 +10,7 @@ This document is the primary reference for understanding and working with the JU
 ## Table of Contents
 1.  [**Part 1: Foundational Concepts**](#part-1-foundational-concepts)
 2.  [**Part 2: The Core Modeling Workflow**](#part-2-the-core-modeling-workflow)
-3.  [**Part 3: Advanced Modeling Patterns & Use Cases**](#part-3-advanced-patterns--use-cases)
+3.  [**Part 3: Advanced Modeling Patterns & Use Cases**](#part-3-advanced-modeling-patterns--use-cases)
 4.  [**Part 4: Judo Query Language (JQL)**](#part-4-judo-query-language-jql)
 5.  [**Part 5: Rules and Best Practices**](#part-5-rules-and-best-practices)
 

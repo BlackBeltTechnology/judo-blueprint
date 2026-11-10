@@ -1,12 +1,14 @@
-## Overview
+## Frontend guidance
 
-The generated React frontend renders the transient multi-select relation as an **embedded table (or list) widget** with add / remove row affordances. Adding rows opens a `RangeDialog` in multi-select mode (`single: false`); the user can select multiple rows in one dialog interaction. Selected rows are appended to the local collection; the Remove icon removes a row from the local collection (it does not delete the underlying entity). Submitting the operation sends the collection to the backend where `mutable input.<rel>` converts it to a stored collection.
+### What the generator gives you
 
-For the action-group / page-routing wrapping see [`action-group-input-output-routing`](../../best-practices/frontend/action-group-input-output-routing.md). For the single-pick variant see [`../transient-relation-single-select-input/frontend.md`](../transient-relation-single-select-input/frontend.md).
+The generated operation input page renders the transient collection relation as a relation table with add and remove actions; adding opens a range dialog fed by the generated `getRangeFor<Relation>` operation ([UI model to frontend mapping](../../agent-docs/frontend/model-screen-layout.md), embedded table actions; [platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md), range and choice operations). Remove on a transient relation only edits the local selection. It does not delete the underlying entity. For the add, remove and clear page of a stored collection see [[many-aggregation-crud-pattern]].
 
-## Widget Recipe
+### Project practice: a custom embedded table
 
-```typescript
+The source project (Alba) customized the field into an embedded table whose Add opens a multi-select range dialog. The components below are example project code, not platform API; the sketch shows the shape only.
+
+```tsx
 <EmbeddedTable
   label="Approvers"
   columns={userColumns}
@@ -36,62 +38,41 @@ For the action-group / page-routing wrapping see [`action-group-input-output-rou
 />
 ```
 
-Key bindings:
-- **Service call**: `getRangeFor<rel>(template, queryCustomizer)` — same shape as the single-select variant. Returns a paginated list of mapped-TO instances filtered by the optional range expression.
-- **Dialog mode**: `single: false` — the dialog returns an **array** of selected rows (or `null` on cancel).
-- **Add semantics**: append selected rows, de-duplicating by `__signedIdentifier` so re-opening the dialog and re-selecting an already-added row does not produce duplicates.
-- **Remove semantics**: filter the local collection; the underlying entity is untouched.
-- **Submit**: `data.users` is sent as the operation input; backend body's `mutable input.users` converts it to a stored collection.
+- The range call is the generated one. The first argument is the current input, the second the paging and filter state.
+- A multi-select dialog returns an array of rows, or nothing on cancel.
+- Add appends and de-duplicates by `__signedIdentifier` (a reserved payload key, see the platform behavior reference), so re-selecting a row does not duplicate it.
+- Remove filters the local collection only.
+- On submit the collection is sent as the operation input and the body links it.
 
-## Trade-off: unmapped target ⇒ no picker
+### Unmapped target
 
-> **Mechanical rule.** Pointing the transient relation at an **unmapped** TO yields a nested structured-input form (one sub-form per element), **not** a picker. The generator does not emit `getRangeFor<rel>()` because unmapped TOs have no persisted instance set to enumerate. If your UX requires a picker, the relation target **must** be mapped.
+If the relation target is unmapped, the source projects saw a nested input form (one sub-form per element), not a picker (*verify*).
 
-## Runtime Sequence
+### Runtime sequence
 
 ```mermaid
 sequenceDiagram
   autonumber
   participant U as User
-  participant V as React view<br/>(operation input page)
-  participant S as Generated service<br/>(*ServiceImpl)
+  participant V as Input page
+  participant S as Generated service
   participant D as Dispatcher
-  participant DAO as DAO / DB
-
-  Note over V: page loaded with empty *Input template<br/>(transient relation = [])
-
-  U->>V: click EmbeddedTable → Add
-  V->>S: getRangeFor<rel>(template, queryCustomizer)
-  S->>D: range dispatch (filtered by range expr)
-  D->>DAO: SELECT * FROM <mapped_entity><br/>WHERE <range filter>
-  DAO-->>D: page
-  D-->>S: page<TargetTO>
-  S-->>V: rows
-  V-->>U: RangeDialog opens (single: false)
-
-  U->>V: select N rows → setData
-  Note over V: input.<rel> now holds<br/>N JudoIdentifiable references<br/>(NOT persisted yet)
-
-  U->>V: optionally remove rows<br/>(local-only filter)
-
-  U->>V: submit operation
+  U->>V: Add
+  V->>S: getRangeFor relation (input, query customizer)
+  S->>D: range call
+  D-->>V: page of target rows
+  V-->>U: dialog (multi select)
+  U->>V: choose rows
+  Note over V: input holds references, nothing stored yet
+  U->>V: remove some rows (local only)
+  U->>V: submit
   V->>S: operation(input)
-  S->>D: op call
-  D->>D: body executes:<br/>mutable input.<rel> ⇒ stored collection
-  D->>DAO: INSERT/UPDATE owning entity<br/>with FKs to selected targets
-  DAO-->>D: ok
-  D-->>S: result
-  S-->>V: navigate / refresh
+  S->>D: operation call
+  D->>D: body links the stored collection
+  D-->>V: result
 ```
 
-## Examples
+### Examples
 
-### Alba
-- **Widget**: `ApprovalTaskInput.users` rendered as an embedded table on the `assignApproval` input page.
-- **Service**: `getRangeForUsers(template, queryCustomizer)` returns active TEACHER / APPROVER users (filtered by the range expression).
-- **UX**: user clicks Add, selects multiple eligible users, optionally removes some, then submits to create approval tasks for each.
-
-### ActionGroupTest
-- **Widget**: `CreatureTemplate.signs` rendered as an embedded list/table on the `Planet.createCreature` input page.
-- **Service**: `getRangeForSigns(template, queryCustomizer)` returns the persisted `Sign` instances.
-- **UX**: user picks zero or more astrological signs; selections persist as the new creature's `signs` relation.
+- Alba: `ApprovalTaskInput.users` as an embedded table on the assign-approval page; the range limited candidates to eligible users.
+- actiongroup-test-react: `CreatureTemplate.signs` as an embedded list on the create-creature page; zero or more signs.
