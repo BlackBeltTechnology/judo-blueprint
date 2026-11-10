@@ -1,28 +1,83 @@
-## Examples
+## Model shape
 
-### alba
-- **Product entity**: `Alba::entities::Product` (non-CRUD)
-  - Content attributes: title (req), introduction (req), goal (req), areaOfDevelopment (req), extent (req), requiredResources (req), relatedLiterature
-  - State: state (req, default: DRAFT), createdAt, finalizedAt
-  - Denormalized: institutionName, curriculumAggregated, resultTypesAggregated, audienceAggregated, isFinalizedOrApproved, ownVersion, userOwnsProduct
-  - Relations: author (0..1 ASSOC), impersonatingAuthor (0..1 ASSOC), approvedBy (0..1 ASSOC), audience (0..* ASSOC), curriculum (0..* ASSOC), resultTypes (0..* ASSOC), attachments (0..* COMPOSITION), events (0..* ASSOC), version (0..1 ASSOC to ProductVersion), currentVersion (0..1 DERIVED), productVersions (1..1 ASSOC to ProductVersions), relatedTasks (0..* ASSOC)
-  - Operations: finalize (custom), approveVersion (custom), revokeApproval (custom), assignApproval (custom), draftNewVersion
-- **ProductState enum**: `Alba::entities::ProductState` -- DRAFT(1), FINALIZED(2), APPROVED(3)
-- **ProductVersion entity**: `Alba::entities::ProductVersion` (non-CRUD)
-  - Attributes: version (default: 0), finalizedAt, state
-  - Relations: origin (1..1 ASSOC to Product)
-- **ProductVersions entity**: `Alba::entities::ProductVersions` (non-CRUD)
-  - A container entity; Relations: versions (0..* ASSOC to ProductVersion), allProducts (0..* DERIVED)
-- **EventType enum**: `Alba::entities::EventType` -- PRODUCT_CREATED(4), PRODUCT_FINALIZED(3), PRODUCT_APPROVED(1), PRODUCT_APPROVAL_REVOKED(2)
-- **Event entity**: `Alba::entities::Event` (non-CRUD) -- type (req), message, createdAt (req); relations: product (0..1 ASSOC), performedBy (0..1 ASSOC to User)
-- **TaskType enum**: `Alba::entities::TaskType` -- APPROVAL(1)
-- **TaskState enum**: `Alba::entities::TaskState` -- TODO(3), APPROVED(1), REJECTED(2)
-- **Task entity**: `Alba::entities::Task` (non-CRUD) -- createdAt (req), type (req), state (req), isActive (default: false), createdByName, assigneeName, productTitle, isAssigneeCurrentUser; relations: createdBy (1..1 ASSOC), assignee (1..1 ASSOC), targetProduct (0..1 ASSOC); ops: closeTask (custom), activate, deactivate
-- **Transfer Objects** (role-specific):
-  - `AdminProduct` -- 25 attributes with guard flags (isDraft, isFinalized, isApproved, isNotApproved, isNotFinalized, isApproveDisabled, isPendingDelegated, fixFalse); ops: draftNewVersion, approveVersion, createProduct (STATIC, custom), revokeApproval, assignApproval
-  - `AuthorProduct` -- 25 attributes; ops: createProduct (STATIC, custom), finalize, draftNewVersion, approve
-  - `ApproverProduct` -- 20 attributes; ops: approveVersion
-  - `GuestProduct` -- 15 attributes; read-only, no operations
-  - `AuthorTask` / `ApproverTask` / `AdminTask` -- task projections per role with closeTask, activate/deactivate operations
-- **AccountStatus enum**: `Alba::entities::AccountStatus` -- PENDING_APPROVAL(1), ACTIVE(2), SUSPENDED(3) -- used for User.status
-- **UserRole enum**: `Alba::entities::UserRole` -- GUEST(1), TEACHER(2), APPROVER(3), ADMIN(4)
+The shape has one main entity, Product, with a state enumeration, a version history, tasks and an event log. Only the workflow core is drawn.
+
+- **Product** has a required title and a required state (ProductState). It has an optional author and approvedBy association to User, a required association to ProductVersions, and custom instance operations finalize, assignApproval, approveVersion, revokeApproval and draftNewVersion.
+- **ProductState** is an enumeration: DRAFT, FINALIZED, APPROVED. Values are stored as ordinals.
+- **ProductVersion** has a version number, a finalized timestamp and a state snapshot, and a required association origin to Product.
+- **ProductVersions** is the container with zero or more ProductVersion.
+- **Task** has a TaskState (TODO, APPROVED, REJECTED), a required assignee and createdBy association to User, and an optional targetProduct.
+- **Event** has an EventType (PRODUCT_CREATED, PRODUCT_FINALIZED, PRODUCT_APPROVED, PRODUCT_APPROVAL_REVOKED), a message, and optional associations to Product and User (performedBy).
+- **Role transfer objects** (admin, author, approver, guest product views) expose the content and the operations each role may call, with boolean guard attributes that control visibility. They are not part of the diagram.
+
+Generated UI pages follow from the entities; the product lists are replaced by custom card views, see [frontend.md](frontend.md).
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=product-with-approval-workflow -->
+<!-- /mermaid:generated -->
+
+<!-- mermaid:generated fragment=product-with-approval-workflow cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Event {
+    <<Entity>>
+    +EventType type [1]
+    +String message
+  }
+  class EventType {
+    <<Enumeration>>
+    PRODUCT_CREATED
+    PRODUCT_FINALIZED
+    PRODUCT_APPROVED
+    PRODUCT_APPROVAL_REVOKED
+  }
+  class Product {
+    <<Entity>>
+    +String title [1]
+    +ProductState state [1]
+  }
+  class ProductState {
+    <<Enumeration>>
+    DRAFT
+    FINALIZED
+    APPROVED
+  }
+  class ProductVersion {
+    <<Entity>>
+    +Integer version
+    +Timestamp finalizedAt
+    +ProductState state
+  }
+  class ProductVersions {
+    <<Entity>>
+  }
+  class Task {
+    <<Entity>>
+    +TaskState state [1]
+  }
+  class TaskState {
+    <<Enumeration>>
+    TODO
+    APPROVED
+    REJECTED
+  }
+  class User {
+    <<Entity>>
+  }
+  Event --> "0..1" Product : product
+  Event --> "0..1" User : performedBy
+  Event ..> EventType : type
+  Product --> "0..1" User : approvedBy
+  Product --> "0..1" User : author
+  Product --> "1" ProductVersions : productVersions
+  Product ..> ProductState : state
+  ProductVersion --> "1" Product : origin
+  ProductVersion ..> ProductState : state
+  ProductVersions --> "*" ProductVersion : versions
+  Task --> "0..1" Product : targetProduct
+  Task --> "1" User : assignee
+  Task --> "1" User : createdBy
+  Task ..> TaskState : state
+```
+<!-- /mermaid:generated -->

@@ -1,18 +1,20 @@
 ## Overview
 
-The abstract Post with concrete content subtypes manifests in the React frontend through per-type custom view components (NewsView, OfferView, RequestView, AnnouncementView) that replace the generated forms, and through type-aware navigation in the feed that resolves each entry to its concrete subtype's detail page.
+Each post subtype has its own page layout in the React frontend. The generated form and view are replaced for the subtypes that need a custom layout. The feed sends the user to the page of the matching subtype.
 
 ## Implementation Pattern
 
-- **Per-type container hooks**: Each concrete post subtype has a dedicated Pandino container extra-actions hook that replaces the generated form with a custom view component. The hooks use `createPortal` with `MutationObserver` to hide the generated `TransferObjectViewPageContainer` and inject the custom view.
-- **Custom view components**: `NewsView`, `OfferView`, `RequestView`, and `AnnouncementView` render type-specific layouts with organization info, capability chips, validity dates (offers/requests), deadlines (requests), price (offers), document attachments (announcements), and inquiry actions.
-- **Type-aware feed navigation**: The feed page actions hook resolves `entryType` (from PostType enum: NEWS, OFFER, REQUEST, ANNOUNCEMENT) to the correct derived relation via `feedEntryService.getNews/getOffer/getRequest/getAnnouncement`, then navigates to the subtype-specific `RelationViewPage`.
-- **Inquiry support**: Offer and Request views include inquiry functionality via `offerService.inquery()` / `requestService.inquery()`, with page mask overrides to include `hasInquired` and `inqueryNumber` fields.
+- **Per-type container hooks.** Each subtype registers a container hook that swaps the generated view for a custom component. The hook hides the generated container and places the custom component in its parent element.
+- **Custom view components.** One component per subtype renders the fields of that subtype: organization, validity or deadline dates, price, documents or image, and an inquiry action where the subtype allows it.
+- **Type-aware feed navigation.** The feed reads the type discriminator of each entry and opens the page of the matching subtype, so each entry shows its own fields.
+- **Inquiry on offers and requests.** The inquiry action calls a custom operation. The page mask must include the fields that show whether the user already inquired.
+
+The hook and component names belong to the example project; the framework's hook interface and the pattern are what generalize.
 
 ## Examples
 
 ### mlszksz-platform
-- Framework: React
-- Key files: `custom/custom_views/NewsView.tsx`, `custom/custom_views/OfferView.tsx`, `custom/custom_views/RequestView.tsx`, `custom/custom_views/AnnouncementView.tsx`, `custom/hooks/containers/registerServicesFeedNewsContainerHook.tsx`, `custom/hooks/containers/registerServicesFeedOfferContainerHook.tsx`, `custom/hooks/containers/registerServicesFeedRequestContainerHook.tsx`, `custom/hooks/containers/registerServicesFeedAnnouncementContainerHook.tsx`
-- Pattern: Each container hook registers an `FC` component via `CONTAINER_EXTRA_ACTIONS_HOOK_INTERFACE_KEY`. The component uses a `MutationObserver` to find and hide the generated page container, then portals the custom view into the parent element. The custom views receive `data` and `isLoading` props and render a mobile-friendly card layout.
-- Notable: The shared `PostViewLayout` component and `ContactActions` component in `custom/custom_views/shared/` provide reusable layout sections across all post type views.
+- Framework: React.
+- Key files: one custom view per subtype (news, offer, request, announcement), a shared layout component and a shared contact component, and one container hook per subtype.
+- Pattern: each hook uses a DOM observer to hide the generated container and portal the custom view in its place. Views receive the loaded data and a loading flag and render a card layout suited to mobile screens.
+- Notable: the shared layout and contact components keep the four views consistent.

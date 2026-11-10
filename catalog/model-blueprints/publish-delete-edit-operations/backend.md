@@ -1,20 +1,32 @@
 ## Overview
 
-The publish/delete/edit operations are implemented as thin custom operation classes per content type, each delegating to the shared `PostLifecycleService` or `AnnouncementService`. The pattern is identical across News, Offer, Request, and Announcement, with content-type-specific variations for expire and moderationDelete.
+Each of the three operations is a custom operation on the transfer object. Custom operations get no operation-call interceptor, so every check and side effect lives in the operation body. The example project keeps the logic in a shared lifecycle service and makes each operation a thin class that delegates to it. The service names and file layout below belong to that example project, not to the platform.
 
-## Implementation Pattern
+## Implementation pattern
 
-- Each content type has 3-5 custom operation classes in its service package: `PublishCustomImplementation`, `DeleteCustomImplementation`, `EditXxxCustomImplementation`, and optionally `ExpiredCustomImplementation`, `ModerationDeleteCustomImplementation`
-- Every operation class: (1) implements the generated operation interface, (2) is an OSGi `@Component`, (3) injects 1-2 services, (4) validates preconditions via the service layer, (5) logs an audit entry
-- Publish: validates DRAFT status, sets PUBLISHED + publishedAt timestamp, creates FeedEntry, sends push/email notifications
-- Delete: validates not already DELETED, hard-deletes DRAFT posts, soft-deletes PUBLISHED posts (sets DELETED status + removes FeedEntry)
-- Edit: validates DRAFT status, updates fields from input TO, manages capability relations for Offer/Request
-- Expire: validates PUBLISHED status, sets EXPIRED, removes FeedEntry; triggered both by custom operations and by the `PostExpirationJob` scheduler
-- ModerationDelete: validates caller is PLATFORM_ADMIN via `ActorService`, sends notification to content owner, then performs soft-delete
+- Put each operation in its own class that implements the generated operation interface and delegates to one service. The service is project code (example: a post lifecycle service); the platform does not provide it.
+- Re-read the content inside the operation before changing it. Do not trust the status the client sent.
+- Check preconditions in this order: the current status, then the caller's authorization, then the input.
+- Modeled business faults are declared on the operation. A failed status check raises the business fault (HTTP 422). Field errors from the input are validation errors (HTTP 400) and come from the framework, not from the operation.
+- Write the audit row, if the project keeps one, last, inside the same transaction. A rollback then removes it too.
+
+## Operation rules
+
+- **Publish.** Allowed only from DRAFT. Sets PUBLISHED and the publish time. Side effects such as a feed entry or a notification run after the status change, in the same transaction where the project's services allow it.
+- **Delete.** A DRAFT row is removed. A PUBLISHED row gets status DELETED and its side-effect rows (for example a feed entry) are removed. A DELETED row is rejected.
+- **Edit.** Allowed only while DRAFT in the example. Copies the editable fields from the input into the entity and keeps the status. Relations that depend on the input (for example capabilities) are replaced inside the same operation.
+
+## Errors and faults
+
+- Declare the business fault on each operation that can raise it, for example a "content not in the right state" fault. Without the declaration the generated interface has no `throws` clause and the build fails; the generated exception is checked and answers HTTP 422 with the `X-Fault` header.
+- Do not throw a bare `RuntimeException` for a business rule: the dispatcher turns it into a generic 500. A business rule uses the modeled fault; a bad field value uses the platform `ValidationException` (400).
+- Authorization is not done by interceptors here, since they do not run for custom operations; the check is written in the operation.
+- Moderation delete (if present) checks the caller's platform role before it changes anything, and notifies the owner after the change.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `custom/.../companyadmin/offer/PublishCustomImplementation.java`, `custom/.../companyadmin/news/DeleteCustomImplementation.java`, `custom/.../companyadmin/request/EditRequestCustomImplementation.java`, `custom/.../companyadmin/offer/ModerationDeleteCustomImplementation.java`
-- Pattern: 4 identical sets of custom operations (News, Offer, Request in companyadmin; Announcement in admin), each a thin delegate to PostLifecycleService/AnnouncementService + AuditLogService
-- Notable: Hard vs soft delete distinction (DRAFT = physical delete, PUBLISHED = status transition to DELETED); moderation operations add authorization checks and owner notifications
+
+- Operation classes sit next to the content type's services (example files: `PublishCustomImplementation`, `DeleteCustomImplementation`, `EditRequestCustomImplementation`, `ModerationDeleteCustomImplementation`). Names are project code.
+- News, offer and request in the company-admin package each have publish, delete, edit and moderation delete. The announcement in the admin package has publish, delete and edit.
+- Delete is the example of the two-branch rule: physical delete for drafts, status change for published items.

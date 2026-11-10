@@ -1,20 +1,36 @@
 ## Overview
 
-The abstract Post entity and its concrete subtypes (News, Offer, Request, Announcement) are managed through a layered service architecture: `PostService` (facade), `PostCreationService` (factory operations), and `PostLifecycleService` (state transitions). Each subtype has separate custom operation classes that delegate to these shared services.
+The abstract Post and its subtypes (News, Offer, Request, Announcement) are handled by a small service layer: a facade, a creation service that builds each subtype, and a lifecycle service that changes status. Each subtype has its own custom operations, and they call the shared services. The services and their names are project code, not platform classes.
 
 ## Implementation Pattern
 
-- `PostServiceImpl` is a facade OSGi `@Component` that delegates to `PostCreationService` and `PostLifecycleService`
-- `PostCreationServiceImpl` handles `createNews()`, `createOffer()`, `createRequest()`: sets common Post fields (title, description, status=DRAFT, createdAt, postType discriminator, author, organization) then adds subtype-specific fields (image for News, validFrom/validUntil/price/capabilities for Offer, deadline/capabilities for Request)
-- `PostLifecycleServiceImpl` handles publish/delete/expire/edit: validates state preconditions, updates status, and triggers side effects (FeedService for feed entry management, PushNotificationService for push, PlatformEmailService for email)
-- Delete behavior is differentiated: DRAFT/PENDING_REVIEW posts are hard-deleted; PUBLISHED posts are soft-deleted (status=DELETED) with feed entry removal
-- The `adaptTo(Post.class)` method is used to upcast subtypes to the abstract Post type when creating feed entries
-- Capability relations on Offer and Request are managed via DAO `addCapabilities()`/`removeCapabilities()` methods
-- Scheduler `PostExpirationJob` queries PUBLISHED offers with expired `validUntil` and requests with expired `deadline`, auto-expiring them
+### Creation sets the shared fields first
+
+A creation method sets the fields every post has (title, description, draft status, creation time, the type discriminator, author and organization). It then sets the fields of its own subtype. The type discriminator must match the subtype, so each creation method sets it itself.
+
+### Lifecycle changes check state first
+
+Publish, unpublish, edit and delete check the current status before they change it. Publishing moves a draft to published. Deleting a draft removes it; deleting a published post changes its status to deleted and removes its feed entry, so the history of the feed stays consistent.
+
+### Polymorphic handling
+
+When a subtype must appear in a shared list, such as the feed, the code treats it as a Post. Because the platform does not allow an abstract entity as a field type, code that needs a shared list works with the base type through the platform's `adaptTo` type conversion; the agent-docs describe `adaptTo` only between the service and entity layers, so using it for the base type is project practice. Code that needs subtype fields uses the subtype type.
+
+### Expiry is a scheduled job
+
+Offers expire when their validity end passes, and requests when their deadline passes. A scheduled job queries published items with those dates in the past and sets them to expired. This runs outside any user operation, so it is not an interceptor and it does not depend on the hierarchy.
+
+### Business faults
+
+A rule that fails in an operation, such as publishing an offer whose validity has already ended, is a modeled fault (HTTP 422 with the X-Fault header) that is declared on the operation in the model; the platform generates a checked `<Fault>Exception` for it, and the operation code throws it. An interceptor cannot throw a modeled fault; it would use `InterceptorCallBusinessException`. A missing required field is a ValidationException (HTTP 400) and comes from the platform.
+
+### Interceptors do not cover custom operations
+
+The creation and lifecycle operations are custom, so an interceptor does not run for them. Any audit row or guard must be called from the operation itself.
 
 ## Examples
 
 ### mlszksz-platform
-- Key files: `common/services/PostService.java`, `common/services/post/PostCreationService.java`, `common/services/post/PostLifecycleService.java`, `common/services/post/impl/PostLifecycleServiceImpl.java`, `scheduler/PostExpirationJob.java`
-- Pattern: Facade + creation service + lifecycle service; creation sets DRAFT status with PostType discriminator; publish transitions to PUBLISHED and creates FeedEntry; delete is soft (PUBLISHED) or hard (DRAFT)
-- Notable: PostExpirationJob automatically expires time-sensitive content (Offers by validUntil, Requests by deadline); `adaptTo(Post.class)` enables polymorphic feed entry creation from any subtype
+- Key files: `common/services/PostService.java` (facade), `common/services/post/PostCreationService.java`, `common/services/post/PostLifecycleService.java`, `scheduler/PostExpirationJob.java`.
+- Pattern: creation sets draft status and the type discriminator; publishing moves to published and creates a feed entry; delete is hard for drafts and soft for published posts.
+- Notable: the expiry job handles offers by their validity end and requests by their deadline. The `adaptTo` conversion lets feed code treat any subtype as a Post (project practice).

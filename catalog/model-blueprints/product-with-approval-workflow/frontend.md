@@ -12,6 +12,9 @@ The product approval workflow blueprint has extensive React frontend customizati
 - **Role-based dashboard routing**: The `application-customizer.tsx` registers a custom dashboard component that renders different product table pages based on the principal's role: `ServicesUserAdminProductsAccessTablePage` for admins, `ServicesUserApproverProductsAccessTablePage` for approvers, and the author products page (lazy-loaded) as the default.
 - **i18n translations**: The `application_hu-HU.json` file provides Hungarian translations for all ProductState enum values (Vazlat/Draft, Veglegesitett/Finalized, Jovahagyott/Approved), EventType values, menu items, and form labels.
 
+- **Visibility is only a hint.** The role views hide or disable operations through boolean attributes read by `hiddenBy` and `enabledBy` rules; the backend operations still check state and role.
+- **Custom folder.** Hook code sits in `src/custom/`, which is gitignored and survives regeneration. The colors and Hungarian labels belong to the example project.
+
 ## Examples
 
 ### alba

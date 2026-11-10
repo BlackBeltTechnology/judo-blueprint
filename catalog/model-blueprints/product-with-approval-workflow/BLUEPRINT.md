@@ -1,47 +1,72 @@
 ---
 id: product-with-approval-workflow
 title: Product Entity with Draft/Finalize/Approve Workflow and Versioning
-description: "A Product entity representing a content item (educational resource, document, or similar) that follows a three-stage approval workflow: DRAFT (being authored), FINALIZED (submitted for review), and APPROVED (officially accepted)."
-aliases: []
-keywords: [product, draft, finalize, approve, workflow, versioning, approval]
+description: "A content item that moves through DRAFT, FINALIZED and APPROVED states by custom operations, keeps a version history, assigns approval tasks and logs events."
+aliases: [approval workflow, versioned product]
+keywords: [product, draft, finalize, approve, workflow, versioning, approval, task, event log]
 tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:alba", "status:single-project"]
 category: pattern
 status: single-project
 projects: [alba]
 evidence: ["alba:unrecorded"]
 alternatives: []
-fragment: pending
+fragment: product-with-approval-workflow
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
-last_updated: 2026-03-05
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A Product entity representing a content item (educational resource, document, or similar) that follows a three-stage approval workflow: DRAFT (being authored), FINALIZED (submitted for review), and APPROVED (officially accepted). The Product has rich content attributes (title, introduction, goal, areaOfDevelopment, extent, requiredResources, relatedLiterature), a state attribute typed to a ProductState enum, and multiple classification relations (audience, curriculum, resultTypes -- all 0..* ASSOCIATION to lookup entities). The Product carries authorship relations: an author (0..1 ASSOC to User), an impersonatingAuthor (0..1 ASSOC to User for delegation), and an approvedBy (0..1 ASSOC to User recording who approved it). File attachments are composed (0..* COMPOSITION to Attachment).
+Let authors prepare a content item, submit it for review and have an approver accept it, with a recorded history. The item has three states (draft, finalized, approved). Each change of state is a custom operation, so the state rules, the approver task and the audit event are written once and each role sees only the operations it may use.
 
-A ProductVersion entity tracks version history: each version has a version number (default: 0), a finalizedAt timestamp, a state snapshot, and an origin relation (1..1 ASSOC back to the Product it was created from). A ProductVersions container entity holds all versions (0..*) and a derived allProducts collection. The Product references both its version container (productVersions 1..1) and the current version (currentVersion 0..1 DERIVED). Denormalized fields on Product (ownVersion, institutionName, curriculumAggregated, resultTypesAggregated, audienceAggregated) provide quick display without joins.
+### Versions keep history
 
-Instance operations on Product implement the approval lifecycle:
-- **finalize** (custom) -- transitions from DRAFT to FINALIZED
-- **assignApproval** (custom) -- assigns an approver to review the product
-- **approveVersion** (custom) -- transitions from FINALIZED to APPROVED
-- **revokeApproval** (custom) -- reverts from APPROVED back to FINALIZED
-- **draftNewVersion** -- creates a new DRAFT copy from the current version
+A new draft is created as a copy of the current item and gets the next version number. The version entity points back to the item it was created from, and a container entity holds all versions.
 
-A Task entity supports the approval workflow: it has a type (TaskType enum: APPROVAL), a state (TaskState enum: TODO/APPROVED/REJECTED), an assignee (1..1 ASSOC to User), a createdBy (1..1 ASSOC to User), and a targetProduct (0..1 ASSOC to Product). Operations on Task include closeTask (custom), activate, and deactivate. Denormalized fields (createdByName, assigneeName, productTitle) provide display strings.
+### Tasks and events support the workflow
 
-An Event entity serves as an audit log, recording product lifecycle events: type (EventType enum: PRODUCT_CREATED/PRODUCT_FINALIZED/PRODUCT_APPROVED/PRODUCT_APPROVAL_REVOKED), message, createdAt, and relations to product (0..1) and performedBy user (0..1).
+Assigning an approver creates a task for that user. Every state change writes an event row, so the lifecycle is auditable.
 
-Transfer objects provide role-specific views: AdminProduct (full access with all operations), AuthorProduct (create/finalize/draftNewVersion), ApproverProduct (approveVersion only), GuestProduct (read-only). Guard attributes (isDraft, isFinalized, isApproved, isNotFinalized, canNotFinalize, isApproveDisabled, draftNewVersionDenied) control operation visibility per state and role.
+## Structure
 
-## Model Definition
+Product is the content item. It has content attributes, a required state attribute typed to the ProductState enumeration (DRAFT, FINALIZED, APPROVED), and several classification relations to lookup entities. It has author, delegating author and approvedBy associations to User, and composed attachments. A ProductVersion entity holds a version number, a finalized timestamp and a state snapshot, with a required association back to its Product (origin). A ProductVersions container holds all versions, and Product has a required association to it.
 
-See [model.md](model.md) for detection queries, creation mutations, and examples.
+A Task entity has a state (TODO, APPROVED, REJECTED), a required assignee and creator (both User) and an optional target Product. An Event entity is the audit log: an event type, a message, a timestamp and optional associations to the Product and the performing User.
 
-## Backend Implementation
+Product has custom instance operations: finalize, assignApproval, approveVersion, revokeApproval and draftNewVersion. Role-specific transfer objects expose the content with only the operations of that role (admin: all; author: create, finalize, new draft; approver: approve only; guest: read only). Boolean attributes on those transfer objects (is draft, is finalized, is approved and similar) drive visibility and enablement of the operations.
 
-See [backend.md](backend.md) for backend implementation patterns and examples.
+## Constraints
 
-## Frontend Implementation
+- State changes only through the custom operations. The operation loads the item, checks the current state and rejects a wrong state before it writes.
+- A rejected transition is a business rule failure. Model it as a fault declared on the operation (HTTP 422 with the X-Fault header); a plain RuntimeException would reach the client as a generic 500. A missing required value stays a platform ValidationException (HTTP 400).
+- Interceptors run only for built-in operations, so they do not run around these custom operations. State checks, event rows and task creation are called from the operations themselves.
+- Only one version may be approved at a time. Approving rolls any earlier approved version back to finalized (project rule, not platform behaviour).
+- Visibility of an operation is a hint for the UI. The backend operation still checks state and role; the frontend can only hide controls.
+- Enumeration ordinals are persisted, unique and within 0 to 9999. Do not renumber members.
+- Each operation resolves the acting user from the actor's email claim. This is project code on top of the platform's variable resolver.
 
-See [frontend.md](frontend.md) for frontend implementation patterns and examples.
+## Variations
+
+- **Event log as an entity.** The shape used here: audit rows are explicit Event entities. A lighter option is to write them only for the transitions that matter.
+- **Task per approver.** Assignment creates one task per selected approver. A single approver field on Product is enough when there is no inbox.
+- **No version container.** Keep a version number on Product and a link to the previous product. Use this when no version list view is needed.
+- **State machine engine.** For many states or configurable transitions, see [[workflow-engine-state-machine-cluster]].
+
+## When to use
+
+- Content needs review and approval before it counts as official.
+- Reviewers and authors have different permitted operations on the same item.
+- A history of versions and an audit trail are required.
+
+## When to avoid
+
+- There are only two states and no review; use [[open-close-status-toggle]] or a status enumeration.
+- Transitions are configured at runtime; use a workflow engine.
+- The item needs no history; drop the version entities.
+
+## Related
+
+- [[accept-reject-operations]] — a smaller accept and reject pair with a status enumeration
+- [[workflow-engine-state-machine-cluster]] — a configurable state machine for many states
+- [[open-close-status-toggle]] — a two-state toggle with a custom operation
+- [[cards-container-configuration-hook]] — the card layout used for the product lists

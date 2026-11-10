@@ -1,0 +1,158 @@
+{
+ "batch": "bp11",
+ "entries": {
+  "post-generalization-hierarchy": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "abstract entity inheritance",
+    "upcast adaptTo",
+    "business fault 422",
+    "interceptors custom operation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jsl-language-notes.md#Constraints that fail the build",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/type-system-guide.md#adaptTo",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "upcast call replaced by adaptTo with project-practice note (docs only cover service/entity layers)",
+    "fault: declared on operation, checked exception, X-Fault; interceptor uses InterceptorCallBusinessException",
+    "added abstract-entity-not-a-field-type constraint"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "price-margin-calculation-utilities": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "derived attribute",
+    "hooks onBlur",
+    "generator-ignore custom folder"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/README.md",
+    "catalog/agent-docs/model/esm_metamodel/ui.md#Hook Generation Attributes"
+   ],
+   "fixes": [
+    "generator-ignore claim corrected: src/custom is gitignored, only generated folders need .generator-ignore",
+    "added onBlur widget flag",
+    "derived attribute variation clarified"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "privacy-visibility-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "enumeration ordinal",
+    "enum ordinal persisted renumber"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jsl-language-notes.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/backend/data-access-guide.md"
+   ],
+   "fixes": [
+    "ordinal range 0-9999 unique added",
+    "query<Attribute>() enum ClassCastException added",
+    "query-by-range claim softened to project logic"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "product-with-approval-workflow": {
+   "status": "rewritten",
+   "fragment": "product-with-approval-workflow",
+   "kb": [
+    "bound operation custom implementation",
+    "enabledBy hiddenBy",
+    "row highlighting hook"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+    "catalog/agent-docs/frontend/README.md"
+   ],
+   "fixes": [
+    "legacy rewritten to new format",
+    "backend RuntimeException state check flagged -> modeled fault 422",
+    "no interceptors on custom ops added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "publish-delete-edit-operations": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "modeled fault declared throws",
+    "form actions hook"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations",
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "fault must be declared or build fails; 422+X-Fault",
+    "bare RuntimeException -> 500 note",
+    "interceptors-only-built-in wording",
+    "guard flags are hints"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "push-notification-system": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "push notification Firebase",
+    "AppBarExtraComponents",
+    "__countRecords"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/ui-hooks.md#Registration",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/frontend/README.md"
+   ],
+   "fixes": [
+    "legacy rewritten",
+    "AppBar extra component registration per docs (exactly one)",
+    "_seek limit 0 count claim relabeled as project code, docs name __countRecords/X-Judo-Count"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "recaptcha-waf-interceptor": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "InterceptorCallBusinessException",
+    "interceptor contract getOperations",
+    "which operations are intercepted"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Throwing a Business Error from an Interceptor",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md"
+   ],
+   "fixes": [
+    "RuntimeException replaced by InterceptorCallBusinessException (422+X-Fault)",
+    "custom/MAPPED ops never intercepted constraint added",
+    "empty getOperations means all built-in"
+   ],
+   "inventory": {
+    "jb-031 wrong-fact": "applied",
+    "jb-035 decision": "applied",
+    "jb-036 wrong-fact": "applied",
+    "jb-037 wrong-fact": "applied"
+   },
+   "lint": "pass"
+  }
+ }
+}
