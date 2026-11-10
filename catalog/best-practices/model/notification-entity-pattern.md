@@ -1,62 +1,119 @@
 ---
 id: notification-entity-pattern
 title: Asynchronous Notification Entity with Device Management
-description: A system-managed notification entity models asynchronous push notifications with delivery tracking.
-aliases: []
-keywords: [asynchronous, notification, device, management]
+description: "Model asynchronous notifications as a read-only entity with a type enum, a delivery status enum and a recipient, plus a device entity for push tokens, with all delivery done by backend code."
+aliases: [push notification entity, notification queue, device token entity]
+keywords: [notification, device token, delivery status, retry, push, read-only entity, createable, background job]
 tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single-project"]
 category: entity
 status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:unrecorded"]
 alternatives: []
-related: [enum-state-machine, category-enum-pattern, bidirectional-relation, audit-event-entity]
-fragment: pending
+related: [enum-state-machine, category-enum-pattern, bidirectional-relation, audit-event-entity, soft-delete-active-flag]
+fragment: notification-entity-pattern
+diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-04
-last_updated: 2026-03-06
-format: legacy
+last_updated: 2026-11-10
 ---
-## Description
+## Intent
 
-A system-managed notification entity models asynchronous push notifications with delivery tracking. Notifications are queued as PENDING, processed by a background job that delivers them via an external service (e.g., Firebase Cloud Messaging), and their status is updated to SENT or FAILED with retry capability. A companion Device entity stores user device tokens for delivery targeting.
+Business events must reach users later, outside the request that caused them (push, e-mail). Store each notification as a row with a delivery status, so that a background job can deliver it and retry failures. Keep the device tokens of users in a companion entity.
 
-## Structure
+## Practice
 
-- **Notification entity** (createable=false, updateable=false, deleteable=false):
-  - `type`: Category enum classifying the notification trigger event
-  - `title`, `message`: Display content
-  - `status`: State machine enum (PENDING -> SENT/FAILED, with retry back to PENDING)
-  - `referenceEntityId`: Optional reference to the triggering entity
-  - `retryCount`: Integer tracking delivery retry attempts
-  - `createdAt`: Timestamp
-  - `user`: Required relation to the recipient user (often bidirectional)
-- **Device entity** (system-managed):
-  - `fcmToken`: External service token
-  - `platform`: Category enum (ANDROID, IOS, WEB)
-  - `isActive`: Boolean for token validity
-  - `lastUsedAt`, `registeredAt`: Timestamps
-  - `user`: Bidirectional relation to User
-- Notifications are created as side effects of business operations (post publish, registration approval, inquiry received)
-- Background processor handles delivery and status updates
+### Notification entity: system-written, read-only for clients
 
-## Examples
+- Attributes: `type` (category enum for the trigger event), `title`, `message`, `status` (enum PENDING, SENT, FAILED), `referenceEntityId` (optional plain string, not a relation), `retryCount`, `createdAt`.
+- Relation `user` to the recipient, required (`1..1`), a plain association: the notification does not own the user. Make it two-way ([[bidirectional-relation]]) only if the recipient's view must list notifications.
+- Switch the entity's `createable`, `updateable` and `deleteable` flags off ([CRUD flags](../../agent-docs/model/README.md), "CRUD Flags"). That removes the generated create, edit and delete controls. These flags govern the generated API and UI only. They do not stop your own backend code, which writes rows through the generated DAO.
+- Notifications are created as a side effect of business operations (publish, approve, receive an inquiry). The creating operation is a stateful operation ([operation reference](../../agent-docs/model/esm_metamodel/operation.md), "Statefulness derived from behaviour") or Java using the DAO.
 
-### MLSZKSZPlatform
-`Notification` entity with `NotificationType` (8 members: NEW_POST, NEW_ANNOUNCEMENT, INQUIRY_RECEIVED, REGISTRATION_APPROVED/REJECTED, INVITATION_RECEIVED/APPROVED/REJECTED) and `NotificationStatus` (PENDING -> SENT/FAILED with retry). `Device` entity stores FCM tokens with `DevicePlatform` (ANDROID, IOS, WEB). Both are system-managed (no CRUD). Notification has bidirectional relation to User. Business operations trigger notifications: `publish` creates NEW_POST, `accept` creates REGISTRATION_APPROVED, `inquery` creates INQUIRY_RECEIVED.
+### Status as a small state machine
 
-### KozutEugyfelClient
-`Ertesites` (Notification) entity tracks email notifications with `kezbesitve: Boolean` (delivered flag), `szoveg: String` (body), `targy: String` (subject). Derives `cimzettEmail` (recipient email) from the `cimzett` (recipient) relation and `bejelentesAzonosito` from the parent report. `olvasott: Boolean` (read flag) tracks user acknowledgment via the `elolvas` (mark-as-read) operation. Simpler than MLSZKSZPlatform -- no device management, email-only delivery.
+PENDING after creation; a delivery job moves it to SENT or FAILED; a retry returns FAILED rows to PENDING and bumps `retryCount` ([[enum-state-machine]]). The model holds only the data. The delivery job and the external push service are backend work (see the push notification blueprint: [[firebase-push-notification-pipeline]]). The agent-docs describe no built-in notification mechanism, so everything about delivery is project practice.
 
-## Trade-offs
+### Device entity
 
-- Pros: Decoupled notification delivery from business operations, retry capability for failed deliveries, multi-platform support, complete delivery tracking
-- Cons: Requires external service integration (FCM), device token management complexity, growing notification table needs eventual cleanup
-- Prefer when: Application needs push notifications to mobile/web clients with delivery guarantees
+Stores one external token per user device: `token`, `platform` (category enum, [[category-enum-pattern]]: ANDROID, IOS, WEB), an active flag, last-used timestamp, and a required relation to the user. It is system-managed: registered and deactivated by backend code. Mark tokens inactive instead of deleting them when the push service reports them invalid, if you want history ([[soft-delete-active-flag]]).
+
+### Reference, not relation
+
+`referenceEntityId` is a string, so a notification survives when the content is deleted. The cost is that the link to the content is not checked by the model.
+
+## Rationale
+
+- Delivery is decoupled from the user's request: failures do not break business operations.
+- Status and retry count make delivery observable and repeatable.
+- Cost: an extra write per event, a job to run and monitor, and no referential integrity to the source content. Old rows grow without bound unless a cleanup job removes them.
+
+## Example
+
+A Notification (type, title, message, status, reference id, retry count, created time) belongs to a User; a Device (token, platform, active flag, last used time) also belongs to a User. The enums are NotificationType, NotificationStatus and DevicePlatform. The source platform had eight notification types (new post, registration approved or rejected, invitation events and so on) and an FCM token per device. A second project kept only an e-mail notification with a delivered flag and a read flag set by a mark-as-read operation, without devices. Names here are neutral.
+
+## When to avoid
+
+- Notifications are sent immediately and never tracked: no entity needed.
+- Only an in-app inbox with read marks is needed: see [[notification-entity]] for the lightweight blueprint and [[custom-notification-card-inbox]].
+- A complete change history is wanted: use [[audit-event-entity]].
 
 ## Related
 
-- [[enum-state-machine]] (NotificationStatus lifecycle)
-- [[category-enum-pattern]] (NotificationType, DevicePlatform)
-- [[bidirectional-relation]] (Device <-> User, Notification <-> User)
-- [[audit-event-entity]] (similar immutable event tracking pattern)
+- [[enum-state-machine]] — delivery status transitions
+- [[category-enum-pattern]] — notification type and device platform
+- [[bidirectional-relation]] — recipient to notifications
+- [[audit-event-entity]] — event history instead of delivery tracking
+- [[soft-delete-active-flag]] — deactivate tokens instead of deleting
+- [[notification-entity]] — blueprint for the plain notification entity
+- [[firebase-push-notification-pipeline]] — backend delivery blueprint
 
+## Structure diagram
+
+<!-- mermaid:generated fragment=notification-entity-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Device {
+    <<Entity>>
+    +String token [1]
+    +DevicePlatform platform [1]
+    +Boolean isActive
+    +Timestamp lastUsedAt
+  }
+  class DevicePlatform {
+    <<Enumeration>>
+    ANDROID
+    IOS
+    WEB
+  }
+  class Notification {
+    <<Entity>>
+    +NotificationType type [1]
+    +String title [1]
+    +Text message
+    +NotificationStatus status [1]
+    +String referenceEntityId
+    +Integer retryCount
+    +Timestamp createdAt [1]
+  }
+  class NotificationStatus {
+    <<Enumeration>>
+    PENDING
+    SENT
+    FAILED
+  }
+  class NotificationType {
+    <<Enumeration>>
+    NEW_POST
+    REGISTRATION_APPROVED
+  }
+  class User {
+    <<Entity>>
+    +String name
+  }
+  Device --> "1" User : user
+  Device ..> DevicePlatform : platform
+  Notification --> "1" User : user
+  Notification ..> NotificationStatus : status
+  Notification ..> NotificationType : type
+```
+<!-- /mermaid:generated -->
