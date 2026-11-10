@@ -2,35 +2,38 @@
 
 ## Project Overview
 
-<!-- One-paragraph description of what this documentation set covers. -->
+The JUDO catalog (platform agent-docs, model blueprints, best practices) as a kb source, plus pi skills to use, diagram and author it. Consumers index only `catalog/`.
+
+## Repo map
+
+| Path | What |
+|---|---|
+| `catalog/agent-docs/` | Platform behaviour and rules. Source of truth for platform facts |
+| `catalog/model-blueprints/<id>/` | `BLUEPRINT.md`, `model.md` (generated diagram), `backend.md`, `frontend.md` |
+| `catalog/best-practices/<domain>/<id>.md` | Practices for model, backend, frontend |
+| `fragments/<id>.model` | Validated fragment models behind the diagrams |
+| `skills/` | `judo-blueprint`, `judo-model-mermaid`, `judo-blueprint-author`, `judo-catalog-maintain`, `judo-session-distill`, shared `_lib` |
+| `openspec/changes/restructure-blueprints-for-kb/` | The active change: proposal, design, specs, `tasks.md`, sweep and gap records |
+| `target/` | Ignored: CLI jar, scratch models, batch work folders, read-only judo-ng clones |
+
+## Gates
+
+Run `skills/judo-catalog-maintain/scripts/check-all` before committing catalog changes. It must pass. After adding or renaming catalog files, run `skills/judo-blueprint-author/scripts/dox-agents` to regenerate the `AGENTS.md` indexes.
+
+## Hard rules
+
+- **Origin is read-only.** Never push, merge, tag or release on `origin`. All work stays local. A local `pre-push` hook enforces this.
+- **judo-ng is read-only.** The clones under `target/` are references; fixes go only into local docs in this repo.
+- Never edit inside generated diagram blocks; change the fragment and run `render`.
+- Platform claims must be backed by `catalog/agent-docs`; otherwise write *verify*.
 
 ## Writing Instructions
 
-Guidelines for clear, consistent documentation.
-
-### 1. Structure First
-
-- Lead with the answer, then the detail. Don't bury the point.
-- One idea per section. Use descriptive headings a reader can scan.
-- Prefer short paragraphs and lists over walls of prose.
-
-### 2. Style
-
-- Plain, direct language. Present tense. Active voice.
-- Define a term once, on first use. Keep terminology consistent.
-- Show, don't tell: concrete examples, commands, and paths over abstraction.
-- Keep code samples runnable and minimal.
-
-### 3. Surgical Edits
-
-- Change only what the request needs. Match the existing voice and structure.
-- Don't restructure a document that isn't broken.
-- Fix the specific error; note adjacent issues, don't silently rewrite them.
-
-### 4. Review
-
-- Read the edited section end-to-end. Does it stand alone and answer the question?
-- Check every link, path, and command you touched.
+- Lead with the answer, then the detail. One idea per section, descriptive headings.
+- Plain, direct language. Present tense, active voice. Consistent terms.
+- Concrete examples, commands and paths over abstraction. Code samples minimal and runnable.
+- Surgical edits: change only what the request needs; note adjacent issues instead of rewriting them.
+- Read the edited section end to end and check every link, path and command you touched.
 
 ## Diagrams
 

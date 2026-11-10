@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Lint catalog entries against references/format.md.
 
-Usage: entry-lint [paths...] [--json] [--legacy] [--profile entries|agent-docs|all]
+Usage: entry-lint [paths...] [--json] [--profile entries|agent-docs|all]
 
 Without paths: the whole catalog/. Paths may be entry dirs, files or folders.
---legacy allows `format: legacy` entries to skip section/fragment rules.
+`format: legacy` and `fragment: pending` are rejected (Pass B finished; task 6.3).
 """
 import argparse
 import json
@@ -131,9 +131,11 @@ def lint_entry_fm(path, fm, err, errs, ids, legacy_ok):
     legacy = fm.get("format", "").strip("\"'") == "legacy"
     frag = fm.get("fragment", "").strip("\"'")
     if not frag:
-        errs.append("frontmatter: missing fragment (id, 'none: <reason>' or pending+legacy)")
-    elif frag == "pending" and not (legacy and legacy_ok):
-        errs.append("fragment: pending is only allowed with format: legacy")
+        errs.append("frontmatter: missing fragment (id or 'none: <reason>')")
+    elif frag == "pending":
+        errs.append("fragment: pending is no longer allowed (build the fragment or use 'none: <reason>')")
+    if legacy:
+        errs.append("format: legacy is no longer allowed (rewrite the entry)")
     return legacy, frag
 
 
@@ -153,7 +155,7 @@ def lint_blueprint(d, ids, legacy_ok):
     legacy, frag = lint_entry_fm(bp, fm, err, errs, ids, legacy_ok)
     if fm.get("id", "").strip("\"'") != d.name:
         errs.append(f"id '{fm.get('id')}' != directory name")
-    if not (legacy and legacy_ok):
+    if True:
         secs = sections(body)
         missing = [s for s in BP_SECTIONS if s not in secs]
         if missing:
@@ -194,7 +196,7 @@ def lint_practice(f, ids, legacy_ok):
     dtags = [t for t in tags if t.startswith("domain:")]
     if dtags and dtags[0] != f"domain:{dom}":
         errs.append(f"tag {dtags[0]} != folder {dom}")
-    if not (legacy and legacy_ok):
+    if True:
         secs = sections(body)
         missing = [s for s in PR_SECTIONS if s not in secs]
         if missing:
@@ -242,7 +244,6 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0], formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
     ap.add_argument("paths", nargs="*")
     ap.add_argument("--json", action="store_true")
-    ap.add_argument("--legacy", action="store_true")
     ap.add_argument("--profile", default="all", choices=["entries", "agent-docs", "all"])
     a = ap.parse_args()
     ids = all_ids()
@@ -256,7 +257,7 @@ def main():
         seen.add(p)
         if p.is_dir() and (p / "BLUEPRINT.md").exists():
             if a.profile in ("entries", "all"):
-                results.extend(lint_blueprint(p, ids, a.legacy))
+                results.extend(lint_blueprint(p, ids, False))
             return
         if p.is_dir():
             for c in sorted(p.iterdir()):
@@ -271,7 +272,7 @@ def main():
                 results.extend(lint_agent_doc(p))
         elif "best-practices" in rel and p.name not in ("AGENTS.md", "README.md"):
             if a.profile in ("entries", "all"):
-                results.extend(lint_practice(p, ids, a.legacy))
+                results.extend(lint_practice(p, ids, False))
         elif "model-blueprints" in rel and p.name == "BLUEPRINT.md":
             visit(p.parent)
     for t in targets:

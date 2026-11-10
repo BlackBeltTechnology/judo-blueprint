@@ -42,7 +42,7 @@ holding `catalog/`, `skills/`, `fragments/`).
 5. **Render and check:** `skills/judo-model-mermaid/scripts/render <id>` then
    `skills/judo-model-mermaid/scripts/check <id>`.
 6. **Lint:** `skills/judo-blueprint-author/scripts/entry-lint <entry path>`.
-   Remove `format: legacy` only when the entry passes without `--legacy`.
+   `entry-lint` rejects `format: legacy` and `fragment: pending`; every entry must pass all rules.
 
 ## Rules
 
