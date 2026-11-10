@@ -30,7 +30,7 @@ CLI_PATTERNS = [
     (re.compile(r"\s--ns[\s=]"), "CLI --ns option"),
     (re.compile(r"\bmermaid model\b"), "CLI mermaid command"),
     (re.compile(r"\bvalidate --strict\b"), "CLI validate command"),
-    (re.compile(r"\./judo\.sh|\bjudo\.sh\s+(build|start|generate|stop|clean|prune)"), "judo.sh command"),
+    (re.compile(r"\./judo\.sh|\bjudo\.sh\s+(build|start|generate|stop|clean|prune|reckless|run|test|install)"), "judo.sh command"),
 ]
 HARNESS = [(re.compile(r"\.claude/"), ".claude path"), (re.compile(r"SKILL\.md"), "SKILL.md link"),
            (re.compile(r"\bjudospec\b"), "judospec")]
