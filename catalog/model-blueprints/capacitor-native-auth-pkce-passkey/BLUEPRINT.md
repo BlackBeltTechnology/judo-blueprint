@@ -47,6 +47,7 @@ The pattern is a frontend layer. It has a native auth provider that wraps the ap
 
 - **Password only.** Drop the passkey option when the identity provider has no WebAuthn support for the realm.
 - **Passkey only.** Drop the password form for users who must register a passkey first; keep the password update flow for required resets.
+- **Runtime backend switcher.** For test and review builds, a dialog on the login screen changes the backend base URL at runtime. The choice (production, test or custom URL, validated as http or https) is kept in local storage and read first when the app resolves its API base URL on native; the web build ignores it. On apply, the dialog removes only the auth entries (tokens and pending PKCE state) from secure storage, because a token from one server is invalid on another, keeps other secure entries such as push registration, and reloads the app. Keep the test option behind a build-time setting so production builds do not show it.
 - **Shared store for web and native.** Use one token store on both platforms when the web also needs offline support. The native-only pieces stay behind the platform check.
 
 ## When to use

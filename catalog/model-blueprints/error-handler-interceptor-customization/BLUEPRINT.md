@@ -4,11 +4,11 @@ title: Error Handler Interceptor Customization
 description: "A frontend hook that intercepts business errors (HTTP 422) and shows their message as a snackbar, instead of the generated fault dialog, while other errors keep the default handling."
 aliases: [error interceptor hook, 422 snackbar handler]
 keywords: [error, handler, interceptor, customization, 422, business error, snackbar, frontend]
-tags: ["domain:model", "layer:frontend", "project:rackinspect", "project:park-here", "status:emerging"]
+tags: ["domain:model", "layer:frontend", "project:rackinspect", "project:park-here", "project:mlszksz-platform", "status:emerging"]
 category: pattern
 status: emerging
-projects: [rackinspect, park-here]
-evidence: ["rackinspect:unrecorded", "park-here:unrecorded"]
+projects: [rackinspect, park-here, mlszksz-platform]
+evidence: ["rackinspect:unrecorded", "park-here:unrecorded", "mlszksz-platform:unrecorded"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09

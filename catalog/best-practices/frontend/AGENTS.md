@@ -13,6 +13,7 @@
 | `approval-workflow-conditional-visibility.md` | An approval workflow UI driven entirely by the model: per-operation derived booleans decide which action buttons and fields are hidden or enabled for the current status and user, with no frontend code |
 | `auto-scrolling-scoreboard.md` | A kiosk-style leaderboard component with a medal podium and a self-scrolling list that pauses on touch and refreshes its data at the bottom, for public display screens. |
 | `autocomplete-range-override.md` | A dialog or page hook replaces the data source of a relation autocomplete so the options are filtered by the owner's current context instead of the generic range query. |
+| `binary-blob-url-hook.md` | A React hook that downloads a binary attribute through the generated access service and returns an object URL for img, video or embed elements, revoking the previous URL on change and on unmount, with |
 | `breadcrumb-navigation-context.md` | Navigation goes through one context hook that keeps a breadcrumb stack, giving forward, back and reset semantics independent of browser history, plus a visual breadcrumb trail. |
 | `centralized-error-handling-validation-map.md` | One error-handling function turns failed service calls into a field-to-message validation map for inline form errors, or into toasts, so every call site uses the same catch block. |
 | `column-filter-provider-pattern.md` | In a hand-written table page, column definitions and filter options are extracted into provider functions or page hooks that take the localization object, so the page keeps only layout and data fetchi |
@@ -44,6 +45,7 @@
 | `infinity-create-mode.md` | Enable rapid sequential creation of similar entities by generating a template that copies most field values from the previously created entry while resetting specific fields. |
 | `input-masking-react-imask.md` | Use the `react-imask` library (IMaskInput) within custom visual element overrides to enforce specific input formats on text fields. |
 | `lazy-vs-greedy-data-persistence.md` | Custom components that manage their own data can implement two data persistence strategies. |
+| `linkified-text-component.md` | A small custom React component that renders plain text with http and https URLs as safe external links, used in custom views for long description fields while the stored text stays plain. |
 | `localstorage-session-persistence.md` | Use `localStorage` to persist session state (user identity, current context, in-progress data) instead of OAuth/OIDC tokens or server-side sessions. |
 | `many-aggregation-crud-pattern.md` | Manage many-to-many or one-to-many entity associations through a dedicated table page with Add, Remove, and Clear operations. |
 | `model-defined-color-palette.md` | Define the application color palette directly in the ESM model on actor types rather than overriding theme files in code. |

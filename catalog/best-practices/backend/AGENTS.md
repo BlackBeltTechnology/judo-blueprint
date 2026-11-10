@@ -27,6 +27,7 @@
 | `dual-dao-pattern.md` | A custom operation may see two generated DAOs with the same simple name, one for the entity and one for an actor's transfer view. |
 | `dual-operation-layer.md` | The same business operation can exist on the entity and again on actor-facing transfer objects. |
 | `duplicate-detection-normalization.md` | Store a normalized copy of a name next to the display name, flag all non-archived entities that share it, and use a similarity score when checking names against an external source. |
+| `email-normalization-at-invite.md` | Trim and lowercase e-mail addresses with one shared helper at every boundary that creates or matches a user, so case variants cannot slip past duplicate checks or mismatch the identity server. |
 | `email-service-integration.md` | Send application e-mail from custom operations through an injected mail service, keep the SMTP settings in platform configuration, and keep sending out of the business transaction. |
 | `entity-re-fetch-pattern.md` | In a bound custom operation, load the entity again through its DAO with a mask before using it, and fail clearly when it is gone. |
 | `excel-data-seed-import.md` | Seed master data at startup from Excel files by keeping the OSGi component thin and moving the reading and creating into a plain Java importer. |
@@ -35,6 +36,7 @@
 | `feed-targeting-strategy.md` | A project-level strategy interface, registered as OSGi components, that decides which organizations or users see a piece of feed content. |
 | `filestore-mediated-file-transfer.md` | Custom operations that import or produce files exchange them through the platform FileStore service: upload operations read the stored file by id, download operations store the result and return a fil |
 | `form-field-flattening.md` | A create form for a parent with child records uses flat form_ fields on the parent transfer object; a create interceptor maps them into the nested child payload before the platform create runs. |
+| `gdpr-placeholder-user-on-delete.md` | A singleton, flagged placeholder user (and organization) is created on demand so that deleting a person can erase their personal data while records they authored stay valid. |
 | `generator-ignore-config-protection.md` | List hand-edited configuration files and custom code in .generator-ignore so that regeneration from the model neither overwrites them nor fails the build on a checksum mismatch. |
 | `guarded-delete-with-deactivate-fallback.md` | An entity offers a hard delete allowed only when nothing references it (otherwise a modeled business fault) and a separate active toggle to retire referenced records. |
 | `handlebars-email-template.md` | Render emails and other structured text from Handlebars templates compiled at runtime, with templates kept in the FileStore or inline in code, so wording changes need no code change. |
