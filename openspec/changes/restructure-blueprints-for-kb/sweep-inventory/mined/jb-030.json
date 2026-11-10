@@ -1,0 +1,325 @@
+{
+ "chunk": "miller-Projects-judo-blueprint__2026-11-06T10-49-13-527Z__030.md",
+ "total_lines": 841,
+ "windows": [
+  [
+   1,
+   200
+  ],
+  [
+   201,
+   400
+  ],
+  [
+   401,
+   600
+  ],
+  [
+   601,
+   800
+  ],
+  [
+   801,
+   841
+  ]
+ ],
+ "items": [
+  {
+   "kind": "wrong-fact",
+   "topic": "Interceptor postCall order is forward, not reverse",
+   "area": "backend",
+   "target": "agent-docs/judo-runtime-core-guice-testkit/interceptor-testing.md",
+   "claim": "'FOR EACH interceptor (REVERSE order): interceptor.postCall(...)' (line 42) and '@JudoTest example comment: Both interceptors invoked in REVERSE order for postCall' (line 86)",
+   "fact": "postCall is dispatched in the same forward registration order as preCall; postCallInterceptors iterates getInterceptorsForOperation(...) in registration order.",
+   "evidence": "judo-runtime-core-guice-testkit/agent-docs/interceptor-testing.md:42,86; findings_rows.json",
+   "status": "validated",
+   "line": 95
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "Interceptor example incomplete (getOperations / getIdOf)",
+   "area": "backend",
+   "target": "agent-docs/backend (Backend - Interceptor example)",
+   "claim": "Example getOperations uses asmUtils::resolveOperation and postCall uses getIdOf(...)",
+   "fact": "Neither asmUtils nor getIdOf is declared/imported in the example. The shipped interceptor template declares `private AsmUtils asmUtils` (@Reference or constructed AsmUtils); show the field and the getIdOf helper.",
+   "evidence": "judo-doc-problems.md Part A, session part 30",
+   "status": "validated",
+   "line": 120
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "EntityTypeExpressions field names",
+   "area": "backend",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "EntityTypeExpressions has -getterExpressions: Map and -referenceExpressions: Map",
+   "fact": "Fields are getterAttributeExpressions and getterReferenceExpressions.",
+   "evidence": "judo-runtime-core@b34d8ea1:judo-runtime-core-expression/src/main/java/hu/blackbelt/judo/runtime/core/expression/EntityTypeExpressions.java:40",
+   "status": "validated",
+   "line": 75
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "AntlrCheckBeanRegistration does not compare versions",
+   "area": "backend",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "spec: module SHALL throw AntlrRuntimeIncompatibilityException if ANTLR runtime version does not match expected",
+   "fact": "AntlrCheckBeanRegistration does not compare versions; it reflectively checks that org.antlr.runtime.Token declares an EOF_TOKEN field and th(rows the incompatibility).",
+   "evidence": "judo-runtime-core openspec/specs/spring/spec.md:93",
+   "status": "validated",
+   "line": 40
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "UniqueAttributeValidator registration condition",
+   "area": "backend",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "DefaultValidatorProvider registers RangeValidator and UniqueAttributeValidator 'when DAO and context are available'",
+   "fact": "UniqueAttributeValidator is registered only when dao, identifierProvider and context are non-null AND asmModel is non-null.",
+   "evidence": "judo-runtime-core openspec/specs/validator/spec.md:10",
+   "status": "validated",
+   "line": 45
+  },
+  {
+   "kind": "bug",
+   "topic": "Actor lookup in PathInfoRealmExtractor has no segment boundary",
+   "area": "backend",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "pathInfo.startsWith('/' + FQN-as-path) with findAny(); path for MyActorX matches MyActor; with prefix actors findAny returns first in list order",
+   "fact": "Match exact segment (pathInfo equals prefix or startsWith prefix + '/') and prefer the longest match.",
+   "evidence": "judo-runtime-core@b34d8ea1:judo-runtime-core-security/src/main/java/hu/blackbelt/judo/runtime/core/security/PathInfoRealmExtractor.java:52",
+   "status": "reported-unvalidated",
+   "line": 30
+  },
+  {
+   "kind": "bug",
+   "topic": "KeycloakLoginInterceptor realm cache swallows lookup RuntimeExceptions",
+   "area": "backend",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "keycloakDeploymentMap is keyed by realm ... RuntimeExceptions from lookup swallowed with no log or rethrow",
+   "fact": "Failures should be logged/rethrown, not silently swallowed (details truncated in session).",
+   "evidence": "judo-runtime-core@b34d8ea1:judo-runtime-core-security-keycloak-cxf/.../KeycloakLoginInterceptor.java:116",
+   "status": "reported-unvalidated",
+   "line": 71
+  },
+  {
+   "kind": "bug",
+   "topic": "Liquibase activate() does not restore context classloader on exception; URISyntaxException swallowed",
+   "area": "deployment",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "activate() sets TCCL (line 53), calls Scope.getCurrentScope()/Scope.enter() (55-60) without try/finally; URISyntaxException from url.toURI() caught and ignored returning empty InputStreamList",
+   "fact": "Restore the original classloader in a finally block (as executeLiquibaseScript does, lines 101-104); do not ignore URISyntaxException - an existing bundle entry is reported missing to Liquibase with no trace. Concurrent migrations on the single Liquibase Scope are serialized regardless of overload.",
+   "evidence": "findings.md batch C189",
+   "status": "reported-unvalidated",
+   "line": 30
+  },
+  {
+   "kind": "bug",
+   "topic": "Playwright retries: 4 unconditional despite 'Retry on CI only' comment",
+   "area": "testing",
+   "target": "judo-ng/frontend (playwright config)",
+   "claim": "retries: 4 unconditional; comment line 14 says 'Retry on CI only'",
+   "fact": "retries should depend on CI, e.g. process.env.CI ? N : 0.",
+   "evidence": "findings.md batch C220",
+   "status": "reported-unvalidated",
+   "line": 82
+  },
+  {
+   "kind": "missing",
+   "topic": "Relation setter set<Relation> needs a value; use unset<Relation> to clear",
+   "area": "backend",
+   "target": "agent-docs/backend (generated DAO/SDK)",
+   "claim": "Report claimed: generated relation setters NPE on null relatedObject",
+   "fact": "Only single-relation set<Relation>(object, relatedObject) calls relatedObject.identifier() without null check (fragment.dao.single.relation.implementation.mapped.java.hbs:193). Clearing is via unset<Relation>(object) (line 202, generated when unset allowed). add/remove on multi relations call identifier() per element so null elements fail. This is by-design: null/absent/empty are distinct in JUDO; document 'set needs a value, use unset', not 'setters throw on null'.",
+   "evidence": "template__judo-psm-generator-sdk-core/.../fragment.dao.single.relation.implementation.mapped.java.hbs:193,202",
+   "status": "validated",
+   "line": 330
+  },
+  {
+   "kind": "bug",
+   "topic": "Generated DAO query<Attribute>() casts enum value directly -> ClassCastException (Integer ordinal)",
+   "area": "backend",
+   "target": "judo-ng/judo-psm-generator-sdk-core",
+   "claim": "Querying enum-typed relation may randomly return raw Integer",
+   "fact": "Deterministic: DTO getter (dto.java.hbs:256-259) converts stored Integer via Enum.getByOrdinal(ordinal); DAO query<Attribute>(id,param) (fragment.dao.query.attribute.implementation.mapped.java.hbs:13) casts the stored value straight to declared type, so enum attributes throw ClassCastException. Methods are generated for self.allTransferAttributesForQuery (parameterised-query attributes) which explains why only some projects hit it. Generator bug; expected: convert via getByOrdinal.",
+   "evidence": "template__judo-psm-generator-sdk-core dao.implementation.java.hbs:438-450; operator asked, agent verified",
+   "status": "validated",
+   "line": 345
+  },
+  {
+   "kind": "missing",
+   "topic": "BooleanFilter has no isUndefined; use filterBy(String customFilter) with JQL !isUndefined()",
+   "area": "backend",
+   "target": "agent-docs/backend (generated DAO query filters)",
+   "claim": "'No is-unset filter for nullable booleans; query cannot be expressed'",
+   "fact": "Typed BooleanFilter only has isTrue() ({0}) and isFalse() ((not {0})) (judo-sdk-common BooleanFilter.java/BooleanOperation.java). Escape hatch: query builder filterBy(String customFilter) takes raw JQL, which has !isUndefined()/!isDefined(). Boolean is three-state: absent/null/value.",
+   "evidence": "runtime__judo-sdk-common/.../query/BooleanFilter.java; fragment.querycustomizer.builder.java.hbs:45",
+   "status": "validated",
+   "line": 335
+  },
+  {
+   "kind": "missing",
+   "topic": "Absent vs null vs empty are distinct states in JUDO generated API",
+   "area": "model",
+   "target": "agent-docs/backend (generated DAO/SDK)",
+   "claim": "Reference for generated getter semantics",
+   "fact": "Generated getters depend on required: required=true -> plain type getter (Boolean getMinimumOfferPriceEnabled()), where null means caller omitted the field (error); required=false -> Optional<T> getter (Optional<FileType> getReviewReportMarkdownTemplate()). DTO getters check containsKey, so key-missing vs present-null differ. Null is not empty; empty is a value.",
+   "evidence": "dto.java.hbs:256; operator 2026-11-09T12:18",
+   "status": "operator-stated",
+   "line": 360
+  },
+  {
+   "kind": "missing",
+   "topic": "Derived attribute through inherited member emits missing JOIN in RDBMS query generator",
+   "area": "model",
+   "target": "agent-docs/model (derived attributes)",
+   "claim": "example: lastWorkReport : Binary = self.workReports!any().lastDocument.document, lastDocument inherited from Task",
+   "fact": "Navigating through an inherited member in a derived attribute produces SQL with a missing JOIN; works if declared locally. Operator: 'great find'. Known bug/pitfall (S12-05).",
+   "evidence": "knowledge-gaps-report.md:110 (S12-05)",
+   "status": "operator-stated",
+   "line": 405
+  },
+  {
+   "kind": "missing",
+   "topic": "Static (unmapped) data accessors: selectValue()/query()/selectOne()",
+   "area": "backend",
+   "target": "agent-docs/backend (generated DAO/SDK)",
+   "claim": "Unmapped attributes/relations read like normal getters",
+   "fact": "Unmapped data comes via generated static-data DAO interfaces: selectValue() (or selectValue(param) if the query has a parameter) returns attribute primitive type; query() for collection navigation, selectOne() for single. Operator: 'very important'.",
+   "evidence": "session part 30, operator 2026-11-09T12:18",
+   "status": "operator-stated",
+   "line": 413
+  },
+  {
+   "kind": "missing",
+   "topic": "Payload typed map API",
+   "area": "backend",
+   "target": "agent-docs/backend (generated DAO/SDK)",
+   "claim": "Payload is just a Map",
+   "fact": "Payload is Map<String,Object> with static factories asPayload(map), map(k1,v1,...) overloads for 1-20 pairs, map(Entry...), entry, and typed accessors getAs(Class<T>,String), getAsPayload(String), getAsCollectionPayload(String). Operator: 'great find'.",
+   "evidence": "session part 30, operator 2026-11-09T12:18",
+   "status": "operator-stated",
+   "line": 419
+  },
+  {
+   "kind": "missing",
+   "topic": "CRUD only on mapped, non-abstract transfer objects",
+   "area": "backend",
+   "target": "agent-docs/backend (generated DAO/SDK)",
+   "claim": "Unmapped/abstract types lack create etc.",
+   "fact": "Generated DAO interface emits create/createAll (with/without Mask), getById/existsById/getAll/countAll/delete, query() and per-relation create/set/unset/add/remove/range only when self.isMapped (plus relation allowed-operation flags, abstract excluded). Operator: 'important'.",
+   "evidence": "session part 30",
+   "status": "operator-stated",
+   "line": 425
+  },
+  {
+   "kind": "correction",
+   "topic": "Operator corrected overgeneralized 'setters NPE on null' and 'enum Integer random' claims",
+   "area": "process",
+   "target": "change-process",
+   "claim": "Agent reported setters NPE and enum Integer as bugs / randomness",
+   "fact": "Operator: 'does 1 apply to all setters? we have not exist, none and null as data it is differentiated! 2 i am certain this is deterministic! what makes them different?' Agent verified in templates; claims must be source-checked, and null/empty/absent semantics respected.",
+   "evidence": "session 2026-11-09T12:18:43, operator",
+   "status": "operator-stated",
+   "line": 300
+  },
+  {
+   "kind": "decision",
+   "topic": "Topic-by-topic review of doc-problem list; split reference vs known bugs",
+   "area": "process",
+   "target": "change-process",
+   "claim": "",
+   "fact": "Operator wants to discuss each Part B addition one by one (operator has basic knowledge, explain why). Agreed restructure of Topic 1: 'absent/null/empty' reference, 'API surface' reference (static accessors, Payload, mapped-only CRUD), and 'known bugs' (enum cast, missing JOIN). Dedupe BooleanFilter facts 3+4 and complete truncated facts.",
+   "evidence": "session 2026-11-09T11:58, operator",
+   "status": "operator-stated",
+   "line": 235
+  },
+  {
+   "kind": "workflow",
+   "topic": "findings.md / findings_rows.json structure for mined judo-ng findings",
+   "area": "process",
+   "target": "change-process",
+   "claim": "",
+   "fact": "target/judo-ng-read/findings_rows.json is a list of 2864 rows [type, repo, loc, claim, reality]; findings.md (12614 lines) has blocks '## [bug|doc] _batch Cxxx_' with what/expected or claim/code/evidence. judo-doc-problems.md (718 lines) in openspec/changes/restructure-blueprints-for-kb has Part A (15 wrong-fact corrections) and Part B (71 topics, 302 facts). Sources checked out under target/judo-ng-read/wt/<group>__<repo>.",
+   "evidence": "session part 30",
+   "status": "validated",
+   "line": 20
+  },
+  {
+   "kind": "workflow",
+   "topic": "kb guard: consult kb_search before repeated source greps; shell globbing grep failures",
+   "area": "kb",
+   "target": "skill/kb",
+   "claim": "",
+   "fact": "Guard message: 'Repeated source searching, still no kb consult. Stop and run kb_search (or kb agents <path> / kb get) now'. Also grep -r with --include on the wt tree failed silently; read files directly. Subagents also skipped kb search.",
+   "evidence": "session part 30 tool results",
+   "status": "reported-unvalidated",
+   "line": 375
+  },
+  {
+   "kind": "missing",
+   "topic": "JUDO runtime exception hierarchy and HTTP mapping",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "ValidationException in business-error docs as modeled/connected to attributes",
+   "fact": "ClientException (abstract, RuntimeException; getStatusCode/getDetails, runtime-core exception package): ValidationException 400 (Collection<ValidationResult>), AccessDeniedException 403, AuthenticationRequiredException 401, NotFoundException 404 (single ValidationResult). ClientExceptionMapper returns getStatusCode (400 if null) with getDetails() JSON. BusinessException (judo-dispatcher-api, RuntimeException, NOT ClientException; fields type, errorCode, details, throwable, locale) -> 422 with header X-Fault:<type>, body {<faultFQN>:{details w/o '_' keys & nulls}, code:errorCode}; cause only if includeBusinessCause. InterceptorCallBusinessException extends BusinessException. Other exceptions -> 500 {level:ERROR, code:INTERNAL_SERVER_ERROR, details:{}}; stack trace details.exception when returnRuntimeExceptions (not for BusinessException). InternalServerException -> 500. There's no FeedbackItem class; equivalent is hu.blackbelt.judo.dao.api.ValidationResult (code, Level ERROR|WARNING, Object location, Map details).",
+   "evidence": "RC/.../exception/*.java; RuntimeExceptionMapper.java:68-110; ClientExceptionMapper.java:33-47; BusinessException.java:29-31; subagent explore",
+   "status": "reported-unvalidated",
+   "line": 760
+  },
+  {
+   "kind": "missing",
+   "topic": "ValidationException is a platform exception; ValidationResult location need not be a model attribute",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "Validation errors map to model attributes",
+   "fact": "ValidationException is a platform ClientException, not generated. ValidationResult.location can be absent (DefaultDispatcher.java:305-309,320), free strings like '_mask'/'_identifier' (QueryCustomizerParameterProcessor.java:296,325), parameter name or '', or global access errors with only code/level (DefaultAccessManager.java:106-130).",
+   "evidence": "runtime__judo-dao-api ValidationResult.java:31-44",
+   "status": "reported-unvalidated",
+   "line": 775
+  },
+  {
+   "kind": "missing",
+   "topic": "Modeled faults generate checked <Fault>Exception; dispatcher translates BusinessException",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "",
+   "fact": "dao.fault.java.hbs:8 generates <Fault>Exception extends java.lang.Exception (checked, not BusinessException) with typed details, errorCode as message, ctors (details),(errorCode,details),(errorCode,details,cause). dto.dispatcher.wrapper.java.hbs:43-54 catches BusinessException, matches ex.getType() to fault ASM name and throws <Fault>Exception, else IllegalStateException. DefaultDispatcher.java:408-414 creates BusinessException from operation result FAULT map (FAULT_TYPE, FAULT_DETAILS, FAULT_ERROR_CODE, FAULT_CAUSE).",
+   "evidence": "template__judo-psm-generator-sdk-core dao.fault.java.hbs; DefaultDispatcher.java:408-414",
+   "status": "reported-unvalidated",
+   "line": 790
+  },
+  {
+   "kind": "missing",
+   "topic": "Dispatcher rewraps non-client RuntimeExceptions as InternalServerException; nested ClientException/BusinessException becomes 500",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "",
+   "fact": "DefaultDispatcher.java:812-814 rethrows ClientException and BusinessException unwrapped; every other RuntimeException/ExecutionException becomes InternalServerException('Operation failed', ex) (:815-816). No recursive getCause unwrapping in mappers or FaultInterceptor, so a client/business exception buried in a cause chain surfaces as generic 500. FaultInterceptor (CXF PRE_STREAM) only sets HTTP status, no body; auto-unboxes getStatusCode (NPE for null custom subclass).",
+   "evidence": "DefaultDispatcher.java:812-816; FaultInterceptor.java:51-108",
+   "status": "reported-unvalidated",
+   "line": 795
+  },
+  {
+   "kind": "decision",
+   "topic": "Business errors from interceptors must be wrapped in a business exception; ValidationException not for interceptors",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "Docs tell interceptors to throw ValidationException/faults",
+   "fact": "Operator: validation exceptions in business errors are not all modeled exceptions; a modeled fault can't be sent from interceptors; not all exceptions connect to model attributes because they don't come from the model; interceptors don't handle business problems, so the business error should be wrapped in the interceptor (e.g. InterceptorCallBusinessException/BusinessException). Operator asked for parallel exploration (5 explore subagents).",
+   "evidence": "session 2026-11-09T13:06:35, operator",
+   "status": "operator-stated",
+   "line": 745
+  },
+  {
+   "kind": "workflow",
+   "topic": "Parallel explore subagents for error-handling investigation",
+   "area": "process",
+   "target": "change-process",
+   "claim": "",
+   "fact": "Used 5 parallel explore subagents (exception hierarchy, interceptor propagation, modeled faults, docs claims, real project usage) with instruction to confirm claims in .java and not edit files; reports flagged uncertain items (mapper precedence, OSGi variants, line numbers \u00b13) that need validation.",
+   "evidence": "session 2026-11-09T13:07",
+   "status": "reported-unvalidated",
+   "line": 755
+  }
+ ]
+}

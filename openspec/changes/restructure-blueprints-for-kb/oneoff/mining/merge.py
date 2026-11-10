@@ -70,8 +70,12 @@ def main():
     # S2
     for r in json.load(open(f"{T}/judo-ng-read/findings_rows.json")):
         kind, repo, loc, claim, fact = (r + [None] * 5)[:5]
+        tgt = f"judo-ng/{repo}"
+        m = re.search(r"src/main/resources/agent-docs/([^:]+?)(?:\.hbs)?(?::\d+)?$", loc or "")
+        if m:  # finding about the template's agent-docs = finding about catalog/agent-docs
+            tgt = "agent-docs/" + m.group(1)
         rows.append({"src": "judo-ng-read", "kind": {"doc": "wrong-fact", "dox": "wrong-fact"}.get(kind, kind), "area": "judo-ng",
-                     "target": f"judo-ng/{repo}", "topic": loc, "claim": claim, "fact": fact, "evidence": f"{repo}:{loc}", "status": "validated"})
+                     "target": tgt, "topic": loc, "claim": claim, "fact": fact, "evidence": f"{repo}:{loc}", "status": "validated"})
     # S3
     for f in glob.glob(f"{T}/agent-docs-review/*.json"):
         d = json.load(open(f))

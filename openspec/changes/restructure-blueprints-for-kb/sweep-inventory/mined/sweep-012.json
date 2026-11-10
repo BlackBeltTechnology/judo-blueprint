@@ -1,0 +1,281 @@
+{
+ "chunk": "miller-Projects-judo-blueprint__2026-11-06T10-49-13-527Z__012.md",
+ "lines_read": 2189,
+ "items": [
+  {
+   "kind": "wrong-fact",
+   "topic": "ExceptionUtils / GenericOperationErrorException are not platform classes",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "Docs teach ExceptionUtils.createBusinessException/createValidationException and GenericOperationErrorException as platform API (error-handling-guide, interceptors, internationalization-guide).",
+   "fact": "No source or template in judo-ng defines them (only doc references). In Rackinspect they are project code (common/.../utils/ExceptionUtils.java) wrapping generated fault exceptions from the project's own fault TOs (BusinessError -> BusinessErrorException, GenericOperationError -> GenericOperationErrorException, 422). Label as example project code to copy.",
+   "evidence": "judo-ng template agent-docs grep; Rackinspect common/src/main/java/hu/blackbelt/rackinspect/common/utils/ExceptionUtils.java:16-50",
+   "status": "validated",
+   "line": 3
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "Docs give three contradictory answers for business rule violation",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "Official docs: modeled fault 422; catalog: GenericOperationErrorException 500; template: ValidationException with ERR_ code 400. Catalog interceptor examples throw raw RuntimeException (user sees 500).",
+   "fact": "Two distinct kinds: platform errors (ValidationException 400, AccessDeniedException 403, AuthenticationRequiredException 401, NotFoundException 404; unchecked ClientException, payload list of ValidationResult{code,level,location,details}) vs modeled faults (generated checked <Fault>Exception, 422 + X-Fault header = fault FQN). Field/input problem -> ValidationException; business rule -> modeled fault. Never RuntimeException for user-facing errors.",
+   "evidence": "session 2026-11-09T13:11:53 assistant synthesis of source-reading agents",
+   "status": "validated",
+   "line": 60
+  },
+  {
+   "kind": "missing",
+   "topic": "Generated frontend error handling matrix (400/422/401/403/404/500)",
+   "area": "frontend",
+   "target": "agent-docs/frontend/error-handling",
+   "claim": "(not documented)",
+   "fact": "utilities/error-handling.ts.hbs useErrorHandler: 400 -> toast judo.error.validation-failed + inline errors only if errorList[0].location exists; 422 -> only first key of body, opens OperationFaultDialog (title judo.error.error, per-field text faults.<fqn>.<attr> default raw attr); detection by status only, X-Fault header never read; 401 clears storage and reloads (toast never seen); 403/404/500 toasts; else error.unknown. Fault i18n key faults.<faultPrefix>.<faultObjectKey>.<attribute>. Only 3 validation codes translated by default; others fall back to raw code.",
+   "evidence": "judo-ui-react actor/src/utilities/error-handling.ts.hbs:72-230; OperationFaultDialog.tsx.hbs:16-65",
+   "status": "validated",
+   "line": 14
+  },
+  {
+   "kind": "bug",
+   "topic": "Frontend 400 handler crashes when a later ValidationResult has null location",
+   "area": "frontend",
+   "target": "judo-ng/judo-ui-react",
+   "claim": "(n/a)",
+   "fact": "If first error has location but a later one is null, error.location.split/startsWith throws (error-handling.ts.hbs:58,183,241). Expected: guard null location. Also errors with no location only produce generic toast (message dropped); location matching no field is stored but never rendered.",
+   "evidence": "judo-ui-react error-handling.ts.hbs:58,183,241",
+   "status": "validated",
+   "line": 20
+  },
+  {
+   "kind": "bug",
+   "topic": "BusinessException never passes throwable to super -> getCause() always null",
+   "area": "backend",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "(n/a)",
+   "fact": "BusinessException (Lombok @AllArgsConstructor) stores throwable field but calls super() with no args; DefaultDispatcher.java:768 uses e.getCause() so cause is always null and mapper cause output never populated. Fix: initCause(throwable) or use getThrowable().",
+   "evidence": "dispatcher-api BusinessException.java; DefaultDispatcher.java:768,412",
+   "status": "validated",
+   "line": 34
+  },
+  {
+   "kind": "bug",
+   "topic": "Guice defaults leak stack traces: returnRuntimeExceptions and includeBusinessCause default true",
+   "area": "backend",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "(n/a)",
+   "fact": "JudoCxfModuleConfiguration.java:31,33 default both true under Guice, so a 500 returns details.exception full stack trace and BusinessException cause; OSGi/Karaf (RuntimeExceptionMapperComponent:44,47; CxfActivator:73,76) default false. Property names returnRuntimeExceptions / includeBusinessCause.",
+   "evidence": "RuntimeExceptionMapper.java:47-110; JudoCxfModuleConfiguration.java:31,33",
+   "status": "validated",
+   "line": 26
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "Interceptors run only for built-in operations, not custom/script operations",
+   "area": "backend",
+   "target": "agent-docs/backend/interceptors.md",
+   "claim": "Interface Javadoc: supports script operations and SDK implementations; empty getOperations means all operation calls intercepted.",
+   "fact": "OperationCallInterceptors fire only on built-in behaviour operations (create, update, delete, list, refresh, set/add/remove reference, range, getTemplate, export, validate). Custom (SDK), MAPPED and script operations never hit interceptors (all 20 call sites in behaviours/*Call.java; DefaultDispatcher.java:716-737). Guards for custom ops must be inside each *CustomImplementation. Javadoc is wrong too.",
+   "evidence": "DefaultDispatcher.java:716-737; Rackinspect session out/S26.json:9",
+   "status": "validated",
+   "line": 63
+  },
+  {
+   "kind": "bug",
+   "topic": "Interceptor async path swallows exceptions; async postCall calls preCall; terminateOnException unused",
+   "area": "backend",
+   "target": "judo-ng/judo-runtime-core",
+   "claim": "(n/a)",
+   "fact": "Async interceptors swallow every exception and run outside the transaction; async postCall path calls preCall (CallInterceptorUtil.java:81); terminateOnException() declared but never read, every sync exception stops the call. Sync interceptors run inside the operation transaction so exception rolls back.",
+   "evidence": "CallInterceptorUtil.java:81",
+   "status": "validated",
+   "line": 70
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "Interceptors cannot throw the generated fault; wrap in InterceptorCallBusinessException",
+   "area": "backend",
+   "target": "agent-docs/backend/interceptors.md",
+   "claim": "Interceptor examples throw <Fault>Exception/RuntimeException.",
+   "fact": "preCall/postCall declare throws InterceptorCallBusinessException only; <Fault>Exception is checked so it won't compile. Use new InterceptorCallBusinessException(type, errorCode, Map details, cause, locale): dispatcher converts to BusinessException -> 422 + X-Fault header; frontend fault dialog translates details by faults.<type>.<attribute>; runs in the operation transaction (rollback). Recommended: type = modeled fault FQN (Rackinspect uses guard name, so no translation matches and it had to override frontend). type/details not validated against model (typo falls back to raw attribute names); null details NPEs in mapper.",
+   "evidence": "DefaultDispatcher.java:764-770,402-414; RuntimeExceptionMapper.java; session 13:11 assistant",
+   "status": "validated",
+   "line": 64
+  },
+  {
+   "kind": "missing",
+   "topic": "Custom operation must declare <faults> in model or SDK lacks throws clause",
+   "area": "model",
+   "target": "agent-docs/model/operations",
+   "claim": "(docs have zero hits for faults/throws)",
+   "fact": "A custom-implemented operation needs an explicit fault parameter (faults relation targeting a fault transfer object); without it generated SDK omits `throws <Fault>Exception` and Maven fails 'not compatible with throws clause'. Also an operation whose output DTO matches the action-container view root breaks frontend generator (non-existent *OutputView): drop output / make void.",
+   "evidence": "gap-mining out/S09.json:5-21, S02.json:25-39",
+   "status": "reported-unvalidated",
+   "line": 263
+  },
+  {
+   "kind": "decision",
+   "topic": "Business errors best practice from Rackinspect (one general BusinessError fault)",
+   "area": "backend",
+   "target": "catalog/best-practices/backend/business-errors-in-practice",
+   "claim": "(n/a)",
+   "fact": "Model one general BusinessError fault TO (code String, message String, required) and declare it on every operation that can fail (141 ops). Custom ops throw via project factory ExceptionUtils.createBusinessErrorException(code, i18nMessage) (362 call sites), never `new` exception inline; codes are string constants (TicketingGuards), messages from i18n (RackInspectI18n). Field errors: ValidationException with attribute name as location. Non-attribute errors -> BusinessError, never location-less ValidationResult. Readiness/multi-problem checks return a result list (FaultRegistryValidationResult) instead of throwing (commit 8cb4f0b). Bulk ops use dedicated fault (FaultRegistryUploadError) to keep per-row errors. Wrap external-system failures into BusinessError and log cause.",
+   "evidence": "Rackinspect 3954ae1 model/rackinspect.model, common/.../ExceptionUtils.java, commit 8cb4f0b",
+   "status": "validated",
+   "line": 575
+  },
+  {
+   "kind": "missing",
+   "topic": "Pitfalls in Rackinspect error handling (anti-patterns)",
+   "area": "backend",
+   "target": "catalog/best-practices/backend/business-errors-in-practice",
+   "claim": "(n/a)",
+   "fact": "Avoid: catch(Exception) -> RuntimeException(e) for Keycloak/PDF/exchange-rate (user sees 500); catch GenericOperationErrorException -> RuntimeException (UserRolesChangeInterceptor:73, UserManagementServiceImpl:208); swallowing cause (WriteGuardSupport:119 turns DB failure into 'forbidden'; UserManagementServiceImpl:196 allowed=false no log); IllegalStateException for business invariants (500); two fault types for same job (GenericOperationError vs BusinessError).",
+   "evidence": "Rackinspect application/interceptors, common/usermanagement",
+   "status": "validated",
+   "line": 560
+  },
+  {
+   "kind": "missing",
+   "topic": "Custom frontend 422 override replaces fault dialog",
+   "area": "frontend",
+   "target": "catalog/best-practices/frontend/custom-error-handler",
+   "claim": "(n/a)",
+   "fact": "Rackinspect custom/hooks/register-error-handler-interceptor.ts intercepts every 422 and shows a 3s snack with data[firstKey].message, bypassing faults.* dialog (batch dialog useCRUDDialog still uses dialog). 400 intercepted only when operation field validation setter is found; location-less validation errors dropped (test asserts MISSING_IDENTIFIER_OF_BOUND_OPERATION case).",
+   "evidence": "Rackinspect frontend custom/hooks/register-error-handler-interceptor.ts:39-68, application-customizer.tsx:240",
+   "status": "validated",
+   "line": 440
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "Rackinspect INTERCEPTORS.md contradicts code",
+   "area": "backend",
+   "target": "catalog/model-blueprints (rackinspect)",
+   "claim": "L682 says ElementFaultUpdateInterceptor throws ValidationException; L70/175 UserRolesChange throws IllegalStateException; L845 createBusinessException returns GenericOperationErrorException; L834 utils path.",
+   "fact": "Code: ElementFaultUpdateInterceptor catches BusinessErrorException and rethrows IBCE; ExceptionUtils has createBusinessErrorException->BusinessErrorException and lives in common module not interceptors.",
+   "evidence": "Rackinspect INTERCEPTORS.md vs interceptors/faultregistry/elementfault/ElementFaultUpdateInterceptor.java:82",
+   "status": "validated",
+   "line": 445
+  },
+  {
+   "kind": "missing",
+   "topic": "Write guards must live in custom operations; range interceptors only on _getRangeReference",
+   "area": "backend",
+   "target": "agent-docs/backend/interceptors.md",
+   "claim": "(n/a)",
+   "fact": "Custom and MAPPED ops (User.toggleActive, createUser, resendInvitation) bypass interceptors; range interceptors only fire on _getRangeReference* not plain list ops; multiple interceptors for same operation see each other's in-place payload mutations, return last-non-null-wins; range interceptors are the security boundary for rangeType=ANY lean TOs; model min/max range bounds are UI-only.",
+   "evidence": "judo-doc-problems.md Part B; session S26",
+   "status": "reported-unvalidated",
+   "line": 672
+  },
+  {
+   "kind": "missing",
+   "topic": "Enum query<Attribute>() always throws; derived attribute via inherited member lacks JOIN",
+   "area": "backend",
+   "target": "agent-docs/backend/dao-sdk",
+   "claim": "(n/a)",
+   "fact": "Known bugs in generated DAO: query<Attribute>() on enumeration attribute throws (ordinal cast, workaround read via DTO or <Enum>.getByOrdinal); derived attribute navigating through inherited member produces query missing JOIN. Set<Relation>(null) semantics corrected: set needs object, unset clears; filter 'not set' via JQL !isUndefined(); CRUD only on mapped non-abstract types.",
+   "evidence": "judo-doc-problems.md Topic 1 rewrite, session 13:37",
+   "status": "reported-unvalidated",
+   "line": 680
+  },
+  {
+   "kind": "decision",
+   "topic": "Doc-problems file format: Part A wrong facts, Part B missing; project code labelled",
+   "area": "process",
+   "target": "change-process",
+   "claim": "(n/a)",
+   "fact": "Operator said 'update everything based on findings'. judo-doc-problems.md updated: Part A 21 items, Part B 72 topics; ExceptionUtils/GenericOperationErrorException described as Rackinspect project code to copy, not platform API. Recommended fault FQN as InterceptorCallBusinessException type.",
+   "evidence": "session 2026-11-09T13:34:30 USER; 13:37:56 assistant",
+   "status": "operator-stated",
+   "line": 660
+  },
+  {
+   "kind": "correction",
+   "topic": "Operator: find in real models what developers do instead of asking",
+   "area": "process",
+   "target": "change-process",
+   "claim": "Agent asked whether to model fault wrapper.",
+   "fact": "Operator: 'No find in the models what do developers do in these situations' - evidence-first: consult real apps (Rackinspect, only real app on disk) rather than ask.",
+   "evidence": "session 2026-11-09T13:26:31 USER",
+   "status": "operator-stated",
+   "line": 580
+  },
+  {
+   "kind": "decision",
+   "topic": "Live test of KB: webshop built by fast-model agent with restricted tools",
+   "area": "testing",
+   "target": "change-process",
+   "claim": "(n/a)",
+   "fact": "Operator requested: build KB with new structure incl. all fixes; agent must first assimilate mined research; create full 'judo webshop' with >=50 prewritten, increasingly complicated webshop functions; use fast model role; spawn session and observe without intervening; agent tools limited to CLI, file read/edit, judo.sh, kb search/get; afterwards review run, record good/bad knowledge retrieval and CLI efficiency; spawn explore subagent on judo-ng if issue suspected; finally try in browser tool in Docker, check each function with subagents; use background subagents in parallel for code checks.",
+   "evidence": "session 2026-11-09T14:36:20, 14:38:43 USER",
+   "status": "operator-stated",
+   "line": 1103
+  },
+  {
+   "kind": "decision",
+   "topic": "Do the full restructure now with ~25 parallel @fast subagents, commit state, test in new folder",
+   "area": "process",
+   "target": "change-process",
+   "claim": "Agent offered options: quick test KB vs days-long full restructure.",
+   "fact": "Operator: it won't take days; run up to 25 parallel subagents, always @fast role (research role only for heavy thinking); do the whole restructure, commit state, then run test in a new folder with the esm fullstack project and spawn background subagent. Subagents lose all knowledge, so kb search must recover it for them.",
+   "evidence": "session 2026-11-09T14:43:21 USER",
+   "status": "operator-stated",
+   "line": 1425
+  },
+  {
+   "kind": "workflow",
+   "topic": "Restructure steps executed: tag archive, catalog/ move, cleanup, agent-docs import",
+   "area": "process",
+   "target": "change-process",
+   "claim": "(n/a)",
+   "fact": "Tag archive/pre-kb-restructure; git mv best-practices/model-blueprints/agent-docs under catalog/ (history follows); removed .claude, CONVENTIONS.md, PROGRESS.md, query-catalog.py, .obsidian, tests/pycache, agent-docs/domain; .gitignore adds target/ and .pi/dashboard/kb/; git rm needs -f for staged renames. agent-docs import from template commit 6273a87 (70 docs, only 8 differ from 5bddd8b^), rendered with oneoff/agent-docs-import/render.py (docLink/localHubLink -> md links, model name -> <app>, escaped {{ }} literals); template version is a superset except hand-edit rule, which was re-added.",
+   "evidence": "session 14:43-14:46; commits 2b65307,0ad87cc,07612bf,2c2ee92",
+   "status": "validated",
+   "line": 1470
+  },
+  {
+   "kind": "missing",
+   "topic": "Template agent-docs: 'do not edit model file by hand' rule",
+   "area": "model",
+   "target": "agent-docs/model/model-development.md",
+   "claim": "Old catalog said use Judo Designer only; template dropped it.",
+   "fact": "Added rule: ESM model file model/<app>.model is XMI, never edit as text; change only via JUDO Model CLI or Designer; hand edits break xmi:id cross-references. Template has new docs: model/judo-cli.md, transformation-pipeline.md, ui-authoring-guide.md.",
+   "evidence": "session 14:45:44; catalog/agent-docs/model/model-development.md",
+   "status": "validated",
+   "line": 1740
+  },
+  {
+   "kind": "decision",
+   "topic": "Spec is a starting point; modifications allowed during apply",
+   "area": "process",
+   "target": "change-process",
+   "claim": "Agent started applying spec rigidly.",
+   "fact": "Operator: read the openspec change restructure-blueprints-for-kb; modifications may be made effectively during apply; proposal doesn't say how knowledge is built/what it contains - it will emerge while doing; record deviations in the change folder. Spec: catalog root with best-practices/model-blueprints/agent-docs; fragments/ skills/ tests/ outside catalog; fragments are CLI-written .model files (no stored command lists); no tracked jars; entries have no score, status derived from distinct project count (1 single-project, 2-3 emerging, >=4 established); pi skills judo-blueprint, judo-model-mermaid, judo-blueprint-author, judo-session-distill exported, judo-catalog-maintain project-local; agent-docs not part of any skill.",
+   "evidence": "session 2026-11-09T14:46:19 and 14:47:00 USER; specs/*",
+   "status": "operator-stated",
+   "line": 1795
+  },
+  {
+   "kind": "workflow",
+   "topic": "judo-model-cli recipe for building a fragment from Sandbox",
+   "area": "cli",
+   "target": "skill/judo-model-mermaid",
+   "claim": "(n/a)",
+   "fact": "java -jar judo-model-cli-*-standalone.jar -q -m Sandbox.model <cmd>. create -t <Type> -n <name> --ns <parentFqn> [-s key=value] [--brief]; parents must exist (create Package Sandbox::bp then Sandbox::bp::<id>); --schema shows fields (EntityType: superTypes,name,abstract,...; DataMember: dataType ref required, memberType STORED|DERIVED|MAPPED|TRANSIENT, required/identifier when STORED). Primitives under Sandbox::types (e.g. Sandbox::types::Timestamp, String). Commands: query, graphql, create, update, delete, move, relocate, fill, split, mermaid, save, merge, discard, validate, transform, server. CLI startup ~0.4s. `status` shows clean/unsaved.",
+   "evidence": "session 14:46-14:47 bash outputs",
+   "status": "validated",
+   "line": 1190
+  },
+  {
+   "kind": "workflow",
+   "topic": "kb guard and tool notes: kb_get needs catalog-relative path; kb_search first",
+   "area": "kb",
+   "target": "skill/judo-blueprint",
+   "claim": "(n/a)",
+   "fact": "Session guard warns after 3 searches without kb_search. kb_get(path) for agent-docs/deployment/build-process.md returned 'not found' while kb_search listed it (path mismatch pre-move). New-project creation uses template judo-esm-fullstack-project-template (generate-root; judo.sh build/--help; Docker + sdkman required; ~/.m2 distribution server credentials).",
+   "evidence": "session 14:44-14:45 tool results",
+   "status": "reported-unvalidated",
+   "line": 1352
+  }
+ ]
+}
