@@ -97,6 +97,12 @@ def main():
     if not bpwt.exists():
         exists = git(["rev-parse", "--verify", "-q", bpbranch], ROOT, check=False)
         git(["worktree", "add", *([] if exists else ["-b", bpbranch]), str(bpwt), *([bpbranch] if exists else ["HEAD"])], ROOT)
+    # gitignored kb state that check-all's kb-dox-lint gate needs (dox coverage record); copy, never link
+    st_src = ROOT / ".pi" / "dashboard" / "kb" / "dox-staleness.json"
+    st_dst = bpwt / ".pi" / "dashboard" / "kb" / "dox-staleness.json"
+    if st_src.exists() and not st_dst.exists():
+        st_dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(st_src, st_dst)
     st.update({"project": a.project, "source_checkout": str(src), "branch": branch, "sha": sha,
                "work": str(w), "src": str(srcwt), "bp": str(bpwt), "bp_branch": bpbranch,
                "previous_swept": row["Swept SHA"]})
