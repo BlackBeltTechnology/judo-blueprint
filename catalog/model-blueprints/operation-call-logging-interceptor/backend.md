@@ -1,37 +1,46 @@
-## Overview
+## Interceptor scope
 
-Implements a global `OperationCallInterceptor` that logs the fully qualified name of every intercepted operation call in its `preCall()` hook. Serves as a development debugging tool and a template for building more sophisticated operation-level audit logging.
+An `OperationCallInterceptor` is dispatched only for built-in operations. Custom operations and script operations do not pass through it. For a custom operation that must be logged, the operation logs explicitly, before or after its business action.
 
 ## Implementation Pattern
 
 **Interceptor class:**
-- `@Component(property={"judo.model.name=<model-name>"})` -- binds to the application's model
-- Implements `OperationCallInterceptor` interface from `hu.blackbelt.judo.runtime.core.dispatcher`
-- `getName()` returns the class simple name (used for logging/identification)
+- `@Component(property={"judo.model.name=<model-name>"})` binds it to the application's model.
+- Implements `OperationCallInterceptor` from `hu.blackbelt.judo.runtime.core.dispatcher`.
+- `getName()` returns an identifier used for logging.
 
-**Operation scoping (two variants):**
-1. **Global (all operations):** Do not override `getOperations()` -- the interceptor receives all operation calls
-2. **Targeted (specific operations):** Override `getOperations(AsmModel)` to return a collection of specific `EOperation` instances resolved via `asmUtils.resolveOperation("FQN#operationName")`. Cache the resolved operations for performance.
+**Operation scoping:**
+1. **All built-in operations:** do not override `getOperations()`. The interceptor receives every built-in operation call.
+2. **Named built-in operations:** override `getOperations(AsmModel)` to return the `EOperation` instances resolved with `asmUtils.resolveOperation("FQN#operationName")`. Resolve them once and cache them. Listing a custom operation here has no effect.
 
 **preCall hook:**
-- Receives the `EOperation` and the parameter payload
-- Extracts the fully qualified operation name via `AsmUtils.getOperationFQName(operation)`
-- Logs the operation name at INFO level
-- Returns `OperationCallInterceptor.super.preCall(operation, parameterPayload)` to pass through without modification
+- Receives the `EOperation` and the parameter payload.
+- Gets the fully qualified name with `AsmUtils.getOperationFQName(operation)`.
+- Logs it at INFO level and returns the payload with `OperationCallInterceptor.super.preCall(operation, parameterPayload)`.
 
-**postCall hook (optional extension):**
-- Can be overridden to log response details, execution time, or error status
-- Useful for building an operation-level audit trail
+**postCall hook (optional):**
+- Logs the response, the elapsed time or the error status.
+- When several interceptors are registered, their `preCall` and `postCall` hooks all run in registration order (`postCall` is not reversed).
+
+**Exceptions:** an interceptor may throw only `InterceptorCallBusinessException`. Wrap any other failure in it. Project error helpers are not platform API.
 
 **Key imports:**
-- `hu.blackbelt.judo.meta.asm.runtime.AsmModel` and `AsmUtils` -- for resolving and naming operations
-- `hu.blackbelt.judo.runtime.core.dispatcher.OperationCallInterceptor` -- the interceptor interface
-- `org.eclipse.emf.ecore.EOperation` -- the EMF operation metadata type
+- `hu.blackbelt.judo.meta.asm.runtime.AsmModel` and `AsmUtils`: resolving and naming operations.
+- `hu.blackbelt.judo.runtime.core.dispatcher.OperationCallInterceptor`: the interface.
+- `org.eclipse.emf.ecore.EOperation`: the EMF operation type.
+
+## Custom operations
+
+Write the log line inside the custom operation itself. Example project code (not platform API):
+
+```java
+log.info("OPERATION {} called by {}", "Order#confirm", currentUser);
+```
 
 ## Examples
 
 ### rackinspect
-- Key files: `interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/LogOperationCallInterceptor.java`
-- Pattern: Global interceptor (no `getOperations()` override) that logs every operation call. The commented-out `getOperations()` code shows the targeted variant pattern with `asmUtils.resolveOperation("[MODEL].[PACKAGE...].[TRANSFER]#[OPERATION]")` and lazy initialization.
-- Notable: Uses `@Component(property={"judo.model.name=rackinspect"})` for model binding. The `preCall()` logs at INFO level with visual markers for easy grep-ability in log output. Demonstrates both global and targeted scoping patterns in a single file (active vs commented).
-- DI wiring: No `@Reference` dependencies -- pure interceptor with no service calls. Registered automatically by OSGi DS when the bundle is active.
+- Key file: `interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/LogOperationCallInterceptor.java`
+- Pattern: interceptor without a `getOperations()` override, so it logs every built-in operation call. The commented-out `getOperations()` shows the named-operation variant using `asmUtils.resolveOperation("[MODEL].[PACKAGE...].[TRANSFER]#[OPERATION]")` with lazy initialization.
+- Notable: `@Component(property={"judo.model.name=rackinspect"})` binds the model. `preCall()` logs at INFO with a marker that makes the lines easy to grep. Custom operations of the project are not in this log.
+- DI wiring: no `@Reference` dependencies. OSGi DS registers it when the bundle is active.

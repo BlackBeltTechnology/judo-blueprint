@@ -1,21 +1,19 @@
-## Overview
+## Backend guidance
 
-The Notification and Device entities are managed by a comprehensive `PushNotificationService` that handles FCM push notification delivery, device registration lifecycle, and retry logic with exponential backoff. Scheduler jobs handle failed notification retries and stale token cleanup.
+The notification rows are written and retried by project code. The platform does not deliver push or email on its own.
 
-## Implementation Pattern
+### Delivery code writes the row first
 
-- `PushNotificationServiceImpl` is an OSGi `@Component` that injects `FirebaseMessagingService`, `NotificationDao`, `DeviceDao`, `UserDao`, and `PlatformEmailService`
-- On post publish, `sendPostPublishedNotification()` queries eligible users (respecting per-type notification preferences: notifyOffers, notifyRequests, notifyNews, notifyAnnouncements), creates a `Notification` entity with PENDING status, and sends FCM multicast to all active devices
-- Deduplication: checks for existing notifications with the same type+entityId within a 5-minute window before creating
-- Per-device FCM result handling: SUCCESS marks SENT, FAILED_INVALID_TOKEN deactivates the device, FAILED_RETRYABLE marks PARTIALLY_SENT and records retryable devices
-- Device registration (`registerDevice()`) handles token migration between users, duplicate cleanup, and platform updates
-- `retryFailedNotifications()` processes FAILED, PARTIALLY_SENT, and stuck PENDING notifications with exponential backoff (base 5 min, max 60 min, up to 5 retries)
-- Custom operations: `RegisterDeviceCustomImplementation`, `DeactivateDeviceCustomImplementation`, `UpdateDeviceTokenCustomImplementation`, `DeleteNotificationCustomImplementation`, `ClearAllNotificationsCustomImplementation`
-- Scheduler jobs: `NotificationRetryJob` (periodic retry), `StaleTokenCleanupJob` (deactivates devices with old tokens)
+A delivery service creates the Notification row with status PENDING, then sends, then updates the status to SENT or FAILED. As project practice, write the row in the same transaction as the business change that caused it, or the message can be sent without a record.
 
-## Examples
+### Retry runs from a scheduled job
 
-### mlszksz-platform
-- Key files: `common/services/PushNotificationService.java`, `common/services/impl/PushNotificationServiceImpl.java`, `firebase/FirebaseMessagingService.java`, `scheduler/NotificationRetryJob.java`, `scheduler/StaleTokenCleanupJob.java`
-- Pattern: Notification creation with FCM multicast delivery, per-device result tracking, PARTIALLY_SENT state for partial failures, exponential backoff retry via scheduler
-- Notable: Deep link routing maps NotificationType to frontend routes (NEWS, OFFER, REQUEST, ANNOUNCEMENT); dual-channel delivery (FCM push + optional email if user has emailNotifications enabled); collapse key grouping prevents notification spam on multi-device users
+A scheduled job reads FAILED rows and stuck PENDING rows, increments the retry count and sends again, with a back-off between attempts and a maximum number of retries. The job is project code, not a platform feature.
+
+### Custom operations and interceptors
+
+Custom operations that mark rows as read or delete them must check that the caller is the notification's user. Interceptors run only on built-in operations and may only throw InterceptorCallBusinessException, so the ownership check belongs in the custom operation, which is also never intercepted.
+
+### Services are project code
+
+Helpers such as a push sender or a retry scheduler are example project code. Name them for the project and keep the platform rules (interceptors, custom operations) separate from them.

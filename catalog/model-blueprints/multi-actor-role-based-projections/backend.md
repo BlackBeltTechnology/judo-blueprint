@@ -1,26 +1,15 @@
-## Overview
+## Backend guidance
 
-The multi-actor role-based projections pattern manifests in backend code through role-based authorization checks in custom operations, an `ActorService` that resolves the current user's role from JUDO security context, and interceptors that compute derived fields differently per actor context.
+Actor projections are read and written by the generated operations of each actor's transfer objects. Backend code adds behaviour in three places.
 
-## Implementation Pattern
+### Custom operations use the projection they serve
 
-- `ActorService` (OSGi `@Component`) provides `getCurrentUser()` which resolves the logged-in user's email from `VariableResolver.resolve("ACTOR", "email")` and queries the User entity
-- Custom operations use `actorService.getCurrentUser().getRole()` to enforce role-based authorization: PLATFORM_ADMIN can manage all organizations, COMPANY_ADMIN only their own, COMPANY_READER is read-only
-- The `LogAuthenticationInterceptor` (implementing `AuthenticationInterceptor`) runs on every `_principal` operation to update `lastLogin` and log authentication for all actors
-- The `StatisticsActiveUsersInterceptor` (implementing `OperationCallInterceptor`) intercepts Statistics-related operations on the AdminDashboard to compute derived fields (activeUsers, recentNews, etc.) that cannot be expressed in JUEL
-- The `ProfilePanelKeycloakSyncInterceptor` runs for CompanyReader actor operations to sync profile data with Keycloak
-- Operations in the `companyadmin` package validate organization scope: the current user's organization must match the target entity's organization
-- Operations in the `feed` package are consumer-facing and typically do not require role checks (all authenticated users can view feed)
-- In simpler projects, interceptors use `VariableResolver` to resolve the current actor's identity and auto-assign role-specific relations on entity creation (e.g., auto-linking a partner to a newly created reservation)
+A custom operation on a restricted transfer object should check its input against that actor's rules. Do not rely on the admin view to enforce them. Custom operations are never intercepted, so the check belongs in the operation body or in a service it calls.
 
-## Examples
+### Interceptors cover built-in operations only
 
-### mlszksz-platform
-- Key files: `common/services/ActorService.java`, `common/services/impl/ActorServiceImpl.java`, `interceptors/StatisticsActiveUsersInterceptor.java`, `interceptors/LogAuthenticationInterceptor.java`, `interceptors/ProfilePanelKeycloakSyncInterceptor.java`
-- Pattern: `ActorService.getCurrentUser()` resolves user from JUDO security context; custom operations check `user.getRole()` for authorization; interceptors compute derived fields per-actor
-- Notable: 6 service sub-packages (admin, companyadmin, companyreader, feed, registration, technical) each have separate custom operation sets; authorization is enforced in service methods, not in the custom operation classes
+An interceptor runs only on built-in operations. It may only throw InterceptorCallBusinessException. Use an interceptor for cross-cutting checks on built-in create, update and delete, and put the checks for custom operations in the operation itself.
 
-### reserve-app
-- Key files: `interceptors/services/PartnerActorInterceptor.java`, `interceptors/InterceptorOperationLogger.java`
-- Pattern: `PartnerActorInterceptor` intercepts the PartnerActor's `_createInstanceReservationsForPartner` operation to auto-assign the logged-in partner's association to newly created FreightReservation entities; resolves the current user via `VariableResolver.resolve("ACTOR", "email")` and queries `UserDao` + `PartnerMask`
-- Notable: Lighter-weight approach than mlszksz-platform -- no shared `ActorService` abstraction; instead, each actor-specific interceptor directly injects `UserDao` and `FreightReservationDao` via OSGi `@Reference` to perform role-specific post-creation wiring. The `InterceptorOperationLogger` provides cross-cutting operation logging for all actors.
+### Shared logic lives in project services
+
+A helper that reads the current user and filters by actor is project code, for example a service in the example project. It is not a platform API. Keep one such helper per project and call it from each restricted operation.

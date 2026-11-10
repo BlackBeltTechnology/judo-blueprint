@@ -1,27 +1,23 @@
 ## Overview
 
-A custom organization directory component that replaces the generated DiscoveryPanel table with an infinite-scrolling, card-based search interface. Supports filtering by name, address, and capability. Framework: React.
+The generated discovery panel shows organizations as a table. This pattern replaces that table with an infinite-scrolling, card-based directory with filters for name, address and capability.
 
 ## Implementation Pattern
 
-The pattern replaces a generated table via Pandino custom visual element registration:
+**Registration:** the discovery panel must be exposed by the model as a custom implementation element. Register the component with `registerService(CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY, ..., { component: <ELEMENT>_COMPONENT_INTERFACE_KEY })`, using the per-element key generated in the container's `customization.ts` and the register function from the generated scaffold. For a table the props type is `TableProxyProps` from `~/custom`. Do not reuse another project's key.
 
-- **Registration** -- Registered in `application-customizer.tsx` via `registerServicesFeedDiscoveryPanelDiscoveryPanel_View_EditOrganizationSearchComponentCustomImplementation(context)`, binding a custom `FC<TableProxyProps>` to the discovery panel table component key.
-- **DiscoveryContainer** (`custom/discoveryComponent/DiscoveryContainer.tsx`) -- Main container that wires filters, pagination, and infinite scroll. Uses the same `useInfiniteScroll` hook from the feed component.
-- **DiscoveryOrganizationCard** (`custom/discoveryComponent/DiscoveryOrganizationCard.tsx`) -- Card with logo avatar (downloaded via `AccessServiceImpl.downloadFile`), name, address with map marker icon, email, phone, and capability chips. Uses `useLogoUrl` hook for binary token-to-blob-URL conversion.
-- **DiscoveryFilters** (`custom/discoveryComponent/DiscoveryFilters.tsx`) -- Horizontal chip bar + SwipeableDrawer (top anchor). Three filters: organization name, address (text fields), capability (Autocomplete). Batch-apply UX with Apply/Clear All buttons.
-- **useDiscoveryPagination** (`custom/discoveryComponent/hooks/useDiscoveryPagination.ts`) -- Seek-based pagination (same PAGE_SIZE+1 pattern as feed). Always applies `OrganizationStatus.ACTIVE` filter. Builds QueryCustomizer with `StringOperation.like` for text search.
-- **useDiscoveryFilters** (`custom/discoveryComponent/hooks/useDiscoveryFilters.ts`) -- Filter state persisted to sessionStorage via `useDataStore`. Manages organizationName, fullAddress, and selectedCapability.
+**Container:** a container component wires the three parts together: the filters, the seek-based pagination and the infinite scroll. The infinite-scroll hook can be shared with other list components in the same frontend.
 
-**Key design decisions**:
-- Shares `useInfiniteScroll` and `useCapabilitiesAutocomplete` hooks with the feed component for consistency
-- Logo images are downloaded as binary blobs and rendered as MUI Avatar with fallback initial letter
-- Scroll area uses CSS gradient mask for a fade-out effect at the bottom
+**Cards:** each organization is one card with a logo avatar (letter fallback), name, address, contact details and capability chips. The logo is a binary token. Convert it to a blob URL with a small hook and release the URL when the card unmounts.
+
+**Filters:** a horizontal chip bar opens a top drawer. Three filters: name, address and capability (autocomplete, backed by the server). Filters apply on "Apply", and "Clear all" resets them. Filter state is kept in session storage so it survives navigation.
+
+**Pagination:** seek-based. Request the page size plus one row; the extra row tells whether a next page exists. The query always includes the status filter for ACTIVE organizations and uses a like-match for text filters.
 
 ## Examples
 
-### mlszksz-platform
-- Framework: React
-- Key files: `custom/discoveryComponent/DiscoveryContainer.tsx`, `custom/discoveryComponent/DiscoveryOrganizationCard.tsx`, `custom/discoveryComponent/DiscoveryFilters.tsx`, `custom/discoveryComponent/hooks/useDiscoveryPagination.ts`, `custom/hooks/custom-implementations/registerServicesFeedDiscoveryPanelDiscoveryPanel_View_EditCustomImplementations.tsx`
-- Pattern: Replaces generated DiscoveryPanel table via CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY with card-based org directory; reuses useInfiniteScroll from feed
-- Notable: Binary logo download via AccessServiceImpl; CSS gradient mask for scroll fade-out; ACTIVE-only status filter hardcoded in QueryCustomizer
+### mlszksz-platform (example project code, not platform API)
+- Framework: React with MUI
+- Key files: `custom/discoveryComponent/DiscoveryContainer.tsx`, `custom/discoveryComponent/DiscoveryOrganizationCard.tsx`, `custom/discoveryComponent/DiscoveryFilters.tsx`, `custom/discoveryComponent/hooks/useDiscoveryPagination.ts`, `custom/discoveryComponent/hooks/useDiscoveryFilters.ts`
+- Pattern: the container reuses the feed's infinite-scroll hook; the card downloads the logo through the access service and displays it as a blob URL.
+- Notable: the scroll area uses a CSS gradient mask for a fade at the bottom. The ACTIVE filter is hard-coded in the query builder.
