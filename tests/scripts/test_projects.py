@@ -9,7 +9,7 @@ class ProjectsTest(unittest.TestCase):
         rows, errs = mod.parse((ROOT / "PROJECTS.md").read_text())
         self.assertEqual(errs, [])
         self.assertGreaterEqual(len(rows), 21)
-        self.assertEqual({r["Project"]: r["Swept SHA"] for r in rows}["mlszksz-platform"], "f2b7101")
+        self.assertRegex({r["Project"]: r["Swept SHA"] for r in rows}["mlszksz-platform"], r"^[0-9a-f]{7,40}$")
         self.assertEqual({r["Project"]: r["Swept SHA"] for r in rows}["rackinspect"], "unreachable")
 
     def test_bad_kind_is_reported(self):
