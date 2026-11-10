@@ -479,7 +479,8 @@ export const customTheme = createTheme({
 ### Step 3: Apply Theme
 
 ```bash
-# Protect from regeneration
+# Generator emits src/theme/typography.ts. Hand-edit in place = case 1 of the
+# .generator-ignore rule — add to protect from regeneration.
 echo "src/theme/typography.ts" >> .generator-ignore
 ```
 

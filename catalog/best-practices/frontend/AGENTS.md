@@ -17,6 +17,7 @@
 | `centralized-error-handling-validation-map.md` | One error-handling function turns failed service calls into a field-to-message validation map for inline form errors, or into toasts, so every call site uses the same catch block. |
 | `column-filter-provider-pattern.md` | In a hand-written table page, column definitions and filter options are extracted into provider functions or page hooks that take the localization object, so the page keeps only layout and data fetchi |
 | `complete-frontend-replacement.md` | Replace all generated pages, routing, layout and theme with a hand-built app while still consuming the generated service layer and transfer object types, for UX that diverges from CRUD or for referenc |
+| `component-proxy-placeholder-page.md` | component-proxy-placeholder-page |
 | `conditional-field-validation-hook.md` | Make a form field required or optional depending on other field values by returning a handler from a page or container actions hook, without editing generated code. |
 | `custom-component-directory.md` | Keep hand-written React components in a dedicated directory such as src/custom, away from generated files, so regeneration never touches them. |
 | `custom-public-assets.md` | Add custom static assets (logos, backgrounds, QR codes) to the frontend public directory under unique names, and protect only the generator-owned files you override. |
@@ -48,6 +49,7 @@
 | `model-defined-color-palette.md` | Define the application color palette directly in the ESM model on actor types rather than overriding theme files in code. |
 | `mui-extensive-component-overrides.md` | Customize the MUI theme with extensive `components` overrides covering 15+ component types. |
 | `multi-provider-app-wrapper.md` | Compose the application root with a nested stack of React Context providers, each managing a specific cross-cutting concern: date localization, MUI theming, internationalization, toast notifications,  |
+| `operation-flow-manager-redirect.md` | operation-flow-manager-redirect |
 | `operation-flow-redirect-pattern.md` | Implement dynamic post-operation navigation by combining a Handlebars generator template override with a custom `OperationFlowManager` service. |
 | `pandino-action-hook-override.md` | The JUDO framework uses Pandino (an OSGi-like service registry for JavaScript) to enable runtime action hook injection in generated pages. |
 | `pdf-preview-inline-display.md` | After a backend operation generates a PDF, use the dialog's post-operation action hook to take the file token from the operation output and open it with the generated downloadFile helper in inline mod |
@@ -61,6 +63,8 @@
 | `session-storage-table-state.md` | Persist a table's sort model and filters in sessionStorage so they survive navigation within the tab. |
 | `single-access-entity-pattern.md` | For an actor access that holds at most one instance (settings, a single planet), fetch the instance first and send the user to a create page when it does not exist, then refresh the full view with a m |
 | `single-actor-heavy-customization.md` | Keep every page of a single-actor frontend generated and put the behaviour in hooks, custom visual element implementations and registrations in application-customizer.tsx; rackinspect has about a hund |
+| `string-field-typeahead-self-learning.md` | string-field-typeahead-self-learning |
+| `table-row-action-icon-from-operation-form.md` | WRONG — sets icon on the TableOperation; row action still shows a chevron |
 | `table-row-actions-utility.md` | A project utility that builds a DataGrid action column from a list of row action definitions, with a setting for how many show as buttons and how many collapse into a dropdown. |
 | `table-row-highlighting-hook.md` | Colour rows of a generated table by data values with the platform's table row highlighting hook, registered per table component. |
 | `timed-quiz-auto-advance.md` | A custom quiz component that shows one question at a time with a countdown and moves on, with a default answer, when the time runs out. |

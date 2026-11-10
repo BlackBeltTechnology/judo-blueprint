@@ -162,6 +162,28 @@ public final class ExceptionUtils {
 
 When you read an example that calls such a helper, translate it to the platform mechanism above (`new ValidationException(List<ValidationResult>)`, or a modeled fault).
 
+> [!IMPORTANT]
+> **There is no `BusinessException` class in `runtime-core`.**
+>
+> Older docs and code comments sometimes refer to a `BusinessException` type — it does not exist as a Java class in the current JUDO runtime. The concrete type for generic business failures is **`GenericOperationErrorException`**, and `ExceptionUtils.createBusinessException(...)` is the factory that produces it.
+>
+> **Convention for business-semantic failures**: the idiomatic pattern is to throw a `ValidationException` whose `ValidationResult` entries carry a **machine-code prefix** in the code/message (e.g. `ERR_USER_INACTIVE`, `ERR_QUOTA_EXCEEDED`). Clients branch on the prefix; the 400 status and field-level rendering are a feature, not a bug, because the business cause is tied to an input or an addressable path.
+
+> [!WARNING]
+> **`NotFoundException` and `AccessDeniedException` require a `ValidationResult` constructor.**
+>
+> The current runtime-core does **not** provide a no-arg constructor on these exceptions. You must instantiate them with a `ValidationResult` (or collection thereof):
+>
+> ```java
+> throw new NotFoundException(ExceptionUtils.createValidationResult(
+>     "id", i18n.entity_not_found()));
+>
+> throw new AccessDeniedException(ExceptionUtils.createValidationResult(
+>     "principal", i18n.access_denied()));
+> ```
+>
+> `new NotFoundException()` / `new AccessDeniedException()` will not compile. Prefer `ExceptionUtils.createValidationResult(field, message)` so the message is localizable and the field path renders correctly client-side.
+
 ---
 
 ## Best Practices

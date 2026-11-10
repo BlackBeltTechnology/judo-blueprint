@@ -58,11 +58,23 @@ Before editing a generated file directly, check the two extension mechanisms off
 Only if neither mechanism offers a hook should you fall back to editing the generated file directly. This is **NOT the preferred way**, but when necessary:
 
 1. **Edit the generated file** with your changes
-2. **Add to `.generator-ignore`** to protect it from regeneration
+2. **Add to `.generator-ignore`** to protect it from regeneration. Only this case (case 1 below) belongs in `.generator-ignore`:
    ```bash
    echo "application/sdk/src/main/java/[PACKAGE]/[GeneratedFile].java" >> .generator-ignore
    ```
 3. Place the entry in `.generator-ignore` near related overrides (it's used like `.gitignore`)
+
+#### `.generator-ignore` — One Rule
+
+`.generator-ignore` uses `.gitignore`-style matching, scoped to generator output. Single purpose: stop the generator from re-emitting a file at path X because you hand-edited that exact generated file in place. It is **not** a "this file is custom" marker.
+
+Three cases:
+
+1. **Generator emits file at path X, you hand-edit X in place.** → Add `X` to `.generator-ignore`. Only legitimate case (example above).
+2. **`.default` rename pattern** (custom operations, interceptors, validators). Generator emits `X.java.default`. Rename to `X.java` once and fill in the body. Generator re-emits `X.java.default` next round as a reference and never touches `X.java`. → `X.java` is OUTSIDE generator scope. **No entry needed.** Do NOT add `X.java.default` either — you want it to keep regenerating as a reference.
+3. **Brand-new hand-written file the generator never emits at that path** (new helper classes, new factories like `ExceptionUtils.java`). → OUTSIDE generator scope. **No entry needed.**
+
+Adding purely-custom files or `.default` paths to `.generator-ignore` is noise; remove such entries.
 
 **Handling Checksum Errors:**
 

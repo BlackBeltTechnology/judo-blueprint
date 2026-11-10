@@ -454,6 +454,8 @@ export const campaignPageActions: PageActionHook = () => {
 
 ## OperationFlowManager
 
+> **Design principle: one representation per concept.** Default mapped-TO output navigation lands on a generated standalone `<TO>View` route. Same row also reachable via `Actor.access.<area>.<rel> → row → detail` — a DIFFERENT generated page. Use `OperationFlowManager` to redirect every post-op landing into the access-context view; standalone routes are generated but unvisited. See [operation-flow-manager-redirect.md](../../../best-practices/frontend/operation-flow-manager-redirect.md) for the redirect recipes and [relation-driven-crud-with-custom-input.md](../../../best-practices/model/relation-driven-crud-with-custom-input.md) for the capability ladder and return-type matrix that motivate the redirect.
+
 ### Purpose
 
 Control navigation and behavior after operations (create, update, delete). Customize where users go after completing actions.

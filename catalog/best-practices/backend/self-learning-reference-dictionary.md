@@ -10,6 +10,8 @@ first_seen: "2026-07-12"
 last_updated: "2026-07-12"
 projects:
   - rackinspect
+format: legacy
+fragment: pending
 ---
 ## Description
 

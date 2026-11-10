@@ -14,6 +14,7 @@ This guide provides a comprehensive overview of `AuthenticationInterceptor` in t
 - [AuthenticationInterceptor Interface](#authenticationinterceptor-interface)
 - [The `#_principal` Operation](#the-_principal-operation)
 - [Token Attribute Extraction](#token-attribute-extraction)
+- [Keycloak managed-realm sync — trigger surface](#keycloak-managed-realm-sync--trigger-surface)
 - [Example: Just-in-Time User Provisioning](#example-just-in-time-user-provisioning)
 - [Testing and Best Practices](#testing-and-best-practices)
 

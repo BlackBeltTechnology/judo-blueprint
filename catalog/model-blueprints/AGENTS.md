@@ -263,6 +263,9 @@
 | `test-attempt-lifecycle-entity/model.md` | test-attempt-lifecycle-entity: model shape and generated structure diagram |
 | `test-attempt-lifecycle-entity/backend.md` | test-attempt-lifecycle-entity: backend guidance |
 | `test-attempt-lifecycle-entity/frontend.md` | test-attempt-lifecycle-entity: frontend guidance |
+| `testkit-integration-foundation/BLUEPRINT.md` | BLUEPRINT |
+| `testkit-integration-foundation/model.md` | testkit-integration-foundation: model shape and generated structure diagram |
+| `testkit-integration-foundation/backend.md` | testkit-integration-foundation: backend guidance |
 | `toggle-active-operation/BLUEPRINT.md` | An entity with a required active boolean (default true) and an instance operation that flips it, giving soft enable and disable without deletion. |
 | `toggle-active-operation/model.md` | toggle-active-operation: model shape and generated structure diagram |
 | `toggle-active-operation/backend.md` | toggle-active-operation: backend guidance |
@@ -270,6 +273,17 @@
 | `token-based-verification-entity/model.md` | token-based-verification-entity: model shape and generated structure diagram |
 | `token-based-verification-entity/backend.md` | token-based-verification-entity: backend guidance |
 | `token-based-verification-entity/frontend.md` | token-based-verification-entity: frontend guidance |
+| `transient-relation-multi-select-input/BLUEPRINT.md` | BLUEPRINT |
+| `transient-relation-multi-select-input/model.md` | transient-relation-multi-select-input: model shape and generated structure diagram |
+| `transient-relation-multi-select-input/backend.md` | transient-relation-multi-select-input: backend guidance |
+| `transient-relation-multi-select-input/frontend.md` | transient-relation-multi-select-input: frontend guidance |
+| `transient-relation-single-select-input/BLUEPRINT.md` | BLUEPRINT |
+| `transient-relation-single-select-input/model.md` | transient-relation-single-select-input: model shape and generated structure diagram |
+| `transient-relation-single-select-input/backend.md` | transient-relation-single-select-input: backend guidance |
+| `transient-relation-single-select-input/frontend.md` | transient-relation-single-select-input: frontend guidance |
+| `two-call-generation-state/BLUEPRINT.md` | BLUEPRINT |
+| `two-call-generation-state/model.md` | two-call-generation-state: model shape and generated structure diagram |
+| `two-call-generation-state/backend.md` | two-call-generation-state: backend guidance |
 | `user-holiday-absence-tracking/BLUEPRINT.md` | A Holiday entity composed by a User that stores the date ranges when the user is unavailable, with a check for overlapping ranges and a calendar that can override public days. |
 | `user-holiday-absence-tracking/model.md` | user-holiday-absence-tracking: model shape and generated structure diagram |
 | `user-holiday-absence-tracking/backend.md` | user-holiday-absence-tracking: backend guidance |

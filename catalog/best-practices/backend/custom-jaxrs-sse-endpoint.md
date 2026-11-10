@@ -11,6 +11,8 @@ last_updated: "2026-05-12"
 projects:
   - compsych-letter-demo
 alternatives: []
+format: legacy
+fragment: pending
 ---
 
 ## Description

@@ -12,6 +12,8 @@ projects:
   - rackinspect
 alternatives:
   - typed-exception-error-handling
+format: legacy
+fragment: pending
 ---
 ## Description
 

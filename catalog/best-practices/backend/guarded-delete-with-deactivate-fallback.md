@@ -13,6 +13,8 @@ projects:
 alternatives:
   - guard-clause-delete
   - soft-delete-active-flag
+format: legacy
+fragment: pending
 ---
 ## Description
 

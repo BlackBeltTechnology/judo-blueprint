@@ -201,6 +201,41 @@ Main orchestration script that simplifies common operations.
 - Service lifecycle management (start/stop/status)
 - Docker compose management
 
+### `judo.sh build` flag reference
+
+`./judo.sh build` accepts a set of single-letter flags whose semantics are non-obvious — several look like "only X" but actually mean "skip X". Inverting them is a common source of "my model change isn't taking effect" reports.
+
+| Flag | Long form | Meaning |
+|------|-----------|---------|
+| `-M` | `--skip-model` | **Skip** the ESM→PSM→ASM→RDBMS→keycloak transformation. NOT "model only". Use when iterating on Java backend only. |
+| `-B` | `--skip-backend` | Skip backend (custom ops + interceptors + REST). |
+| `-F` | `--skip-frontend` | Skip frontend React generation/build. |
+| `-KA` | `--skip-karaf` | Skip Karaf assembly. |
+| `-S` | `--skip-schema` | Skip schema-migration image. |
+| `-a` | `--build-app-module` | Build the `app/` (custom ops) module only — fast iteration on Java code. |
+| `-f` | `--build-frontend-module` | Build the frontend React module only. |
+| `-sc` | `--build-schema-cli` | Build the standalone schema CLI JAR. |
+| `-d` | `--docker` | Build Docker images. |
+| `-p` | `--build-parallel` | Maven parallel build (noisier logs). |
+| `-q` | `--quick` | Quick mode — use cache, skip validations. |
+| `-i` | `--ignore-checksum` | Ignore generator checksum errors and refresh checksums. |
+
+**Model-only changes need a full `./judo.sh build` (no flags) — not `-M`.** The `asm2keycloak` transformation (which emits the Keycloak realm from your `ActorType`s) only runs when model build is enabled. With `-M` the previous build's Keycloak realm artifact sticks and a new actor / claim / realm-name change never reaches Keycloak; the local stack starts but the React app shows blank and `/system/health` reports `JaxRsApplicationsReady` missing because the Keycloak adapter cannot find a realm matching `schema_name`.
+
+### Local-dev Keycloak realm dependency
+
+Projects generated from the JUDO platform ship a helper script `bin/keycloak-disable-ssl-required.sh` (invoked in the background by `./judo.sh start_local_env` right after `start_keycloak`). It:
+
+1. logs into the Keycloak `master` realm as `admin`/`judo`,
+2. flips `sslRequired=NONE` on `master` (so further admin calls work over plain HTTP from Karaf),
+3. waits up to 180s for a realm named **exactly** `<schema_name>` (from `judo.properties`) to appear,
+4. when it does, flips `sslRequired=NONE` on that realm too,
+5. logs `WARNING: app realm '<schema_name>' did not appear within 180s; skipping` if it never shows.
+
+The app realm's name is `ActorType.realm` emitted verbatim by `asm2keycloak` as `<keycloak:Realm id="<realm>" realm="<realm>">`. `ActorType.realm` has `defaultValueLiteral="DEFAULT"` in `esm.ecore`, so an actor without an explicit `realm` (or with `realm="DEFAULT"` literally) produces a Keycloak realm named `DEFAULT` — which will never match `schema_name` and triggers the 180s wait + give-up. The realm stays at `sslRequired=external`, and the React app silently fails because `/.well-known/openid-configuration` returns 403 over plain HTTP.
+
+**Authoring rule:** always set `ActorType.realm = <schema_name>` (the value in `judo.properties`). Every analyzed project that ships a working local stack does this.
+
 ### Quick Reference Commands
 
 ```bash

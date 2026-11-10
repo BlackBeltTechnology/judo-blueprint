@@ -34,7 +34,7 @@ A grant of permission for an `ActorType` to access a collection of data objects.
 | :--- | :--- | :--- | :--- |
 | `name` | String | `[1]` | The name of the access grant (e.g., "AccessMyCustomers"). |
 | `target` | `TransferObjectType` | `[1]` | A reference to the TO that this rule grants access to. This is the entry point for a query. |
-| `getterExpression` | `ReferenceExpression` | `[0..1]` | An optional expression to filter the data this actor is allowed to see (e.g., `self.customers` to only see customers directly related to the actor). If omitted, the actor can see all instances. |
+| `getterExpression` | `ReferenceExpression` | `[0..1]` | An optional expression to filter the data this actor is allowed to see (e.g., `self.customers` to only see customers directly related to the actor). If omitted, the actor can see all instances. Write-side membership invariant: UPDATE rejected when post-update state no longer satisfies the predicate — filter attributes are read-only through the filtered access path. See [derived-relation-membership-invariant.md](../../../best-practices/model/derived-relation-membership-invariant.md). |
 | `createable` | Boolean | `[1]` | If `true`, the actor can create new instances of the `target`. |
 | `updateable` | Boolean | `[1]` | If `true`, the actor can update instances. |
 | `deleteable` | Boolean | `[1]` | If `true`, the actor can delete instances. |
@@ -176,6 +176,8 @@ These rules define how accesspoint elements behave based on their context and at
 | `updateable` | Always | Allow modifying instances |
 | `deleteable` | Always | Allow deleting instances |
 | `exportable` | Always | Allow exporting instances |
+
+Access CRUD flags are rung 2 of the relation-CUD capability ladder. Full ladder (rungs 1–6: target outer flags, relation flag, `enabledBy` chain, parent per-instance `__updateable` / `__deletable`, filter membership invariant, LIST scope) in [relation-driven-crud-with-custom-input.md — §4](../../../best-practices/model/relation-driven-crud-with-custom-input.md#4-capability-ladder).
 
 ### Claim Attribute Rules
 

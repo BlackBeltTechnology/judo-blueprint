@@ -7,6 +7,8 @@ first_seen: "2026-05-11"
 last_updated: "2026-05-11"
 projects:
   - compsych-letter-framework
+format: legacy
+fragment: pending
 ---
 ## Description
 

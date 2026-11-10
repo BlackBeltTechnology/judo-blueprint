@@ -63,6 +63,8 @@ Sometimes there's no hook available for customization, and you must edit generat
    ```
 3. Place the entry in `.generator-ignore` near related overrides (it's used like `.gitignore`)
 
+See [Understanding .generator-ignore](#understanding-generator-ignore) below for the full rule.
+
 **Handling Checksum Errors:**
 
 If you get checksum errors due to code formatting changes (e.g., after `git checkout`, Prettier/Biomé auto-format, or dev mode changes):
@@ -169,7 +171,17 @@ Frontend JAR
 
 ## Understanding .generator-ignore
 
-The `.generator-ignore` file works exactly like `.gitignore` but for the code generator.
+### One Rule
+
+`.generator-ignore` uses `.gitignore`-style matching, scoped to generator output. Single purpose: stop the generator from re-emitting a file at path X because you hand-edited that exact generated file in place. It is **not** a "this file is custom" marker, and it is **not** needed for files the generator never produces.
+
+Three cases:
+
+1. **Generator emits file at path X, you hand-edit X in place.** → Add `X` to `.generator-ignore`. The only legitimate case. Examples: `src/generated/pages/MyPage.tsx`, `src/theme/palette.ts`, or a generator-emitted stub like `src/custom/application-customizer.tsx`.
+2. **`.default` rename pattern.** Generator emits `X.default` (e.g. `src/custom/application-customizer.tsx.default`). Rename to `X` once and fill in the body. Generator re-emits `X.default` next round as a reference; never touches `X`. → `X` is OUTSIDE generator scope. **No entry needed.** Do NOT add `X.default` either — you want it to keep regenerating as a reference.
+3. **Brand-new hand-written file the generator never emits at that path** (new components, new helper hooks under `src/custom/...`). → OUTSIDE generator scope. **No entry needed.**
+
+Adding purely-custom files to `.generator-ignore` is noise; remove such entries.
 
 **Location:** `application/frontend-react/<app>__[actor_fqn]/.generator-ignore`
 

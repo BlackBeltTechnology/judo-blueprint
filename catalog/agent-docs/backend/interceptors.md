@@ -789,7 +789,7 @@ The generator creates `.default` template files as **blueprints** for custom int
 1. **Renamed** to `.java` extension to be compiled
 2. **Customized** by implementing the method bodies and uncommenting relevant code
 
-**Note**: The renamed `.java` files do NOT need to be added to `.generator-ignore` because the generator only creates `.default` files, never `.java` files. Your `.java` implementations are safe from regeneration.
+**Note**: The renamed `.java` files do NOT need to be added to `.generator-ignore` because the generator only creates `.default` files, never `.java` files. Your `.java` implementations are safe from regeneration. This is case 2 of the `.generator-ignore` rule (see backend [README.md](README.md#generator-ignore--one-rule) or [custom-operations.md](custom-operations.md#generator-ignore--one-rule)).
 
 ### Workflow: Using .default Templates
 
@@ -812,6 +812,7 @@ mvn install
 **Important Notes**:
 - Do NOT edit `.java.default` files directly - they are regenerated on each build
 - Do NOT add `.java` files to `.generator-ignore` - the generator only creates `.default` files, your `.java` implementations are never overwritten
+- Do NOT add `.java.default` files to `.generator-ignore` either — keep them regenerating as a read-only reference. See [`.generator-ignore` — One Rule](README.md#generator-ignore--one-rule).
 - Always work with the `.java` file after renaming
 
 ### Common .default Template Patterns

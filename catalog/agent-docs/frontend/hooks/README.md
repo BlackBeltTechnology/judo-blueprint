@@ -33,7 +33,7 @@ Hooks are **customization points** in the generated code where you can inject yo
 
 **Alternative (Not Recommended):**
 - ❌ Edit generated files → Build fails on checksum mismatch
-- ❌ Add to `.generator-ignore` → Lose generator updates
+- ❌ Add a `.default` stub or a brand-new file to `.generator-ignore` → Lose generator updates / pointless noise. See One Rule below.
 - ❌ Template overrides → Complex to maintain
 
 ## Hook Architecture
@@ -300,6 +300,18 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ## Understanding .generator-ignore
 
+### One Rule
+
+`.generator-ignore` uses `.gitignore`-style matching, scoped to generator output. Single purpose: stop the generator from re-emitting a file at path X because you hand-edited that exact generated file in place. It is **not** a "this file is custom" marker, and it is **not** needed for files the generator never produces.
+
+Three cases:
+
+1. **Generator emits file at path X, you hand-edit X in place.** → Add `X` to `.generator-ignore`. The only legitimate case. Examples: generator-emitted stub `src/custom/application-customizer.tsx`, generator-emitted `src/theme/palette.ts`, or a directly-edited file under `src/generated/`.
+2. **`.default` rename pattern.** Generator emits `X.default`. Rename to `X` once and fill in the body. The generator re-emits `X.default` next round as a reference; it never touches `X`. → `X` is OUTSIDE generator scope. **No entry needed.** Do NOT add `X.default` either — you want it to keep regenerating as a reference.
+3. **Brand-new hand-written file the generator never emits at that path** (new custom hook file, new component under `src/custom/components/`). → OUTSIDE generator scope. **No entry needed.**
+
+Adding purely-custom files to `.generator-ignore` is noise; remove such entries.
+
 ### When to Use
 
 **Add to .generator-ignore:**
@@ -423,10 +435,13 @@ grep -rn "component=" src/containers | head   # component names used in hook ser
 
 ### "File overwritten after build"
 
-**Add to .generator-ignore:**
-```bash
-echo "src/custom/hooks/myHook.tsx" >> .generator-ignore
-```
+**Diagnose first — do NOT blindly add to `.generator-ignore`:**
+- If `src/custom/hooks/myHook.tsx` is a brand-new file you wrote and the generator never emits at that path → case 3, no entry needed. The "overwrite" suggests something else (build output, formatter, git). Investigate.
+- If the generator DOES emit a stub at that path and you hand-edited it → case 1:
+  ```bash
+  echo "src/custom/hooks/myHook.tsx" >> .generator-ignore
+  ```
+- If a `.default` stub exists (`myHook.tsx.default`), use the rename pattern — no entry needed (case 2).
 
 ### "Type errors with hook interface"
 

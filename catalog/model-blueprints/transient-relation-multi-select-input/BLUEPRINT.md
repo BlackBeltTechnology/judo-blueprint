@@ -10,6 +10,8 @@ last_updated: "2026-05-13"
 projects:
   - alba
   - actiongroup-test-react
+format: legacy
+fragment: pending
 ---
 ## Description
 

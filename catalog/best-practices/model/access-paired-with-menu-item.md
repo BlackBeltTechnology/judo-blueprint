@@ -17,6 +17,8 @@ projects:
   - ams-frontend
   - indamedia-adtrack
   - compsychletter
+format: legacy
+fragment: pending
 ---
 ## Description
 
