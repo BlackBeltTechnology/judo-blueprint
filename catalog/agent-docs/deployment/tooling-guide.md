@@ -1,3 +1,8 @@
+---
+title: Tooling Guide
+description: Diagram generator script for visualising the ESM model.
+---
+
 # Tooling Guide
 
 This guide provides an overview of the custom tools available in this project for working with the JUDO models. These tools are designed to help with documentation and visualization.

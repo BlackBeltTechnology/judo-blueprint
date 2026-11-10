@@ -1,3 +1,8 @@
+---
+title: Local Development
+description: Starting the application locally, hot deployment, Karaf console, logs and local troubleshooting.
+---
+
 # Local Development
 
 This guide covers local development setup, hot deployment, and development workflows for the <app> project.
@@ -29,12 +34,16 @@ This guide covers local development setup, hot deployment, and development workf
 **What starts:**
 - PostgreSQL (Docker container, port 5432)
 - Keycloak (Docker container, port 8080)
-- Karaf (standalone, port 8080 for app)
+- Karaf (standalone, HTTP port **8181** by default; override with `./judo.sh start -o karaf_port=<port>`)
 
 **Access points:**
-- Application: http://localhost:8080
-- Keycloak Admin: http://localhost:8080/auth/admin
-- Karaf SSH: `ssh -p 8101 karaf@localhost` (password: karaf)
+- Application: http://localhost:8181/apps/
+- Keycloak Admin: http://localhost:8080 (8080 is the Keycloak port, not the application's)
+- Karaf SSH: `ssh -p 8101 karaf@localhost` (password: karaf) - these are Apache Karaf defaults, not set by the project template
+
+**Start options:** `./judo.sh start -o "runtime=karaf|compose,dbtype=hsqldb|postgresql,compose_env=...,karaf_port=...,postgres_port=...,keycloak_port=..."`, `-K` skips Keycloak, `-W` disables bundle watching. See [Build Process](./build-process.md#command-reference). Compose-based runs are described in [Production Deployment](./production.md#shipped-docker-compose-environments).
+
+**Local email:** run a mail catcher such as Mailpit and point the app at `localhost:1025` (no auth/TLS) in `judo-karaf.env`; see [Application Configuration](./application-config.md#6-email-smtp).
 
 ### Stopping Services
 
@@ -96,7 +105,7 @@ tail -f application/.karaf/data/log/karaf.log
 # Service registered: CustomAddressService
 
 # 5. Test immediately - no restart needed
-curl http://localhost:8080/api/entity/Address
+curl http://localhost:8181/api/entity/Address
 ```
 
 ## Development Workflow
@@ -185,15 +194,23 @@ tail -f karaf.log | grep ERROR
 tail -f karaf.log | grep "Bundle"
 ```
 
+## IDE Launch Configurations
+
+The template ships Eclipse m2e launchers in the generated `launcher` folder: `BuildApplication`, `BuildApplicationWithoutFrontend`, `CompileCustomApp`, `RunApplication` and `RunFrontend` (details in [Build Process](./build-process.md#eclipse-launch-configurations)).
+
+## Local Database Choice and Tests
+
+`./judo.sh start -o dbtype=hsqldb` runs against HSQLDB, the default uses PostgreSQL in Docker. After a rebuild always use `./judo.sh build -i` when tests and the running application disagree (stale `~/.m2` artifacts, see [Build Process](./build-process.md#stale-artifacts-and-multi-module-build-order)). Do not run the long `initdatatests` in the normal cycle.
+
 ## Troubleshooting
 
 ### Runtime Issues
 
-#### "Port 8080 already in use"
+#### "Port 8181 (or 8080) already in use"
 
 **Solution:**
-- Check running processes: `lsof -i :8080`
-- Stop conflicting service or change port
+- Check running processes: `lsof -i :8181` (Karaf) or `lsof -i :8080` (Keycloak)
+- Stop the conflicting service or start with another port: `./judo.sh start -o karaf_port=<port>`
 
 #### "Database connection failed"
 
@@ -258,8 +275,8 @@ tail -f karaf.log | grep "Bundle"
 
 **Frontend** (`.env` or export):
 ```bash
-VITE_API_DEFAULT_BASE_URL=http://localhost:8080
-VITE_KEYCLOAK_URL=http://localhost:8080/auth
+VITE_API_DEFAULT_BASE_URL=http://localhost:8181
+VITE_KEYCLOAK_URL=http://localhost:8080
 VITE_KEYCLOAK_REALM=<app>
 ```
 

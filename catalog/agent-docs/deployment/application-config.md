@@ -1,12 +1,17 @@
+---
+title: Application Configuration
+description: JUDO_PLATFORM environment variables for database, Keycloak, filestore, mail and identifier signing, per-environment setup and encrypted values.
+---
+
 # Configuration Guide
 
 ## Overview
 
-The <app> application is configured through **environment variables** defined in the `judo-karaf.env` file. This approach ensures configuration is externalized and can be easily changed without modifying code or configuration files.
+The <app> application is configured through **environment variables** (prefix `JUDO_PLATFORM_`). Locally they come from the `judo-karaf.env` file in the project root and from the variables `judo.sh` exports; in Docker Compose they are set in the `environment:` block of the compose file. Configuration is externalized, so it can be changed without modifying code.
 
 **Note**: Throughout this document, `<app>` refers to the application name from `judo.properties` (app_name property). Use this value in database names, Keycloak realms, and other application-specific settings.
 
-**Important**: Do NOT edit `.cfg` files in `application/karaf-offline/etc/` directly. Always use environment variables via `judo-karaf.env`.
+**Important**: Do NOT edit `.cfg` files in `application/karaf-offline/etc/` directly. They are overwritten on rebuild; use environment variables.
 
 ## Table of Contents
 
@@ -14,6 +19,8 @@ The <app> application is configured through **environment variables** defined in
 - [Configuration Methods](#configuration-methods)
 - [Parameter Naming Convention](#parameter-naming-convention)
 - [Configuration Categories](#configuration-categories)
+- [Environment-Specific Configuration](#environment-specific-configuration)
+- [Encrypted Values (Jasypt)](#encrypted-values-jasypt)
 - [Security Best Practices](#security-best-practices)
 - [Troubleshooting](#troubleshooting)
 
@@ -21,47 +28,40 @@ The <app> application is configured through **environment variables** defined in
 
 ## Quick Reference
 
+These are the variables the shipped `judo.sh` and the Docker Compose stacks of the project template actually set.
+
 | Parameter | Example Value | Purpose |
 | :--- | :--- | :--- |
-| `JUDO_PLATFORM_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/<app>` | Database connection URL |
-| `JUDO_PLAT-FORM_DATASOURCE_USERNAME`| `<app>` | Database username |
-| `JUDO_PLAT-FORM_DATASOURCE_PASSWORD`| `secret` | Database password |
-| `JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL`| `http://localhost:8080/auth` | Keycloak server URL |
-| `JUDO_PLATFORM_KEYCLOAK_REALM` | `<app>` | Keycloak realm name |
-| `JUDO_PLATFORM_KEYCLOAK_RESOURCE` | `<app>-client` | Keycloak client ID |
-| `JUDO_PLATFORM_LOG_LEVEL` | `DEBUG` | Global log level |
+| `JUDO_PLATFORM_RDBMS_DIALECT` | `postgresql` | Database dialect (`postgresql` or `hsqldb`) |
+| `JUDO_PLATFORM_RDBMS_DB_HOST` | `postgres` | Database host |
+| `JUDO_PLATFORM_RDBMS_DB_PORT` | `5432` | Database port |
+| `JUDO_PLATFORM_RDBMS_DB_DATABASE` | `<app>` | Database name |
+| `JUDO_PLATFORM_RDBMS_DB_USER` | `<app>` | Database user |
+| `JUDO_PLATFORM_RDBMS_DB_PASSWORD` | `secret` | Database password |
+| `JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL` | `http://auth:8080` | Keycloak URL used by the backend |
+| `JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL` | `https://auth.example.com` | Keycloak URL as seen by browsers |
+| `JUDO_PLATFORM_FILESTORE` | `filesystem` | File storage backend |
+| `JUDO_PLATFORM_FILESTORE_DIRECTORY` | `/filestore` | Directory for the `filesystem` filestore |
+| `JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET` | Base64 string | Secret used to sign entity identifiers |
 
 ---
 
 ## Configuration Methods
 
-### Primary Method: judo-karaf.env (Recommended)
+### Primary Method: judo-karaf.env
 
 **Location:** `/judo-karaf.env`
 
-**Usage:**
-1. Edit `judo-karaf.env` in project root
-2. Add or modify environment variables
-3. Restart application: `./judo.sh stop && ./judo.sh start`
+The generated file contains only a few defaults (identifier signer secret, Keycloak password policy, `JUDO_PLATFORM_LOG_SMTP_SERVER`, `JUDO_PLATFORM_FILESTORE=rdbms`). Add or change variables there, then restart: `./judo.sh stop && ./judo.sh start`.
 
 **Format:**
 ```bash
 JUDO_PLATFORM_PARAMETER_NAME=value
 ```
 
-**Example:**
-```bash
-# Database configuration
-JUDO_PLATFORM_RDBMS_DIALECT=postgresql
-JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://localhost:5432/<app>
-JUDO_PLATFORM_DATASOURCE_USERNAME=<app>
-JUDO_PLATFORM_DATASOURCE_PASSWORD=secret
+### Selecting an environment: `judo.sh env`
 
-# Keycloak configuration
-JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/auth
-JUDO_PLATFORM_KEYCLOAK_REALM=<app>
-JUDO_PLATFORM_KEYCLOAK_RESOURCE=<app>-client
-```
+`./judo.sh env <name>` selects an **alternate custom properties file** (for example `compose-dev.properties`) instead of the default `judo.properties`. The properties file carries `judo.sh start` options such as `runtime=compose` and `compose_env=compose-develop` (see [Build Process](./build-process.md#judosh-script)). The template does not generate per-environment `judo-karaf.env.development` / `judo-karaf.env.production` files; if you want per-environment env files you create and manage them yourself.
 
 ### Alternative Methods (Not Recommended)
 
@@ -78,7 +78,7 @@ export JAVA_EXTRA_OPTS="-Djudo.platform.parameterName=value"
 ## Parameter Naming Convention
 
 ### Environment Variables
-- Prefix: `JUDO_PLATFORM_`
+- Prefix: `JUDO_PLATFORM_` (no hyphen)
 - Format: `SNAKE_CASE` (uppercase with underscores)
 - Example: `JUDO_PLATFORM_RDBMS_DIALECT`
 
@@ -89,499 +89,209 @@ export JAVA_EXTRA_OPTS="-Djudo.platform.parameterName=value"
 
 ### Conversion Rule
 ```
-Environment Variable          → OSGi Parameter
-JUDO_PLATFORM_RDBMS_DIALECT  → rdbmsDialect
-JUDO_PLATFORM_KEYCLOAK_REALM → keycloakRealm
+Environment Variable                       → OSGi Parameter
+JUDO_PLATFORM_RDBMS_DIALECT               → rdbmsDialect
+JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL    → keycloakAuthPublicUrl
 ```
 
 ## Configuration Categories
 
 ### 1. Database (RDBMS)
 
-**For database schema migration and evolution**, see: `docs/schema-evolution.md`
-
-#### Connection Settings
-
-**JUDO_PLATFORM_DATASOURCE_URL**
-- **Description**: JDBC connection URL
-- **Format**: `jdbc:<dialect>://<host>:<port>/<database>`
-- **Example**: 
-  - PostgreSQL: `jdbc:postgresql://localhost:5432/<app>`
-  - HSQLDB: `jdbc:hsqldb:mem:<app>`
-
-**JUDO_PLATFORM_DATASOURCE_USERNAME**
-- **Description**: Database username
-- **Default**: None (required)
-- **Example**: `<app>`
-
-**JUDO_PLATFORM_DATASOURCE_PASSWORD**
-- **Description**: Database password
-- **Security**: Masked in logs
-- **Example**: `secret`
-
-**JUDO_PLATFORM_DATASOURCE_DRIVER_CLASS_NAME**
-- **Description**: JDBC driver class
-- **PostgreSQL**: `org.postgresql.Driver`
-- **HSQLDB**: `org.hsqldb.jdbcDriver`
-
-#### Dialect Configuration
+**For database schema migration and evolution**, see [Schema Evolution](./schema-evolution.md).
 
 **JUDO_PLATFORM_RDBMS_DIALECT**
 - **Description**: Database dialect for SQL generation
-- **Options**:
-  - `postgresql` - PostgreSQL 9.5+
-  - `hsqldb` - HSQLDB (for development/testing)
-- **Default**: Detected from JDBC URL
-- **Example**: `postgresql`
+- **Options**: `postgresql`, `hsqldb` (JUDO ships only these two dialect bundles)
 
-#### Connection Pool
+**JUDO_PLATFORM_RDBMS_DB_HOST / _PORT / _DATABASE / _USER / _PASSWORD**
+- **Description**: Connection settings of the application database. `judo.sh` exports them for a local PostgreSQL container; the Compose stacks set them to the `postgres` service (`DB_DATABASE`, `DB_USER` and `DB_PASSWORD` default to the lower-case model name).
+- **Note**: There is no `JUDO_PLATFORM_DATASOURCE_URL` / `_USERNAME` / `_PASSWORD` variable in the template. The JDBC URL is built by the platform from these parts.
 
-**JUDO_PLATFORM_DATASOURCE_MAX_POOL_SIZE**
-- **Description**: Maximum database connections in pool
-- **Default**: `10`
-- **Recommended**: 
-  - Development: `5-10`
-  - Production: `20-50`
+**Connection pool and transaction timeouts** (used in the project's run scripts):
+- `JUDO_PLATFORM_HIKARI_MAXIMUM_POOL_SIZE` (e.g. `10`)
+- `JUDO_PLATFORM_HIKARI_CONNECTION_TIMEOUT` (milliseconds, e.g. `120000`)
+- `JUDO_PLATFORM_NARAYANA_DEFAULT_TIMEOUT` (milliseconds, e.g. `120000`)
+- `JUDO_PLATFORM_CASE_INSENSITIVE_LIKE` (`true` for case-insensitive `like` on PostgreSQL)
 
-**JUDO_PLATFORM_DATASOURCE_MIN_POOL_SIZE**
-- **Description**: Minimum idle connections
-- **Default**: `2`
-
-**JUDO_PLATFORM_DATASOURCE_CONNECTION_TIMEOUT**
-- **Description**: Connection timeout in milliseconds
-- **Default**: `30000` (30 seconds)
+For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtime](./spring-boot-runtime.md). For runtime datasource behaviour (pax-jdbc keys, version checks) see [OSGi Runtime Services](./osgi-runtime-services.md).
 
 ### 2. Keycloak (Security)
 
-#### Server Configuration
-
 **JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL**
-- **Description**: Keycloak server URL
-- **Format**: `http(s)://<host>:<port>/auth`
-- **Example**: `http://localhost:8080/auth`
+- **Description**: Keycloak URL used by the backend (inside the Compose network, e.g. `http://auth:8080`)
 - **Required**: Yes
 
-**JUDO_PLATFORM_KEYCLOAK_REALM**
-- **Description**: Keycloak realm name
-- **Example**: `<app>`
-- **Required**: Yes
+**JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL**
+- **Description**: Keycloak URL as reachable by browsers (e.g. `https://auth-<ip>.traefik.me`). The parameter is `keycloakAuthPublicUrl`, not `keycloakPublicUrl`.
 
-**JUDO_PLATFORM_KEYCLOAK_RESOURCE**
-- **Description**: Client ID in Keycloak
-- **Example**: `<app>-client`
-- **Required**: Yes
-
-**JUDO_PLATFORM_KEYCLOAK_CREDENTIALS_SECRET**
-- **Description**: Client secret (for confidential clients)
-- **Security**: Masked in logs
-- **Example**: `a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6`
-
-#### Security Settings
+**JUDO_PLATFORM_KEYCLOAK_REALM / JUDO_PLATFORM_KEYCLOAK_CLIENT_ID**
+- **Description**: Realm and client id (used in real-world deployments).
 
 **JUDO_PLATFORM_KEYCLOAK_DEFAULT_PASSWORD_POLICY**
-- **Description**: Password policy enforcement
-- **Options**:
-  - `SAME_EMAIL` - Password must differ from email
-  - `STRONG` - Strong password requirements
-  - `NONE` - No policy
-- **Default**: `NONE`
-- **Current**: `SAME_EMAIL` (see judo-karaf.env)
+- **Description**: Password policy for users created by the platform. The shipped `judo-karaf.env` sets `SAME_EMAIL`; the Compose stack sets `SAME_USERNAME`.
 
-**JUDO_PLATFORM_SECURITY_PROVIDER**
-- **Description**: Security implementation
-- **Options**:
-  - `keycloak` - Keycloak-based authentication
-  - `none` - No authentication (development only)
-- **Default**: `keycloak`
-
-**JUDO_PLATFORM_KEYCLOAK_SSL_REQUIRED**
-- **Description**: Require SSL for Keycloak communication
-- **Options**: `external`, `none`, `all`
-- **Default**: `external`
-- **Production**: Should be `all`
+**JUDO_PLATFORM_KEYCLOAK_MANAGEMENT_ENABLED / JUDO_PLATFORM_USER_MANAGER_ENABLED / JUDO_PLATFORM_KEYCLOAK_USER / JUDO_PLATFORM_KEYCLOAK_PASSWORD**
+- **Description**: Enable the built-in Keycloak user management and the Keycloak admin credentials the backend uses for it (seen in production Compose files of real applications).
 
 ### 3. REST API
 
-**JUDO_PLATFORM_REST_API_ROOT**
-- **Description**: Base path for REST API
-- **Default**: `/api`
-- **Example**: `http://localhost:8080/api`
+**JUDO_PLATFORM_SWAGGER_UI / JUDO_PLATFORM_SWAGGER_UI_PATH**
+- **Description**: Switch on the Swagger UI (default path `/swagger-ui`). Consider disabling it in production.
 
-**JUDO_PLATFORM_REST_CORS_ENABLED**
-- **Description**: Enable CORS (Cross-Origin Resource Sharing)
-- **Options**: `true`, `false`
-- **Default**: `true`
-- **Production**: Configure allowed origins
-
-**JUDO_PLATFORM_REST_CORS_ALLOWED_ORIGINS**
-- **Description**: Allowed CORS origins
-- **Format**: Comma-separated list
-- **Example**: `http://localhost:3000,https://app.example.com`
-- **Default**: `*` (all origins - development only)
-
-**JUDO_PLATFORM_SWAGGER_UI**
-- **Description**: Enable Swagger UI for API documentation
-- **Options**: `true`, `false`
-- **Default**: `true`
-- **Production**: Consider `false` for security
-
-**JUDO_PLATFORM_SWAGGER_UI_PATH**
-- **Description**: Path to Swagger UI
-- **Default**: `/swagger-ui`
-- **Example**: `http://localhost:8080/swagger-ui`
+**JUDO_PLATFORM_CORS_ALLOW_ORIGIN**
+- **Description**: Allowed CORS origin(s) (used by real deployments; do not leave it open in production).
 
 ### 4. File Storage
 
 **JUDO_PLATFORM_FILESTORE**
-- **Description**: File storage backend
-- **Options**:
-  - `rdbms` - Store in database (current setting)
-  - `filesystem` - Store in filesystem
-  - `s3` - Store in AWS S3
-- **Default**: `rdbms`
-- **Current**: `rdbms` (see judo-karaf.env)
+- **Options**: `rdbms` (files in the database; the shipped `judo-karaf.env` and the `compose-develop` stack use it), `filesystem` (the `compose-postgresql-https` stack), `s3`.
 
-**JUDO_PLATFORM_FILESTORE_PATH**
-- **Description**: Filesystem path for files (if `filestore=filesystem`)
-- **Example**: `/var/lib/<app>/files`
+**JUDO_PLATFORM_FILESTORE_DIRECTORY**
+- **Description**: Directory for the `filesystem` store (Compose stack: `/filestore`). The old name `JUDO_PLATFORM_FILESTORE_PATH` does not exist.
 
-**JUDO_PLATFORM_FILESTORE_S3_BUCKET**
-- **Description**: S3 bucket name (if `filestore=s3`)
-- **Example**: `<app>-files`
+**S3 settings**: `JUDO_PLATFORM_S3_BUCKET`, `JUDO_PLATFORM_S3_REGION`, `JUDO_PLATFORM_S3_ENDPOINT`, `JUDO_PLATFORM_S3_ACCESS_KEY`, `JUDO_PLATFORM_S3_SECRET_KEY`, plus `JUDO_PLATFORM_FILESTORE_TOKEN_EXPIRY`.
 
-### 5. Identifier Generation
+#### Using a Google Cloud Storage bucket
 
-**JUDO_PLATFORM_IDENTIFIER_PROVIDER**
-- **Description**: Strategy for generating identifiers
-- **Options**:
-  - `uuid` - UUID-based identifiers
-  - `sequence` - Database sequences
-- **Default**: `uuid`
+Google Cloud Storage exposes an S3-compatible XML API, so the platform's S3 file store works against it with no GCS-specific code: set `JUDO_PLATFORM_FILESTORE=s3`, point `JUDO_PLATFORM_S3_ENDPOINT` at `https://storage.googleapis.com` and use **HMAC credentials** for the access/secret keys. Bucket lifecycle rules (for example delete after one day for temporary uploads) are configured in GCS, not in JUDO.
+
+### 5. Identifier Signing
 
 **JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET**
-- **Description**: Secret key for signing identifiers
-- **Security**: Masked in logs
-- **Format**: Base64-encoded key
-- **Current**: Set in judo-karaf.env
-- **Important**: Change default in production!
+- **Description**: Base64-encoded HMAC secret used to sign the entity identifiers sent to clients (`__signedIdentifier`).
+- **Important**: If the secret is not configured, the runtime generates a **new random 1024-bit key on every start**. Signed identifiers then become invalid after a restart and are not valid across cluster nodes. Always set the same secret on every node and keep it stable between restarts; treat it as a secret in production.
 
 ### 6. Email (SMTP)
 
-**JUDO_PLATFORM_MAIL_SMTP_HOST**
-- **Description**: SMTP server hostname
-- **Example**: `smtp.gmail.com`
+| Variable | Purpose |
+|----------|---------|
+| `JUDO_PLATFORM_MAIL_SMTP_HOST` / `_PORT` | SMTP server |
+| `JUDO_PLATFORM_MAIL_SMTP_USER` / `_PASSWORD` | Credentials |
+| `JUDO_PLATFORM_MAIL_SMTP_AUTH` | Enable authentication |
+| `JUDO_PLATFORM_MAIL_SMTP_STARTTLS_ENABLE` | Enable STARTTLS |
+| `JUDO_PLATFORM_MAIL_SMTP_FROM` | Sender address |
+| `JUDO_PLATFORM_MAIL_TRANSPORT_PROTOCOL` | Transport protocol |
+| `JUDO_PLATFORM_MAIL_SMTP_SSL_TRUST` | Trusted SSL hosts |
+| `JUDO_PLATFORM_LOG_SMTP_SERVER` | Log SMTP interactions (`true` in the shipped files) |
 
-**JUDO_PLATFORM_MAIL_SMTP_PORT**
-- **Description**: SMTP server port
-- **Default**: `25` (plain), `587` (TLS), `465` (SSL)
-- **Example**: `587`
+**Local testing with Mailpit:** run a mail catcher such as Mailpit locally; the app only knows an SMTP host and port, so for local runs point them at `localhost:1025` (no authentication, no TLS) in `judo-karaf.env`. Test/demo/production read the `JUDO_PLATFORM_MAIL_SMTP_*` variables from the deployment environment (for example `environments/<env>/app-compose/docker-compose.yml`). Nothing in the app depends on Mailpit; new-user and activation emails go through the same SMTP configuration, so Mailpit captures them too.
 
-**JUDO_PLATFORM_MAIL_SMTP_USERNAME**
-- **Description**: SMTP authentication username
-- **Example**: `notifications@example.com`
+### 7. Other platform switches
 
-**JUDO_PLATFORM_MAIL_SMTP_PASSWORD**
-- **Description**: SMTP authentication password
-- **Security**: Masked in logs
+- `JUDO_PLATFORM_DEFAULT_ZONE_ID` - default time zone id (e.g. `Europe/Budapest`).
+- `JUDO_PLATFORM_METRICS_ENABLED` - enable metrics.
+- `JUDO_PLATFORM_MARK_SELECTED_RANGE_ITEMS` - set in the shipped Compose stacks (`true`).
+- `JUDO_PLATFORM_BUNDLE_WATCHER` - `false` disables watching bundle changes (hot deployment).
+- `JUDO_STARTUP_FEATURE` - overrides the startup feature of the offline Karaf assembly at runtime.
 
-**JUDO_PLATFORM_MAIL_SMTP_AUTH**
-- **Description**: Enable SMTP authentication
-- **Options**: `true`, `false`
-- **Default**: `false`
+### 8. Startup banner and JMX
 
-**JUDO_PLATFORM_MAIL_SMTP_STARTTLS_ENABLE**
-- **Description**: Enable STARTTLS encryption
-- **Options**: `true`, `false`
-- **Default**: `false`
-- **Recommended**: `true` for production
-
-**JUDO_PLATFORM_LOG_SMTP_SERVER**
-- **Description**: Log SMTP server interactions
-- **Options**: `true`, `false`
-- **Default**: `false`
-- **Current**: `true` (see judo-karaf.env)
-
-**JUDO_PLATFORM_MAIL_FROM**
-- **Description**: Default "from" email address
-- **Example**: `noreply@<app>.example.com`
-
-### 7. Model and DAO
-
-**JUDO_PLATFORM_DAO**
-- **Description**: Data Access Object implementation
-- **Options**:
-  - `rdbms` - RDBMS-based DAO
-- **Default**: `rdbms`
-
-**JUDO_PLATFORM_MODEL_NAME**
-- **Description**: Model identifier
-- **Default**: Detected from deployed model
-- **Example**: `<app>`
-
-### 8. Logging
-
-**JUDO_PLATFORM_LOG_LEVEL**
-- **Description**: Global log level
-- **Options**: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`
-- **Default**: `INFO`
-- **Development**: `DEBUG`
-- **Production**: `INFO` or `WARN`
-
-**JUDO_PLATFORM_LOG_SQL**
-- **Description**: Log SQL statements
-- **Options**: `true`, `false`
-- **Default**: `false`
-- **Development**: Can enable for debugging
-
-### 9. Performance and Caching
-
-**JUDO_PLATFORM_CACHE_ENABLED**
-- **Description**: Enable entity caching
-- **Options**: `true`, `false`
-- **Default**: `false`
-- **Production**: Consider `true` for performance
-
-**JUDO_PLATFORM_CACHE_SIZE**
-- **Description**: Maximum cache entries
-- **Default**: `1000`
-
-**JUDO_PLATFORM_QUERY_TIMEOUT**
-- **Description**: Query timeout in seconds
-- **Default**: `30`
+The banner is printed once all platform services of a model are ready. Config keys: `bannerEnabled` (default `true`), `bannerFonts`, `bannerHslStart` / `bannerHslEnd` (`<hue>,<saturation>,<lightness>`, random when unset) and `enableJMX` (default `false`, registers MBeans `hu.blackbelt.judo:type=<model>,name=Application`). The system property `disableJudoAnsiColors` (any value) disables ANSI colours. See [OSGi Runtime Services](./osgi-runtime-services.md#startup-banner-and-readiness) for the readiness services.
 
 ## Configuration Precedence
 
-When a parameter is set in multiple places, the following precedence applies (highest to lowest):
-
-1. **OSGi Configuration** (.cfg files) - Not recommended
-2. **Java System Properties** (`-D` flags)
-3. **Environment Variables** (`JUDO_PLATFORM_*`) - **Recommended**
-
-**Best Practice**: Use environment variables via `judo-karaf.env` exclusively.
-
-## Current Configuration
-
-The project's current configuration is defined in `/judo-karaf.env`:
-
-```bash
-# Identifier signing (security)
-JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET=<base64-encoded-secret>
-
-# Keycloak password policy
-JUDO_PLATFORM_KEYCLOAK_DEFAULT_PASSWORD_POLICY=SAME_EMAIL
-
-# SMTP logging (development)
-JUDO_PLATFORM_LOG_SMTP_SERVER=true
-
-# File storage backend
-JUDO_PLATFORM_FILESTORE=rdbms
-```
+Environment variables (`JUDO_PLATFORM_*`) are the recommended source. Edits of `.cfg` files are overwritten on rebuild and Karaf console changes are lost on restart, so keep every permanent setting in `judo-karaf.env` or the compose environment.
 
 ## Environment-Specific Configuration
 
 ### Development (Local)
 
-**judo-karaf.env:**
+**judo-karaf.env** / start options: `./judo.sh start` runs Karaf on port **8181**, Keycloak on 8080 and PostgreSQL (or HSQLDB with `-o dbtype=hsqldb`).
+
 ```bash
-# Database - HSQLDB (in-memory)
 JUDO_PLATFORM_RDBMS_DIALECT=hsqldb
-JUDO_PLATFORM_DATASOURCE_URL=jdbc:hsqldb:mem:<app>
-JUDO_PLATFORM_DATASOURCE_USERNAME=sa
-JUDO_PLATFORM_DATASOURCE_PASSWORD=
-
-# Keycloak - Local
-JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/auth
-JUDO_PLATFORM_KEYCLOAK_REALM=<app>
-JUDO_PLATFORM_KEYCLOAK_RESOURCE=<app>-client
-
-# Development settings
-JUDO_PLATFORM_SWAGGER_UI=true
-JUDO_PLATFORM_LOG_LEVEL=DEBUG
-JUDO_PLATFORM_LOG_SQL=true
+JUDO_PLATFORM_FILESTORE=rdbms
+JUDO_PLATFORM_LOG_SMTP_SERVER=true
 ```
+
+### Docker Compose
+
+See [Production Deployment](./production.md#shipped-docker-compose-environments) for the two shipped stacks (`compose-develop`, `compose-postgresql-https`) and their environment blocks.
 
 ### Production
 
-**judo-karaf.env:**
 ```bash
-# Database - PostgreSQL
 JUDO_PLATFORM_RDBMS_DIALECT=postgresql
-JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://db.example.com:5432/<app>
-JUDO_PLATFORM_DATASOURCE_USERNAME=<app>_prod
-JUDO_PLATFORM_DATASOURCE_PASSWORD=${DB_PASSWORD}  # From secrets management
-JUDO_PLATFORM_DATASOURCE_MAX_POOL_SIZE=30
+JUDO_PLATFORM_RDBMS_DB_HOST=db.example.com
+JUDO_PLATFORM_RDBMS_DB_PORT=5432
+JUDO_PLATFORM_RDBMS_DB_DATABASE=<app>
+JUDO_PLATFORM_RDBMS_DB_USER=<app>_prod
+JUDO_PLATFORM_RDBMS_DB_PASSWORD=${DB_PASSWORD}          # from secrets management
 
-# Keycloak - Production
-JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=https://auth.example.com/auth
-JUDO_PLATFORM_KEYCLOAK_REALM=<app>-prod
-JUDO_PLATFORM_KEYCLOAK_RESOURCE=<app>-prod-client
-JUDO_PLATFORM_KEYCLOAK_CREDENTIALS_SECRET=${KEYCLOAK_SECRET}
-JUDO_PLATFORM_KEYCLOAK_SSL_REQUIRED=all
-
-# Production security
-JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET=${SIGNER_SECRET}
-JUDO_PLATFORM_KEYCLOAK_DEFAULT_PASSWORD_POLICY=STRONG
-
-# Production settings
+JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=https://auth.example.com
+JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL=https://auth.example.com
+JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET=${SIGNER_SECRET}  # stable across restarts and nodes
+JUDO_PLATFORM_FILESTORE=filesystem
+JUDO_PLATFORM_FILESTORE_DIRECTORY=/filestore
 JUDO_PLATFORM_SWAGGER_UI=false
-JUDO_PLATFORM_LOG_LEVEL=INFO
-JUDO_PLATFORM_REST_CORS_ALLOWED_ORIGINS=https://app.example.com
-JUDO_PLATFORM_CACHE_ENABLED=true
-
-# Email
-JUDO_PLATFORM_MAIL_SMTP_HOST=smtp.example.com
-JUDO_PLATFORM_MAIL_SMTP_PORT=587
-JUDO_PLATFORM_MAIL_SMTP_USERNAME=notifications@example.com
-JUDO_PLATFORM_MAIL_SMTP_PASSWORD=${SMTP_PASSWORD}
-JUDO_PLATFORM_MAIL_SMTP_AUTH=true
-JUDO_PLATFORM_MAIL_SMTP_STARTTLS_ENABLE=true
-JUDO_PLATFORM_MAIL_FROM=noreply@<app>.example.com
 ```
+
+### Provisioning a new environment (prod / test / demo)
+
+- Keep environments distinct: separate Keycloak reachable address (in `karaf.env`), separate seed data and separate secrets.
+- Wire the **init-time admin users** through the whole chain: the application's startup template (for example `app-startup.sh.tpl`) and the infrastructure config (for example terraform) must pass the admin-user and admin-password variables of your application. If one link is missing, the Keycloak admin users are silently not created on first init.
+- Schema updates in such a pipeline run the schema tool in `generate` or `execute` mode; take a database backup (for example a managed-database backup branch) before `execute` and keep the restore command ready. See [Schema Evolution](./schema-evolution.md).
+
+## Encrypted Values (Jasypt)
+
+Configuration files can embed secrets as `password=ENC(<encrypted>)`. The `org.jasypt.encryption.StringEncryptor` OSGi service (from the `karaf-jasypt-support` / `osgi-encryption` features) decrypts them when the configuration is read. Passwords can be encrypted with a Karaf command and replaced in the PAX-JDBC / DBCP2 configuration files.
 
 ## Applying Configuration Changes
 
 ### Method 1: Restart Application (Recommended)
 
 ```bash
-# Edit judo-karaf.env
-vim judo-karaf.env
-
-# Restart
 ./judo.sh stop
 ./judo.sh start
 ```
 
 ### Method 2: Karaf Console (Runtime Changes)
 
-Some parameters can be changed at runtime via Karaf console:
-
 ```bash
-# Connect to Karaf
 ./application/.karaf/bin/client
 
-# Update config (temporary until restart)
 config:edit hu.blackbelt.judo.runtime
 config:property-set parameterName newValue
 config:update
 
-# View current config
 config:list
 ```
 
-**Note**: Runtime changes via console are lost on restart. Always update `judo-karaf.env` for persistence.
+**Note**: Runtime changes via console are lost on restart. Always update the environment for persistence.
 
 ## Security Best Practices
 
-### 1. Never Commit Secrets
-
-Add to `.gitignore`:
-```
-judo-karaf.env
-*.env
-```
-
-### 2. Use Environment-Specific Files
-
-```bash
-# Development
-judo-karaf.env.development
-
-# Production (never commit)
-judo-karaf.env.production
-```
-
-### 3. Use Secrets Management
-
-For production, inject secrets from:
-- HashiCorp Vault
-- AWS Secrets Manager
-- Azure Key Vault
-- Kubernetes Secrets
-
-**Example with placeholders:**
-```bash
-# judo-karaf.env.production.template
-JUDO_PLATFORM_DATASOURCE_PASSWORD=${DB_PASSWORD}
-JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET=${SIGNER_SECRET}
-```
-
-### 4. Rotate Secrets Regularly
-
-- Change `JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET` periodically
-- Update `JUDO_PLATFORM_KEYCLOAK_CREDENTIALS_SECRET`
-- Rotate database passwords
-
-### 5. Principle of Least Privilege
-
-- Database user should have minimal required permissions
-- Keycloak client should have minimal scopes
+1. **Never commit secrets.** Keep real credentials out of version control; commit templates with placeholders such as `${DB_PASSWORD}`.
+2. **Use a secrets manager** (Vault, cloud secret managers, Kubernetes Secrets) to inject values at deploy time, or Jasypt `ENC(...)` values.
+3. **Rotate secrets** (database passwords, Keycloak client secret). Rotating `JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET` invalidates all signed identifiers currently held by clients.
+4. **Least privilege** for the database user and Keycloak client.
 
 ## Troubleshooting
 
 ### Configuration Not Applied
 
-**Symptom**: Changes to `judo-karaf.env` not reflected
-
-**Solutions:**
-1. Ensure application was restarted: `./judo.sh stop && ./judo.sh start`
-2. Check environment variable name matches convention
-3. Verify no typos in parameter names
-4. Check Karaf logs: `tail -f application/.karaf/data/log/karaf.log`
+1. Ensure the application was restarted: `./judo.sh stop && ./judo.sh start`
+2. Check that the variable name matches the convention (`JUDO_PLATFORM_` prefix, no hyphen, names from the list above)
+3. Check Karaf logs: `tail -f application/.karaf/data/log/karaf.log`
 
 ### Viewing Effective Configuration
 
-**Check loaded parameters:**
 ```bash
-# In Karaf console
 ./application/.karaf/bin/client
-
-# List all JUDO platform configs
 config:list | grep judo
-
-# View specific config
-config:list "(service.pid=hu.blackbelt.judo.runtime)"
 ```
-
-### Parameter Masked in Logs
-
-**Symptom**: Can't see parameter value in logs
-
-**Reason**: Parameters containing "Password" or "Secret" are automatically masked for security
-
-**Solution**: Check configuration source (judo-karaf.env) directly
 
 ### Database Connection Failed
 
-**Check these parameters:**
-```bash
-JUDO_PLATFORM_DATASOURCE_URL=jdbc:postgresql://localhost:5432/<app>
-JUDO_PLATFORM_DATASOURCE_USERNAME=<app>
-JUDO_PLATFORM_DATASOURCE_PASSWORD=secret
-JUDO_PLATFORM_RDBMS_DIALECT=postgresql
-```
-
-**Test connection:**
-```bash
-psql -h localhost -U <app> -d <app>
-```
+Check `JUDO_PLATFORM_RDBMS_DB_*` and `JUDO_PLATFORM_RDBMS_DIALECT`, then test the connection: `psql -h localhost -U <app> -d <app>`. Note that if the connection still fails after the PostgreSQL retry loop, the platform only logs an error and creates no datasource for the model (see [OSGi Runtime Services](./osgi-runtime-services.md#postgresql-bootstrap-retry-and-datasource-keys)).
 
 ### Keycloak Authentication Failed
 
-**Check these parameters:**
-```bash
-JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080/auth
-JUDO_PLATFORM_KEYCLOAK_REALM=<app>
-JUDO_PLATFORM_KEYCLOAK_RESOURCE=<app>-client
-```
-
-**Verify Keycloak running:**
-```bash
-curl http://localhost:8080/auth/realms/<app>
-```
+Check `JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL` / `_AUTH_PUBLIC_URL` and that the realm exists: `curl http://localhost:8080/realms/<app>` (the Keycloak path prefix depends on the Keycloak version).
 
 ## Reference Documentation
 
-For comprehensive parameter documentation, see:
 - **JUDO Platform Parameters**: https://internal-documentation.judo.technology/administrator-guide/03_platform_parameters.html
 
 ## File Locations
@@ -589,10 +299,9 @@ For comprehensive parameter documentation, see:
 - Configuration file: `/judo-karaf.env`
 - Karaf config directory: `/application/karaf-offline/etc/`
 - Runtime logs: `/application/.karaf/data/log/karaf.log`
-- Application POM: `/application/pom.xml`
 
 ## Related Documentation
 
-- **Deployment Guides**: `../deployment/` - For the build and deployment process.
-- **Backend Guides**: `../backend/` - For guides on custom operations and other backend topics.
-- **AGENTS.md**: For a complete project overview.
+- [Build Process](./build-process.md), [Production Deployment](./production.md), [Local Development](./local-development.md)
+- [Schema Evolution](./schema-evolution.md)
+- **Backend Guides**: `../backend/` - custom operations and other backend topics.

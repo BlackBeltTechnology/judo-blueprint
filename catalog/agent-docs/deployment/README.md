@@ -1,18 +1,15 @@
 ---
-name: judo-deployment-docs
+title: Deployment Documentation
 description: Deployment and build documentation for JUDO applications. Covers judo.sh commands, Docker setup, Karaf configuration, and production deployment.
-disable-model-invocation: false
-user-invocable: false
-agent: general-purpose
 ---
 
 # Deployment Documentation
 
 ## Overview
 
-The \<app> project uses a sophisticated build system orchestrated by `judo.sh` script and Maven. This documentation provides comprehensive guidance for building, deploying, and troubleshooting the application.
+The <app> project uses a sophisticated build system orchestrated by `judo.sh` script and Maven. This documentation provides comprehensive guidance for building, deploying, and troubleshooting the application.
 
-**Note**: Throughout this documentation, `\<app>` refers to the application name from `judo.properties` (app_name property). This value is used in artifact names, bundle names, and deployment configurations.
+**Note**: Throughout this documentation, `<app>` refers to the application name from `judo.properties` (app_name property). This value is used in artifact names, bundle names, and deployment configurations.
 
 ## Quick Reference
 
@@ -34,6 +31,16 @@ The \<app> project uses a sophisticated build system orchestrated by `judo.sh` s
 # Fast iteration mode
 ./judo.sh reckless
 
+# Build including Docker images
+./judo.sh build -d
+
+# Rebuild ignoring checksums (use when a build fails or artifacts look stale)
+./judo.sh build -i
+
+# Use an alternate properties file, e.g. compose-dev.properties
+./judo.sh env compose-dev build start
+
+# Other commands: update, generate, generate-root, dump, import, schema-upgrade, prune
 # Clean everything
 ./judo.sh clean
 
@@ -68,7 +75,7 @@ The \<app> project uses a sophisticated build system orchestrated by `judo.sh` s
 
 - **First-time setup**: `./judo.sh build start`
 - **Development iteration**: `./judo.sh reckless` (fast builds)
-- **Production build**: `./judo.sh build -DskipDocker=false`
+- **Production build**: `./judo.sh build -d` (`judo.sh` has no `-D` pass-through; `-DskipDocker=false` still skips Docker)
 - **Stop all services**: `./judo.sh stop`
 
 ## Deployment Guides
@@ -105,6 +112,21 @@ Configuration for different environments:
 - `judo-karaf.env` file
 - Security and database settings
 
+### [Schema Evolution](./schema-evolution.md)
+Database schema migration: incremental generation, review scripts, rollback, when no manual step is needed.
+
+### [OSGi Runtime Services](./osgi-runtime-services.md)
+Model bundles, datasource provisioning, version checks, startup readiness, health-check details, Karaf administration.
+
+### [Spring Boot Runtime](./spring-boot-runtime.md)
+Running JUDO on Spring Boot, archetype, build plugin, test database selection, new dialects.
+
+### [Generator Plugins](./generator-plugins.md)
+ESM/UI generator goals, checksums and regeneration, Tatami workflow plugins, generation toggles, OpenAPI, Flutter, frontend env vars.
+
+### [Tooling Guide](./tooling-guide.md)
+Diagram generator script.
+
 ## Build System Architecture
 
 ### Components
@@ -136,25 +158,27 @@ Maven (build tool)
 When services are running locally:
 
 - **Application**: http://localhost:8181/apps/
-- **API Spec**: http://localhost:8181/api-spec/\<app>
-- **Health Check**: http://localhost:8181/system/health?tags=\<app>
-- **Keycloak Admin**: http://localhost:8080
-- **Karaf SSH**: `ssh -p 8101 karaf@localhost` (password: karaf)
+- **API Spec**: http://localhost:8181/api-spec/<app>
+- **Health Check**: http://localhost:8181/system/health?tags=<app>
+- **Keycloak Admin**: http://localhost:8080 (Keycloak's port; the application is on 8181)
+- **Karaf SSH**: `ssh -p 8101 karaf@localhost` (password: karaf; Apache Karaf defaults, not set by the template)
 
 ## Health Check Endpoint
 
-Check backend health at: `http://localhost:8181/system/health?tags=\<app>`
+The endpoint is `/system/health` (not `/health`). Query-parameter, status-code and serializer details are in [OSGi Runtime Services](./osgi-runtime-services.md#health-check-endpoint-details); custom checks are implemented as `org.apache.felix.hc.api.HealthCheck` components.
+
+Check backend health at: `http://localhost:8181/system/health?tags=<app>`
 
 ### Response Format
 
 **HTML format** (default):
 ```
-http://localhost:8181/system/health?tags=\<app>
+http://localhost:8181/system/health?tags=<app>
 ```
 
 **JSON format** (recommended for automation):
 ```
-http://localhost:8181/system/health?tags=\<app>&format=json
+http://localhost:8181/system/health?tags=<app>&format=json
 ```
 
 ### JSON Response Structure
@@ -168,7 +192,7 @@ http://localhost:8181/system/health?tags=\<app>&format=json
             "status": "OK",
             "timeInMs": 0,
             "finishedAt": "2025-12-02T20:45:21.339",
-            "tags": ["\<app>"],
+            "tags": ["<app>"],
             "messages": [
                 {
                     "status": "OK",
@@ -181,7 +205,7 @@ http://localhost:8181/system/health?tags=\<app>&format=json
             "status": "OK",
             "timeInMs": 0,
             "finishedAt": "2025-12-02T20:45:21.339",
-            "tags": ["\<app>"],
+            "tags": ["<app>"],
             "messages": [
                 {
                     "status": "OK",
@@ -194,7 +218,7 @@ http://localhost:8181/system/health?tags=\<app>&format=json
             "status": "OK",
             "timeInMs": 10,
             "finishedAt": "2025-12-02T20:45:21.349",
-            "tags": ["\<app>"],
+            "tags": ["<app>"],
             "messages": [
                 {
                     "status": "OK",
@@ -226,24 +250,26 @@ http://localhost:8181/system/health?tags=\<app>&format=json
 
 | Parameter | Description |
 |-----------|-------------|
-| `tags` | Comma-separated list of health check tags (e.g., `\<app>`) |
+| `tags` | Comma-separated list of health check tags (e.g., `<app>`) |
 | `names` | Comma-separated list of specific health check names |
 | `format` | Output format: `html`, `json`, `jsonp`, `txt`, `verbose.txt` |
 | `httpStatus` | Custom HTTP status mapping (e.g., `CRITICAL:503`) |
 | `timeout` | Timeout in milliseconds for health checks |
 | `forceInstantExecution` | If `true`, bypasses cache and executes checks immediately |
 
+HTTP codes: `OK`/`WARN` -> 200, `TEMPORARILY_UNAVAILABLE`/`CRITICAL` -> 503, `HEALTH_CHECK_ERROR` -> 500. With `format=txt` only the overall status name is returned (useful for load balancers).
+
 ### Example: Check Health with curl
 
 ```bash
 # HTML format (human-readable)
-curl "http://localhost:8181/system/health?tags=\<app>"
+curl "http://localhost:8181/system/health?tags=<app>"
 
 # JSON format (for scripts/automation)
-curl -s "http://localhost:8181/system/health?tags=\<app>&format=json" | jq .
+curl -s "http://localhost:8181/system/health?tags=<app>&format=json" | jq .
 
 # Check overall status only
-curl -s "http://localhost:8181/system/health?tags=\<app>&format=json" | jq -r '.overallResult'
+curl -s "http://localhost:8181/system/health?tags=<app>&format=json" | jq -r '.overallResult'
 ```
 
 ## Next Steps

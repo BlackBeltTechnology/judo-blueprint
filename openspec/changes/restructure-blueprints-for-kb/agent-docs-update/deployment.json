@@ -1,0 +1,587 @@
+{
+ "area": "deployment",
+ "items": {
+  "DE-001": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Stale Artifacts and Multi-Module Build Order",
+   "note": "initdatatests only when init data changes"
+  },
+  "DE-002": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Integration-Test Database Selection",
+   "note": "dialect/container/tz properties, Yugabyte container, initdatatests"
+  },
+  "DE-006": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Integration-Test Database Selection",
+   "note": "dialect/container/tz properties, Yugabyte container, initdatatests"
+  },
+  "DE-007": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Integration-Test Database Selection",
+   "note": "dialect/container/tz properties, Yugabyte container, initdatatests"
+  },
+  "DE-003": {
+   "action": "rejected",
+   "file": null,
+   "heading": "-",
+   "note": "irrelevant to app developers per curated judgement"
+  },
+  "DE-004": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "-",
+   "note": "CLI GraphQL query usage belongs to a CLI doc area"
+  },
+  "DE-005": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Adding a New Database Dialect",
+   "note": "added"
+  },
+  "DE-008": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Eclipse Launch Configurations",
+   "note": "added; linked from local-development"
+  },
+  "DE-009": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "-",
+   "note": "targets judo-ng framework docs/README, not catalog deployment docs"
+  },
+  "DE-010": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "-",
+   "note": "targets judo-ng framework docs/README, not catalog deployment docs"
+  },
+  "DE-011": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "-",
+   "note": "targets judo-ng framework docs/README, not catalog deployment docs"
+  },
+  "DE-012": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "-",
+   "note": "targets judo-ng framework docs/README, not catalog deployment docs"
+  },
+  "DE-013": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "-",
+   "note": "targets judo-ng framework docs/README, not catalog deployment docs"
+  },
+  "DE-014": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "-",
+   "note": "targets judo-ng framework docs/README, not catalog deployment docs"
+  },
+  "DE-069": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "-",
+   "note": "targets judo-ng framework docs/README, not catalog deployment docs"
+  },
+  "DE-070": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "-",
+   "note": "targets judo-ng framework docs/README, not catalog deployment docs"
+  },
+  "DE-015": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Health Check Endpoint Details",
+   "note": "formats, params, status mapping, serializers"
+  },
+  "DE-016": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Health Check Endpoint Details",
+   "note": "formats, params, status mapping, serializers"
+  },
+  "DE-017": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-065": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-066": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-052": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-037": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-038": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-028": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-029": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-030": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-031": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-043": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-044": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-063": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-032": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Code Generation Maven Plugins and Workflow Goals",
+   "note": "new section for the item"
+  },
+  "DE-018": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "Review Workflow for Incremental Migrations",
+   "note": "review scripts, .missing, flags, consolidation"
+  },
+  "DE-026": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "Review Workflow for Incremental Migrations",
+   "note": "review scripts, .missing, flags, consolidation"
+  },
+  "DE-033": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "Review Workflow for Incremental Migrations",
+   "note": "review scripts, .missing, flags, consolidation"
+  },
+  "DE-019": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Provisioning a new environment / Email",
+   "note": "admin-user wiring, Mailpit vs SMTP env"
+  },
+  "DE-056": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Provisioning a new environment / Email",
+   "note": "admin-user wiring, Mailpit vs SMTP env"
+  },
+  "DE-020": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Command Reference",
+   "note": "full judo.sh commands, build and start options"
+  },
+  "DE-021": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Command Reference",
+   "note": "full judo.sh commands, build and start options"
+  },
+  "DE-085": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Command Reference",
+   "note": "full judo.sh commands, build and start options"
+  },
+  "DE-086": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Command Reference",
+   "note": "full judo.sh commands, build and start options"
+  },
+  "DE-074": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Command Reference",
+   "note": "full judo.sh commands, build and start options"
+  },
+  "DE-022": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Encrypted Values (Jasypt)",
+   "note": "added"
+  },
+  "DE-023": {
+   "action": "unverified",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Deploying a Model as an OSGi Bundle",
+   "note": "Judo-Models header documented; MockOsgi DS-test claim not applied (not verified)"
+  },
+  "DE-024": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Writing a custom health check",
+   "note": "added"
+  },
+  "DE-025": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Spring Boot sections",
+   "note": "archetype, wiring keys, autoconfig, transformerWorkflow"
+  },
+  "DE-035": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Spring Boot sections",
+   "note": "archetype, wiring keys, autoconfig, transformerWorkflow"
+  },
+  "DE-050": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Spring Boot sections",
+   "note": "archetype, wiring keys, autoconfig, transformerWorkflow"
+  },
+  "DE-051": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Spring Boot sections",
+   "note": "archetype, wiring keys, autoconfig, transformerWorkflow"
+  },
+  "DE-060": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Spring Boot sections",
+   "note": "archetype, wiring keys, autoconfig, transformerWorkflow"
+  },
+  "DE-064": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/spring-boot-runtime.md",
+   "heading": "Spring Boot sections",
+   "note": "archetype, wiring keys, autoconfig, transformerWorkflow"
+  },
+  "DE-027": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Raw Generation Flags",
+   "note": "added"
+  },
+  "DE-034": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Identifier Signing",
+   "note": "stable secret requirement"
+  },
+  "DE-036": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "OSGi Runtime Services",
+   "note": "new section for the item"
+  },
+  "DE-041": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "OSGi Runtime Services",
+   "note": "new section for the item"
+  },
+  "DE-042": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "OSGi Runtime Services",
+   "note": "new section for the item"
+  },
+  "DE-061": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "OSGi Runtime Services",
+   "note": "new section for the item"
+  },
+  "DE-062": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "OSGi Runtime Services",
+   "note": "new section for the item"
+  },
+  "DE-039": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "OSGi Runtime Services",
+   "note": "new section for the item"
+  },
+  "DE-040": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "OSGi Runtime Services",
+   "note": "new section for the item"
+  },
+  "DE-045": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "OSGi Runtime Services",
+   "note": "new section for the item"
+  },
+  "DE-046": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/production.md",
+   "heading": "Shipped Docker Compose Environments",
+   "note": "added"
+  },
+  "DE-047": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Available Fragment Extension Points",
+   "note": "stub fragments survive regeneration"
+  },
+  "DE-048": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Docker Image Build",
+   "note": "added"
+  },
+  "DE-049": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Toolchain Bootstrap and Versions",
+   "note": "added"
+  },
+  "DE-053": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Frontend Build Recovery",
+   "note": "added"
+  },
+  "DE-054": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "When No Manual Step Is Needed",
+   "note": "added"
+  },
+  "DE-055": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Stale Artifacts and Multi-Module Build Order",
+   "note": "added"
+  },
+  "DE-082": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Stale Artifacts and Multi-Module Build Order",
+   "note": "added"
+  },
+  "DE-057": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Using a Google Cloud Storage bucket",
+   "note": "added"
+  },
+  "DE-058": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Multi-Repository Development",
+   "note": "added"
+  },
+  "DE-059": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/production.md",
+   "heading": "Persisting container state",
+   "note": "added"
+  },
+  "DE-067": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/production.md",
+   "heading": "Production Build",
+   "note": "-d instead of -DskipDocker=false; README and build-process too"
+  },
+  "DE-073": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/production.md",
+   "heading": "Production Build",
+   "note": "-d instead of -DskipDocker=false; README and build-process too"
+  },
+  "DE-068": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Quick Reference / Configuration Categories",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*, FILESTORE_DIRECTORY, no per-env env files; unsupported DATASOURCE/CACHE keys removed"
+  },
+  "DE-075": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Quick Reference / Configuration Categories",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*, FILESTORE_DIRECTORY, no per-env env files; unsupported DATASOURCE/CACHE keys removed"
+  },
+  "DE-076": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Quick Reference / Configuration Categories",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*, FILESTORE_DIRECTORY, no per-env env files; unsupported DATASOURCE/CACHE keys removed"
+  },
+  "DE-077": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Quick Reference / Configuration Categories",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*, FILESTORE_DIRECTORY, no per-env env files; unsupported DATASOURCE/CACHE keys removed"
+  },
+  "DE-078": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Quick Reference / Configuration Categories",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*, FILESTORE_DIRECTORY, no per-env env files; unsupported DATASOURCE/CACHE keys removed"
+  },
+  "DE-079": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Quick Reference / Configuration Categories",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*, FILESTORE_DIRECTORY, no per-env env files; unsupported DATASOURCE/CACHE keys removed"
+  },
+  "DE-080": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Quick Reference / Configuration Categories",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*, FILESTORE_DIRECTORY, no per-env env files; unsupported DATASOURCE/CACHE keys removed"
+  },
+  "DE-081": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "Quick Reference / Configuration Categories",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*, FILESTORE_DIRECTORY, no per-env env files; unsupported DATASOURCE/CACHE keys removed"
+  },
+  "DE-071": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "-",
+   "note": "targets community/admin documentation; this doc already uses keycloakAuthPublicUrl and no SAME_USERNAME-as-option claims"
+  },
+  "DE-072": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "-",
+   "note": "targets community/admin documentation; this doc already uses keycloakAuthPublicUrl and no SAME_USERNAME-as-option claims"
+  },
+  "DE-083": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Template Agent-Docs Placeholders",
+   "note": "added"
+  },
+  "DE-084": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "Creating a New Project from the ESM Fullstack Template",
+   "note": "added (m2 artifact version paths omitted)"
+  },
+  "DE-087": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/local-development.md",
+   "heading": "Access points",
+   "note": "Karaf HTTP port 8181"
+  },
+  "DE-088": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/local-development.md",
+   "heading": "Access points",
+   "note": "Karaf HTTP port 8181"
+  },
+  "DE-089": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/local-development.md",
+   "heading": "Access points",
+   "note": "kept SSH 8101/karaf, labelled as Apache Karaf defaults"
+  },
+  "DE-090": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/production.md",
+   "heading": "Health Checks",
+   "note": "/system/health"
+  },
+  "DE-091": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/production.md",
+   "heading": "Running Docker Container",
+   "note": "JUDO_PLATFORM_RDBMS_DB_*"
+  },
+  "DE-092": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/production.md",
+   "heading": "Environment Variables",
+   "note": "JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL"
+  },
+  "DE-093": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "Model Version Configuration",
+   "note": "model-version=${project.version}"
+  },
+  "DE-094": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "Step 3 / Column Type Mismatch",
+   "note": "T_ENTITIES_<NAME>, C_ columns (verified in generated changelog)"
+  },
+  "DE-095": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "Module Structure / Docker",
+   "note": "<app>-schema"
+  }
+ },
+ "files": {
+  "catalog/agent-docs/deployment/application-config.md": "rewritten: correct JUDO_PLATFORM_RDBMS_DB_*/FILESTORE_DIRECTORY, removed unsupported vars, jasypt, GCS, mail, signer secret, provisioning",
+  "catalog/agent-docs/deployment/build-process.md": "judo.sh command/options reference, -d docker, recovery, stale artifacts, new project, docker image, launchers, node pinning",
+  "catalog/agent-docs/deployment/local-development.md": "port 8181, start options, launchers, mailpit",
+  "catalog/agent-docs/deployment/production.md": "-d build, JUDO_PLATFORM env in docker run, compose profiles, /system/health, persistent state",
+  "catalog/agent-docs/deployment/schema-evolution.md": "generate params, review workflow, additive changes, T_ENTITIES naming, schema artifact names, model-version",
+  "catalog/agent-docs/deployment/README.md": "commands, health check endpoint, links to new files",
+  "catalog/agent-docs/deployment/osgi-runtime-services.md": "NEW: OSGi runtime behaviour",
+  "catalog/agent-docs/deployment/spring-boot-runtime.md": "NEW: Spring Boot runtime",
+  "catalog/agent-docs/deployment/generator-plugins.md": "NEW: generator plugins",
+  "catalog/agent-docs/deployment/tooling-guide.md": "frontmatter only"
+ }
+}

@@ -1,3 +1,8 @@
+---
+title: Production Deployment
+description: Production builds, Docker and Compose deployment, environment configuration, monitoring and deployment checklist.
+---
+
 # Production Deployment
 
 This guide covers production deployment, Docker deployment, environment configuration, and production best practices for the <app> project.
@@ -21,13 +26,15 @@ This guide covers production deployment, Docker deployment, environment configur
 
 ### Full Production Build
 
-Build everything including Docker image:
+Build everything including the Docker images (`-d` / `--docker`):
 
 ```bash
-./judo.sh build
+./judo.sh build -d
 ```
 
-Or with Maven directly:
+Without `-d`, `judo.sh build` skips Docker (it passes `-DskipDocker -DskipSchemaDocker`). `judo.sh` has no `-D` pass-through; `-DskipDocker=false` does **not** enable Docker, because the docker profile activates on `!skipDocker` (the property being defined at all disables it). Use `-ma "<arg>"` for extra Maven arguments.
+
+Or with Maven directly (Docker profiles active as long as no `skipDocker` property is defined):
 
 ```bash
 mvn clean install
@@ -65,11 +72,13 @@ Before deploying to production, verify:
 
 ### Building Docker Image
 
-The build process creates a Docker image when the `build-docker` profile is active (default):
+The build process creates Docker image tars when Docker building is requested:
 
 ```bash
-./judo.sh build
+./judo.sh build -d
 ```
+
+Image details (jib, base image, tags, agents, ports) are in [Build Process](./build-process.md#docker-image-build).
 
 **Output:**
 - Docker context: `/application/docker/target/docker/`
@@ -89,27 +98,44 @@ The Docker image includes:
 ```bash
 docker run -d \
   --name <app>-app \
-  -p 8080:8080 \
-  -e DB_HOST=postgres \
-  -e DB_PORT=5432 \
-  -e DB_NAME=<app> \
-  -e DB_USER=postgres \
-  -e DB_PASSWORD=yourpassword \
-  [project-name]:latest
+  -p 8181:8181 \
+  -e JUDO_PLATFORM_RDBMS_DIALECT=postgresql \
+  -e JUDO_PLATFORM_RDBMS_DB_HOST=postgres \
+  -e JUDO_PLATFORM_RDBMS_DB_PORT=5432 \
+  -e JUDO_PLATFORM_RDBMS_DB_DATABASE=<app> \
+  -e JUDO_PLATFORM_RDBMS_DB_USER=<app> \
+  -e JUDO_PLATFORM_RDBMS_DB_PASSWORD=yourpassword \
+  -e JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=http://auth:8080 \
+  -e JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET=<stable base64 secret> \
+  <image>:<tag>
 ```
+
+The image tag comes from `DOCKER_IMAGE_TAGS` (default `dev`). All variables are described in [Application Configuration](./application-config.md).
 
 ### Docker Compose
 
-For complete stack deployment including database and Keycloak:
+For a complete stack including database and Keycloak:
 
 ```bash
-./judo.sh start
+./judo.sh env compose-dev build start
 ```
 
-This uses Docker Compose to orchestrate:
-- Application container
-- PostgreSQL container
-- Keycloak container
+where `compose-dev.properties` contains `runtime=compose` and `compose_env=compose-develop`. This orchestrates the application, PostgreSQL and Keycloak containers.
+
+### Shipped Docker Compose Environments
+
+The project template ships two Compose profiles under `application/docker/`:
+
+| Profile | Description |
+|---------|-------------|
+| `compose-develop` | Traefik + Keycloak in `start-dev` mode + the app, on `*.traefik.me` over plain HTTP (`proxy.traefik.me`, `auth.traefik.me:8080`, `app.traefik.me:8181`); `JUDO_PLATFORM_FILESTORE=rdbms` |
+| `compose-postgresql-https` | Production-like: TLS on 80/443, Keycloak on PostgreSQL, the app on PostgreSQL with a filesystem filestore (`JUDO_PLATFORM_FILESTORE_DIRECTORY=/filestore`), a helper container that downloads the traefik.me certificate |
+
+`compose-postgresql-https` declares its network and volumes as **external**: create them before `docker compose up`. Select a profile with the `compose_env` start option.
+
+### Persisting container state
+
+If a container seeds credentials or data only once on first start (for example the AI analyzer plugin `pi-analyzer`, whose seed script skips when its auth file already exists, so a changed `RI_AUTH_JSON` is ignored afterwards), rotating the value requires deleting the seeded file (for example `docker compose rm -sf <service>` and recreating it). Mount such state on a **named volume**; otherwise it lives in the container layer and is lost on replace, and a persisted volume means the data lives on the host's boot disk.
 
 ## Environment Configuration
 
@@ -133,22 +159,20 @@ This uses Docker Compose to orchestrate:
 
 #### Application Configuration
 
+The platform reads `JUDO_PLATFORM_*` variables (full list in [Application Configuration](./application-config.md)):
+
 ```bash
 # Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=<app>
-DB_USER=postgres
-DB_PASSWORD=yourpassword
+JUDO_PLATFORM_RDBMS_DIALECT=postgresql
+JUDO_PLATFORM_RDBMS_DB_HOST=localhost
+JUDO_PLATFORM_RDBMS_DB_PORT=5432
+JUDO_PLATFORM_RDBMS_DB_DATABASE=<app>
+JUDO_PLATFORM_RDBMS_DB_USER=<app>
+JUDO_PLATFORM_RDBMS_DB_PASSWORD=yourpassword
 
 # Keycloak
-KEYCLOAK_URL=http://localhost:8080/auth
-KEYCLOAK_REALM=<app>
-KEYCLOAK_CLIENT_ID=<app>-client
-
-# Application
-APP_PORT=8080
-LOG_LEVEL=INFO
+JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL=http://localhost:8080
+JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL=http://localhost:8080
 ```
 
 #### Frontend Configuration
@@ -157,8 +181,8 @@ LOG_LEVEL=INFO
 
 ```bash
 VITE_API_DEFAULT_BASE_URL=https://api.yourdomain.com
-VITE_KEYCLOAK_URL=https://auth.yourdomain.com/auth
-VITE_KEYCLOAK_REALM=<app>
+VITE_API_RELATIVE_PATH=/api
+VITE_FILE_DEFAULT_BASE_URL=https://api.yourdomain.com
 ```
 
 ### Karaf Configuration
@@ -167,7 +191,7 @@ Production Karaf configurations are located in:
 - `application/karaf-offline/target/assembly/etc/`
 
 **Important files:**
-- `org.ops4j.datasource-<app>.cfg` - Database configuration
+- `org.ops4j.datasource-<app>.cfg` - Database configuration (passwords may be stored as `ENC(...)`, see [Encrypted Values](./application-config.md#encrypted-values-jasypt))
 - `org.ops4j.pax.web.cfg` - Web server configuration
 - `judo-runtime.cfg` - Application runtime configuration
 
@@ -196,7 +220,7 @@ docker logs <app>-app | grep ERROR
 **Connect to Karaf console:**
 
 ```bash
-# Local
+# Local (8101 / karaf:karaf are Apache Karaf defaults; change them outside local development)
 ssh -p 8101 karaf@localhost
 
 # Docker
@@ -229,9 +253,11 @@ bundle:diag > diagnostics.txt
 
 **Verify application health:**
 
+The health endpoint is `/system/health` (there is no `/health` route). Use the model name as tag:
+
 ```bash
-# Check application endpoint
-curl http://localhost:8080/health
+curl "http://localhost:8181/system/health?tags=<app>&format=json"
+curl -s "http://localhost:8181/system/health?tags=<app>&format=txt"   # overall status only
 
 # Check bundle status via SSH
 ssh -p 8101 karaf@localhost "bundle:list" | grep Active
@@ -256,12 +282,12 @@ ssh -p 8101 karaf@localhost "jdbc:datasources"
 **Solution:**
 - Verify database is running and accessible
 - Check database credentials in configuration
-- Test connection: `psql -h $DB_HOST -U $DB_USER -d $DB_NAME`
+- Test connection: `psql -h $JUDO_PLATFORM_RDBMS_DB_HOST -U $JUDO_PLATFORM_RDBMS_DB_USER -d $JUDO_PLATFORM_RDBMS_DB_DATABASE`
 
 #### "Port already in use"
 
 **Solution:**
-- Check running processes: `lsof -i :8080`
+- Check running processes: `lsof -i :8181` (Karaf) / `lsof -i :8080` (Keycloak)
 - Stop conflicting service or change port
 - For Docker: Check for orphaned containers: `docker ps -a`
 
@@ -373,7 +399,7 @@ ssh -p 8101 karaf@localhost "jdbc:datasources"
 
 1. **Database Backups**
    ```bash
-   pg_dump -h $DB_HOST -U $DB_USER $DB_NAME > backup-$(date +%Y%m%d).sql
+   pg_dump -h $JUDO_PLATFORM_RDBMS_DB_HOST -U $JUDO_PLATFORM_RDBMS_DB_USER $JUDO_PLATFORM_RDBMS_DB_DATABASE > backup-$(date +%Y%m%d).sql
    ```
 
 2. **Configuration Backups**
@@ -385,6 +411,14 @@ ssh -p 8101 karaf@localhost "jdbc:datasources"
    - Document rollback procedure
    - Test recovery process regularly
    - Maintain previous version images
+
+### Health Check and Runtime Details
+
+The `/system/health` endpoint, its formats, status-to-HTTP mapping and custom health checks are described in [Deployment Overview](./README.md#health-check-endpoint) and [OSGi Runtime Services](./osgi-runtime-services.md#health-check-endpoint-details).
+
+### Environment provisioning notes
+
+Keep prod/test/demo environments distinct and wire the init-time admin-user variables through your startup template and infrastructure config, see [Application Configuration](./application-config.md#provisioning-a-new-environment-prod-test-demo). Signed identifiers need a stable `JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET` on every node.
 
 ## Related Documentation
 

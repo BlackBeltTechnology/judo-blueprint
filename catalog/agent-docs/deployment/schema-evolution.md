@@ -1,3 +1,8 @@
+---
+title: Database Schema Evolution
+description: Incremental schema migration with judo-rdbms-schema: generate, review scripts, execute, Docker migration, rollback and production strategy.
+---
+
 # Database Schema Evolution Guide
 
 ## Overview
@@ -10,6 +15,7 @@ The `application/schema` module provides database schema migration capabilities 
 
 - [Quick Start Workflow](#quick-start-workflow)
 - [Key Concepts](#key-concepts)
+- [Review Workflow](#review-workflow-for-incremental-migrations)
 - [Migration Commands](#migration-commands)
 - [Production Migration Strategy](#production-migration-strategy)
 - [Troubleshooting](#troubleshooting)
@@ -29,13 +35,15 @@ This section provides a condensed workflow for the most common migration task: g
     ```
 
 2.  **Generate the migration scripts:**
-    You need the `baseModelVersion` (current) and `updateModelVersion` (new). Find these in `application/model/pom.xml` or from your build logs.
+    The `generate` goal takes the base and the updated RDBMS model files (`baseModel`, `updateModel`; each a file path or a `mvn:` URL such as `mvn:<groupId>:<app>-model:<version>!model/<app>-rdbms_postgresql.model`), the `modelName`, the `dbType` and an `outputDirectory`. If no base model is given, the base is read from the `latest.version` / `previous.version` marker files in the output directory.
     ```bash
     # From application/schema/
     mvn judo-rdbms-schema:generate \
-      -DbaseModelVersion=<base_version> \
-      -DupdateModelVersion=<update_version>
+      -DmodelName=<app> -DdbType=postgresql \
+      -DbaseModel=<base_model_file_or_mvn_url> \
+      -DupdateModel=<update_model_file_or_mvn_url>
     ```
+    The `execute` goal takes `baseModelVersion` and `updateModelVersion` (see below).
 
 3.  **Apply the migration to your local database:**
     ```bash
@@ -65,6 +73,10 @@ When you modify the ESM model (using Judo Designer), the database schema often n
 - Modifying relationships → Changing foreign keys
 
 Schema evolution manages these database changes safely and incrementally.
+
+### When No Manual Step Is Needed
+
+Adding a **stored** member (for example a new attribute) to an entity needs **no** manual migration or `schema-upgrade` run for a fresh or development database: the generated Liquibase changelog (`application/model/target/generated-resources/model/<app>-liquibase_postgresql.changelog.xml`) already contains the new column. A manual schema-upgrade step is only relevant for a persistent database that already holds data, and for genuinely non-additive or backward-incompatible changes (renames, type changes, removals). For a local persistent PostgreSQL database `./judo.sh schema-upgrade` generates the difference against the running database and applies it.
 
 **⚠️ IMPORTANT: When Schema Migration is Required**
 
@@ -108,7 +120,7 @@ application/schema/
 │   └── [manual-scripts].sql        # Custom SQL migrations
 ├── README.adoc                      # Original migration instructions
 └── target/
-    └── <app>-application-schema-[version].jar   # Executable JAR
+    └── <app>-schema-[version].jar   # Executable JAR
 ```
 
 ## Schema Migration Workflow
@@ -119,34 +131,30 @@ When migrating, you need two model versions:
 - **Base version** (FROM): Current database schema version
 - **Update version** (TO): Target database schema version
 
-**Model versions** are embedded in the generated model artifacts and follow the pattern:
-```
-[version].[timestamp]_[git-commit]_[branch]
-Example: 1.1.0.20210929_004050_9602796_develop
-```
+**Model versions** are embedded in the generated model artifacts. The generated model POM sets `model-version` to `${project.version}`; build pipelines often use a timestamped form such as `1.1.0.20210929_004050_9602796_develop` (set it with `./judo.sh build -v <version>`).
 
-**Important**: This is the MODEL version (from `application/model/pom.xml`), NOT the application version.
+**Important**: This is the MODEL version (the `Judo-Models` bundle header / `model-version` property), NOT a separate application version.
 
 ### Step 2: Generate Migration Scripts
 
-**Automatic generation** creates SQL scripts by comparing two model versions:
+**Automatic generation** compares the base and the updated RDBMS model:
 
 ```bash
 cd application/schema
 
-# Generate migration SQL scripts
 mvn judo-rdbms-schema:generate \
-  -DbaseModelVersion=1.1.0.20210929_004050 \
-  -DupdateModelVersion=1.2.0.20211021_085156 \
-  -DdbType=postgresql
-
-# Scripts are generated in: migration/ directory
+  -DmodelName=<app> -DdbType=postgresql \
+  -DbaseModel=<base rdbms model file or mvn: url> \
+  -DupdateModel=<update rdbms model file or mvn: url> \
+  -DoutputDirectory=migration
 ```
 
-**What gets generated:**
-- DDL scripts for schema changes (ALTER TABLE, CREATE TABLE, DROP TABLE, etc.)
-- Data migration scripts (if detectable)
-- Stored as: `migration/[baseVersion]__[updateVersion].sql`
+**What gets generated** in `migration/<previous>_to_<latest>/` (dots and dashes of the versions become underscores):
+- an aggregated `00_<app>_incremental_<dialect>.changeset.xml` plus eight phase changesets: `check`, `backup`, `beforeIncremental`, `updateDataBeforeIncremental`, `incremental`, `updateDataAfterIncremental`, `aferIncremental` (sic, script `07_aferIncremental`) and `dropBackup`;
+- the model `<app>-rdbms_<version>_<dialect>.model`;
+- marker files `latest.version` and `previous.version` in the output directory, which drive base/update version resolution for the next run.
+
+Only changesets that contain developer knowledge matter in practice: the data-migration changesets (`updateDataBeforeIncremental`, `updateDataAfterIncremental`) are empty unless you write them.
 
 ### Step 3: Manual Migration Scripts (Optional)
 
@@ -156,19 +164,30 @@ Sometimes automatic generation cannot handle complex migrations:
 - Splitting/merging columns
 - Custom data fixes
 
-**Create manual SQL scripts** in `application/schema/migration/`:
+**Write the data-migration changesets** (`updateDataBeforeIncremental` / `updateDataAfterIncremental`) in the generated version folder under `application/schema/migration/`. Entity tables are named `T_ENTITIES_<NAME>` and columns `C_<NAME>` (check the generated changelog for the exact names):
 
 ```sql
--- migration/1.1.0__1.2.0_manual.sql
-
 -- Custom data migration
-UPDATE t_entity_user 
-SET full_name = CONCAT(first_name, ' ', last_name)
-WHERE full_name IS NULL;
+UPDATE T_ENTITIES_USER
+SET C_FULL_NAME = CONCAT(C_FIRST_NAME, ' ', C_LAST_NAME)
+WHERE C_FULL_NAME IS NULL;
 
 -- Complex transformation
 -- ... your custom SQL
 ```
+
+## Review Workflow for Incremental Migrations
+
+The schema generator classifies model changes as **identical**, **applyable** (can be done automatically) or **review-required** (for example renames, narrowing type changes, data loss). At application startup the runtime stops with an error when the base model stored in the database differs from the application's base model, so an incremental model must be executed first.
+
+- When a change needs review, generation writes `<name>.sql.missing` placeholder files. Replace them with the real SQL: rename each `.sql.missing` to `.sql` and place it in the review script directory (`reviewScriptDirectory`) before the migration can be applied. Without them `isApplyable()` is false and `execute` / `apply` fail with `IllegalStateException: Missing scripts`.
+- Generation overwrites every file in the output folder **except** the review files.
+- `useXmiId` (default `true`) lets a rename be detected as a *modify* rather than delete + create. Keep it `true` when entities or attributes are renamed.
+- `ignoreReview` defaults to `false` for `generate` and to `true` for the Maven `execute` / `apply` goals; `./update.sh ... --ignoreReview`-style pipelines set it explicitly.
+- Several accumulated per-snapshot migration folders (for example `130051 -> 175110` plus hand-written steps) can be consolidated: regenerate one continuous folder from the two model files (oldest base model -> current model), move the hand-written steps into it and delete the intermediate folder, so production goes through one continuous step. An exit with `DATABASE HAVE TO BE UPDATED` during this generate step is part of the normal flow.
+- A project can keep many steps (for example 18 steps with changesets `00`..`08`); only the non-empty data-migration changesets carry developer knowledge.
+
+In managed pipelines the same flow is exposed as a script, for example `./update.sh --version <v> --schema generate|execute --ignoreReview`, where the runner snapshots a database backup (such as a Neon backup branch `backup-<ts>`) before `execute` and rollback is `--schema restore --branch backup-<ts>`.
 
 ### Step 4: Test Migration
 
@@ -247,19 +266,18 @@ mvn judo-rdbms-schema:apply \
   -DdbPassword=[password]
 ```
 
-**Use case**: Fresh development database, testing
+**Use case**: Fresh development database, testing. `apply` takes `modelName`, `updateModel`, `reviewScriptDirectory` and `outputDirectory` (default `target/classes/schema`) in addition to the connection parameters.
 
 #### Generate Migration Scripts
 
-Compare two model versions and generate SQL:
+Compare two models and generate the changesets:
 
 ```bash
 mvn judo-rdbms-schema:generate \
-  -DbaseModelVersion=1.1.0.20210929_004050_9602796_develop \
-  -DupdateModelVersion=1.2.0.20211021_085156_21efaed_develop \
-  -DdbType=postgresql
+  -DmodelName=<app> -DdbType=postgresql \
+  -DbaseModel=<base model> -DupdateModel=<update model>
 
-# Output: migration/[base]__[update].sql
+# Output: migration/<previous>_to_<latest>/
 ```
 
 #### Execute Migration
@@ -288,14 +306,14 @@ cd application/schema
 # Build with Docker profile
 mvn clean install -Pdocker
 
-# Image created: <app>-application-schema:[version]
+# Image created: <app>-schema:[version]  (the image name is the schema module artifactId)
 ```
 
 #### Run Migration with Docker
 
 ```bash
 docker run --rm \
-  <app>-application-schema:latest \
+  <app>-schema:latest \
   execute \
   --baseModelVersion=1.1.0.20210929_004050_9602796_develop \
   --updateModelVersion=1.2.0.20211021_085156_21efaed_develop \
@@ -316,7 +334,7 @@ version: '3.8'
 
 services:
   db-migration:
-    image: <app>-application-schema:${VERSION}
+    image: <app>-schema:${VERSION}
     command:
       - execute
       - --baseModelVersion=${BASE_VERSION}
@@ -357,11 +375,12 @@ volumes:
    ```bash
    # Generate and review migration scripts
    mvn judo-rdbms-schema:generate \
-     -DbaseModelVersion=${CURRENT_PROD_VERSION} \
-     -DupdateModelVersion=${NEW_VERSION}
+     -DmodelName=<app> -DdbType=postgresql \
+     -DbaseModel=${CURRENT_PROD_RDBMS_MODEL} \
+     -DupdateModel=${NEW_RDBMS_MODEL}
    
-   # Review generated SQL
-   cat migration/${CURRENT_PROD_VERSION}__${NEW_VERSION}.sql
+   # Review generated changesets and any *.sql.missing placeholders
+   ls migration/*_to_*/
    ```
 
 2. **Test in Staging**
@@ -404,13 +423,13 @@ For zero-downtime deployments:
 
 ### Model Version Configuration
 
-Model version is typically set in `application/model/pom.xml`:
+The generated model module sets the model version from the project version:
 
 ```xml
-<properties>
-    <model-version>1.2.0.${maven.build.timestamp}_${git.commit.id.abbrev}_${git.branch}</model-version>
-</properties>
+<model-version>${project.version}</model-version>
 ```
+
+The composite timestamp/commit/branch form (for example `1.2.0.20211021_085156_21efaed_develop`) is not generated; supply it through the build version, for example `./judo.sh build -v <version>`. Override the property with a `pom.xml.model-properties-definition.fragment.hbs` fragment if you need a different scheme.
 
 ### Schema Module Properties
 
@@ -445,9 +464,13 @@ mvn dependency:tree | grep <app>-model
 **Problem**: `migration/` directory is empty after generate
 
 **Solution**:
-- Check both model versions are valid and different
+- Check both models are valid and different (`Update model is not defined` means `updateModel` is missing)
 - Verify model artifacts exist in local Maven repo (`~/.m2/repository`)
 - Check for errors in Maven output
+
+### Application stops at startup with "RDBMS model changes which have not been applied"
+
+**Problem**: The model version stored in the database (`JUDO_MODEL_VERSIONS`) differs from the deployed model. Run the incremental migration first, or restore the database. Do not set `ignoreVersionCheck=true` as a shortcut on a database that really needs migrating (see [OSGi Runtime Services](./osgi-runtime-services.md#runtime-model-version-check)).
 
 ### Migration Fails Halfway
 
@@ -473,16 +496,16 @@ UPDATE databasechangeloglock SET locked = false;
 - Convert data explicitly:
   ```sql
   -- Add new column with new type
-  ALTER TABLE t_entity_user ADD COLUMN age_new INTEGER;
+  ALTER TABLE T_ENTITIES_USER ADD COLUMN C_AGE_NEW INTEGER;
   
   -- Convert data
-  UPDATE t_entity_user SET age_new = CAST(age_old AS INTEGER);
+  UPDATE T_ENTITIES_USER SET C_AGE_NEW = CAST(C_AGE_OLD AS INTEGER);
   
   -- Drop old column
-  ALTER TABLE t_entity_user DROP COLUMN age_old;
+  ALTER TABLE T_ENTITIES_USER DROP COLUMN C_AGE_OLD;
   
   -- Rename new column
-  ALTER TABLE t_entity_user RENAME COLUMN age_new TO age;
+  ALTER TABLE T_ENTITIES_USER RENAME COLUMN C_AGE_NEW TO C_AGE;
   ```
 
 ### Docker Migration Cannot Connect to Database
@@ -526,7 +549,7 @@ migration-test:
     - cd application/schema
     - mvn judo-rdbms-schema:apply -DjdbcUrl=jdbc:postgresql://postgres/<app>_test -DdbUser=<app> -DdbPassword=test
     # Generate migration
-    - mvn judo-rdbms-schema:generate -DbaseModelVersion=${BASE_VERSION} -DupdateModelVersion=${CI_COMMIT_TAG}
+    - mvn judo-rdbms-schema:generate -DmodelName=<app> -DdbType=postgresql -DbaseModel=${BASE_RDBMS_MODEL} -DupdateModel=${NEW_RDBMS_MODEL}
     # Execute migration
     - mvn judo-rdbms-schema:execute -DbaseModelVersion=${BASE_VERSION} -DupdateModelVersion=${CI_COMMIT_TAG} -DjdbcUrl=jdbc:postgresql://postgres/<app>_test -DdbUser=<app> -DdbPassword=test
 ```
@@ -541,7 +564,7 @@ migration-test:
 ## File Locations
 
 - Schema module: `application/schema/`
-- Migration scripts: `application/schema/migration/`
+- Migration scripts: `application/schema/migration/<previous>_to_<latest>/`
 - Generated models: `application/model/target/generated-resources/model/`
 - Liquibase changelogs: `application/model/target/generated-resources/model/<app>-liquibase_[db].changelog.xml`
-- Schema JAR: `application/schema/target/<app>-application-schema-[version].jar`
+- Schema JAR: `application/schema/target/<app>-schema-[version].jar`

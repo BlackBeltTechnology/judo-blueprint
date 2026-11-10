@@ -1,3 +1,8 @@
+---
+title: Build Process
+description: judo.sh command reference, Maven profiles, build workflows, project template generation, Docker image build and build troubleshooting.
+---
+
 # Build Process
 
 This guide covers the build system, Maven configuration, and build workflows for the <app> project.
@@ -75,10 +80,10 @@ generateKarafModule=true
    - Example: `judo-esm-fullstack-project-template-application/src/main/resources/model/pom.xml.hbs`
 
 3. **Check for conditional blocks** in the template:
-   ```handlebars
-   {{#if rdbmsCreateSimpleName}}
-   <rdbmsCreateSimpleName>{{rdbmsCreateSimpleName}}</rdbmsCreateSimpleName>
-   {{/if}}
+   ```text
+   #if rdbmsCreateSimpleName
+   <rdbmsCreateSimpleName>(value of rdbmsCreateSimpleName)</rdbmsCreateSimpleName>
+   /if
    ```
 
 4. **Add parameter** to `generator-parameter.properties` instead of manually editing
@@ -117,6 +122,8 @@ By default the fragment resolves to an empty stub from the template jar. You ove
 
 **Override directory:** `application/generator-overrides/` (wired into the generator invocation in the root `pom.xml` via `<uri>${maven.multiModuleProjectDirectory}/application/generator-overrides</uri>`; a second override root `generator-overrides/` exists for the project-root generator step).
 
+#### Worked Example: Adding a Dependency
+
 **Worked example — add a runtime dependency to `application/app/pom.xml`:**
 
 1. Locate the marker in `application/app/pom.xml`:
@@ -134,7 +141,11 @@ By default the fragment resolves to an empty stub from the template jar. You ove
    ```
 3. Run `./judo.sh generate` (or `./judo.sh build`). The dependency now appears in the regenerated `application/app/pom.xml`, and its checksum in `.generated-files` stays stable because the content is produced by the template, not by a manual edit.
 
-Fragments are Handlebars templates, so you can use `{{ }}` expressions and generator parameters (for example `\<app>`) inside them.
+Fragments are Handlebars templates, so you can use expression syntax and generator parameters (for example `\<app>`) inside them.
+
+#### Available Fragment Extension Points
+
+Every generated module (application root, app, interceptors, karaf-features, schema, e2e, web-root) has these empty stubs; a file with exactly that name in the override directory survives regeneration and needs no `.generator-ignore` entry.
 
 **Available fragment extension points (from `judo-esm-fullstack-project-template`):**
 
@@ -220,6 +231,46 @@ Main orchestration script that simplifies common operations.
 ./judo.sh --help
 ```
 
+### Command Reference
+
+`./judo.sh COMMANDS... [OPTIONS...]` - several commands can be chained (`./judo.sh build clean start`).
+
+| Command | Purpose |
+|---------|---------|
+| `env <env>` | Use an alternate custom properties file (default `judo.properties`), e.g. `./judo.sh env compose-dev build start` |
+| `clean` | Stop the PostgreSQL container and clear its data |
+| `prune` (`-f`, `-y`) | Delete untracked files (see warning below) |
+| `update` (`-i`) | Update dependency versions in the JUDO project |
+| `generate` (`-i`) | Regenerate the application from the model (`-DgenerateApplication -DskipApplicationBuild`) |
+| `generate-root` (`-i`) | Regenerate the application root structure (`-DgenerateRoot`) |
+| `dump` | Dump PostgreSQL data before clearing and starting |
+| `import` (`-dn <name>`) | Import a dump; without a name the last one is loaded |
+| `schema-upgrade` | Persistent PostgreSQL only: generates the difference against the running database and applies it |
+| `build` | Build the project (options below) |
+| `reckless` | Build and run as fast as possible (skips validation and Docker) |
+| `start` | Run the application with PostgreSQL and Keycloak |
+| `stop` | Stop application, PostgreSQL and Keycloak |
+| `status` | Print the status of the containers |
+
+**`build` options:** `-v <version>` (model and application version), `-p` (parallel), `-a` (app module only), `-f` (frontend module only), `-sc` (build the schema CLI standalone JAR), `-d` / `--docker` (build Docker images), `-M` (skip model), `-B` (skip backend), `-F` (skip frontend), `-KA` (skip Karaf), `-S` (skip schema migration image), `-ma <arg>` (extra Maven argument), `-q` (quick: cache, no validation), `-i` (ignore checksum errors, regenerate and update checksums).
+
+**`start` options:** `-W` (do not watch bundle changes), `-K` (skip Keycloak), `-o "<name>=<value>,..."` with:
+
+| Option | Values |
+|--------|--------|
+| `runtime` | `karaf` \| `compose` |
+| `dbtype` | `hsqldb` \| `postgresql` |
+| `compose_env` | `compose-develop` \| `compose-postgresql-https` \| any directory under the model's `doc` directory |
+| `model_dir` | model project directory (default: the application's parent) |
+| `karaf_port`, `postgres_port`, `keycloak_port` | port overrides (Karaf HTTP default **8181**) |
+| `compose_access_ip` | alternate IP used to access the app |
+| `karaf_enable_admin_user` | `1` enables the Karaf admin user |
+| `java_compiler` | `ejc` (default) \| `javac` |
+
+Defaults for the options can be placed in `judo.properties` (or the properties file chosen with `env`).
+
+> **`judo.sh` has no `-D` pass-through.** Use `-d` / `--docker` to build Docker images and `-ma "<arg>"` for extra Maven arguments. Docker profiles activate on `!skipDocker`, so defining `-DskipDocker` in any form (even `=false`) **disables** Docker.  Without `-d`, `judo.sh build` itself passes `-DskipDocker -DskipSchemaDocker`, and `reckless` skips Docker builds.
+
 ### ⚠️ Prune (Destructive) — Read Before Running
 
 `./judo.sh prune` runs `git clean` against the working tree and **permanently deletes every file that is not tracked by git**. There is no undo.
@@ -250,6 +301,46 @@ Main orchestration script that simplifies common operations.
 - As the first step of a fully clean rebuild: `./judo.sh prune -f && ./judo.sh build -i`.
 
 If you only need to clear generator caches without touching untracked files, use `./judo.sh clean` instead — `clean` is non-destructive to untracked source files.
+
+## Frontend Build Recovery
+
+When `./judo.sh build -i` fails in the frontend reactor (typically after model or OpenSpec-driven changes, for example `TS2307 Cannot find module ~/services/data-axios/...`), delete the generated folders of the `frontend-react` module - `src/pages/`, `src/dialog/`, `src/containers/` and `src/services/` - and run `./judo.sh build -i` again; the generator recreates them. Re-running the build alone is not enough in this case.
+
+## Stale Artifacts and Multi-Module Build Order
+
+- A JUDO application is a Maven reactor (model, schema, sdk, internal, app, common). The SDK POM is regenerated at `generate-sources` **from the installed model jar in `~/.m2`**, not from the edited model source, so a stale installed jar poisons the whole chain. Building `sdk` standalone fails with `Could not collect dependencies` until model and schema are installed; then use `-pl` with `-o` and `validateModels=false`.
+- Tests can pass while the installed SNAPSHOT jars are stale (and `mvnd` can print `BUILD SUCCESS` while installing stale jars). Always rebuild with `./judo.sh build -i` (forces regeneration, ignoring checksums - hand edits not covered by `.generator-ignore` are lost) and verify the installed jar content with `unzip -l` / `javap` rather than jar timestamps. Working in two parallel copies of a repository is a common cause of such confusion.
+- Additive model changes (a new stored attribute) need **no** manual migration step: the generated Liquibase changelog (`<app>-liquibase_postgresql.changelog.xml` under `application/model/target/generated-resources/model/`) already contains the new column. See [Schema Evolution](./schema-evolution.md#when-no-manual-step-is-needed).
+- Do **not** run the `initdatatests` as part of the baseline build; they are very long and only needed when the init data changes.
+
+## Multi-Repository Development (platform changes)
+
+A runtime change can span several repositories (`judo-runtime-core`, `judo-platform`, `osgi-filestore`) plus the application. Create matching feature branches, build bottom-up (runtime-core, install the snapshot into `~/.m2`, then platform pins the new runtime-core, then the application pins the platform) and update the versions in **both** `application/pom.xml` and `judo-version.properties`. The `judo-versions` repository holds the real versions in its `pom.xml` `<properties>`; `src/main/resources/versions.properties` only contains `${}` placeholders. Before merging verify that the feature commit is an ancestor of the develop build and that the new artifact is really in the assembled `karaf-offline` zip or Docker image. `./judo.sh update` refreshes the pinned versions.
+
+## Creating a New Project from the ESM Fullstack Template
+
+The template (`judo-esm-fullstack-project-template`) has the modules `-root`, `-application`, `-common` and `-test`. The root module's resources contain `pom.xml.hbs`, `judo.sh.hbs`, `generator-parameter.properties.hbs`, `AGENTS.md.hbs`, `README.adoc.hbs` and the `pom.xml.*.fragment.hbs` files. To start a project:
+
+1. Place the model at `model/<app>.model` and generate the project with the `create-judo-project` goal of `judo-version-updater-maven-plugin` (parameters `-DmodelName`, `-DprojectGroupId`, `-DprojectArtifactId`, `-DprojectVersion`, `-Dversion`).
+2. The root POM has a `generate-root` execution with `synchronizeGitignore` (`esm=${basedir}/model/<app>.model`, ignored files `pom.xml`, `**/pom.xml`, `judo.sh`, `.mvn/jvm.config`).
+3. Add a `<server>` with the id `<app>-distribution` to `~/.m2/settings.xml` if you deploy artifacts.
+4. Run `./judo.sh build`; Docker must be installed (the local database and Keycloak run in containers).
+
+## Toolchain Bootstrap and Versions
+
+Node and pnpm versions are template parameters (defaults `node-version` 24.13.1, `pnpm-version` 10.15.0, `frontend-maven-plugin` 1.12.1; Maven properties `nodeVersion` / `pnpmVersion` override them). The `prepare-nodejs` profile runs `install-node-and-pnpm` into `${maven.multiModuleProjectDirectory}/.nodejs`, so the frontend and e2e modules need no pre-installed Node.
+
+## Docker Image Build
+
+The `docker` module builds one image tar per architecture with `jib-maven-plugin` 3.3.2 (profiles `x86_64`, `amd64`, `arm64`), writing `target/<artifactId>-<version>_docker_image_<arch>.tar` on the base image `azul/zulu-openjdk-debian:21-latest`. Tags come from the property `DOCKER_IMAGE_TAGS` (default `dev`). JMX exporter, Elastic APM and New Relic agents are added only when the template variables `dockerPrometheusJmxExporterAgentVersion`, `dockerElasticApmAgentVersion` and `dockerNewrelicAgentVersion` are set. The entrypoint runs `/<name>/bin/karaf run clean`, the exposed ports are 8181, 8081, 1099, 44444, 5000, 9090 and 5005, `/<name>/deploy` and `/<name>/data` are volumes, and files in `${project.basedir}/overrided` are copied into the image.
+
+## Eclipse Launch Configurations
+
+The template ships Eclipse m2e launchers: `BuildApplication.launch` (clean install of `application`), `BuildApplicationWithoutFrontend.launch` (adds `-DskipDocker=true -DskipFrontend=true`), `CompileCustomApp.launch` (clean install of `application/app`), `RunApplication.launch` (starts the backend from `application/karaf-offline` with `-DrunKaraf=true`) and `RunFrontend.launch` (profile `react-build`, `-DskipDist=true -DrunServer=true`, from `application/frontend`).
+
+## Template Agent-Docs Placeholders
+
+The generated agent-docs are Handlebars templates in the project template. They use only `docLink`/`localHubLink` helpers (defined in `EsmProjectHelper`, `judo-esm-fullstack-project-template-common`), a lower-case model-name expression and a model-name expression; literal double braces are escaped with a backslash. `docLink` becomes `[text](path)` and `localHubLink` becomes `[text](./README.md)`. Code constructs like `#if`/`#each` inside docs are examples only.
 
 ## Maven Commands
 
@@ -313,7 +404,7 @@ mvn clean install -DskipDocker
 2. **Model Transformation**
    - Load `/model/<app>.model`
    - Generate ESM, PSM, ASM models
-   - Create database schemas (see `docs/schema-evolution.md` for schema migration)
+   - Create database schemas (see [Schema Evolution](./schema-evolution.md) for schema migration)
    - Generate expression models
 3. **SDK Generation**
    - Create Java interfaces from ASM
