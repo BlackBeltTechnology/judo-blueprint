@@ -1,12 +1,15 @@
 # Tasks
 
+> **Origin is read-only.** Nothing is pushed, merged, tagged or released on `origin` from this work. All work stays on the local branch `feature/JNG-6380_cli_guidance`. A local `pre-push` hook blocks every push. Branches on origin are read only, never merged. judo-ng clones are read-only references, and fixes go only into local docs. Any task below that would touch origin (1.2 merge, 1.4 tag push, PRs, 7.1b `sweep-publish`, 9.2 release workflow, 9.4 rackinspect PR, 9.5 release) is **out of scope for the agent** and left to the owner.
+
+
 ## 1. Prerequisites (P0)
 
 - [x] 1.1 Pin the CLI: _(done: pinned via pom profile → target/judo-cli.jar; skills/_lib resolves $JUDO_CLI_JAR then target/)_
 set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`mermaid model`, authoring commands) and point the pom download to `target/judo-cli.jar`. Verify: `./mvnw validate -P download-model-cli` downloads it, and `java -jar target/judo-cli.jar mermaid model --help` prints usage.
-- [ ] 1.2 Merge `origin/feature/cciu-model-patterns` and `origin/feature/rackinspect-entity-lifecycle-and-ui-icon-patterns` into `develop`. Verify: `git rev-list --count develop..origin/feature/<b>` is 0 for both, and `Sandbox.model` metaVersion matches the pinned CLI.
+- [ ] 1.2 Merge `origin/feature/cciu-model-patterns` and `origin/feature/rackinspect-entity-lifecycle-and-ui-icon-patterns` into `develop`. Verify: `git rev-list --count develop..origin/feature/<b>` is 0 for both, and `Sandbox.model` metaVersion matches the pinned CLI. **[owner only: do NOT merge; origin branches are only read (cciu `2a27d6a`, rackinspect `aed8fdd`, each 2 ahead of origin/develop)]**
 - [ ] 1.3 Add `CONSENT.md` listing the session contributors, and get their approval on the PR. Verify: both contributors approved, or group 8 is deferred.
-- [ ] 1.4 Tag the last pre-change commit `archive/pre-kb-restructure` and push it. Verify: `git ls-remote --tags origin archive/pre-kb-restructure` returns the SHA. _(partial: tag exists locally (bda20d0), NOT pushed)_
+- [ ] 1.4 Tag the last pre-change commit `archive/pre-kb-restructure` and push it. Verify: `git ls-remote --tags origin archive/pre-kb-restructure` returns the SHA. _(partial: tag exists locally (bda20d0), NOT pushed)_ **[owner only: local tag `archive/pre-kb-restructure` = bda20d0 exists; not pushed]**
 
 - [x] 1.5 Add `target/` to `.gitignore` (the CLI jar, sweep work folders and scratch models live there). Verify: `git check-ignore target/sweep/x/shape.md` succeeds. _(done: git check-ignore passes)_
 
@@ -119,7 +122,7 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
   - `sweep-prepare` twice reuses the worktrees;
   - on two fixture projects that share an entry, `sweep-overlap` lists it;
   - `--clean` removes only merged sweep worktrees;
-  - `sweep-publish` refuses to push without confirmation.
+  - `sweep-publish` never pushes (origin is read-only); it only prepares local branches.
 - [ ] 7.2 Sweep `rackinspect@develop` with the D10b sequence (full; old SHA unreachable). Start with `model-overview` and `custom-overview`, and read `shape.md`, `domain.md` and `custom.md` to list candidates (model shapes with their custom code, plus recurring frontend and interceptor patterns); drill down only with read-only CLI tools (`mermaid model --scope … --depth 1`, `query esm`), then build neutral fragments. Re-validate the 38 rackinspect-only entries. Verify: the PR is green, `PROJECTS.md` has the new SHA, evidence entries cite that SHA, and the PR body lists every candidate from the overview with its target entry or `new`.
 - [ ] 7.3 Sweep `mlszksz-platform@develop` the same way (then run `sweep-overlap`), and re-validate its 34 sole entries. Verify: same checks as 7.2.
 - [ ] 7.4 Run the full `check --all` after the sweep merges. Verify: CI on `develop` is green.
@@ -138,15 +141,15 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 ## 9. kb quality, release and consumers (P7)
 
 - [ ] 9.1 Extend `tests/golden/kb-golden.json` (started with the agent-docs queries in 3.3) to ~60 queries and a `kb eval` step in `check-all`. Record the recall@5 threshold. Verify: CI fails if the threshold is set above the measured value.
-- [ ] 9.2 Implement `judo-catalog-maintain/scripts/version.sh` (JUDO NG string; tests for develop, feature and master) and `release-notes`. Port the release workflow from `judo-maven-plugin`:
+- [ ] 9.2 Implement `judo-catalog-maintain/scripts/version.sh` (JUDO NG string; tests for develop, feature and master) and `release-notes`. Port the release workflow from `judo-maven-plugin`: **[owner only: release workflow touches origin]**
   - tag only after gates and sandbox pass;
   - never retag;
   - prerelease for branch builds, full release for `master`.
 
   Verify: a test feature branch gets the expected tag and prerelease, and a forced gate failure creates no tag.
 - [ ] 9.3 Write the `judo-blueprint` skill (`references/search.md`, `apply.md`, `scripts/pin-source`, which writes the kb git source with `pin` and `subdir: catalog`). Verify: in a clean rackinspect worktree, `pi install git:…@<tag>` plus `pin-source <tag>` plus `kb index` returns the catalog entry for `kb_search "audit log entity"`. _(partial: skills/judo-blueprint has empty references/ and scripts/)_
-- [ ] 9.4 Open a rackinspect PR that switches to the pinned tag, and list the overlapping local skills for the team to remove (`judo-blueprint`, `judo-model-cli-mutations`, `judo-*-docs`, `judo-agent-docs-gap`). Verify: rackinspect `kb config` shows the pin, and pi shows no duplicate-skill warning after the listed removals.
-- [ ] 9.5 Cut the first `master` release `v1.0.0`. Verify: a non-prerelease GitHub release exists, and the tag tree has `catalog/`, `skills/` and `fragments/`, no `.jar`, and no CLI text under `catalog/`.
+- [ ] 9.4 Open a rackinspect PR that switches to the pinned tag, and list the overlapping local skills for the team to remove (`judo-blueprint`, `judo-model-cli-mutations`, `judo-*-docs`, `judo-agent-docs-gap`). Verify: rackinspect `kb config` shows the pin, and pi shows no duplicate-skill warning after the listed removals. **[owner only: PR on another repo]**
+- [ ] 9.5 Cut the first `master` release `v1.0.0`. Verify: a non-prerelease GitHub release exists, and the tag tree has `catalog/`, `skills/` and `fragments/`, no `.jar`, and no CLI text under `catalog/`. **[owner only: release on origin]**
 
 ## Workflow follow-up
 
