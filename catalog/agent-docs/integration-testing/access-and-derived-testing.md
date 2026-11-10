@@ -88,21 +88,21 @@ class IsNotAdminDerivedTest {
 
 ### What this proves
 
-That the JQL `getterExpression` of the `DERIVED` attribute parses, transforms, and evaluates against the entity row \u2014 catching the common authoring mistakes (wrong member name, missing `not`, wrong type, missing `!any()` at the tail of a singleton-typed expression).
+That the JQL `getterExpression` of the `DERIVED` attribute parses, transforms, and evaluates against the entity row — catching the common authoring mistakes (wrong member name, missing `not`, wrong type, missing `!any()` at the tail of a singleton-typed expression).
 
 ### What this does NOT prove
 
-That the value is correct under an authenticated actor context. If the getter expression contains `!getVariable("ACTOR", …)` switch to **Pattern C** \u2014 the variable resolver returns empty in the bare-DAO context, masking real bugs.
+That the value is correct under an authenticated actor context. If the getter expression contains `!getVariable("ACTOR", …)` switch to **Pattern C** — the variable resolver returns empty in the bare-DAO context, masking real bugs.
 
 ---
 
-## Pattern B \u2014 Testing `Access.getterExpression` per actor via the Dispatcher
+## Pattern B — Testing `Access.getterExpression` per actor via the Dispatcher
 
 `Access.getterExpression` is evaluated by the dispatcher when a request enters through the access point, **not** by the DAO. To exercise it from a test you go through `Dispatcher.callOperation` with a `JudoPrincipal` in the exchange.
 
 ### Setup steps
 
-1.  Seed the principal entity row via the entity DAO (since `managed=true` auto-insert is not implemented \u2014 see Limitations above).
+1.  Seed the principal entity row via the entity DAO (since `managed=true` auto-insert is not implemented — see Limitations above).
 2.  Seed the test data the access should scope (some rows the actor should see, some it should not).
 3.  Build a `JudoPrincipal` whose `attributes` map contains the keys consumed by your access getter (`userName`, `email`, etc.).
 4.  Resolve the `Dispatcher` from the fixture's injector.
@@ -192,23 +192,23 @@ That the access getter compiles, runs, and **scopes correctly per actor**. Run t
 
 ### Common failure modes this catches
 
-*   Wrong attribute name in `getVariable("ACTOR", "...")` \u2014 returns empty results for everyone.
-*   Wrong type in the typed prefix (`String!getVariable` vs `Boolean!getVariable`) \u2014 expression rejects at evaluation.
+*   Wrong attribute name in `getVariable("ACTOR", "...")` — returns empty results for everyone.
+*   Wrong type in the typed prefix (`String!getVariable` vs `Boolean!getVariable`) — expression rejects at evaluation.
 *   Forgetting `!any()` where the expression must terminate at a single instance.
 *   Off-by-one membership bugs from a `!filter` predicate that doesn't match the intent.
-*   `Access.upper`, `createable`, `updateable`, `deleteable` flag mismatches \u2014 the dispatcher rejects the operation with the access-point's permission semantics.
+*   `Access.upper`, `createable`, `updateable`, `deleteable` flag mismatches — the dispatcher rejects the operation with the access-point's permission semantics.
 
 ### What this does NOT prove
 
-That the menu actually surfaces this access in the UI \u2014 that requires the paired `MenuItemAccess` and is an E2E concern. See [E2E Testing Guide](../e2e-testing/README.md).
+That the menu actually surfaces this access in the UI — that requires the paired `MenuItemAccess` and is an E2E concern. See [E2E Testing Guide](../e2e-testing/README.md).
 
 ---
 
-## Pattern C \u2014 Testing DERIVED getters that depend on `ACTOR.*`
+## Pattern C — Testing DERIVED getters that depend on `ACTOR.*`
 
-When a `DERIVED` attribute's getter references `!getVariable("ACTOR", "...")`, its value is per-request \u2014 it can only be evaluated when a principal is in scope. The plain DAO path used in Pattern A returns empty because the variable resolver has nothing to resolve.
+When a `DERIVED` attribute's getter references `!getVariable("ACTOR", "...")`, its value is per-request — it can only be evaluated when a principal is in scope. The plain DAO path used in Pattern A returns empty because the variable resolver has nothing to resolve.
 
-The mechanics are the same as Pattern B: build a `JudoPrincipal`, put it in the exchange under `Dispatcher.PRINCIPAL_KEY`, and call the access-point query through the dispatcher. The difference is the assertion target \u2014 you read a `DERIVED` field off the *projected TO returned by the dispatcher response*, not a row count.
+The mechanics are the same as Pattern B: build a `JudoPrincipal`, put it in the exchange under `Dispatcher.PRINCIPAL_KEY`, and call the access-point query through the dispatcher. The difference is the assertion target — you read a `DERIVED` field off the *projected TO returned by the dispatcher response*, not a row count.
 
 ### Example
 
@@ -280,12 +280,12 @@ class OwnedByMeDerivedTest {
 
 ### Counter-example: why a DAO test would silently pass
 
-If you tried to assert `ownedByMe` via `orderDao.query().selectList()`, every row would come back with `ownedByMe = empty Optional` (or `false`, depending on coercion) regardless of the data, because there is no `__principal` in scope to populate `getVariable("ACTOR", "userName")`. The DAO test would either always fail or always trivially "pass" \u2014 neither catches the real bug. **Always route ACTOR-dependent derived getters through the dispatcher.**
+If you tried to assert `ownedByMe` via `orderDao.query().selectList()`, every row would come back with `ownedByMe = empty Optional` (or `false`, depending on coercion) regardless of the data, because there is no `__principal` in scope to populate `getVariable("ACTOR", "userName")`. The DAO test would either always fail or always trivially "pass" — neither catches the real bug. **Always route ACTOR-dependent derived getters through the dispatcher.**
 
 ---
 
 ## Cross-references
 
-*   [Mocking VariableResolver for custom operations](./advanced-patterns.md#pattern-mocking-variableresolver-for-authentication) \u2014 the analogous pattern for *custom Java code* that calls `VariableResolver.resolve("ACTOR", …)` directly. Use that helper when the SUT is a custom operation implementation; use Patterns B and C here when the SUT is the JQL evaluation pipeline itself.
-*   [Role Flags on the Principal Entity](../model/advanced-modeling-patterns.md#pattern-role-flags-on-the-principal-entity) \u2014 every model authored from that pattern should ship with the corresponding Pattern A (for the `isNotAdmin` mirror) and Pattern B (for the role-scoped access getter) tests.
-*   [Three actor shapes](../model/esm_metamodel/accesspoint.md#three-actor-shapes-authoring-reference) \u2014 determines which of `USER` / `PRINCIPAL` / `ACTOR` is populated, and therefore which test patterns apply.
+*   [Mocking VariableResolver for custom operations](./advanced-patterns.md#pattern-mocking-variableresolver-for-authentication) — the analogous pattern for *custom Java code* that calls `VariableResolver.resolve("ACTOR", …)` directly. Use that helper when the SUT is a custom operation implementation; use Patterns B and C here when the SUT is the JQL evaluation pipeline itself.
+*   [Role Flags on the Principal Entity](../model/advanced-modeling-patterns.md#pattern-role-flags-on-the-principal-entity) — every model authored from that pattern should ship with the corresponding Pattern A (for the `isNotAdmin` mirror) and Pattern B (for the role-scoped access getter) tests.
+*   [Three actor shapes](../model/esm_metamodel/accesspoint.md#three-actor-shapes-authoring-reference) — determines which of `USER` / `PRINCIPAL` / `ACTOR` is populated, and therefore which test patterns apply.

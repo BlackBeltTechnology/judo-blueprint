@@ -206,9 +206,9 @@ Example:
 
 ```java
 @Test
-void testCreateAddress(JudoTestFixture fixture) {
+void testCreateAddress(JudoRuntimeFixture fixture) {
     // 1. Get DAOs
-    SettlementDao settlementDao = fixture.newInstance(SettlementDao.class);
+    SettlementDao settlementDao = fixture.getInjector().getInstance(SettlementDao.class);
 
     // 2. Create prerequisite entities (entity layer)
     Settlement entitySettlement = settlementDao.create(SettlementForCreate.builder()
@@ -217,7 +217,7 @@ void testCreateAddress(JudoTestFixture fixture) {
 
     // 3. Get custom operation
     CreateAddressCustomImplementation createAddress =
-        ReferenceInjector.resolve(
+        ReferenceInjector.createAndInject(
             CreateAddressCustomImplementation.class,
             fixture.getInjector()
         );
@@ -234,7 +234,7 @@ void testCreateAddress(JudoTestFixture fixture) {
     createAddress.accept(null, input);
 
     // 6. Verify using DAO (entity layer)
-    AddressDao addressDao = fixture.newInstance(AddressDao.class);
+    AddressDao addressDao = fixture.getInjector().getInstance(AddressDao.class);
     assertEquals(1, addressDao.query().selectList().size());
 }
 ```
@@ -443,10 +443,10 @@ Use `dao.getById(entity.identifier())` when:
 
 ```java
 @Test
-void testComplexMapping(JudoTestFixture fixture) {
+void testComplexMapping(JudoRuntimeFixture fixture) {
     // 1. Get DAOs
-    AddressDao addressDao = fixture.newInstance(AddressDao.class);
-    PollingStationDao pollingStationDao = fixture.newInstance(PollingStationDao.class);
+    AddressDao addressDao = fixture.getInjector().getInstance(AddressDao.class);
+    PollingStationDao pollingStationDao = fixture.getInjector().getInstance(PollingStationDao.class);
 
     // 2. Create prerequisites (entity layer)
     Address address = addressDao.create(AddressForCreate.builder()

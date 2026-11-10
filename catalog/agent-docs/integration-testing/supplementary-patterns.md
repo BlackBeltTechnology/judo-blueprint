@@ -132,13 +132,13 @@ public class EntityATestFixtures {
 ```java
 @Test
 @JudoTest
-void testCreateEntityA(JudoTestFixture fixture) {
+void testCreateEntityA(JudoRuntimeFixture fixture) {
     // Create all prerequisites with one call
     EntityATestFixtures fixtures = new EntityATestFixtures(fixture.getInjector());
     fixtures.createAllPrerequisites();
     
     // Get custom operation
-    CreateEntityACustomImplementation createEntityA = ReferenceInjector.resolve(
+    CreateEntityACustomImplementation createEntityA = ReferenceInjector.createAndInject(
         CreateEntityACustomImplementation.class,
         fixture.getInjector()
     );
@@ -155,7 +155,7 @@ void testCreateEntityA(JudoTestFixture fixture) {
     createEntityA.customCall(input);
     
     // Verify
-    EntityADao entityADao = fixture.newInstance(EntityADao.class);
+    EntityADao entityADao = fixture.getInjector().getInstance(EntityADao.class);
     assertEquals(1, entityADao.query().selectList().size());
 }
 ```
@@ -173,8 +173,8 @@ void testCreateEntityA(JudoTestFixture fixture) {
 ## Pattern: Common Validation Utilities
 
 > **📖 Production Documentation**: For the complete ValidationUtils implementation and production usage patterns, see:
-> - [Common Patterns - ValidationUtils](./common-patterns.md#validationutils)
-> - [Custom Operations - ValidationUtils Pattern](./custom-operations.md#validationutils-pattern)
+> - [Backend patterns - ValidationUtils](../backend/patterns-and-best-practices.md#validationutils)
+> - [Backend error handling - validation strategy](../backend/error-handling-guide.md#validation-strategy)
 
 **Problem**: Same validation logic duplicated across multiple custom operations.
 
@@ -183,6 +183,8 @@ void testCreateEntityA(JudoTestFixture fixture) {
 **This section shows**: How to test operations that use ValidationUtils.
 
 ### ValidationUtils Class (Reference)
+
+> `ValidationUtils` is example project code, not a platform class. Write your own helper in the application module and unit-test it like this.
 
 ```java
 package [your.package].[yourmodel].custom.utils;
@@ -226,10 +228,11 @@ public class ValidationUtils {
      *
      * @param startDate the start date
      * @param endDate the end date
-     * @throws IllegalArgumentException if end date is before start date
+     * @throws IllegalArgumentException if end date is not after start date
+     *         (equal dates are rejected too)
      */
     public static void validateDateRange(LocalDate startDate, LocalDate endDate) {
-        if (endDate.isBefore(startDate)) {
+        if (!endDate.isAfter(startDate)) {
             throw new IllegalArgumentException("End date must be after start date");
         }
     }
@@ -338,7 +341,7 @@ void testValidateRequired() {
 ## Pattern: Idempotent Operations
 
 > **📖 Production Documentation**: For complete idempotent operation patterns and implementation, see:
-> - [Custom Operations - Idempotent Operation Pattern](./custom-operations.md#idempotent-operation-pattern)
+> - [Backend patterns - Idempotent Operation Pattern](../backend/patterns-and-best-practices.md#idempotent-operation-pattern)
 
 **Problem**: Some operations (like initialization) should be safe to call multiple times without errors or duplication.
 
@@ -408,13 +411,13 @@ public void run() {
 ```java
 @Test
 @JudoTest
-void testIdempotentBehavior(JudoTestFixture fixture) {
-    InitSystemCustomImplementation initSystem = ReferenceInjector.resolve(
+void testIdempotentBehavior(JudoRuntimeFixture fixture) {
+    InitSystemCustomImplementation initSystem = ReferenceInjector.createAndInject(
         InitSystemCustomImplementation.class,
         fixture.getInjector()
     );
     
-    ConfigDao configDao = fixture.newInstance(ConfigDao.class);
+    ConfigDao configDao = fixture.getInjector().getInstance(ConfigDao.class);
     
     // First call - should create
     initSystem.run();
@@ -475,8 +478,8 @@ public void customCall(CreateCampaignInput input) {
 
 ```java
 public static void validateDateRange(LocalDate startDate, LocalDate endDate, DateRangeConstraints constraints) {
-    // Check basic order
-    if (endDate.isBefore(startDate)) {
+    // Check basic order (equal dates are rejected as well)
+    if (!endDate.isAfter(startDate)) {
         throw new IllegalArgumentException("End date must be after start date");
     }
     
@@ -514,8 +517,8 @@ public static void validateDateRange(LocalDate startDate, LocalDate endDate, Dat
 ```java
 @Test
 @JudoTest(transaction = TransactionHandling.AUTO_ROLLBACK)
-void testInvalidDateRangeRejection(JudoTestFixture fixture) {
-    CreateCampaignCustomImplementation createCampaign = ReferenceInjector.resolve(
+void testInvalidDateRangeRejection(JudoRuntimeFixture fixture) {
+    CreateCampaignCustomImplementation createCampaign = ReferenceInjector.createAndInject(
         CreateCampaignCustomImplementation.class,
         fixture.getInjector()
     );
@@ -601,8 +604,8 @@ public static void validatePairedFields(
 ```java
 @Test
 @JudoTest(transaction = TransactionHandling.AUTO_ROLLBACK)
-void testIncompletePairedFieldsRejection(JudoTestFixture fixture) {
-    CreateLocationCustomImplementation createLocation = ReferenceInjector.resolve(
+void testIncompletePairedFieldsRejection(JudoRuntimeFixture fixture) {
+    CreateLocationCustomImplementation createLocation = ReferenceInjector.createAndInject(
         CreateLocationCustomImplementation.class,
         fixture.getInjector()
     );
@@ -643,7 +646,7 @@ class CreateEntityIntegrationTest {
     
     @Test
     @JudoTest
-    void testSuccessfulCreation(JudoTestFixture fixture) {
+    void testSuccessfulCreation(JudoRuntimeFixture fixture) {
         log.info("Testing successful entity creation");
         
         // Test setup
@@ -665,7 +668,7 @@ class CreateEntityIntegrationTest {
     
     @Test
     @JudoTest(transaction = TransactionHandling.AUTO_ROLLBACK)
-    void testValidationFailure(JudoTestFixture fixture) {
+    void testValidationFailure(JudoRuntimeFixture fixture) {
         log.info("Testing validation failure for missing required field");
         
         CreateEntityInput input = CreateEntityInput.builder()
@@ -824,8 +827,8 @@ public void customCall(CreateUserInput input) {
 ```java
 @Test
 @JudoTest
-void testDuplicateUsernameRejection(JudoTestFixture fixture) {
-    UserDao userDao = fixture.newInstance(UserDao.class);
+void testDuplicateUsernameRejection(JudoRuntimeFixture fixture) {
+    UserDao userDao = fixture.getInjector().getInstance(UserDao.class);
     
     // Create first user
     userDao.create(UserForCreate.builder()

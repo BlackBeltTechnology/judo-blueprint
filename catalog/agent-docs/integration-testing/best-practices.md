@@ -50,19 +50,19 @@ Choose the right transaction mode for your test:
 ```java
 // ✅ Use AUTO_ROLLBACK for read-only verification tests
 @JudoTest(transaction = TransactionHandling.AUTO_ROLLBACK)
-void testEntityCreatedWithCorrectData(JudoTestFixture fixture) {
+void testEntityCreatedWithCorrectData(JudoRuntimeFixture fixture) {
     // Test verifies data without needing persistence
 }
 
 // ✅ Use AUTO_COMMIT for persistence tests
 @JudoTest(transaction = TransactionHandling.AUTO_COMMIT)
-void testEntityPersisted(JudoTestFixture fixture) {
+void testEntityPersisted(JudoRuntimeFixture fixture) {
     // Test verifies entity persists across transactions
 }
 
 // ✅ Use MANUAL for complex multi-transaction scenarios
 @JudoTest(transaction = TransactionHandling.MANUAL)
-void testMultiStepWorkflow(JudoTestFixture fixture) {
+void testMultiStepWorkflow(JudoRuntimeFixture fixture) {
     // Test controls transaction boundaries explicitly
 }
 ```
@@ -97,9 +97,9 @@ public class AddressTestFixtures {
 ```java
 @Test
 @JudoTest
-void testCreatePollingStation(JudoTestFixture fixture) {
-    SettlementDao settlementDao = fixture.newInstance(SettlementDao.class);
-    AddressDao addressDao = fixture.newInstance(AddressDao.class);
+void testCreatePollingStation(JudoRuntimeFixture fixture) {
+    SettlementDao settlementDao = fixture.getInjector().getInstance(SettlementDao.class);
+    AddressDao addressDao = fixture.getInjector().getInstance(AddressDao.class);
     
     // Use fixtures for clean, readable tests
     Settlement settlement = AddressTestFixtures.createTestSettlement(settlementDao);
@@ -116,7 +116,7 @@ void testCreatePollingStation(JudoTestFixture fixture) {
 ```java
 @Test
 @JudoTest
-void testCreateAddress(JudoTestFixture fixture) {
+void testCreateAddress(JudoRuntimeFixture fixture) {
     // ... create address ...
     
     // ✅ Verify entity was created
@@ -169,15 +169,16 @@ void testCreateAddress(JudoTestFixture fixture) {
 **Ensure tests don't interfere with each other:**
 
 ```java
-// ✅ Use truncateTables = true (default)
+// ✅ Use truncateTables = true (default; effective for AUTO_COMMIT / MANUAL,
+//    AUTO_ROLLBACK relies on the rollback instead)
 @JudoTest(truncateTables = true)
-void testIsolated(JudoTestFixture fixture) {
-    // Database is clean before this test runs
+void testIsolated(JudoRuntimeFixture fixture) {
+    // Tables are truncated after this test (AUTO_COMMIT / MANUAL)
 }
 
 // ⚠️ Only disable when you have expensive setup
 @JudoTest(truncateTables = false)
-void testWithSharedData(JudoTestFixture fixture) {
+void testWithSharedData(JudoRuntimeFixture fixture) {
     // Make sure test handles existing data properly
 }
 ```
@@ -207,8 +208,8 @@ boolean exists = addressDao.getById(addressId, AddressMask.addressMask()).isPres
 ```java
 public abstract class BaseIntegrationTest {
     
-    protected <T> T getInstance(JudoTestFixture fixture, Class<T> clazz) {
-        return fixture.newInstance(clazz);
+    protected <T> T getInstance(JudoRuntimeFixture fixture, Class<T> clazz) {
+        return fixture.getInjector().getInstance(clazz);
     }
     
     protected void assertEntityExists(Object dao, Object identifier) {
@@ -228,7 +229,7 @@ public abstract class BaseIntegrationTest {
 - Tests need consistent, reusable test data
 - You want to centralize test data creation logic
 
-**Example implementation:**
+#### Example implementation
 
 ```java
 public abstract class BaseIntegrationTest {
@@ -290,19 +291,19 @@ public abstract class BaseIntegrationTest {
 }
 ```
 
-**Using in tests:**
+#### Using the base class in tests
 
 ```java
 class FaultRegistryBasicTest extends BaseIntegrationTest {
     
     @Test
     @JudoTest(
-        modelName = "rackinspect",
+        modelName = "<app>",
         dialect = "hsqldb",
         transaction = TransactionHandling.AUTO_ROLLBACK,
         truncateTables = true,
         modelSource = JudoTest.ModelSource.CLASSPATH,
-        modules = { RackinspectDaoModules.class }
+        modules = { AppDaoModules.class }
     )
     void testCreateFaultRegistry(JudoRuntimeFixture fixture) {
         // Clean, readable test using helper methods
@@ -414,7 +415,7 @@ void testEntityPersisted() {
 
 ```java
 // ❌ WRONG - Won't compile
-import hu.blackbelt.judo.runtime.core.jsl.fixture.*;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.*;
 
 @JudoTest(transaction = TransactionHandling.AUTO_COMMIT)  // ERROR!
 ```
@@ -423,8 +424,8 @@ import hu.blackbelt.judo.runtime.core.jsl.fixture.*;
 
 ```java
 // ✅ CORRECT - Import nested enum
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTest;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.TransactionHandling;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoTest;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoTest.TransactionHandling;
 
 @JudoTest(transaction = TransactionHandling.AUTO_COMMIT)  // Works!
 ```
@@ -718,16 +719,16 @@ Follow the **Arrange-Act-Assert** pattern:
 ```java
 @Test
 @JudoTest
-void testCreateAddress(JudoTestFixture fixture) {
+void testCreateAddress(JudoRuntimeFixture fixture) {
     // ARRANGE - Set up test data
-    SettlementDao settlementDao = fixture.newInstance(SettlementDao.class);
-    AddressDao addressDao = fixture.newInstance(AddressDao.class);
+    SettlementDao settlementDao = fixture.getInjector().getInstance(SettlementDao.class);
+    AddressDao addressDao = fixture.getInjector().getInstance(AddressDao.class);
     
     Settlement settlement = settlementDao.create(SettlementForCreate.builder()
         .withName("Test Settlement")
         .build());
     
-    CreateAddressCustomImplementation createAddress = ReferenceInjector.resolve(
+    CreateAddressCustomImplementation createAddress = ReferenceInjector.createAndInject(
         CreateAddressCustomImplementation.class,
         fixture.getInjector()
     );

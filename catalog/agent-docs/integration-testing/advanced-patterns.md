@@ -344,13 +344,13 @@ import [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.e
 
 @Test
 @JudoTest
-void testOperationRequiringAuthentication(JudoTestFixture fixture) {
+void testOperationRequiringAuthentication(JudoRuntimeFixture fixture) {
     // Get DAOs
-    UserDao userDao = fixture.newInstance(UserDao.class);
-    AddressDao addressDao = fixture.newInstance(AddressDao.class);
+    UserDao userDao = fixture.getInjector().getInstance(UserDao.class);
+    AddressDao addressDao = fixture.getInjector().getInstance(AddressDao.class);
 
     // Create custom implementation via ReferenceInjector
-    CreateAddressCustomImplementation createAddress = ReferenceInjector.resolve(
+    CreateAddressCustomImplementation createAddress = ReferenceInjector.createAndInject(
         CreateAddressCustomImplementation.class,
         fixture.getInjector()
     );
@@ -506,8 +506,8 @@ Test that your custom operations handle missing optional fields correctly:
 ```java
 @Test
 @JudoTest
-void testOptionalFieldsNotSet(JudoTestFixture fixture) {
-    CreateAddressCustomImplementation createAddress = ReferenceInjector.resolve(
+void testOptionalFieldsNotSet(JudoRuntimeFixture fixture) {
+    CreateAddressCustomImplementation createAddress = ReferenceInjector.createAndInject(
         CreateAddressCustomImplementation.class,
         fixture.getInjector()
     );
@@ -522,14 +522,14 @@ void testOptionalFieldsNotSet(JudoTestFixture fixture) {
     assertDoesNotThrow(() -> createAddress.customCall(input));
 
     // Verify entity created successfully
-    AddressDao addressDao = fixture.newInstance(AddressDao.class);
+    AddressDao addressDao = fixture.getInjector().getInstance(AddressDao.class);
     assertEquals(1, addressDao.query().selectList().size());
 }
 
 @Test
 @JudoTest(transaction = TransactionHandling.AUTO_ROLLBACK)
-void testOptionalFieldValidation(JudoTestFixture fixture) {
-    CreateAddressCustomImplementation createAddress = ReferenceInjector.resolve(
+void testOptionalFieldValidation(JudoRuntimeFixture fixture) {
+    CreateAddressCustomImplementation createAddress = ReferenceInjector.createAndInject(
         CreateAddressCustomImplementation.class,
         fixture.getInjector()
     );
@@ -596,9 +596,9 @@ When writing integration tests:
 ```java
 @Test
 @JudoTest
-void testInvalidReferenceRejection(JudoTestFixture fixture) {
+void testInvalidReferenceRejection(JudoRuntimeFixture fixture) {
     // Get DAOs
-    SettlementDao settlementDao = fixture.newInstance(SettlementDao.class);
+    SettlementDao settlementDao = fixture.getInjector().getInstance(SettlementDao.class);
 
     // Create and then DELETE a settlement
     Settlement settlement = settlementDao.create(SettlementForCreate.builder()
@@ -607,7 +607,7 @@ void testInvalidReferenceRejection(JudoTestFixture fixture) {
     settlementDao.delete(settlement);  // Now it doesn't exist
 
     // Get custom operation
-    CreateAddressCustomImplementation createAddress = ReferenceInjector.resolve(
+    CreateAddressCustomImplementation createAddress = ReferenceInjector.createAndInject(
         CreateAddressCustomImplementation.class,
         fixture.getInjector()
     );
@@ -675,8 +675,8 @@ public void customCall(CreateAddressInput input) {
 ```java
 @Test
 @JudoTest
-void testNullReference(JudoTestFixture fixture) {
-    CreateAddressCustomImplementation createAddress = ReferenceInjector.resolve(
+void testNullReference(JudoRuntimeFixture fixture) {
+    CreateAddressCustomImplementation createAddress = ReferenceInjector.createAndInject(
         CreateAddressCustomImplementation.class,
         fixture.getInjector()
     );
@@ -697,8 +697,8 @@ void testNullReference(JudoTestFixture fixture) {
 
 @Test
 @JudoTest
-void testDeletedReference(JudoTestFixture fixture) {
-    SettlementDao settlementDao = fixture.newInstance(SettlementDao.class);
+void testDeletedReference(JudoRuntimeFixture fixture) {
+    SettlementDao settlementDao = fixture.getInjector().getInstance(SettlementDao.class);
     
     // Create and delete
     Settlement settlement = settlementDao.create(SettlementForCreate.builder()
@@ -706,7 +706,7 @@ void testDeletedReference(JudoTestFixture fixture) {
         .build());
     settlementDao.delete(settlement);
 
-    CreateAddressCustomImplementation createAddress = ReferenceInjector.resolve(
+    CreateAddressCustomImplementation createAddress = ReferenceInjector.createAndInject(
         CreateAddressCustomImplementation.class,
         fixture.getInjector()
     );

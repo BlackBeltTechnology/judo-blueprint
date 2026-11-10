@@ -59,7 +59,7 @@ Use JudoTest + `ReferenceInjector` (see [Getting Started](getting-started.md)) f
 During `mvn package` on the `…-application-app` module, `maven-bundle-plugin` (configured with `extensions=true` in the parent POM) runs bnd, scans every `@Component` class, and writes one XML file per component under `OSGI-INF/` in the produced jar:
 
 ```
-application/app/target/<app>{{ projectPostfix }}-app-<version>.jar
+application/app/target/<app><postfix>-app-<version>.jar
 └── OSGI-INF/
     ├── com.<group>.<model>.custom.….MyCustomImplementation.xml
     ├── com.<group>.<model>.services.…OtherImplementation.xml
@@ -68,11 +68,13 @@ application/app/target/<app>{{ projectPostfix }}-app-<version>.jar
 
 The `application/integration-test` module already declares `…-application-app` as an upstream dependency (see `integration-test/pom.xml`). Because Maven builds `app` → `integration-test` in reactor order, the jar — and therefore every `OSGI-INF/*.xml` resource — is on the test classpath by the time `integration-test`'s `test` phase runs. A plain classpath lookup (`ClassLoader.getResourceAsStream("OSGI-INF/…xml")`) is all that is needed.
 
-> **Orphaned-from-reactor build.** The `application/integration-test` module is intentionally not listed in `application/pom.xml`'s module tree; it is built standalone via `mvn -pl application/integration-test …` (or from the module directory). This is the established JUDO pattern (see rackinspect's `application/test/` for a richer example) and is what lets the tests consume the already-packaged upstream app jar without creating a reactor cycle with the `package`-phase bundle plugin.
+> **Orphaned-from-reactor build.** The `application/integration-test` module is intentionally not listed in `application/pom.xml`'s module tree; it is built standalone via `mvn -pl application/integration-test …` (or from the module directory). This is the established JUDO pattern (see <app>'s `application/test/` for a richer example) and is what lets the tests consume the already-packaged upstream app jar without creating a reactor cycle with the `package`-phase bundle plugin.
 
 ## Complete Example
 
-Below is a self-contained descriptor contract test that asserts four `@Reference` fields across four custom-operation classes all declare `target="(profile=${app.profile})"`. Adapt the resource paths, reference names, and expected filter to your project's invariants.
+Below is a self-contained descriptor contract test that asserts the `@Reference` field `myService` in two custom-operation classes (`OP_A`, `OP_B`), which both declare `target="(profile=${app.profile})"`. Adapt the resource paths, reference names, and expected filter to your project's invariants.
+
+### Example Test Class
 
 ```java
 package com.example.<app>.integration.dscomponent;
@@ -209,7 +211,7 @@ These two test styles cover **different layers** and are complementary, not redu
 
 | Dimension | JudoTest + Guice testkit | Descriptor contract test |
 |---|---|---|
-| Test annotation | `@JudoTest` (+ `@RegisterExtension JudoRuntimeExtension`) | Plain `@Test` |
+| Test annotation | `@JudoTest` (the annotation registers `JudoTestExtension` itself) | Plain `@Test` |
 | Dependency wiring | Guice injector binds by type | Asserted at XML surface only |
 | What it proves | The class's methods produce correct behavior with the given dependencies | The class's wiring contract (what the OSGi container will read at runtime) is as intended |
 | Sees `@Reference.target()` | No (CLASS retention, not Guice-modeled) | Yes (rendered to `<reference target="…"/>`) |

@@ -71,7 +71,7 @@ application/integration-test/
 
 This provides:
 - `@JudoTest` annotation
-- `JudoTestFixture` for accessing DAOs
+- `JudoRuntimeFixture` for accessing DAOs
 - Transaction management utilities
 
 ### Project Dependencies
@@ -144,27 +144,22 @@ All JUDO integration tests must be annotated with `@JudoTest`. This annotation:
 
 1. **Sets up the test environment**: Initializes JUDO runtime, DAOs, and dependency injection
 2. **Manages transactions**: Controls how transactions are handled during tests
-3. **Truncates tables**: Optionally cleans up database tables between tests
+3. **Truncates tables**: Optionally cleans up database tables after a test (only in `AUTO_COMMIT` and `MANUAL` mode)
 
 ### Basic Test Structure
 
 ```java
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoRuntimeExtension;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTest;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTestFixture;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoTest;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoRuntimeFixture;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @JudoTest
 public class MyFirstIntegrationTest {
 
-    @RegisterExtension
-    static JudoRuntimeExtension judoRuntimeExtension = new JudoRuntimeExtension();
-
     @Test
-    public void testSomething(JudoTestFixture fixture) {
+    public void testSomething(JudoRuntimeFixture fixture) {
         // Your test code here
         // fixture.getInjector() provides access to DAOs and services
     }
@@ -176,7 +171,15 @@ public class MyFirstIntegrationTest {
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `transaction` | `TransactionHandling` | `AUTO_ROLLBACK` | Controls transaction behavior |
-| `truncateTables` | `boolean` | `true` | Whether to truncate tables before each test |
+| `truncateTables` | `boolean` | `true` | Whether to truncate tables **after** each test; applies only to `AUTO_COMMIT` and `MANUAL` (`AUTO_ROLLBACK` never truncates, rollback does the cleanup) |
+| `modelName` | `String` | `"example"` | Name of the model to load |
+| `dialect` | `String` | `"hsqldb"` | `hsqldb` or `postgresql`; overridden by env `JUDO_TEST_DIALECT` |
+| `container` | `String` | `"none"` | `none`, `postgresql`, `yugabytedb`; overridden by env `JUDO_TEST_CONTAINER` |
+| `modelSource` | `ModelSource` | `AUTO` | `AUTO` (filesystem, then classpath), `FILESYSTEM`, `CLASSPATH` |
+| `modules` | `Class<? extends Module>[]` | `{}` | Extra Guice modules (public no-arg constructor) |
+| `dataSourceMode` | `DataSourceMode` | `BY_METHOD` | `BY_METHOD`, `BY_CLASS`, `SINGLETON` (datasource lifecycle) |
+| `shareInjector` | `boolean` | `false` | Reuse the Guice injector across the methods of a class (with `BY_CLASS`/`SINGLETON`) |
+| `interceptors` | `Class<? extends OperationCallInterceptor>[]` | `{}` | Interceptors registered for the test |
 
 ### Transaction Handling Modes
 
@@ -220,7 +223,7 @@ public class MyTest {
 - Testing cascading operations
 - Verifying post-commit triggers
 
-**Warning**: Requires manual cleanup or `truncateTables = true`
+**Warning**: Committed data stays until it is truncated; keep `truncateTables = true` (default) or clean up manually
 
 #### 3. `MANUAL`
 
@@ -228,13 +231,13 @@ public class MyTest {
 @JudoTest(transaction = TransactionHandling.MANUAL)
 public class MyTest {
     @Test
-    public void testWithManualControl(JudoTestFixture fixture) {
-        fixture.begin();
+    public void testWithManualControl(JudoRuntimeFixture fixture) {
+        fixture.beginTransaction();
         try {
             // Your test logic
-            fixture.commit();
+            fixture.commitTransaction();
         } catch (Exception e) {
-            fixture.rollback();
+            fixture.rollbackTransaction();
             throw e;
         }
     }
@@ -243,7 +246,7 @@ public class MyTest {
 
 **Behavior**:
 - No automatic transaction management
-- You control `begin()`, `commit()`, and `rollback()`
+- You control `beginTransaction()`, `commitTransaction()`, and `rollbackTransaction()` on the `JudoRuntimeFixture`
 
 **Use when**:
 - Testing complex multi-transaction scenarios
@@ -275,7 +278,8 @@ public class MyTest {
 ```java
 @JudoTest(truncateTables = true)  // Default
 public class MyTest {
-    // All tables are truncated before EACH test method
+    // All tables are truncated AFTER each test method
+    // (only with AUTO_COMMIT or MANUAL; AUTO_ROLLBACK never truncates)
 }
 
 @JudoTest(truncateTables = false)
@@ -283,6 +287,8 @@ public class MyTest {
     // Tables are NOT truncated - data persists between tests
 }
 ```
+
+`AUTO_ROLLBACK` ignores `truncateTables`: the rollback is the cleanup, tables are never truncated. In `MANUAL` mode tables are truncated after the test even if you committed nothing. In `NONE` mode nothing is cleaned.
 
 **When to disable truncation**:
 - Tests require expensive setup data
@@ -300,11 +306,9 @@ public class MyTest {
 This is the simplest integration test pattern - testing Data Access Object operations directly.
 
 ```java
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoRuntimeExtension;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTest;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTestFixture;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoTest;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoRuntimeFixture;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.entity.user.User;
 import [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.entity.user.UserDao;
@@ -315,13 +319,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @JudoTest
 public class UserDaoTest {
 
-    @RegisterExtension
-    static JudoRuntimeExtension judoRuntimeExtension = new JudoRuntimeExtension();
-
     @Test
-    public void testCreateUser(JudoTestFixture fixture) {
+    public void testCreateUser(JudoRuntimeFixture fixture) {
         // 1. Get the DAO from the fixture
-        UserDao userDao = fixture.newInstance(UserDao.class);
+        UserDao userDao = fixture.getInjector().getInstance(UserDao.class);
 
         // 2. Create a new entity using the ForCreate builder
         User createdUser = userDao.create(UserForCreate.builder()
@@ -342,8 +343,8 @@ public class UserDaoTest {
     }
 
     @Test
-    public void testUpdateUser(JudoTestFixture fixture) {
-        UserDao userDao = fixture.newInstance(UserDao.class);
+    public void testUpdateUser(JudoRuntimeFixture fixture) {
+        UserDao userDao = fixture.getInjector().getInstance(UserDao.class);
 
         // Create initial entity
         User user = userDao.create(UserForCreate.builder()
@@ -362,8 +363,8 @@ public class UserDaoTest {
     }
 
     @Test
-    public void testDeleteUser(JudoTestFixture fixture) {
-        UserDao userDao = fixture.newInstance(UserDao.class);
+    public void testDeleteUser(JudoRuntimeFixture fixture) {
+        UserDao userDao = fixture.getInjector().getInstance(UserDao.class);
 
         // Create entity
         User user = userDao.create(UserForCreate.builder()
@@ -382,7 +383,7 @@ public class UserDaoTest {
 ```
 
 **Key Points**:
-- Use `fixture.newInstance(DaoClass.class)` to get DAOs
+- Use `fixture.getInjector().getInstance(DaoClass.class)` to get DAOs
 - Use `EntityForCreate.builder()` to create entities
 - Use `identifier()` to get entity identifiers for queries
 - Default `AUTO_ROLLBACK` transaction cleans up after each test
@@ -394,12 +395,10 @@ public class UserDaoTest {
 When testing custom operations (business logic), you need to instantiate the custom implementation class with its dependencies injected.
 
 ```java
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoRuntimeExtension;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTest;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTestFixture;
-import hu.blackbelt.osgi.api.ReferenceInjector;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoTest;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoRuntimeFixture;
+import hu.blackbelt.judo.runtime.core.guice.testkit.util.ReferenceInjector;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.entity.user.User;
 import [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.entity.user.UserDao;
@@ -412,13 +411,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @JudoTest
 public class CreateComplexEntityTest {
 
-    @RegisterExtension
-    static JudoRuntimeExtension judoRuntimeExtension = new JudoRuntimeExtension();
-
     @Test
-    public void testCreateComplexEntity(JudoTestFixture fixture) {
+    public void testCreateComplexEntity(JudoRuntimeFixture fixture) {
         // 1. Get required DAOs
-        UserDao userDao = fixture.newInstance(UserDao.class);
+        UserDao userDao = fixture.getInjector().getInstance(UserDao.class);
 
         // 2. Create prerequisite entities
         User user = userDao.create(UserForCreate.builder()
@@ -429,7 +425,7 @@ public class CreateComplexEntityTest {
 
         // 3. Instantiate custom operation with dependency injection
         CreateComplexEntityCustomImplementation createOperation = 
-            ReferenceInjector.resolve(
+            ReferenceInjector.createAndInject(
                 CreateComplexEntityCustomImplementation.class,
                 fixture.getInjector()
             );
@@ -450,8 +446,8 @@ public class CreateComplexEntityTest {
 ```
 
 **Key Points**:
-- Use `ReferenceInjector.resolve(CustomClass.class, fixture.getInjector())` to instantiate custom operations
-- ReferenceInjector handles OSGi `@Reference` injection automatically
+- Use `ReferenceInjector.createAndInject(CustomClass.class, fixture.getInjector())` to instantiate custom operations
+- `ReferenceInjector` (`hu.blackbelt.judo.runtime.core.guice.testkit.util`) injects by **type**: every non-static, non-final field (and every single-argument `set*` method) whose type the Guice injector can provide is filled. It does not read `@Reference` / `@Inject`, because OSGi's `@Reference` has CLASS retention and is invisible to reflection. Use `createAndInject(Class, injector)` to create and wire an instance, `injectReferences(instance, injector)` for an existing one
 - Create all prerequisite entities before calling custom operations
 - Custom operations may modify the input or create new entities
 
@@ -462,12 +458,10 @@ public class CreateComplexEntityTest {
 For complex scenarios requiring multiple transaction boundaries:
 
 ```java
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoRuntimeExtension;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTest;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.JudoTestFixture;
-import hu.blackbelt.judo.runtime.core.jsl.fixture.TransactionHandling;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoTest;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoRuntimeFixture;
+import hu.blackbelt.judo.runtime.core.guice.testkit.fixture.JudoTest.TransactionHandling;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.entity.user.User;
 import [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.entity.user.UserDao;
@@ -478,15 +472,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @JudoTest(transaction = TransactionHandling.MANUAL)
 public class MultiTransactionTest {
 
-    @RegisterExtension
-    static JudoRuntimeExtension judoRuntimeExtension = new JudoRuntimeExtension();
-
     @Test
-    public void testMultipleTransactions(JudoTestFixture fixture) {
-        UserDao userDao = fixture.newInstance(UserDao.class);
+    public void testMultipleTransactions(JudoRuntimeFixture fixture) {
+        UserDao userDao = fixture.getInjector().getInstance(UserDao.class);
 
         // Transaction 1: Create user
-        fixture.begin();
+        fixture.beginTransaction();
         User user1 = null;
         try {
             user1 = userDao.create(UserForCreate.builder()
@@ -494,48 +485,48 @@ public class MultiTransactionTest {
                     .withEmail("admin@example.com")
                     .withIsActive(true)
                     .build());
-            fixture.commit();
+            fixture.commitTransaction();
         } catch (Exception e) {
-            fixture.rollback();
+            fixture.rollbackTransaction();
             throw e;
         }
 
         // Verify user1 is persisted
-        fixture.begin();
+        fixture.beginTransaction();
         try {
             assertTrue(userDao.getById(user1.identifier()).isPresent());
-            fixture.commit();
+            fixture.commitTransaction();
         } catch (Exception e) {
-            fixture.rollback();
+            fixture.rollbackTransaction();
             throw e;
         }
 
         // Transaction 2: Create second user
-        fixture.begin();
+        fixture.beginTransaction();
         try {
             User user2 = userDao.create(UserForCreate.builder()
                     .withUserName("user2")
                     .withEmail("admin@example.com")
                     .withIsActive(true)
                     .build());
-            fixture.commit();
+            fixture.commitTransaction();
 
             // Both users should exist
-            fixture.begin();
+            fixture.beginTransaction();
             assertEquals(2, userDao.query().selectList().size());
-            fixture.commit();
+            fixture.commitTransaction();
         } catch (Exception e) {
-            fixture.rollback();
+            fixture.rollbackTransaction();
             throw e;
         }
     }
 
     @Test
-    public void testRollbackBehavior(JudoTestFixture fixture) {
-        UserDao userDao = fixture.newInstance(UserDao.class);
+    public void testRollbackBehavior(JudoRuntimeFixture fixture) {
+        UserDao userDao = fixture.getInjector().getInstance(UserDao.class);
 
         // Transaction that will be rolled back
-        fixture.begin();
+        fixture.beginTransaction();
         try {
             userDao.create(UserForCreate.builder()
                     .withUserName("rollbackuser")
@@ -544,19 +535,19 @@ public class MultiTransactionTest {
                     .build());
 
             // Intentionally rollback
-            fixture.rollback();
+            fixture.rollbackTransaction();
         } catch (Exception e) {
-            fixture.rollback();
+            fixture.rollbackTransaction();
             throw e;
         }
 
         // Verify user was NOT persisted
-        fixture.begin();
+        fixture.beginTransaction();
         try {
             assertEquals(0, userDao.query().selectList().size());
-            fixture.commit();
+            fixture.commitTransaction();
         } catch (Exception e) {
-            fixture.rollback();
+            fixture.rollbackTransaction();
             throw e;
         }
     }
@@ -564,7 +555,7 @@ public class MultiTransactionTest {
 ```
 
 **Key Points**:
-- Always wrap operations in `begin()` / `commit()` / `rollback()` blocks
+- Always wrap operations in `beginTransaction()` / `commitTransaction()` / `rollbackTransaction()` blocks
 - Use try-catch to ensure rollback on exceptions
 - Each transaction boundary is explicit and controlled
 - Useful for testing transaction isolation and consistency

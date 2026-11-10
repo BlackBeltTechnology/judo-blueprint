@@ -12,7 +12,7 @@ agent: general-purpose
 
 ## Overview
 
-This guide covers integration testing for custom business logic in <app>. It focuses on using the `judo-runtime-core-testkit` to test custom operations, interceptors, and validators.
+This guide covers integration testing for custom business logic in <app>. It focuses on using the `judo-runtime-core-guice-testkit` to test custom operations, interceptors, and validators.
 
 For a complete understanding of the backend architecture, code generation, and custom implementation patterns, please refer to the main [Backend Development Guide](../backend/README.md).
 
@@ -25,8 +25,8 @@ For a complete understanding of the backend architecture, code generation, and c
 This project uses SDKMAN for version management. Required versions are specified in `.sdkmanrc`:
 
 ```bash
-java=21.0.7-zulu
-maven=3.9.10
+java=21.0.4-zulu
+maven=3.9.9
 mvnd=1.0.2
 ```
 
@@ -44,8 +44,8 @@ cd [project-name]
 sdk env install
 
 # 4. Verify
-java -version   # Should show 21.0.7-zulu
-mvn -version    # Should show 3.9.10
+java -version   # Should show 21.0.4-zulu
+mvn -version    # Should show 3.9.9
 ```
 
 **How It Works**:
@@ -68,5 +68,7 @@ For comprehensive information on backend development, please see the [Backend De
 - **[Advanced Integration Testing Patterns](advanced-patterns.md)** - Advanced techniques for complex testing scenarios.
 - **[Testing Access Rules and DERIVED Attributes](access-and-derived-testing.md)** - Pattern A (DAO-projected derived attributes), Pattern B (`Access.getterExpression` per actor via Dispatcher), Pattern C (DERIVED getters that read `ACTOR.*`). Closes the gap between entity-level DAO tests and full E2E.
 - **[Supplementary Testing Patterns](supplementary-patterns.md)** - Additional patterns and examples.
+- **[Interceptor Testing](interceptor-testing.md)** - `@JudoTest(interceptors = …)`, programmatic registration, execution order (registration order for `preCall` and `postCall`), by-type dependency injection.
+- **[Runtime Fixture Internals and Test Scoping](runtime-fixture-and-test-scope.md)** - How the injector is composed, fixture lifecycle, self-contained class-scoped tests.
 - **[Type Safety in Integration Tests](type-safety.md)** - Ensuring type safety in your tests.
 - **[OSGi DS Descriptor Contract Tests](osgi-ds-descriptor-tests.md)** - Verify `@Reference` target filters, cardinality, policy, and service properties by asserting against the SCR component XML descriptors emitted by `maven-bundle-plugin`. Needed because OSGi's `@Reference` annotation has CLASS retention and is invisible to reflection / the Guice testkit.
