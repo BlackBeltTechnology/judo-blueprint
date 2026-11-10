@@ -1,0 +1,139 @@
+{
+ "batch": "mg2",
+ "entries": {
+  "access-paired-with-menu-item": {
+   "status": "rewritten",
+   "fragment": "access-paired-with-menu-item",
+   "kb": [
+    "menu item access actor menuItems access",
+    "menu-items.tsx routes.tsx generator-ignore",
+    "MenuItemGroup hidden hiddenBy menu orientation",
+    "place column DataColumn viewable table row transfer object judo-cli",
+    "transform --load frontend checksum manual changes in the generated files build -f -i"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/ui.md#MenuItemAccess",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#UI Requirements on the Target TO",
+    "catalog/agent-docs/model/ui-authoring-guide.md#15 Step 3 menu wiring",
+    "catalog/agent-docs/frontend/extension-points.md#Extra Routes"
+   ],
+   "fixes": [
+    "removed GraphQL verification, EList/xmi:id authoring notes",
+    "added table-column requirement for list accesses",
+    "generated-file claims marked as project practice/verify",
+    "added SYSTEM actor exception"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "api-package-thin-ref-projection": {
+   "status": "rewritten",
+   "fragment": "api-package-thin-ref-projection",
+   "kb": [
+    "transient relation input transfer object operation parameter picker range",
+    "relationKind AGGREGATION ASSOCIATION COMPOSITION transfer object relation",
+    "mapped transfer object mapping createable updateable deleteable data member MAPPED"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Relation kinds per layer and the bidirectional rules",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/best-practices/model/transient-relation-parameter.md"
+   ],
+   "fixes": [
+    "removed GraphQL verification and tree dump",
+    "AGGREGATION: unmapped TO rule, CLI cannot set it",
+    "picker/body-access claims marked verify"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "derived-relation-membership-invariant": {
+   "status": "rewritten",
+   "fragment": "derived-relation-membership-invariant",
+   "kb": [
+    "update through derived relation filter predicate post-update rejected validation",
+    "signed identifier refreshInstance updateInstance filter not re-evaluated",
+    "derived access getterExpression filter entity DAO bypass"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Access",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers",
+    "catalog/model-blueprints/testkit-integration-foundation/backend.md#Access-link role x ownership matrix"
+   ],
+   "fixes": [
+    "removed pseudo-model dumps and REST paths",
+    "custom-op/DAO bypass marked verify",
+    "added interceptors-do-not-run note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "identifier-attribute-vs-relation": {
+   "status": "rewritten",
+   "fragment": "identifier-attribute-vs-relation",
+   "kb": [
+    "referential integrity relation instead of string id attribute foreign key",
+    "polymorphic target reference type enum audit event",
+    "range getRangeFor relation picker AggregationInput reference field",
+    "GET_RANGE choice modifier getRangeFor operation generated"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#REST Wire Contract > Range and Choice Operations",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Relation kinds per layer and the bidirectional rules"
+   ],
+   "fixes": [
+    "removed GraphQL verification",
+    "AggregationInput/not-found claims marked verify",
+    "getRangeFor and NOT_ACCEPTED_BY_RANGE tied to docs",
+    "AGGREGATION CLI note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "relation-driven-crud-with-custom-input": {
+   "status": "rewritten",
+   "fragment": "relation-driven-crud-with-custom-input",
+   "kb": [
+    "OperationFlowManager redirect operation result filterRecords refresh",
+    "__updateable __deletable per-instance flags createable relation access enabledBy",
+    "operation return type mapped unmapped transfer object navigation view",
+    "mapped transfer object requires at least one mapped attribute mapping rule"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Access CRUD Rules",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#UI Requirements on the Target TO",
+    "catalog/agent-docs/model/model-validation-and-transformation.md#Creatable transfer objects",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers"
+   ],
+   "fixes": [
+    "removed pseudo-model DSL, REST/DI key detail",
+    "interceptors-not-around-custom-ops note",
+    "return-type matrix marked partly verify",
+    "added creatable-binds-required-features rule"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "thin-identifiable-result-for-parent-relation-create": {
+   "status": "rewritten",
+   "fragment": "thin-identifiable-result-for-parent-relation-create",
+   "kb": [
+    "operation output unmapped transfer object view mode form no identifier refresh",
+    "operation enabledBy custom operation transfer object stateful mapped operation interceptors do not run",
+    "OperationFlowManager redirect operation result filterRecords refresh"
+   ],
+   "docs_used": [
+    "catalog/best-practices/frontend/operation-flow-redirect-pattern.md#Platform base",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md",
+    "catalog/best-practices/model/operation-return-type-navigation.md"
+   ],
+   "fixes": [
+    "removed ESM DSL and TypeScript sample; dummy-attribute rule marked verify",
+    "interceptor note added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

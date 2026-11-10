@@ -1,134 +1,120 @@
 ---
-id: "thin-identifiable-result-for-parent-relation-create"
-title: "Thin Identifiable Result for Parent-Relation Create Operations"
-domain: "model"
-category: "transfer"
-score: 0.0
-usage_count: 0
-alternative_count: 0
-first_seen: "2026-05-13"
-last_updated: "2026-05-13"
-projects:
-  - compsych-letter-demo
-format: legacy
-fragment: pending
+id: thin-identifiable-result-for-parent-relation-create
+title: Thin Identifiable Result for Parent-Relation Create Operations
+description: "A custom create-on-relation operation returns a minimal mapped transfer object of the new row, so the frontend can redirect to the caller's relation view without a full second projection."
+aliases: [thin result, identifiable result, create on relation return type, dummy attribute result]
+keywords: [custom operation, create, return type, mapped transfer object, identifier, OperationFlowManager, redirect, relation]
+tags: ["domain:model", "layer:model", "project:compsych-letter-demo", "status:single-project"]
+category: transfer
+status: single-project
+projects: [compsych-letter-demo]
+evidence: ["compsych-letter-demo:unrecorded"]
+alternatives: []
+first_seen: 2026-05-13
+fragment: thin-identifiable-result-for-parent-relation-create
+diagram: { kinds: [entity, transfer, operation], members: types }
+last_updated: 2026-11-10
 ---
-## Purpose
+## Intent
 
-Custom create operation on a parent (`A.createB(input) : ?`) should return a **thin Identifiable projection of B** — mapped TO carrying only `__identifier` plus a dummy attribute — and let `OperationFlowManager` redirect the UI to the **caller's relation view** of B. Avoids modelling a full B transfer projection just for the post-create landing page. Avoids the standalone `<BTO>View` route ever being the canonical surface for B.
+A custom create operation on a parent (`A.createB(input)`) should return a thin mapped projection of the new B, enough to carry its identifier, and let the frontend redirect to the caller's own relation view of B. This avoids a full second projection of B just for the landing page, and keeps the standalone view of B from becoming the canonical surface.
 
-## §1 The rule
+## Practice
 
-For `A → B` via relation `A.bs : B[0..*]` (or single-valued `A.b : B[0..1]`), when create-B is a custom op `A.createB(input: BInput)`:
+For a relation from A to B (list or single) where create-B is a custom operation:
 
 | Decision | Choice |
 |---|---|
-| Return type | **Mapped TO of B**, with a single dummy attribute. Carries `__identifier`. |
-| Default Layer-1 navigation (standalone `<TO>View`) | **Suppressed** by `OperationFlowManager`. |
-| Post-op landing | **Caller's relation view** — the same list the user opened the create form from, filtered/selected to the new row. |
-| Full `BTO` mapped TO | Continues to exist for the relation list + detail. Not used as the op's return type. |
+| Return type | a mapped transfer object of B with one attribute; it carries the identifier |
+| Default navigation (standalone view of the returned type) | overridden by a frontend `OperationFlowManager` |
+| Landing | the caller's relation view of B, filtered or selected to the new row |
+| Full B transfer object | stays for the relation list and detail; not the operation's return type |
 
-Effect: one canonical UI for B (the parent-rooted relation detail), one source of truth for B's mapped projection (`BTO`), and an id-carrying result that the frontend can route on without re-fetching by query.
+Why a separate thin transfer object rather than the full one:
 
-## §2 Why a thin Identifiable, not the full `BTO`
+- A mapped transfer object needs at least one mapped attribute (project reading; the agent-docs do not state it, *verify*), so the thin type keeps one attribute that is never shown. Document it so nobody renders it later.
+- The standalone view of the full B type stays unused: nothing returns it, so nothing links into it (one representation per concept, see [[relation-driven-crud-with-custom-input]]).
+- The operation contract does not change when the full B projection gains or loses fields.
+- The result is small and holds only the identifier.
+- If the result ever feeds a refresh or edit form, only the identifier is meaningful; there is no half-filled edit surface.
+- Make the thin type read-only (not createable, updateable or deleteable).
 
-JUDO requires a mapped TO to declare at least one mapped attribute. An identity-only return is therefore modelled as a **separate, minimal** mapped TO over B:
+The operation takes an unmapped input transfer object when its shape differs from B ([[unmapped-transfer-dto]]). The body is custom project code; interceptors never run around a custom operation, so required checks belong in the body.
 
-```
-TransferObjectType IdentifiableB mapping B {
-    name : String   // dummy. Never rendered. Exists to satisfy ESM mapping rule.
-}
-```
+On the frontend, a flow manager registered for this operation maps the result to an actor, an access and a filter on the new identifier. Its interface is in the [action hooks guide](../../agent-docs/frontend/hooks/action-hooks.md); recipes in [[operation-flow-manager-redirect]]. Project practice, the shape of the returned object: actor name, access name that resolves the parent, and a filter on the identifier of the result. If the relation list lives deeper than the access, use whichever navigation the flow manager contract supports (id-based detail or filtered list).
 
-Reasons to prefer this over returning the full `BTO`:
+### When not to use it
 
-| Reason | Detail |
+| Case | Use instead |
 |---|---|
-| **Standalone `<BTO>View` stays unused** | Generator emits the route, but no op ever returns `BTO`, so no link/breadcrumb funnels users into it. One representation per concept. |
-| **Decouples op contract from list/detail projection** | Adding/removing fields on `BTO` for the relation row UI does not change the op's payload contract. |
-| **Wire payload minimal** | Result carries identifier only. Browser re-fetches via the canonical access-context detail after redirect. |
-| **No accidental write-back coupling** | If the op result is ever piped into a `_refreshInstance<BTO>` / inline edit form by the generator, only the identifier is meaningful — no half-populated edit surface. |
+| The operation returns another entity (the parent or a sibling) | The default navigation for the returned type fits ([[operation-return-type-navigation]]). |
+| The result needs inline editing on the caller page | The full B type with output behaviours ([[operation-output-with-behaviors]]). |
+| A multi-step flow where the next step depends on computed state | A redirect transfer object ([[operation-flow-redirect-pattern]]). |
+| The create is fire-and-forget and the user stays on the list | No return value; the list refreshes. |
 
-The dummy attribute exists purely to satisfy the metamodel. `visible=false` on it removes it from the auto-form if any view ever instantiates the TO; in practice the TO is never rendered, only the id is read.
+A void return refreshes the list, but the user must find the new row; the thin result enables landing directly on it.
 
-## §3 Why not `void` and refresh?
+## Rationale
 
-`void` return causes the caller list to refresh — new row appears, but the user has to scan/click it to open detail. Thin Identifiable carries the new `__identifier` out, enabling **direct row landing** via `OperationFlowManager` filterRecords/id navigation. Use `void` only when the create is fire-and-forget and the user should stay on the list with no row-selection signal.
+- One canonical view for B, one source for its projection, an operation contract independent of that projection.
+- Cost: one more transfer object, a flow manager registration per such operation, and an unused attribute that needs a comment.
+- Prefer it when a create-on-relation operation exists, the parent has a canonical relation list and detail for B, and you do not want the standalone view reachable.
 
-## §4 Worked example — `A.createB`
+## Example
 
-Model (ESM mutation outline; adapt names to the local model):
+A project view has a tasks relation to a mapped task view (the canonical list and detail). The project view's `createTask` operation takes an unmapped task create input (a name and a description) and returns a thin read-only task reference with only the name. The frontend flow manager opens the project's tasks list filtered to the new task. The diagram shows the shape. Observed in compsych-letter-demo.
 
+## When to avoid
+
+- See the table above: another entity returned, inline edit, multi-step flows, fire-and-forget creates.
+- Prototypes with no frontend flow manager: without the redirect the thin result lands on the standalone view and shows only the dummy attribute.
+
+## Related
+
+- [[relation-driven-crud-with-custom-input]] — shape-divergent create, return-type matrix, anti-patterns
+- [[operation-flow-manager-redirect]] — flow manager registration and recipes
+- [[operation-return-type-navigation]] — the default navigation this overrides
+- [[operation-flow-redirect-pattern]] — redirect-object workflow alternative
+- [[actor-based-transfer-projection]] — one transfer object per relation target
+- [[managed-actor-admin-pattern]] — admin surface with a custom operation and redirect
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=thin-identifiable-result-for-parent-relation-create cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class IdentifiableTask {
+    <<Transfer>>
+    +String name
+  }
+  class Project {
+    <<Entity>>
+    +String title
+  }
+  class ProjectView {
+    <<Transfer>>
+    +String title
+    +createTask(TaskCreateInput) IdentifiableTask
+  }
+  class Task {
+    <<Entity>>
+    +String name
+    +String description
+  }
+  class TaskCreateInput {
+    <<Transfer>>
+    +String name
+    +String description
+  }
+  class TaskView {
+    <<Transfer>>
+    +String name
+    +String description
+  }
+  IdentifiableTask ..> Task : maps
+  Project *-- "*" Task : tasks
+  ProjectView ..> Project : maps
+  ProjectView o-- "*" TaskView : tasks
+  TaskView ..> Task : maps
 ```
-// Full mapped TO for relation list + detail (canonical surface for B)
-TransferObjectType BTO mapping B {
-    name        : String
-    description : String
-    // … other rendered attributes
-}
-
-// Thin Identifiable TO — only ever used as createB's return type
-TransferObjectType IdentifiableB mapping B {
-    name : String   // dummy, satisfies mapping requirement
-}
-
-// Unmapped input TO — shape-divergent from BTO (see relation-driven-crud-with-custom-input §2)
-TransferObjectType BCreateInput {
-    name        : String  required
-    description : String
-    // …input-shape fields, may include parent reference, sentinels, etc.
-}
-
-// Custom op on parent
-ATO.createB(input: BCreateInput) : IdentifiableB
-    enabledBy: <expr gating create on A>
-```
-
-Frontend redirect (see [operation-flow-manager-redirect.md](../frontend/operation-flow-manager-redirect.md) for registration):
-
-```typescript
-import { OperationFlowManager, OperationInput } from '~/generated';
-
-export const customFlowManager: OperationFlowManager = {
-  shouldUseCustomFlow: (input: OperationInput) =>
-    input.operationName === 'createB',
-
-  handleResult: (input: OperationInput) => {
-    // input.result is the IdentifiableB payload — only __identifier matters.
-    return {
-      actor: 'AActor',           // FQN of the actor whose access link surfaces the A→B relation
-      access: 'as',              // access link name on the actor that resolves to the A row
-      // navigate into the A's `bs` relation detail, filtered to new row:
-      filterRecords: {
-        __identifier: [{ operator: 'equal', value: input.result.__identifier }],
-      },
-    };
-  },
-};
-```
-
-If the relation list lives under a deeper path (`actor.as → A → bs`), use the navigation shape supported by your `OperationFlowManager` contract — id-based detail vs filterRecords list — per §3 return-type matrix of [relation-driven-crud-with-custom-input.md](relation-driven-crud-with-custom-input.md#3-return-type-matrix). The principle is the same: land in the **caller's relation view**, not in a standalone `<BTO>View`.
-
-## §5 When this rule does NOT apply
-
-| Case | Why thin-Identifiable is wrong |
-|---|---|
-| Op returns a different entity than what was created (e.g. returns the parent or a sibling) | Layer-1 default navigation is meaningful; redirect target depends on the actual returned entity. |
-| Result needs immediate inline edit on the caller page (OPERATION_OUTPUT_UPDATE) | Generator emits an inline edit form from the returned mapped TO. Use the full `BTO`. See [operation-output-with-behaviors.md](operation-output-with-behaviors.md). |
-| Multi-step workflow where the next step depends on backend-computed state (not just id) | Return a redirect TO carrying actor/access/operation per [operation-flow-redirect-pattern.md](../frontend/operation-flow-redirect-pattern.md). |
-| Create is fire-and-forget; user should not be moved off the list | Return `void`. List refreshes; no row selection. |
-
-## §6 Trade-offs
-
-- **Pros** — single canonical view for B; op contract independent of `BTO` projection drift; minimal wire payload; standalone `<BTO>View` becomes inert; aligns with one-representation-per-concept rule (`relation-driven-crud-with-custom-input` §3).
-- **Cons** — one extra TO declaration (`IdentifiableB`); requires `OperationFlowManager` registration for every such op; the dummy attribute is awkward and must be documented to discourage future readers from rendering it.
-- **Prefer when** — create-on-relation custom op exists, parent has a canonical access-context relation list/detail for B, and you do not want generated standalone `<BTO>View` to be a reachable surface.
-
-## See also
-
-- [relation-driven-crud-with-custom-input.md](relation-driven-crud-with-custom-input.md) — §2 shape-divergent create rule; §3 return-type matrix; §5 anti-patterns
-- [operation-flow-manager-redirect.md](../frontend/operation-flow-manager-redirect.md) — `OperationFlowManager` registration + handleResult recipes
-- [operation-return-type-navigation.md](operation-return-type-navigation.md) — Layer-1 default behaviour that this rule overrides
-- [operation-flow-redirect-pattern.md](../frontend/operation-flow-redirect-pattern.md) — `@redirect`-annotated multi-step workflow alternative
-- [actor-based-transfer-projection.md](actor-based-transfer-projection.md) — one-TO-per-relation-target rule
-- [managed-actor-admin-pattern.md](../backend/managed-actor-admin-pattern.md) — admin surface combining custom op + access-context redirect
+<!-- /mermaid:generated -->

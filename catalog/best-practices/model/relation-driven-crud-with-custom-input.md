@@ -1,136 +1,153 @@
 ---
-id: "relation-driven-crud-with-custom-input"
-title: "Relation-Driven CRUD with Custom-Input Operations"
-domain: "model"
-category: "transfer"
-score: 0.0
-usage_count: 0
-alternative_count: 0
-first_seen: "2026-05-11"
-last_updated: "2026-05-11"
-projects:
-  - compsych-letter-demo
-format: legacy
-fragment: pending
+id: relation-driven-crud-with-custom-input
+title: Relation-Driven CRUD with Custom-Input Operations
+description: "Let a mapped relation target generate the table, detail and create screens; use a custom operation with an unmapped input when the create shape differs; know the capability ladder that gates create, update and delete."
+aliases: [relation CRUD, capability ladder, custom input create, one transfer object per relation target]
+keywords: [relation, mapped transfer object, createable, updateable, deleteable, capability ladder, custom operation, unmapped input, OperationFlowManager, access, enabledBy]
+tags: ["domain:model", "layer:model", "project:compsych-letter-demo", "status:single-project"]
+category: transfer
+status: single-project
+projects: [compsych-letter-demo]
+evidence: ["compsych-letter-demo:unrecorded"]
+alternatives: []
+first_seen: 2026-05-11
+fragment: relation-driven-crud-with-custom-input
+diagram: { kinds: [entity, transfer, operation], members: types }
+last_updated: 2026-11-10
 ---
-## Purpose
+## Intent
 
-JUDO CRUD philosophy. Relation auto-wiring + custom-op shape divergence + return-type-driven UI navigation + capability ladder. Mandatory reading before designing any access link, custom op, or admin surface.
+Read this before designing an access, a custom operation or an admin surface. It covers four connected ideas: a relation to a mapped transfer object generates its own screens, a create whose shape differs needs a custom operation, the operation's return type steers the UI, and a ladder of conditions decides whether create, update or delete is possible at runtime.
 
-## §1 Relation auto-wiring from mapped target TO
+## Practice
 
-`[0..*]` relation `X.relY : Y[0..*]` auto-generates UI affordances from `Y` mapped attributes. Same engine for `ActorType.access` links and plain `TransferObjectType` relations.
+### The relation target generates the screens
 
-| `Y` outer flag | Relation flag | Auto-generated UI |
-|---|---|---|
-| — | (R always) | Table view. Columns = `Y` mapped attributes. |
-| — | (R always) | Row-click → detail form bound to `Y`. |
-| `Y.updateable=true` | U-flag | Inline edit on detail form. Save → `_updateInstance<Y>`. |
-| `Y.createable=true` | C-flag | "Add" button → create form from `Y` mapped attributes. |
-| `Y.deleteable=true` | D-flag | Row delete action. |
+A list relation (a derived or mapped relation on a transfer object, or an actor access) gets its UI from the mapped target transfer object `Y`:
 
-Access link vs. plain relation differs in:
-- Security gating (`enabledBy` chain, `getterExpression` filter, scope on LIST).
-- Routing (access link surfaces in menu; plain relation reached via parent navigation).
-- Principal-projection semantics (`actorType` back-link exclusivity — see [accesspoint.md — Principal back-link exclusivity](../../agent-docs/model/esm_metamodel/accesspoint.md#principal-back-link-exclusivity)).
-
-Access link vs. plain relation does NOT differ in form / table generation. Same affordances from same `Y` flags.
-
-**One TO per relation target.** Single `Y` per relation. Table columns + detail form + create form + edit form all from `Y`. Row-click → detail bound to same `Y`. No drift.
-
-See §5 anti-patterns for `<X>ListTO` separate-from-detail anti-pattern.
-
-## §2 Custom operations for shape-divergent mutations
-
-Auto-generated create form derives fields from `Y`'s mapped attributes. Shape-divergent create — input fields ≠ target TO attributes — needs a custom operation with **unmapped input TO**.
-
-Examples:
-- `inviteUser(input: UserInvitationInput) : UserTO` where `UserInvitationInput { email, givenName, familyName, isAdmin }` differs from `UserTO` mapped attrs.
-- Composite create taking parent reference + child attrs in single payload.
-- Factory op picking concrete subtype from sentinel field.
-
-Pattern:
-1. Define **unmapped** `TransferObjectType` for input. Outer CRUD flags irrelevant (not persisted).
-2. Define op on appropriate scope (parent / view-model / access target).
-3. Op body builds target entity row via DAO. Returns mapped target TO.
-4. Default UI navigation = standalone `<TO>View` (§3 layer 1).
-5. Production: `OperationFlowManager` redirects to access-context detail or caller's relation view (§3 layer 2).
-
-**Return shape rule — prefer thin Identifiable over full target TO.** When the op is a create-on-relation (`A.createB(input) : ?`) and the canonical view for B is the parent-rooted relation list/detail, return a **thin Identifiable mapped TO of B** (single dummy attribute, exists only to satisfy mapping requirement) rather than the full `BTO`. Result carries `__identifier`; `OperationFlowManager` reads it and redirects to the caller's relation view. Standalone `<BTO>View` is generated but never reached. Full recipe + worked example: [thin-identifiable-result-for-parent-relation-create.md](thin-identifiable-result-for-parent-relation-create.md).
-
-## §3 Return-type matrix
-
-### Layer 1 — generation defaults
-
-| Op output type | Generated UI navigation | Refreshable |
-|---|---|---|
-| Mapped TO | Standalone `<TO>View` route. Re-fetch via `_refreshInstance<TO>` + signed `__identifier`. | Yes |
-| Unmapped TO | Inline view-mode form on caller page. No `__identifier`, no re-fetch endpoint. | No |
-| `void` | Stay on caller page. Default refresh fires. | n/a |
-
-### Layer 2 — production with `OperationFlowManager`
-
-`OPERATION_FLOW_MANAGER_INTERFACE_KEY` Pandino DI extension overrides layer-1 default.
-
-| Returned spec | Effect |
+| Flag | Generated UI |
 |---|---|
-| `{ actor, access, id }` | Navigate to access-context detail. Canonical view. Dashboard breadcrumbs + gating preserved. |
-| `{ actor, access, filterRecords }` | Navigate to access list filtered to specific row. Use for parent-relation create landing on new row — see [thin-identifiable-result-for-parent-relation-create.md](thin-identifiable-result-for-parent-relation-create.md). |
-| `{ refresh: true }` | Stay on caller. Re-fetch. |
-| `null` | Fall through to layer-1 default. |
+| always | table with the mapped attributes of `Y` as columns; row click opens a detail form bound to `Y` |
+| `Y.updateable` | editing on the detail form |
+| `Y.createable` | an add action with a create form from the attributes of `Y` |
+| `Y.deleteable` | a delete action |
 
-See [operation-flow-manager-redirect.md](../frontend/operation-flow-manager-redirect.md).
+The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md), *UI Requirements on the Target TO*). An actor access and a plain relation differ in security gating (`enabledBy`, getter filter, list scope), in routing (an access gets a menu item, see [[access-paired-with-menu-item]]) and in the principal back-link rules ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md), *Principal back-link exclusivity*), not in form or table generation. The row-by-row mapping table above is the project's reading; check it against your generator version (*verify*).
 
-**One representation per concept.** Default mapped-TO navigation lands on standalone `<TO>View`. Same row also reachable via `Actor.access.<area>.<rel> → row → detail` — DIFFERENT generated page. Two views drift; maintenance burden doubles.
+**One transfer object per relation target.** Table, detail, create and edit all come from one `Y`, so nothing drifts. Thin the columns by hiding technical attributes, not by adding a second list-only transfer object. See [[actor-based-transfer-projection]] and [[transfer-object-multiplicity]].
 
-**Rule.** Pick access-context view as canonical. Redirect every post-op landing into it via `OperationFlowManager`. Standalone routes generated but unvisited.
+### Custom operation when the create shape differs
 
-**U/D on result page.** Conditional on target row's `__updateable` / `__deletable` evaluated against the redirect-target context, not the caller's ladder gate. See §4 for ladder; see [managed-actor-admin-pattern.md](../backend/managed-actor-admin-pattern.md) for worked example where parent's outer `updateable=false` but result row's `__updateable=true` (computed in admin access-context).
+When the input fields differ from the attributes of `Y` (an invitation with email and names, a composite create with a parent reference, a factory that picks a subtype), do not bend `Y`:
 
-## §4 Capability ladder
+1. Declare an unmapped transfer object for the input ([[unmapped-transfer-dto]]); its CRUD flags do not matter.
+2. Declare the operation on the parent, the view model or the access target.
+3. The body creates the entity through the DAO and returns a mapped transfer object. The custom body is project code.
 
-For C / U / D on `Y` via `X.relY`, ALL rungs hold:
+A transfer object used as a create target must bind every required feature of its entity, or validation fails (`AllRequiredFeaturesHaveBindingIfCreatable`, [validation options](../../agent-docs/model/model-validation-and-transformation.md), *Creatable transfer objects*).
 
-| Rung | C on Y | U on Y | D on Y |
+**Return shape:** for a create-on-relation operation, return a thin mapped reference of the new row rather than the full target; see [[thin-identifiable-result-for-parent-relation-create]].
+
+### The return type steers navigation
+
+Project reading, partly backed by the docs:
+
+| Operation output | Default UI landing |
+|---|---|
+| mapped transfer object | the generated standalone view of that type, re-fetched by the signed identifier |
+| unmapped transfer object | an inline view-mode form on the caller page; no identifier, so no re-fetch (*verify*) |
+| nothing | stay on the caller page and refresh |
+
+The platform's declarative route is the operation form's post-call access navigation ([[operation-return-type-navigation]]). For dynamic targets a frontend `OperationFlowManager` returns actor and access plus an optional id filter, an operation, or a refresh ([[operation-flow-manager-redirect]], [[operation-flow-redirect-pattern]]).
+
+**One representation per concept.** The standalone view and the access-context detail of the same row are two generated pages that drift. Pick the access-context view as canonical and redirect every post-operation landing into it; the standalone route is generated but not visited. Update and delete on the landing page depend on the target row's per-instance flags in the redirect target's context, not on the caller's.
+
+### Capability ladder
+
+Create, update or delete on `Y` through `X.relY` needs all rungs:
+
+| Rung | Create on Y | Update on Y | Delete on Y |
 |---|---|---|---|
-| 1. Y outer CRUD | `Y.createable` | `Y.updateable` | `Y.deleteable` |
-| 2. Relation flag | C-flag | U-flag | D-flag |
+| 1. Y outer flags | `Y.createable` | `Y.updateable` | `Y.deleteable` |
+| 2. Relation or access flag | create flag | update flag | delete flag |
 | 3. Access reachability | `enabledBy` chain to X | same | same |
-| 4. Parent per-instance | `X.__updateable` | `X.__updateable` | `X.__deletable` |
-| 5. Filter membership post-state | new row satisfies `getterExpression` | post-update Y satisfies | n/a |
-| 6. LIST scope at signed-ID issuance | row visible on LIST | same | same |
+| 4. Parent per-instance flag | `X.__updateable` | `X.__updateable` | `X.__deletable` |
+| 5. Filter membership after the change | new row matches the getter filter | updated row matches | not applicable |
+| 6. Visible in the list scope | row listed | same | same |
 
-Rungs 1–3 model-time. Rungs 4–6 per request.
+The access reference names the ladder and lists its rungs (*Access CRUD Rules*). Rungs 1–3 are decided in the model, 4–6 per request. Rung 5 is [[derived-relation-membership-invariant]]. Rung 6: a caller only gets a signed identifier for rows the list returns ([platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md), *Signed Identifiers*).
 
-- **Rung 1** declares `Y`'s outer capability. Path-agnostic (§Mapped TO outer CRUD is path-agnostic, below). TO is unit of capability declaration; path is navigation only.
-- **Rung 2** restricts the parent-rooted relation. `relY.createable=false` blocks C even if `Y.createable=true`.
-- **Rung 3** gates the access link via `ActorType.access[*].enabledBy`. Chain must hold from actor → X.
-- **Rung 4** `X.__updateable` for both C and U on Y. Both mutate parent's relation set / linked-row state. D rides `X.__deletable` (composition / decomposition semantics).
-- **Rung 5** derived-relation/access membership invariant. Read-only state through filtered path. See [derived-relation-membership-invariant.md](derived-relation-membership-invariant.md).
-- **Rung 6** signed-identifier issuance gated on LIST scope. Out-of-scope row never obtains signed id; cross-scope refresh / update bypass impossible. See [testkit-integration-foundation/backend.md — bypass note](../../model-blueprints/testkit-integration-foundation/backend.md).
+- The outer flags of `Y` state the maximum capability wherever `Y` is shown; the request still walks the whole ladder.
+- A custom operation on X is not subject to this ladder. It has its own gate (`enabledBy`) and body logic, and may touch rows the ladder forbids. Interceptors never run around custom operations either, so checks belong in the body.
 
-**Custom-op bypass.** Custom operations on X are NOT subject to this ladder. Own gate via op's `enabledBy` + op body logic. Op may read/write Y rows the ladder forbids.
+## Rationale
 
-**Mapped TO outer CRUD is path-agnostic.** `Y.createable / updateable / deleteable` state maximum capability anywhere `Y` rendered: relation row, custom-op result, deep link, access detail. Declaration ≠ runtime authorization — effective capability per request still walks full ladder.
+- One mapped transfer object per relation target means one place to change a screen.
+- A custom operation keeps the auto-generated forms honest when the input shape truly differs.
+- Knowing the ladder explains why a button is missing even though `Y.createable` is true.
 
-## §5 Anti-patterns
+## Example
 
-| Anti-pattern | Why bad | Correct shape |
-|---|---|---|
-| Separate `<X>ListTO` for relation target without picker / audience-hide / expensive-derived justification | Row-click navigates to `<X>ListTO` detail; needs custom handler to swap to `<X>TO` detail. Dual TOs drift. | One mapped TO per relation. Use audience-hide attributes (`visible=false` on data members) for column thinning. |
-| `Y.createable=true` when create input shape diverges from `Y` mapped attrs | Auto-form is misshapen. User types into wrong fields. Validation surface wrong. | Custom op with **unmapped input TO**. Returns mapped target TO. §2. |
-| `X.updateable=true` purely to enable relation CUD on children | Opens parent surface for unintended U. Self-elevation risk on principal entities (admin editing own row via `~admin` PUT). | Custom ops on X with `enabledBy` gating. C/U/D each own op. Single security gate per op. See [managed-actor-admin-pattern.md](../backend/managed-actor-admin-pattern.md). |
-| Two TOs for same representation — standalone `<TO>View` + access-context detail — both authored, both maintained | Auto-generated routes drift; bug-fix lands one place only. Two URLs for same row. | One canonical access-context view. `OperationFlowManager` redirects every op result. §3 layer 2. |
-| Create-on-relation op returns full target TO purely to carry `__identifier` for post-create redirect | Pulls standalone `<TO>View` into the funnel as a plausible landing; op contract coupled to mapped projection drift; wire payload bloated. | Return **thin Identifiable mapped TO** (id + dummy attr). Redirect to caller's relation view. See [thin-identifiable-result-for-parent-relation-create.md](thin-identifiable-result-for-parent-relation-create.md). |
+A folder view has an entries relation to a mapped entry view (createable, updateable, deleteable). The table, detail and delete action come from the entry view. The folder view's `createEntry` operation takes an unmapped entry input (a name and a note) and returns a thin entry reference. The diagram shows this shape. Observed in compsych-letter-demo.
 
-## See also
+Anti-patterns seen:
 
-- [derived-relation-membership-invariant.md](derived-relation-membership-invariant.md) — write-side membership rule (rung 5)
-- [operation-flow-manager-redirect.md](../frontend/operation-flow-manager-redirect.md) — return-type navigation override
-- [managed-actor-admin-pattern.md](../backend/managed-actor-admin-pattern.md) — canonical admin surface combining §2 + §3 + §4
-- [accesspoint.md — Principal back-link exclusivity](../../agent-docs/model/esm_metamodel/accesspoint.md#principal-back-link-exclusivity)
-- [accesspoint.md — Managed-realm sync trigger](../../agent-docs/model/esm_metamodel/accesspoint.md#managed-realm-sync-trigger)
-- [actor-based-transfer-projection.md](actor-based-transfer-projection.md) — multi-TO same-entity projection rules
-- [operation-return-type-navigation.md](operation-return-type-navigation.md) — return-type → view navigation (Layer 1 behaviour)
-- [state-based-transfer-partitioning.md](state-based-transfer-partitioning.md) — partition + return-type pattern as rung-5 workaround
-- [thin-identifiable-result-for-parent-relation-create.md](thin-identifiable-result-for-parent-relation-create.md) — return-shape rule for create-on-relation ops
+- A separate list-only transfer object for the relation target: row click needs a custom handler to reach the real detail. Use one transfer object and hide attributes.
+- `Y.createable` when the create input differs from the attributes of `Y`: the auto form is the wrong shape. Use the custom operation.
+- Making `X` updateable only so that its children can be edited: it opens the parent for unintended updates (self-elevation risk on principal entities). Give each of create, update and delete its own operation with `enabledBy`; see [[managed-actor-admin-pattern]].
+- Two maintained views for one row (standalone plus access-context). Redirect into one.
+- A create-on-relation operation that returns the full target just to carry the identifier: return the thin reference.
+
+## When to avoid
+
+- The create input matches the attributes of `Y`: use the generated create, no custom operation.
+- A read-only relation (no create, update or delete): the ladder is irrelevant.
+
+## Related
+
+- [[derived-relation-membership-invariant]] — rung 5, write-side membership
+- [[thin-identifiable-result-for-parent-relation-create]] — return shape of create-on-relation operations
+- [[operation-return-type-navigation]] — return type to view navigation
+- [[operation-flow-manager-redirect]] — redirect into the access-context view
+- [[managed-actor-admin-pattern]] — admin surface combining custom operations, redirect and the ladder
+- [[actor-based-transfer-projection]] — several transfer objects over one entity
+- [[state-based-transfer-partitioning]] — partitioning as the rung-5 workaround
+
+## Structure diagram
+
+<!-- mermaid:generated fragment=relation-driven-crud-with-custom-input cli=1.1.0.20261108_202643_d9769d90_develop -->
+```mermaid
+classDiagram
+  class Entry {
+    <<Entity>>
+    +String name
+  }
+  class EntryInput {
+    <<Transfer>>
+    +String name
+    +String note
+  }
+  class EntryRef {
+    <<Transfer>>
+    +String name
+  }
+  class EntryView {
+    <<Transfer>>
+    +String name
+  }
+  class Folder {
+    <<Entity>>
+    +String title
+  }
+  class FolderView {
+    <<Transfer>>
+    +String title
+    +createEntry(EntryInput) EntryRef
+  }
+  EntryRef ..> Entry : maps
+  EntryView ..> Entry : maps
+  Folder *-- "*" Entry : entries
+  FolderView ..> Folder : maps
+  FolderView o-- "*" EntryView : entries
+```
+<!-- /mermaid:generated -->
