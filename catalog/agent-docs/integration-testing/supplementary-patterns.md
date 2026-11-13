@@ -460,7 +460,7 @@ void testIdempotentBehavior(JudoRuntimeFixture fixture) {
 
 ```java
 @Override
-public void customCall(CreateCampaignInput input) {
+public void customCall(CreateActivityInput input) {
     // Validate required fields
     ValidationUtils.validateRequired(input.getCode(), "Code");
     ValidationUtils.validateRequired(input.getName(), "Name");
@@ -474,7 +474,7 @@ public void customCall(CreateCampaignInput input) {
         );
     }
     
-    // Create campaign...
+    // Create activity...
 }
 ```
 
@@ -522,24 +522,24 @@ public static void validateDateRange(LocalDate startDate, LocalDate endDate, Dat
 @Test
 @JudoTest(transaction = TransactionHandling.AUTO_ROLLBACK)
 void testInvalidDateRangeRejection(JudoRuntimeFixture fixture) {
-    CreateCampaignCustomImplementation createCampaign = ReferenceInjector.createAndInject(
-        CreateCampaignCustomImplementation.class,
+    CreateActivityCustomImplementation createActivity = ReferenceInjector.createAndInject(
+        CreateActivityCustomImplementation.class,
         fixture.getInjector()
     );
     
     LocalDate startDate = LocalDate.of(2024, 12, 31);
     LocalDate endDate = LocalDate.of(2024, 1, 1);  // Before start!
     
-    CreateCampaignInput input = CreateCampaignInput.builder()
-        .withCode("CAMPAIGN2024")
-        .withName("Invalid Campaign")
+    CreateActivityInput input = CreateActivityInput.builder()
+        .withCode("ACTIVITY2024")
+        .withName("Invalid Activity")
         .withStartDate(startDate)
         .withEndDate(endDate)
         .build();
     
     IllegalArgumentException exception = assertThrows(
         IllegalArgumentException.class,
-        () -> createCampaign.customCall(input)
+        () -> createActivity.customCall(input)
     );
     
     assertTrue(exception.getMessage().toLowerCase().contains("date"));
@@ -871,7 +871,7 @@ void testDuplicateUsernameRejection(JudoRuntimeFixture fixture) {
 public void customCall(CreateUserInput input) {
     // Validate at least one role is assigned
     boolean hasRole = Boolean.TRUE.equals(input.getIsAdmin()) ||
-                     Boolean.TRUE.equals(input.getIsCampaignManager()) ||
+                     Boolean.TRUE.equals(input.getIsActivityManager()) ||
                      Boolean.TRUE.equals(input.getIsCoordinator()) ||
                      Boolean.TRUE.equals(input.getIsCanvasser());
 

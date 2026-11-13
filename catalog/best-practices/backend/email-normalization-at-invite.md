@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:si
 category: operation
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/utils/EmailUtils.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/UserServiceImpl.java"]
 alternatives: [duplicate-detection-normalization]
 related: [duplicate-detection-normalization, invitation-with-key-based-acceptance]
 fragment: "none: backend-only"
@@ -23,12 +23,12 @@ The same person typed as a padded mixed-case address and its lowercase form must
 
 ### Platform base
 
-- Typed DAO string filters such as `StringFilter.equalTo` are used for exact matches, and `ilike` exists for case-insensitive matching ([DAO filters](../../agent-docs/backend/data-access-guide.md)). Whether `equalTo` is case-sensitive on the configured database is not stated in the agent-docs, *verify*; the project treats it as case-sensitive.
-- The platform provides no e-mail normalization; it is plain project code.
+- Typed DAO string filters such as `StringFilter.equalTo` are used for exact matches, and `ilike` exists for case-insensitive matching ([DAO filters](../../agent-docs/backend/data-access-guide.md)). Whether `equalTo` is case-sensitive on the configured database is not stated in the agent-docs, *verify*; the example treats it as case-sensitive.
+- The platform provides no e-mail normalization; it is plain application code.
 
-### Project practice: one helper, every boundary
+### Practice notes: one helper, every boundary
 
-This layer is project practice (mlszksz-platform), not a platform feature.
+This layer is a convention built on the platform, not a platform feature.
 
 - One static helper `normalizeEmail(String)`: null stays null, otherwise `trim().toLowerCase()`. Keep it in the shared utils package with unit tests for mixed case plus whitespace, already normal, null, empty and blank.
 - Call it at the entry of every service method that creates or matches a user: single invite, bulk invite (replacing an inline `trim().toLowerCase()`), re-invite (superseding a pending invitation), direct user creation, registration submission (all e-mail fields), and the lookup of the identity-server account.
@@ -37,7 +37,7 @@ This layer is project practice (mlszksz-platform), not a platform feature.
 - Test through the runtime: mixed-case input is stored lowercase; the duplicate check catches case variants for verified users and for pending invitations; a re-invite supersedes across case variants; bulk lists are normalized; accepting an invitation creates the user with the normalized address.
 
 ```java
-// Example project code
+// Example code
 public static String normalizeEmail(String email) {
     return email == null ? null : email.trim().toLowerCase();
 }
@@ -52,7 +52,7 @@ String email = EmailUtils.normalizeEmail(rawEmail);   // first line of invite, i
 
 ## Example
 
-mlszksz-platform's `EmailUtils.normalizeEmail` is called in the invitation, bulk invitation, user and registration services; `EmailNormalizationTest` covers each path.
+The helper `normalizeEmail` is called in the invitation, bulk invitation, user and registration services; a normalization test covers each path.
 
 ## When to avoid
 

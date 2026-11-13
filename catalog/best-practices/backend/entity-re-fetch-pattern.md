@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect
 category: operation
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, park-here, indamedia-adtrack, judo-partner, workflow-poc]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/unit/ToggleActiveCustomImplementation.java", "alba:unrecorded", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/admindashboard/DeleteUserCustomImplementation.java", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 related: [dao-fluent-query-filter, state-lifecycle-operation]
 fragment: "none: backend-only"
@@ -31,7 +31,7 @@ Call `dao.getById(_this.identifier(), mask)` first. The identifier of `_this` is
 
 ### Fetch only what you need
 
-When the operation needs only the identity of the entity, for example to pass it on to another call, re-fetch with an empty or minimal mask. One project does this because an unmasked `getById` of a transfer object with aggregating derived members over sub-collections failed at runtime with "Not supported yet". The platform cause is not verified in the agent-docs (*verify*); treat the narrow mask as a workaround and a cheaper read, not as a documented rule.
+When the operation needs only the identity of the entity, for example to pass it on to another call, re-fetch with an empty or minimal mask. One application does this because an unmasked `getById` of a transfer object with aggregating derived members over sub-collections failed at runtime with "Not supported yet". The platform cause is not verified in the agent-docs (*verify*); treat the narrow mask as a workaround and a cheaper read, not as a documented rule.
 
 ### Treat the Optional properly
 
@@ -41,7 +41,7 @@ When the operation needs only the identity of the entity, for example to pass it
 - A `NotFoundException` built with a `ValidationResult` (code, level, location) for a 404 the client can read.
 - A fault declared on the operation, if the UI should show a typed message. Declare it on the model operation or the generated interface has no `throws` clause (see [Modeled Faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)).
 
-Project helpers such as an `ExceptionUtils` or a `BusinessErrorException` are example project code, not platform API. Translate them to the mechanisms above.
+Helpers such as an `ExceptionUtils` or a `BusinessErrorException` are example code, not platform API. Translate them to the mechanisms above.
 
 ### Re-fetch again after your own writes
 
@@ -59,11 +59,11 @@ The re-fetch gives current data at the moment of reading, not protection against
 
 ## Example
 
-- Trivia: every bound operation starts with `_this = testDao.getById(_this.identifier()).get()`.
-- RackInspect: 24 toggle operations use `orElseThrow()` and then flip a flag.
-- ALBA: the product operations load with a mask for the state attribute and convert the identifier to the entity type in the same call.
-- ParkHere, Indamedia-AdTrack, judo-partner: the re-fetch sits in service methods the operations delegate to.
-- workflow-poc: the upload operation re-fetches at the start and again after deleting an old version.
+- Every bound operation starts with `_this = itemDao.getById(_this.identifier()).get()`.
+- Several toggle operations use `orElseThrow()` and then flip a flag.
+- Product operations load with a mask for the state attribute and convert the identifier to the entity type in the same call.
+- Some applications: the re-fetch sits in service methods the operations delegate to.
+- A workflow example: the upload operation re-fetches at the start and again after deleting an old version.
 
 ## When to avoid
 

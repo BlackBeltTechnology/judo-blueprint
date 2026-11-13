@@ -8,7 +8,7 @@ tags: [domain:model, layer:frontend, project:mlszksz-platform, status:single-pro
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/auth/pkce-utils.ts", "mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/capacitor.config.ts"]
 alternatives: [keycloak-magic-link-passkey-authentication]
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -32,12 +32,12 @@ A rejected token clears the session. A network failure does not. This keeps a us
 
 ## Structure
 
-The pattern is a frontend layer. It has a native auth provider that wraps the app on native platforms, a login screen with two methods, an auth service that calls the identity provider's token and URL endpoints, a PKCE helper that holds the flow state, a token store with a mirror in the OIDC format, and a logout hook that takes the native or web path. None of these modules is a platform API; they are project code, and their names are examples only.
+The pattern is a frontend layer. It has a native auth provider that wraps the app on native platforms, a login screen with two methods, an auth service that calls the identity provider's token and URL endpoints, a PKCE helper that holds the flow state, a token store with a mirror in the OIDC format, and a logout hook that takes the native or web path. None of these modules is a platform API; they are application code, and their names are examples only.
 
 ## Constraints
 
 - The native path runs only when the app is on a native platform. The web path must not change.
-- A password grant is a project choice for the native login. The platform's generated actor client has direct access grants enabled, so the grant itself needs no extra Keycloak setting for that client; a separate native client must enable it. Do not expose it on the web.
+- A password grant is an application choice for the native login. The platform's generated actor client has direct access grants enabled, so the grant itself needs no extra Keycloak setting for that client; a separate native client must enable it. Do not expose it on the web.
 - PKCE state expires after a few minutes and blocks a second start while one is pending.
 - A server rejection clears tokens; a network failure keeps them.
 - The deep-link redirect URI is registered with the identity provider for the native client. A different redirect URI fails the exchange. The platform's generated Keycloak client uses `redirectUris=["*"]`; a separate native client needs its own redirect URIs.
@@ -64,7 +64,7 @@ The pattern is a frontend layer. It has a native auth provider that wraps the ap
 
 ## Related
 
-- [[keycloak-magic-link-passkey-authentication]] — the server-side passwordless integration this native flow can pair with
-- [[capacitor-native-file-handling]] — the other native Capacitor concern, file download and open
-- [[custom-theme-with-native-status-bar]] — native-only UI behaviour in the same Capacitor app
-- [[user-with-organization-and-role]] — the user model that holds the signed-in principal
+- [[keycloak-magic-link-passkey-authentication]]: the server-side passwordless integration this native flow can pair with
+- [[capacitor-native-file-handling]]: the other native Capacitor concern, file download and open
+- [[custom-theme-with-native-status-bar]]: native-only UI behaviour in the same Capacitor app
+- [[user-with-organization-and-role]]: the user model that holds the signed-in principal

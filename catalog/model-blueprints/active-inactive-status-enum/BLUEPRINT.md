@@ -59,7 +59,7 @@ The enumeration has two members. ACTIVE has ordinal 1 and INACTIVE has ordinal 2
 
 ## Related
 
-- [[active-suspended-deactivated-status-enum]] — the three-value form when a middle state is needed
-- [[toggle-active-operation]] — an operation that flips the status between the two values
-- [[open-close-status-toggle]] — the same two-state idea with open and closed wording
-- [[accept-reject-operations]] — a decision pair that moves a request between two decided states
+- [[active-suspended-deactivated-status-enum]]: the three-value form when a middle state is needed
+- [[toggle-active-operation]]: an operation that flips the status between the two values
+- [[open-close-status-toggle]]: the same two-state idea with open and closed wording
+- [[accept-reject-operations]]: a decision pair that moves a request between two decided states

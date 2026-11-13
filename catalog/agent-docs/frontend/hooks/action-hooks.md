@@ -419,16 +419,16 @@ export const entityPageActions: PageActionHook = () => {
 #### Custom Operation Action
 
 ```typescript
-export const campaignPageActions: PageActionHook = () => {
+export const activityPageActions: PageActionHook = () => {
   return {
     'export-to-excel': async (context) => {
-      const campaign = context.getData();
+      const activity = context.getData();
 
       context.showNotification('Generating Excel export...');
 
       try {
         // ✅ CORRECT: Use getAction from context to call custom operation
-        const result = await context.actions.getAction('exportToExcel')(campaign.__signedIdentifier);
+        const result = await context.actions.getAction('exportToExcel')(activity.__signedIdentifier);
 
         // If operation returns a download token, use it
         if (result.data?.downloadToken) {
@@ -438,7 +438,7 @@ export const campaignPageActions: PageActionHook = () => {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `campaign-${campaign.title}-export.xlsx`;
+          a.download = `activity-${activity.title}-export.xlsx`;
           a.click();
           URL.revokeObjectURL(url);
         }
@@ -668,8 +668,8 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 ```typescript
 console.log('Registering container hook');
 context.registerService(
-  SERVICE_CAMPAIGN_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
-  campaignFormHook,
+  SERVICE_ACTIVITY_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
+  activityFormHook,
 );
 ```
 
@@ -700,7 +700,7 @@ handleResult: (input) => {
   console.log('Operation input:', input);
   const result = {
     actor: 'ServiceActor',
-    access: 'ServiceCampaignView',
+    access: 'ServiceActivityView',
     id: input.result.__identifier,
   };
   console.log('Returning:', result);

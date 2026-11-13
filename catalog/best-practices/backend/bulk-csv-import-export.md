@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "project:p
 category: operation
 status: emerging
 projects: [mlszksz-platform, park-here]
-evidence: ["mlszksz-platform:unrecorded", "park-here:application/app/src/main/java/hu/blackbelt/park/here/parkhere/custom/parkhere/services/travelpanel/ImportReservationsCustomImplementation.java"]
+evidence: ["mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/admindashboard/ExportAuditLogCustomImplementation.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AuditLogServiceImpl.java", "park-here:application/app/src/main/java/hu/blackbelt/park/here/parkhere/custom/parkhere/services/travelpanel/ImportReservationsCustomImplementation.java"]
 alternatives: [bulk-json-import-export]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -28,9 +28,9 @@ Administrative users need to download data as CSV (for example a compliance expo
 - Custom operations are OSGi components and bring their own services with `@Reference` ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)). Interceptors do not guard them, so any role check belongs inside the implementation ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - A list query returns all matching rows unless you ask for a seek, so a full export pulls everything into memory ([pagination](../../agent-docs/backend/data-access-guide.md#pagination)). Use filters and masks to limit what is read ([query patterns](../../agent-docs/backend/data-access-guide.md#query-patterns)).
 
-### Project practice: CSV through the file store
+### Practice notes: CSV through the file store
 
-`FileStoreService` and the CSV helpers below are example project code (mlszksz-platform), not platform classes.
+`FileStoreService` and the CSV helpers below are example code, not platform classes.
 
 ```java
 // Export: query, build CSV with UTF-8 BOM, store, return FileType
@@ -80,9 +80,9 @@ Use it when the rows are modeled data the user selects. Use the file-store varia
 
 ## Example
 
-park-here uses the input-rows variation: an operation that imports a user's parking reservations as travel records takes a generated input with a selection grid of row objects, filled by a range interceptor that hides reservations already imported and honours the seek limit; the operation implementation only delegates to a service.
+One variant uses the input-rows pattern: an operation that imports a user's bookings as records takes a generated input with a selection grid of row objects, filled by a range interceptor that hides bookings already imported and honours the seek limit; the operation implementation only delegates to a service.
 
-mlszksz-platform has two operations. An audit-log export builds a CSV with an optional date filter, quoted and escaped fields and a BOM and returns file metadata. A bulk invite reads an uploaded CSV, extracts e-mail addresses, creates an invitation with one recipient per address and sends a verification e-mail to each.
+One variant has two operations. An audit-log export builds a CSV with an optional date filter, quoted and escaped fields and a BOM and returns file metadata. A bulk invite reads an uploaded CSV, extracts e-mail addresses, creates an invitation with one recipient per address and sends a verification e-mail to each.
 
 ## When to avoid
 

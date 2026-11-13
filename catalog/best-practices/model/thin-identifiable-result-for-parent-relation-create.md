@@ -41,7 +41,7 @@ Why a separate thin transfer object rather than the full one:
 
 The operation takes an unmapped input transfer object when its shape differs from B ([[unmapped-transfer-dto]]). The body is custom project code; interceptors never run around a custom operation, so required checks belong in the body.
 
-On the frontend, a flow manager registered for this operation maps the result to an actor, an access and a filter on the new identifier. Its interface is in the [action hooks guide](../../agent-docs/frontend/hooks/action-hooks.md); recipes in [[operation-flow-manager-redirect]]. Project practice, the shape of the returned object: actor name, access name that resolves the parent, and a filter on the identifier of the result. If the relation list lives deeper than the access, use whichever navigation the flow manager contract supports (id-based detail or filtered list).
+On the frontend, a flow manager registered for this operation maps the result to an actor, an access and a filter on the new identifier. Its interface is in the [action hooks guide](../../agent-docs/frontend/hooks/action-hooks.md); recipes in [[operation-flow-manager-redirect]]. Practice note, the shape of the returned object: actor name, access name that resolves the parent, and a filter on the identifier of the result. If the relation list lives deeper than the access, use whichever navigation the flow manager contract supports (id-based detail or filtered list).
 
 ### When not to use it
 
@@ -62,7 +62,7 @@ A void return refreshes the list, but the user must find the new row; the thin r
 
 ## Example
 
-A project view has a tasks relation to a mapped task view (the canonical list and detail). The project view's `createTask` operation takes an unmapped task create input (a name and a description) and returns a thin read-only task reference with only the name. The frontend flow manager opens the project's tasks list filtered to the new task. The diagram shows the shape. Observed in compsych-letter-demo.
+A project view has a tasks relation to a mapped task view (the canonical list and detail). The project view's `createTask` operation takes an unmapped task create input (a name and a description) and returns a thin read-only task reference with only the name. The frontend flow manager opens the project's tasks list filtered to the new task. The diagram shows the shape. Observed in one project.
 
 ## When to avoid
 

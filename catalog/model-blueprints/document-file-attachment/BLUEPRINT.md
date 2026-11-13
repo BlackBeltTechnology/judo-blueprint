@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, project:mlszksz-platform, proje
 category: pattern
 status: established
 projects: [mlszksz-platform, rackinspect, reserve-app, alba, judo-demo-miniworkflow, doors-model, park-here]
-evidence: [mlszksz-platform:unrecorded, rackinspect:unrecorded, reserve-app:unrecorded, alba:unrecorded, judo-demo-miniworkflow:unrecorded, doors-model:unrecorded]
+evidence: [mlszksz-platform:model/MLSZKSZPlatform.model, rackinspect:model/rackinspect.model, reserve-app:unrecorded, alba:unrecorded, judo-demo-miniworkflow:unrecorded, doors-model:unrecorded]
 alternatives: [binary-document-with-link-pattern]
 fragment: document-file-attachment
 diagram: { kinds: [entity, transfer], members: types }
@@ -27,7 +27,7 @@ A parent entity composes or associates zero or more Document entities. A Documen
 
 - A Document is created through its parent. A client never creates or edits it directly, so the rules sit in the parent's operation (a custom operation, or the generated relation-based create on the parent).
 - The file is a binary attribute. The platform keeps the content in its file store and the client sends and receives a file token, never the bytes in the JSON body. A transfer object field that maps a binary on a create-capable transfer gets a generated token operation, and the upload is two-phase: request the token, upload the content with it, then send the token as the attribute value.
-- Project practice: serve a file through an access-checked operation or the generated token-gated download. Do not expose a public URL built from the stored id, because anyone who can guess the id could read the file.
+- Common practice: serve a file through an access-checked operation or the generated token-gated download. Do not expose a public URL built from the stored id, because anyone who can guess the id could read the file.
 - Interceptors run only for the built-in operations (create, update, delete, list, the upload token). They do not run on a custom upload or delete operation, so audit the attachment inside those operations.
 
 ## Variations
@@ -52,6 +52,6 @@ A parent entity composes or associates zero or more Document entities. A Documen
 
 ## Related
 
-- [[binary-document-with-link-pattern]] — a binary file with a companion URL, for files that may be hosted elsewhere
-- [[document-review-state-machine]] — a document with an approval cycle, for files that need a workflow
-- [[document-registry-sequence]] — numbering for generated documents
+- [[binary-document-with-link-pattern]]: a binary file with a companion URL, for files that may be hosted elsewhere
+- [[document-review-state-machine]]: a document with an approval cycle, for files that need a workflow
+- [[document-registry-sequence]]: numbering for generated documents

@@ -22,7 +22,5 @@ When the application must check for a minimum level, compare ordinals in Java co
 
 ## Examples
 
-### skillmatrix-model
-
-- The four levels cover beginner to native. A user composes its language skills, each with one language reference and one level.
-- The HR employee view maps the level and the note, and shows the language code derived from the reference record.
+- Four levels, from beginner to native. A user composes its language skills, each with one language reference and one level.
+- A user view maps the level and the note, and shows the language code derived from the reference record.

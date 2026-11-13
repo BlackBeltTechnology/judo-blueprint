@@ -19,13 +19,13 @@ Expose the snapshots as a read-only transfer object, with the copied fields and 
 
 ### Errors
 
-Project practice: do not turn a snapshot failure into a business fault. An unexpected runtime exception becomes a generic 500 and fails the operation, so the change and its snapshot stay consistent. Report bad user input with a `ValidationException` before the write.
+Common practice: do not turn a snapshot failure into a business fault. An unexpected runtime exception becomes a generic 500 and fails the operation, so the change and its snapshot stay consistent. Report bad user input with a `ValidationException` before the write.
 
 ## Examples
 
-### indamedia-adtrack
+### Variant seen in practice
 
-- The parent campaign service writes a snapshot on create (baseline) and on each update, after the campaign is saved.
+- The parent service writes a snapshot on create (baseline) and on each update, after the parent is saved.
 - Delete runs the snapshot deletion first, then the parent.
-- The snapshot copies name, start, end, total budget and daily budget, which are the fields a user can change.
-- The project's own service classes are project code. Copy the pattern, not the names.
+- The snapshot copies name, start, end, total and daily amount, which are the fields a user can change.
+- The application's own service classes are application code. Copy the pattern, not the names.

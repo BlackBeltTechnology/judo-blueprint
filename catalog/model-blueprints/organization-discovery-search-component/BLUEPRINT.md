@@ -8,7 +8,7 @@ tags: [domain:model, layer:frontend, project:mlszksz-platform, status:single-pro
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: [mlszksz-platform:unrecorded]
+evidence: [mlszksz-platform:model/MLSZKSZPlatform.model, mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/hooks/containers/registerServicesFeedOrganizationSearchContainerHook.tsx]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09

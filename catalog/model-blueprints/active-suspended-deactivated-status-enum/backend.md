@@ -10,9 +10,9 @@ Each transition is a custom operation. Interceptors run only for built-in operat
 
 ### Guard the last administrator in the service
 
-Rules such as "the last platform administrator cannot be suspended" depend on other rows. Put them in a domain service that the operations call, and count the remaining administrators there (project practice).
+Rules such as "the last platform administrator cannot be suspended" depend on other rows. Put them in a domain service that the operations call, and count the remaining administrators there (common practice).
 
-- The service class is project code. Its name belongs to the example project, not to the platform.
+- The service class is application code. Its name belongs to the application, not to the platform.
 - Re-read the entity through the data access layer inside the service before the check, so the decision uses the current value.
 
 ### Audit each transition
@@ -21,10 +21,10 @@ Log one audit record per transition, with the previous status, the new status an
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - Users and organizations each have a status with these three values. Both share the same member names and ordinals.
 - Each transition on the user and on the organization admin panel is a separate custom operation class. Each class delegates to a user service or an organization service.
 - The user service enforces the transitions and the last-administrator guards. The organization service enforces suspension and reactivation with a protection for administrator organizations.
 - Each operation writes an audit record with a transition-specific action type.
-- The service and class names are example project code. Copy the pattern, not the names.
+- The service and class names are application-specific. Copy the pattern, not the names.

@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single
 category: entity
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 related: [enum-state-machine, category-enum-pattern, bidirectional-relation, audit-event-entity, soft-delete-active-flag]
 fragment: notification-entity-pattern
@@ -31,7 +31,7 @@ Business events must reach users later, outside the request that caused them (pu
 
 ### Status as a small state machine
 
-PENDING after creation; a delivery job moves it to SENT or FAILED; a retry returns FAILED rows to PENDING and bumps `retryCount` ([[enum-state-machine]]). The model holds only the data. The delivery job and the external push service are backend work (see the push notification blueprint: [[firebase-push-notification-pipeline]]). The agent-docs describe no built-in notification mechanism, so everything about delivery is project practice.
+PENDING after creation; a delivery job moves it to SENT or FAILED; a retry returns FAILED rows to PENDING and bumps `retryCount` ([[enum-state-machine]]). The model holds only the data. The delivery job and the external push service are backend work (see the push notification blueprint: [[firebase-push-notification-pipeline]]). The agent-docs describe no built-in notification mechanism, so everything about delivery is a convention.
 
 ### Device entity
 

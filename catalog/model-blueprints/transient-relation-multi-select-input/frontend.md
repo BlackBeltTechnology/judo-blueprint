@@ -6,7 +6,7 @@ The generated operation input page renders the transient collection relation as 
 
 ### Project practice: a custom embedded table
 
-The source project (Alba) customized the field into an embedded table whose Add opens a multi-select range dialog. The components below are example project code, not platform API; the sketch shows the shape only.
+The source project customized the field into an embedded table whose Add opens a multi-select range dialog. The components below are example project code, not platform API; the sketch shows the shape only.
 
 ```tsx
 <EmbeddedTable
@@ -74,5 +74,5 @@ sequenceDiagram
 
 ### Examples
 
-- Alba: `ApprovalTaskInput.users` as an embedded table on the assign-approval page; the range limited candidates to eligible users.
-- actiongroup-test-react: `CreatureTemplate.signs` as an embedded list on the create-creature page; zero or more signs.
+- An assignment input with `users` as an embedded table on the assign-approval page; the range limited candidates to eligible users.
+- A create input with `signs` as an embedded list on the create page; zero or more signs.

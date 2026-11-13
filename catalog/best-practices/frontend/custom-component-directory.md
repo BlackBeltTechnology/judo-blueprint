@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspe
 category: component
 status: established
 projects: [trivia, rackinspect, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [complete-frontend-replacement, glassmorphic-styled-components, application-customizer-hub]
 fragment: "none: frontend-only"
@@ -28,9 +28,9 @@ Hand-written components (pages, dialogs, shared widgets) need a home that regene
 - Files outside `src/custom/` that the generator owns carry a generated header and are checksum-protected: editing them fails the build unless they are listed in `.generator-ignore`, which also stops generator updates for that file. Keeping hand-written code in a separate directory avoids that trade-off.
 - `src/custom/application-customizer.tsx` is a plain generated file with an empty `customize(context)` method; register custom hooks and components from there.
 
-### Project practice: one custom root, subfolders by role
+### Practice notes: one custom root, subfolders by role
 
-The layout below is project convention, not generated output:
+The layout below is a convention, not generated output:
 
 ```
 src/custom/
@@ -41,7 +41,7 @@ src/custom/
 
 - Put every hand-written file under one root and import generated code through the `~/` alias; never put custom files into generated folders such as `pages/`, `containers/` or `services/`.
 - Mirror the generator's subfolders (`hooks/dialogs`, `hooks/pages`) so scaffold copies stay discoverable.
-- Trivia used a different root, `src/trivia/`, for custom pages and dialogs. This also works because the generator does not produce files there; like `src/custom/`, the folder is committed to version control.
+- Some frontends use a different root, such as `src/<app>/`, for custom pages and dialogs. This also works because the generator does not produce files there; like `src/custom/`, the folder is committed to version control.
 
 ## Rationale
 
@@ -49,10 +49,10 @@ A single custom root makes the boundary between generated and hand-written code 
 
 ## Example
 
-- trivia: player frontend with eleven custom files in `src/trivia/` (dialogs, contest pages, shared styled components, utilities).
-- rackinspect: `src/custom/` with about 87 files in `hooks/custom-implementations/`, `hooks/dialogs/`, `hooks/pages/`, form and view-edit action hook folders, table row highlighting hooks, plus `application-customizer.tsx` and an error handler registration.
-- workflow-poc: `src/custom/components/` with a diagram renderer and a code viewer, each with its Pandino registration file.
-- reserve-app: a single hook file in `src/custom/hooks/dialogs/` for one actor; the other four actor frontends have no custom files.
+- A game frontend with a small set of custom files in `src/<app>/` (dialogs, game pages, shared styled components, utilities).
+- A heavily customized frontend: a custom root with many files in `hooks/custom-implementations/`, `hooks/dialogs/`, `hooks/pages/`, form and view-edit action hook folders, table row highlighting hooks, plus `application-customizer.tsx` and an error handler registration.
+- A workflow frontend: `src/custom/components/` with a diagram renderer and a code viewer, each with its Pandino registration file.
+- A frontend with a single hook file in `src/custom/hooks/dialogs/` for one actor; the other four actor frontends have no custom files.
 
 ## When to avoid
 

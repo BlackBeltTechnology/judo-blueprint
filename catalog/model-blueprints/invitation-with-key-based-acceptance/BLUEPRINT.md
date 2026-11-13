@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:ubives,
 category: pattern
 status: emerging
 projects: [ubives, mlszksz-platform]
-evidence: ["ubives:unrecorded", "mlszksz-platform:unrecorded"]
+evidence: ["ubives:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [invitation-with-recipients]
 fragment: invitation-with-key-based-acceptance
 diagram: { kinds: [entity, enum, transfer, operation], members: types }
@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Let someone who has no account yet accept an invitation. The invitation is an entity with an email, an expiration and a key. The key is carried in a link, so the invitee can open the link and accept without first signing in. On the platform this is an actor marked anonymous (an unauthenticated guest) whose access reaches the link transfer object; the key scheme itself is project practice, not a platform feature. Accepting or cancelling is an operation on the invitation, and the link itself is a transfer object that exposes only what the invitee needs.
+Let someone who has no account yet accept an invitation. The invitation is an entity with an email, an expiration and a key. The key is carried in a link, so the invitee can open the link and accept without first signing in. On the platform this is an actor marked anonymous (an unauthenticated guest) whose access reaches the link transfer object; the key scheme itself is common practice, not a platform feature. Accepting or cancelling is an operation on the invitation, and the link itself is a transfer object that exposes only what the invitee needs.
 
 ### The key is the access credential
 
@@ -62,6 +62,6 @@ The Invitation entity is non-CRUD (not createable, updateable or deleteable thro
 
 ## Related
 
-- [[invitation-with-recipients]] — invitations to a recipient list with per-recipient status
-- [[code-based-player-authentication]] — key-based acceptance of an invitation for a player
-- [Two-phase registration](../../best-practices/backend/two-phase-registration.md) — registration with email verification, the same link-based idea
+- [[invitation-with-recipients]]: invitations to a recipient list with per-recipient status
+- [[email-code-guest-authentication]]: key-based acceptance of an invitation for an end user
+- [Two-phase registration](../../best-practices/backend/two-phase-registration.md), registration with email verification, the same link-based idea

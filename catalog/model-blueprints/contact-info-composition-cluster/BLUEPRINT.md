@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "projec
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: [partner-with-contact-details]
 fragment: contact-info-composition-cluster
 diagram: { kinds: [entity, enum], members: types }
@@ -37,7 +37,7 @@ The parent (for example a partner or a user) has three composition relations, ea
 
 EmailAddress holds an e-mail address (required, e-mail type), an optional name and an active flag (required, default true). PhoneNumber holds a phone number (required, phone type), an optional name, an active flag (required, default true) and a fax flag (default false). Address holds a street name, a city and a postal code (all required), an optional full address text, and an active flag (required, default true).
 
-Each contact entity has an instance toggle-active operation. EmailAddress also has a toggle-primary operation.
+Each contact entity has an instance toggle-active operation. The e-mail contact type also has a toggle-primary operation.
 
 ## Constraints
 
@@ -67,8 +67,8 @@ Each contact entity has an instance toggle-active operation. EmailAddress also h
 
 ## Related
 
-- [[partner-with-contact-details]] — a partner that holds contact details, the same need in a simpler form
-- [[address-entity-with-location]] — an address entity with location data, when an address needs more than text fields
-- [[address-field-auto-composition]] — computing a single address line from its parts
-- [[masked-input-integration]] — input masking for phone and bank-type fields
-- [[safe-failure-pattern]] — keeping the parent change valid when a side effect fails
+- [[partner-with-contact-details]]: a partner that holds contact details, the same need in a simpler form
+- [[address-entity-with-location]]: an address entity with location data, when an address needs more than text fields
+- [[address-field-auto-composition]]: computing a single address line from its parts
+- [[masked-input-integration]]: input masking for phone and bank-type fields
+- [[safe-failure-pattern]]: keeping the parent change valid when a side effect fails

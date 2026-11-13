@@ -17,12 +17,12 @@ The JUDO framework uses a **two-layer type system** for a clean separation of co
 1.  **Service Layer** (`api.[app].service.*`)
     *   **Purpose**: Represents the external API contracts. These are the types used in the inputs and outputs of your custom operations.
     *   **Location**: `application/sdk/target/generated-sources/.../service/`
-    *   **Examples**: `CreateUserInput`, `Campaign`, `Address`
+    *   **Examples**: `CreateUserInput`, `Activity`, `Address`
 
 2.  **Entity Layer** (`api.[app]._default_transferobjecttypes.entity.*`)
     *   **Purpose**: Represents the internal database entities. These are the types used by the DAOs for persistence and queries.
     *   **Location**: `application/sdk/target/generated-sources/.../_default_transferobjecttypes/entity/`
-    *   **Examples**: `UserForCreate`, `Campaign`, `Address` (Note: Names can be the same, but packages differ)
+    *   **Examples**: `UserForCreate`, `Activity`, `Address` (Note: Names can be the same, but packages differ)
 
 ### Why Two Layers?
 

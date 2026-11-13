@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba",
 category: data-access
 status: established
 projects: [rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner]
-evidence: ["rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
+evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/user/management/UserDeleteInterceptor.java", "alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PushNotificationServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [dao-fluent-query-filter, mutable-entity-update-pattern, entity-re-fetch-pattern, dirty-check-before-update]
 fragment: "none: backend-only"
@@ -30,30 +30,30 @@ Every DAO read and update takes a mask that names the attributes and relations t
 - Do not read a field you did not include; it is `null` (same section). In generated getters an optional attribute is an `Optional`, a required one a plain value, and a key absent from the payload differs from a key present with `null` ([absent, null and empty](../../agent-docs/backend/data-access-guide.md#absent-null-and-empty-are-different)).
 - A list call without an explicit seek returns all matching rows, so a mask limits columns, not rows; use a seek for paging ([pagination](../../agent-docs/backend/data-access-guide.md#pagination)).
 
-### Project practice: how the seven projects use them
+### Practice notes: how the examples use them
 
 ```java
-// Example project code: Partner, Address and their DAOs and masks are generated types
+// Example code: Account, Address and their DAOs and masks are generated types
 // existence check: identifier only
-boolean exists = partnerDao.getById(id, PartnerMask.partnerMask()).isPresent();
+boolean exists = accountDao.getById(id, AccountMask.accountMask()).isPresent();
 
 // list: only the displayed columns
-partnerDao.query().maskedBy(PartnerMask.partnerMask().withName().withIsArchived()).selectList();
+accountDao.query().maskedBy(AccountMask.accountMask().withName().withIsArchived()).selectList();
 
 // detail: nested masks control depth
-partnerDao.getById(id, PartnerMask.partnerMask()
+accountDao.getById(id, AccountMask.accountMask()
         .withName()
         .withAddresses(AddressMask.addressMask().withCity().withIsBilling()));
 
 // relation query
-partnerDao.queryAddresses(partner).maskedBy(AddressMask.addressMask().withIsBilling()).selectList();
+accountDao.queryAddresses(account).maskedBy(AddressMask.addressMask().withIsBilling()).selectList();
 
 // partial update: only these fields are written
-partner.setName(newName);
-partnerDao.update(partner, PartnerMask.partnerMask().withName());
+account.setName(newName);
+accountDao.update(account, AccountMask.accountMask().withName());
 ```
 
-- Build one named helper for a deep mask used in several places (one project has a standard-rack mask five levels deep) instead of repeating the chain.
+- Build one named helper for a deep mask used in several places (one example has a standard nested mask five levels deep) instead of repeating the chain.
 - Use the empty mask for toggle operations and batch deletes that need only the identifiers: `dao.update(entity, EntityMask.entityMask())` and loading ids before deleting in batches.
 - In authentication and per-request paths (user lookup by e-mail) use the smallest mask: the check runs on every login or call ([[keycloak-jit-user-provisioning]]).
 - On update, mask what you set. A wider mask than the changed fields rewrites values you loaded, which can overwrite concurrent changes; compare before writing ([[dirty-check-before-update]], [[mutable-entity-update-pattern]]).
@@ -68,7 +68,7 @@ partnerDao.update(partner, PartnerMask.partnerMask().withName());
 
 ## Example
 
-Seven projects use masks throughout. A duplicate check loads only the normalized name and archived flag of partners with the same normalized name. A validation step loads only the state of a product. A holiday cancellation reads only the status of reservations. A cache clearing job loads ids with an empty mask and deletes in batches. A rack service builds a five-level nested mask once and reuses it. Authentication interceptors load only the e-mail of the user.
+Several applications use masks throughout. A duplicate check loads only the normalized name and archived flag of accounts with the same normalized name. A validation step loads only the state of a product. A calendar cancellation reads only the status of bookings. A cache clearing job loads ids with an empty mask and deletes in batches. A catalog service builds a five-level nested mask once and reuses it. Authentication interceptors load only the e-mail of the user.
 
 ## When to avoid
 

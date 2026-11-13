@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:reserve
 category: pattern
 status: established
 projects: [reserve-app, viterra_demo, doors-model, ams-model, skillmatrix-model, mlszksz-platform]
-evidence: ["reserve-app:unrecorded", "viterra_demo:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded"]
+evidence: ["reserve-app:unrecorded", "viterra_demo:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [actor-based-transfer-projection]
 fragment: multi-actor-role-based-projections
 diagram: { kinds: [entity, enum, transfer, actor], members: types }
@@ -41,11 +41,11 @@ A role can be stored as an enumeration on the user entity (for example PARTNER a
 
 ## Variations
 
-- **Role enumeration on the user.** A Role enumeration (PARTNER, ADMIN) is stored on the user entity, and each role maps to its own transfer objects. The example project reserve-app uses this form.
+- **Role enumeration on the user.** A Role enumeration (PARTNER, ADMIN) is stored on the user entity, and each role maps to its own transfer objects.
 - **Actor type per user subtype.** Each user subtype carries an actor type reference, so the actor is fixed by the subtype. See [[actor-based-transfer-projection]] for the role-prefixed naming style.
-- **Principal-bound actors.** A self-service actor authenticates as its own transfer object and filters with `getVariable("ACTOR", "email")`, so it sees only its own records. The viterra_demo example uses this form.
+- **Principal-bound actors.** A self-service actor authenticates as its own transfer object and filters with `getVariable("ACTOR", "email")`, so it sees only its own records.
 - **Role flag on the principal.** One actor with a role flag (for example `isAdmin`) on its principal transfer object, instead of one actor per role. An access getter can read it with a typed `getVariable("ACTOR", ...)` call in a single filter, and `hiddenBy` on menu items can use a derived boolean on the principal. This is project practice on top of the platform's access and menu rules; see the advanced modeling patterns in the agent-docs.
-- **Named service packages per role.** Projections are grouped into service sub-packages per role instead of per actor package. The mlszksz-platform example uses this form.
+- **Named service packages per role.** Projections are grouped into service sub-packages per role instead of per actor package.
 
 ## When to use
 

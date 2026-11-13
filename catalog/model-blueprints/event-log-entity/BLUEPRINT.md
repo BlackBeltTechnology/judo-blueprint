@@ -60,8 +60,8 @@ The Event entity is not createable, updateable or deleteable through generated a
 
 ## Related
 
-- [[audit-log-entity]] — the audit trail with denormalized actor names, for platform-wide review
-- [[audit-event-trail]] — the same need as an event entity written inside the business transaction
-- [[history-audit-trail-entity]] — a per-entity history instead of one shared event table
-- [[operation-call-logging-interceptor]] — logs built-in operation calls from an interceptor
-- [[safe-failure-pattern]] — when a failure to write an event must not break the business operation
+- [[audit-log-entity]]: the audit trail with denormalized actor names, for platform-wide review
+- [[audit-event-trail]]: the same need as an event entity written inside the business transaction
+- [[history-audit-trail-entity]]: a per-entity history instead of one shared event table
+- [[operation-call-logging-interceptor]]: logs built-in operation calls from an interceptor
+- [[safe-failure-pattern]]: when a failure to write an event must not break the business operation

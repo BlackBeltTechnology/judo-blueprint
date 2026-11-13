@@ -2,7 +2,7 @@
 
 ### Show the business error message from a 422 response
 
-A business error arrives as HTTP 422 with an `X-Fault` header. The response body is keyed by the fault's type name, and the business error's `message` is the text to show. By default the generated handler takes only the first key of the body and opens the fault dialog, which shows every detail as a key and value; labels come from translation keys `faults.<fault name>.<attribute>` and fall back to the raw attribute name. Project practice: an error hook for the 422 status reads the message instead and shows it as a snack. See [[error-handler-interceptor-customization]].
+A business error arrives as HTTP 422 with an `X-Fault` header. The response body is keyed by the fault's type name, and the business error's `message` is the text to show. By default the generated handler takes only the first key of the body and opens the fault dialog, which shows every detail as a key and value; labels come from translation keys `faults.<fault name>.<attribute>` and fall back to the raw attribute name. Common practice: an error hook for the 422 status reads the message instead and shows it as a snack. See [[error-handler-interceptor-customization]].
 
 ### Translate the codes, not the messages
 
@@ -18,11 +18,11 @@ A field error from the field validation mechanism belongs under its field. A bus
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
-- The project uses plain string codes, so the hook shows the message text only and needs no enumeration translation.
+- One project uses plain string codes, so the hook shows the message text only and needs no enumeration translation.
 - The hook checks for status 422, reads the message from the first key of the response body, and shows it for three seconds.
 
-### indamedia-adtrack and park-here
+### Second variant seen in practice
 
 - The projects with an enumeration provide a translation for each member, and the hook shows the translated text.

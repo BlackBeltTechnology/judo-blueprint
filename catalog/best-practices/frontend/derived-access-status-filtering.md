@@ -28,7 +28,7 @@ Users of a workflow application want to open "my drafts", "pending" or "rejected
 - Getter rules at actor scope ([architectural patterns: getter rules](../../agent-docs/backend/architectural-patterns.md), [JQL cheatsheet](../../agent-docs/model/model-development.md)): the filter starts from the entity, not from the transfer object (`<model>::entities::<Entity>!filter(x | ...)`); there is no `self` at actor scope; a boolean literal is rejected for `DERIVED` (use `ALL` for an unfiltered access); primitives in `!getVariable` calls must be fully qualified.
 - Filtering runs in the backend as part of the access query, so the page only receives matching rows. Row-level permissions of the access (creatable, updatable, deletable) are set per access ([access testing patterns](../../agent-docs/integration-testing/access-and-derived-testing.md)).
 
-### Project practice: one access per status
+### Practice notes: one access per status
 
 - Add one `DERIVED` access per status of interest, all pointing to the same transfer object, with a filter on the status attribute. Reusing one table definition for all of them keeps columns identical across the status pages.
 - Give each access its own menu entry, and group the entries (for example "my tasks", "my items by status", "all items") to keep the menu readable.
@@ -42,7 +42,7 @@ Navigation becomes task-oriented and the filter is enforced in the model rather 
 
 ## Example
 
-doors-model, employee actor: nineteen accesses, a dozen of them `DERIVED` status filters over the contract entity (created, uploaded, rejected, finalized, to close, in progress, plus global and division views). The menu groups them as my tasks, my contracts as officer, contracts and partners. One contract table definition with eight columns is reused by all filtered views.
+One app, with an employee actor: many accesses, several of them `DERIVED` status filters over the order entity (created, paid, rejected, finalized, to close, in progress, plus global and team views). The menu groups them as my tasks, my orders as approver, orders and partners. One order table definition is reused by all filtered views.
 
 ## When to avoid
 

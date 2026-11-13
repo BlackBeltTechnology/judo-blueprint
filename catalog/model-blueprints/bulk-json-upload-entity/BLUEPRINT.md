@@ -31,19 +31,19 @@ Each created item holds a reference to its Upload. Tracing an item to its source
 
 The Upload entity has three required attributes: json (text), timestampOfUpload (timestamp) and nrOfUploadedQuestions (integer). Upload has a 0..* association to Question. Question has a required text identifier, an optional back-reference to Upload (0..1) and an optional Category (0..1). Category has a required name identifier.
 
-The import and download operations are not part of the entity shape. They are static operations on a transfer object (a project choice) that take the JSON as an unmapped transfer object input and return a file reference or the export payload.
+The import and download operations are not part of the entity shape. They are static operations on a transfer object (an application choice) that take the JSON as an unmapped transfer object input and return a file reference or the export payload.
 
 ## Constraints
 
 - Upload rows are created only by the import operation. Create, update and delete flags are set on transfer-object relations, not on the entity: expose Upload through a transfer object without the create, update and delete flags (read-only), so no generated REST create exists for it.
-- The import writes the Upload row and its items in one operation call. If the operation throws, the writes of that transaction roll back, including the Upload row (project expectation; the agent-docs state this explicitly only for interceptors).
+- The import writes the Upload row and its items in one operation call. If the operation throws, the writes of that transaction roll back, including the Upload row (expected behaviour; the agent-docs state this explicitly only for interceptors).
 - The import operation is a custom operation that writes, so it must be modelled stateful. A stateless call context makes the DAO writes throw `IllegalStateException`.
 - Items that match an existing identifier are skipped, not updated.
 - The JSON text is stored whole. Its size is bounded by the database text column, so large files need the file-store path.
 
 ## Variations
 
-- **Whole-file import through the file store.** The JSON is uploaded as a binary file, read back by the operation, and parsed there. This is the example project's approach for larger files.
+- **Whole-file import through the file store.** The JSON is uploaded as a binary file, read back by the operation, and parsed there. This is the reference implementation's approach for larger files.
 - **Inline JSON input.** The JSON arrives as a text input on an unmapped transfer object. Simpler, but limited by request size.
 - **Batch without a Category.** Drop the Category entity when items carry no classification. The Upload and item relations stay the same.
 - **Export as a round trip.** A static download operation writes the same item shape back out as JSON. The CSV counterpart is described in the bulk import best practices.
@@ -62,6 +62,6 @@ The import and download operations are not part of the entity shape. They are st
 
 ## Related
 
-- [[event-log-entity]] — an append-only log of events, used when every change must be recorded rather than one batch
-- [[document-file-attachment]] — how the uploaded file itself is stored and attached
-- [[reference-data-lookup-entity]] — the Category reference list that imported items point to
+- [[event-log-entity]]: an append-only log of events, used when every change must be recorded rather than one batch
+- [[document-file-attachment]]: how the uploaded file itself is stored and attached
+- [[reference-data-lookup-entity]]: the Category reference list that imported items point to

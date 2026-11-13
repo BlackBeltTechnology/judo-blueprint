@@ -6,7 +6,7 @@ The shape is one document entity with a review cycle, a state enumeration and a 
 - **DocumentState** is an enumeration with five members: IN_PROGRESS, REVIEW_REQUESTED, ACCEPTED, REJECTED and CLOSED.
 - **Document** has four instance operations: `requestReview`, `accept`, `reject` and `close`.
 - **Document** refers to one **User** as owner (1..1, association). It holds **DocumentHistoryEntry** items (composition) and **File** items (composition).
-- **DocumentTransfer** is the transfer object for the document. It exposes `referenceNumber`, `currentState`, `ownerRepresentation`, the four guards and their four negations (`isNotReviewable`, `isNotAcceptable`, `isNotRejectable`, `isNotClosable`). It maps the four transitions (mapped operations that delegate to the entity's instance operations, whose implementation is custom project code) and offers a static `createDocument` operation.
+- **DocumentTransfer** is the transfer object for the document. It exposes `referenceNumber`, `currentState`, `ownerRepresentation`, the four guards and their four negations (`isNotReviewable`, `isNotAcceptable`, `isNotRejectable`, `isNotClosable`). It maps the four transitions (mapped operations that delegate to the entity's instance operations, whose implementation is custom application code) and offers a static `createDocument` operation.
 - **Message** is an unmapped input transfer object with a `message` field, used as the rejection reason.
 
 The transitions are IN_PROGRESS to REVIEW_REQUESTED, REVIEW_REQUESTED to ACCEPTED or REJECTED, and ACCEPTED or REJECTED to CLOSED.

@@ -26,17 +26,17 @@ A `MenuItemAccess` points at a dashboard transfer object, but the UI model gives
 - Files under `src/custom/` are never regenerated ([action hooks, keep custom hooks under src/custom](../../agent-docs/frontend/hooks/action-hooks.md)).
 - Whether the generator really emits no page for a dashboard without a layout, and the exact `ComponentProxy` props, are *verify* items: check the generated sources of your version.
 
-### Project practice: placeholder page per dashboard (compsychletter)
+### Practice notes: placeholder page per dashboard
 
-The agent-docs do not describe this page shape; it is project practice.
+The agent-docs do not describe this page shape; it is practice, not a platform feature.
 
 - One `default export function <Dashboard>Page()` per dashboard, rendering a `ComponentProxy`.
 - The `filter` matches `OBJECTCLASS` = `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` and a `component` value equal to the page's own exported string constant (`<DASHBOARD>_PAGE_INTERFACE_KEY`). A later bundle imports that constant to register its implementation.
 - The child of the proxy is the fallback: a plain heading with the dashboard label.
-- The route is added to `routes.tsx` as a lazy-loaded route at the access path, and the menu entry to `menu-items.tsx`. In the project both files are listed in `.generator-ignore`, so they are edited by hand.
+- The route is added to `routes.tsx` as a lazy-loaded route at the access path, and the menu entry to `menu-items.tsx`. In this setup both files are listed in `.generator-ignore`, so they are edited by hand.
 
 ```tsx
-// Example project code: src/pages/<Actor>/DocumentsDashboardPage/index.tsx
+// Example code: src/pages/<Actor>/DocumentsDashboardPage/index.tsx
 import { OBJECTCLASS } from '@pandino/pandino-api';
 import { ComponentProxy } from '@pandino/react-hooks';
 import { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY } from '~/custom';
@@ -71,7 +71,7 @@ routes.push({ path: 'documents', exact: true, element: <Suspense><DocumentsDashb
 
 ## Example
 
-In compsychletter, three placeholder pages were created for `DocumentsDashboard`, `AuthoringDashboard` and `DataDashboard` after `MenuItemAccess` entries were added to the `LetterUser` actor. Each exports its own `*_PAGE_INTERFACE_KEY`. All three were navigable at once; the real dashboards came later as separate Pandino bundles.
+One frontend created three placeholder pages for `DocumentsDashboard`, `AuthoringDashboard` and `DataDashboard` after `MenuItemAccess` entries were added to a `Viewer` actor. Each exports its own `*_PAGE_INTERFACE_KEY`. All three were navigable at once; the real dashboards came later as separate Pandino bundles.
 
 ## When to avoid
 

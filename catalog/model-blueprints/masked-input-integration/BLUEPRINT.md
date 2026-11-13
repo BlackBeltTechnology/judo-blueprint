@@ -8,7 +8,7 @@ tags: [domain:frontend, layer:frontend, project:rackinspect, status:single-proje
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -24,12 +24,12 @@ The mask shapes what the user can type. Business validation still comes from the
 
 ## Structure
 
-The pattern has no model shape of its own beyond a UI element flagged as a custom implementation. The platform generates an extension point for such elements, and the frontend registers a React component for it (see the `frontend.md` and the platform's custom component replacement section). The element is not a replacement of an arbitrary generated component: the model has to expose it. In the rackinspect project this is a group of VAT ID fields on a partner edit page. The element receives the stored data, the validation map, the edit mode, the store diff, the loading flag and the action helpers from the generated page. Each masked field is a text input with an input-mask component, a mask pattern and a placeholder character. The accepted (unmasked) value is written back to the store.
+The pattern has no model shape of its own beyond a UI element flagged as a custom implementation. The platform generates an extension point for such elements, and the frontend registers a React component for it (see the `frontend.md` and the platform's custom component replacement section). The element is not a replacement of an arbitrary generated component: the model has to expose it. In one project this is a group of VAT ID fields on an edit page. The element receives the stored data, the validation map, the edit mode, the store diff, the loading flag and the action helpers from the generated page. Each masked field is a text input with an input-mask component, a mask pattern and a placeholder character. The accepted (unmasked) value is written back to the store.
 
 ## Constraints
 
 - The element must be marked as a custom implementation in the UI model. Its registration key is generated per element in the container's `customization.ts`, and the generated scaffold `register<Container>CustomImplementations.tsx.default` contains the register function with the correct props type. Take the key from there, not from another project.
-- The props are those of the proxy props type in the scaffold. The names used here (`data`, `validation`, `editMode`, `storeDiff`, `isLoading`, `actions`) come from the rackinspect project, so check them against the scaffold.
+- The props are those of the proxy props type in the scaffold. The names used here (`data`, `validation`, `editMode`, `storeDiff`, `isLoading`, `actions`) come from one project, so check them against the scaffold.
 - The mask callback is used to capture the value. The change handler is not used, because it fires before the mask has settled.
 - An empty mask (only placeholder characters) is stored as null, not as an empty string.
 - Editability follows the generated flags: the field is read-only when the generated updateable flag is false or the field is disabled by the action helpers.

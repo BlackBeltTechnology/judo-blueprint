@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "status:single-proj
 category: relation
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: [snapshot-versioning-pattern]
 fragment: self-referencing-versioning
 diagram: { kinds: [entity, enum], members: types }
@@ -29,7 +29,7 @@ Keep the full history of an entity inside a single entity table. Each version po
 
 ### Creating a version is a custom operation
 
-The platform generates plain create, update and delete. The version-creation step is project practice implemented in a custom operation (see [data access guide](../../agent-docs/backend/data-access-guide.md)):
+The platform generates plain create, update and delete. The version-creation step is a convention implemented in a custom operation (see [data access guide](../../agent-docs/backend/data-access-guide.md)):
 
 1. Copy the current entity into a new row.
 2. Set the copy's `previousVersion` to the original.
@@ -49,7 +49,7 @@ Collections for pages and queries filter on `lastVersion = true`. The history is
 
 ## Example
 
-An Offer has `title`, a `status` (Draft, Done), `lastVersion` (default true) and `previousVersion` pointing to another Offer. A `generateNewVersion` operation clones the offer, links the clone to the original and flips the flags. Offer pages list only offers whose `lastVersion` is true. The original project (RackInspect) combined this with a status workflow and cost fields to keep a pricing history. The names here are neutral stand-ins.
+An Offer has `title`, a `status` (Draft, Done), `lastVersion` (default true) and `previousVersion` pointing to another Offer. A `generateNewVersion` operation clones the offer, links the clone to the original and flips the flags. Offer pages list only offers whose `lastVersion` is true. The original project combined this with a status workflow and cost fields to keep a pricing history. The names here are neutral stand-ins.
 
 ## When to avoid
 

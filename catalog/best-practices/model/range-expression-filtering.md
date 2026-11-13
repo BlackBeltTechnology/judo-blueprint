@@ -28,7 +28,7 @@ On a transfer object relation that can be edited (a mapped relation that is not 
 
 - Write the expression as a filter over the target entity: `Client!filter(c | c.active)`. Typical filters are an active flag ([[soft-delete-active-flag]]) or a status enumeration literal ([[enum-state-machine]]).
 - Add `!sort(c | c.name ASC)` for ordered pickers. The collection-function syntax is in [model development](../../agent-docs/model/model-development.md).
-- Dependent pickers: the project observations (ParkHere, ReserveApp) start the expression from `self`, for example "the spots of the selected project". The agent-docs do not describe `self` in range expressions, so verify each such expression in your model.
+- Dependent pickers: the project observations (two projects) start the expression from `self`, for example "the items of the selected group". The agent-docs do not describe `self` in range expressions, so verify each such expression in your model.
 
 ### A range is not a security boundary
 
@@ -46,7 +46,7 @@ The range is a plain expression. Put complex rules into a derived boolean on the
 
 ## Example
 
-A neutral Report entity has an association `client` to Client. The `ReportView` transfer object maps Report and exposes `client` (type `ClientRef`, mapping Client) with a derived range: `Client!filter(c | c.active)!sort(c | c.name ASC)`. The picker shows only active clients, sorted by name. The projects used the same shape: Trivia offered only approved questions, Alba only active teachers and approvers as approvers, SkillMatrix active competences and ordered skill levels, Viterra and ReserveApp active clients and companies.
+A neutral Report entity has an association `client` to Client. The `ReportView` transfer object maps Report and exposes `client` (type `ClientRef`, mapping Client) with a derived range: `Client!filter(c | c.active)!sort(c | c.name ASC)`. The picker shows only active clients, sorted by name. The projects used the same shape: one offered only approved entries, one only active approvers, one active entries with ordered levels, and two only active clients and companies.
 
 ## When to avoid
 

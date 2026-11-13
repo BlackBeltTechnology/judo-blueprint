@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:si
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/RecaptchaWafInterceptor.java"]
 alternatives: []
 fragment: none: backend-only interceptor with no model structure of its own, except one input attribute for the token
 first_seen: 2026-03-09

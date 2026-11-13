@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:itracker", "project:actiongroup-t
 category: enum
 status: established
 projects: [itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
-evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
 fragment: category-enum-pattern
@@ -30,7 +30,7 @@ Some entities need a classification from a small fixed vocabulary that is set at
 ### Use the classification in the model and in code
 
 - Filter and group by it in access getters and derived members with the same literal form.
-- Project practice: category enumerations that drive branching in operations (for example which credential type is valid) are fine, but if the value changes through transitions it is a state, not a category: use [[enum-state-machine]].
+- Practice note: category enumerations that drive branching in operations (for example which credential type is valid) are fine, but if the value changes through transitions it is a state, not a category: use [[enum-state-machine]].
 - Known generated-DAO issue (agent-docs backend data-access guide): the generated `query<Attribute>()` on an enumeration attribute can fail with a cast error because the runtime delivers the ordinal; read the value through the DTO or convert with `<Enum>.getByOrdinal(...)`.
 
 ### When the set must grow at runtime

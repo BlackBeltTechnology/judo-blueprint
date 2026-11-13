@@ -1,7 +1,7 @@
 ---
 id: single-access-entity-pattern
 title: Single Access Entity Fetch and Create-If-Missing
-description: "For an actor access that holds at most one instance (settings, a single planet), fetch the instance first and send the user to a create page when it does not exist, then refresh the full view with a mask using the returned signed identifier."
+description: "For an actor access that holds at most one instance (settings, a single item), fetch the instance first and send the user to a create page when it does not exist, then refresh the full view with a mask using the returned signed identifier."
 aliases: [singleton fetch or create, create-if-missing page]
 keywords: [single access, singleton, signed identifier, create if missing, refresh with mask, two-phase fetch, view page, empty key, hand-built frontend]
 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
@@ -27,22 +27,22 @@ Handle an access that yields zero or one instance: show it when it exists, offer
 - Every instance the REST layer returns carries `__identifier` and `__signedIdentifier`. Bound operations and instance updates take the signed identifier, not the plain id. The signed identifier changes after every update (the version is part of it), and client code cannot mint one, so take the current one from a response ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
 - Loading related data for a detail view is done with a mask ([masks for detail views](../../agent-docs/backend/data-access-guide.md)). The generated frontend builds this page for you from the access; the steps below matter for hand-built pages.
 
-### Project practice: fetch, then refresh with a mask (actiongroup-test-react)
+### Practice notes: fetch, then refresh with a mask
 
-The names below belong to that project's generated service layer, not to the platform docs:
+The names below belong to an example's generated service layer, not to the platform docs:
 
-1. Ask the root access service for the instance with an empty key (`godServiceForEarthImpl.get('{}')` in the example; the empty-key call is a convention of that generated service layer, so check yours).
+1. Ask the root access service for the instance with an empty key (`settingsServiceImpl.get('{}')` in the example; the empty-key call is a convention of that generated service layer, so check yours).
 2. If an instance with a signed identifier comes back, keep the identifier and load the full entity with the view service's `refresh`, passing the identifier and a query customizer with the mask for relations. Two steps: existence check first, data second.
 3. If none exists, navigate to the create page; the create call goes through the same root service. Provide a way back from the create page.
 4. Catch errors in one handler (snackbar), and drive the action buttons of the view from entity state.
 5. Re-read the signed identifier after each update before the next bound call, since it changes.
 
 ```typescript
-const { __signedIdentifier } = await godServiceForEarthImpl.get('{}');
+const { __signedIdentifier } = await settingsServiceImpl.get('{}');
 if (__signedIdentifier) {
-  setData(await viewPlanetServiceImpl.refresh({ __signedIdentifier }, queryCustomizer));
+  setData(await viewSettingsServiceImpl.refresh({ __signedIdentifier }, queryCustomizer));
 } else {
-  navigate('/earth/create');
+  navigate('/settings/create');
 }
 ```
 
@@ -52,7 +52,7 @@ The user always lands on the right screen for an optional single instance, and t
 
 ## Example
 
-actiongroup-test-react: the Earth entity is checked with the empty-key get. When found, the planet view loads with its creatures table; otherwise the user goes to `/earth/create`. The view shows action buttons depending on state (habitable, inhabited, peaceful).
+A hand-built app: the settings entity is checked with the empty-key get. When found, the view loads with its related table; otherwise the user goes to `/settings/create`. The view shows action buttons depending on state (active, archived, draft).
 
 ## When to avoid
 

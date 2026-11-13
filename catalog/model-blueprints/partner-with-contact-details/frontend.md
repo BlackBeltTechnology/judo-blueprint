@@ -11,8 +11,7 @@ The partner view shows backend validation results next to the fields, uses maske
 
 ## Examples
 
-### rackinspect (example project code, not platform API)
+### Example (project code, not platform API)
 - Framework: React
-- Key files: `custom/hooks/ViewEditActionHooks/customServicesPartnerServicePartnerPartnerViewEditActionsHook.tsx`, `custom/hooks/TableRowHighlightingHooks/ratingTableHighlightHook.tsx`
 - Pattern: the refresh handler builds a map keyed by the error location with the message as value; the highlight hook maps rating result values to background colours.
 - Notable: the display is server-authoritative; there is no client-side duplicate of the validation.

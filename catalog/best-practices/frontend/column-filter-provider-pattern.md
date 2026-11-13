@@ -27,16 +27,16 @@ Table pages with many columns and filter types get cluttered when definitions si
 - Per-column adjustments that the model cannot express go through column customizer hooks, which receive the original column definition and return a changed one (width, hidden, not sortable) ([column width and order](../../agent-docs/frontend/hooks/table-hooks.md)); see also [table column customization](../../agent-docs/frontend/advanced-patterns.md).
 - Provider functions are only needed in a hand-written table page. With the generated tables, hooks and the model already do this job.
 
-### Project practice: providers for columns and filters
+### Practice notes: providers for columns and filters
 
-This layer is project practice (actiongroup-test-react), not a platform feature:
+This layer is practice, not a platform feature:
 
 - A column provider takes the localization object and returns the column definitions with translated header names; a filter provider returns filter options with attribute name, translated label and filter type.
-- Two forms coexist in the project: standalone provider files for a simple table, and a page-specific hook that returns columns, filter options and the row click handler (the view page hook also returns nested columns and query customizers).
-- Choose one form per project to avoid inconsistency.
+- Two forms can coexist in one frontend: standalone provider files for a simple table, and a page-specific hook that returns columns, filter options and the row click handler (the view page hook also returns nested columns and query customizers).
+- Choose one form per frontend to avoid inconsistency.
 
 ```typescript
-// Example project code: types and ids are the project's own
+// Example code: types and ids are illustrative
 type ColumnDefsProvider = (intl: IntlShape) => GridColDef[];
 
 export const getColumns: ColumnDefsProvider = (intl) => [
@@ -55,7 +55,7 @@ Definitions are separated from page logic, reusable across table instances, test
 
 ## Example
 
-actiongroup-test-react uses standalone column and filter provider files for the matter table of a galaxy, a table hook for the galaxies list, and a view hook for the galaxy view with nested star and astronomer columns plus query customizers. Both forms live side by side.
+One app uses standalone column and filter provider files for the line-item table of an order, a table hook for the orders list, and a view hook for the order view with nested product and customer columns plus query customizers. Both forms live side by side.
 
 ## When to avoid
 

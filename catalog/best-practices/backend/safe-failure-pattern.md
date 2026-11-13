@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "project:w
 category: error
 status: emerging
 projects: [mlszksz-platform, workflow-poc]
-evidence: ["mlszksz-platform:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AuditLogServiceImpl.java", "workflow-poc:unrecorded"]
 alternatives: []
 related: [audit-event-trail, quartz-scheduled-job, interceptor-aggregation-postcall, spel-guard-evaluation]
 fragment: "none: backend-only"
@@ -28,9 +28,9 @@ Some work is secondary: writing an audit row, updating statistics, sending a not
 - An async interceptor runs outside the transaction and its exceptions are lost, so it needs no catch for the transaction's sake, but should still log ([interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)).
 - The agent-docs do not say what a failed DAO call inside a surrounding transaction does to that transaction. Do not assume a swallowed persistence error leaves the transaction usable; test it.
 
-### Project practice: log and continue
+### Practice notes: log and continue
 
-This layer is project practice (mlszksz-platform, workflow-poc), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - Catch only around the secondary action, never around the primary write. Catch `Exception`, log at warn or error with the cause, and do not rethrow.
 - An interceptor `postCall` that does secondary work still returns the payload it received.
@@ -39,7 +39,7 @@ This layer is project practice (mlszksz-platform, workflow-poc), not a platform 
 - Narrow the catch when the failure has a known, harmless meaning (see the guard example below); rethrow everything else.
 
 ```java
-// Example project code: auditLogDao, log and service are project/generated members
+// Example code: auditLogDao, log and service are generated members
 public void log(ActionType type, String entityType, String entityId, Map<String, Object> details) {
     try {
         auditLogDao.create(auditLog);
@@ -76,7 +76,7 @@ for (Entity item : items) {
 
 ## Example
 
-In mlszksz-platform the audit service catches everything around its create call, all five interceptors catch and log and return the payload unchanged, and the post-expiration job handles each offer or request on its own and continues after a failure. In workflow-poc the guard evaluation catches the expression engine's missing-property errors and treats them as a false guard, while rethrowing all other expression errors (see [[spel-guard-evaluation]]).
+In one application the audit service catches everything around its create call, several interceptors catch and log and return the payload unchanged, and the post-expiration job handles each order or request on its own and continues after a failure. In a workflow example the guard evaluation catches the expression engine's missing-property errors and treats them as a false guard, while rethrowing all other expression errors (see [[spel-guard-evaluation]]).
 
 ## When to avoid
 

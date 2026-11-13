@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: entity
 status: single-project
 projects: [mlszksz-platform]
-evidence: [mlszksz-platform:unrecorded]
+evidence: [mlszksz-platform:model/MLSZKSZPlatform.model]
 alternatives: []
 fragment: organization-entity
 diagram: { kinds: [entity, enum], members: types }

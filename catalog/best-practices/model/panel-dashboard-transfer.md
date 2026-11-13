@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-pl
 category: transfer
 status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, InterfaceRegister, judo-partner]
-evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [service-based-transfer-organization, unmapped-transfer-dto, derived-access-filtering, self-access-point]
 fragment: panel-dashboard-transfer
@@ -46,7 +46,7 @@ One panel per screen and per actor role. If the panel collects dozens of operati
 
 ## Example
 
-A neutral Employee entity owns a collection of Order entities. `OrderView` maps Order. `EmployeePanel` maps Employee and carries two derived relations of OrderView, `openOrders` and `closedOrders`, filtering the employee's own orders, plus a static `createOrder` operation that returns an OrderView. Actor Clerk has one derived access `panel` of cardinality 0..1 whose getter returns the employee row, targeting EmployeePanel. Used in this shape across the projects: RackInspect task and item panels, MLSZKSZ admin dashboards with many creation operations, ParkHere reservation panels, and InterfaceRegister and judo-partner dashboards mapped to the user entity.
+A neutral Employee entity owns a collection of Order entities. `OrderView` maps Order. `EmployeePanel` maps Employee and carries two derived relations of OrderView, `openOrders` and `closedOrders`, filtering the employee's own orders, plus a static `createOrder` operation that returns an OrderView. Actor Clerk has one derived access `panel` of cardinality 0..1 whose getter returns the employee row, targeting EmployeePanel. Used in this shape across the projects: task and item panels, admin dashboards with many creation operations, booking panels, and dashboards mapped to the user entity.
 
 ## When to avoid
 

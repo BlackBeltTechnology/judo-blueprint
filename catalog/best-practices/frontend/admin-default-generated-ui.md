@@ -28,9 +28,9 @@ For back-office actors that only need CRUD over master data, the generated front
 - Hook scaffolds are generated as `.default` files under `src/custom/hooks/`. A `.default` file is not compiled; it only takes effect when copied to a name without `.default` and registered from `application-customizer.tsx` ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md)).
 - Your own files in `src/custom/` are not generated (only `.default` scaffolds and four base files are), so they need no `.generator-ignore` entry ([frontend guide](../../agent-docs/frontend/README.md)).
 
-### Project practice: leave the admin UI alone
+### Practice notes: leave the admin UI alone
 
-This layer is project practice, not a platform feature:
+This layer is practice, not a platform feature:
 
 - Do not activate scaffolds, override pages or theme for the admin actor; keep customization out of its pages entirely. The `.generator-ignore` then protects only itself and `.gitignore`.
 - Improve the admin UX in the model (labels, table columns, layout, menu order), not in the frontend.
@@ -42,10 +42,10 @@ No custom code means nothing to maintain across generator upgrades, and every en
 
 ## Example
 
-- trivia: ten-plus entity types with fully generated tables and forms; dozens of scaffolds stay inactive.
-- itracker: three entity types (users, categories, regions), full CRUD, landing on the users table.
-- reserve-app: thirteen master-data entities with a uniform name-plus-active shape; one hook activated for conditional validation on one entity.
-- doors-model: five master-data entities with a flat menu and consistent table, create form and detail layout.
+- Ten-plus entity types with fully generated tables and forms; dozens of scaffolds stay inactive.
+- Three entity types (users, categories, regions) with full CRUD, landing on the users table.
+- Thirteen master-data entities with a uniform name-plus-active shape; one hook activated for conditional validation on one entity.
+- Five master-data entities with a flat menu and consistent table, create form and detail layout.
 
 ## When to avoid
 

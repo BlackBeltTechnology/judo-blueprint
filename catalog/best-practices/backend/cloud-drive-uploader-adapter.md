@@ -26,9 +26,9 @@ An application must push generated files (reports, documents) to a cloud drive f
 - The runtime turns an uncaught exception from a custom operation into a generic 500 ([How the Runtime Maps Exceptions to HTTP](../../agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http)). An upload failure that is only a side effect should therefore come back as data, not as an exception.
 - Custom operations reach services with `@Reference` ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)). Do not call out from an interceptor ([[external-api-adapter-pattern]]).
 
-### Project practice: separate bundle, neutral interface
+### Practice notes: separate bundle, neutral interface
 
-The interface, outcome class and implementation are example project code.
+The interface, outcome class and implementation are example code.
 
 1. Put the uploader in its own bundle. Its interface knows nothing of the business domain: the caller passes a parent folder id, a subfolder name and a list of named byte streams, and interprets the result.
 2. Read the credential from the OSGi configuration property of the component, which can interpolate an environment variable, and fall back to the raw environment variable. Resolve it at activation and again on modification.
@@ -57,7 +57,7 @@ Library-specific hardening (class loader and security provider handling inside t
 
 ## Example
 
-A travel-report operation builds a set of documents, asks the uploader to put them in a new per-run subfolder of a shared drive and mails the folder link. With no credential, the mail states that upload is not configured and the rest of the operation succeeds.
+A report operation builds a set of documents, asks the uploader to put them in a new per-run subfolder of a shared drive and mails the folder link. With no credential, the mail states that upload is not configured and the rest of the operation succeeds.
 
 ## When to avoid
 

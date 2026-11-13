@@ -25,7 +25,7 @@ A document should be available either as an uploaded file or as a link to where 
 
 - The binary attribute uses a BinaryType. The platform requires at least one allowed MIME type on the binary type (`type/subType`, for example a PDF), and an optional maximum size in bytes (default 50 MB). Declare the types once per model and reuse them. See the [type reference](../../agent-docs/model/esm_metamodel/type.md).
 - The link is a plain string, usually the model's URL type. It holds an address only; the platform does not fetch or check it.
-- Both attributes are optional on the entity. If at least one must be present, express that as a rule in an operation or a validating interceptor, since the model has no "one of" constraint. Project practice: the original project left both optional and relied on users.
+- Both attributes are optional on the entity. If at least one must be present, express that as a rule in an operation or a validating interceptor, since the model has no "one of" constraint. Practice note: the original project left both optional and relied on users.
 - Decide whether the two may disagree. If the upload and the link must describe the same document, say so in the UI labels; the platform does not compare them.
 
 ### Repeat the pair in subtypes

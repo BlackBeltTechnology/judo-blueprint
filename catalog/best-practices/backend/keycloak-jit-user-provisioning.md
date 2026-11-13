@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platf
 category: auth
 status: established
 projects: [alba, mlszksz-platform, ubives, park-here, indamedia-adtrack]
-evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
+evidence: ["alba:unrecorded", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/LogAuthenticationInterceptor.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: [two-phase-registration]
 related: [two-phase-registration, actor-resolution-variable-resolver, dao-fluent-query-filter, mask-field-projection, interceptor-global-logging, safe-failure-pattern, magic-link-authentication]
 fragment: "none: backend-only"
@@ -32,10 +32,10 @@ A user who logs in through Keycloak must have an application user row (the actor
 - The Keycloak user and the database row are two stores that can drift: a user can exist in Keycloak without a row ([Keycloak users and the entity store](../../agent-docs/backend/platform-behavior-reference.md#keycloak-users-and-the-entity-store)).
 - Like operation interceptors, the component needs `judo.model.name=<model>` ([registration](../../agent-docs/backend/interceptors.md#interceptor-component-registration)).
 
-### Project practice: idempotent create under a lock, never throw
+### Practice notes: idempotent create under a lock, never throw
 
 ```java
-// Example project code: UserDao, User, UserForCreate, AccountStatus are generated or project types
+// Example code: UserDao, User, UserForCreate, AccountStatus are generated types
 @Component(property = { "judo.model.name=<model>" })
 public class UserProvisioningInterceptor implements AuthenticationInterceptor {
 
@@ -79,10 +79,10 @@ public class UserProvisioningInterceptor implements AuthenticationInterceptor {
 }
 ```
 
-- **Filter for `#_principal`** (most projects do; the pattern also "intercepts all events" and returns early otherwise).
+- **Filter for `#_principal`** (most implementations do; the pattern also "intercepts all events" and returns early otherwise).
 - **Pick the claim that matches the actor's lookup attribute** (email or `preferred_username`); the runtime looks the actor up by the attribute with `claim = USERNAME`, then `EMAIL`, then the first identifier ([resolution order](../../agent-docs/backend/authentication-guide.md#resolution-order-defaultactorresolver)). A different claim here than in the lookup leaves the user unfound.
 - **Idempotency**: check existence first with a minimal mask ([[mask-field-projection]], [[dao-fluent-query-filter]]).
-- **Thread safety**: concurrent first logins can both pass the check. Projects wrap check and create in `synchronized` on a dedicated lock; the alternative is no lock and a swallowed unique-constraint failure. A lock protects one node only; a cluster needs the unique constraint as the final guard.
+- **Thread safety**: concurrent first logins can both pass the check. Implementations wrap check and create in `synchronized` on a dedicated lock; the alternative is no lock and a swallowed unique-constraint failure. A lock protects one node only; a cluster needs the unique constraint as the final guard.
 - **Do not rethrow.** Exceptions from `authenticate` block the login; use the safe-failure approach ([[safe-failure-pattern]]) unless blocking is intended.
 - **Default status** such as `PENDING_APPROVAL` so an admin approves before access. Authorization still comes from the model's access rules, not from this interceptor.
 - Variants seen: update `lastLogin` and write an audit entry on every login instead of creating users; set admin status from a configured list of e-mail addresses; build a display name with fallbacks; create a minimal account row (user name only).
@@ -96,7 +96,7 @@ public class UserProvisioningInterceptor implements AuthenticationInterceptor {
 
 ## Example
 
-A user logs in through Keycloak for the first time. The interceptor sees `#_principal`, reads e-mail, given and family name from the claims, finds no user with that e-mail, and creates one with status "pending approval". The runtime then resolves the actor from the new row. An administrator approves the user later. Five projects use this shape; one also sets admin rights from a configured address list, under a lock.
+A user logs in through Keycloak for the first time. The interceptor sees `#_principal`, reads e-mail, given and family name from the claims, finds no user with that e-mail, and creates one with status "pending approval". The runtime then resolves the actor from the new row. An administrator approves the user later. Several applications use this shape; one also sets admin rights from a configured address list, under a lock.
 
 ## When to avoid
 

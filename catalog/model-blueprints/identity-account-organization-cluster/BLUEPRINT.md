@@ -69,6 +69,6 @@ The organization access type enumeration has two members: OWNER and ADMIN.
 
 ## Related
 
-- [[idm-realm-keycloak-integration]] — the identity server and per-organization realms that these records use
-- [[freight-reservation-cluster]] — a domain cluster whose partners and users link to organizations
-- [[audit-log-entity]] — recording who changed an organization access
+- [[idm-realm-keycloak-integration]]: the identity server and per-organization realms that these records use
+- [[capacity-reservation-cluster]]: a domain cluster whose partners and users link to organizations
+- [[audit-log-entity]]: recording who changed an organization access

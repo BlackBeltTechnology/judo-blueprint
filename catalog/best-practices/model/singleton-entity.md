@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:itracker", "pro
 category: entity
 status: established
 projects: [trivia, itracker, mlszksz-platform, viterra_demo, mjsz, park-here, InterfaceRegister, judo-partner]
-evidence: ["trivia:unrecorded", "itracker:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
+evidence: ["trivia:unrecorded", "itracker:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 fragment: singleton-entity
 diagram: { kinds: [entity, transfer, actor, operation], members: types }
@@ -23,7 +23,7 @@ Model application-wide state or entry points as an entity of which the project o
 
 ### The platform has no singleton construct
 
-"Singleton" is project practice. Nothing in the model stops a second row. The pattern is: an entity, a single-instance Access, and a project rule that only one row is created.
+"Singleton" is a convention. Nothing in the model stops a second row. The pattern is: an entity, a single-instance Access, and a project rule that only one row is created.
 
 ### Data-carrying singleton: settings
 
@@ -35,7 +35,7 @@ Model application-wide state or entry points as an entity of which the project o
 ### Attribute-less singleton: initializer and application container
 
 - An entity with no attributes or relations (named Application or Initializer) hosts static operations: an initializer that seeds data, registration, bulk actions. Operation type `INITIALIZER` is stored as a static operation with the initializer flag set ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)). Whether and when the platform calls it is not documented there; see [[initializer-operation]] for the seeding practice.
-- If clients should call its operations, expose the entity through the same single-instance Access. Several projects (itracker, Viterra, MJSZ) did not expose it at all: it exists only for startup seeding.
+- If clients should call its operations, expose the entity through the same single-instance Access. Several projects did not expose it at all: it exists only for startup seeding.
 
 ### First-run check
 
@@ -43,9 +43,9 @@ Operations that create the singleton row guard with a collection check (`!empty(
 
 ### Variants seen
 
-- Two singletons side by side: an attribute-less Initializer and a data-carrying Configuration (MLSZKSZPlatform, ParkHere).
-- InterfaceRegister split seeding across four domain-specific initializer operations, each guarded.
-- judo-partner keeps API credentials in a configuration entity read with `!any()` on the actor.
+- Two singletons side by side: an Initializer whose only attribute is `createdAt`, and a data-carrying Configuration (seen in two projects).
+- One project split seeding across four domain-specific initializer operations, each guarded.
+- One project keeps API credentials in a configuration entity read with `!any()` on the actor.
 
 ## Rationale
 

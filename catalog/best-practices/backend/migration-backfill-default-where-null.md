@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:park-h
 category: data-migration
 status: emerging
 projects: [rackinspect, park-here]
-evidence: ["rackinspect:unrecorded", "park-here:application/schema/migration/1_0_0_20260713_124306_SNAPSHOT_to_1_0_0_20260727_155508_SNAPSHOT/06_updateDataAfterIncremental_postgresql.changeset.xml"]
+evidence: ["rackinspect:application/schema/migration/1_0_0_20260923_100755_SNAPSHOT_to_1_0_0_20260924_103958_SNAPSHOT/06_updateDataAfterIncremental_postgresql.changeset.xml", "park-here:application/schema/migration/1_0_0_20260713_124306_SNAPSHOT_to_1_0_0_20260727_155508_SNAPSHOT/06_updateDataAfterIncremental_postgresql.changeset.xml"]
 alternatives: []
 related: [init-data-seeding, excel-data-seed-import]
 fragment: "none: backend-only"
@@ -27,9 +27,9 @@ When a model change adds an attribute, the generated schema migration adds a pla
 - Entity tables are named `T_ENTITIES_<NAME>` and columns `C_<NAME>`. Check the generated changelog for the exact names (same guide).
 - Generation overwrites the files of the output folder except review files, so confirm against the guide that a hand-written changeset survives regenerating the folder, and re-check it after every regeneration (*verify*).
 
-### Project practice: the backfill changeset
+### Practice notes: the backfill changeset
 
-This layer is project practice (rackinspect), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - **Put the backfill in the "after" changeset.** The new column is created by the `incremental` step, so in the "before" hook it does not exist yet and the UPDATE would fail. Anything that reads or writes the new column belongs in `updateDataAfterIncremental`.
 - **Default backfill.** Update only the rows still NULL: `UPDATE <table> SET <col> = <default> WHERE <col> IS NULL`. The condition keeps the changeset harmless if it runs on rows that already carry a value.
@@ -39,7 +39,7 @@ This layer is project practice (rackinspect), not a platform feature:
 - **Enum ordinals are gapped.** If the backfill tests an enum column, read the ordinals from the model's own `ordinal` attributes, not from the member order in the file.
 
 ```xml
-<!-- Example project code: table and column names are illustrative -->
+<!-- Example code: table and column names are illustrative -->
 <changeSet author="app" context="<from>_<to>" dbms="postgresql" id="add-flag-backfill-false">
     <sql>
         UPDATE T_ENTITIES_ORDER
@@ -72,9 +72,9 @@ This layer is project practice (rackinspect), not a platform feature:
 
 ## Example
 
-A second project (park-here) backfills a newly added required text attribute of a configuration entity with its default in the "after" changeset, using the `WHERE <col> IS NULL` form; its changeset has no explanatory comment, which the practice recommends. The same project also met the variant of backfilling a file-store reference in SQL together with seeding the file; this is the counter-example for the "cannot be produced in SQL" rule below, so keep that advice and fill such references from application code ([[init-data-seeding]]).
+A second variant backfills a newly added required text attribute of a configuration entity with its default in the "after" changeset, using the `WHERE <col> IS NULL` form; its changeset has no explanatory comment, which the practice recommends. The same variant also met the variant of backfilling a file-store reference in SQL together with seeding the file; this is the counter-example for the "cannot be produced in SQL" rule below, so keep that advice and fill such references from application code ([[init-data-seeding]]).
 
-In rackinspect two migration steps carry this. One adds a Boolean attribute to a registry entity and sets it to false for every existing row. The other adds a "converted at" timestamp to a state-machine entity: rows already in the converted state take the creation time of the header row that holds the entity they were converted into, and any row still NULL gets the current time so that the retention job can age it. Both changesets say in their comment that the generator emits the file empty.
+Two migration steps in one application carry this. One adds a Boolean attribute to a record entity and sets it to false for every existing row. The other adds a "converted at" timestamp to a state-machine entity: rows already in the converted state take the creation time of the header row that holds the entity they were converted into, and any row still NULL gets the current time so that the retention job can age it. Both changesets say in their comment that the generator emits the file empty.
 
 ## When to avoid
 

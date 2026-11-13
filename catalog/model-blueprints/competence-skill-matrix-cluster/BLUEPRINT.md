@@ -68,7 +68,7 @@ The User entity is the employee. It holds a full name, a many-association to its
 
 ## Related
 
-- [[approval-workflow-pattern]] — the general pattern for a request that someone approves
-- [[product-with-approval-workflow]] — an approval workflow on a product, for comparison
-- [[risk-level-enum]] — an ordered enumeration, the alternative to a reference entity for levels
-- [[derived-attribute-flattening]] — how the display names are computed on read instead of stored
+- [[approval-workflow-pattern]]: the general pattern for a request that someone approves
+- [[product-with-approval-workflow]]: an approval workflow on a product, for comparison
+- [[risk-level-enum]]: an ordered enumeration, the alternative to a reference entity for levels
+- [[derived-attribute-flattening]]: how the display names are computed on read instead of stored

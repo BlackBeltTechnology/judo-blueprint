@@ -1,6 +1,6 @@
 ## Backend guidance
 
-Platform facts: an initializer operation is a static operation with an initializer flag and no input. Built-in operations and their interceptors do not apply to custom operations. Types such as `InitializerContext` and the helper methods below are illustrative project code, not platform API.
+Platform facts: an initializer operation is a static operation with an initializer flag and no input. Built-in operations and their interceptors do not apply to custom operations. Types such as `InitializerContext` and the helper methods below are illustrative application code, not platform API.
 
 ### Implement init as a custom static operation
 
@@ -27,18 +27,18 @@ Choose one guard and document it:
 
 Write all seed rows in the operation's transaction. A failure then rolls back the whole seed, and the next start retries it cleanly.
 
-### Use project services for lookups
+### Use application services for lookups
 
-Seed code that looks up existing rows usually calls project services. Those services are project code, not platform API, so copy the pattern and not the names.
+Seed code that looks up existing rows usually calls application services. Those services are application code, not platform API, so copy the pattern and not the names.
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - The init operation seeds cities, postal codes, capabilities, the platform configuration singleton, and an admin organization with an admin user.
 - It runs with the `createdAt` marker set last.
 
-### doors-model
+### Second variant seen in practice
 
 - The init operation runs numbered migration steps in order. A counter attribute records the last completed step, so each step runs once across deployments.
 - A gap in the step numbers marks a step that was removed.

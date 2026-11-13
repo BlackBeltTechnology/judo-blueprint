@@ -35,7 +35,7 @@ The platform generates create, update and delete only. The step "copy now" is a 
 2. Compute the summary values, with null-safe filtering ([[null-safe-collection-aggregation]]).
 3. Copy each live child into a snapshot line and attach everything to the parent.
 
-Do all of it in one operation call so a failure leaves no partial snapshot. Alternatively the update operation writes a history record with the previous values before it changes the parent (IndamediaAdTrack: five key fields plus a `changed` timestamp, written whenever budget or dates change).
+Do all of it in one operation call so a failure leaves no partial snapshot. Alternatively the update operation writes a history record with the previous values before it changes the parent (one project: five key fields plus a `changed` timestamp, written whenever a tracked value changes).
 
 ### Make snapshots read-only
 
@@ -44,8 +44,8 @@ Nothing in the platform makes an entity immutable by itself. Turn off the update
 ### Finding the latest version
 
 - Sort the snapshot collection by timestamp.
-- Or keep a stored pointer to the latest (judo-partner: a `currentVersion` relation next to the `versions` collection), which avoids a derived head expression. The pointer must be updated by the operation that adds a version.
-- Or keep two pointers (workflow-poc: `head` for the latest, possibly uncommitted, and `published` for the active one). Upload creates a version, commit finalizes it, publish promotes head to published. This lets drafts be edited without touching production.
+- Or keep a stored pointer to the latest (one project: a `currentVersion` relation next to the `versions` collection), which avoids a derived head expression. The pointer must be updated by the operation that adds a version.
+- Or keep two pointers (one project: `head` for the latest, possibly uncommitted, and `published` for the active one). Upload creates a version, commit finalizes it, publish promotes head to published. This lets drafts be edited without touching production.
 
 ## Rationale
 
@@ -54,7 +54,7 @@ Nothing in the platform makes an entity immutable by itself. Turn off the update
 
 ## Example
 
-A Plan entity owns `lines` (PlanLine with an amount) and `snapshots` (PlanSnapshot with `takenAt` and `totalAmount`). Each PlanSnapshot owns its own `lines` of the copy type SnapshotLine. The operation `archive` on Plan creates a snapshot, sums the amounts, copies every line and attaches the result. This mirrors itracker's forecast archive (an initiative archives its monthly forecasts into a forecast version). Names are neutral stand-ins.
+A Plan entity owns `lines` (PlanLine with an amount) and `snapshots` (PlanSnapshot with `takenAt` and `totalAmount`). Each PlanSnapshot owns its own `lines` of the copy type SnapshotLine. The operation `archive` on Plan creates a snapshot, sums the amounts, copies every line and attaches the result. This mirrors a forecast archive seen in one project (a parent archives its monthly figures into a version). Names are neutral stand-ins.
 
 ## When to avoid
 
@@ -69,7 +69,7 @@ A Plan entity owns `lines` (PlanLine with an amount) and `snapshots` (PlanSnapsh
 - [[audit-event-entity]] — event-based audit trail instead of copies
 - [[null-safe-collection-aggregation]] — summary values computed over optional data
 - [[workflow-versioning-pattern]] — the head/published variant as a blueprint
-- [[forecast-versioning-snapshot]] — the forecast archive as a blueprint
+- [[plan-versioning-snapshot]] — the forecast archive as a blueprint
 
 ## Structure diagram
 

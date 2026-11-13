@@ -20,10 +20,10 @@ Backend code sometimes needs an unguessable string: an application token handed 
 
 ## Practice
 
-The platform has no key generator for this: signed identifiers are minted by the runtime only when it serves a response and cannot be produced by custom code ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md#signed-identifiers)), and variable providers or sequences give environment values or numbers, not secrets ([variables and sequences](../../agent-docs/backend/platform-behavior-reference.md#variables-and-sequences)). An application secret is therefore project practice: a plain Java utility class that service classes call.
+The platform has no key generator for this: signed identifiers are minted by the runtime only when it serves a response and cannot be produced by custom code ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md#signed-identifiers)), and variable providers or sequences give environment values or numbers, not secrets ([variables and sequences](../../agent-docs/backend/platform-behavior-reference.md#variables-and-sequences)). An application secret is therefore a practice built on the platform: a plain Java utility class that service classes call.
 
 ```java
-// Example project code (a static utility, not a platform class)
+// Example code (a static utility, not a platform class)
 public class ApiKeyGenerator {
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final String CHARACTERS =
@@ -52,7 +52,7 @@ public class ApiKeyGenerator {
 
 ## Example
 
-The ubives project uses the generator in three places: an application service creates tokens for new applications, an invite service creates the ids used in e-mail invitation links, and the organization service creates a temporary realm name that is replaced by the organization name once registration completes.
+One application uses the generator in three places: an application service creates tokens for new applications, an invite service creates the ids used in e-mail invitation links, and the account service creates a temporary realm name that is replaced by the account name once registration completes.
 
 ## When to avoid
 

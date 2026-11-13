@@ -25,8 +25,6 @@ Each of the three operations is a custom operation on the transfer object. Custo
 
 ## Examples
 
-### mlszksz-platform
-
-- Operation classes sit next to the content type's services (example files: `PublishCustomImplementation`, `DeleteCustomImplementation`, `EditRequestCustomImplementation`, `ModerationDeleteCustomImplementation`). Names are project code.
-- News, offer and request in the company-admin package each have publish, delete, edit and moderation delete. The announcement in the admin package has publish, delete and edit.
+- Operation classes sit next to the content type's services. Class names are project code.
+- Three content types each have publish, delete, edit and moderation delete. A fourth content type, managed by administrators, has publish, delete and edit.
 - Delete is the example of the two-branch rule: physical delete for drafts, status change for published items.

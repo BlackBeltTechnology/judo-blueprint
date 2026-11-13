@@ -231,10 +231,10 @@ export const useHotkeys = () => {
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      // Ctrl+N: New campaign
+      // Ctrl+N: New activity
       if (event.ctrlKey && event.key === 'n') {
         event.preventDefault();
-        navigate('/campaigns/create');
+        navigate('/activities/create');
       }
 
       // Ctrl+Shift+S: Search
@@ -402,19 +402,19 @@ import {
 
 export const navigationHook: NavigationInterceptorHook = ({ stringifyPath }) => ({
   decorateNavigation: (to) => {
-    const currentCampaign = localStorage.getItem('selectedCampaign');
+    const currentActivity = localStorage.getItem('selectedActivity');
 
-    if (currentCampaign && typeof to === 'string') {
-      return `${to}?campaign=${currentCampaign}`;
+    if (currentActivity && typeof to === 'string') {
+      return `${to}?activity=${currentActivity}`;
     }
 
     return to;
   },
 
   onBeforeInitialLoad: () => {
-    const campaign = new URLSearchParams(window.location.search).get('campaign');
-    if (campaign) {
-      localStorage.setItem('selectedCampaign', campaign);
+    const activity = new URLSearchParams(window.location.search).get('activity');
+    if (activity) {
+      localStorage.setItem('selectedActivity', activity);
     }
   },
 });
@@ -451,7 +451,7 @@ export const QuickActions: FC = () => {
 
   return (
     <Box>
-      <Button onClick={() => navigate('/service/campaigns/create')}>New Campaign</Button>
+      <Button onClick={() => navigate('/service/activities/create')}>New Activity</Button>
       <Button onClick={back}>Back</Button>
     </Box>
   );
@@ -498,12 +498,12 @@ useEffect(() => {
 // ✅ Good
 if (event.ctrlKey && event.key === 'n') {
   event.preventDefault(); // Prevent browser's "new window"
-  navigate('/campaigns/create');
+  navigate('/activities/create');
 }
 
 // ❌ Bad
 if (event.ctrlKey && event.key === 'n') {
-  navigate('/campaigns/create'); // Browser still opens new window
+  navigate('/activities/create'); // Browser still opens new window
 }
 ```
 

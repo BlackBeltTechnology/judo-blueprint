@@ -191,7 +191,7 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_zGtxwdzeEfG_eMKOtxLodg" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_zU5XsNzeEfG_eMKOtxLodg" name="derived_access_filtering">
-      <elements xsi:type="structure:EntityType" xmi:id="_zbLl4NzeEfG_eMKOtxLodg" name="Contest" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_zbLl4NzeEfG_eMKOtxLodg" name="Event" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_zySeUNzeEfG_eMKOtxLodg" name="status" dataType="_zhK5INzeEfG_eMKOtxLodg" defaultExpression="" binding="_zySeUNzeEfG_eMKOtxLodg" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_zySeUdzeEfG_eMKOtxLodg"/>
         </attributes>
@@ -199,15 +199,15 @@
           <inherited xmi:id="_z4GLYdzeEfG_eMKOtxLodg"/>
         </attributes>
         <mapping xmi:id="_zbM0ANzeEfG_eMKOtxLodg" target="_zbLl4NzeEfG_eMKOtxLodg"/>
-        <form xmi:id="_zbOCINzeEfG_eMKOtxLodg" name="Contest_Form" label="Contest Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_zbOpMNzeEfG_eMKOtxLodg" name="Contest_Table" label="Contest Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_zbNbENzeEfG_eMKOtxLodg" name="Contest_View_Edit" label="Contest View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_zbOCINzeEfG_eMKOtxLodg" name="Event_Form" label="Event Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_zbOpMNzeEfG_eMKOtxLodg" name="Event_Table" label="Event Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_zbNbENzeEfG_eMKOtxLodg" name="Event_View_Edit" label="Event View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="type:EnumerationType" xmi:id="_zhK5INzeEfG_eMKOtxLodg" name="ContestStatus">
+      <elements xsi:type="type:EnumerationType" xmi:id="_zhK5INzeEfG_eMKOtxLodg" name="EventStatus">
         <members xmi:id="_znEs0NzeEfG_eMKOtxLodg" name="OPEN"/>
         <members xmi:id="_zs62INzeEfG_eMKOtxLodg" name="CLOSED" ordinal="1"/>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_z9mWcNzeEfG_eMKOtxLodg" name="ContestView" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_z9mWcNzeEfG_eMKOtxLodg" name="EventView" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_z9m9gdzeEfG_eMKOtxLodg" name="status" dataType="_zhK5INzeEfG_eMKOtxLodg" defaultExpression="" binding="_zySeUNzeEfG_eMKOtxLodg" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_z9m9gtzeEfG_eMKOtxLodg"/>
         </attributes>
@@ -215,32 +215,32 @@
           <inherited xmi:id="_z9m9hNzeEfG_eMKOtxLodg"/>
         </attributes>
         <mapping xmi:id="_z9m9gNzeEfG_eMKOtxLodg" target="_zbLl4NzeEfG_eMKOtxLodg"/>
-        <form xmi:id="_z9nkkdzeEfG_eMKOtxLodg" name="ContestView_Form" label="ContestView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false">
+        <form xmi:id="_z9nkkdzeEfG_eMKOtxLodg" name="EventView_Form" label="EventView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false">
           <components xsi:type="ui:DataField" xmi:id="_0DOdUNzeEfG_eMKOtxLodg" name="status" label="Status" iconName="format-list-numbered" col="12" stretch="NONE" row="1" fit="LOOSE" onBlur="false" dataFeature="_z9m9gdzeEfG_eMKOtxLodg" enumWidget="COMBO" textMultiLine="false" textWidget="INPUT" booleanWidget="CHECKBOX" valueLabelPlacement="DEFAULT" formatValue="true" isTypeAheadField="false" textCountCharacters="false"/>
           <components xsi:type="ui:DataField" xmi:id="_0DPEYdzeEfG_eMKOtxLodg" name="title" label="Title" iconName="format-size" col="12" stretch="NONE" row="1" fit="LOOSE" onBlur="false" dataFeature="_z9m9g9zeEfG_eMKOtxLodg" enumWidget="COMBO" textMultiLine="false" textWidget="INPUT" booleanWidget="CHECKBOX" valueLabelPlacement="DEFAULT" formatValue="true" isTypeAheadField="false" textCountCharacters="false"/>
         </form>
-        <table xmi:id="_z9nkktzeEfG_eMKOtxLodg" name="ContestView_Table" label="ContestView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false">
+        <table xmi:id="_z9nkktzeEfG_eMKOtxLodg" name="EventView_Table" label="EventView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false">
           <columns xsi:type="ui:DataColumn" xmi:id="_0DOdUdzeEfG_eMKOtxLodg" name="status" label="Status" iconName="format-list-numbered" visible="true" sort="NONE" sortPrecedence="0" formatValue="true" dataFeature="_z9m9gdzeEfG_eMKOtxLodg"/>
           <columns xsi:type="ui:DataColumn" xmi:id="_0DPEYtzeEfG_eMKOtxLodg" name="title" label="Title" iconName="format-size" visible="true" sort="NONE" sortPrecedence="0" formatValue="true" dataFeature="_z9m9g9zeEfG_eMKOtxLodg"/>
         </table>
-        <view xmi:id="_z9nkkNzeEfG_eMKOtxLodg" name="ContestView_View_Edit" label="ContestView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false">
+        <view xmi:id="_z9nkkNzeEfG_eMKOtxLodg" name="EventView_View_Edit" label="EventView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false">
           <components xsi:type="ui:DataField" xmi:id="_0DN2QNzeEfG_eMKOtxLodg" name="status" label="Status" iconName="format-list-numbered" col="12" stretch="NONE" row="1" fit="LOOSE" onBlur="false" dataFeature="_z9m9gdzeEfG_eMKOtxLodg" enumWidget="COMBO" textMultiLine="false" textWidget="INPUT" booleanWidget="CHECKBOX" valueLabelPlacement="DEFAULT" formatValue="true" isTypeAheadField="false" textCountCharacters="false"/>
           <components xsi:type="ui:DataField" xmi:id="_0DPEYNzeEfG_eMKOtxLodg" name="title" label="Title" iconName="format-size" col="12" stretch="NONE" row="1" fit="LOOSE" onBlur="false" dataFeature="_z9m9g9zeEfG_eMKOtxLodg" enumWidget="COMBO" textMultiLine="false" textWidget="INPUT" booleanWidget="CHECKBOX" valueLabelPlacement="DEFAULT" formatValue="true" isTypeAheadField="false" textCountCharacters="false"/>
         </view>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_0tsWoNzeEfG_eMKOtxLodg" name="PlayerPrincipal" createable="false" updateable="false" deleteable="false" actorType="_06A7YNzeEfG_eMKOtxLodg">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_0tsWoNzeEfG_eMKOtxLodg" name="ParticipantPrincipal" createable="false" updateable="false" deleteable="false" actorType="_06A7YNzeEfG_eMKOtxLodg">
         <attributes xsi:type="structure:DataMember" xmi:id="_0y6N0NzeEfG_eMKOtxLodg" name="email" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" getterExpression="" identifier="false" memberType="TRANSIENT">
           <inherited xmi:id="_0y6N0dzeEfG_eMKOtxLodg"/>
         </attributes>
-        <form xmi:id="_0tsWotzeEfG_eMKOtxLodg" name="PlayerPrincipal_Form" label="PlayerPrincipal Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_0tsWo9zeEfG_eMKOtxLodg" name="PlayerPrincipal_Table" label="PlayerPrincipal Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_0tsWodzeEfG_eMKOtxLodg" name="PlayerPrincipal_View_Edit" label="PlayerPrincipal View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_0tsWotzeEfG_eMKOtxLodg" name="ParticipantPrincipal_Form" label="ParticipantPrincipal Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_0tsWo9zeEfG_eMKOtxLodg" name="ParticipantPrincipal_Table" label="ParticipantPrincipal Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_0tsWodzeEfG_eMKOtxLodg" name="ParticipantPrincipal_View_Edit" label="ParticipantPrincipal View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="accesspoint:ActorType" xmi:id="_06A7YNzeEfG_eMKOtxLodg" name="Player" realm="DEFAULT" principal="_0tsWoNzeEfG_eMKOtxLodg" anonymous="false" kind="HUMAN" managed="true" defaultLanguage="en-US" textPrimaryColor="#17191DFF" textSecondaryColor="#434448FF" primaryColor="#3C4166FF" subtitleColor="#8C8C8C" secondaryColor="#E7501DFF" backgroundColor="#FAFAFAFF" paperBackgroundColor="#FFFFFFFF" supportGuestAccess="false" menuOrientation="VERTICAL">
-        <accesses xmi:id="_0_kw0NzeEfG_eMKOtxLodg" lower="0" upper="-1" target="_z9mWcNzeEfG_eMKOtxLodg" name="allContests" createable="false" updateable="false" deleteable="false" accessType="ALL"/>
-        <accesses xmi:id="_1EpeENzeEfG_eMKOtxLodg" lower="0" upper="-1" target="_z9mWcNzeEfG_eMKOtxLodg" name="openContests" createable="false" updateable="false" deleteable="false" getterExpression="Sandbox::bp::derived_access_filtering::Contest!filter(c | c.status == Sandbox::bp::derived_access_filtering::ContestStatus#OPEN)" accessType="DERIVED"/>
-        <menuItems xsi:type="ui:MenuItemAccess" xmi:id="_0_lX4NzeEfG_eMKOtxLodg" name="Menu" label="ContestView" hidden="false" access="_0_kw0NzeEfG_eMKOtxLodg"/>
-        <menuItems xsi:type="ui:MenuItemAccess" xmi:id="_1EpeEdzeEfG_eMKOtxLodg" name="Menu_2" label="ContestView" hidden="false" access="_1EpeENzeEfG_eMKOtxLodg"/>
+      <elements xsi:type="accesspoint:ActorType" xmi:id="_06A7YNzeEfG_eMKOtxLodg" name="Participant" realm="DEFAULT" principal="_0tsWoNzeEfG_eMKOtxLodg" anonymous="false" kind="HUMAN" managed="true" defaultLanguage="en-US" textPrimaryColor="#17191DFF" textSecondaryColor="#434448FF" primaryColor="#3C4166FF" subtitleColor="#8C8C8C" secondaryColor="#E7501DFF" backgroundColor="#FAFAFAFF" paperBackgroundColor="#FFFFFFFF" supportGuestAccess="false" menuOrientation="VERTICAL">
+        <accesses xmi:id="_0_kw0NzeEfG_eMKOtxLodg" lower="0" upper="-1" target="_z9mWcNzeEfG_eMKOtxLodg" name="allEvents" createable="false" updateable="false" deleteable="false" accessType="ALL"/>
+        <accesses xmi:id="_1EpeENzeEfG_eMKOtxLodg" lower="0" upper="-1" target="_z9mWcNzeEfG_eMKOtxLodg" name="openEvents" createable="false" updateable="false" deleteable="false" getterExpression="Sandbox::bp::derived_access_filtering::Event!filter(e | e.status == Sandbox::bp::derived_access_filtering::EventStatus#OPEN)" accessType="DERIVED"/>
+        <menuItems xsi:type="ui:MenuItemAccess" xmi:id="_0_lX4NzeEfG_eMKOtxLodg" name="Menu" label="EventView" hidden="false" access="_0_kw0NzeEfG_eMKOtxLodg"/>
+        <menuItems xsi:type="ui:MenuItemAccess" xmi:id="_1EpeEdzeEfG_eMKOtxLodg" name="Menu_2" label="EventView" hidden="false" access="_1EpeENzeEfG_eMKOtxLodg"/>
       </elements>
     </elements>
   </elements>

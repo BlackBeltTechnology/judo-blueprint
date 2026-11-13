@@ -184,7 +184,7 @@ For filtering enum fields. The enum must implement `hu.blackbelt.judo.sdk.Enumer
 import hu.blackbelt.judo.sdk.query.EnumerationFilter;
 
 // Exact match
-.filterByCampaignType(EnumerationFilter.equalTo(CampaignType.NATIONAL))
+.filterByActivityType(EnumerationFilter.equalTo(ActivityType.NATIONAL))
 .filterByStatus(EnumerationFilter.equalTo(Status.ACTIVE))
 
 // Not equal
@@ -203,9 +203,9 @@ List<User> users = userDao.query()
     .filterByEmail(StringFilter.like("%@company.com"))
     .selectList();
 
-// Find campaigns of specific type within date range
-List<Campaign> campaigns = campaignDao.query()
-    .filterByCampaignType(EnumerationFilter.equalTo(CampaignType.NATIONAL))
+// Find activities of specific type within date range
+List<Activity> activities = activityDao.query()
+    .filterByActivityType(EnumerationFilter.equalTo(ActivityType.NATIONAL))
     .filterByStartDate(DateFilter.greaterOrEqualThan(LocalDate.of(2024, 1, 1)))
     .filterByEndDate(DateFilter.lessOrEqualThan(LocalDate.of(2024, 12, 31)))
     .selectList();

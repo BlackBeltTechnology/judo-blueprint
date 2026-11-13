@@ -1,14 +1,14 @@
 ---
 id: magic-link-authentication
 title: Keycloak Magic Link Authentication Flow
-description: "A custom Keycloak authenticator deployed as a Keycloak extension that signs users in by a time-limited e-mailed link, with token handling in an application service and the Keycloak admin client wrapped as an OSGi component; project practice outside the JUDO platform."
+description: "A custom Keycloak authenticator deployed as a Keycloak extension that signs users in by a time-limited e-mailed link, with token handling in an application service and the Keycloak admin client wrapped as an OSGi component; local practice outside the JUDO platform."
 aliases: ["passwordless email login", "magic link authenticator", "Keycloak SPI authenticator"]
 keywords: ["Keycloak", "magic link", "authenticator", "SPI", "passwordless", "token lifespan", "admin client", "OSGi", "email"]
-tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "project:ubives", "status:emerging"]
+tags: ["domain:backend", "layer:backend", "project:ubives", "status:single-project"]
 category: auth
-status: emerging
-projects: [mlszksz-platform, ubives]
-evidence: ["mlszksz-platform:unrecorded", "ubives:unrecorded"]
+status: single-project
+projects: [ubives]
+evidence: ["ubives:unrecorded"]
 alternatives: []
 related: [keycloak-jit-user-provisioning, two-phase-registration, email-service-integration, multi-tenant-keycloak-realm, keycloak-magic-link-passkey-authentication]
 fragment: "none: backend-only"
@@ -29,10 +29,10 @@ Users should sign in without a password: they enter an e-mail address, receive a
 - Keycloak and the application database are two stores that drift apart; invitation and first-login flows must create the database row, not assume Keycloak membership implies it. Invitation e-mails from Keycloak use the SMTP settings the connector writes at start ([Keycloak users and the entity store](../../agent-docs/backend/platform-behavior-reference.md#keycloak-users-and-the-entity-store)).
 - Several Keycloak clients in one realm must be whitelisted for the actor mapping ([acceptable clients](../../agent-docs/backend/authentication-guide.md#several-keycloak-clients-in-one-realm)).
 
-### Project practice: authenticator in Keycloak, services in the application
+### Practice notes: authenticator in Keycloak, services in the application
 
 ```java
-// Example project code, deployed INTO Keycloak (a Keycloak SPI, not a JUDO component)
+// Example code, deployed INTO Keycloak (a Keycloak SPI, not a JUDO component)
 public class MagicLinkAuthenticator implements Authenticator {
     @Override
     public void authenticate(AuthenticationFlowContext context) {
@@ -45,7 +45,7 @@ public class MagicLinkAuthenticator implements Authenticator {
     }
 }
 
-// Example project code, application side (OSGi, runs in the JUDO runtime)
+// Example code, application side (OSGi, runs in the JUDO runtime)
 @Component(configurationPid = "...KeycloakFactoryComponent",
            configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class KeycloakFactoryComponent {
@@ -54,9 +54,9 @@ public class KeycloakFactoryComponent {
 ```
 
 - **Two modules, two class loaders.** The authenticator (plus its token handling and REST endpoint) is a separate extension module deployed into the Keycloak server; the module that calls the admin API stays in the application. Do not share classes between them ([[osgi-karaf-bundle-architecture]]; see also [Keep the Keycloak extension separate](../../model-blueprints/keycloak-magic-link-passkey-authentication/backend.md)).
-- **Configuration of the authenticator** (as the projects named them): token lifespan in seconds (default 300 in one project, one day in the other) and a flag that allows or forbids reuse. Defaults that allow reuse are a security trade-off: a link in a forwarded mail logs in again.
+- **Configuration of the authenticator** (as named in the examples): token lifespan in seconds (default 300 in one example, one day in the other) and a flag that allows or forbids reuse. Defaults that allow reuse are a security trade-off: a link in a forwarded mail logs in again.
 - **Application services**: a service that creates users, resets passwords and manages groups through the admin API, a token service (`generate`, `validate`), and an e-mail step that sends the link ([[email-service-integration]]).
-- **OSGi class loading.** The Keycloak admin client needs a composite class loader inside OSGi; one project builds it in its factory.
+- **OSGi class loading.** The Keycloak admin client needs a composite class loader inside OSGi; one application builds it in its factory.
 - Never log the link or token.
 - A second flow (passkeys through WebAuthn with a fallback to the password form) can sit next to the magic link in the same extension module; the full pattern is in [[keycloak-magic-link-passkey-authentication]].
 
@@ -68,12 +68,12 @@ public class KeycloakFactoryComponent {
 
 ## Example
 
-A platform with invited users: an administrator creates a user through the application service (which calls the Keycloak admin API and sends an invitation e-mail with a magic link). The user opens the link, the authenticator validates the token and signs the user in; the runtime then resolves the actor from the token. A second project adds an e-mail code authenticator and a continuation authenticator in the same extension module, and a browser flow that offers passkeys first.
+A platform with invited users: an administrator creates a user through the application service (which calls the Keycloak admin API and sends an invitation e-mail with a magic link). The user opens the link, the authenticator validates the token and signs the user in; the runtime then resolves the actor from the token. A second variant adds an e-mail code authenticator and a continuation authenticator in the same extension module, and a browser flow that offers passkeys first.
 
 ## When to avoid
 
 - When a standard Keycloak login (password, social login) is enough.
-- When the project cannot deploy extensions into Keycloak (managed Keycloak hosting).
+- When the application cannot deploy extensions into Keycloak (managed Keycloak hosting).
 - When the application has no outbound e-mail that can be relied on at login time.
 - For registration of unknown users: use [[two-phase-registration]] or provisioning on first login.
 

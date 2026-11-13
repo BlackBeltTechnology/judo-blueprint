@@ -37,7 +37,7 @@ A classification (level, grade, category) must be extensible after deployment. I
 
 - New values need no model change, no regeneration and no deployment: only data changes.
 - Values can carry data (score, description, colour) and be managed from the UI.
-- Project practice (not platform behaviour): the original project used an entity for levels that administrators extend and a true enumeration for a stable scale, deciding per classification.
+- Practice note (not platform behaviour): the original project used an entity for levels that administrators extend and a true enumeration for a stable scale, deciding per classification.
 - Cost: no compile-time safety, a seeding step, and a relation join instead of a literal.
 
 ## Example

@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "project:skillmatri
 category: relation
 status: established
 projects: [rackinspect, skillmatrix-model, mjsz, ams-model, park-here, judo-partner]
-evidence: ["rackinspect:unrecorded", "skillmatrix-model:unrecorded", "mjsz:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model", "skillmatrix-model:unrecorded", "mjsz:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 fragment: container-back-reference
 first_seen: 2026-03-04

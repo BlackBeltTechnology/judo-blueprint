@@ -191,7 +191,7 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_VWqCUdzeEfGReY7KVtpk9g" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_VrY8MNzeEfGReY7KVtpk9g" name="attribute_renaming_in_transfer">
-      <elements xsi:type="structure:EntityType" xmi:id="_V2LP4NzeEfGReY7KVtpk9g" name="Quiz" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_V2LP4NzeEfGReY7KVtpk9g" name="Questionnaire" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_V-al4NzeEfGReY7KVtpk9g" name="score" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_V-al4NzeEfGReY7KVtpk9g" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_V-gsgNzeEfGReY7KVtpk9g"/>
         </attributes>
@@ -199,11 +199,11 @@
           <inherited xmi:id="_WF2qodzeEfGReY7KVtpk9g"/>
         </attributes>
         <mapping xmi:id="_V2NFENzeEfGReY7KVtpk9g" target="_V2LP4NzeEfGReY7KVtpk9g"/>
-        <form xmi:id="_V2OTMNzeEfGReY7KVtpk9g" name="Quiz_Form" label="Quiz Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_V2TywNzeEfGReY7KVtpk9g" name="Quiz_Table" label="Quiz Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_V2NsINzeEfGReY7KVtpk9g" name="Quiz_View_Edit" label="Quiz View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_V2OTMNzeEfGReY7KVtpk9g" name="Questionnaire_Form" label="Questionnaire Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_V2TywNzeEfGReY7KVtpk9g" name="Questionnaire_Table" label="Questionnaire Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_V2NsINzeEfGReY7KVtpk9g" name="Questionnaire_View_Edit" label="Questionnaire View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_WMca0NzeEfGReY7KVtpk9g" name="QuizView" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_WMca0NzeEfGReY7KVtpk9g" name="QuestionnaireView" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_WfkyMNzeEfGReY7KVtpk9g" name="result" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_V-al4NzeEfGReY7KVtpk9g" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_WfkyMdzeEfGReY7KVtpk9g"/>
         </attributes>
@@ -211,12 +211,12 @@
           <inherited xmi:id="_WmpDgdzeEfGReY7KVtpk9g"/>
         </attributes>
         <mapping xmi:id="_WMca0dzeEfGReY7KVtpk9g" target="_V2LP4NzeEfGReY7KVtpk9g"/>
-        <form xmi:id="_WMdB5dzeEfGReY7KVtpk9g" name="QuizView_Form" label="QuizView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_WMdB5tzeEfGReY7KVtpk9g" name="QuizView_Table" label="QuizView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false">
+        <form xmi:id="_WMdB5dzeEfGReY7KVtpk9g" name="QuestionnaireView_Form" label="QuestionnaireView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_WMdB5tzeEfGReY7KVtpk9g" name="QuestionnaireView_Table" label="QuestionnaireView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false">
           <columns xsi:type="ui:DataColumn" xmi:id="_Ww2vcNzeEfGReY7KVtpk9g" name="result" label="Result" iconName="numeric" visible="true" sort="NONE" sortPrecedence="0" formatValue="true" dataFeature="_WfkyMNzeEfGReY7KVtpk9g"/>
           <columns xsi:type="ui:DataColumn" xmi:id="_Ww2vcdzeEfGReY7KVtpk9g" name="uploadedAt" label="UploadedAt" iconName="calendar-clock" visible="true" sort="NONE" sortPrecedence="0" formatValue="true" dataFeature="_WmpDgNzeEfGReY7KVtpk9g"/>
         </table>
-        <view xmi:id="_WMdB5NzeEfGReY7KVtpk9g" name="QuizView_View_Edit" label="QuizView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <view xmi:id="_WMdB5NzeEfGReY7KVtpk9g" name="QuestionnaireView_View_Edit" label="QuestionnaireView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

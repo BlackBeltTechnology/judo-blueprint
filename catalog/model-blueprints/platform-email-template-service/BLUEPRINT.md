@@ -8,7 +8,7 @@ tags: [domain:model, layer:backend, project:mlszksz-platform, project:rackinspec
 category: pattern
 status: emerging
 projects: [mlszksz-platform, rackinspect, park-here]
-evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded"]
+evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PlatformEmailServiceImpl.java", "rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/EmailSenderServiceImpl.java", "park-here:unrecorded"]
 alternatives: []
 fragment: none: backend-only
 first_seen: 2026-03-09

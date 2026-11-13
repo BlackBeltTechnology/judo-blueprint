@@ -6,7 +6,7 @@ The generated operation input page renders the transient single relation like an
 
 ### Project practice: a custom picker widget
 
-The source project (itracker) used a custom `AggregationInput` widget that shows the current selection, opens a range dialog in single-select mode and writes the chosen row back into the form state. The widget and the dialog helper are example project code, not platform API. The sketch shows the shape only; see [[aggregation-input-widget]] for the widget itself and [[action-group-input-output-routing]] for how the operation input page is routed.
+The source project used a custom `AggregationInput` widget that shows the current selection, opens a range dialog in single-select mode and writes the chosen row back into the form state. The widget and the dialog helper are example project code, not platform API. The sketch shows the shape only; see [[aggregation-input-widget]] for the widget itself and [[action-group-input-output-routing]] for how the operation input page is routed.
 
 ```tsx
 <AggregationInput
@@ -57,4 +57,4 @@ sequenceDiagram
 
 ### Example
 
-In the itracker create-initiative page, the region picker was a single `AggregationInput` and showed the paginated, optionally range-filtered regions in a dialog; submitting created the initiative with the chosen region.
+On a create page, the picker was a single `AggregationInput` and showed the paginated, optionally range-filtered target rows in a dialog; submitting created the owning entity with the chosen row.

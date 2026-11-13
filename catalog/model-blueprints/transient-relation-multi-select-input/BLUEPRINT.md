@@ -29,19 +29,19 @@ This is the multi-pick variant. For one record see [[transient-relation-single-s
 
 ### What is project practice
 
-Alba assigned the picked users with `mutable input.users` in the body, and actiongroup-test-react did the same for `signs`. The agent-docs only describe `mutable` as a unary prefix operator and `input` as immutable unless declared mutable ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)); the link semantics for a transient collection are project experience, *verify* on your runtime version.
+One project assigned the picked users with `mutable input.users` in the body, and another did the same for a list of signs. The agent-docs only describe `mutable` as a unary prefix operator and `input` as immutable unless declared mutable ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)); the link semantics for a transient collection are project experience, *verify* on your runtime version.
 
 ## Structure
 
 - **Mapped target transfer object** (for example `ApproverView`): maps the entity to choose from.
 - **Unmapped input transfer object** (for example `TaskInput`): transient attributes plus the picker relation.
-- **Transient relation**: cardinality 0..* (optional) or 1..* (at least one), kind aggregation, target the mapped transfer object. Optional range expression (Alba: only active users with an eligible role).
+- **Transient relation**: cardinality 0..* (optional) or 1..* (at least one), kind aggregation, target the mapped transfer object. Optional range expression (for example only active users with an eligible role).
 - **Operation** taking the input. The body creates the owning entity and assigns the picked collection to a stored relation.
 - **Stored relation** on the owning entity: 0..* association to the target entity.
 
 ## Constraints
 
-- **The relation target must be mapped.** Without a persisted instance set there is nothing to list. The source projects observed that an unmapped target (a trivia answer list) renders nested sub-forms, one per element, and no range operation (*verify*).
+- **The relation target must be mapped.** Without a persisted instance set there is nothing to list. The source projects observed that an unmapped target (an answer list) renders nested sub-forms, one per element, and no range operation (*verify*).
 - **The owning transfer object stays unmapped.**
 - **The body must convert the transient collection into a stored one.** In the source projects, assigning without the conversion persisted an empty collection and raised no error. Write an integration test that submits a non-empty selection and asserts the persisted collection size.
 - **Eligibility is enforced by the range**, and the platform rejects values outside it. Keep the eligibility rule in the range expression, not only in the UI.

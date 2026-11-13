@@ -52,7 +52,7 @@ application/app/src/main/java/.generated-files
 └── [package]/
     └── operations/
         ├── CreateUserOperation.java.default
-        ├── CreateCampaignOperation.java.default
+        ├── CreateActivityOperation.java.default
         ├── InitAdminUserOperation.java.default
         └── ...
 ```
@@ -92,7 +92,7 @@ When asking an AI agent to help customize an operation:
 ```
 "Check the .default file for CreateUser operation and tell me what can be customized"
 "What's the default behavior of initAdminUser? Show me the .default implementation"
-"I want to add validation to CreateCampaign - what does the .default file do?"
+"I want to add validation to CreateActivity - what does the .default file do?"
 ```
 
 ### Relationship Between `.default` Files and Custom Implementations
@@ -146,7 +146,7 @@ application/app/src/main/java/<generated-root-package>/<app>/custom/
   └── CreateUserOperation.java                ← your custom impl (same package!)
 ```
 
-**Concrete example (real project):** `hu.blackbelt.compsych.letter.compsychletter.custom/` — derived from the root package `hu.blackbelt.compsych.letter` plus the lower-cased model name `compsychletter` plus the fixed `.custom` suffix.
+**Concrete example:** `com.example.orders.orders.custom/` — derived from the root package `com.example.orders` plus the lower-cased model name `orders` plus the fixed `.custom` suffix.
 
 > [!WARNING]
 > **Generator checksum gotcha — `.generated-files` can be wiped.**

@@ -1,14 +1,14 @@
 ---
 id: read-tracking-postcall-interceptor
 title: Read Tracking Post-Call Interceptor with Deduplication
-description: Project practice that records the first read of an item per user from a postCall interceptor on the built-in refresh operation, checking for an existing audit row so each user is counted once.
+description: Practice that records the first read of an item per user from a postCall interceptor on the built-in refresh operation, checking for an existing audit row so each user is counted once.
 aliases: [first read tracking, read receipt, view tracking, announcement read log]
 keywords: [read, tracking, postCall, interceptor, deduplication, refresh, audit, analytics, VariableResolver]
 tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
 category: interceptor
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/AnnouncementReadTrackingInterceptor.java"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Know which users have opened an item (for example an announcement) without any change in the client: a `postCall` interceptor on the item's refresh operation writes one event row per user and item. This is project practice (mlszksz-platform) that reuses an audit log; the platform only supplies the interceptor hook.
+Know which users have opened an item (for example a published notice) without any change in the client: a `postCall` interceptor on the item's refresh operation writes one event row per user and item. This is a convention that reuses an audit log; the platform only supplies the interceptor hook.
 
 ## Practice
 
@@ -29,10 +29,10 @@ Know which users have opened an item (for example an announcement) without any c
 - The current user comes from `VariableResolver.resolve(String.class, "ACTOR", "email")` ([[actor-resolution-variable-resolver]]); the actor value exists only when the request carries a principal.
 - Error handling: `preCall` and `postCall` declare only `InterceptorCallBusinessException`, and a modeled fault cannot be thrown from an interceptor. See [error handling](../../agent-docs/backend/error-handling-guide.md#exceptions-thrown-from-interceptors).
 
-### Project practice: record once per user and item
+### Practice notes: record once per user and item
 
 ```java
-// Example project code: AuditLogDao, AuditLogService and ActionType are project types
+// Example code: AuditLogDao, AuditLogService and ActionType are types
 @Component(property = { "judo.model.name=<app>" })
 public class ReadTrackingInterceptor implements OperationCallInterceptor {
     @Reference VariableResolver variableResolver;

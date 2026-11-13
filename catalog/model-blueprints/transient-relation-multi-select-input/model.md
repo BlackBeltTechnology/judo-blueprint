@@ -16,7 +16,7 @@ An operation input transfer object (unmapped) carries a transient collection rel
 
 ### Range
 
-A derived range expression narrows the candidates. Alba limited the approver picker to active users with a teacher or approver role. The actiongroup-test-react project used the plain range over all signs. See [[range-expression-filtering]].
+A derived range expression narrows the candidates. One project limited the approver picker to active users with an approver role. Another used the plain range over all signs. See [[range-expression-filtering]].
 
 ### Unmapped target: a different shape
 

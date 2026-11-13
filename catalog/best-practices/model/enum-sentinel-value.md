@@ -39,12 +39,12 @@ The sentinel is a real member. Switches, counts and drop-downs include it unless
 
 - "No value" is typed and visible in expressions, so no null handling is needed.
 - It works as a default and in conditional getters.
-- Project practice (not platform behaviour): two source projects used it for unanswered quiz choices and for an undetermined classification.
+- Practice note (not platform behaviour): two source projects used it for unanswered choices and for an undetermined classification.
 - Cost: one extra member that every consumer has to treat; statistics may count it by mistake.
 
 ## Example
 
-`Choice` has members A, B, C, D and `NONE` (ordinal 4). `Prompt.answer` is a required `Choice` with default `Choice#NONE`. A derived player-side view returns `NONE` until the test is finished. Names are neutral stand-ins.
+`Choice` has members A, B, C, D and `NONE` (ordinal 4). `Prompt.answer` is a required `Choice` with default `Choice#NONE`. A derived participant-side view returns `NONE` until the test is finished. Names are neutral stand-ins.
 
 ## When to avoid
 

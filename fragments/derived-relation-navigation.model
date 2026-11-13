@@ -191,26 +191,26 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_XsppUdzeEfGDwNew6x4Beg" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_X7L0kNzeEfGDwNew6x4Beg" name="derived_relation_navigation">
-      <elements xsi:type="structure:EntityType" xmi:id="_YDh4QNzeEfGDwNew6x4Beg" name="Contest" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_YDh4QNzeEfGDwNew6x4Beg" name="Event" createable="false" updateable="false" deleteable="false">
         <relations xsi:type="structure:OneWayRelationMember" xmi:id="_Yyda0NzeEfGDwNew6x4Beg" lower="0" upper="-1" target="_YJYBkNzeEfGDwNew6x4Beg" name="categories" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_Yyda0NzeEfGDwNew6x4Beg" getterExpression="">
           <inherited xmi:id="_YyeB4NzeEfGDwNew6x4Beg"/>
         </relations>
-        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_ZcLtQNzeEfGDwNew6x4Beg" lower="0" upper="-1" target="_YUYXsNzeEfGDwNew6x4Beg" name="tests" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_ZcLtQNzeEfGDwNew6x4Beg" getterExpression="">
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_ZcLtQNzeEfGDwNew6x4Beg" lower="0" upper="-1" target="_YUYXsNzeEfGDwNew6x4Beg" name="assessments" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_ZcLtQNzeEfGDwNew6x4Beg" getterExpression="">
           <inherited xmi:id="_ZcLtQdzeEfGDwNew6x4Beg"/>
         </relations>
         <relations xsi:type="structure:OneWayRelationMember" xmi:id="_Zk4WQNzeEfGDwNew6x4Beg" lower="0" upper="-1" target="_YOtNgNzeEfGDwNew6x4Beg" name="questions" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="DERIVED" rangeType="ANY" binding="_Zk4WQNzeEfGDwNew6x4Beg" getterExpression="self.categories.questions">
           <inherited xmi:id="_Zk4WQdzeEfGDwNew6x4Beg"/>
         </relations>
-        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_ZtbOQNzeEfGDwNew6x4Beg" lower="0" upper="-1" target="_YUYXsNzeEfGDwNew6x4Beg" name="finishedBest" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="DERIVED" rangeType="ANY" binding="_ZtbOQNzeEfGDwNew6x4Beg" getterExpression="self.tests!filter(t | t.status == Sandbox::bp::derived_relation_navigation::TestStatus#FINISHED and t.best)">
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_ZtbOQNzeEfGDwNew6x4Beg" lower="0" upper="-1" target="_YUYXsNzeEfGDwNew6x4Beg" name="finishedBest" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="DERIVED" rangeType="ANY" binding="_ZtbOQNzeEfGDwNew6x4Beg" getterExpression="self.assessments!filter(a | a.status == Sandbox::bp::derived_relation_navigation::AssessmentStatus#FINISHED and a.best)">
           <inherited xmi:id="_ZtbOQdzeEfGDwNew6x4Beg"/>
         </relations>
-        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_Z15NwNzeEfGDwNew6x4Beg" lower="0" upper="1" target="_YUYXsNzeEfGDwNew6x4Beg" name="latestTest" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="DERIVED" rangeType="ANY" binding="_Z15NwNzeEfGDwNew6x4Beg" getterExpression="self.tests!sort(t | t.status DESC)!head()">
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_Z15NwNzeEfGDwNew6x4Beg" lower="0" upper="1" target="_YUYXsNzeEfGDwNew6x4Beg" name="latestAssessment" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="DERIVED" rangeType="ANY" binding="_Z15NwNzeEfGDwNew6x4Beg" getterExpression="self.assessments!sort(a | a.status DESC)!head()">
           <inherited xmi:id="_Z15NwdzeEfGDwNew6x4Beg"/>
         </relations>
         <mapping xmi:id="_YDkUgNzeEfGDwNew6x4Beg" target="_YDh4QNzeEfGDwNew6x4Beg"/>
-        <form xmi:id="_YDmJsNzeEfGDwNew6x4Beg" name="Contest_Form" label="Contest Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_YDmwwNzeEfGDwNew6x4Beg" name="Contest_Table" label="Contest Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_YDlioNzeEfGDwNew6x4Beg" name="Contest_View_Edit" label="Contest View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_YDmJsNzeEfGDwNew6x4Beg" name="Event_Form" label="Event Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_YDmwwNzeEfGDwNew6x4Beg" name="Event_Table" label="Event Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_YDlioNzeEfGDwNew6x4Beg" name="Event_View_Edit" label="Event View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
       <elements xsi:type="structure:EntityType" xmi:id="_YJYBkNzeEfGDwNew6x4Beg" name="Category" createable="false" updateable="false" deleteable="false">
         <relations xsi:type="structure:OneWayRelationMember" xmi:id="_Y5770NzeEfGDwNew6x4Beg" lower="0" upper="-1" target="_YOtNgNzeEfGDwNew6x4Beg" name="questions" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" binding="_Y5770NzeEfGDwNew6x4Beg" getterExpression="">
@@ -230,7 +230,7 @@
         <table xmi:id="_YOt0k9zeEfGDwNew6x4Beg" name="Question_Table" label="Question Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
         <view xmi:id="_YOt0kdzeEfGDwNew6x4Beg" name="Question_View_Edit" label="Question View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:EntityType" xmi:id="_YUYXsNzeEfGDwNew6x4Beg" name="Test" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_YUYXsNzeEfGDwNew6x4Beg" name="Assessment" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_ZBswsNzeEfGDwNew6x4Beg" name="status" dataType="_Ya8SsNzeEfGDwNew6x4Beg" defaultExpression="" binding="_ZBswsNzeEfGDwNew6x4Beg" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_ZBt-0NzeEfGDwNew6x4Beg"/>
         </attributes>
@@ -238,11 +238,11 @@
           <inherited xmi:id="_ZLKOsdzeEfGDwNew6x4Beg"/>
         </attributes>
         <mapping xmi:id="_YUYXsdzeEfGDwNew6x4Beg" target="_YUYXsNzeEfGDwNew6x4Beg"/>
-        <form xmi:id="_YUYXs9zeEfGDwNew6x4Beg" name="Test_Form" label="Test Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_YUYXtNzeEfGDwNew6x4Beg" name="Test_Table" label="Test Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_YUYXstzeEfGDwNew6x4Beg" name="Test_View_Edit" label="Test View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_YUYXs9zeEfGDwNew6x4Beg" name="Assessment_Form" label="Assessment Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_YUYXtNzeEfGDwNew6x4Beg" name="Assessment_Table" label="Assessment Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_YUYXstzeEfGDwNew6x4Beg" name="Assessment_View_Edit" label="Assessment View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="type:EnumerationType" xmi:id="_Ya8SsNzeEfGDwNew6x4Beg" name="TestStatus">
+      <elements xsi:type="type:EnumerationType" xmi:id="_Ya8SsNzeEfGDwNew6x4Beg" name="AssessmentStatus">
         <members xmi:id="_YkCkUNzeEfGDwNew6x4Beg" name="RUNNING"/>
         <members xmi:id="_Yr-YUNzeEfGDwNew6x4Beg" name="FINISHED" ordinal="1"/>
       </elements>

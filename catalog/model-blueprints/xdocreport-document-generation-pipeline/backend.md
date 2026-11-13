@@ -32,8 +32,6 @@ The calling operations are custom, so interceptors do not guard them (see [inter
 
 ## Examples
 
-### rackinspect
-
 - Six document types, each with its own report utility; the orchestrator uses a dozen DAOs.
 - Two conversion backends: in-process for some documents, an external converter for others.
 - A watermark service adds a draft mark to preview documents.

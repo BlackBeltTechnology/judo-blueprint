@@ -26,7 +26,7 @@ This document details advanced, non-obvious design patterns and concepts for the
     2.  Create a higher-level `TransferObjectType` that represents the entire view or screen (e.g., `UserReservationPanel`). This acts as the "View Model." If an actor `Access` targets it (step 4), it must be **mapped**: EVL rejects an access to an unmapped transfer object (`Access target have to be mapped`). Map it to the root entity the screen is about (for example the user), and keep the panel's own relations `DERIVED`. An unmapped view model is only reachable as an operation input or output, not as an access target.
     3.  Define all the contextual relationships on this View Model TO. These are almost always **`DERIVED`** relations, each with its own `Getter expression` to fetch and filter its specific data set (e.g., `activeReservations`, `pastReservations`).
     4.  The main `Access` link for the actor then targets this high-level View Model (`UserReservationPanel`), not the individual data TOs.
-*   **Key Insight**: This pattern decouples the UI's structure from the domain model's structure. It allows you to create purpose-built screens by creating a transient "view model" that aggregates and filters data from multiple sources, presenting it in exactly the way the UI needs it, without requiring a direct mapping to a single database entity. This was observed in the `ParkHere.model`.
+*   **Key Insight**: This pattern decouples the UI's structure from the domain model's structure. It allows you to create purpose-built screens by creating a transient "view model" that aggregates and filters data from multiple sources, presenting it in exactly the way the UI needs it, without requiring a direct mapping to a single database entity. This was observed in one sample model.
 
 ### Pattern: Fully User-Scoped Data Access
 *   **Use Case**: In a multi-user application, you need to strictly enforce that a user can only see data directly related to their own user entity (e.g., "My Profile," "My Orders").
@@ -150,7 +150,7 @@ This document details advanced, non-obvious design patterns and concepts for the
     2.  On the `Actor`'s `principal` `TransferObjectType`, define a set of **`DERIVED` boolean attributes** that act as state flags (e.g., `isSuperAdmin`, `isOrganizationSelected`). The `getterExpression` for these flags contains the logic to determine the user's status.
     3.  Model the entire menu structure using `MenuItemAccess` elements.
     4.  Use the **`hiddenBy`** property on each `MenuItemAccess` to link its visibility to one of the boolean state flags.
-*   **Key Insight**: This pattern, observed in `Ubives.model` and `Alba.model`, centralizes complex permission and UI state logic onto the main `principal` object. The UI (e.g., the navigation menu) then declaratively binds to this state, dynamically showing or hiding entire sections of the application based on the user's role and context, without requiring multiple actor definitions.
+*   **Key Insight**: This pattern, observed in two sample models, centralizes complex permission and UI state logic onto the main `principal` object. The UI (e.g., the navigation menu) then declaratively binds to this state, dynamically showing or hiding entire sections of the application based on the user's role and context, without requiring multiple actor definitions.
 
 ---
 

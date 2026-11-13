@@ -88,7 +88,7 @@ The access reference names the ladder and lists its rungs (*Access CRUD Rules*).
 
 ## Example
 
-A folder view has an entries relation to a mapped entry view (createable, updateable, deleteable). The table, detail and delete action come from the entry view. The folder view's `createEntry` operation takes an unmapped entry input (a name and a note) and returns a thin entry reference. The diagram shows this shape. Observed in compsych-letter-demo.
+A folder view has an entries relation to a mapped entry view (createable, updateable, deleteable). The table, detail and delete action come from the entry view. The folder view's `createEntry` operation takes an unmapped entry input (a name and a note) and returns a thin entry reference. The diagram shows this shape. Observed in one project.
 
 Anti-patterns seen:
 

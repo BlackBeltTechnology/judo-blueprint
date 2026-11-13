@@ -1,6 +1,6 @@
 ## Overview
 
-The toggle is a custom operation class per entity. The platform part is the generated interface and the OSGi registration; the rest below is project practice seen in rackinspect and mlszksz-platform. The platform's own toggle example is in [Custom operations](../../agent-docs/backend/custom-operations.md#example-1-simple-toggle-operation).
+The toggle is a custom operation class per entity. The platform part is the generated interface and the OSGi registration; the rest below is project practice seen in several projects. The platform's own toggle example is in [Custom operations](../../agent-docs/backend/custom-operations.md#example-1-simple-toggle-operation).
 
 ## Implementation Pattern
 
@@ -38,8 +38,8 @@ Primary, billing, headquarters, postal and delivery toggles reuse the three step
 
 ### Project practice: self-lock guard
 
-In rackinspect the user toggle resolves the current actor with `VariableResolver` and refuses to deactivate that user. It also uses a validation DAO to confirm that at least one active user keeps the roles and users permissions. The platform doc shows the same guard ([Custom operations](../../agent-docs/backend/custom-operations.md#example-1-simple-toggle-operation)). Raise a declared fault, not a plain Java exception.
+In one project the user toggle resolves the current actor with `VariableResolver` and refuses to deactivate that user. It also uses a validation DAO to confirm that at least one active user keeps the roles and users permissions. The platform doc shows the same guard ([Custom operations](../../agent-docs/backend/custom-operations.md#example-1-simple-toggle-operation)). Raise a declared fault, not a plain Java exception.
 
 ### Project practice: delegating service
 
-In mlszksz-platform the operation class is thin and calls `MasterDataService.toggleCityActive()` or `toggleCapabilityActive()`, an example project service that queries the entity, flips `isActive` and updates through the DAO.
+In another project the operation class is thin and calls a master data service (for example a `toggle...Active()` method per reference type), a project service that queries the entity, flips `isActive` and updates through the DAO.

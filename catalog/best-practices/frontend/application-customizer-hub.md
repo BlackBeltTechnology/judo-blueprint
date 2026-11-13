@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:work
 category: config
 status: established
 projects: [rackinspect, workflow-poc, reserve-app, park-here, indamedia-adtrack]
-evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx", "workflow-poc:unrecorded", "reserve-app:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, hook-scaffold-default-pattern, generator-ignore-app-theme]
 fragment: "none: frontend-only"
@@ -40,9 +40,9 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 }
 ```
 
-### Project practice: one customizer, one register function per hook
+### Practice notes: one customizer, one register function per hook
 
-This layer is project practice, not a platform feature:
+This layer is practice, not a platform feature:
 
 - Keep the customizer a flat list of calls: dialog, page and container hooks, custom visual elements, row highlighting, the error interceptor, flow managers.
 - Put each registration in its own `register...` function in a hook file, so the customizer stays readable even with many entries.
@@ -54,9 +54,9 @@ A single entry point makes customization auditable and the registration pattern 
 
 ## Example
 
-- rackinspect: a customizer of about 270 lines registers over a hundred services: dialog hooks, custom visual elements, page hooks, form and view/edit hooks, row highlighting and an error interceptor.
-- workflow-poc: about 47 lines, three services: an operation flow manager for workflow results and two visual elements (a diagram and a code viewer).
-- reserve-app: one registration, a page hook for conditional field validation on one view; other actors keep the generated empty customizer.
+- A heavily customized frontend: a long customizer registers over a hundred services: dialog hooks, custom visual elements, page hooks, form and view/edit hooks, row highlighting and an error interceptor.
+- A workflow-focused frontend: a short customizer with three services: an operation flow manager for workflow results and two visual elements (a diagram and a code viewer).
+- A frontend with one registration: a page hook for conditional field validation on one view; other actors keep the generated empty customizer.
 
 ## When to avoid
 

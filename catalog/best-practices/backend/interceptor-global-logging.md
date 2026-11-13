@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect
 category: interceptor
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, judo-partner, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/LogOperationCallInterceptor.java", "alba:unrecorded", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/LogAuthenticationInterceptor.java", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [interceptor-security-filter-validation, interceptor-template-postcall, interceptor-crud-lifecycle, keycloak-jit-user-provisioning]
 fragment: "none: backend-only"
@@ -29,10 +29,10 @@ During development you want to see which operations the runtime dispatches and i
 - `AsmUtils.getOperationFQName(operation)` gives the name; the same string format is used to register targeted interceptors ([FQN reference](../../agent-docs/backend/interceptors.md#operation-fqn-format-reference)). The component needs `judo.model.name=<model>` ([registration](../../agent-docs/backend/interceptors.md#interceptor-component-registration)); the platform guide shows this logger as its first example ([example 1](../../agent-docs/backend/interceptors.md#example-1-simple-logging-interceptor)).
 - The generator emits `Log*Interceptor.java.default` templates. They are not compiled until renamed to `.java`, and the renamed file needs no `.generator-ignore` entry ([.default templates](../../agent-docs/backend/interceptors.md#using-default-template-files)).
 
-### Project practice: one logger class, switched on only when needed
+### Practice notes: one logger class, switched on only when needed
 
 ```java
-// Example project code
+// Example code
 @Component(property = { "judo.model.name=<model>" })
 public class InterceptorOperationLogger implements OperationCallInterceptor {
 
@@ -48,7 +48,7 @@ public class InterceptorOperationLogger implements OperationCallInterceptor {
 }
 ```
 
-- Ten projects carry this class. Some keep it active, most ship it disabled (logic commented out, or the unrenamed `.java.default` template) and enable it on demand.
+- Many applications carry this class. Some keep it active, most ship it disabled (logic commented out, or the unrenamed `.java.default` template) and enable it on demand.
 - Log at a level you can filter; the logger runs on every intercepted call, so leave it off in production or limit the log level.
 - Variants seen: also log the parameter payload in `preCall` and the return value in `postCall`; and an `AuthenticationInterceptor` twin that logs the claim, realm, client and all token attributes for debugging token mapping ([authentication interceptor](../../agent-docs/backend/authentication-guide.md#authenticationinterceptor-interface), [[keycloak-jit-user-provisioning]]).
 - Do not log payloads that contain personal data or secrets, and do not log the full token attributes outside development.

@@ -8,7 +8,7 @@ tags: [domain:model, layer:frontend, project:mlszksz-platform, status:single-pro
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/feedComponent/hooks/useInfiniteScroll.ts", "mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/feedComponent/FeedContainer.tsx"]
 alternatives: []
 fragment: "none: frontend-only"
 first_seen: 2026-03-09
@@ -65,6 +65,6 @@ The create action is a floating button that opens a bottom drawer. It is shown o
 
 ## Related
 
-- [[feed-entry-denormalization]] — storing the fields a feed card needs on the entry itself
-- [[custom-post-detail-views]] — the detail view opened from a feed card
-- [[custom-statistics-dashboard]] — another custom frontend view on generated data
+- [[feed-entry-denormalization]]: storing the fields a feed card needs on the entry itself
+- [[custom-post-detail-views]]: the detail view opened from a feed card
+- [[custom-statistics-dashboard]]: another custom frontend view on generated data

@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect
 category: data-access
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/ticketing/RangeActor.java", "alba:unrecorded", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/LogAuthenticationInterceptor.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -33,14 +33,14 @@ The platform documents this API in the [data access guide](../../agent-docs/back
 - Known issues: querying an enumeration attribute with `query<Attribute>()` can throw a `ClassCastException`; and "not set" on an optional boolean needs `filterBy("this.x!isUndefined()")` ([known issues](../../agent-docs/backend/data-access-guide.md#known-issues-of-the-generated-dao)). For calls the SDK cannot express, the low-level `DAO` takes a `QueryCustomizer`.
 
 ```java
-// Example project code (generated DAO types)
+// Example code (generated DAO types)
 Optional<User> user = userDao.query()
     .filterByEmail(StringFilter.equalTo(email))
     .filterByActive(BooleanFilter.isTrue())
     .selectOne();
 
-List<Test> tests = contestDao.queryTests(contest)
-    .filterByStatus(EnumerationFilter.equalTo(TestStatus.STARTED))
+List<Item> items = itemDao.queryItems(order)
+    .filterByStatus(EnumerationFilter.equalTo(ItemStatus.STARTED))
     .selectList();
 
 long correct = testDao.queryPrompts(_this)
@@ -48,11 +48,11 @@ long correct = testDao.queryPrompts(_this)
     .count();
 ```
 
-### Project practice
+### Practice notes
 
 - Duplicate detection before creation: `count() > 0` on the business key ([[upsert-create-or-update]]); existence checks combine `count()` with an empty or small mask.
 - Where the query is a user lookup, wrap it once in a service ([[actor-resolution-variable-resolver]]).
-- Several projects use `TimeFilter` for time-overlap queries (parking availability) and paged `selectList(offset, limit)` loops for batch validation or migration, and `findAllById` for bulk fetches by identifier list. These calls are not described in the platform docs; verify against the generated DAO of your model.
+- Several applications use `TimeFilter` for time-overlap queries (resource availability) and paged `selectList(offset, limit)` loops for batch validation or migration, and `findAllById` for bulk fetches by identifier list. These calls are not described in the platform docs; verify against the generated DAO of your model.
 - Use one clock when a timestamp filter is compared with values written by Java code ([time zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)).
 
 ## Rationale
@@ -62,7 +62,7 @@ long correct = testDao.queryPrompts(_this)
 
 ## Example
 
-Trivia filters by status, email and correctness flags in about fifteen query shapes across eight operations. ParkHere combines date, enumeration and two time filters into an availability query. workflow-poc fetches the next unprocessed event with a string filter, a boolean filter and an ordering. Ubives uses `count()` with a mask for username existence checks before creating organizations or applications.
+One application filters by status, email and flags in many query shapes across operations. Another combines date, enumeration and two time filters into an availability query. A workflow example fetches the next unprocessed event with a string filter, a boolean filter and an ordering. A third uses `count()` with a mask for username existence checks before creating accounts or applications.
 
 ## When to avoid
 

@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-
 category: operation
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/initializer/ExcelDataImporter.java", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/initializer/InitCustomImplementation.java"]
 alternatives: [init-data-seeding]
 related: [custom-operation-osgi-component, service-delegation-pattern, bulk-json-import-export, init-data-seeding]
 fragment: "none: backend-only"
@@ -23,7 +23,7 @@ An application needs a lot of master data from the start (countries, currencies,
 
 ### Trigger it from an init operation
 
-The trigger is project convention, not a platform startup hook: an operation on an initializer entity that a deployment step or a person calls (see [[init-data-seeding]] and [Custom Operations](../../agent-docs/backend/custom-operations.md#when-to-implement-custom-operations)). The platform does not call it on start by itself.
+The trigger is a convention, not a platform startup hook: an operation on an initializer entity that a deployment step or a person calls (see [[init-data-seeding]] and [Custom Operations](../../agent-docs/backend/custom-operations.md#when-to-implement-custom-operations)). The platform does not call it on start by itself.
 
 ### Keep the component thin, the importer plain
 
@@ -35,11 +35,11 @@ Import referenced data before the data that points to it (permissions before rol
 
 ### Make the run repeatable
 
-The source project had no incremental import. Add a guard so a second call does nothing or only fills gaps: check by a natural key with a typed filter and a count, or skip when the initializer has already run (see [Query Result Methods](../../agent-docs/backend/data-access-guide.md#query-result-methods)). Use masks for these existence checks, and an empty mask for the cheapest one.
+The source had no incremental import. Add a guard so a second call does nothing or only fills gaps: check by a natural key with a typed filter and a count, or skip when the initializer has already run (see [Query Result Methods](../../agent-docs/backend/data-access-guide.md#query-result-methods)). Use masks for these existence checks, and an empty mask for the cheapest one.
 
 ### Read spreadsheets safely
 
-Apache POI is a project dependency. Read cell values by type, since a numeric cell is not a string, and convert dates and enumerations explicitly (enumerations are written by their model literal, not by ordinal). Do not log passwords from user sheets. A user created here must also exist in the identity provider: the entity row and the Keycloak user can drift, so the init must create or verify the database row itself (see [Keycloak Users and the Entity Store](../../agent-docs/backend/platform-behavior-reference.md#keycloak-users-and-the-entity-store)).
+Apache POI is an application dependency. Read cell values by type, since a numeric cell is not a string, and convert dates and enumerations explicitly (enumerations are written by their model literal, not by ordinal). Do not log passwords from user sheets. A user created here must also exist in the identity provider: the entity row and the Keycloak user can drift, so the init must create or verify the database row itself (see [Keycloak Users and the Entity Store](../../agent-docs/backend/platform-behavior-reference.md#keycloak-users-and-the-entity-store)).
 
 ### Mind the transaction and size
 
@@ -53,7 +53,7 @@ The whole import runs in the operation's transaction. A failure in any row rolls
 
 ## Example
 
-RackInspect: the init component forwards over 30 DAOs by setter injection to an importer. A reader utility reads rows and cells from Excel files on the classpath. The importer creates countries, currencies, languages, permissions, roles, users, brands, dimension templates, error categories and codes, rack types, repair types and items.
+One application: the init component forwards many DAOs by setter injection to an importer. A reader utility reads rows and cells from Excel files on the classpath. The importer creates reference data (for example countries, currencies, languages, permissions, roles and users), catalog categories and codes, and item types.
 
 ## When to avoid
 

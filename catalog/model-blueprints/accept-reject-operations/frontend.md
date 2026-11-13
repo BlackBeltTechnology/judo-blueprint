@@ -21,8 +21,8 @@ The reject operation takes a RejectInput. Its dialog should show one text field 
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - Framework: React.
-- Both the embedded admin table and the standalone registration-request table add a status filter in their refresh action hook (project customization), so admins only see verified requests.
+- Both the embedded admin table and the standalone registration-request table add a status filter in their refresh action hook (custom code), so admins only see verified requests.
 - The accept and reject buttons use the generated UI, with the guard attributes controlling visibility.

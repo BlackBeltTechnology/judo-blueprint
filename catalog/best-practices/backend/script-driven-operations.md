@@ -29,9 +29,9 @@ Most operations of a business application only change a status, create a few rel
 - Script operations never hit interceptors. Interceptors fire only for built-in behaviour operations, and custom, mapped and script operations bypass them. Permission checks that matter must be expressed in the script or in the model's access rules ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - The agent-docs describe no way for a script to call an OSGi service, a SOAP/REST client or a mail sender, nor to raise a modeled fault. Treat anything that needs them as a Java custom operation ([custom operations](../../agent-docs/backend/custom-operations.md)) and test before relying on a script for it.
 
-### Project practice: scripts as the only implementation
+### Practice notes: scripts as the only implementation
 
-This layer is project practice (five projects), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - Use scripts for status transitions, entity creation with child rows, versioning with collection aggregation, and seeding reference data in an init operation ([[state-lifecycle-operation]], [[init-data-seeding]]).
 - Keep a Java custom implementation only for operations that truly need Java: file handling, document templating, external services. Mark exactly those `customImplementation = true`.
@@ -54,11 +54,11 @@ this.children += new Child(month = 0, value = input.value)   // add to a referen
 
 ## Example
 
-- itracker: all operations (create, send for approval, approve, reject, archive forecast at actor and entity level) plus init are scripts. They create an initiative with twelve monthly forecasts and version forecasts with collection aggregation.
-- viterra_demo: report lifecycle (accept, review, submit) and init data are scripts.
-- judo-demo-miniworkflow: document workflow transitions, creation with owner and first history entry, and idempotent user seeding are scripts.
-- ReserveApp: one script operation (user init, `customImplementation` false); all Java customization is interceptors.
-- doors-model: ten-plus operations in the expression language (approval start, next-stage state machine with skip/execute conditions by net value, approve/reject, init with a migration counter). Only eleven operations that need Java (file handling, document templating) are custom.
+- One application: all operations (create, send for approval, approve, reject, archive plan at actor and entity level) plus init are scripts. They create a plan with monthly entries and version plans with collection aggregation.
+- One example: report lifecycle (accept, review, submit) and init data are scripts.
+- A demo: document workflow transitions, creation with owner and first history entry, and idempotent user seeding are scripts.
+- One application: one script operation (user init, `customImplementation` false); all Java customization is interceptors.
+- One application: many operations in the expression language (approval start, next-stage state machine with skip/execute conditions by net value, approve/reject, init with a migration counter). Only a few operations that need Java (file handling, document templating) are custom.
 
 ## When to avoid
 

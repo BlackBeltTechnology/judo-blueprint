@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: navigation
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/components/LandingRedirect.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx"]
 alternatives: [operation-flow-redirect-pattern]
 related: [operation-flow-redirect-pattern, post-operation-navigation-hook, access-paired-with-menu-item]
 fragment: "none: frontend-only"
@@ -28,9 +28,9 @@ An application with several roles has one home route, but not every role may ope
 - Visibility of menu entries is modeled with `hiddenBy` on the actor accesses, so the backend decides what each role sees ([access flags](../../agent-docs/frontend/hooks/navigation-and-access.md)).
 - A client-side filter is a UX layer only. Real authorization stays in the backend.
 
-### Project practice: the landing redirect
+### Practice notes: the landing redirect
 
-This layer is project practice (rackinspect), not a platform feature:
+This layer is practice, not a platform feature:
 
 - **Derive, do not map.** Read the generated menu tree with the generated `useMenus()` hook and compute the target from it. A hard-coded role-to-URL table drifts out of sync with the model.
 - **Visible leaves.** Walk the tree depth first and keep the leaf items the principal may see. An item or group is hidden when its `hiddenBy` flag is true on the principal, and a hidden group removes its whole subtree, exactly as the sidebar does. The check repeats the generated navigation predicate, so keep the two in step. If a menu customizer hook is ever registered for the sidebar, apply it here too (*verify* against the generated navigation code).
@@ -40,7 +40,7 @@ This layer is project practice (rackinspect), not a platform feature:
 - **Render nothing while redirecting.** Navigate with `replace: true` in an effect and return `null` instead of `children`, so the home page never mounts for a role that cannot load it. Otherwise render `children` unchanged.
 
 ```tsx
-// Example project code: useMenus and the principal type are generated for the application
+// Example code: useMenus and the principal type are generated for the application
 export const LandingRedirect: FC<AccessFilterComponentProps> = ({ principal, children }) => {
   const menus = useMenus();
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ export const LandingRedirect: FC<AccessFilterComponentProps> = ({ principal, chi
 
 ## Example
 
-In rackinspect seven provider-side roles see a task dashboard on the home route and stay there. Four operator-side roles are sent to their own partner page and an external officer to a separate panel, all by their first visible menu entry. A unit test renders the component for an officer, an operator and an inspector principal and for a principal that sees nothing, using the real menu tree.
+In one app, several provider-side roles see a task dashboard on the home route and stay there. Several operator-side roles are sent to their own page and an external role to a separate panel, all by their first visible menu entry. A unit test renders the component for an external, an operator and a reviewer principal and for a principal that sees nothing, using the real menu tree.
 
 ## When to avoid
 

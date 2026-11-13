@@ -32,7 +32,7 @@ An instance operation `delete` on the entity carries a JCL body (`customImplemen
 
 The operation must be `stateful`: the DAO throws `IllegalStateException` for a write inside a stateless operation ([platform behaviour](../../agent-docs/model/esm_metamodel/operation.md), "Statefulness derived from behaviour").
 
-### The guard is project practice, not platform behaviour
+### The guard is a convention, not platform behaviour
 
 The platform gives `deleteable` flags on accesses and relations and cascades a parent delete over composition relations ([relation kinds](../../agent-docs/model/esm_metamodel/structure.md)). It has no declarative "delete only if" rule. The guard lives in the operation body, so an API client that uses the generated delete without the operation bypasses it. Expose deletion only through this operation (leave `deleteable` off on the accesses) when the rule must hold everywhere.
 
@@ -52,7 +52,7 @@ Expose the guard as a derived boolean (for example `deletable`) on the transfer 
 
 ## Example
 
-A Project entity has a boolean `active` and owns Task entities by composition. Its `delete` operation returns early when `active` is true; otherwise it deletes the tasks and then the project. The diagram shows the model shape; the operation body is described above. In the source project a User had the same guard over three role flags, and a Competence guarded on `active` and also removed its skill targets. Names here are neutral stand-ins.
+A Project entity has a boolean `active` and owns Task entities by composition. Its `delete` operation returns early when `active` is true; otherwise it deletes the tasks and then the project. The diagram shows the model shape; the operation body is described above. In the source project a User had the same guard over three role flags, and a second entity guarded on `active` also removed its child targets. Names here are neutral stand-ins.
 
 ## When to avoid
 

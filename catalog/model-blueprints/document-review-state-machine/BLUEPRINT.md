@@ -50,8 +50,8 @@ The document entity carries a `currentState` attribute of a state enumeration wi
 
 ## Related
 
-- [[draft-done-status-enum]] — the simpler two-state form for work items
-- [[content-lifecycle-status-enum]] — status for published content, with a soft-delete state
-- [[entity-based-state-machine]] — the alternative when states, transitions and guards are data
-- [[enum-state-machine]] — the enumeration-based approach this entry uses
-- [[mapped-operation-delegation]] — how transfer objects map entity operations
+- [[draft-done-status-enum]]: the simpler two-state form for work items
+- [[content-lifecycle-status-enum]]: status for published content, with a soft-delete state
+- [[entity-based-state-machine]]: the alternative when states, transitions and guards are data
+- [[enum-state-machine]]: the enumeration-based approach this entry uses
+- [[mapped-operation-delegation]]: how transfer objects map entity operations

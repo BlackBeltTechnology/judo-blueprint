@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect
 category: di
 status: established
 projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, doors-model]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/unit/ToggleActiveCustomImplementation.java", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/city/ActivateToggleCustomImplementation.java", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
 alternatives: [script-driven-operations]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Every operation the model marks as custom needs a handwritten implementation. The platform wires it through OSGi Declarative Services: the class implements the generated interface and is registered as an OSGi service, and its dependencies (DAOs, other operations, project services) come in through `@Reference`.
+Every operation the model marks as custom needs a handwritten implementation. The platform wires it through OSGi Declarative Services: the class implements the generated interface and is registered as an OSGi service, and its dependencies (DAOs, other operations, services) come in through `@Reference`.
 
 ## Practice
 
@@ -32,7 +32,7 @@ public class OperationNameCustomImplementation implements GeneratedOperationInte
     EntityDao entityDao;
 
     @Reference
-    ExternalService externalService;   // example project service
+    ExternalService externalService;   // example service
 
     @Override
     public ReturnType apply(EntityType _this, InputType input) {
@@ -49,14 +49,14 @@ public class OperationNameCustomImplementation implements GeneratedOperationInte
 - Interceptors and write guards never fire for custom operations, so permission checks go inside the implementation ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - The class name `<Op>CustomImplementation` is a convention; the interface path names the model operation.
 
-### Project practice: keep the component thin
+### Practice notes: keep the component thin
 
-Most projects keep the component to a few lines and delegate to a shared service injected with `@Reference` ([[service-delegation-pattern]]); mlszksz-platform has more than 60 operations that inject only services such as a post, audit-log or actor service (example project classes). For heavy logic with many dependencies, the component can build a plain Java object and pass the injected services to it through setters, so the logic is testable without OSGi (delegated implementation with dependency injection bridge, [custom operations example 4](../../agent-docs/backend/custom-operations.md#example-4-delegated-implementation-with-dependency-injection-bridge); see also [[integration-test-reflection-injection]]).
+Most implementations keep the component to a few lines and delegate to a shared service injected with `@Reference` ([[service-delegation-pattern]]); One application has many operations that inject only services such as a post, audit-log or actor service (example classes). For heavy logic with many dependencies, the component can build a plain Java object and pass the injected services to it through setters, so the logic is testable without OSGi (delegated implementation with dependency injection bridge, [custom operations example 4](../../agent-docs/backend/custom-operations.md#example-4-delegated-implementation-with-dependency-injection-bridge); see also [[integration-test-reflection-injection]]).
 
 - One operation per class; group classes by the model's transfer-object path, mirroring the generated packages.
 - Start from the DAO-level patterns in [[dual-dao-pattern]] and [[entity-re-fetch-pattern]] when the operation receives a bound instance.
 - Model scripts can implement logic without Java ([[script-driven-operations]]).
-- Operations that are only declared in the model (for example in a repository that provides the implementations separately) leave the `.default` stubs unimplemented until the backend project supplies the components.
+- Operations that are only declared in the model (for example in a repository that provides the implementations separately) leave the `.default` stubs unimplemented until the backend supplies the components.
 
 ## Rationale
 
@@ -65,7 +65,7 @@ Most projects keep the component to a few lines and delegate to a shared service
 
 ## Example
 
-Trivia implements eight operations (register, enter, and others) that inject DAOs and the e-mail service. Ubives has 42 operations over ten service domains that delegate with one-line service calls. judo-partner has 15 operations delegating to seven service classes. workflow-poc registers four operations plus two utility components that are injected into them. Several demo projects leave the generated `.default` stubs unimplemented and rely on model scripts.
+One application implements a few operations (register, enter, and others) that inject DAOs and the e-mail service. Another has many operations over several service domains that delegate with one-line service calls. A workflow example registers a handful of operations plus two utility components that are injected into them. Several demo applications leave the generated `.default` stubs unimplemented and rely on model scripts.
 
 ## When to avoid
 

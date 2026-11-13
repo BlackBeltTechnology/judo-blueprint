@@ -33,7 +33,7 @@ The expression runs where the data is computed, so a client cannot bypass it, un
 
 ## Example
 
-A quiz has questions composed in it. `PlayerQuestion` is a transfer object mapped to the question entity. Its derived `shownAnswer` returns the answer only when the owning quiz is finished and `NONE` otherwise: the getter is `self!container(Quiz).status == QuizStatus#FINISHED ? self.answer : Choice#NONE`.
+A questionnaire has questions composed in it. `ParticipantQuestion` is a transfer object mapped to the question entity. Its derived `shownAnswer` returns the answer only when the owning questionnaire is finished and `NONE` otherwise: the getter is `self!container(Questionnaire).status == QuestionnaireStatus#FINISHED ? self.answer : Choice#NONE`.
 
 Another seen variant switches between a guest's and an owner's data depending on whether a guest relation is defined, giving one polymorphic display attribute.
 
@@ -59,7 +59,7 @@ classDiagram
     A
     B
   }
-  class PlayerQuestion {
+  class ParticipantQuestion {
     <<Transfer>>
     +Choice answer
     +String text
@@ -70,20 +70,20 @@ classDiagram
     +String text
     +Choice answer
   }
-  class Quiz {
+  class Questionnaire {
     <<Entity>>
-    +QuizStatus status
+    +QuestionnaireStatus status
   }
-  class QuizStatus {
+  class QuestionnaireStatus {
     <<Enumeration>>
     ACTIVE
     FINISHED
   }
-  PlayerQuestion ..> Choice : answer
-  PlayerQuestion ..> Choice : shownAnswer
-  PlayerQuestion ..> Question : maps
+  ParticipantQuestion ..> Choice : answer
+  ParticipantQuestion ..> Choice : shownAnswer
+  ParticipantQuestion ..> Question : maps
   Question ..> Choice : answer
-  Quiz *-- "*" Question : questions
-  Quiz ..> QuizStatus : status
+  Questionnaire *-- "*" Question : questions
+  Questionnaire ..> QuestionnaireStatus : status
 ```
 <!-- /mermaid:generated -->

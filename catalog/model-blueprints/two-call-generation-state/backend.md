@@ -1,6 +1,6 @@
 ## Backend guidance
 
-This is project practice on top of the platform. The platform gives you custom operations, DAOs and modeled faults; the start and confirm flow, the expiry check and the identifier strategy are the project's own. Helper names in the examples (`LetterGeneratorService`, `FileStoreService`) are example project code, not platform API.
+This is project practice on top of the platform. The platform gives you custom operations, DAOs and modeled faults; the start and confirm flow, the expiry check and the identifier strategy are the project's own. Helper names in the examples (`DocumentGeneratorService`, `FileStoreService`) are example project code, not platform API.
 
 ### Two custom operations
 
@@ -40,5 +40,5 @@ InputStream bodyStream = fileStoreService.get(overflow.getFileId());
 
 ### Example project use
 
-- **Start** (`GenerateLetter`): validated template, data object and design, rendered the content through a letter generator service, wrote `body` for text outputs and a file for PDF output, set expiry to 30 minutes and created the Handle in state ACTIVE.
-- **Confirm** (`ConfirmLetter`): checked state and expiry, marked the Handle CONFIRMED, generated a barcode payload string as `identifier`, created the Document with the same source relations and returned it.
+- **Start** (`GenerateDocument`): validated template, data object and design, rendered the content through a document generator service, wrote `body` for text outputs and a file for PDF output, set expiry to 30 minutes and created the Handle in state ACTIVE.
+- **Confirm** (`ConfirmDocument`): checked state and expiry, marked the Handle CONFIRMED, generated a barcode payload string as `identifier`, created the Document with the same source relations and returned it.

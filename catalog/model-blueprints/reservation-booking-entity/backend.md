@@ -28,4 +28,4 @@ E-mails for create, delete, modify and reminder are rendered from stored templat
 
 ### Logistics variant
 
-The freight variant has no custom create operation. An interceptor on the built-in create wires the acting partner into the new reservation. This works because create is a built-in operation; interceptors do not run for custom ones.
+The logistics variant has no custom create operation. An interceptor on the built-in create wires the acting partner into the new reservation. This works because create is a built-in operation; interceptors do not run for custom ones.

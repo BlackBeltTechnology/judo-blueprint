@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszks
 category: operation
 status: emerging
 projects: [rackinspect, mlszksz-platform, ubives]
-evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded"]
+evidence: ["rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/unit/ToggleActiveCustomImplementation.java", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/city/ActivateToggleCustomImplementation.java", "ubives:unrecorded"]
 alternatives: []
 related: [entity-re-fetch-pattern, mutable-entity-update-pattern, mask-field-projection, service-delegation-pattern, custom-operation-osgi-component, toggle-active-operation]
 fragment: "none: backend-only"
@@ -46,7 +46,7 @@ public class ToggleActiveCustomImplementation implements ToggleActive {
 }
 ```
 
-`Entity`, `Parent`, `Validate` and the mask methods stand for generated and example project types. The mask builder method names depend on the model.
+`Entity`, `Parent`, `Validate` and the mask methods stand for generated and example types. The mask builder method names depend on the model.
 
 ### Platform facts that shape it
 
@@ -55,9 +55,9 @@ public class ToggleActiveCustomImplementation implements ToggleActive {
 - Every write bumps `__version`, so the signed identifier a client holds becomes stale after a toggle (see [Optimistic Locking](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)). The client must take the identifier from the response or reload.
 - A toggle with an empty mask can update every field. Always pass the one-field mask.
 
-### Project layer
+### Layer notes
 
-The one-class-per-flag layout, the toggle names (`ToggleActive`, `TogglePrimary`, `ToggleBilling`, `ToggleHeadquarters`) and the parent re-validation are project practice. Where the logic is more than a flip, the operation delegates to a service method ([[service-delegation-pattern]]). The model side of an active toggle is described in [[toggle-active-operation]].
+The one-class-per-flag layout, the toggle names (`ToggleActive`, `TogglePrimary`, `ToggleBilling`, `ToggleHeadquarters`) and the parent re-validation are a convention. Where the logic is more than a flip, the operation delegates to a service method ([[service-delegation-pattern]]). The model side of an active toggle is described in [[toggle-active-operation]].
 
 ## Rationale
 
@@ -67,9 +67,9 @@ The one-class-per-flag layout, the toggle names (`ToggleActive`, `TogglePrimary`
 
 ## Example
 
-- RackInspect: 24 toggle implementations across address, bank account, e-mail, phone, unit and user entities (active, primary, billing, delivery, headquarters, postal, standalone-storable). Most re-validate the owning partner after the flip.
-- mlszksz-platform: two activate-toggle implementations for city and capability master data. Both delegate to a master-data service method, following [[service-delegation-pattern]]. Platform admins use them to disable entries without deleting them.
-- Ubives: six enable/disable operation pairs (registration support, user enabled, access enabled). Each delegates to a service method, repeated across several actor views.
+- One application: many toggle implementations across address, bank account, e-mail, phone, unit and user entities (active, primary, billing, delivery, main, postal, standalone-storable). Most re-validate the owning account after the flip.
+- One application: two activate-toggle implementations for city and capability master data. Both delegate to a master-data service method, following [[service-delegation-pattern]]. Platform admins use them to disable entries without deleting them.
+- One application: several enable/disable operation pairs (registration support, user enabled, access enabled). Each delegates to a service method, repeated across several actor views.
 
 ## When to avoid
 

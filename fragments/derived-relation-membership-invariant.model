@@ -191,41 +191,41 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_8oOyMd0IEfGyuNPkLoAmHw" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_81r_YN0IEfGyuNPkLoAmHw" name="derived_relation_membership_invariant">
-      <elements xsi:type="structure:EntityType" xmi:id="_87DAgN0IEfGyuNPkLoAmHw" name="Garage" createable="false" updateable="false" deleteable="false">
-        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_9KRIQN0IEfGyuNPkLoAmHw" lower="0" upper="-1" target="_9ATT8N0IEfGyuNPkLoAmHw" name="cars" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="COMPOSITION" memberType="STORED" rangeType="ANY" binding="_9KRIQN0IEfGyuNPkLoAmHw" getterExpression="">
+      <elements xsi:type="structure:EntityType" xmi:id="_87DAgN0IEfGyuNPkLoAmHw" name="Container" createable="false" updateable="false" deleteable="false">
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_9KRIQN0IEfGyuNPkLoAmHw" lower="0" upper="-1" target="_9ATT8N0IEfGyuNPkLoAmHw" name="items" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="COMPOSITION" memberType="STORED" rangeType="ANY" binding="_9KRIQN0IEfGyuNPkLoAmHw" getterExpression="">
           <inherited xmi:id="_9KRIQd0IEfGyuNPkLoAmHw"/>
         </relations>
         <mapping xmi:id="_87E1sN0IEfGyuNPkLoAmHw" target="_87DAgN0IEfGyuNPkLoAmHw"/>
-        <form xmi:id="_87Fcwd0IEfGyuNPkLoAmHw" name="Garage_Form" label="Garage Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_87GD0N0IEfGyuNPkLoAmHw" name="Garage_Table" label="Garage Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_87FcwN0IEfGyuNPkLoAmHw" name="Garage_View_Edit" label="Garage View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_87Fcwd0IEfGyuNPkLoAmHw" name="Container_Form" label="Container Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_87GD0N0IEfGyuNPkLoAmHw" name="Container_Table" label="Container Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_87FcwN0IEfGyuNPkLoAmHw" name="Container_View_Edit" label="Container View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:EntityType" xmi:id="_9ATT8N0IEfGyuNPkLoAmHw" name="Car" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_9ATT8N0IEfGyuNPkLoAmHw" name="Item" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_9FO3QN0IEfGyuNPkLoAmHw" name="color" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_9FO3QN0IEfGyuNPkLoAmHw" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_9FPeUN0IEfGyuNPkLoAmHw"/>
         </attributes>
         <mapping xmi:id="_9ATT8d0IEfGyuNPkLoAmHw" target="_9ATT8N0IEfGyuNPkLoAmHw"/>
-        <form xmi:id="_9ATT890IEfGyuNPkLoAmHw" name="Car_Form" label="Car Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_9ATT9N0IEfGyuNPkLoAmHw" name="Car_Table" label="Car Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_9ATT8t0IEfGyuNPkLoAmHw" name="Car_View_Edit" label="Car View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_9ATT890IEfGyuNPkLoAmHw" name="Item_Form" label="Item Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_9ATT9N0IEfGyuNPkLoAmHw" name="Item_Table" label="Item Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_9ATT8t0IEfGyuNPkLoAmHw" name="Item_View_Edit" label="Item View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_9PPu4N0IEfGyuNPkLoAmHw" name="CarView" createable="false" updateable="true" deleteable="false">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_9PPu4N0IEfGyuNPkLoAmHw" name="ItemView" createable="false" updateable="true" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_9Yo7cN0IEfGyuNPkLoAmHw" name="color" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_9FO3QN0IEfGyuNPkLoAmHw" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_9Yo7cd0IEfGyuNPkLoAmHw"/>
         </attributes>
         <mapping xmi:id="_9PPu4d0IEfGyuNPkLoAmHw" target="_9ATT8N0IEfGyuNPkLoAmHw"/>
-        <form xmi:id="_9PQV890IEfGyuNPkLoAmHw" name="CarView_Form" label="CarView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_9PQV9N0IEfGyuNPkLoAmHw" name="CarView_Table" label="CarView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_9PQV8t0IEfGyuNPkLoAmHw" name="CarView_View_Edit" label="CarView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_9PQV890IEfGyuNPkLoAmHw" name="ItemView_Form" label="ItemView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_9PQV9N0IEfGyuNPkLoAmHw" name="ItemView_Table" label="ItemView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_9PQV8t0IEfGyuNPkLoAmHw" name="ItemView_View_Edit" label="ItemView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_9T8osN0IEfGyuNPkLoAmHw" name="GarageView" createable="false" updateable="false" deleteable="false">
-        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_9ddKAN0IEfGyuNPkLoAmHw" lower="0" upper="-1" target="_9PPu4N0IEfGyuNPkLoAmHw" name="redCars" createable="false" updateable="true" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="AGGREGATION" memberType="DERIVED" rangeType="ANY" getterExpression="self.cars!filter(c | c.color == 'red')">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_9T8osN0IEfGyuNPkLoAmHw" name="ContainerView" createable="false" updateable="false" deleteable="false">
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_9ddKAN0IEfGyuNPkLoAmHw" lower="0" upper="-1" target="_9PPu4N0IEfGyuNPkLoAmHw" name="redItems" createable="false" updateable="true" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="AGGREGATION" memberType="DERIVED" rangeType="ANY" getterExpression="self.items!filter(c | c.color == 'red')">
           <inherited xmi:id="_9ddKAd0IEfGyuNPkLoAmHw"/>
         </relations>
         <mapping xmi:id="_9T8osd0IEfGyuNPkLoAmHw" target="_87DAgN0IEfGyuNPkLoAmHw"/>
-        <form xmi:id="_9T8os90IEfGyuNPkLoAmHw" name="GarageView_Form" label="GarageView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_9T8otN0IEfGyuNPkLoAmHw" name="GarageView_Table" label="GarageView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_9T8ost0IEfGyuNPkLoAmHw" name="GarageView_View_Edit" label="GarageView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_9T8os90IEfGyuNPkLoAmHw" name="ContainerView_Form" label="ContainerView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_9T8otN0IEfGyuNPkLoAmHw" name="ContainerView_Table" label="ContainerView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_9T8ost0IEfGyuNPkLoAmHw" name="ContainerView_View_Edit" label="ContainerView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

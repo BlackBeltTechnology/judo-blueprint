@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platf
 category: auth
 status: established
 projects: [alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, judo-partner, reserve-app, doors-model, rackinspect]
-evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded", "rackinspect:unrecorded"]
+evidence: ["alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/ActorServiceImpl.java", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded", "rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/ActorServiceImpl.java"]
 alternatives: [keycloak-jit-user-provisioning]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -26,12 +26,12 @@ Custom operations and interceptors often need to know who is calling: for author
 - Variable categories include `SYSTEM`, `ENVIRONMENT`, `REQUEST`, `ACTOR`, `PRINCIPAL` and `SEQUENCE` ([variable providers](../../agent-docs/backend/platform-behavior-reference.md#variable-providers)). `ACTOR` values come from the actor the runtime resolved for the request; the actor row is read from the database on every request that carries a principal, and a missing row gives `AUTHENTICATED_ENTITY_NOT_FOUND` ([principal-to-actor resolution](../../agent-docs/backend/authentication-guide.md#principal-to-actor-resolution-and-multi-client-mapping)).
 - In model expressions the same value is available without Java: `Type!filter(u | u.email == types::Email!getVariable('ACTOR', 'email'))!any()`; primitive types must be fully qualified ([getVariable rules](../../agent-docs/backend/architectural-patterns.md#rules-for-accessesgetterexpression)).
 
-### Project practice: look up the user entity, then wrap it once
+### Practice notes: look up the user entity, then wrap it once
 
-Which actor attributes exist (`email`, `userName`, `identifier`) depends on the model's actor type. The projects query their user entity with the resolved value:
+Which actor attributes exist (`email`, `userName`, `identifier`) depends on the model's actor type. Typical code queries the user entity with the resolved value:
 
 ```java
-// Example project code: User and UserDao are project/generated types
+// Example code: User and UserDao are generated types
 @Reference VariableResolver variableResolver;
 @Reference UserDao userDao;
 
@@ -43,13 +43,13 @@ User user = userDao.query()
 ```
 
 - `selectOne()` returns an `Optional` ([query result methods](../../agent-docs/backend/data-access-guide.md#query-result-methods)); decide explicitly what a missing user means instead of `.orElse(null)`, which only moves the failure to a later NullPointerException.
-- Do not paste this block into every operation. Four projects (mlszksz-platform, park-here, indamedia-adtrack, ubives) wrap it in one project service (`ActorService` / `Variables`, example project helpers) with `getCurrentUser()`, which throws a business error when the user is missing; operations inject only that service.
-- Interceptors use the same lookup, for example to resolve the caller's partner for ownership on create or to check an admin flag. Remember that interceptors do not protect custom operations, so the check must also sit in the operation or its service ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- Do not paste this block into every operation. Several applications wrap it in one service (`ActorService` / `Variables`, example helpers) with `getCurrentUser()`, which throws a business error when the user is missing; operations inject only that service.
+- Interceptors use the same lookup, for example to resolve the caller's account for ownership on create or to check an admin flag. Remember that interceptors do not protect custom operations, so the check must also sit in the operation or its service ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - When a Keycloak user may exist without a database row, provisioning is a separate concern ([[keycloak-jit-user-provisioning]]).
 
-### Variation: shared actor service (rackinspect)
+### Variation: shared actor service
 
-One project wraps the ACTOR variable lookup in a shared `ActorService` that every operation injects, instead of repeating the lookup per operation.
+One variant wraps the ACTOR variable lookup in a shared `ActorService` that every operation injects, instead of repeating the lookup per operation.
 
 ## Rationale
 
@@ -59,7 +59,7 @@ One project wraps the ACTOR variable lookup in a shared `ActorService` that ever
 
 ## Example
 
-Typical uses seen in the projects: setting the author or owner on a created record, recording who performed a state transition, writing a log entry with the acting user, and gating admin-only features. One project resolves the actor purely in the model with an expression (`!getVariable('ACTOR', 'email')` filtered over the user entity) in its transition operations, and another injects a thin wrapper with a model-name target filter so it binds to the right model.
+Typical uses: setting the author or owner on a created record, recording who performed a state transition, writing a log entry with the acting user, and gating admin-only features. One variant resolves the actor purely in the model with an expression (`!getVariable('ACTOR', 'email')` filtered over the user entity) in its transition operations, and another variant injects a thin wrapper with a model-name target filter so it binds to the right model.
 
 ## When to avoid
 

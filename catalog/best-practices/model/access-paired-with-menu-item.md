@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:judo-demo-miniworkflow", "project
 category: access
 status: established
 projects: [judo-demo-miniworkflow, mlszksz-platform, rackinspect, park-here, reserve-app, ams-frontend, indamedia-adtrack, compsych-letter-demo]
-evidence: ["judo-demo-miniworkflow:unrecorded", "mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded", "reserveapp:unrecorded", "ams-frontend:unrecorded", "indamedia-adtrack:unrecorded", "compsychletter:unrecorded"]
+evidence: ["judo-demo-miniworkflow:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "rackinspect:model/rackinspect.model", "park-here:unrecorded", "reserveapp:unrecorded", "ams-frontend:unrecorded", "indamedia-adtrack:unrecorded", "compsychletter:unrecorded"]
 alternatives: []
 first_seen: 2026-05-13
 fragment: access-paired-with-menu-item
@@ -29,7 +29,7 @@ Every access meant to be reached from the UI gets its own `MenuItemAccess`, eith
 - **Order:** menu order is list order. Decide the top-to-bottom order before creating the items.
 - **Table columns:** a list-cardinality access renders a table page, so its target transfer object also needs a table with at least one column, otherwise validation fails ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md), *UI Requirements on the Target TO*).
 - **Audit:** the UI authoring guide checks the wiring by counting, per actor, accesses and menu items; an actor with accesses but zero menu items has only API-only accesses ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md), section 15, step 3).
-- Project practice (the agent-docs do not describe it, treat as *verify* for your generator version): the generated drawer and routing files (`menu-items.tsx`, `routes.tsx`) were protected by `.generator-ignore` in these projects, so adding a menu item to the model did not change them and the entries had to be added by hand there. Custom routes belong in `extra-routes.tsx` ([extension points](../../agent-docs/frontend/extension-points.md), *Extra Routes*), which the docs say to protect in `.generator-ignore`; one project saw it overwritten when unprotected. A frontend `build -f` right after `transform --load` failed on the checksum file in one project (use the ignore-checksum build option; see [build and deployment](../../agent-docs/frontend/build-and-deployment.md), *Checksum Handling*).
+- Practice note (the agent-docs do not describe it, treat as *verify* for your generator version): the generated drawer and routing files (`menu-items.tsx`, `routes.tsx`) were protected by `.generator-ignore` in these projects, so adding a menu item to the model did not change them and the entries had to be added by hand there. Custom routes belong in `extra-routes.tsx` ([extension points](../../agent-docs/frontend/extension-points.md), *Extra Routes*), which the docs say to protect in `.generator-ignore`; one project saw it overwritten when unprotected. A frontend `build -f` right after `transform --load` failed on the checksum file in one project (use the ignore-checksum build option; see [build and deployment](../../agent-docs/frontend/build-and-deployment.md), *Checksum Handling*).
 
 ## Rationale
 
@@ -41,13 +41,13 @@ Every access meant to be reached from the UI gets its own `MenuItemAccess`, eith
 
 A staff actor has a `reports` access whose target is a report view with a table and one column. The actor also has a menu item bound to that access, with a label and an icon. Without the menu item, `reports` would exist but not appear.
 
-Observed in projects:
+Variants seen:
 
-- **judo-demo-miniworkflow:** the generic actor's accesses (documents, waiting for approval, users and others) each have a menu item with an icon. Admin-only entries are hidden by a `hiddenBy` flag on the menu item.
-- **mlszksz-platform:** the admin actor has 13 accesses and 13 menu items, one-to-one, each with icon and label.
-- **reserveapp:** the admin actor has 13 accesses and 13 menu items; actors that have no accesses yet (logistician, doorman, read-only) have no menu items.
-- **ams-frontend:** manager and admin actors each have 3 accesses and 3 menu items with their own icons.
-- **compsychletter (anti-example):** a user actor declared 3 derived accesses (documents, authoring, data) and 0 menu items. The generated menu was empty and only `/` was routed, so a signed-in user saw a blank sidebar. The pairing step was simply not done yet; a later phase was to add the three menu items.
+- **One project:** the generic actor's accesses (documents, waiting for approval, users and others) each have a menu item with an icon. Admin-only entries are hidden by a `hiddenBy` flag on the menu item.
+- **One project:** a user actor has one menu item per access, each with icon and label.
+- **One project:** the admin actor has one menu item per access; actors that have no accesses yet (a second role and a read-only role) have no menu items.
+- **One project:** manager and admin actors each have one menu item per access, with their own icons.
+- **Anti-example:** a user actor declared several derived accesses and no menu items. The generated menu was empty and only `/` was routed, so a signed-in user saw a blank sidebar. The pairing step was simply not done yet; a later phase was to add the menu items.
 
 ## When to avoid
 

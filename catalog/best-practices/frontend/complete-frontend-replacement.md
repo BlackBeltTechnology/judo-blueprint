@@ -28,12 +28,12 @@ Some UX requirements fundamentally diverge from the generated CRUD pages: games,
 - Your own code under `src/custom/` is not generated, so it survives regeneration without `.generator-ignore` entries (`src/custom/` is committed, not gitignored). Extra routes can be added in `src/extra-routes.tsx` ([extension points](../../agent-docs/frontend/extension-points.md)). Prefer these supported extension points and hooks when they are enough.
 - The generated frontend authenticates, applies access control and registers hooks; a replacement must handle sign-in and the signed identifiers of instances itself (they change after every update of an entity, see [signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
 
-### Project practice: hand-built app over generated services
+### Practice notes: hand-built app over generated services
 
-This layer is project practice (trivia, actiongroup-test-react), not a platform feature. Two variants exist:
+This layer is practice, not a platform feature. Two variants exist:
 
-- Partial replacement (trivia): protect the app root and theme files in `.generator-ignore`, put the custom components in a directory the generator does not know, and construct generated service classes directly in the custom root. Generated pages, routes and containers are still produced but unused.
-- Full replacement (actiongroup-test-react): no generator-managed UI at all; all pages, layout, theme, dialogs and utilities are hand-written, and generated Axios services and types are imported from a generated folder.
+- Partial replacement: protect the app root and theme files in `.generator-ignore`, put the custom components in a directory the generator does not know, and construct generated service classes directly in the custom root. Generated pages, routes and containers are still produced but unused.
+- Full replacement: no generator-managed UI at all; all pages, layout, theme, dialogs and utilities are hand-written, and generated Axios services and types are imported from a generated folder.
 - Implement navigation, state, error handling and localization yourself; none of the generated hook mechanisms apply to custom pages.
 
 ## Rationale
@@ -42,8 +42,8 @@ You get full UI freedom and no constraint from generated page patterns. The cost
 
 ## Example
 
-- trivia: the player frontend is a quiz-game single-page app. The root component acts as a state-machine controller that renders custom contest and dialog components and calls generated player services directly.
-- actiongroup-test-react: a hand-built reference app with more than twenty pages that demonstrates action group routes, CRUD, many-aggregation and single-access entity patterns.
+- A game frontend as a single-page app. The root component acts as a state-machine controller that renders custom game and dialog components and calls generated services directly.
+- A hand-built reference app with many pages that demonstrates action group routes, CRUD, many-aggregation and single-access entity patterns.
 
 ## When to avoid
 

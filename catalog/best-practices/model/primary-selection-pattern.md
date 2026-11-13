@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "project:judo-partn
 category: operation
 status: emerging
 projects: [rackinspect, judo-partner]
-evidence: ["rackinspect:unrecorded", "judo-partner:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model", "judo-partner:unrecorded"]
 alternatives: []
 related: [toggle-operation-pattern, composition-ownership, container-back-reference]
 fragment: primary-selection-pattern
@@ -34,7 +34,7 @@ An entity owns several similar items (bank accounts, addresses, phone numbers) a
 
 The second observed shape stores `isPrimary` as a boolean on each item and derives the parent's `primaryAccount` by filtering the collection on the flag. This variant does not by itself prevent two flagged items; `setAsPrimary` must clear the others. The single-reference form is preferred.
 
-### Project practice, not platform behaviour
+### Practice note, not platform behaviour
 
 Single-primary is a modelling convention. The platform has no uniqueness rule for a flag; the guarantee comes from the single reference and the operation. The agent-docs do not say what happens to the reference when the primary item is deleted, so test or handle that case (for example clear the reference first).
 
@@ -46,7 +46,7 @@ Single-primary is a modelling convention. The platform has no uniqueness rule fo
 
 ## Example
 
-A neutral Partner owns `accounts` (composition, 0..*) and has `primaryAccount` (association, 0..1). Account has an `iban`, a derived `partner` back-reference using `!container`, a derived boolean `isPrimary` and a stateful instance operation `setAsPrimary`. RackInspect used the single-reference form for bank accounts, e-mails, phones and addresses of partners, users and company data. judo-partner used the flag variant: an `isPrimary` boolean per address and contact with a derived `primaryAddress` and `primaryContact`.
+A neutral Partner owns `accounts` (composition, 0..*) and has `primaryAccount` (association, 0..1). Account has an `iban`, a derived `partner` back-reference using `!container`, a derived boolean `isPrimary` and a stateful instance operation `setAsPrimary`. One project used the single-reference form for bank accounts, e-mails, phones and addresses of partners, users and company data. Another used the flag variant: an `isPrimary` boolean per address and contact with a derived `primaryAddress` and `primaryContact`.
 
 ## When to avoid
 

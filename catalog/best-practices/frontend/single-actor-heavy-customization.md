@@ -1,14 +1,14 @@
 ---
 id: single-actor-heavy-customization
 title: Single-Actor Frontend with Heavy Hook Customization
-description: "Keep every page of a single-actor frontend generated and put the behaviour in hooks, custom visual element implementations and registrations in application-customizer.tsx; rackinspect has about a hundred registrations and changes no generated page."
+description: "Keep every page of a single-actor frontend generated and put the behaviour in hooks, custom visual element implementations and registrations in application-customizer.tsx; one app has about a hundred registrations and changes no generated page."
 aliases: [heavily hooked generated frontend, hook-only customization]
 keywords: [single actor, heavy customization, hooks, application-customizer, custom visual element, scaffold, src/custom, generated pages, generator upgrades]
 tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:single-project"]
 category: framework
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx"]
 alternatives: [dual-actor-frontend-architecture, zero-customization-generated-frontend]
 related: [dual-actor-frontend-architecture, application-customizer-hub, pandino-action-hook-override, zero-customization-generated-frontend, complete-frontend-replacement]
 fragment: "none: frontend-only"
@@ -27,13 +27,13 @@ Get a tailored UX in an enterprise CRUD application without editing generated pa
 - Hook code you add in `src/custom/` is not generated and survives regeneration without `.generator-ignore` entries; the generated `application-customizer.tsx` needs an entry once you edit it ([frontend guide](../../agent-docs/frontend/README.md)).
 - Model elements that the generator exposes as extension points can be replaced by custom visual element implementations registered under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` ([custom component replacement](../../agent-docs/frontend/advanced-patterns.md)). Container, page and dialog hooks have generated, per-container names; always take the names from the generated scaffolds ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 
-### Project practice: all customization in hooks (rackinspect)
+### Practice notes: all customization in hooks
 
-This is a project choice about how far to go with the platform's mechanisms:
+This is a choice about how far to go with the platform's mechanisms:
 
 - Leave generated `pages/`, `containers/` and `services/` untouched. When a UI need cannot be met by a hook, use a custom visual element implementation rather than editing generated code.
 - Group the code under `src/custom/hooks/` by kind: custom implementations, dialog action hooks, page action hooks, form blur hooks, view/edit hooks, table row highlighting hooks, shared utilities.
-- Keep `application-customizer.tsx` as the one registration hub ([[application-customizer-hub]]); it grows to a hundred registrations in this project, so keep the hook files themselves free of wiring.
+- Keep `application-customizer.tsx` as the one registration hub ([[application-customizer-hub]]); it can grow to over a hundred registrations, so keep the hook files themselves free of wiring.
 - `.generator-ignore` is used only for the few generated files that are truly taken over (translations, layout configuration).
 
 ```
@@ -50,7 +50,7 @@ All generated pages stay current with the generator and look consistent; the cus
 
 ## Example
 
-rackinspect: a single `GenericUser` actor with 87 custom files, over 100 registrations and 29 menu items, with no generated page edited. Customizations include a dimension parameter component (a custom visual element), VAT ID masking, address auto-composition, table row highlighting, PDF preview and mask optimizations.
+One app: a single actor with a large `src/custom` tree (including scaffolds), many registrations and many menu items, with no generated page edited. Customizations include a configurable-parameter component (a custom visual element), a masked identifier input, address auto-composition, table row highlighting, PDF preview and mask optimizations.
 
 ## When to avoid
 

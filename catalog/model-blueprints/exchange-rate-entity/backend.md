@@ -20,13 +20,13 @@ Before the fetch, query the currencies that lack an automatic rate for the day. 
 
 Call the external source through a service interface, not directly in the operation. The operation then depends on the interface, and the client can be replaced in tests. See [[external-api-adapter-provider-pattern]].
 
-### Project code, not platform API
+### Application code, not platform API
 
-The example project uses its own helpers (an exception utility class, a date utility) for building validation results and wrapping faults. These are project code, not platform API. Copy the pattern, not the names.
+One reference implementation uses its own helpers (an exception utility class, a date utility) for building validation results and wrapping faults. These are application code, not platform API. Copy the pattern, not the names.
 
 ## Examples
 
-### rackinspect
+### Variant seen in practice
 
 - The automatic fetch is a static operation with a custom implementation. It queries the currencies except the base currency, finds the ones without a current automatic rate, asks the external rate service for those, and writes the rates as automatic.
 - The manual entry operation validates the date, the currency pair and the rate unit before it writes the row.

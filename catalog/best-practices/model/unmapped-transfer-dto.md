@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: transfer
 status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, judo-demo-miniworkflow, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 related: [transient-relation-parameter, actor-based-transfer-projection, error-code-enum-pattern, factory-operation-with-prepopulation, transfer-object-multiplicity]
 fragment: unmapped-transfer-dto

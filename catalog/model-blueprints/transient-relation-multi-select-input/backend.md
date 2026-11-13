@@ -22,7 +22,7 @@ This is the old projects' form, adapted to use `this` (JCL bodies use `this`, ne
 - `mutable input.users` turned it into a collection assignable to the stored relation, element by element.
 - A body without `mutable` persisted the owning entity with an empty collection and raised no error.
 
-Projects: Alba (`Product.assignApproval`, filtered picker of eligible users) and actiongroup-test-react (`Planet.createCreature`, `mutable input.signs`).
+Projects: one uses a filtered picker of eligible users in an assign-approval operation, and another uses `mutable input.signs` in a create operation.
 
 ### Custom Java implementation
 

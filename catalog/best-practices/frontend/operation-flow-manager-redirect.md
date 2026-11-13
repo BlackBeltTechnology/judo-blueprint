@@ -29,9 +29,9 @@ The rule is one representation per concept: choose the access-context view as ca
 - Files under `src/custom/` are never regenerated ([action hooks, keep custom hooks under src/custom](../../agent-docs/frontend/hooks/action-hooks.md)).
 - The agent-docs state the same design principle and link here for the recipes.
 
-### Project practice: land on the filtered access table (compsych-letter-demo)
+### Practice notes: land on the filtered access table
 
-The recipes below are project practice on top of that hook. Where the old text used `input.operationName`, `input.result.entityId` or an `id` key, treat those as *verify*: the documented input is the result object itself and the documented return keys are `actor`, `access`, `filterRecords`, `operation`.
+The recipes below are practice on top of that hook. Where the old text used `input.operationName`, `input.result.entityId` or an `id` key, treat those as *verify*: the documented input is the result object itself and the documented return keys are `actor`, `access`, `filterRecords`, `operation`.
 
 | Goal | `handleResult` returns |
 |---|---|
@@ -43,14 +43,14 @@ The recipes below are project practice on top of that hook. Where the old text u
 `actor` is the actor name string and `access` the access name, as generated.
 
 ```typescript
-// Example project code: src/custom/hooks/operationFlowManager.tsx
+// Example code: src/custom/hooks/operationFlowManager.tsx
 import { OPERATION_FLOW_MANAGER_INTERFACE_KEY, type OperationFlowManager } from '~/utilities/application';
 
 export const customFlowManager: OperationFlowManager = {
   // inviteUser returns the newly created user transfer object
   shouldUseCustomFlow: (input) => (input as any)?.__entityType === 'UserTO',
   handleResult: (input) => ({
-    actor: 'LetterUser',
+    actor: 'Viewer',
     access: 'users',
     filterRecords: { entityId: [{ operator: 'equal', value: (input as any).entityId }] },
   }),
@@ -60,7 +60,7 @@ export const customFlowManager: OperationFlowManager = {
 context.registerService<OperationFlowManager>(OPERATION_FLOW_MANAGER_INTERFACE_KEY, customFlowManager);
 ```
 
-Registration lives in `application-customizer.tsx`, which the project protects with `.generator-ignore`.
+Registration lives in `application-customizer.tsx`, which this frontend protects with `.generator-ignore`.
 
 ## Rationale
 
@@ -70,7 +70,7 @@ Registration lives in `application-customizer.tsx`, which the project protects w
 
 ## Example
 
-In compsych-letter-demo a custom operation `AdminDashboard.inviteUser(input)` returns the created user transfer object. Without a custom manager the app opened the standalone user view. With the manager above it opens the admin users table filtered to the new user's row. The model side of this admin surface is described in [[managed-actor-admin-pattern]].
+In one app a custom operation `AdminDashboard.inviteUser(input)` returns the created user transfer object. Without a custom manager the app opened the standalone user view. With the manager above it opens the admin users table filtered to the new user's row. The model side of this admin surface is described in [[managed-actor-admin-pattern]].
 
 ## When to avoid
 

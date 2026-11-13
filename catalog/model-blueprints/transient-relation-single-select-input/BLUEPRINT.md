@@ -29,17 +29,17 @@ This is the single-pick variant. For collections see [[transient-relation-multi-
 
 ### What is project practice
 
-The source project (itracker) linked the picked record in the operation body with `mutable input.<relation>`. The platform docs only say that `mutable` is a unary prefix operator and that `input` is immutable unless declared mutable ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). They do not describe the link semantics of a transient reference, so treat the claim that a missing `mutable` silently drops the link as project experience and *verify* it on your runtime version.
+The source project linked the picked record in the operation body with `mutable input.<relation>`. The platform docs only say that `mutable` is a unary prefix operator and that `input` is immutable unless declared mutable ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). They do not describe the link semantics of a transient reference, so treat the claim that a missing `mutable` silently drops the link as project experience and *verify* it on your runtime version.
 
 ## Structure
 
 - **Mapped target transfer object** (for example a view of `Region`): mapped to its entity, so the picker has a persisted set to list.
 - **Unmapped input transfer object** (for example `TaskInput`): the operation's input type. It holds the ordinary input fields as transient attributes and the picker relation.
-- **Transient relation** on the input: cardinality 1..1 for a required choice, 0..1 for an optional one; kind aggregation (reference without ownership); target is the mapped transfer object, never the entity itself. Optional default expression (itracker: the first target instance) and an optional range expression (for example only active records).
+- **Transient relation** on the input: cardinality 1..1 for a required choice, 0..1 for an optional one; kind aggregation (reference without ownership); target is the mapped transfer object, never the entity itself. Optional default expression (for example the first target instance) and an optional range expression (for example only active records).
 - **Operation** taking the input transfer object. The body creates or updates the owning entity and assigns the picked reference to a stored relation of that entity.
 - **Stored relation** on the owning entity (association) to the target entity. The diagram shows it as `Task --> Region`.
 
-A second picker of the same shape on the same input (itracker also had a category picker) is simply another transient relation.
+A second picker of the same shape on the same input (a category picker, for example) is simply another transient relation.
 
 ## Constraints
 

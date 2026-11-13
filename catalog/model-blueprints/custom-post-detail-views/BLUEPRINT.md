@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:mlszksz-platform", "status:
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/custom_views/shared/PostViewLayout.tsx"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -60,4 +60,4 @@ The views cover the four post types (news, offer, request and announcement), the
 
 ## Related
 
-- [[custom-notification-card-inbox]] — the notification list that opens these post pages
+- [[custom-notification-card-inbox]]: the notification list that opens these post pages

@@ -23,9 +23,9 @@ Make URLs inside long text attributes (descriptions, announcements) clickable wi
 
 ### Platform base
 
-- Custom views and components belong in the project's custom directory and are wired in through the generated hook scaffolds ([extension points](../../agent-docs/frontend/extension-points.md)).
+- Custom views and components belong in the custom directory and are wired in through the generated hook scaffolds ([extension points](../../agent-docs/frontend/extension-points.md)).
 
-### Project practice: a presentational component, used by custom views (mlszksz-platform)
+### Practice notes: a presentational component, used by custom views
 
 - It is not registered as a replacement of the generated text field. Custom detail views, registered through container hooks, import it and use it where they would otherwise print the text attribute. Generated forms keep the standard input. Whether a text-field visual element can be overridden the same way is *verify*.
 - A pure `parseText` function splits the text into text and link parts with an `https?://` regex. It is exported so it can be unit tested apart from React.
@@ -33,7 +33,7 @@ Make URLs inside long text attributes (descriptions, announcements) clickable wi
 - Links open with `target="_blank"` and `rel="noopener noreferrer"`, and the click handler stops propagation so a link inside a clickable card does not trigger the card's navigation.
 - Text without a URL takes a fast path and renders as plain typography. Text is always rendered as React children, never as HTML, so no escaping step is needed.
 - Wrapper styling (`whiteSpace: 'pre-wrap'`, word break) is passed in by the caller, so line breaks in the stored text survive.
-- Only URLs are detected; mentions are not handled in the project.
+- Only URLs are detected; mentions are not handled.
 
 ## Rationale
 
@@ -41,7 +41,7 @@ Plain text storage stays simple and safe. The cost is a small regex that can mis
 
 ## Example
 
-mlszksz-platform shows feed descriptions in four detail views and in the feed card with this component.
+One app shows feed descriptions in four detail views and in the feed card with this component.
 
 ## When to avoid
 

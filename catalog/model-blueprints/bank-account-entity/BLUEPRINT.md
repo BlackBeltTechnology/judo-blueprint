@@ -36,13 +36,13 @@ The owning entity, Partner in the fragment, holds the accounts as a composition 
 ## Constraints
 
 - A composition has exactly one owner. The platform validator rejects a bidirectional relation with a composition end: if the account must point back to its owner, make the owner end an aggregation and the back-pointer an association. The fragment uses a one-way composition, so it has no back-pointer.
-- The main-account association should reference only the owner's own accounts. Range expressions belong to transfer-object relations, not to entity relations. Restrict the candidates with a range expression on the owner's transfer-object relation that exposes the main account, for example the owner's own accounts. Otherwise check it in the operation that sets the main account. This is project practice, not an entity-level platform rule.
+- The main-account association should reference only the owner's own accounts. Range expressions belong to transfer-object relations, not to entity relations. Restrict the candidates with a range expression on the owner's transfer-object relation that exposes the main account, for example the owner's own accounts. Otherwise check it in the operation that sets the main account. This is common practice, not an entity-level platform rule.
 - Account number, bank name and giro code are required.
 
 ## Variations
 
 - **Owner-side main account.** The owner (an entity) holds the main account as a single association. This is the form in the fragment.
-- **Bank lookup by number prefix.** An operation on BankAccount sets the bank by matching the first digits of the account number against the bank's giro code. This is project logic inside a model-defined instance operation, not a platform feature.
+- **Bank lookup by number prefix.** An operation on BankAccount sets the bank by matching the first digits of the account number against the bank's giro code. This is application logic inside a model-defined instance operation, not a platform feature.
 - **Derived bank access.** A derived member on a related entity reads the owner's main account, for example a contract that exposes its contractor's main account. The derived member is read-only.
 
 ## When to use
@@ -57,7 +57,7 @@ The owning entity, Partner in the fragment, holds the accounts as a composition 
 
 ## Related
 
-- [[reference-data-lookup-entity]] — the reference table pattern used for Bank
-- [[contact-info-composition-cluster]] — other owned contact data held by the same owners
-- [[partner-generalization-hierarchy]] — the partner hierarchy that owns bank accounts
-- [[identity-account-organization-cluster]] — the organization side that also owns accounts
+- [[reference-data-lookup-entity]]: the reference table pattern used for Bank
+- [[contact-info-composition-cluster]]: other owned contact data held by the same owners
+- [[partner-generalization-hierarchy]]: the partner hierarchy that owns bank accounts
+- [[identity-account-organization-cluster]]: the organization side that also owns accounts

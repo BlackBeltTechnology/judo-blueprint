@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: hook
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/ViewEditActionHooks/customServicesPartnerServicePartnerPartnerViewEditActionsHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/utils/partnerErrorValidation.ts"]
 alternatives: []
 related: [pandino-action-hook-override, error-code-mapping-pattern, form-blur-action-hook]
 fragment: "none: frontend-only"
@@ -26,11 +26,11 @@ Show complex, server-computed validation results (cross-entity checks, lookups) 
 - Page and dialog hook types have an optional `post<RefreshAction>` handler (for example `postRefreshAction`), whose parameters are generated for the page. There is no generic `PostRefreshActionHook` type or interface key: return the handler from the page actions hook built from the `register<Page>ActionsHook` scaffold ([PostRefresh action hook](../../agent-docs/frontend/advanced-patterns.md), [action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 - Platform validation errors from the backend use `{ location, code, message }`. Inline field errors from a failed request appear only when the first error has a `location`; otherwise only the generic toast shows ([error handling](../../agent-docs/frontend/error-handling.md), [validation hooks](../../agent-docs/frontend/hooks/validation-hooks.md)).
 
-### Project practice: error list on the data (rackinspect)
+### Practice notes: error list on the data
 
-This is a project convention layered on the platform, not a platform feature:
+This is a convention layered on the platform, not a platform feature:
 
-- The entity carries a model-defined list of errors (for example `partnerErrors`), each with a field `location` and an `errorMessage`. Because it is part of the loaded data, it is recomputed by the backend on each load. It is the project's own transfer object field, separate from the platform's error response.
+- The entity carries a model-defined list of errors (for example `entityErrors`), each with a field `location` and an `errorMessage`. Because it is part of the loaded data, it is recomputed by the backend on each load. It is a custom transfer object field, separate from the platform's error response.
 - The post-refresh handler rebuilds the whole validation map from the current list on every refresh through `setValidation`, so cleared errors disappear.
 - The map keys are the form field names; a `location` that matches no field is not shown.
 - Handler parameters and the error field names in the sketch are illustrative; use the generated types.
@@ -52,7 +52,7 @@ Complex rules stay in the backend and the frontend only displays them, with fiel
 
 ## Example
 
-rackinspect: the partner view/edit hook maps the partner error list to field validation. After each refresh the map is rebuilt from the current errors, so backend rules appear as inline field errors.
+One app: a view/edit hook maps the error list to field validation. After each refresh the map is rebuilt from the current errors, so backend rules appear as inline field errors.
 
 ## When to avoid
 

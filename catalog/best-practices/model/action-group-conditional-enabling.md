@@ -26,7 +26,7 @@ Several operations of one object belong together and are valid only in some stat
 
 The UI model's ActionGroup holds a list of operation buttons (OperationForm elements, each bound to an operation by name). Its `enabledBy` (and `hiddenBy`) reference a boolean data member of the **same transfer object** that owns the page. No cross-object reference is possible, so a state computed elsewhere must first be exposed on that transfer object.
 
-- Make the boolean a derived member of the entity (here `habitable`, computed from the entity's own state) and map it into the transfer object. It is true when the group should be usable.
+- Make the boolean a derived member of the entity (here `available`, computed from the entity's own state) and map it into the transfer object. It is true when the group should be usable.
 - `enabledBy` disables the group when the boolean is false. `hiddenBy` removes it instead. Pick one: disabled keeps the controls visible for orientation, hidden removes noise.
 - One boolean per group. Combine several conditions inside the derived expression, not in the UI model.
 
@@ -47,7 +47,7 @@ The boolean only controls the generated UI. An API client can still call the ope
 
 ## Example
 
-A Planet entity has a derived boolean `habitable` and two operations (`launch`, `retire`). The PlanetView transfer object maps Planet and carries the boolean; the operations are declared on Planet. The view page holds one ActionGroup with `enabledBy` pointing at `habitable` and `featuredActions` of 1: `launch` is a standalone button, `retire` sits in the pop-up menu. When `habitable` is false, the whole group is disabled. The original project used four operations with two featured actions. Entity and transfer names here are neutral stand-ins.
+An Item entity has a derived boolean `available` and two operations (`start`, `archive`). The ItemView transfer object maps Item and carries the boolean; the operations are declared on Item. The view page holds one ActionGroup with `enabledBy` pointing at `available` and `featuredActions` of 1: `start` is a standalone button, `archive` sits in the pop-up menu. When `available` is false, the whole group is disabled. The original project used four operations with two featured actions. Entity and transfer names here are neutral stand-ins.
 
 ## When to avoid
 
@@ -65,18 +65,18 @@ A Planet entity has a derived boolean `habitable` and two operations (`launch`, 
 <!-- mermaid:generated fragment=action-group-conditional-enabling cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
-  class Planet {
+  class Item {
     <<Entity>>
-    +Integer population
-    +Boolean /habitable
-    +launch()
-    +retire()
+    +Integer quantity
+    +Boolean /available
+    +start()
+    +archive()
   }
-  class PlanetView {
+  class ItemView {
     <<Transfer>>
-    +Integer population
-    +Boolean habitable
+    +Integer quantity
+    +Boolean available
   }
-  PlanetView ..> Planet : maps
+  ItemView ..> Item : maps
 ```
 <!-- /mermaid:generated -->

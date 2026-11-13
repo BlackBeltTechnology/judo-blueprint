@@ -20,7 +20,7 @@ Declare the range type on the relation. A derived range expression narrows candi
 
 ### Observed alternatives (source project)
 
-The source project (itracker) declared the relation 1..1 with a default expression selecting any target instance and a second picker of the same shape on the same input. Whether the generator also needs explicit range and refresh behaviors on the relation was not settled in the source: it stated them explicitly in one project and left them out in another. Declare the range explicitly and *verify* on your generator version.
+The source project declared the relation 1..1 with a default expression selecting any target instance and a second picker of the same shape on the same input. Whether the generator also needs explicit range and refresh behaviors on the relation was not settled in the source: it stated them explicitly in one project and left them out in another. Declare the range explicitly and *verify* on your generator version.
 
 ## Structure diagram
 

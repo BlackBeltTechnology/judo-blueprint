@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: table
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/TableRowHighlightingHooks/ratingTableHighlightHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/TableRowHighlightingHooks/offerItemsTableHighlightHook.tsx"]
 alternatives: []
 related: [pandino-action-hook-override, custom-visual-element-override, application-customizer-hub]
 fragment: "none: frontend-only"
@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Rows of a table should be visually distinguished by an enum value, a status or a threshold, without editing the generated table. The platform offers a table row highlighting hook for exactly this; this practice describes how a project uses it.
+Rows of a table should be visually distinguished by an enum value, a status or a threshold, without editing the generated table. The platform offers a table row highlighting hook for exactly this; this practice describes how one frontend uses it.
 
 ## Practice
 
@@ -31,26 +31,26 @@ The hook is a platform extension point ([table hooks](../../agent-docs/frontend/
 - The hook file you add in `src/custom/` is not generated, so it survives regeneration without `.generator-ignore` entries ([extension points](../../agent-docs/frontend/extension-points.md)).
 
 ```typescript
-// Platform shape; the row type and enum come from the project's generated code
-export const itemHighlighting: TableRowHighlightingHook<ItemStored> = () => {
+// Platform shape; the row type and enum come from the generated code
+export const productHighlighting: TableRowHighlightingHook<ProductStored> = () => {
   return () => ([
-    { name: 'row-material', label: 'Material', backgroundColor: '#0095ff',
-      condition: (params) => params.row.itemType === 'MATERIAL' },
-    { name: 'row-service', label: 'Service', backgroundColor: '#e88f00',
-      condition: (params) => params.row.itemType === 'SERVICE' },
+    { name: 'row-physical', label: 'Physical', backgroundColor: '#0095ff',
+      condition: (params) => params.row.productType === 'PHYSICAL' },
+    { name: 'row-digital', label: 'Digital', backgroundColor: '#e88f00',
+      condition: (params) => params.row.productType === 'DIGITAL' },
   ]);
 };
 
 context.registerService<TableRowHighlightingHook>(
   TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
-  itemHighlighting,
-  { component: 'OfferItemsTable' } // the generated table component name
+  productHighlighting,
+  { component: 'ProductTable' } // the generated table component name
 );
 ```
 
-### Project practice: one hook per table, rules keyed by enum
+### Practice notes: one hook per table, rules keyed by enum
 
-This layer is project practice (rackinspect):
+This layer is practice:
 
 - One hook per table, each registered with its own `component` so a rule set never leaks onto another table.
 - Rules test an enum attribute of the row; a value without a rule stays unhighlighted (a rating table coloured green for the best grade and red for the worst, with the middle grade plain).
@@ -62,7 +62,7 @@ The hook changes only the background, so the generated table, its actions and it
 
 ## Example
 
-rackinspect registers two hooks in `application-customizer.tsx`: the offer items table (blue for material rows, orange for service rows) and the partner rating table (green for the top grade, red for the lowest).
+One app registers two hooks in `application-customizer.tsx`: the product table (blue for physical rows, orange for digital rows) and the partner rating table (green for the top grade, red for the lowest).
 
 ## When to avoid
 

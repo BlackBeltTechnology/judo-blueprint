@@ -1,7 +1,7 @@
 ---
 id: interceptor-security-filter-validation
 title: Security Filter Validation Interceptor
-description: "A pre-call interceptor on selected list operations that checks the client-supplied query filter against an allowed pattern and refuses the call otherwise, to stop enumeration of data the actor may not list; a project guard on top of the platform's access rules."
+description: "A pre-call interceptor on selected list operations that checks the client-supplied query filter against an allowed pattern and refuses the call otherwise, to stop enumeration of data the actor may not list; an application guard on top of the platform's access rules."
 aliases: ["list filter guard", "query filter allow-list"]
 keywords: ["interceptor", "security", "filter", "list", "preCall", "enumeration", "queryCustomizer", "regex", "InterceptorCallBusinessException"]
 tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
@@ -30,10 +30,10 @@ A client of the generated API can send its own filter with a list call. If an ac
 - Range interceptors do not cover lists: they fire only on `_getRangeReference*` operations ([[interceptor-range-override]]).
 - Where the model can express the restriction (an access filter on the actor's relation), that is the primary mechanism; this interceptor is an additional guard.
 
-### Project practice: allow-list the filter with a pattern
+### Practice notes: allow-list the filter with a pattern
 
 ```java
-// Example project code: the operation FQN and the pattern are project specific
+// Example code: the operation FQN and the pattern are application specific
 @Override
 public Object preCall(EOperation operation, Object parameterPayload)
         throws InterceptorCallBusinessException {
@@ -50,7 +50,7 @@ public Object preCall(EOperation operation, Object parameterPayload)
 
 - Register only the list operations that need it (`getOperations`, resolved once through `AsmUtils` and cached).
 - Reject when the filter is absent or not matching; accept only a closed pattern, never a blacklist.
-- Use the FQN of a modeled fault transfer object as the exception `type`, so the frontend can translate it; the first project version threw a raw exception that the client saw as a 500.
+- Use the FQN of a modeled fault transfer object as the exception `type`, so the frontend can translate it; the first version threw a raw exception that the client saw as a 500.
 - Test with a hand-made request: the generated UI never sends a hostile filter, so only API-level tests prove the guard.
 
 ## Rationale
@@ -61,7 +61,7 @@ public Object preCall(EOperation operation, Object parameterPayload)
 
 ## Example
 
-A quiz player may list tests only by test id. The interceptor for the player's list-tests operation accepts a filter of the form `this.id=="<uuid>"` and rejects every other filter, so the player cannot list all tests or use wildcard filters.
+A restricted actor may list records only by id. The interceptor for that actor's list operation accepts a filter of the form `this.id=="<uuid>"` and rejects every other filter, so the actor cannot list all records or use wildcard filters.
 
 ## When to avoid
 

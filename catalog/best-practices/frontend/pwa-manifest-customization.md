@@ -1,7 +1,7 @@
 ---
 id: pwa-manifest-customization
 title: PWA Manifest Customization
-description: "Take over the generated public/manifest.json through .generator-ignore to set the installable web app name, display mode and colors; trivia uses it for a mobile-first player frontend."
+description: "Take over the generated public/manifest.json through .generator-ignore to set the installable web app name, display mode and colors; one app uses it for a mobile-first participant frontend."
 aliases: [PWA manifest override, installable web app manifest]
 keywords: [pwa, manifest.json, generator-ignore, standalone, display, theme color, background color, installable, mobile first, checksum]
 tags: ["domain:frontend", "layer:frontend", "project:trivia", "status:single-project"]
@@ -24,9 +24,9 @@ Make a mobile-first frontend installable with its own name and look by owning `p
 ### Platform base
 
 - The frontend module ships a generated `public/manifest.json` ([project structure](../../agent-docs/frontend/README.md)). Generated files are protected by a checksum: an edited generated file fails the build unless it is listed in `.generator-ignore`, which works like `.gitignore`; files not listed are regenerated on the next build ([checksum protection and .generator-ignore](../../agent-docs/frontend/README.md), [surviving regeneration](../../agent-docs/deployment/generator-plugins.md)).
-- The platform docs do not describe the manifest content or PWA behaviour (service worker, install prompts); the content below is project practice.
+- The platform docs do not describe the manifest content or PWA behaviour (service worker, install prompts); the content below is practice, not a platform feature.
 
-### Project practice: own the manifest (trivia)
+### Practice notes: own the manifest
 
 - Add `public/manifest.json` to `.generator-ignore`, then edit it. The edit is lost on regeneration if the entry is missing, and the build fails on the checksum before that.
 - Set `name` and `short_name` (app launcher label), `display: standalone` (no browser chrome), `theme_color` and `background_color`.
@@ -39,7 +39,7 @@ An installable app needs its own name and colors. Ignoring the file is cheap, bu
 
 ## Example
 
-trivia: the player frontend sets the app name to "JUDO Trivia", short name "Trivia", standalone display and a black theme color, and lists `public/manifest.json` in `.generator-ignore`, so the game can be installed on phones.
+One app's participant frontend sets the app name to "JUDO Example", short name "Example", standalone display and a black theme color, and lists `public/manifest.json` in `.generator-ignore`, so the app can be installed on phones.
 
 ## When to avoid
 

@@ -8,10 +8,10 @@ tags: [domain:model, layer:backend, project:mlszksz-platform, project:rackinspec
 category: pattern
 status: established
 projects: [mlszksz-platform, rackinspect, indamedia-adtrack, park-here]
-evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
+evidence: ["mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/SingleInstanceSchedulerActivator.java", "rackinspect:application/scheduler/src/main/java/hu/blackbelt/rackinspect/scheduler/SingleInstanceSchedulerActivator.java", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
 alternatives: []
 fragment: none: backend-only
-related: [osgi-service-layer-delegation, campaign-lifecycle-status-enum]
+related: [osgi-service-layer-delegation, ongoing-finished-deleted-status-enum]
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---
@@ -66,4 +66,4 @@ Jobs fall into five kinds: data cleanup (delete or transition stale records), pr
 
 - [[osgi-service-layer-delegation]] — the shared service layer that every job calls
 - [[quartz-scheduled-job]] — the Quartz-based variant of the same job idea, with transaction handling
-- [[campaign-lifecycle-status-enum]] — scheduled jobs reuse the same service that the lifecycle operations use
+- [[ongoing-finished-deleted-status-enum]] — scheduled jobs reuse the same service that the lifecycle operations use

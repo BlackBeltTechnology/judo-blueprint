@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Operations are declared on entities and, for the API an actor sees, again on transfer objects. In a project with several actors or pages the same business action therefore appears several times, each with its own generated interface and its own custom implementation to write. Decide which copy holds the logic and make every other copy delegate.
+Operations are declared on entities and, for the API an actor sees, again on transfer objects. In an application with several actors or pages the same business action therefore appears several times, each with its own generated interface and its own custom implementation to write. Decide which copy holds the logic and make every other copy delegate.
 
 ## Practice
 
@@ -27,7 +27,7 @@ Each operation declaration, wherever it sits (entity, actor transfer object, ser
 
 ### Keep the logic in one service
 
-Put the business rule in a project service (or in the entity-level implementation) and let each copy do only the type conversion and call it. This is the thin-adapter shape of the custom service layer (see [The Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)). Ubives and ParkHere did this: about 15 or 12 unique actions turned into 42 or 20 implementations, all delegating.
+Put the business rule in a service (or in the entity-level implementation) and let each copy do only the type conversion and call it. This is the thin-adapter shape of the custom service layer (see [The Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)). Several applications did this, turning a modest set of unique actions into a larger set of implementations, all delegating.
 
 ### Respect the signature differences
 
@@ -49,10 +49,10 @@ Fields such as `editable` or `hideApprove` that exist only for the screen belong
 
 ## Example
 
-- itracker: five operations (create, send for approval, approve, reject, archive forecast) exist on the entity and on the actor's initiative view. The actor-level create returns the created object, the entity-level create returns nothing, and the actor view adds seven UI fields.
-- Ubives: one invitation operation appears in six views, each implementation calling the same service.
-- ParkHere: holiday operations appear in three panels, all calling a holiday service.
-- InterfaceRegister: three create operations exist on the user entity and on the dashboard, bound to different `_this` types and sharing input types.
+- Plan workflow: five operations (create, send for approval, approve, reject, archive plan) exist on the entity and on the actor's initiative view. The actor-level create returns the created object, the entity-level create returns nothing, and the actor view adds several UI fields.
+- One invitation operation appears in several views, each implementation calling the same service.
+- Calendar operations appear in several panels, all calling a calendar service.
+- Create operations exist on the user entity and on the dashboard, bound to different `_this` types and sharing input types.
 
 ## When to avoid
 

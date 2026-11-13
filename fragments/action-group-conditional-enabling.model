@@ -191,35 +191,35 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_D_WNsNzdEfGFK9L-eLiGgg" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_EE74UNzdEfGFK9L-eLiGgg" name="action_group_conditional_enabling">
-      <elements xsi:type="structure:EntityType" xmi:id="_EKEP8NzdEfGFK9L-eLiGgg" name="Planet" createable="false" updateable="false" deleteable="false">
-        <attributes xsi:type="structure:DataMember" xmi:id="_EPJkQNzdEfGFK9L-eLiGgg" name="population" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_EPJkQNzdEfGFK9L-eLiGgg" getterExpression="" identifier="false" memberType="STORED">
+      <elements xsi:type="structure:EntityType" xmi:id="_EKEP8NzdEfGFK9L-eLiGgg" name="Item" createable="false" updateable="false" deleteable="false">
+        <attributes xsi:type="structure:DataMember" xmi:id="_EPJkQNzdEfGFK9L-eLiGgg" name="quantity" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_EPJkQNzdEfGFK9L-eLiGgg" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_EPJkQdzdEfGFK9L-eLiGgg"/>
         </attributes>
-        <attributes xsi:type="structure:DataMember" xmi:id="_EXscQNzdEfGFK9L-eLiGgg" name="habitable" dataType="_nhZUV-OjEeuTFeBuQgBSDg" defaultExpression="" binding="_EXscQNzdEfGFK9L-eLiGgg" getterExpression="self.population > 0" identifier="false" memberType="DERIVED">
+        <attributes xsi:type="structure:DataMember" xmi:id="_EXscQNzdEfGFK9L-eLiGgg" name="available" dataType="_nhZUV-OjEeuTFeBuQgBSDg" defaultExpression="" binding="_EXscQNzdEfGFK9L-eLiGgg" getterExpression="self.quantity > 0" identifier="false" memberType="DERIVED">
           <inherited xmi:id="_EXscQdzdEfGFK9L-eLiGgg"/>
         </attributes>
         <mapping xmi:id="_EKEP8dzdEfGFK9L-eLiGgg" target="_EKEP8NzdEfGFK9L-eLiGgg"/>
-        <operations xmi:id="_EdPqoNzdEfGFK9L-eLiGgg" name="launch" customImplementation="true" body="" stateful="true" operationType="INSTANCE" binding="" initializer="false">
+        <operations xmi:id="_EdPqoNzdEfGFK9L-eLiGgg" name="start" customImplementation="true" body="" stateful="true" operationType="INSTANCE" binding="" initializer="false">
           <inherited xmi:id="_EdPqodzdEfGFK9L-eLiGgg"/>
         </operations>
-        <operations xmi:id="_EkVxINzdEfGFK9L-eLiGgg" name="retire" customImplementation="true" body="" stateful="true" operationType="INSTANCE" binding="" initializer="false">
+        <operations xmi:id="_EkVxINzdEfGFK9L-eLiGgg" name="archive" customImplementation="true" body="" stateful="true" operationType="INSTANCE" binding="" initializer="false">
           <inherited xmi:id="_EkVxIdzdEfGFK9L-eLiGgg"/>
         </operations>
-        <form xmi:id="_EKEP89zdEfGFK9L-eLiGgg" name="Planet_Form" label="Planet Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_EKEP9NzdEfGFK9L-eLiGgg" name="Planet_Table" label="Planet Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_EKEP8tzdEfGFK9L-eLiGgg" name="Planet_View_Edit" label="Planet View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_EKEP89zdEfGFK9L-eLiGgg" name="Item_Form" label="Item Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_EKEP9NzdEfGFK9L-eLiGgg" name="Item_Table" label="Item Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_EKEP8tzdEfGFK9L-eLiGgg" name="Item_View_Edit" label="Item View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_ErQRcNzdEfGFK9L-eLiGgg" name="PlanetView" createable="false" updateable="false" deleteable="false">
-        <attributes xsi:type="structure:DataMember" xmi:id="_ErQRctzdEfGFK9L-eLiGgg" name="population" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_EPJkQNzdEfGFK9L-eLiGgg" getterExpression="" identifier="false" memberType="MAPPED">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_ErQRcNzdEfGFK9L-eLiGgg" name="ItemView" createable="false" updateable="false" deleteable="false">
+        <attributes xsi:type="structure:DataMember" xmi:id="_ErQRctzdEfGFK9L-eLiGgg" name="quantity" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_EPJkQNzdEfGFK9L-eLiGgg" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_ErQRc9zdEfGFK9L-eLiGgg"/>
         </attributes>
-        <attributes xsi:type="structure:DataMember" xmi:id="_ErQRdNzdEfGFK9L-eLiGgg" name="habitable" dataType="_nhZUV-OjEeuTFeBuQgBSDg" defaultExpression="" binding="_EXscQNzdEfGFK9L-eLiGgg" getterExpression="" identifier="false" memberType="MAPPED">
+        <attributes xsi:type="structure:DataMember" xmi:id="_ErQRdNzdEfGFK9L-eLiGgg" name="available" dataType="_nhZUV-OjEeuTFeBuQgBSDg" defaultExpression="" binding="_EXscQNzdEfGFK9L-eLiGgg" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_ErQRddzdEfGFK9L-eLiGgg"/>
         </attributes>
         <mapping xmi:id="_ErQRcdzdEfGFK9L-eLiGgg" target="_EKEP8NzdEfGFK9L-eLiGgg"/>
-        <form xmi:id="_ErQRd9zdEfGFK9L-eLiGgg" name="PlanetView_Form" label="PlanetView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_ErQReNzdEfGFK9L-eLiGgg" name="PlanetView_Table" label="PlanetView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_ErQRdtzdEfGFK9L-eLiGgg" name="PlanetView_View_Edit" label="PlanetView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_ErQRd9zdEfGFK9L-eLiGgg" name="ItemView_Form" label="ItemView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_ErQReNzdEfGFK9L-eLiGgg" name="ItemView_Table" label="ItemView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_ErQRdtzdEfGFK9L-eLiGgg" name="ItemView_View_Edit" label="ItemView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

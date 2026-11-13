@@ -40,7 +40,7 @@ Make the field read-only on the transfer objects clients write through, so only 
 - Reads are cheap: list pages and search use one column and no join.
 - The cost is staleness risk and duplicated data. If a refresh is missed, the summary lies until the next refresh. Decide who owns the refresh before adding the field.
 - If the value must always be exact and the collection is small, a DERIVED attribute computed with a collection function is simpler and cannot go stale. See [[derived-attribute-flattening]].
-- Project practice (not platform): the original project used rich text for the summaries and updated them in custom backend code.
+- Practice note (not platform): the original project used rich text for the summaries and updated them in custom backend code.
 
 ## Example
 

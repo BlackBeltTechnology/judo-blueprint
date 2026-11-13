@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: access
 status: established
 projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, park-here, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 fragment: derived-access-filtering
 diagram: { kinds: [entity, enum, transfer, actor], members: types }
@@ -28,7 +28,7 @@ Restrict what an actor can reach by giving its access a `DERIVED` type and a get
   - a `DERIVED` access needs an expression that returns references; for "see everything" use `ALL` with no getter
   - `!getVariable(...)` returns a scalar; compare with `==`, and qualify the primitive type
 - Typical shapes:
-  - status filter: `Contest!filter(c | c.status == ContestStatus#OPEN)`
+  - status filter: `Event!filter(e | e.status == EventStatus#OPEN)`
   - singleton: an expression ending in `!any()` with cardinality `0..1`
   - ownership: compare an entity field to the actor's own value, for example `!getVariable("ACTOR", "email")`
   - role-scoped: one `!filter` whose lambda disjuncts a role flag and the ownership clause; JQL has no if/else ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), *Role-scoped access getters*)
@@ -42,7 +42,7 @@ The filter runs in the generated query, so a client never receives rows outside 
 
 ## Example
 
-`Player` actor has two accesses to `ContestView`, a transfer object mapped to `Contest`: `allContests` of type `ALL` and `openContests` of type `DERIVED` with getter `Contest!filter(c | c.status == ContestStatus#OPEN)`, cardinality `0..*`.
+`Participant` actor has two accesses to `EventView`, a transfer object mapped to `Event`: `allEvents` of type `ALL` and `openEvents` of type `DERIVED` with getter `Event!filter(e | e.status == EventStatus#OPEN)`, cardinality `0..*`.
 
 Seen in 13 projects, mostly for status, ownership and singleton accesses.
 
@@ -64,31 +64,31 @@ Seen in 13 projects, mostly for status, ownership and singleton accesses.
 <!-- mermaid:generated fragment=derived-access-filtering cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
-  class Contest {
+  class Event {
     <<Entity>>
-    +ContestStatus status
+    +EventStatus status
     +String title
   }
-  class ContestStatus {
+  class EventStatus {
     <<Enumeration>>
     OPEN
     CLOSED
   }
-  class ContestView {
+  class EventView {
     <<Transfer>>
-    +ContestStatus status
+    +EventStatus status
     +String title
   }
-  class Player {
+  class Participant {
     <<Actor>>
   }
-  class PlayerPrincipal {
+  class ParticipantPrincipal {
     <<Transfer>>
     +String email
   }
-  Contest ..> ContestStatus : status
-  ContestView ..> Contest : maps
-  ContestView ..> ContestStatus : status
-  Player ..> PlayerPrincipal : principal
+  Event ..> EventStatus : status
+  EventView ..> Event : maps
+  EventView ..> EventStatus : status
+  Participant ..> ParticipantPrincipal : principal
 ```
 <!-- /mermaid:generated -->

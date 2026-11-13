@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:park-h
 category: interceptor
 status: emerging
 projects: [rackinspect, park-here]
-evidence: ["rackinspect:unrecorded", "park-here:unrecorded"]
+evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/faultregistry/elementfaultinput/ElementFaultInputRepairTypesRangeInterceptor.java", "park-here:unrecorded"]
 alternatives: []
 related: [interceptor-crud-lifecycle, interceptor-access-control-flags, interceptor-security-filter-validation]
 fragment: "none: backend-only"
@@ -18,7 +18,7 @@ last_updated: 2026-11-10
 
 ## Intent
 
-Options for a relation field (a dropdown or autocomplete) often depend on another value on the same form: only the error codes of the chosen element, only free parking slots for the chosen days, only non-archived cars of the current user. A range interceptor replaces the options the platform returns with a query that uses the current form context.
+Options for a relation field (a dropdown or autocomplete) often depend on another value on the same form: only the codes of the chosen element, only free resource slots for the chosen days, only non-archived items of the current user. A range interceptor replaces the options the platform returns with a query that uses the current form context.
 
 ## Practice
 
@@ -30,10 +30,10 @@ Options for a relation field (a dropdown or autocomplete) often depend on anothe
 - Security: for a relation whose range type exposes every instance (`rangeType=ANY`) a read-only attribute does not stop enumeration, so the range interceptor is the server-side boundary. Model `min`/`max` bounds are UI-only and not enforced on the server ([same section](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - Return a payload collection that has the shape the original call returns; the `postCall` result replaces it. The returned payloads carry the `__selected` marker in the range path ([reserved payload keys](../../agent-docs/backend/platform-behavior-reference.md#reserved-payload-keys)).
 
-### Project practice: re-query with the owner context
+### Practice notes: re-query with the owner context
 
 ```java
-// Example project code: ParentDao, Entity and the payload helper are project or generated types
+// Example code: ParentDao, Entity and the payload helper are generated types
 @Override
 public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload)
         throws InterceptorCallBusinessException {
@@ -47,12 +47,12 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
             .filterBy(originalFilter)          // keep the client's own filter, order and seek
             .orderBy(attribute, order)
             .selectList(limit, lastItem, isReverse);
-    return toPayloads(filtered);               // project helper
+    return toPayloads(filtered);               // helper
 }
 ```
 
 - Keep the client's filter, ordering and pagination from the `queryCustomizer`: the range operation is called while the user types and pages, and a replacement that ignores them breaks autocomplete.
-- Map attribute names for `orderBy` carefully; projects converted camelCase names to the upper-snake enum names of the generated attribute and found that fragile.
+- Map attribute names for `orderBy` carefully; applications converted camelCase names to the upper-snake enum names of the generated attribute and found that fragile.
 - Handle an owner that has no value for the controlling field yet (return the original range or an empty one).
 - Resolve the current user once and filter by ownership where options are per user ([[actor-resolution-variable-resolver]]).
 - The operation name is `<model>.services.<Service>#_getRangeReference<Relation>`; resolve and cache it ([FQN format](../../agent-docs/backend/interceptors.md#operation-fqn-format-reference)).
@@ -65,7 +65,7 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
 
 ## Example
 
-A reservation form offers car, parking slot and period. The car range interceptor returns only the current user's non-archived cars. The slot range interceptor picks the "free slots for one day" or "for several days" query by reservation type, excludes exclusive slots for non-admins, and keeps the client's filter and paging. A profile form restricts preferred slots to those the user may access.
+A booking form offers item, resource slot and period. The item range interceptor returns only the current user's non-archived items. The slot range interceptor picks the "free slots for one day" or "for several days" query by booking type, excludes exclusive slots for non-admins, and keeps the client's filter and paging. A profile form restricts preferred slots to those the user may access.
 
 ## When to avoid
 

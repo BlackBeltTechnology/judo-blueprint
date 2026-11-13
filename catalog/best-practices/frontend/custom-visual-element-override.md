@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:work
 category: component
 status: emerging
 projects: [rackinspect, workflow-poc, park-here]
-evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/custom-implementations/registerServicesPartner_servicePartnerPartner_View_EditCustomImplementations.tsx", "workflow-poc:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, application-customizer-hub]
 fragment: "none: frontend-only"
@@ -37,7 +37,7 @@ export function registerMyElementCustomImplementation(context: BundleContext) {
 }
 ```
 
-### Project practice
+### Practice notes
 
 - Keep the component in `src/custom/` and use the props of the proxy type; the data, edit mode and loading state come from it, not from your own fetching.
 - Handle every state the generated element would have handled (loading, read-only, validation errors); nothing is inherited.
@@ -49,8 +49,8 @@ The element is replaced at one well-defined seam while navigation, data binding 
 
 ## Example
 
-- rackinspect: thirteen custom implementations, including a large configurable-parameter form, a masked tax-id input, a password-style input and picture upload buttons.
-- workflow-poc: two custom elements bound to a transfer object attribute: a diagram renderer for workflow states and a read-only YAML code viewer.
+- A large frontend with many custom implementations, including a configurable form, a masked identifier input, a password-style input and file upload buttons.
+- A workflow frontend: two custom elements bound to a transfer object attribute: a diagram renderer for workflow states and a read-only YAML code viewer.
 
 ## When to avoid
 

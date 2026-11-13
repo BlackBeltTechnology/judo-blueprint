@@ -28,9 +28,9 @@ A distinctive, branded look needs more than seven palette colors. This practice 
 - The docs advise a fragment override over a full `.generator-ignore` of `index.tsx` when only a few components change.
 - Per-widget colors are done with sub-themes: a model `subTheme` name selects a registered `SubThemeHook` that returns `{ components: { ... } }` overrides ([extension points](../../agent-docs/frontend/extension-points.md)).
 
-### Project practice: one broad theme file
+### Practice notes: one broad theme file
 
-This is project practice (actiongroup-test-react): the whole theme file is taken over and carries about 16 component overrides. Choose it only when most components change; otherwise use fragments.
+This is practice: the whole theme file is taken over and carries many component overrides. Choose it only when most components change; otherwise use fragments.
 
 - Set default props and style overrides together per component, so one place holds a component's look (for example buttons with a pill radius and no shadow; filled text fields with a styled read-only state).
 - Extend the palette type with extra slots through module augmentation (for example a subtitle color) and read them in component overrides.
@@ -38,7 +38,7 @@ This is project practice (actiongroup-test-react): the whole theme file is taken
 - Check each MUI upgrade against the overrides, and keep component-level `sx` to exceptions, since both fight over the same properties.
 
 ```typescript
-// Example project code
+// Example code
 declare module '@mui/material/styles' {
   interface Palette { subtitleColor: Palette['primary']; }
   interface PaletteOptions { subtitleColor?: PaletteOptions['primary']; }
@@ -61,11 +61,11 @@ const theme = createTheme({
 
 ## Rationale
 
-Centralised theme code gives one coherent look and relies on MUI's cascade instead of styling every screen. The cost is a large file (about 280 lines here), tracking MUI changes, conflicts with `sx` props and a protected file that no longer follows generator updates.
+Centralised theme code gives one coherent look and relies on MUI's cascade instead of styling every screen. The cost is a large file, tracking MUI changes, conflicts with `sx` props and a protected file that no longer follows generator updates.
 
 ## Example
 
-actiongroup-test-react's theme overrides 16 MUI components: pill buttons, filled text fields with a white background and a read-only style, a borderless data grid, rounded paper with a light shadow, a borderless drawer with shadow, orange icon buttons and small avatars, plus a subtitle color palette extension for form labels.
+One app's theme overrides many MUI components: pill buttons, filled text fields with a white background and a read-only style, a borderless data grid, rounded paper with a light shadow, a borderless drawer with shadow, orange icon buttons and small avatars, plus a subtitle color palette extension for form labels.
 
 ## When to avoid
 

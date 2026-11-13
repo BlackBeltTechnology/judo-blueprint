@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: build
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/.generator-ignore", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/config/layout.ts"]
 alternatives: []
 related: [generator-ignore-app-theme, i18n-custom-translation-keys, application-customizer-hub]
 fragment: "none: frontend-only"
@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-A project with extensive manual translations or tuned layout constants must keep those files across builds.
+A frontend with extensive manual translations or tuned layout constants must keep those files across builds.
 
 ## Practice
 
@@ -27,9 +27,9 @@ A project with extensive manual translations or tuned layout constants must keep
 - Generated files not in `.generator-ignore` are regenerated and a hand-edited one fails the checksum check; `.generator-ignore` is the documented protection ([checksum protection](../../agent-docs/frontend/README.md)).
 - Platform docs describe adding a language by copying the default files and translating them, and finding missing keys by diffing against the default ([adding languages](../../agent-docs/frontend/i18n.md)).
 
-### Project practice: ignore locale and layout files
+### Practice notes: ignore locale and layout files
 
-The project lists the translated files and its layout constants:
+A frontend that keeps its translations and layout constants lists them:
 
 ```
 .generator-ignore
@@ -41,16 +41,16 @@ src/custom/application-customizer.tsx
 ```
 
 - Ignored locale files are no longer updated when the model adds entities or attributes; add the new generated keys by hand (diff against `application_default.json`).
-- `src/config/layout.ts` (drawer width, theme mode, menu orientation) is project code from this example, not documented platform behavior; verify it exists in your generated frontend.
+- `src/config/layout.ts` (drawer width, theme mode, menu orientation) is code from this example, not documented platform behavior; verify it exists in your generated frontend.
 - For only a few extra keys, a `custom.*` prefix plus an override fragment avoids ignoring the whole file, see [[i18n-custom-translation-keys]].
 
 ## Rationale
 
-Thousands of manual translation lines and tuned layout values must not be overwritten. The price is manual key maintenance and a layout file that can miss new framework options.
+Manual translation lines and tuned layout values must not be overwritten. The price is manual key maintenance and a layout file that can miss new framework options.
 
 ## Example
 
-rackinspect: protects Hungarian locale files (about 3,300 and 190 lines), the layout config (horizontal menu, light theme, 260px drawer) and the application customizer with 100+ hook registrations. It maintains the translation files with its own Python scripts (cleaner, sorter, updater).
+One frontend protects its Hungarian locale files, its layout config (horizontal menu, light theme, drawer width) and the application customizer with many hook registrations. It maintains the translation files with its own scripts (cleaner, sorter, updater).
 
 ## When to avoid
 

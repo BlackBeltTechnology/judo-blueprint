@@ -55,7 +55,7 @@ An administrator toggles the flags through an admin transfer object. Protect the
 
 ## Example
 
-A User entity has a unique e-mail, the flags `isAdmin` and `isApprover` (default false) and the derived `hasNoRole`. AdminActor and ApproverActor both use the same realm and an e-mail claim, each over its own principal transfer object, each active by its own flag. The source projects used three to five flags (admin, HR, professional; administrator and reservation types; admin, architect, developer, operator). Names here are neutral.
+A User entity has a unique e-mail, the flags `isAdmin` and `isApprover` (default false) and the derived `hasNoRole`. AdminActor and ApproverActor both use the same realm and an e-mail claim, each over its own principal transfer object, each active by its own flag. The source projects used three to five flags (admin, HR and professional flags; two administrator types; admin, architect, developer and operator roles). Names here are neutral.
 
 ## When to avoid
 

@@ -417,7 +417,7 @@ interceptError: (error, opts) => {
 },
 ```
 
-**Rule of thumb**: each subsystem-specific dialog must be triggered ONLY by an explicit backend `code` value. HTTP status alone is not enough — a 500 can come from anywhere in the stack. If you want to show a generic "server error" dialog for unknown 5xx, add an `isGenericServerError` predicate and a separate `compsych.error.server.title` / `.message` i18n pair; do not reuse the converter dialog.
+**Rule of thumb**: each subsystem-specific dialog must be triggered ONLY by an explicit backend `code` value. HTTP status alone is not enough — a 500 can come from anywhere in the stack. If you want to show a generic "server error" dialog for unknown 5xx, add an `isGenericServerError` predicate and a separate `app.error.server.title` / `.message` i18n pair; do not reuse the converter dialog.
 
 ---
 

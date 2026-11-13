@@ -26,7 +26,7 @@ A container-level hook for the same form may be needed for a second field. Keep 
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - A dialog form action hook on the organization admin panel's invite form filters the role dropdown. It reads the inviter's role and the admin-organization flag from the owner data, then applies a role-to-invitable-roles mapping.
 - The filter separates a platform admin inviting into their own admin organization from a platform admin inviting into another company's panel.

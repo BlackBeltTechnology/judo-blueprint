@@ -2,7 +2,7 @@
 
 ### The operation body links the picked record
 
-The operation that consumes the input transfer object creates (or updates) the owning entity and assigns the transient picker selection to a stored relation. The source project (itracker) wrote this in the operation body with `mutable input.<relation>`:
+The operation that consumes the input transfer object creates (or updates) the owning entity and assigns the transient picker selection to a stored relation. The source project wrote this in the operation body with `mutable input.<relation>`:
 
 ```
 operation createInitiative(input: InitiativeInput): Initiative {

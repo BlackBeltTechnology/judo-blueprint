@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspe
 category: build
 status: emerging
 projects: [trivia, rackinspect]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/.generator-ignore"]
 alternatives: []
 related: [complete-frontend-replacement, dark-theme-override, pwa-manifest-customization, generator-ignore-i18n-layout]
 fragment: "none: frontend-only"
@@ -27,9 +27,9 @@ Keep a hand-edited app shell or theme file across builds. This is the last resor
 - `.generator-ignore` sits in the actor frontend module root and works like `.gitignore`: exact paths, wildcards, directories, patterns, `#` comments. Add the file, then edit it; your changes survive rebuilds ([.generator-ignore](../../agent-docs/frontend/README.md)).
 - Platform guidance: hooks first, editing generated files only when no hook exists. For the theme, prefer a same-named override of one theme fragment (`index.ts.mui-<component>.fragment.hbs`, theme options, palette fragments) over ignoring all of `index.tsx`; app-wide colors come from the actor's palette in the model ([theme override fragments](../../agent-docs/frontend/theming.md)).
 
-### Project practice: ignore the shell and theme
+### Practice notes: ignore the shell and theme
 
-When a project fully takes over the shell and theme, its `.generator-ignore` lists them:
+When a frontend fully takes over the shell and theme, its `.generator-ignore` lists them:
 
 ```
 .generator-ignore
@@ -49,8 +49,8 @@ The ignore list is simple and leaves the rest of generation intact. The cost is 
 
 ## Example
 
-- trivia, player frontend: ignores `src/App.tsx`, `src/theme/index.tsx` and `public/manifest.json`; the admin frontend lists only `.generator-ignore` and `.gitignore` and stays fully generated.
-- rackinspect: does not ignore App.tsx or the theme. Customization goes through hooks and custom components; its ignore list covers the application customizer, layout config and two i18n files.
+- A game frontend ignores `src/App.tsx`, `src/theme/index.tsx` and `public/manifest.json`; the admin frontend lists only `.generator-ignore` and `.gitignore` and stays fully generated.
+- A frontend that keeps App.tsx and the theme generated: its customization goes through hooks and custom components; its ignore list covers the application customizer, layout config and three i18n files.
 
 ## When to avoid
 

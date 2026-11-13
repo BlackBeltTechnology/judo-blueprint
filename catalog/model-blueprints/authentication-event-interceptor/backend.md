@@ -19,20 +19,20 @@ On first login, check for an existing row by email and create one only if none e
 
 ### Keep login from failing
 
-Wrap each side effect in a try and catch block. Log the error with the email and the operation name, and return the token. Do not rethrow (project practice, matching the platform guide's default): a failed audit write or a failed timestamp update must not stop the user from signing in.
+Wrap each side effect in a try and catch block. Log the error with the email and the operation name, and return the token. Do not rethrow (common practice): a failed audit write or a failed timestamp update must not stop the user from signing in.
 
 - Use a short field mask when reading the user, so only the needed columns are loaded.
 - Assign roles only from a configured list, read when the component is activated.
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
-- One login interceptor filters for the principal operation. It finds the user by email, updates the last-login time and writes a login entry through the project's audit service.
+- One login interceptor filters for the principal operation. It finds the user by email, updates the last-login time and writes a login entry through the application's audit service.
 - The interceptor uses a short field mask when it reads the user. Its whole body is in a try and catch block, so a failure does not stop the login.
 
-### indamedia-adtrack
+### Second variant seen in practice
 
 - A login interceptor creates the user on first login from the email and name claims. It assigns the admin flag from a comma-separated list of administrator emails in the component properties.
 - A lock around the check and the insert prevents duplicate rows under concurrent logins. This variant has no audit service.
-- The service and class names are example project code. Copy the pattern, not the names.
+- The service and class names are application-specific. Copy the pattern, not the names.

@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszks
 category: config
 status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack]
-evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
+evidence: ["rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/i18n/RackInspectI18nActivator.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/i18n/MLSZKSZPlatformI18nActivator.java", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -26,24 +26,24 @@ The platform docs describe the backend i18n service ([backend i18n guide](../../
 
 The docs do not say how the interface is turned into a registered service or how the locale is chosen per request; they say the interface is "typically defined in your common utilities".
 
-### Project practice: annotation proxy plus thread-local locale
+### Practice notes: annotation proxy plus thread-local locale
 
-The example projects add this wiring on top (all of it project code):
+The examples add this wiring on top (all of it application code):
 
 - The interface methods carry a message-by-key annotation and a proxy implementation reads the properties bundle for the current locale.
 - A bundle activator registers the proxy as an OSGi service, so services receive it by `@Reference`.
-- A locale supplier backed by an `InheritableThreadLocal<Locale>` holds the current locale (default set per project, for example Hungarian). Child threads inherit it. Services that build text outside a request, such as email jobs, read it directly.
+- A locale supplier backed by an `InheritableThreadLocal<Locale>` holds the current locale (default set per application, for example a regional language). Child threads inherit it. Services that build text outside a request, such as email jobs, read it directly.
 - Messages with parameters are methods with arguments.
 
 ```java
-// Example project code
+// Example code
 public interface AppI18n {
     @MessageByKey String error_not_found();
-    @MessageByKey String too_many_active_reservations(long num);
+    @MessageByKey String too_many_active_bookings(long num);
 }
 
 @Reference AppI18n i18n;
-// ExceptionUtils is a helper of the example project, not platform API
+// ExceptionUtils is a helper of the example, not platform API
 throw ExceptionUtils.createBusinessException(i18n.status_change_failed(), i18n.entity_must_be_active());
 ```
 
@@ -57,10 +57,10 @@ How the message reaches the client depends on the mechanism: field errors are `V
 
 ## Example
 
-- RackInspect: an interface with 100+ methods, a Hungarian properties file, a Hungarian default locale supplier and an activator that registers the proxy. It is used for error messages and for boolean display values.
-- mlszksz-platform: a platform-specific interface with parameterized methods (not-found messages, invalid date range) used for business error messages. Tests mock it with fixed English strings.
-- ParkHere: English default and Hungarian bundles, parameterized messages, the locale supplier injected into seven services, used for errors, email subjects and notifications.
-- Indamedia-AdTrack: eight messages in English and Hungarian, Hungarian default, used by six services for error messages.
+- One application: an interface with many methods, a properties file for a second locale, a default locale supplier and an activator that registers the proxy. It is used for error messages and for boolean display values.
+- One application: a platform-specific interface with parameterized methods (not-found messages, invalid date range) used for business error messages. Tests mock it with fixed English strings.
+- One application: English default and a second-language bundle, parameterized messages, the locale supplier injected into several services, used for errors, email subjects and notifications.
+- One application: a few messages in English and a second language, that language as default, used by several services for error messages.
 
 ## When to avoid
 

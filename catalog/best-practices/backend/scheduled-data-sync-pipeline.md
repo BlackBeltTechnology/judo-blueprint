@@ -23,14 +23,14 @@ Data that lives in an external system (here: advertising cost) must stay fresh i
 
 ### Platform base
 
-- The agent-docs describe no scheduler. Scheduling is project infrastructure (OSGi components configured through Configuration Admin, see [[quartz-scheduled-job]]). The practice below is therefore project practice built on platform data access.
+- The agent-docs describe no scheduler. Scheduling is application infrastructure (OSGi components configured through Configuration Admin, see [[quartz-scheduled-job]]). The practice below is therefore a convention built on platform data access.
 - Data access inside the service uses the generated DAOs injected with `@Reference`, the fluent query API ending in `selectOne` / `selectList`, and `create` with the generated `ForCreate` builder or `update` ([data access guide](../../agent-docs/backend/data-access-guide.md#query-result-methods)).
 - Updating an entity returned by the DAO works only when the loaded version is written back; a hand-built payload without `__version` skips optimistic locking ([platform behaviour](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)).
 - A scheduled run is not a request, so no interceptor fires and no actor or request context exists. Interceptors fire only for built-in behaviour operations triggered through the dispatcher ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). Anything a job writes through the DAO bypasses them.
 
-### Project practice: three thin jobs, one service
+### Practice notes: three thin jobs, one service
 
-This layer is project practice (indamedia-adtrack), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - **Fetch job** (every few minutes, business hours): iterates active parent entities, syncs each child through the external API adapter ([[external-api-adapter-pattern]]), stores the raw response as a snapshot ([[data-snapshot-versioning]]), upserts the day's cost record ([[upsert-create-or-update]]) and recalculates the parent aggregates (total spend, remaining budget).
 - **Daily reset job** (just after midnight): zeroes the per-day counters, fetches the previous day's final figures, recalculates aggregates.
@@ -40,10 +40,10 @@ This layer is project practice (indamedia-adtrack), not a platform feature:
 - The three jobs depend on timing, not on each other: make each idempotent and recompute aggregates from stored rows rather than adding increments.
 
 ```java
-// Example project code: AggregatedService, CostDao and the job configuration are project classes
+// Example code: GroupService, CostDao and the job configuration are classes
 @Component(configurationPid = "fetchJob", configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class FetchDataJob implements Runnable {
-    @Reference AggregatedService service;
+    @Reference GroupService service;
 
     @Override
     public void run() {
@@ -75,7 +75,7 @@ void updateOrCreateCosts(List<CostInfo> costs) {
 
 ## Example
 
-Indamedia-AdTrack tracks advertising campaign cost. The fetch job runs every three minutes from 01:00 to 23:59: it iterates all ongoing campaigns, syncs each tracked campaign through the ads API, stores a fetched-data snapshot, upserts the cost record, and recalculates today's spend, total cost, remaining budget, remaining days and remaining average daily spend. The reset job runs at 00:01, resets counters and fetches the previous day's costs. A third job at 00:01 archives finished campaigns. A fourth, a reminder job for budget alerts, is only a placeholder. All jobs are configured as non-concurrent.
+One application tracks advertising cost per item. The fetch job runs every three minutes from 01:00 to 23:59: it iterates all ongoing items, syncs each tracked item through the ads API, stores a fetched-data snapshot, upserts the cost record, and recalculates today's spend, total cost, remaining budget, remaining days and remaining average daily spend. The reset job runs at 00:01, resets counters and fetches the previous day's costs. A third job at 00:01 archives finished items. A fourth, a reminder job for budget alerts, is only a placeholder. All jobs are configured as non-concurrent.
 
 ## When to avoid
 

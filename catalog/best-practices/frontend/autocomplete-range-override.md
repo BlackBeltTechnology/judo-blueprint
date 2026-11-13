@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: hook
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditFaultHeadersCopyRackInputFormActionsHook.ts", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditFaultHeadersCreateFaultElementInputFormActionsHook.ts"]
 alternatives: [interceptor-range-override]
 related: [pandino-action-hook-override, interceptor-range-override]
 fragment: "none: frontend-only"
@@ -28,19 +28,19 @@ By default a relation autocomplete offers every instance the generic range query
 - Autocomplete handlers in hooks may fetch options through `context.actions.getRangeAction('<relation>')({ query, page, size })` ([typeahead/autocomplete](../../agent-docs/frontend/hooks/action-hooks.md)).
 - The agent-docs do not list the exact name of the range-override member for a relation. Take it from the generated `customization` module of the container instead of guessing it.
 
-### Project practice: redirect the range call to a context-filtered service
+### Practice notes: redirect the range call to a context-filtered service
 
-This layer is project practice (rackinspect), not a platform feature:
+This layer is practice, not a platform feature:
 
-- In the hook, override the range member of each dependent relation. It receives the query customizer and calls a specialized service that filters by the owner data held in the hook closure (for example only racks of the partner of the current record).
+- In the hook, override the range member of each dependent relation. It receives the query customizer and calls a specialized service that filters by the owner data held in the hook closure (for example only products of the supplier of the current record).
 - Wrap each filtered call in a small utility function, shared by all hooks that need the same filter.
 - The filter is applied in the client. If the restriction is a security boundary, enforce it on the server too, for example in a range interceptor ([[interceptor-range-override]]).
 
 ```typescript
-// Example project code: member and service names are illustrative, check the generated hook type
+// Example code: member and service names are illustrative, check the generated hook type
 const hookImpl = (ownerData) => ({
-  async rackAutocompleteRangeAction(queryCustomizer) {
-    return getRackRangeForPartner(ownerData, queryCustomizer);
+  async productAutocompleteRangeAction(queryCustomizer) {
+    return getProductRangeForSupplier(ownerData, queryCustomizer);
   },
 });
 ```
@@ -51,7 +51,7 @@ Users see only relevant options, which cuts selection errors, and the filtering 
 
 ## Example
 
-rackinspect has several dialog hooks that override rack, warehouse and rack-element ranges. One shows only racks of the partner of the current fault registry; another filters rack elements by the rack type of the current fault. Shared utilities in one helper module hold the range query logic.
+One app has several dialog hooks that override product, warehouse and product-variant ranges. One shows only products of the supplier of the current order; another filters product variants by the product type of the current order. Shared utilities in one helper module hold the range query logic.
 
 ## When to avoid
 

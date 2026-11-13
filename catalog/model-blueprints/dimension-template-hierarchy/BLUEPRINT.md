@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:rackins
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: [rackinspect:unrecorded]
+evidence: [rackinspect:model/rackinspect.model]
 alternatives: [credential-generalization-hierarchy]
 fragment: dimension-template-hierarchy
 diagram: { kinds: [entity, enum], members: types }
@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Let administrators define the measurements that an inspection records, as data rather than code. The template describes the structure once; each inspection later copies it and fills in values.
+Let administrators define the measurements that a check records, as data rather than code. The template describes the structure once; each check later copies it and fills in values.
 
 ## Structure
 
@@ -50,6 +50,6 @@ The template layer has three elements. A template holds groups in composition. A
 
 ## Related
 
-- [[credential-generalization-hierarchy]] — another hierarchy, built from a base type and subtypes
-- [[self-referencing-derived-relation]] — a self-referencing relation for hierarchical data
-- [[category-enum-pattern]] — choosing an enumeration for the value type
+- [[credential-generalization-hierarchy]]: another hierarchy, built from a base type and subtypes
+- [[self-referencing-derived-relation]]: a self-referencing relation for hierarchical data
+- [[category-enum-pattern]]: choosing an enumeration for the value type

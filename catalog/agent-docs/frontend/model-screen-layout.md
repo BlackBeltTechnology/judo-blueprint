@@ -489,7 +489,7 @@ Backend interceptors can dynamically modify access control by setting boolean at
 public AdministrationInfo preRead(AdministrationInfo input) {
     // Control access visibility based on user permissions
     input.setCanManageUsers(hasPermission("users:manage"));
-    input.setCanManageCampaigns(hasPermission("campaigns:manage"));
+    input.setCanManageActivities(hasPermission("activities:manage"));
     return input;
 }
 ```
@@ -500,14 +500,14 @@ public AdministrationInfo preRead(AdministrationInfo input) {
   <!-- Boolean attributes for access control -->
   <attributes name="canManageUsers" memberType="DERIVED"
     getterExpression="false" primitiveType="_BooleanType"/>
-  <attributes name="canManageCampaigns" memberType="DERIVED"
+  <attributes name="canManageActivities" memberType="DERIVED"
     getterExpression="false" primitiveType="_BooleanType"/>
 
   <!-- Relations controlled by boolean attributes -->
   <relations name="users" target="_UserInfo"
     hiddenBy="not self.canManageUsers"/>
-  <relations name="campaigns" target="_CampaignInfo"
-    hiddenBy="not self.canManageCampaigns"/>
+  <relations name="activities" target="_ActivityInfo"
+    hiddenBy="not self.canManageActivities"/>
 </elements>
 ```
 

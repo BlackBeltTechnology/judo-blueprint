@@ -2,7 +2,7 @@
 
 ### Declare the business error on each operation that can raise it
 
-A business failure is a modeled fault: a transfer object of the model that is attached to the operation as a fault. The SDK generator turns it into a checked exception class per project (here `BusinessErrorException`, a name that exists only because the project models a fault called `BusinessError`; it is not platform API). Without the declaration the generated operation interface has no `throws` clause and throwing it fails the build with a message about an incompatible throws clause. Declare it on every operation that can fail for a business reason. The runtime answers HTTP 422 with `X-Fault: <fault name>` and a body keyed by that name, plus the `code`.
+A business failure is a modeled fault: a transfer object of the model that is attached to the operation as a fault. The SDK generator turns it into a checked exception class per project (here `BusinessErrorException`, a name that exists only because the application models a fault called `BusinessError`; it is not platform API). Without the declaration the generated operation interface has no `throws` clause and throwing it fails the build with a message about an incompatible throws clause. Declare it on every operation that can fail for a business reason. The runtime answers HTTP 422 with `X-Fault: <fault name>` and a body keyed by that name, plus the `code`.
 
 ### Throw through one factory, never inline
 
@@ -10,7 +10,7 @@ Build the business error and wrap it in the business exception in one factory of
 
 - The factory takes the code and a message key or text, and builds the error object and the exception.
 - Overloads can take the enumeration member or a string code, depending on the variant chosen.
-- The factory (for example an `ExceptionUtils`) is project code, not platform API. Copy the pattern, not the class name.
+- The factory (for example an `ExceptionUtils`) is application code, not platform API. Copy the pattern, not the class name.
 - The generated exception has constructors taking the details, the error code and the details, or the code, details and a cause. Projects use it as `new BusinessErrorException(BusinessError.builder().withCode(...).build())` or through the factory.
 
 ### Keep the failure a business error, not a 500
@@ -38,30 +38,30 @@ For a check that the user runs before submitting (is this ready to close), retur
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
-- The project uses plain string codes with a general business error object, and no enumeration. Codes are constants in application code.
+- One project uses plain string codes with a general business error object, and no enumeration. Codes are constants in application code.
 - Authorization checks and validation checks in custom operations raise the business error with a code.
 
-### indamedia-adtrack
+### Second variant seen in practice
 
-- The project uses an enumeration of twelve codes (lookups, credentials, integration, platform support) in the model.
+- One project uses an enumeration of twelve codes (lookups, credentials, integration, platform support) in the model.
 - The factory takes the enumeration member and a localized message from the translation service.
 - The platform provider raises the platform-not-supported and not-implemented codes when it dispatches on the platform enumeration.
 
-### park-here
+### Third variant seen in practice
 
-- The project uses an enumeration of eight codes and a business error object where code and message are both required.
+- One project uses an enumeration of eight codes and a business error object where code and message are both required.
 
-### ubives
+### Fourth variant seen in practice
 
-- The project uses an enumeration of about twenty codes for identity management, and the business error object uses `code` rather than `errorCode`.
+- One project uses an enumeration of about twenty codes for identity management, and the business error object uses `code` rather than `errorCode`.
 - External identity-provider failures have their own codes, separate from the domain codes.
 
-### workflow-poc
+### Fifth variant seen in practice
 
-- The project uses a domain-scoped enumeration with one code for workflow declaration validation, which grows as rules are added.
+- One project uses a domain-scoped enumeration with one code for workflow declaration validation, which grows as rules are added.
 
-### trivia
+### Fifth variant seen in practice
 
-- The project uses an actor-scoped enumeration of five codes in the player namespace, for quiz state preconditions.
+- One project uses an actor-scoped enumeration of five codes, for state preconditions.

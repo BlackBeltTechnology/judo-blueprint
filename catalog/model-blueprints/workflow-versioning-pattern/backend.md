@@ -19,10 +19,10 @@ Commit sets committed and the commit time and stores the comment. Publish checks
 
 ### Example project code
 
-`UploadCustomImplementation`, `WorkflowUtils` and `DiagramUtils` in the source project are example project code, not platform classes.
+The upload operation and the helper classes in the source project are example project code, not platform classes.
 
 ## Examples
 
-### workflow-poc
+### Example
 
 - The upload operation is the largest class; the cleanup helper breaks transition links before deleting states.

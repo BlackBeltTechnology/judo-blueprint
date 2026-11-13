@@ -62,6 +62,6 @@ The application entity holds a required name, a required client identifier and a
 
 ## Related
 
-- [[identity-account-organization-cluster]] — the accounts and organizations that use these realms
-- [[application-vendor-integration-registry]] — a shared registry of external integrations
-- [[external-api-adapter-provider-pattern]] — adapting an external provider behind a common interface
+- [[identity-account-organization-cluster]]: the accounts and organizations that use these realms
+- [[application-vendor-integration-registry]]: a shared registry of external integrations
+- [[external-api-adapter-provider-pattern]]: adapting an external provider behind a common interface

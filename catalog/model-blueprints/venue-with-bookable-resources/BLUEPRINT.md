@@ -2,7 +2,7 @@
 id: venue-with-bookable-resources
 title: Venue with Bookable Resource Slots
 description: "A two-level resource hierarchy for bookable venues: a venue entity containing individually bookable slot entities, with per-member venue access and a preferred slot."
-aliases: [bookable slots, venue and slots, parking garage with slots]
+aliases: [bookable slots, venue and slots, venue with slots]
 keywords: [venue, bookable, resource, slot, reservation, access, preferred slot, exclusive]
 tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "project:park-here", "status:single-project"]
 category: pattern
@@ -49,7 +49,7 @@ Whether a slot is free for a day or a date range is a query over its reservation
 
 ## When to use
 
-- Physical spaces are divided into units that members book one at a time (parking, desks, rooms, lockers).
+- Physical spaces are divided into units that members book one at a time (desks, rooms, lockers, equipment).
 - Members are limited to a subset of venues, with an optional favourite slot.
 
 ## When to avoid

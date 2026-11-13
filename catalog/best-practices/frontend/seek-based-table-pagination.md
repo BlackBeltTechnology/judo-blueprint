@@ -26,12 +26,12 @@ Page large tables without counting rows or using offsets, so deep pages cost the
 - A list call with no explicit seek returns all matching rows; pagination is opt-in ([pagination](../../agent-docs/backend/data-access-guide.md)).
 - List queries combine `_orderBy`, a `_seek` keyset cursor (`lastItem` with the signed identifier and sort key, `limit`, `offset`, `reverse`) and per-attribute filter operators ([resource verbs and list queries](../../agent-docs/backend/platform-behavior-reference.md)). On the backend, the low-level `QueryCustomizer` carries the same `seek` ([data access guide](../../agent-docs/backend/data-access-guide.md)).
 
-### Project practice: next/previous paging in the table page (frontends in four projects)
+### Practice notes: next/previous paging in the table page
 
-This client-side handling is project practice; the platform only provides the seek parameters:
+This client-side handling is practice; the platform only provides the seek parameters:
 
 - **Server-side seek paging for table pages.** To go forward send the last visible row as `lastItem` with `reverse` false; to go back send the first visible row with `reverse` true. Send the page size as `limit` together with the current sort column, direction and filters.
-- **Detect a next page with limit + 1.** Request one more row than the page size; if the extra row arrives, enable Next and drop it (React, actiongroup-test-react). The Flutter stores instead compare the result count to the limit.
+- **Detect a next page with limit + 1.** Request one more row than the page size; if the extra row arrives, enable Next and drop it (React). The Flutter stores instead compare the result count to the limit.
 - **No random access.** Only Next and Previous are offered; no jump to page N and no total count.
 - **Embedded tables in view pages** load all their rows once and page them on the client with a sublist. This is fine for small related sets; use seek for large ones.
 - Reset the cursor when sort or filters change, and keep the table state across navigation ([[session-storage-table-state]]).
@@ -49,10 +49,10 @@ Keyset paging avoids count queries and offset scans, so it stays fast on deep pa
 
 ## Example
 
-- actiongroup-test-react: fetches `limit + 1` rows, pops the extra one, and a custom pagination component renders Previous and Next with `firstItem` and `lastItem` cursors passed in the seek.
-- skill-matrix: all table pages use server-side seek paging; embedded tables in view pages page on the client.
-- kozut-eugyfel-client: about forty table pages across three Flutter actors use cursor paging, with next and previous enabled flags per page store.
-- ams-frontend: the applications, campaigns, users, approval and subordinates tables use cursor paging; embedded tables in the campaign view use client paging.
+- A hand-built React app: fetches `limit + 1` rows, pops the extra one, and a custom pagination component renders Previous and Next with `firstItem` and `lastItem` cursors passed in the seek.
+- A Flutter app: all table pages use server-side seek paging; embedded tables in view pages page on the client.
+- Another Flutter app: many table pages across several actors use cursor paging, with next and previous enabled flags per page store.
+- A further app: its list tables use cursor paging; embedded tables in a detail view use client paging.
 
 ## When to avoid
 

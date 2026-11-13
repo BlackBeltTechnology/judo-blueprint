@@ -44,7 +44,7 @@ The projection decides which fields an actor sees; the Access `getterExpression`
 
 - Each client receives exactly the data it needs and cannot read fields that were never exposed.
 - Entity changes stay in one place; each projection adapts independently.
-- Cost: more transfer objects and some repeated mappings across actors. Project practice (not platform behaviour): many projects accept the duplication, and keep one transfer object per actor and entity rather than inheritance between them. [[service-based-transfer-organization]] is the alternative organisation.
+- Cost: more transfer objects and some repeated mappings across actors. Practice note (not platform behaviour): many projects accept the duplication, and keep one transfer object per actor and entity rather than inheritance between them. [[service-based-transfer-organization]] is the alternative organisation.
 
 ## Example
 

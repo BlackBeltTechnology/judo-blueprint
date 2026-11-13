@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect
 category: data-access
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/unit/ToggleActiveCustomImplementation.java", "alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PushNotificationServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -27,10 +27,10 @@ Update an existing record without a separate update object: the entity returned 
 - Optimistic locking is on by default, but the version check runs only when the update payload contains `__version`; an entity loaded from the DAO and written back carries its version, while a payload rebuilt by hand without `__version` silently skips the guard. A stale version fails the update ([optimistic locking](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)).
 - Fields not included in the mask used to load an entity are `null` ([mask best practices](../../agent-docs/backend/data-access-guide.md#mask-best-practices)). The docs do not say what an unmasked update does with them, so for an entity loaded with a narrow mask pass an update mask naming only the changed fields.
 
-### Project practice: fetch, mutate, update
+### Practice notes: fetch, mutate, update
 
 ```java
-// Example project code: Entity, EntityDao and EntityMask are generated types
+// Example code: Entity, EntityDao and EntityMask are generated types
 Entity entity = entityDao.getById(id).orElseThrow();
 
 entity.setStatus(NewStatus.VALUE);
@@ -42,9 +42,9 @@ entityDao.update(entity);                   // whole entity
 entityDao.update(entity, EntityMask.entityMask().withStatus().withChangedAt());
 ```
 
-- Nine projects use this cycle for state transitions, timestamps, flags (archive, enable/disable, processed), and metadata.
-- Several projects pass a mask when the change touches few fields or when the entity was loaded with a mask; others call `update(entity)` for small entities.
-- Batch changes loop over the entities and call `update` for each; one project calls `updateAll` on a collection.
+- Many applications use this cycle for state transitions, timestamps, flags (archive, enable/disable, processed), and metadata.
+- Several applications pass a mask when the change touches few fields or when the entity was loaded with a mask; others call `update(entity)` for small entities.
+- Batch changes loop over the entities and call `update` for each; one variant calls `updateAll` on a collection.
 - Operations that receive a transfer object copy its values onto the entity with setters (guarding optional inputs) and then update.
 - Updates inside interceptors (for example a last-login time) follow the same cycle; the entity is loaded, changed and saved.
 
@@ -56,7 +56,7 @@ entityDao.update(entity, EntityMask.entityMask().withStatus().withChangedAt());
 
 ## Example
 
-A state change in a custom operation: load the record by its identifier, set the new state and a timestamp, update with a mask naming only those two attributes. A cancellation loop does the same for each reservation in a list; a duplicate-detection job sets a flag on each match and saves the group in one `updateAll`. To avoid a write when nothing changed, compare before and after first ([[dirty-check-before-update]]).
+A state change in a custom operation: load the record by its identifier, set the new state and a timestamp, update with a mask naming only those two attributes. A cancellation loop does the same for each booking in a list; a duplicate-detection job sets a flag on each match and saves the group in one `updateAll`. To avoid a write when nothing changed, compare before and after first ([[dirty-check-before-update]]).
 
 ## When to avoid
 

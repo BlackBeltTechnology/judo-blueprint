@@ -22,10 +22,10 @@ A floating action button to request a new post appears only for users with the m
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - The feed container replaces the generated table, with infinite scroll and seek pagination ordered by creation time.
 - Each feed card has a colour cue by post type, capability chips, and a clickable organization name.
 - A page action hook overrides the open action, so each type navigates to its own detail page.
 - The request-post button is shown only to the company admin and reader roles.
-- The project's own component and hook names are project code. Copy the pattern, not the names.
+- The application's own component and hook names are application code. Copy the pattern, not the names.

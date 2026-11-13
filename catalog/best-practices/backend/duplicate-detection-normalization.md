@@ -21,9 +21,9 @@ Users type the same company or person in slightly different ways: with or withou
 
 ## Practice
 
-### Normalize in project code, store the result
+### Normalize in application code, store the result
 
-The normalization function is plain project code (strip legal-form suffixes, punctuation, case). The platform provides no normalization or similarity function. Store the result in a `normalizedName` attribute written whenever the name changes. A stored attribute has a generated typed filter, so the lookup needs no custom query.
+The normalization function is plain application code (strip legal-form suffixes, punctuation, case). The platform provides no normalization or similarity function. Store the result in a `normalizedName` attribute written whenever the name changes. A stored attribute has a generated typed filter, so the lookup needs no custom query.
 
 ### Find duplicates with the typed filters
 
@@ -45,17 +45,17 @@ A duplicate is a hint, not an error. Surface the flag in the transfer object. If
 
 ### Similarity against an external source
 
-For checking a name against an outside register, compute a similarity score (Jaro-Winkler with a project-chosen threshold, 0.8 in the source project) in project code and use it as a warning. Tune the threshold on real data, because false positives and negatives are both likely.
+For checking a name against an outside register, compute a similarity score (Jaro-Winkler with a chosen threshold, 0.8 in one application) in application code and use it as a warning. Tune the threshold on real data, because false positives and negatives are both likely.
 
 ## Rationale
 
 - Equality on a stored normalized value is one query, cheaper than comparing every pair of names.
 - The flag turns an expensive check into a column that lists can filter and show.
-- Limit: normalization rules are domain-specific (here Hungarian legal forms), and the group recalculation grows with the number of duplicates.
+- Limit: normalization rules are domain-specific (here legal forms of one country), and the group recalculation grows with the number of duplicates.
 
 ## Example
 
-In judo-partner, a utility normalizes a company name by removing Hungarian legal-form suffixes and punctuation and upper-casing it. A service queries all non-archived partners with the same normalized name, sets the duplicate flag on each, and updates them in one batch. It runs after create, validate and delete operations and in the partner update interceptor. A separate function compares the name with the national tax authority's data using Jaro-Winkler and a 0.8 threshold.
+A utility normalizes a company name by removing legal-form suffixes and punctuation and upper-casing it. A service queries all non-archived records with the same normalized name, sets the duplicate flag on each, and updates them in one batch. It runs after create, validate and delete operations and in the record update interceptor. A separate function compares the name with an external register using Jaro-Winkler and a 0.8 threshold.
 
 ## When to avoid
 

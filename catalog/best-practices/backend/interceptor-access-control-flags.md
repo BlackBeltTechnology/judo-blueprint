@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:judo-p
 category: interceptor
 status: emerging
 projects: [rackinspect, judo-partner]
-evidence: ["rackinspect:unrecorded", "judo-partner:unrecorded"]
+evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/jobsheet/jobsheetitem/JobSheetInputItemListInterceptor.java", "judo-partner:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -24,7 +24,7 @@ The model's updateable and deleteable settings are per relation or entity, not p
 
 Response payloads of mapped transfer objects carry `__updateable` and `__deleteable`, and clients use them to enable or disable row actions ([REST wire contract](../../agent-docs/backend/platform-behavior-reference.md)). The e2e docs give the precedence: a model flag of `false` disables the action always; a model flag of `true` with a record-level `false` disables it for that record; a record-level `true` or absent flag leaves it enabled ([runtime override via JSON](../../agent-docs/e2e-testing/language-independent-testing.md)). A postCall interceptor receives the call's return payload (a `Payload` or a collection of payloads), may change it, and the returned object becomes the result ([interceptor contract](../../agent-docs/backend/interceptors.md)). Interceptors fire only for built-in operations such as list, query and refresh, and an interceptor is registered with `judo.model.name=<model>` and the operations it targets.
 
-### Project practice: row-level read-only by interceptor
+### Practice notes: row-level read-only by interceptor
 
 - Register one interceptor per transfer object that needs it, targeting its list and refresh operations (the same rule in both, otherwise the row and its detail page disagree).
 - In `postCall`, evaluate the business condition and put `false` under `__updateable` and `__deleteable`. For list operations the return is a collection of payloads, for refresh a single payload.
@@ -32,7 +32,7 @@ Response payloads of mapped transfer objects carry `__updateable` and `__deletea
 - Only ever set a flag to `false`. Leave the others untouched so the model rule still applies.
 
 ```java
-// Example project code
+// Example code
 @Override
 public Object postCall(EOperation op, Object paramPayload, Object returnPayload) {
     Collection<Payload> items = returnPayload instanceof Payload p ? List.of(p) : (Collection<Payload>) returnPayload;
@@ -58,8 +58,8 @@ The flags only drive the UI. An API client can still call update and delete. The
 
 ## Example
 
-- RackInspect: five interceptors on list and refresh operations. A fault element becomes read-only when its owning registry is not a draft, generated instances are locked for edit and delete, and job-sheet items are locked when a completion flag is set.
-- judo-partner: one interceptor for twelve list and refresh operations across partners, addresses and contacts. It resolves the current user through the variable resolver (actor e-mail) and, for a non-administrator, sets both flags to false on single and list results ([[actor-resolution-variable-resolver]]).
+- One application: five interceptors on list and refresh operations. A detail element becomes read-only when its owning record is not a draft, generated instances are locked for edit and delete, and work items are locked when a completion flag is set.
+- One interceptor covers list and refresh operations across accounts, addresses and contacts. It resolves the current user through the variable resolver (actor e-mail) and, for a non-administrator, sets both flags to false on single and list results ([[actor-resolution-variable-resolver]]).
 
 ## When to avoid
 

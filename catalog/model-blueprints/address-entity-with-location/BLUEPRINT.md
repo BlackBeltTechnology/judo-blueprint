@@ -4,11 +4,11 @@ title: Address Entity with Location
 description: "An address entity with structured street fields, a required city and postal code, and an optional composed location holding latitude and longitude for map use."
 aliases: [address with coordinates, geolocated address, address location]
 keywords: [address, location, latitude, longitude, geolocation, postal code, city]
-tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz-platform, project:rackinspect, project:doors-model, status:emerging]
+tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz-platform, project:doors-model, status:emerging]
 category: pattern
 status: emerging
-projects: [mlszksz-platform, rackinspect, doors-model]
-evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "doors-model:unrecorded"]
+projects: [mlszksz-platform, doors-model]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "doors-model:unrecorded"]
 alternatives: [address-field-auto-composition]
 fragment: address-entity-with-location
 diagram: { kinds: [entity, enum], members: types }
@@ -60,7 +60,7 @@ The Address entity has a required street name and optional building, floor and d
 
 ## Related
 
-- [[address-field-auto-composition]] — computes the address text and the address line from the parts
-- [[organization-entity]] — an owner that commonly composes an address
-- [[partner-with-contact-details]] — an owner that holds addresses and contact data
-- [[contact-info-composition-cluster]] — contact data composed on the same owner
+- [[address-field-auto-composition]]: computes the address text and the address line from the parts
+- [[organization-entity]]: an owner that commonly composes an address
+- [[partner-with-contact-details]]: an owner that holds addresses and contact data
+- [[contact-info-composition-cluster]]: contact data composed on the same owner

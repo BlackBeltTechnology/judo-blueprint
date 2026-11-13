@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:park
 category: i18n
 status: emerging
 projects: [rackinspect, park-here]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/generator-overrides/ui-react/actor/public/i18n/application_default_extra.fragment.hbs"]
 alternatives: []
 related: [i18n-custom-translation-keys, generator-override-extra-dependencies, generator-ignore-i18n-layout]
 fragment: "none: frontend-only"
@@ -27,9 +27,9 @@ Custom UI code (hand-written components, custom operations, project fault messag
 - The generator supports fragment overrides: a file with the same relative path and name as a template's fragment, placed in the override directory, is picked up on every generation and needs no `.generator-ignore` entry ([fragment overrides](../../agent-docs/deployment/build-process.md)).
 - The platform key patterns include `extra.localization.operation.<operationName>` for custom operation labels and `faults.<app>...` for fault messages ([i18n](../../agent-docs/frontend/i18n.md)).
 
-### Project practice: a fragment for `application_default.json`
+### Practice notes: a fragment for `application_default.json`
 
-The agent-docs describe fragment overrides for `pom.xml` and `feature.xml`; the i18n slot below is project practice (rackinspect) and is not covered by the agent-docs, so check the generated output after adding it.
+The agent-docs describe fragment overrides for `pom.xml` and `feature.xml`; the i18n slot below is practice from one example and is not covered by the agent-docs, so check the generated output after adding it.
 
 - Place `application_default_extra.fragment.hbs` under the frontend override directory at `ui-react/actor/public/i18n/`.
 - The content is JSON key-value pairs without wrapping braces; the generator merges it into the `translation` object of `application_default.json`.
@@ -39,7 +39,7 @@ The agent-docs describe fragment overrides for `pom.xml` and `feature.xml`; the 
 ```
 "extra.localization.operation.createOrderOperation": "Create Order",
 "custom.dialog.row-selection.title": "Select row from \"{{groupLabel}}\" group",
-"custom.dimension.no-selection": "-- None --",
+"custom.parameter.no-selection": "-- None --",
 "judo.error.validation-failed.CUSTOM_ERROR": "Custom error message",
 ```
 
@@ -51,11 +51,11 @@ The generated default file stays fully model-driven while custom keys still get 
 
 ## Example
 
-rackinspect injects 24 custom keys: operation labels, dimension-parameter UI text, row-selection dialog strings with a `groupLabel` placeholder, a picture creation label and a custom validation error message. The Hungarian translations live in a separate ignored locale file.
+One app injects a set of keys: operation labels, configurable-parameter UI text, row-selection dialog strings with a `groupLabel` placeholder, a record creation label and a custom validation error message. Translations for other locales live in a separate ignored locale file.
 
 ## When to avoid
 
-- The project hand-maintains all locale files under `.generator-ignore` anyway ([[generator-ignore-i18n-layout]]).
+- The frontend hand-maintains all locale files under `.generator-ignore` anyway ([[generator-ignore-i18n-layout]]).
 - No custom component needs its own keys.
 
 ## Related

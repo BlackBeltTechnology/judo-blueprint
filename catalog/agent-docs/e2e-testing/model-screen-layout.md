@@ -23,14 +23,14 @@ The generator also produces `VisualElementIds.ts` - a TypeScript file containing
 
 ### Understanding Menu Structure
 
-The sidebar menu only shows Actor accesses, not direct entity links. For example, if an Actor has a single "Administration" access that contains multiple entity groups (Users, Campaigns, Addresses), the navigation flow is:
+The sidebar menu only shows Actor accesses, not direct entity links. For example, if an Actor has a single "Administration" access that contains multiple entity groups (Users, Activities, Addresses), the navigation flow is:
 
 ```
 Dashboard
   └── Administration (menu item = Actor access)
         └── Tab Groups:
             ├── UsersGroup → Users table
-            ├── CampaignsGroup → Campaigns, Events
+            ├── ActivitiesGroup → Activities, Events
             └── AddressesGroup → Addresses table
 ```
 

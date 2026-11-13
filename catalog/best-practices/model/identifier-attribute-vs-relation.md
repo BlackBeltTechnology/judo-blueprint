@@ -50,7 +50,7 @@ Review every member named `*Id`, `*Identifier`, `*Ref` or `*Uuid` against the li
 
 The diagram shows both groups. A document keeps its barcode as an identifying string attribute. An audit event keeps a target identifier string plus a target type enumeration. A start input holds a transient relation to a template reference, instead of a string template id.
 
-Observed in compsych-letter-demo:
+Observed in one project:
 
 - Kept: the document barcode (BarcodeCode128 type), the generation handle's own id (opaque token), the handle's reserved document barcode (pre-allocated), and an LLM audit event's target identifier with a companion kind enumeration (polymorphic).
 - Replaced: the start and confirm generation inputs had four transient String attributes (object, template, design, generation handle). The operations resolved each by lookup in custom Java and raised not-found faults by hand, and the form showed four plain text fields. Four transient one-to-one relations to mapped transfer objects replaced them, so the unresolvable references are rejected by the framework and the form shows typed pickers.

@@ -45,7 +45,7 @@ If the shared structure is a real "is-a" hierarchy of data, model it as entity g
 - Declaring the transfer objects separately matches what the platform supports, so the model validates and the generated services and pages exist for each transfer object.
 - Each transfer object stays a complete, readable contract for one consumer. A change to the base view does not silently change every extended view; the price is that a new common attribute must be added to each view that should show it.
 - Keeping the shared data on the entity keeps the duplication small and mechanical.
-- Project practice: the source projects described a base transfer extended by role-specific transfers. The agent-docs do not confirm that this is valid platform modelling, so this entry records the supported alternative.
+- Practice note: the source projects described a base transfer extended by role-specific transfers. The agent-docs do not confirm that this is valid platform modelling, so this entry records the supported alternative.
 
 ## Example
 

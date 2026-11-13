@@ -23,7 +23,7 @@ The names that fit storage are not always the names that fit a client. A transfe
 
 ### Rename with a mapped member
 
-A MAPPED member of a mapped transfer object has its own name and a `binding` to the entity attribute. The member `result` can bind to `Quiz.score`. Client code sees `result`; storage keeps `score`. A MAPPED member is allowed only on a transfer object that has a mapping to an entity, and it projects the bound feature (see the structure reference in the agent-docs).
+A MAPPED member of a mapped transfer object has its own name and a `binding` to the entity attribute. The member `result` can bind to `Questionnaire.score`. Client code sees `result`; storage keeps `score`. A MAPPED member is allowed only on a transfer object that has a mapping to an entity, and it projects the bound feature (see the structure reference in the agent-docs).
 
 - The binding makes the member editable or read-only according to the transfer object's rules. The member's type follows the bound attribute.
 - Keep the rename consistent: if two transfer objects of the same entity expose the attribute, use the same new name in both, or the generated client types diverge.
@@ -40,11 +40,11 @@ The mapping is the only place that says `result` is the entity's `score`. Name t
 
 - API and UI names can differ from storage names and stay stable when the stored name changes.
 - Each actor can use its own vocabulary: see [[actor-based-transfer-projection]].
-- Cost: one more indirection to remember. Project practice, not platform: the original project renamed only a few members, where the entity name was technical.
+- Cost: one more indirection to remember. Practice note, not platform: the original project renamed only a few members, where the entity name was technical.
 
 ## Example
 
-A Quiz entity has a stored integer `score` and a stored timestamp `createdTs`. QuizView maps Quiz, exposes `result` as a MAPPED member bound to `score`, and `uploadedAt` as a DERIVED member computed from `createdTs`. Names are neutral stand-ins.
+A Questionnaire entity has a stored integer `score` and a stored timestamp `createdTs`. QuestionnaireView maps Questionnaire, exposes `result` as a MAPPED member bound to `score`, and `uploadedAt` as a DERIVED member computed from `createdTs`. Names are neutral stand-ins.
 
 ## When to avoid
 
@@ -63,16 +63,16 @@ A Quiz entity has a stored integer `score` and a stored timestamp `createdTs`. Q
 <!-- mermaid:generated fragment=attribute-renaming-in-transfer cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
-  class Quiz {
+  class Questionnaire {
     <<Entity>>
     +Integer score
     +Timestamp createdTs
   }
-  class QuizView {
+  class QuestionnaireView {
     <<Transfer>>
     +Integer result
     +Timestamp /uploadedAt
   }
-  QuizView ..> Quiz : maps
+  QuestionnaireView ..> Questionnaire : maps
 ```
 <!-- /mermaid:generated -->

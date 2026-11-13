@@ -8,7 +8,7 @@ tags: [domain:model, layer:backend, project:rackinspect, project:park-here, stat
 category: pattern
 status: emerging
 projects: [rackinspect, park-here]
-evidence: [rackinspect:unrecorded, park-here:unrecorded]
+evidence: [rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/LogOperationCallInterceptor.java, park-here:unrecorded]
 alternatives: []
 fragment: none: backend-only
 first_seen: 2026-03-09

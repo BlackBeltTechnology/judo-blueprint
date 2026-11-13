@@ -37,7 +37,7 @@ A wrong category is a silent failure (empty values, no build error). Check every
 - **Scope an Access:** a derived Access whose getter filters the shared entity by the owner's key keeps a user inside their own rows. See [[derived-access-filtering]].
 - **Derived permission flags:** a derived boolean on the entity, such as an owned-by-me flag, compares the owner with the actor value. Expose it on the transfer object and bind a button or action group to it. See [[action-group-conditional-enabling]].
 - **Role flag:** store the role as a boolean on the principal entity, map it into the principal transfer object, and read it with a Boolean `ACTOR` lookup anywhere a boolean is expected.
-- **Defaults:** project practice (not described in the agent-docs): `Email!getVariable("ACTOR", "email")` as the default of an audit attribute.
+- **Defaults:** a convention (not described in the agent-docs): `Email!getVariable("ACTOR", "email")` as the default of an audit attribute.
 
 ### What the actor needs
 
@@ -48,7 +48,7 @@ For `ACTOR` lookups the chain must be complete: a mapped principal transfer obje
 - No explicit user parameter: the caller cannot spoof another user.
 - The lookup is evaluated per request, so a getter always reflects the signed-in user.
 - One extra row lookup per evaluation when the user is re-queried; the persisted role flag form avoids it.
-- Project practice: most projects key the lookup on email; one project used `USER` for the same purpose because its actors had no mapped principal.
+- Practice note: most projects key the lookup on email; one project used `USER` for the same purpose because its actors had no mapped principal.
 
 ## Example
 

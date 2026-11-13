@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single
 category: entity
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 related: [derived-attribute-flattening, category-enum-pattern, default-value-patterns]
 first_seen: 2026-03-04
@@ -36,7 +36,7 @@ A derived member of a transfer object can flatten values from related entities o
 
 - Reads are one flat table: simple sorting, filtering and paging.
 - Display shape is decoupled from the source entities.
-- Project practice (not platform behaviour): one source project kept a feed table in sync from its publish and delete operations.
+- Practice note (not platform behaviour): one source project kept a feed table in sync from its publish and delete operations.
 - Cost: redundant data, a synchronisation obligation and the risk of stale rows.
 
 ## Example

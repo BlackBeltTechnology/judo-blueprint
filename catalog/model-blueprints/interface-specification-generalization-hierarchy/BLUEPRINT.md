@@ -38,14 +38,14 @@ The base entity InterfaceSpecification has a required identifier name, a descrip
 - The recipients of an Email are composed. A recipient cannot exist without its Email.
 - The direction of transmission is required on the base, so every subtype has one.
 - Generalization is a platform feature between entity types only. Inheritance between transfer object types is not supported, so every transfer object (the read-only polymorphic one and each typed one) is declared on its own and maps its own entity.
-- A transfer object used as a create target must not map to an abstract entity and must bind every required feature of the mapped entity. In the reference project the base is a concrete entity type that is simply not createable; making it abstract would be an alternative the project did not use.
+- A transfer object used as a create target must not map to an abstract entity and must bind every required feature of the mapped entity. In one project the base is a concrete entity type that is simply not createable; making it abstract would be an alternative the application did not use.
 
 ## Variations
 
 - **Flat list of subtypes.** All protocols generalize the base directly. Simple, but no shared grouping.
-- **Grouped asynchronous subtypes.** Asynchronous protocols generalize an intermediate subtype, as in the reference project.
+- **Grouped asynchronous subtypes.** Asynchronous protocols generalize an intermediate subtype, as in one project.
 - **Polymorphic read, typed write.** A read-only transfer object over the base lists everything. Each subtype has its own writable transfer object.
-- **Platform-managed polymorphic creation.** When an access links to a collection of an abstract base, the generated Create button offers the concrete subtypes, with no custom operation. The reference project did not model this; it creates on the subtype pages.
+- **Platform-managed polymorphic creation.** When an access links to a collection of an abstract base, the generated Create button offers the concrete subtypes, with no custom operation. One project did not model this; it creates on the subtype pages.
 
 ## When to use
 
@@ -61,6 +61,6 @@ The base entity InterfaceSpecification has a required identifier name, a descrip
 
 ## Related
 
-- [[credential-generalization-hierarchy]] — the same polymorphic base-and-subtypes pattern for platform credentials
-- [[post-generalization-hierarchy]] — an abstract base with concrete content subtypes
-- [[partner-generalization-hierarchy]] — a generalization hierarchy for partners
+- [[credential-generalization-hierarchy]]: the same polymorphic base-and-subtypes pattern for platform credentials
+- [[post-generalization-hierarchy]]: an abstract base with concrete content subtypes
+- [[partner-generalization-hierarchy]]: a generalization hierarchy for partners

@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [invitation-with-key-based-acceptance]
 fragment: invitation-with-recipients
 diagram: { kinds: [entity], members: types }
@@ -37,7 +37,7 @@ The Invitation entity is non-CRUD. It has an optional message, a required creati
 - The creator is required, so every invitation names who sent it.
 - Recipients are composed. A composition relation is owned by its parent and deleted with it, so deleting the invitation removes its recipients.
 - Creation runs in a custom operation. The platform runs interceptors only for built-in operations, so permission checks on who may invite, and any audit, must be written inside that operation.
-- A recipient's verification token is stored only as a hash, never in plain text. The plain token is sent once, by email. This is project practice (see [[token-based-verification-entity]]), not something the platform does for you.
+- A recipient's verification token is stored only as a hash, never in plain text. The plain token is sent once, by email. This is common practice (see [[token-based-verification-entity]]), not something the platform does for you.
 - A recipient's verification window is checked on each use. An expired recipient is refused.
 - A recipient is used at most once. After it is used, it must not be accepted again.
 
@@ -45,7 +45,7 @@ The Invitation entity is non-CRUD. It has an optional message, a required creati
 
 - **Admin bulk invitation.** An administrator uploads a list of addresses. One invitation, one recipient per address.
 - **Single-user invitation inside an organization.** One invitation with one recipient, created from the organization's admin panel.
-- **Recipient-level verification.** Each recipient keeps its own token and expiry, as in the reference project.
+- **Recipient-level verification.** Each recipient keeps its own token and expiry, as in one project.
 
 ## When to use
 
@@ -61,6 +61,6 @@ The Invitation entity is non-CRUD. It has an optional message, a required creati
 
 ## Related
 
-- [[invitation-with-key-based-acceptance]] — a single key-based invitation accepted through a link
-- [[token-based-verification-entity]] — the hashed-token verification each recipient uses
-- [[user-with-organization-and-role]] — an organization user invited by an admin
+- [[invitation-with-key-based-acceptance]]: a single key-based invitation accepted through a link
+- [[token-based-verification-entity]]: the hashed-token verification each recipient uses
+- [[user-with-organization-and-role]]: an organization user invited by an admin

@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:si
 category: auth
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/UserServiceImpl.java"]
 alternatives: []
 related: [actor-resolution-variable-resolver, typed-exception-error-handling, service-delegation-pattern]
 fragment: "none: backend-only"
@@ -26,19 +26,19 @@ An invitation operation lets a user create an invitation that carries a role for
 - An invitation is a custom operation, so its logic is your own `<Op>CustomImplementation` OSGi component ([custom operations](../../agent-docs/backend/custom-operations.md)).
 - Interceptors fire only for built-in behaviour operations. Permission checks for custom operations must be written inside the implementation, and hiding a button in the UI does not protect the operation ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - A refusal is a business error. The operation can throw a fault it declares in the model; the generated `<Fault>Exception` is checked, and the operation must declare the fault or Maven fails with a `throws` clause error ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)). On the wire it is HTTP 422 with the fault FQN in `X-Fault`.
-- Names such as `BusinessErrorException` exist only if the project models a fault called `BusinessError`; they are not platform classes.
+- Names such as `BusinessErrorException` exist only if the application models a fault called `BusinessError`; they are not platform classes.
 
-### Project practice: the role matrix
+### Practice notes: the role matrix
 
-This layer is project practice (mlszksz-platform), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - Keep one constant map from inviter role to the allowed set of invited roles. An unknown inviter role gets the empty set, so the default is deny.
-- Resolve the caller's role from the current user (the project's actor service, see [[actor-resolution-variable-resolver]]) and compare it with the role on the input, before any side effect.
+- Resolve the caller's role from the current user (the application's actor service, see [[actor-resolution-variable-resolver]]) and compare it with the role on the input, before any side effect.
 - Throw a stable error code such as `FORBIDDEN_ROLE_INVITATION` and only then call the service that creates the invitation.
 - Every role list is a domain decision. Adding a role means touching the matrix and its test.
 
 ```java
-// Example project code: actorService, userService, auditLogService and ExceptionUtils are project classes
+// Example code: actorService, userService, auditLogService and ExceptionUtils are classes
 private static final Map<UserRole, Set<UserRole>> ALLOWED_INVITATION_ROLES = Map.of(
     UserRole.COMPANY_ADMIN, Set.of(UserRole.COMPANY_ADMIN, UserRole.COMPANY_READER),
     UserRole.PLATFORM_ADMIN, Set.of(UserRole.PLATFORM_ADMIN, UserRole.ASSOCIATION_LEADERSHIP),
@@ -50,12 +50,12 @@ public void accept(Panel _this, InvitationInput input) throws BusinessErrorExcep
     UserRole inviterRole = actorService.getCurrentUser().getRole();
     Set<UserRole> allowed = ALLOWED_INVITATION_ROLES.getOrDefault(inviterRole, Set.of());
     if (!allowed.contains(input.getRole())) {
-        // BusinessErrorException is the project's own modeled fault
+        // BusinessErrorException is the application's own modeled fault
         throw ExceptionUtils.createBusinessErrorException(
             "FORBIDDEN_ROLE_INVITATION",
             "You are not authorized to invite users with this role");
     }
-    userService.inviteUser(input, organization);
+    userService.inviteUser(input, account);
     auditLogService.log(AuditActionType.INVITATION_SENT, ...);
 }
 ```
@@ -68,7 +68,7 @@ public void accept(Panel _this, InvitationInput input) throws BusinessErrorExcep
 
 ## Example
 
-In mlszksz-platform the invite operation defines the map: a company admin may invite company admins and company readers, a platform admin may invite platform admins and association leadership, association leadership may invite association leadership only. A company admin therefore cannot create a platform admin invitation. An integration test, `InviteUserRoleValidationTest`, covers the matrix.
+In one application the map lives in the service layer as constants, and the checks run there; the operation only delegates. Each inviter role may invite a fixed set of roles, so an inviter cannot create an invitation for a role above their own. A test covers the matrix.
 
 ## When to avoid
 
@@ -78,6 +78,6 @@ In mlszksz-platform the invite operation defines the map: a company admin may in
 
 ## Related
 
-- [[actor-resolution-variable-resolver]] — how the project finds the current user and role
+- [[actor-resolution-variable-resolver]] — how the application finds the current user and role
 - [[typed-exception-error-handling]] — the modeled fault used for the refusal
 - [[service-delegation-pattern]] — the services the operation calls after the check

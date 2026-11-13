@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:door
 category: i18n
 status: emerging
 projects: [rackinspect, doors-model]
-evidence: ["rackinspect:unrecorded", "doors-model:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/public/i18n/application_hu-HU.json", "doors-model:unrecorded"]
 alternatives: []
 related: [generator-ignore-i18n-layout, i18n-custom-translation-keys, i18n-generator-override-extra-fragment]
 fragment: "none: frontend-only"
@@ -29,18 +29,18 @@ Deliver the whole UI in Hungarian: entity labels, menus and enumerations (applic
 - Adding a language: copy the default files, translate, update the language selector. Users switch language at runtime through i18n `changeLanguage` and a registered language dropdown ([adding languages](../../agent-docs/frontend/i18n.md)).
 - Labels set on the UI model elements become the generated translation keys, so Hungarian can also be provided in the model.
 
-### Project practice: ignored locale files plus scripts
+### Practice notes: ignored locale files plus scripts
 
 ```
 public/i18n/
-  application_hu-HU.json    # domain translations, thousands of lines
+  application_hu-HU.json    # model-derived translations
   system_hu-HU.json         # framework UI strings
   i18nCleaner.py            # remove unused keys
   sort_json.py              # sort keys
   update-localization.py    # merge newly generated keys with manual ones
 ```
 
-The scripts are project tools, not platform features. The project keeps `application_hu-HU.json` and `system_hu-HU.json` in `.generator-ignore` and runs them after model changes.
+The scripts are custom tools, not platform features. This setup keeps `application_hu-HU.json` and `system_hu-HU.json` in `.generator-ignore` and runs them after model changes.
 
 - Translate enumerations including `_null`, menu labels and every entity field.
 - Diff the key set against `application_default.json` to find untranslated keys after each model change.
@@ -53,9 +53,9 @@ Users get one language throughout. The cost is maintenance: ignored files miss n
 
 ## Example
 
-- rackinspect: a 3,300-line application file (29 menu items, 16 enumerations, all field labels) and a 190-line system file (login, save and similar), maintained with a cleaner and a sorter script.
-- doors-model: puts Hungarian labels on the UI model elements (menu items, table columns, form fields, buttons); a few labels stay English. The keys are generated when the frontend is built.
-- Flutter variants (kozut-eugyfel-client, ams-frontend) use ARB files, which is outside the React docs here.
+- One frontend: a large application file (menu items, enumerations, all field labels) and a short system file (login, save and similar), maintained with a cleaner and a sorter script.
+- Another app puts Hungarian labels on the UI model elements (menu items, table columns, form fields, buttons); a few labels stay English. The keys are generated when the frontend is built.
+- Flutter variants use ARB files, which is outside the React docs here.
 
 ## When to avoid
 

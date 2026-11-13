@@ -63,7 +63,7 @@ The Account has a platform (required, from the Platform enumeration with values 
 
 ## Related
 
-- [[interface-specification-generalization-hierarchy]] — another generalization hierarchy, with an abstract interface and concrete specifications
-- [[partner-generalization-hierarchy]] — a generalization of one party type into subtypes
-- [[post-generalization-hierarchy]] — a generalization of content into subtypes
-- [[derived-attribute-flattening]] — exposing a subtype field on the account without copying it
+- [[interface-specification-generalization-hierarchy]]: another generalization hierarchy, with an abstract interface and concrete specifications
+- [[partner-generalization-hierarchy]]: a generalization of one party type into subtypes
+- [[post-generalization-hierarchy]]: a generalization of content into subtypes
+- [[derived-attribute-flattening]]: exposing a subtype field on the account without copying it

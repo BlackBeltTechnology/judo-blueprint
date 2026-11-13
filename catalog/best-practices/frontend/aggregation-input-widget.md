@@ -27,9 +27,9 @@ A form field that represents a single aggregation or required relation has sever
 - The options of a selector come from a generated range operation (`GET_RANGE`): an unbound operation whose input is an unmapped transfer object carrying the owner, with the range type as output ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)).
 - The widget below replaces the generated selector. It must keep calling the generated range service so server-side paging, filtering and access rules still apply.
 
-### Project practice: one widget for the whole association lifecycle
+### Practice notes: one widget for the whole association lifecycle
 
-This layer is project practice (actiongroup-test-react), not a platform feature:
+This layer is practice, not a platform feature:
 
 - The widget shows the associated entity's chosen properties as a concatenated label list.
 - Icons depend on state: view and delete in read-only mode, remove in edit mode, create when the association is empty.
@@ -37,7 +37,7 @@ This layer is project practice (actiongroup-test-react), not a platform feature:
 - All behavior is passed in as callbacks, so the widget owns no data access.
 
 ```tsx
-// Example project code: AggregationInput is the project's component, not a platform API
+// Example code: AggregationInput is a custom component, not a platform API
 <AggregationInput
   label="Parent"
   labelList={[data.parent?.name ?? '', data.parent?.code ?? '']}
@@ -62,7 +62,7 @@ One component with all states gives a consistent experience for every entity rel
 
 ## Example
 
-actiongroup-test-react uses the widget for a galaxy-to-astronomer association. In view mode it shows name and birth date with view and delete icons; in edit mode a remove icon; when empty a create icon. Selection opens a range dialog with server-side paging and filtering against the generated range call of the galaxy page.
+One app uses the widget for an order-to-customer association. In view mode it shows name and email with view and delete icons; in edit mode a remove icon; when empty a create icon. Selection opens a range dialog with server-side paging and filtering against the generated range call of the order page.
 
 ## When to avoid
 

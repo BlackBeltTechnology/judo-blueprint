@@ -47,7 +47,7 @@
 | `identifier-attribute-vs-relation.md` | Decide when a String identifier member is a legitimate domain value and stays an attribute, and when it stands in for a typed relation and should be replaced. |
 | `impersonation-relation.md` | Store a second optional reference to the user next to the owner relation, so an admin can record content created in another user's name, and expose it only on the admin transfer object. |
 | `initializer-operation.md` | Declare a static, input-less initializer operation on a dedicated entity that seeds reference data and first accounts, and guard its body so a repeated run does not duplicate rows. |
-| `integer-boolean-for-aggregation.md` | Type a derived true/false condition as an Integer 0 or 1 using a ternary expression, so that !sum can add the flags in standings, points and statistics. |
+| `integer-boolean-for-aggregation.md` | Type a derived true/false condition as an Integer 0 or 1 using a ternary expression, so that !sum can add the flags in rankings, weighted totals and statistics. |
 | `literal-derived-attribute.md` | A derived attribute on a transfer object whose getter expression is a literal (a fixed string or true/false) exposes an application constant or a permanent UI flag without any stored field. |
 | `mapped-operation-delegation.md` | Put the business logic in an entity operation and expose it to each actor through a MAPPED operation on that actor's transfer object, which binds to the entity operation by name. |
 | `moderation-operation-pattern.md` | Give a content entity a second delete operation for moderators that takes a reason input and writes its own audit entry, next to the owner's plain delete. |

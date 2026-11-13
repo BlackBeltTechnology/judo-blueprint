@@ -20,9 +20,9 @@ Email bodies, reports and generated diagrams are text with variable parts. Keep 
 
 ## Practice
 
-### Platform base and what is project practice
+### Platform base and what is a convention
 
-The agent-docs cover only the surroundings: SMTP is configured through `JUDO_PLATFORM_MAIL_SMTP_*` environment values ([email configuration](../../agent-docs/deployment/application-config.md)), the FileStore is a platform service ([[filestore-mediated-file-transfer]]), and custom services are OSGi components. The agent-docs do not describe a Handlebars library or an email-sending API: rendering with Handlebars and the `EmailService` calls below are what the example projects use. Verify the library version and the service API in your project.
+The agent-docs cover only the surroundings: SMTP is configured through `JUDO_PLATFORM_MAIL_SMTP_*` environment values ([email configuration](../../agent-docs/deployment/application-config.md)), the FileStore is a platform service ([[filestore-mediated-file-transfer]]), and custom services are OSGi components. The agent-docs do not describe a Handlebars library or an email-sending API: rendering with Handlebars and the `EmailService` calls below are what the examples use. Verify the library version and the service API in your application.
 
 ### Compile from a stored or inline template
 
@@ -31,7 +31,7 @@ The agent-docs cover only the surroundings: SMTP is configured through `JUDO_PLA
 - Hand the rendered text to the mail service, with images attached as inline content, or use the text for any other output.
 
 ```java
-// Example project code (Handlebars Java library; EmailService is project-used API)
+// Example code (Handlebars Java library; EmailService is an application-level API)
 Handlebars handlebars = new Handlebars();
 String templateContent = convertStreamToString(fileStoreService.get(templateId));
 Template template = handlebars.compileInline(templateContent);
@@ -45,7 +45,7 @@ emailService.sendMessage(EmailService.EmailMessage.emailBuilder()
     .build());
 ```
 
-- Per-entity variants (for example a template per garage) are separate stored templates chosen by id.
+- Per-entity variants (for example a template per site) are separate stored templates chosen by id.
 - Treat a missing or broken template as a runtime failure: it is only discovered when rendering.
 
 ## Rationale
@@ -56,8 +56,8 @@ emailService.sendMessage(EmailService.EmailMessage.emailBuilder()
 
 ## Example
 
-- ParkHere: five email types (reservation creation with a per-garage template and embedded floor plan, modification, deletion, reminder, doorman daily summary). Templates are stored in the FileStore at init and floor plans are embedded as base64.
-- workflow-poc: an inline template generates a workflow state diagram. It loops over states and transitions with a context map, including fork, join and final states.
+- One application: five email types (booking creation with a per-site template and an embedded layout image, modification, deletion, reminder, and a daily summary). Templates are stored in the FileStore at init and layout images are embedded as base64.
+- A workflow example: an inline template generates a workflow state diagram. It loops over states and transitions with a context map, including fork, join and final states.
 
 ## When to avoid
 

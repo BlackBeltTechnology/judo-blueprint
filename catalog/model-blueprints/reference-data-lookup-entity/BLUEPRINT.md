@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "projec
 category: pattern
 status: established
 projects: [reserve-app, alba, trivia, itracker, viterra_demo, InterfaceRegister, doors-model, ams-model, skillmatrix-model, mlszksz-platform]
-evidence: ["reserve-app:unrecorded", "alba:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded"]
+evidence: ["reserve-app:unrecorded", "alba:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 fragment: reference-data-lookup-entity
 diagram: { kinds: [entity, enum], members: types }

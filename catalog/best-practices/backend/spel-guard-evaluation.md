@@ -23,14 +23,14 @@ In a workflow engine the conditions on transitions are data, not code: an admini
 
 ### Platform base
 
-- The agent-docs do not cover SpEL, and the platform's own expression languages (JQL in the model, JCL scripts in operation bodies) are compiled with the model and cannot be built from user-entered strings at runtime ([operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). SpEL is a plain Java library used inside a custom operation or service; it is project practice, not a platform feature.
+- The agent-docs do not cover SpEL, and the platform's own expression languages (JQL in the model, JCL scripts in operation bodies) are compiled with the model and cannot be built from user-entered strings at runtime ([operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). SpEL is a plain Java library used inside a custom operation or service; it is a convention, not a platform feature.
 - The evaluator is ordinary Java in a service injected into the custom operations ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)). Guard and context rows are read through generated DAOs.
 - Custom operations are not intercepted, so who may fire a transition is checked inside the operation, not by a guard expression alone ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - An exception thrown from the evaluator inside the operation propagates. To refuse a transition as a business error, map it to a fault that the operation declares ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)); a raw runtime exception becomes a generic 500.
 
-### Project practice: context-backed property accessor
+### Practice notes: context-backed property accessor
 
-This layer is project practice (workflow-poc), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - Store each guard as a string on a guard entity linked to the transition. A transition may have several guards; all must be true (`allMatch`).
 - Load the context attributes (name, type, string value) from the database and convert them to typed values (boolean, string, number). Expose them to SpEL through a custom `PropertyAccessor`, so an expression refers to `isApproved` rather than a bean path.
@@ -39,7 +39,7 @@ This layer is project practice (workflow-poc), not a platform feature:
 - Validate expressions when they are saved (parse them), because there is no compile-time check.
 
 ```java
-// Example project code: Context, ContextDao, Transition, TransitionDao are project/generated types
+// Example code: Context, ContextDao, Transition, TransitionDao are generated types
 class ContextVariableResolver implements PropertyAccessor {
     private final Map<String, Object> variables = new HashMap<>();
 
@@ -91,7 +91,7 @@ private boolean evalGuards(Context context, Transition transition) {
 
 ## Example
 
-In workflow-poc `WorkflowUtils.evalGuards()` evaluates the guards of a transition. A context resolver loads the context attributes from the database as typed SpEL variables. Guards are string expressions on guard entities linked to transitions, and several guards are AND-combined. A missing attribute makes a guard false, so a transition does not fire until its preconditions exist. The same evaluation serves event-triggered and automatic transitions.
+In a workflow example `WorkflowUtils.evalGuards()` evaluates the guards of a transition. A context resolver loads the context attributes from the database as typed SpEL variables. Guards are string expressions on guard entities linked to transitions, and several guards are AND-combined. A missing attribute makes a guard false, so a transition does not fire until its preconditions exist. The same evaluation serves event-triggered and automatic transitions.
 
 ## When to avoid
 

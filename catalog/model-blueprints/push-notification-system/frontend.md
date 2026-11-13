@@ -24,8 +24,7 @@ The module names are project code; the app bar registration, the customizer and 
 
 ## Examples
 
-### mlszksz-platform
+### Example (project code)
 - Framework: React (Capacitor Android)
-- Key files: `custom/notifications/PushNotificationAppIntegration.tsx`, `custom/notifications/usePushNotifications.ts`, `custom/notifications/push-notification-service.ts`, `custom/notifications/notification-badge-store.ts`, `custom/notifications/launch-notification-store.ts`, `custom/notifications/navigate-to-feed-entry.ts`, `custom/notifications/NotificationDeepLinkRoute.tsx`
-- Pattern: FCM push with backend registerDevice/deactivateDevice/updateDeviceToken APIs, snackbar foreground display, deep link navigation to typed post pages, cold-start capture, badge sync via useSyncExternalStore
-- Notable: Registered as AppBarExtraComponents Pandino service for header bell icon; extra-routes.tsx adds `notification/:notificationId/:feedEntryId` deep link route
+- Pattern: FCM push with backend registerDevice/deactivateDevice/updateDeviceToken APIs, snackbar foreground display, deep link navigation to typed content pages, cold-start capture, badge sync via useSyncExternalStore
+- Notable: Registered as AppBarExtraComponents Pandino service for header bell icon; the extra routes add a `notification/:notificationId/:entryId` deep link route

@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-pl
 category: operation
 status: emerging
 projects: [rackinspect, mlszksz-platform]
-evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 fragment: toggle-operation-pattern
 diagram: { kinds: [entity, transfer, operation], members: types }
@@ -23,7 +23,7 @@ A boolean flag such as `active` or `primary` often has rules attached: only one 
 
 ### One instance operation per flag
 
-- The entity has a boolean attribute and an instance operation that flips it: `toggle` plus the flag name (`toggleActive`, `togglePrimary`, `toggleBilling`). MLSZKSZPlatform used `activateToggle` and `changeVisibility`; one naming scheme per model is enough.
+- The entity has a boolean attribute and an instance operation that flips it: `toggle` plus the flag name (`toggleActive`, `togglePrimary`, `toggleBilling`). One project used `activateToggle` and `changeVisibility`; one naming scheme per model is enough.
 - The operation holds the side effects: unsetting the other primary item, updating a parent reference, cascading to children.
 - The operation writes data, so it must be `stateful`; the DAO rejects writes in a stateless operation ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)). The body is project code (a custom implementation, see [[custom-implementation-placeholder]]) or an operation script ([operation scripts](../../agent-docs/model/jcl-operation-scripts.md)).
 
@@ -42,12 +42,12 @@ Hiding a button is not protection. Interceptors do not fire for mapped, custom o
 ## Rationale
 
 - Business rules for flag changes sit in one place and cannot be skipped by a form edit.
-- Cost: one operation per flag, a mapped declaration per transfer object, and a server round trip for a simple flip. RackInspect has about 30 toggle operations over 16 entities.
+- Cost: one operation per flag, a mapped declaration per transfer object, and a server round trip for a simple flip. One project has 38 toggle operations on 20 entities.
 - A flag without side effects does not need this; see [[soft-delete-active-flag]] for plain flag updates.
 
 ## Example
 
-An Address entity has `street`, a required `active` (default true) and a required `primary` (default false), plus the operations `toggleActive` and `togglePrimary`. The AddressView transfer object maps the entity and carries two MAPPED operations bound to them. `togglePrimary` clears the primary flag on the other addresses of the same owner before setting it. The original projects (RackInspect: five toggles on addresses, two on bank accounts) used the same shape. Names are neutral stand-ins.
+An Address entity has `street`, a required `active` (default true) and a required `primary` (default false), plus the operations `toggleActive` and `togglePrimary`. The AddressView transfer object maps the entity and carries two MAPPED operations bound to them. `togglePrimary` clears the primary flag on the other addresses of the same owner before setting it. The original projects (one project: several toggles on addresses and bank accounts) used the same shape. Names are neutral stand-ins.
 
 ## When to avoid
 

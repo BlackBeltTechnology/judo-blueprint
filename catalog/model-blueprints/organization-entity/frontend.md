@@ -12,8 +12,7 @@ The organization appears in the frontend through two custom views: a full organi
 
 ## Examples
 
-### mlszksz-platform (example project code, not platform API)
+### Example (project code, not platform API)
 - Framework: React
-- Key files: `custom/custom_views/OrganizationView.tsx`, `custom/hooks/containers/registerServicesCompanyReaderOrganizationContainerHook.tsx`, `custom/hooks/containers/registerServicesFeedOrganizationSearchContainerHook.tsx`, `custom/hooks/pages/registerServicesFeedDiscoveryPanelOrganizationSearchRelationViewPageActionsHook.tsx`
 - Pattern: a `useLogoUrl` hook downloads the logo through the access service and creates a blob URL; contact actions render `mailto:` and `tel:` links.
 - Notable: the same view serves the user's own organization profile and the public discovery detail, registered through two container hooks.

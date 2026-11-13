@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:itracker", "project:actiongroup-t
 category: relation
 status: established
 projects: [itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, judo-partner, workflow-poc, reserve-app]
-evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
 fragment: bidirectional-relation
@@ -25,7 +25,7 @@ Two entities need to navigate to each other and the platform should keep both en
 
 - A TwoWayRelationMember exists only on entities, never on transfer objects. Each end names the other as its `partner`. The two ends may have different cardinalities: a Customer has `0..*` orders, an Order has `0..1` customer.
 - Setting the relation from either side changes the other, because it is one stored relation seen from two ends. There is no second column to keep in step.
-- Many-to-many is allowed (`0..*` on both ends). Exactly one end of each pair is `primary`, which resolves ownership of the stored relation; project practice is to make the "many"/owning side primary.
+- Many-to-many is allowed (`0..*` on both ends). Exactly one end of each pair is `primary`, which resolves ownership of the stored relation; a convention is to make the "many"/owning side primary.
 
 ### Relation kinds and the validator
 

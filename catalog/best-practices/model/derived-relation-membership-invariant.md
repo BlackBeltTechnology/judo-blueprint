@@ -42,7 +42,7 @@ Refresh and update of a single instance take the signed identifier from an earli
 
 ### Ways to change the filtered attribute
 
-Project practice, three options:
+Three options, as practice:
 
 1. **An unfiltered access.** Add a second access to the same target without the filter (or with a broader one) and write through it. Keep the filtered access for scoped display.
 2. **A custom operation** on the parent or the entity. The operation body writes the row through the entity (or an unfiltered path), and its availability can be guarded with `enabledBy`. Return the transfer object that suits the destination (see [[operation-return-type-navigation]]). Interceptors never run around custom operations, so put required checks in the body.
@@ -56,9 +56,9 @@ Project practice, three options:
 
 ## Example
 
-A garage has cars. The garage view has a derived relation `redCars` that filters the cars by colour equal to red. The car view is updateable. Editing a red car's colour to blue through `redCars` is rejected, because the post-update colour fails the filter. To recolour, use an unfiltered cars access, or an operation on the garage that takes the car and the colour.
+A container has items. The container view has a derived relation `redItems` that filters the items by colour equal to red. The item view is updateable. Editing a red item's colour to blue through `redItems` is rejected, because the post-update colour fails the filter. To recolour, use an unfiltered items access, or an operation on the container that takes the item and the colour.
 
-The same applies to a user's drafts access filtered by status equal to draft: setting a draft's status to published through it is rejected. Publishing goes through an unfiltered letters access, or through a custom operation that returns the published letter's own transfer object. (Observed in compsych-letter-demo.)
+The same applies to a user's drafts access filtered by status equal to draft: setting a draft's status to published through it is rejected. Publishing goes through an unfiltered documents access, or through a custom operation that returns the published document's own transfer object. (Observed in one project.)
 
 ## When to avoid
 
@@ -77,23 +77,23 @@ The same applies to a user's drafts access filtered by status equal to draft: se
 <!-- mermaid:generated fragment=derived-relation-membership-invariant cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
-  class Car {
+  class Container {
+    <<Entity>>
+  }
+  class ContainerView {
+    <<Transfer>>
+  }
+  class Item {
     <<Entity>>
     +String color
   }
-  class CarView {
+  class ItemView {
     <<Transfer>>
     +String color
   }
-  class Garage {
-    <<Entity>>
-  }
-  class GarageView {
-    <<Transfer>>
-  }
-  CarView ..> Car : maps
-  Garage *-- "*" Car : cars
-  GarageView ..> Garage : maps
-  GarageView o-- "*" CarView : redCars
+  Container *-- "*" Item : items
+  ContainerView ..> Container : maps
+  ContainerView o-- "*" ItemView : redItems
+  ItemView ..> Item : maps
 ```
 <!-- /mermaid:generated -->

@@ -8,7 +8,7 @@ tags: [domain:frontend, layer:frontend, project:rackinspect, status:single-proje
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesOffer_servicesOfferOffer_View_EditPreviewOfferDocumentInputFormActionsHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditGenerateAssessmentSheetPreviewInputFormActionsHook.tsx"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -20,7 +20,7 @@ When a backend operation generates a PDF, the user usually wants to see it at on
 
 ### The hook decides what happens after the operation
 
-A dialog form action hook receives the operation output. The hook closes the input dialog and passes the file token to the generated `fileHandling.downloadFile` helper. The default output view is not shown. The hook itself is project practice on top of the platform: the platform generates the dialog action hook scaffold and the download helper, and the inline use is the project's choice.
+A dialog form action hook receives the operation output. The hook closes the input dialog and passes the file token to the generated `fileHandling.downloadFile` helper. The default output view is not shown. The hook itself is common practice on top of the platform: the platform generates the dialog action hook scaffold and the download helper, and the inline use is the application's choice.
 
 ### The file token can take two shapes
 
@@ -58,6 +58,6 @@ The pattern is a frontend element only. A dialog form action hook for the operat
 
 ## Related
 
-- [[pdf-preview-inline-display]] — the best practice this blueprint implements, with the same inline-mode technique
-- [[post-operation-navigation-hook]] — a related post-operation hook that navigates instead of opening a file
-- [[zero-customization-generated-frontend]] — the generated default when no custom hook is written
+- [[pdf-preview-inline-display]]: the best practice this blueprint implements, with the same inline-mode technique
+- [[post-operation-navigation-hook]]: a related post-operation hook that navigates instead of opening a file
+- [[zero-customization-generated-frontend]]: the generated default when no custom hook is written

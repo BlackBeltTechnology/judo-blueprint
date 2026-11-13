@@ -19,7 +19,7 @@ Venues and slots are seeded by an initializer in project code. An authentication
 
 ## Examples
 
-### park-here
+### Example
 
 - Three range interceptors narrow the slot choice on the reservation input and on the preferred-slot field; one template interceptor strips venue fields; one authentication interceptor provisions users.
 - The interceptors preserve the original filter and ordering and add access constraints.

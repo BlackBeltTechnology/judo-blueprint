@@ -28,9 +28,9 @@ Change what the generator emits for every component that uses a template or frag
 - Helpers come from the generator's helper classes (for example `toSafeCamelCase`, `firstToUpperCase`); run with `-DtemplateDebug` to see the context available in a template ([template variables](../../agent-docs/frontend/README.md)).
 - The docs say to prefer hooks over overrides: you must maintain the template on every upgrade. For navigation after operations, the platform already offers `OperationFlowManager` ([OperationFlowManager](../../agent-docs/frontend/hooks/action-hooks.md)).
 
-### Project practice: an annotation-driven fragment
+### Practice notes: an annotation-driven fragment
 
-The project overrides the fragment that handles operation output, placing it under the override directory at the path the generator expects (here `ui-react/actor/src/fragments/operations/operation-primary-output-handler.fragment.hbs`). The fragment tests a model annotation and injects code:
+The example overrides the fragment that handles operation output, placing it under the override directory at the path the generator expects (here `ui-react/actor/src/fragments/operations/operation-primary-output-handler.fragment.hbs`). The fragment tests a model annotation and injects code:
 
 ```handlebars
 {{# if (elementHasAnnotation operation.output.target 'redirect') }}
@@ -38,7 +38,7 @@ The project overrides the fragment that handles operation output, placing it und
 {{/ if }}
 ```
 
-`elementHasAnnotation` and the `operation.output.target` context are known from the project; they are not listed in the agent-docs, so confirm helper names with `-DtemplateDebug` on your generator version.
+`elementHasAnnotation` and the `operation.output.target` context come from one example project; they are not listed in the agent-docs, so confirm helper names with `-DtemplateDebug` on your generator version.
 
 - Make the injected code conditional on an annotation, so only marked elements change.
 - Inspect the generated output after each change: a wrong fragment breaks every page that uses it.
@@ -50,7 +50,7 @@ One fragment reaches all generated places that use it, with no per-page hook cod
 
 ## Example
 
-workflow-poc: overrides `operation-primary-output-handler.fragment.hbs` so operation outputs annotated `@redirect` call `processRedirect(result)`. All workflow operations (start, navigate, execute, assign) then route through the project's own flow manager rather than the default output dialog.
+One app: overrides `operation-primary-output-handler.fragment.hbs` so operation outputs annotated `@redirect` call `processRedirect(result)`. All of its operations (start, navigate, execute, assign) then route through its own flow manager rather than the default output dialog.
 
 ## When to avoid
 

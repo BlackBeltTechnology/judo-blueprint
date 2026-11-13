@@ -1,7 +1,7 @@
 ---
 id: diagram-generation-service
 title: Automatic Diagram Generation from Entity Data
-description: A project service renders a Mermaid diagram from persisted entity data and stores it as text on the parent entity, so the UI can show it without extra tooling.
+description: A service renders a Mermaid diagram from persisted entity data and stores it as text on the parent entity, so the UI can show it without extra tooling.
 aliases: [mermaid from data, generated state diagram, diagram utils]
 keywords: [diagram, mermaid, handlebars, template, service, state diagram, osgi component, text field]
 tags: ["domain:backend", "layer:backend", "project:workflow-poc", "status:single-project"]
@@ -21,9 +21,9 @@ Some entities describe a graph (a workflow of states and transitions). Users und
 
 ## Practice
 
-### A project service builds the text
+### A service builds the text
 
-The renderer is project code (in the source project a class called `DiagramUtils`), not a platform feature. It is an OSGi component that custom operations inject with `@Reference`, like any other service (see [Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)).
+The renderer is application code (in one application a class called `DiagramUtils`), not a platform feature. It is an OSGi component that custom operations inject with `@Reference`, like any other service (see [Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)).
 
 - Read the source entities through the generated DAO relation queries (`queryStates(version).selectList()`). Use a mask limited to the attributes the diagram shows.
 - Turn them into plain maps or lists and feed a template engine (Handlebars in the example) with an inline Mermaid template. Keeping the template as text makes the output easy to test without the platform.
@@ -45,7 +45,7 @@ Fork and join stereotypes, start and end markers and annotated transitions need 
 
 ## Example
 
-In workflow-poc a workflow upload creates a version with states, transitions, events and role assignments. The service walks the states of the version, declares each one (join and fork get stereotypes, final states get an arrow to the end marker), adds one arrow per transition labelled with the event and role, and the result is stored in the version's `diagram` attribute. The frontend renders that text as a state diagram.
+A workflow upload creates a version with states, transitions, events and role assignments. The service walks the states of the version, declares each one (join and fork get stereotypes, final states get an arrow to the end marker), adds one arrow per transition labelled with the event and role, and the result is stored in the version's `diagram` attribute. The frontend renders that text as a state diagram.
 
 ## When to avoid
 

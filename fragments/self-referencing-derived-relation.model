@@ -191,35 +191,35 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_TARkUdzfEfGFVfSdkx8uYg" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_TSk1QNzfEfGFVfSdkx8uYg" name="self_referencing_derived_relation">
-      <elements xsi:type="structure:EntityType" xmi:id="_TZANYNzfEfGFVfSdkx8uYg" name="Contest" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_TZANYNzfEfGFVfSdkx8uYg" name="Event" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_Tf9xANzfEfGFVfSdkx8uYg" name="title" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_Tf9xANzfEfGFVfSdkx8uYg" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_Tf-YENzfEfGFVfSdkx8uYg"/>
         </attributes>
         <mapping xmi:id="_TZFF4NzfEfGFVfSdkx8uYg" target="_TZANYNzfEfGFVfSdkx8uYg"/>
-        <form xmi:id="_TZG7ENzfEfGFVfSdkx8uYg" name="Contest_Form" label="Contest Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_TZHiINzfEfGFVfSdkx8uYg" name="Contest_Table" label="Contest Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_TZGUANzfEfGFVfSdkx8uYg" name="Contest_View_Edit" label="Contest View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_TZG7ENzfEfGFVfSdkx8uYg" name="Event_Form" label="Event Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_TZHiINzfEfGFVfSdkx8uYg" name="Event_Table" label="Event Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_TZGUANzfEfGFVfSdkx8uYg" name="Event_View_Edit" label="Event View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_TqipUNzfEfGFVfSdkx8uYg" name="ContestView" createable="false" updateable="false" deleteable="false">
-        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_T5vi8NzfEfGFVfSdkx8uYg" lower="0" upper="1" target="_TyDmkNzfEfGFVfSdkx8uYg" name="scoreboard" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="AGGREGATION" memberType="DERIVED" rangeType="ANY" getterExpression="self">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_TqipUNzfEfGFVfSdkx8uYg" name="EventView" createable="false" updateable="false" deleteable="false">
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_T5vi8NzfEfGFVfSdkx8uYg" lower="0" upper="1" target="_TyDmkNzfEfGFVfSdkx8uYg" name="summary" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="AGGREGATION" memberType="DERIVED" rangeType="ANY" getterExpression="self">
           <inherited xmi:id="_T5wKANzfEfGFVfSdkx8uYg"/>
         </relations>
         <attributes xsi:type="structure:DataMember" xmi:id="_Tqm6wNzfEfGFVfSdkx8uYg" name="title" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_Tf9xANzfEfGFVfSdkx8uYg" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_Tqm6wdzfEfGFVfSdkx8uYg"/>
         </attributes>
         <mapping xmi:id="_TqjQYNzfEfGFVfSdkx8uYg" target="_TZANYNzfEfGFVfSdkx8uYg"/>
-        <form xmi:id="_Tqnh0dzfEfGFVfSdkx8uYg" name="ContestView_Form" label="ContestView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_Tqnh0tzfEfGFVfSdkx8uYg" name="ContestView_Table" label="ContestView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_Tqnh0NzfEfGFVfSdkx8uYg" name="ContestView_View_Edit" label="ContestView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_Tqnh0dzfEfGFVfSdkx8uYg" name="EventView_Form" label="EventView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_Tqnh0tzfEfGFVfSdkx8uYg" name="EventView_Table" label="EventView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_Tqnh0NzfEfGFVfSdkx8uYg" name="EventView_View_Edit" label="EventView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_TyDmkNzfEfGFVfSdkx8uYg" name="ScoreboardView" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_TyDmkNzfEfGFVfSdkx8uYg" name="SummaryView" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_TyDmktzfEfGFVfSdkx8uYg" name="title" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_Tf9xANzfEfGFVfSdkx8uYg" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_TyDmk9zfEfGFVfSdkx8uYg"/>
         </attributes>
         <mapping xmi:id="_TyDmkdzfEfGFVfSdkx8uYg" target="_TZANYNzfEfGFVfSdkx8uYg"/>
-        <form xmi:id="_TyDmldzfEfGFVfSdkx8uYg" name="ScoreboardView_Form" label="ScoreboardView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_TyDmltzfEfGFVfSdkx8uYg" name="ScoreboardView_Table" label="ScoreboardView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_TyDmlNzfEfGFVfSdkx8uYg" name="ScoreboardView_View_Edit" label="ScoreboardView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_TyDmldzfEfGFVfSdkx8uYg" name="SummaryView_Form" label="SummaryView Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_TyDmltzfEfGFVfSdkx8uYg" name="SummaryView_Table" label="SummaryView Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_TyDmlNzfEfGFVfSdkx8uYg" name="SummaryView_View_Edit" label="SummaryView View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

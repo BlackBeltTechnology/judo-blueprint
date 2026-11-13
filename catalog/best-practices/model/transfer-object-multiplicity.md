@@ -47,7 +47,7 @@ The data-access guide says the generated DAO has full CRUD only for mapped, non-
 
 - Each consumer receives only the data it needs, which keeps payloads small and limits what a role can read.
 - Create, update and delete permissions can differ per transfer object while the entity stays the single source of the stored data.
-- Project practice (not a platform rule): in the source projects the ratio was often 2:1 to 4:1 transfer objects per entity (for example about 44 transfer objects over 11 entities in one project), and some entities had five or more views. Names state the purpose or the role (`...Admin`, `...Picker`, `...ForPartner`), because several transfer objects for one entity are easy to confuse.
+- Practice note (not a platform rule): in the source projects the ratio was often 2:1 to 4:1 transfer objects per entity (for example about 44 transfer objects over 11 entities in one project), and some entities had five or more views. Names state the purpose or the role (`...Admin`, `...Picker`, `...ForPartner`), because several transfer objects for one entity are easy to confuse.
 - Cost: every entity change must be checked against all views that bind to it, and a shared attribute must be repeated in each view that needs it.
 
 ## Example

@@ -19,7 +19,7 @@ Generated hook keys are per page or container (names end with the actions hook i
 
 ## Examples
 
-### rackinspect
+### Variant seen in practice
 
 - Framework: React.
 - Blur handlers for the street name, public place category, number, building, staircase, floor, door and lot number, plus a handler for the manual override toggle. All of them call one shared update function.

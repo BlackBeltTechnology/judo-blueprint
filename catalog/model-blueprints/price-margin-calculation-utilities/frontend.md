@@ -16,8 +16,8 @@ The module and hook names belong to the example project. The pure-function patte
 
 ## Examples
 
-### rackinspect
+### Example
 - Framework: React.
-- Key files: a single utility module under the custom hooks utilities folder, and its Vitest test file.
+- Structure: a single utility module and its Vitest test file.
 - Pattern: the selling-price and markup functions work in both directions between cost price and selling price. The standard-selling-price function converts standard minutes at an hourly rate into a price.
 - Notable: the test file checks that the output of one function, fed into its inverse, returns the original input. It sits in the custom folder, so regeneration does not touch it.

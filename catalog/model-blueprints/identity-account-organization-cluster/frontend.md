@@ -1,6 +1,6 @@
 ## Overview
 
-Platform facts: the React frontend extends through registered hooks (AppBar extra components, navigation interceptor, guest page, axios customization) and generated pages are overridden by listing them in `.generator-ignore`. Principal flags are derived attributes of the principal transfer object; the page re-reads them after `refreshPrincipal()`. Hiding UI does not protect operations. The selector, tile dashboard and organization header handling below are example project code.
+Platform facts: the React frontend extends through registered hooks (AppBar extra components, navigation interceptor, guest page, axios customization) and generated pages are overridden by listing them in `.generator-ignore`. Principal flags are derived attributes of the principal transfer object; the page re-reads them after `refreshPrincipal()`. Hiding UI does not protect operations. The selector, tile dashboard and organization header handling below are reference implementation code.
 
 The identity-account-organization-cluster blueprint has substantial React frontend customization in the account actor application. The key frontend implementation is a custom organization selector in the AppBar that allows users to switch between organizations, combined with an axios interceptor that passes the selected organization as a request header, a navigation interceptor that preserves the organization query parameter across page transitions, a custom landing page with principal-guarded action tiles, and a fully overridden PartnerDashboard page.
 
@@ -15,8 +15,7 @@ The identity-account-organization-cluster blueprint has substantial React fronte
 
 ## Examples
 
-### ubives
+### Variant seen in practice
 - Framework: React
-- Key files: `ubives__services__account_actor/src/custom/hooks/AppBar/AppBarExtraComponents.tsx`, `ubives__services__account_actor/src/custom/hooks/Navigation/CustomAxiosInterceptor.ts`, `ubives__services__account_actor/src/custom/hooks/Navigation/CustomNavigationInterceptor.ts`, `ubives__services__account_actor/src/custom/LandingPage.tsx`, `ubives__services__account_actor/src/pages/Services/AccountActor/PartnerDashboard/AccessViewPage/index.tsx`
 - Pattern: The AppBar organization selector fetches DashboardOrganization TOs, renders a dropdown menu, and sets the `organization` search parameter. An axios interceptor passes this as `X-Judo-RequestParameters`. The PartnerDashboard is replaced with a custom tile-based dashboard that uses `principal.isOrganizationSelected` to conditionally show invite/create actions.
 - Notable: The organization context flows entirely via URL query parameters and HTTP headers rather than being stored in session state, making the selected organization bookmarkable and shareable. The `refreshPrincipal()` call after organization change ensures the principal's derived guard flags update immediately.

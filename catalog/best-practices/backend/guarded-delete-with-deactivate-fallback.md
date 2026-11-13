@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-
 category: operation
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/EntityLifecycleServiceImpl.java"]
 alternatives: [guard-clause-delete, soft-delete-active-flag]
 fragment: "none: backend-only"
 first_seen: 2026-07-09
@@ -25,30 +25,30 @@ An entity exposes two explicit, complementary user actions: a guarded hard `dele
 - The generated DAO of a mapped, non-abstract type offers `getById`, `existsById`, `delete` and per-relation `query...()` accessors ([generated DAO behaviour](../../agent-docs/backend/data-access-guide.md#which-types-get-a-full-dao)).
 - A refusal the user must see is a modeled fault declared on the operation, thrown as the generated checked exception; it reaches the client as 422 with `X-Fault` ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults), [[business-error-vs-generic-operation-error]]).
 - A custom-implemented operation is not intercepted: interceptors fire only for the built-in create/update/delete/reference operations ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). The guard therefore has to live in the implementation itself, and the built-in generated delete would bypass it, so the guarded delete is a custom operation and the entity must not also expose the generic delete to clients (*verify* that access `deleteable` is off).
-- Cascade of composition children on `delete` is stated by the project as automatic; the agent-docs do not describe it, *verify*.
+- Cascade of composition children on `delete` is stated by one application as automatic; the agent-docs do not describe it, *verify*.
 
-### Project practice: guard, fault, deactivate
+### Practice notes: guard, fault, deactivate
 
-This layer is project practice (rackinspect), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
-- Model shape: a required Boolean `active` with default true and an instance operation `toggleActive`; an instance operation `delete<Entity>` that declares the modeled business fault; a thin custom implementation delegating to a service in the project's common module.
-- The service loads the entity, runs the referential guard, throws the business fault with a machine code such as `RACK_IN_USE` and a localized message, otherwise deletes. A not-found case uses the same fault style.
-- Transitive guard: a parent (a warehouse) is deletable only when none of its composition children (racks) is referenced, done as one existence check over the children instead of a per-child loop.
-- An entity that must never be removed (a partner) gets only `toggleActive`, and no delete operation or access is created for it.
+- Model shape: a required Boolean `active` with default true and an instance operation `toggleActive`; an instance operation `delete<Entity>` that declares the modeled business fault; a thin custom implementation delegating to a service in the application's common module.
+- The service loads the entity, runs the referential guard, throws the business fault with a machine code such as `ITEM_IN_USE` and a localized message, otherwise deletes. A not-found case uses the same fault style.
+- Transitive guard: a parent (a container) is deletable only when none of its composition children (items) is referenced, done as one existence check over the children instead of a per-child loop.
+- An entity that must never be removed (an account) gets only `toggleActive`, and no delete operation or access is created for it.
 
 ```java
-// Example project code: rackDao is a generated DAO, ExceptionUtils and i18n are project helpers
-public void deleteRack(Rack rack) throws BusinessErrorException {
-    Rack entity = rackDao.getById(rack.identifier().getIdentifier()).orElseThrow(
-        () -> ExceptionUtils.createBusinessErrorException("RACK_NOT_FOUND", i18n.rack_not_found(id)));
-    if (isReferencedByRegistryHeader(entity)) {            // referential guard
-        throw ExceptionUtils.createBusinessErrorException("RACK_IN_USE", i18n.rack_in_use());
+// Example code: itemDao is a generated DAO, ExceptionUtils and i18n are helpers
+public void deleteItem(Item item) throws BusinessErrorException {
+    Item entity = itemDao.getById(item.identifier().getIdentifier()).orElseThrow(
+        () -> ExceptionUtils.createBusinessErrorException("ITEM_NOT_FOUND", i18n.item_not_found(id)));
+    if (isReferencedByAuditHeader(entity)) {            // referential guard
+        throw ExceptionUtils.createBusinessErrorException("ITEM_IN_USE", i18n.item_in_use());
     }
-    rackDao.delete(entity);   // composition children cascade (project-observed)
+    itemDao.delete(entity);   // composition children cascade (observed in practice)
 }
-// Transitive parent guard: block if ANY child rack is in use
-boolean anyRackInUse = warehouseDao.queryRacks(entity).selectList().stream()
-        .anyMatch(r -> isReferencedByRegistryHeader(r));
+// Transitive parent guard: block if ANY child item is in use
+boolean anyItemInUse = containerDao.queryItems(entity).selectList().stream()
+        .anyMatch(r -> isReferencedByAuditHeader(r));
 ```
 
 ## Rationale
@@ -59,7 +59,7 @@ boolean anyRackInUse = warehouseDao.queryRacks(entity).selectList().stream()
 
 ## Example
 
-rackinspect's lifecycle service guards `deleteRack` and `deleteWarehouse` against `RegistryHeader.rack` references (the fault-registry audit link). The rack guard is "no registry header points at this rack"; the warehouse guard is "no child rack is referenced". A blocked delete raises `RACK_IN_USE` or `WAREHOUSE_IN_USE`, the record stays, and the user deactivates it with `toggleActive`. A partner can only be deactivated.
+A lifecycle service guards `deleteItem` and `deleteContainer` against `AuditHeader.item` references (the audit link). The item guard is "no audit header points at this item"; the container guard is "no child item is referenced". A blocked delete raises `ITEM_IN_USE` or `CONTAINER_IN_USE`, the record stays, and the user deactivates it with `toggleActive`. An account can only be deactivated.
 
 ## When to avoid
 

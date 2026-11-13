@@ -8,7 +8,7 @@ tags: [domain:backend, layer:backend, project:mlszksz-platform, project:indamedi
 category: pattern
 status: emerging
 projects: [mlszksz-platform, indamedia-adtrack, park-here]
-evidence: ["mlszksz-platform:unrecorded", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
+evidence: ["mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/LogAuthenticationInterceptor.java", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
 alternatives: [audit-log-entity]
 fragment: none: backend-only
 first_seen: 2026-03-09
@@ -59,7 +59,7 @@ This is a backend pattern with no model shape. An authentication interceptor is 
 
 ## Related
 
-- [[audit-log-entity]] — the audit record a login entry can be written to
-- [[operation-call-logging-interceptor]] — logs built-in operation calls from an operation interceptor, a different scope
-- [[safe-failure-pattern]] — the failure rule this interceptor follows
-- [[keycloak-magic-link-passkey-authentication]] — an authentication flow that the login side effects can follow
+- [[audit-log-entity]]: the audit record a login entry can be written to
+- [[operation-call-logging-interceptor]]: logs built-in operation calls from an operation interceptor, a different scope
+- [[safe-failure-pattern]]: the failure rule this interceptor follows
+- [[keycloak-magic-link-passkey-authentication]]: an authentication flow that the login side effects can follow

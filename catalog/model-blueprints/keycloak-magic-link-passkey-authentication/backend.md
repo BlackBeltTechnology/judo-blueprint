@@ -41,8 +41,6 @@ The client, the activator, the realm manager, the retry helper and the service i
 
 ## Examples
 
-### mlszksz-platform
-
 - The client module runs the realm setup at startup with retries, then serves the user and link services.
 - The extension module adds the magic-link authenticator and the action token that starts a session.
 - The native app browser flow is passkey first. The password form is a fallback sub-flow.

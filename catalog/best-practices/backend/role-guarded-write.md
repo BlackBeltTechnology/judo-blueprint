@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-
 category: auth
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/access/WriteGuards.java", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/access/update/PriceModifierUpdateGuard.java"]
 alternatives: []
 related: [role-based-invitation-guard, guarded-delete-with-deactivate-fallback, interceptor-security-filter-validation, typed-exception-error-handling]
 fragment: "none: backend-only"
@@ -30,9 +30,9 @@ Who may write what is a security rule, and a rule written as a free-form interce
 - Declarative Services does not inherit references: collaborators held in a shared base class produce no references in the component descriptor. Whether this applies to your build, check the generated `OSGI-INF` descriptors (*verify*).
 - A modeled `hiddenBy` only hides UI. It does not protect the operation.
 
-### Project practice: guards grouped by role
+### Practice notes: guards grouped by role
 
-This layer is project practice (rackinspect), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - **One contract, two answers.** A `WriteGuard` interface extends the interceptor and asks an implementation for just two things: `operations()` (fully qualified names) and `permitted()` (a set of roles). The name, the resolution of names to operations and the refusal are shared. A guard is then readable as a statement of policy.
 - **One guard per verb and role set**, in one package per verb (`create`, `update`, `delete`), so "what may this role delete?" is answered by one folder. A guard that belongs to a feature package may declare its verb explicitly.
@@ -58,26 +58,26 @@ Deleting this test returns the design to the bug it replaced.
 A role list says who may write an area, not which row. Put that in one injectable guard service that every operation body calls before it writes:
 
 - **Role guards read a model attribute.** A derived, actor-scoped flag on the bound instance (for example "actor cannot manage this") is evaluated by the dispatcher when the instance is loaded. The guard refuses on `true`, on empty and on absent, so the role set lives in one place, the model, and no Java copy can drift.
-- **Ownership guards** compare the caller's own scope (for example the organisation the user belongs to) with the scope of the row, and refuse when they differ.
+- **Ownership guards** compare the caller's own scope (for example the account the user belongs to) with the scope of the row, and refuse when they differ.
 - **State guards** read the row's derived gate attribute instead of re-deriving the rule in Java, so each guard is the exact negation of its gate by construction. Re-read the bound instance through the DAO before guarding, because gates are only populated on a fully masked read, and treat an absent gate as a refusal.
 - **Stable error codes per guard family**, derived from the gate names so guard, gate and code move together; tests assert the constant, never a literal. The guard service resolves messages from an i18n service in the request locale.
 - Operation bodies call the service first. Because custom operations are not intercepted, this is where their guard lives; for built-in writes the same service can be called from the interceptor.
 
 ```java
-// Example project code: names are illustrative
+// Example code: names are illustrative
 public interface WriteGuard extends OperationCallInterceptor {
     List<String> operations();   // fully qualified operation names, one verb
     Set<ActorRole> permitted();  // roles allowed to perform them
 }
 
 @Component(service = OperationCallInterceptor.class, property = { "judo.model.name=app" })
-public class PartnerCreateGuard implements WriteGuard {
+public class AccountCreateGuard implements WriteGuard {
     @Reference ActorService actorService;
     @Reference AppI18n i18n;
     @Reference ThreadLocalLocaleSupplier localeSupplier;
 
     public Set<ActorRole> permitted() { return Set.of(ActorRole.ADMIN, ActorRole.MANAGER); }
-    public List<String> operations() { return List.of("app.services.GenericUser#_createInstancePartners"); }
+    public List<String> operations() { return List.of("app.services.GenericUser#_createInstanceAccounts"); }
 
     @Override
     public Object preCall(EOperation operation, Object payload) throws InterceptorCallBusinessException {
@@ -100,7 +100,7 @@ guardService.requireTicketEditable(ticket);
 
 ## Example
 
-In rackinspect about a dozen guards cover create, update and delete across the actor's areas, split by role set (administrator-only, provider-side, one role for price data, the external officer's panel, user management with row-level checks). The coverage test derives write operations from the model and was added after an earlier design guarded only two of thirty-one areas while looking finished. The ticketing capability's operation bodies call a guard service that checks the role flag, the caller's partner against the row's partner, and each state gate, with a separate error code per family.
+Around a dozen guards cover create, update and delete across the actor's areas, split by role set (administrator-only, a supplier-side role, a role for price data, an external reviewer panel, user management with row-level checks). The coverage test derives write operations from the model and was added after an earlier design guarded only a few areas while looking finished. The operation bodies of one capability call a guard service that checks the role flag, the caller's account against the row's account, and each state gate, with a separate error code per family.
 
 ## When to avoid
 

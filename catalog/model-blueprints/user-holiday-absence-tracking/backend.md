@@ -15,8 +15,6 @@ Holiday creation and deletion are custom operations. They delegate to a shared h
 
 ## Examples
 
-### park-here
-
-- Key files (example project code): the holiday operations on the panels, the delete operation on the holiday, the preview query, and the holiday and date services.
+- Example project code: the holiday operations on the panels, the delete operation on the holiday, the preview query, and the holiday and date services.
 - All panel creation operations follow the same flow and delegate to the same holiday service.
 - The date service computes the public calendar, including the Easter-based moveable holidays, and merges it with the stored overrides.

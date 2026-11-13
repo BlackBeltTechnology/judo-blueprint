@@ -12,9 +12,7 @@ A task is created by a domain operation, not by a task-specific operation, and i
 
 ## Examples
 
-### alba
-
-- Key files: `custom/.../entities/task/CloseTaskCustomImplementation.java` and `custom/.../entities/product/AssignApprovalCustomImplementation.java` (example project code).
+- Example project code: a close operation and an assignment operation.
 - Creation: the domain operation resolves the assignee users from the input collection, then creates one task per user in the same transaction.
 - Close: the close operation loads the task, sets the state from the input and saves it. It does not raise events or start another transition; the approval continues through separate operations on the target.
 - Dependencies are injected into the operation classes through the platform's component wiring.

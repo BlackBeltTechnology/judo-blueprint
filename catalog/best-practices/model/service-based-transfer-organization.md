@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-pl
 category: transfer
 status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, reserve-app]
-evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: [actor-based-transfer-projection]
 fragment: service-based-transfer-organization
 diagram: { kinds: [entity, transfer, actor], members: types }
@@ -33,7 +33,7 @@ Each ActorType needs an Access entry per transfer object it may reach, and a pai
 
 ### Permissions are a project layer on top
 
-The platform gives per-actor access and an optional row filter on the Access. When all users share one actor, differences between users are modelled by the project: a role flag on the user entity (for example `isAdministrator`, `permissionTo...`), used in `hiddenBy` / `enabledBy` expressions on menu items and actions, and checked again in operations or interceptors. This is project practice, not platform enforcement. UI hiding alone does not stop an API client, so the server side must check too.
+The platform gives per-actor access and an optional row filter on the Access. When all users share one actor, differences between users are modelled by the project: a role flag on the user entity (for example `isAdministrator`, `permissionTo...`), used in `hiddenBy` / `enabledBy` expressions on menu items and actions, and checked again in operations or interceptors. This is a convention, not platform enforcement. UI hiding alone does not stop an API client, so the server side must check too.
 
 ### Naming
 
@@ -41,15 +41,15 @@ Functional suffixes keep a large package readable: `*Transfer` or `*View` (mappe
 
 ### Variations seen
 
-- Several actors sharing one service namespace (ReserveApp: admin and partner-scoped objects in the same package).
-- Two tiers (judo-partner): identity-mapped internal transfer objects for backend use, plus curated API objects with derived members and operations.
-- Several access points per service for different roles (MLSZKSZ), hidden per role.
+- Several actors sharing one service namespace (admin and partner-scoped objects in the same package).
+- Two tiers (one project): identity-mapped internal transfer objects for backend use, plus curated API objects with derived members and operations.
+- Several access points per service for different roles, hidden per role.
 
 ## Rationale
 
 - Related functionality sits together whatever the caller, and transfer objects are not duplicated per actor.
 - Works well when one user type has role-based permissions rather than fundamentally different actors.
-- Cost: separate actors give platform-level isolation (own Access entries and row filters); with one actor every service is reachable by everyone, so project flags and server checks replace that. The set of packages can grow large (RackInspect: 14 packages, 142 transfer objects).
+- Cost: separate actors give platform-level isolation (own Access entries and row filters); with one actor every service is reachable by everyone, so project flags and server checks replace that. The set of packages can grow large (one project: many packages and transfer objects).
 
 ## Example
 

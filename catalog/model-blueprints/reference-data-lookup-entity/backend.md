@@ -8,7 +8,7 @@ Initial rows are created once by a static initializer operation with the generat
 
 ### Management through a shared service
 
-One project service (in the source project `MasterDataService`, an example name) holds create, update and toggle-active for the lookups. The custom operations are thin wrappers that delegate to it. Its main job is the rule the model does not express: name uniqueness checked before create and update. The service and operation classes are project code, not platform API. Interceptors do not run for custom operations, so the rule lives in the service. See [[capability-lookup-entity]] for the same shape with a flag.
+One project service (an example name, such as `MasterDataService`) holds create, update and toggle-active for the lookups. The custom operations are thin wrappers that delegate to it. Its main job is the rule the model does not express: name uniqueness checked before create and update. The service and operation classes are project code, not platform API. Interceptors do not run for custom operations, so the rule lives in the service. See [[capability-lookup-entity]] for the same shape with a flag.
 
 ### Resolving selected entries
 

@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:reserve-app", "project:rack
 category: hook
 status: emerging
 projects: [reserve-app, rackinspect]
-evidence: ["reserve-app:unrecorded", "rackinspect:unrecorded"]
+evidence: ["reserve-app:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/containers/registerServicesItem_serviceItemItem_View_EditContainerActionsHook.ts"]
 alternatives: []
 related: [pandino-action-hook-override, hook-scaffold-default-pattern, application-customizer-hub, approval-workflow-conditional-visibility]
 fragment: "none: frontend-only"
@@ -29,9 +29,9 @@ A form field should be mandatory only when another field has a certain value (fo
 - Conditional requiredness is a model switch: with `generateVisualPropertiesHook` set, the generated container hook type has `is<Field>Hidden`, `is<Field>Disabled`, `is<Field>Readonly` and `is<Field>Required` handlers ([hook generation](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md)). Requiredness can also be driven by the model's `requiredBy` attribute, static or set dynamically by a backend interceptor ([access control attributes](../../agent-docs/frontend/model-screen-layout.md)).
 - Validation hooks can express other conditional rules by looking at the form data ([conditional validation](../../agent-docs/frontend/hooks/validation-hooks.md)).
 
-### Project practice: a required-predicate handler
+### Practice notes: a required-predicate handler
 
-The reserve-app project returned a single `isFieldRequired` predicate from the dialog actions hook of an AccessViewPage. The agent-docs name per-field `is<Field>Required` handlers instead, so use the handler names in the generated `customization.ts` and `types.ts`; the shape below is the project's.
+One frontend returned a single `isFieldRequired` predicate from the dialog actions hook of a view page. The agent-docs name per-field `is<Field>Required` handlers instead, so use the handler names in the generated `customization.ts` and `types.ts`; the shape below is one such variant.
 
 ```typescript
 // src/custom/hooks/dialogs/register<Dialog>ActionsHook.ts (from the scaffold)
@@ -57,9 +57,9 @@ const entityActionsHook: EntityActionsHook = () => ({
 - Keep the predicate a pure function of `data`; one hook file serves one page or dialog.
 - Enforce the same rule in the backend as well (a model constraint or interceptor); the hook only changes the form.
 
-### Variation: container action hooks (rackinspect)
+### Variation: container action hooks
 
-A second project sets required and disabled state per field from hooks on container actions, rather than a single required-predicate handler.
+A second frontend sets required and disabled state per field from hooks on container actions, rather than a single required-predicate handler.
 
 ## Rationale
 
@@ -67,7 +67,7 @@ The rule stays out of generated code and survives regeneration, because the scaf
 
 ## Example
 
-reserve-app, AdminActor, storage types AccessViewPage dialog: `name` is required only when the `active` flag is set; inactive records may leave it empty. It is the project's only hook override across five actor frontends.
+One app, with an admin actor, has a view page dialog where `name` is required only when the `active` flag is set; inactive records may leave it empty. It is the only hook override across five actor frontends.
 
 ## When to avoid
 

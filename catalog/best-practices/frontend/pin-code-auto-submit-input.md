@@ -10,7 +10,7 @@ status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
-related: [timed-quiz-auto-advance, dialog-based-navigation, input-masking-react-imask]
+related: [timed-step-auto-advance, dialog-based-navigation, input-masking-react-imask]
 fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
@@ -26,18 +26,18 @@ Let users enter a short numeric code (activation code, PIN, one-time code) digit
 - The generated UI has no multi-field code widget; a text attribute is one `TextField` ([widgets](../../agent-docs/frontend/esm-to-ui-mappings/widgets.md)). Such an input is a custom component.
 - A model element that the generator exposes as an extension point is replaced by registering an `FC` under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` with the per-element `component` key from the container's `customization.ts`. The register function comes from the generated `register<Container>CustomImplementations.tsx.default` scaffold and is called from `application-customizer.tsx` ([custom component replacement](../../agent-docs/frontend/advanced-patterns.md)). The real props are the proxy props type of that scaffold.
 
-### Project practice: the PIN component (trivia)
+### Practice notes: the PIN component
 
-The component below is project code, not a platform feature:
+The component below is custom code, not a platform feature:
 
 - One `TextField` per digit with `type="tel"`, so phones show the numeric keyboard.
 - Entering a digit moves focus to the next field. Backspace in a field moves focus to the previous one.
 - When the last field is filled, the component calls an `onAutoSubmit(code)` callback; no submit button.
-- The first field gets focus on mount, after a short delay (trivia uses 300 ms) so the dialog or page has rendered.
-- The digit count is fixed in the component (four in trivia).
+- The first field gets focus on mount, after a short delay (the example uses 300 ms) so the dialog or page has rendered.
+- The digit count is fixed in the component (four in the example).
 
 ```typescript
-// Illustrative; names are project code
+// Illustrative; names are examples
 const handleChange = (index: number, value: string) => {
   if (value.length === 1 && index < 3) refs[index + 1].current?.focus();
   const code = updateDigit(index, value);
@@ -54,7 +54,7 @@ The input suits mobile entry and needs no extra tap to submit. The cost is a fix
 
 ## Example
 
-trivia: `NumberInputAutoFocus` in `CustomComponents.tsx` collects the 4-digit activation code in the player frontend. Completing the fourth digit calls the player activation operation through the generated service (`playerServiceForApplicationImpl.activate()`).
+One app: `NumberInputAutoFocus` in `CustomComponents.tsx` collects the 4-digit activation code in the participant frontend. Completing the fourth digit calls the activation operation through the generated service (`accessServiceImpl.activate()`).
 
 ## When to avoid
 
@@ -63,6 +63,6 @@ trivia: `NumberInputAutoFocus` in `CustomComponents.tsx` collects the 4-digit ac
 
 ## Related
 
-- [[timed-quiz-auto-advance]] — another auto-advancing input flow
+- [[timed-step-auto-advance]] — another auto-advancing input flow
 - [[dialog-based-navigation]] — dialogs that host such inputs
 - [[input-masking-react-imask]] — formatted single-field input

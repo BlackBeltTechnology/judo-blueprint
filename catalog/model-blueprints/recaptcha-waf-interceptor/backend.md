@@ -26,7 +26,6 @@ The reCAPTCHA filter is an `OperationCallInterceptor` that checks the token on p
 
 ## Examples
 
-### mlszksz-platform
-- Key files: `interceptors/RecaptchaWafInterceptor.java`
+### Example (project code)
 - Pattern: protects the registration, validate and verify-invitation operations of the registration transfer object. `preCall()` reads the `recaptcha` field and refuses the call when it is missing. Bypass through the `RECAPTCHA_WAF_BYPASS` environment variable.
 - Notable: the original code threw `RuntimeException("Request blocked: reCAPTCHA token required")`, which gives a 500, not a typed error; the entry recommends `InterceptorCallBusinessException` instead. Operations are resolved lazily with `AsmUtils.resolveOperation()` and cached. Whether each protected operation is built-in must be confirmed in the project, because an interceptor never runs for a custom one.

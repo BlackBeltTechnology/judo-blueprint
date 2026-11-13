@@ -16,8 +16,7 @@ The generated discovery panel shows organizations as a table. This pattern repla
 
 ## Examples
 
-### mlszksz-platform (example project code, not platform API)
+### Example (project code, not platform API)
 - Framework: React with MUI
-- Key files: `custom/discoveryComponent/DiscoveryContainer.tsx`, `custom/discoveryComponent/DiscoveryOrganizationCard.tsx`, `custom/discoveryComponent/DiscoveryFilters.tsx`, `custom/discoveryComponent/hooks/useDiscoveryPagination.ts`, `custom/discoveryComponent/hooks/useDiscoveryFilters.ts`
 - Pattern: the container reuses the feed's infinite-scroll hook; the card downloads the logo through the access service and displays it as a blob URL.
 - Notable: the scroll area uses a CSS gradient mask for a fade at the bottom. The ACTIVE filter is hard-coded in the query builder.

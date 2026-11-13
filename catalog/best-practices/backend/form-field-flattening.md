@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-
 category: interceptor
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/partner/PartnerCreateInterceptor.java"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-One create form should fill a parent and its first child (for example a partner and its headquarters address) in one call. The parent transfer object carries extra flat `form_*` members, and a create interceptor turns them into the nested child payload before the platform's create runs.
+One create form should fill a parent and its first child (for example an account and its primary address) in one call. The parent transfer object carries extra flat `form_*` members, and a create interceptor turns them into the nested child payload before the platform's create runs.
 
 ## Practice
 
@@ -24,16 +24,16 @@ One create form should fill a parent and its first child (for example a partner 
 
 The platform lets an `OperationCallInterceptor` change the input of the built-in create operation in `preCall`. The returned object replaces the input payload, and `Payload.map()` builds nested payloads; the agent-docs show this exact flat-form-to-nested mapping and a matching `postCall` ([pre-call payload manipulation](../../agent-docs/backend/interceptors.md)). Create is a built-in operation, so interceptors fire for it; custom operations are never intercepted ([which operations are intercepted](../../agent-docs/backend/interceptors.md)). Register the component with `judo.model.name=<model>` and name the create operation by its FQN in `getOperations`.
 
-### Project practice: the `form_` naming convention
+### Practice notes: the `form_` naming convention
 
-The `form_*` prefix and the flattening itself are project practice, not platform concepts.
+The `form_*` prefix and the flattening itself are a convention, not platform concepts.
 
 - Model: the parent transfer object gets plain (transient) members named `form_<field>` for the child's fields. They exist only for the form.
 - `preCall`: validate required form fields, then put the nested child list into the payload under the relation name, copying each `form_*` value to the child attribute key.
 - `postCall` (optional): look the created child up and set relations that need the created instance, such as a "primary" reference.
 
 ```java
-// Example project code; ParentAttribute / AddressAttribute / ParentReference are generated constants
+// Example code; ParentAttribute / AddressAttribute / ParentReference are generated constants
 @Override
 public Object preCall(EOperation op, Object payload) {
     Payload input = ((CreateInstanceCall.CreateInstanceCallPayload) payload).getInput();
@@ -59,7 +59,7 @@ Use `getAs(...)` with `Boolean.TRUE.equals(...)`: `getAs` returns null for an ab
 
 ## Example
 
-RackInspect: a partner create interceptor maps more than a dozen flat `form_*` fields (city, street, postal code, headquarters flag and others) into a nested address payload and requires the headquarters flag before transforming. A user create interceptor does the same for address, e-mail and phone fields.
+One application: an account create interceptor maps many flat `form_*` fields (city, street, postal code, primary flag and others) into a nested address payload and requires the primary flag before transforming. A user create interceptor does the same for address, e-mail and phone fields.
 
 ## When to avoid
 

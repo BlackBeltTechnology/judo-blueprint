@@ -45,7 +45,7 @@ The getter expression only decides which rows each list shows. It does not stop 
 
 ## Example
 
-A Report entity has a `status` (Pending, Submitted), a title and owned stock lines. OpenReport maps Report and is updateable; ClosedReport maps it read-only. A Partner actor has an `openReports` access that keeps pending reports and a `closedReports` access that keeps the rest. Report has an operation `submit` that returns a ClosedReport, so a submitted report moves from one list to the other. The original (Viterra) used four statuses (pending, submitted, review, accepted) with the open partition equal to pending. Names are neutral stand-ins.
+A Report entity has a `status` (Pending, Submitted), a title and owned stock lines. OpenReport maps Report and is updateable; ClosedReport maps it read-only. A Partner actor has an `openReports` access that keeps pending reports and a `closedReports` access that keeps the rest. Report has an operation `submit` that returns a ClosedReport, so a submitted report moves from one list to the other. The original used four statuses (pending, submitted, review, accepted) with the open partition equal to pending. Names are neutral stand-ins.
 
 ## When to avoid
 

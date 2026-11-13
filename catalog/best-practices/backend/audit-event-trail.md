@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platf
 category: operation
 status: established
 projects: [alba, mlszksz-platform, judo-demo-miniworkflow, park-here, judo-partner, workflow-poc, doors-model]
-evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
+evidence: ["alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AuditLogServiceImpl.java", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
 alternatives: [audit-log-entity]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -28,15 +28,15 @@ Record who did what and when for every significant change as ordinary rows of an
 - The acting user comes from `VariableResolver` ([[actor-resolution-variable-resolver]]).
 - Use one clock for stamps and comparisons: `LocalDateTime.now()` follows the JVM zone, while `current_timestamp` in model expressions follows the platform `defaultZoneId` ([time zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)).
 
-### Project practice: where the rows are written
+### Practice notes: where the rows are written
 
 Two places, depending on the operation kind:
 
-- **Custom operations** write the event themselves after the state change, usually through a small project service (`AuditLogService`, `logCompletion` helpers are example project code).
-- **Built-in create/update/delete** are audited from an `OperationCallInterceptor` `postCall`, which catches every update, including those from generated CRUD. One project logs create and delete in the custom operations and update in an interceptor.
+- **Custom operations** write the event themselves after the state change, usually through a small service (`AuditLogService`, `logCompletion` helpers are example code).
+- **Built-in create/update/delete** are audited from an `OperationCallInterceptor` `postCall`, which catches every update, including those from generated CRUD. One variant logs create and delete in the custom operations and update in an interceptor.
 
 ```java
-// Example project code: Event, EventDao, EventType are project/generated types
+// Example code: Event, EventDao, EventType are generated types
 Event event = eventDao.create(EventForCreate.builder()
     .withType(EventType.ENTITY_STATE_CHANGED)
     .withMessage("Description of what happened")
@@ -48,7 +48,7 @@ Event event = eventDao.create(EventForCreate.builder()
 
 Typical event fields: an enumeration `type`, a human-readable `message` (possibly localized), a timestamp, a reference to the subject and a reference to the performing user.
 
-Variants seen in the projects:
+Variants seen:
 
 - one event entity with a type enumeration per lifecycle step;
 - a history entry per transition with `fromState`, `toState`, time and user, attached to the subject by a composition relation;
@@ -63,7 +63,7 @@ Variants seen in the projects:
 
 ## Example
 
-ALBA logs five product lifecycle event types (created, finalized, approved, approval revoked) with message, timestamp, product and performing user, each written by the corresponding custom operation. The mini-workflow demo appends a history entry with from-state, to-state, time and user for every transition. judo-partner writes create and delete logs in operations and update logs in an interceptor `postCall`, so every update is covered.
+One variant logs five product lifecycle event types (created, finalized, approved, approval revoked) with message, timestamp, product and performing user, each written by the corresponding custom operation. A workflow example appends a history entry with from-state, to-state, time and user for every transition. Another variant writes create and delete logs in operations and update logs in an interceptor `postCall`, so every update is covered.
 
 ## When to avoid
 

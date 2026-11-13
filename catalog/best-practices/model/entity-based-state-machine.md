@@ -39,7 +39,7 @@ The model holds data only. Moving a token, evaluating a guard and calling an act
 
 - States and transitions are data, so they can be uploaded or edited without changing the model.
 - Guards, actions and roles per transition give room for join states, approvals and audit through tokens.
-- Project practice (not platform behaviour): the source project loaded the state graph from a configuration file and ran it from custom operations.
+- Practice note (not platform behaviour): the source project loaded the state graph from a configuration file and ran it from custom operations.
 - Cost: a much larger model and a hand-written engine, and the compiler no longer checks state names.
 
 ## Example

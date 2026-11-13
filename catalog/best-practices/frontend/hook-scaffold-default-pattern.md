@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspe
 category: hook
 status: established
 projects: [trivia, rackinspect, itracker, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/.gitignore", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/custom-implementations/registerServicesVoice_servicesCreateRackInputCreateRackInput_FormCustomImplementations.tsx.default", "itracker:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, application-customizer-hub]
 fragment: "none: frontend-only"
@@ -27,7 +27,7 @@ Start every frontend customization from the generated scaffold of the hook, so t
 - `src/custom/application-customizer.tsx` is a plain generated file with an empty `customize(context)`; it is where `register...Hook(context)` calls go. It is not a `.default` file.
 - A `.default` file is not compiled. Copy it to the same name without `.default`, implement it, and register it. Do not edit the `.default` file: it is regenerated on every build. The copy is not generated (the frontend `.gitignore` ignores only the `.default` files), so it survives regeneration and needs no `.generator-ignore` entry ([activating a scaffold](../../agent-docs/frontend/hooks/README.md)).
 
-### Project practice: leave the scaffolds, activate on demand
+### Practice notes: leave the scaffolds, activate on demand
 
 ```
 src/custom/hooks/
@@ -60,11 +60,11 @@ Scaffolds give correct signatures and imports for every hook point the model ena
 
 ## Example
 
-- trivia admin: 24 scaffolds (page, container, dialog), none activated.
-- itracker: about 60 scaffolds over two actors, none activated; behavior comes from the model.
-- workflow-poc: 2 scaffolds, left inactive; it uses a generator fragment override and `OperationFlowManager` instead.
-- reserve-app: one activated (a dialog hook for conditional field validation) among scaffolds for five actors.
-- rackinspect: all scaffolds activated into about 87 working files under `src/custom/`.
+- An admin frontend with many scaffolds (page, container, dialog), none activated.
+- A two-actor frontend with many scaffolds, none activated; behavior comes from the model.
+- A workflow frontend with a few scaffolds, left inactive; it uses a generator fragment override and `OperationFlowManager` instead.
+- A multi-actor frontend with one activated hook (a dialog hook for conditional field validation) among the scaffolds.
+- A heavily customized frontend: all scaffolds activated, with many working files under `src/custom/`.
 
 ## When to avoid
 

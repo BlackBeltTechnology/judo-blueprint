@@ -13,6 +13,6 @@ Hiding the exclusive-slot toggle or the venue access table from non-administrato
 
 ## Examples
 
-### park-here
+### Example
 
 - React frontend with generated pages; the booking form and the profile page use the slot range selection.

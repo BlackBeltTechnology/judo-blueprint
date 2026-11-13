@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspe
 category: hook
 status: established
 projects: [trivia, rackinspect, itracker, reserve-app, park-here]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx", "itracker:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [hook-scaffold-default-pattern, application-customizer-hub, custom-visual-element-override]
 fragment: "none: frontend-only"
@@ -28,7 +28,7 @@ Customize the behaviour of a generated page or dialog without editing generated 
 - Page and dialog hooks have the signature `(data, editMode, storeDiff, refresh, submit)`, and the real type and key names are generated per page ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 - `src/custom/` is not generated and needs no `.generator-ignore` entry. Hooks are the documented route; editing generated files fails the checksum check ([why hooks](../../agent-docs/frontend/hooks/README.md)).
 
-### Project practice: override only the actions that differ
+### Practice notes: override only the actions that differ
 
 The generated page does the lookup, shown here as a simplified sketch (names are generated per page and are not a fixed API):
 
@@ -38,7 +38,7 @@ The generated page does the lookup, shown here as a simplified sketch (names are
 - Registration is by interface key plus component name, so one hook serves exactly one page or dialog.
 
 ```typescript
-// Example project code (generated page, simplified)
+// Example code (generated page, simplified)
 const customActions = customActionsHook?.(data, editMode, storeDiff, refresh, submit);
 const actions = {
   getPageTitle,
@@ -57,10 +57,10 @@ The generated code stays untouched and upgrade-safe, hooks resolve at runtime, a
 
 ## Example
 
-- rackinspect registers more than 100 hooks in its application customizer: 48 dialog hooks, 10 page hooks, form and view/edit hooks, table row highlighting hooks and 13 custom visual element implementations.
-- trivia has two page overrides whose scaffolds are in place but still return empty objects.
-- itracker is generated with the hook lookup in all 15 pages and 11 dialogs, yet registers none (all 60 scaffolds stay inactive): zero customization costs nothing at runtime.
-- reserve-app registers one page hook that makes a name field required depending on an `active` flag.
+- A heavily customized frontend registers many hooks in its application customizer: dialog files, page hook files, form and view/edit hooks, table row highlighting hooks and custom visual element implementations.
+- A game frontend has two page overrides whose scaffolds are in place but still return empty objects.
+- A two-actor frontend is generated with the hook lookup in every page and dialog, yet registers none (all scaffolds stay inactive): zero customization costs nothing at runtime.
+- A frontend registers one page hook that makes a name field required depending on an `active` flag.
 
 ## When to avoid
 

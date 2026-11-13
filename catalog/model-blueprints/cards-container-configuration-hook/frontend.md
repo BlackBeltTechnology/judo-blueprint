@@ -4,7 +4,7 @@ A cards container shows relation data as rows in a grid by default. This pattern
 
 ### Register the hook under the generated key
 
-Each container generates a typed hook interface and a key for it. The key is named after the page and container, so take it from the generated customization module of that container. Register the hook through the project's customizer, and do not hard-code the key string.
+Each container generates a typed hook interface and a key for it. The key is named after the page and container, so take it from the generated customization module of that container. Register the hook through the application's customizer, and do not hard-code the key string.
 
 ### Return only the card element
 

@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: operation
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, park-here, indamedia-adtrack, judo-partner, workflow-poc]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "alba:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 fragment: custom-implementation-placeholder
 diagram: { kinds: [entity, transfer, operation], members: types }

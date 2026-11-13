@@ -46,7 +46,7 @@ The old project notes talk of a `behaviours` list (REFRESH, UPDATE, DELETE) on t
 
 ## Example
 
-A neutral Order entity has an instance operation `ship`. It returns a `ShipmentView`, a transfer object mapping the Shipment entity (attribute `carrier`). The `output` parameter of `ship` has `updateable` and `deleteable` set, so after shipping, the user can correct or remove the created shipment from the result. The original project had a planet operation returning a creature with all three actions; names here are neutral stand-ins.
+A neutral Order entity has an instance operation `ship`. It returns a `ShipmentView`, a transfer object mapping the Shipment entity (attribute `carrier`). The `output` parameter of `ship` has `updateable` and `deleteable` set, so after shipping, the user can correct or remove the created shipment from the result. The original project had an operation returning a related entity with all three actions; names here are neutral stand-ins.
 
 ## When to avoid
 

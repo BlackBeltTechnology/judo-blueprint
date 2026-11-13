@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:work
 category: build
 status: emerging
 projects: [rackinspect, workflow-poc, park-here]
-evidence: ["rackinspect:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["rackinspect:application/generator-overrides/ui-react/actor/package.json.dependencies.extra.fragment.hbs", "workflow-poc:unrecorded"]
 alternatives: []
 related: [pdf-preview-inline-display, generator-ignore-app-theme]
 fragment: "none: frontend-only"
@@ -27,9 +27,9 @@ Custom components often need npm packages the generated frontend does not includ
 - The frontend override mechanism is the same: a template with the same name in `generator-overrides/` is used instead of the default, and the template name is shown in each generated file's header ([template override process](../../agent-docs/frontend/README.md)).
 - Direct edits of a generated file fail the checksum unless the file is in `.generator-ignore` ([checksum protection](../../agent-docs/frontend/README.md)).
 
-### Project practice: a package.json dependencies fragment
+### Practice notes: a package.json dependencies fragment
 
-The projects name the fragment `package.json.dependencies.extra.fragment.hbs` and place it under `generator-overrides/ui-react/actor/` of the frontend application. The docs here do not list the frontend `package.json` fragment names, so confirm the name from the marker comment in your generated `package.json`.
+Frontends name the fragment `package.json.dependencies.extra.fragment.hbs` and place it under `generator-overrides/ui-react/actor/` of the frontend application. The docs here do not list the frontend `package.json` fragment names, so confirm the name from the marker comment in your generated `package.json`.
 
 The file holds only the extra entries, comma-separated:
 
@@ -48,8 +48,8 @@ A fragment keeps generated and custom dependencies separate and needs no ignore 
 
 ## Example
 
-- rackinspect: three PDF viewer packages (`@react-pdf-viewer/core`, `@react-pdf-viewer/page-navigation`, `pdfjs-dist`) via the fragment, for inline PDF preview. `react-imask` is already in the generated dependencies.
-- workflow-poc: instead lists `package.json` in `.generator-ignore` and edits it by hand to add `mermaid`, `svg-pan-zoom` and `react-syntax-highlighter` for its diagram and code-viewer elements. This works, but it loses generator updates to that file.
+- One app: three PDF viewer packages (`@react-pdf-viewer/core`, `@react-pdf-viewer/page-navigation`, `pdfjs-dist`) via the fragment, for inline PDF preview. `react-imask` is already in the generated dependencies.
+- Another app instead lists `package.json` in `.generator-ignore` and edits it by hand to add `mermaid`, `svg-pan-zoom` and `react-syntax-highlighter` for its diagram and code-viewer elements. This works, but it loses generator updates to that file.
 
 ## When to avoid
 

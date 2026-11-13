@@ -14,7 +14,6 @@ The organization is managed through custom operations that call a project servic
 
 ## Examples
 
-### mlszksz-platform (example project code, not platform API)
-- Key files: `common/services/OrganizationService.java`, `common/services/impl/OrganizationServiceImpl.java`, `custom/.../admindashboard/CreateOrganizationCustomImplementation.java`, `custom/.../organizationadminpanel/UpdateAddressCustomImplementation.java`
+### Example (project code, not platform API)
 - Pattern: the service handles creation with user provisioning, address composition and status rules; each custom operation is a thin wrapper over one service method.
 - Notable: creating an organization is a compound action (organization, first user, identity-provider account). Address text uses a shared helper so registration and update produce the same format.

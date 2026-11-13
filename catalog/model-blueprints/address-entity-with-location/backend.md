@@ -13,7 +13,7 @@ The full-address text and the address line are derived from the parts. Compute t
 The model references a city and a postal code, but it does not check that they belong together. The service that writes the address reads the postal code's cities and refuses the write when the selected city is not in that list.
 
 - Refuse a mismatch with a modeled business fault that the operation declares (checked generated exception, HTTP 422). A wrong field value on the input is instead a ValidationException (unchecked, HTTP 400), not a fault.
-- The service reads the reference data through the data access layer at check time, so it sees current values. The service is project code, not platform API.
+- The service reads the reference data through the data access layer at check time, so it sees current values. The service is application code, not platform API.
 
 ### Create the location with its address
 
@@ -24,12 +24,12 @@ The location is composed by the address, so the service creates it in the same o
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - The update operation of the organization admin panel calls a shared organization service. The service creates or updates the address and checks the postal code against the city.
 - The address helper builds the full-address text and the address line. The registration flow builds the address the same way and strips identifiers before copying it to the organization.
 
-### rackinspect
+### Second variant seen in practice
 
-- A create and update interceptor (project code) on the partner address sets the headquarters, billing and postal designations on the parent, then calls the address service for the computed text. It is registered for the built-in create and update operations, so it runs for those operations only.
+- A create and update interceptor (application code) on the partner address sets the headquarters, billing and postal designations on the parent, then calls the address service for the computed text. It is registered for the built-in create and update operations, so it runs for those operations only.
 - Custom operations for the address are not intercepted, so they must compute the text themselves.

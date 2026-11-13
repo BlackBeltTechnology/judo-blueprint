@@ -27,9 +27,9 @@ Tables with several row-level actions need one consistent action column whose de
 - The platform has a supported way to add or replace a single column on a generated table without replacing the table: a column customizer hook registered under `TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY` with the table component name and the column as service properties. Its documented example is an action button column with `renderCell` ([table hooks](../../agent-docs/frontend/hooks/table-hooks.md)).
 - Hooks and custom code you add under `src/custom/` are not generated, so they survive regeneration ([extension points](../../agent-docs/frontend/extension-points.md)).
 
-### Project practice: configurable action column helper
+### Practice notes: configurable action column helper
 
-This layer is project code (actiongroup-test-react, a frontend that builds its own tables), not a platform feature. A helper takes an array of `{ label, action, icon }` definitions and returns a column definition, with a `shownActions` option:
+This layer is custom code (a frontend that builds its own tables), not a platform feature. A helper takes an array of `{ label, action, icon }` definitions and returns a column definition, with a `shownActions` option:
 
 - `0`: no action column
 - `1`: every action in the dropdown
@@ -37,14 +37,14 @@ This layer is project code (actiongroup-test-react, a frontend that builds its o
 - `-1`: every action as a button
 
 ```typescript
-// Example project code, not a platform API
+// Example code, not a platform API
 interface TableRowAction<R> {
   label: string;
   action: (row: R) => void;
   icon: ReactNode;
 }
 
-const rowActions: TableRowAction<GalaxyStored>[] = [
+const rowActions: TableRowAction<OrderStored>[] = [
   { label: 'Delete', action: (row) => deleteRow(row), icon: <Delete /> },
   { label: 'Create item', action: (row) => navigate(`/${row.id}/createItem`), icon: <Icon /> },
 ];
@@ -52,7 +52,7 @@ const rowActions: TableRowAction<GalaxyStored>[] = [
 const columns = [...baseColumns, ...columnsActionCalculator(rowActions, { shownActions: 1 })];
 ```
 
-In the source project, a table with four actions shows them all in the dropdown, while a table with a single Remove action shows it as a button.
+In one app, a table with four actions shows them all in the dropdown, while a table with a single Remove action shows it as a button.
 
 ## Rationale
 
@@ -62,7 +62,7 @@ Limits: the column has a fixed width that may not fit long labels, the dropdown 
 
 ## Example
 
-In actiongroup-test-react the helper lives in a utilities file and builds the action column for the Galaxy table (Delete plus three create-item actions, `shownActions: 1`) and for the join table (one Remove action as a button).
+In one hand-built app the helper lives in a utilities file and builds the action column for the order table (Delete plus three create-item actions, `shownActions: 1`) and for the join table (one Remove action as a button).
 
 When the generated table is kept, prefer model row actions and the column customizer hook. The helper fits a frontend that already builds its own DataGrids.
 

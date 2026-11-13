@@ -27,12 +27,12 @@ A single external trigger can cause a transition whose actions raise further eve
 - The platform has its own request correlation, the `X-Exchange-Id` header ([Debugging and Monitoring Guide](../../agent-docs/backend/debugging-and-monitoring-guide.md)); it is for log tracing and is separate from the domain correlation id described here.
 - Async interceptors and other threads run outside the transaction and without context variables ([interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)), so a ThreadLocal value is not visible there.
 
-### Project practice: correlation id and recursive drain
+### Practice notes: correlation id and recursive drain
 
-This is workflow-poc project code, not a platform feature.
+This is example code, not a platform feature.
 
 ```java
-// Example project code (workflow engine)
+// Example code (workflow engine)
 private static final ThreadLocal<String> correlationID =
     ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
 
@@ -69,7 +69,7 @@ private void processEvent(Token token, Event event) {
 
 ## Example
 
-In workflow-poc a trigger operation creates an event with the caller's or a generated correlation id. Processing finds the current state's transition for that event, executes it, marks the event processed and looks up the next unprocessed event with the same correlation id. Actions run during the transition (on enter, on leave, on transition) can create further events with the same id, so one trigger advances the workflow as far as it can go.
+A trigger operation creates an event with the caller's or a generated correlation id. Processing finds the current state's transition for that event, executes it, marks the event processed and looks up the next unprocessed event with the same correlation id. Actions run during the transition (on enter, on leave, on transition) can create further events with the same id, so one trigger advances the workflow as far as it can go.
 
 ## When to avoid
 

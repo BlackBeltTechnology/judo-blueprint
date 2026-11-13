@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: form
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/custom-implementations/registerServicesPartner_servicePartnerPartner_View_EditCustomImplementations.tsx"]
 alternatives: []
 related: [custom-visual-element-override, masked-input-integration]
 fragment: "none: frontend-only"
@@ -28,16 +28,16 @@ A text field must accept only a fixed format (tax numbers, phone numbers, postal
 - `imask` and `react-imask` are added as npm dependencies, and an `IMaskInput` can be wrapped in a MUI text field ([advanced patterns, IMaskInput integration](../../agent-docs/frontend/advanced-patterns.md)).
 - A model-designated custom element is rendered by a component you register ([[custom-visual-element-override]]).
 
-### Project practice: masked fields in a custom element
+### Practice notes: masked fields in a custom element
 
-When the model mask cannot express the behaviour (placeholder shown at once, empty mask mapped to null, upper-casing), a custom visual element replaces the generated input group. This is project practice (rackinspect).
+When the model mask cannot express the behaviour (placeholder shown at once, empty mask mapped to null, upper-casing), a custom visual element replaces the generated input group. This is practice, not a platform feature.
 
 - The text field uses `IMaskInput` as its input component, with a mask such as `00000000-0-00`, a placeholder character, `lazy: false` (mask always visible) and `overwrite: true`.
 - `onAccept` pushes the value into page state with `storeDiff`. A value that equals the bare mask is converted to null, and it writes only when the value really changed.
 - Read validation messages and the disabled / read-only state from the page actions and data, so the field behaves like the generated ones.
 
 ```tsx
-// Example project code (inside a custom element component)
+// Example code (inside a custom element component)
 <TextField
   inputProps={{
     mask: '00000000-0-00',
@@ -61,7 +61,7 @@ The mask prevents malformed input before the server sees it and shows users the 
 
 ## Example
 
-In rackinspect the partner view/edit page replaces a group of three tax-number fields. Two use the mask `00000000-0-00` (Hungarian tax number format) with upper-casing; the third (an EU tax number) is a plain text field because its format varies. See [[masked-input-integration]] for the blueprint view.
+One app's partner view/edit page replaces a group of three tax-number fields. Two use the mask `00000000-0-00` (a national tax number format) with upper-casing; the third (an EU tax number) is a plain text field because its format varies. See [[masked-input-integration]] for the blueprint view.
 
 ## When to avoid
 

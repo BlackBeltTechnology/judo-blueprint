@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: i18n
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/custom-implementations/DimensionParametersViewComponent.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/public/i18n/application_hu-HU.json"]
 alternatives: [react-intl-flat-key-pattern]
 related: [i18n-generator-override-extra-fragment, react-intl-flat-key-pattern]
 fragment: "none: frontend-only"
@@ -27,17 +27,17 @@ Hand-built components need translated texts that the model does not produce. A f
 - The platform's own key patterns are `entities.*`, `enumerations.*`, `menuTree.*`, `services.*`, `faults.<prefix>.*` and `extra.localization.operation.<name>` for custom operation labels ([key conventions](../../agent-docs/frontend/i18n.md)).
 - `application_<locale>.json` files are generated and regenerate unless listed in `.generator-ignore`; keep a `_default` fallback ([best practices](../../agent-docs/frontend/i18n.md)).
 
-### Project practice: `custom.*` plus defaults
+### Practice notes: `custom.*` plus defaults
 
-The project puts every non-generated string under `custom.*`, grouped by area:
+The convention puts every non-generated string under `custom.*`, grouped by area:
 
-- `custom.dimension.*` for a feature's UI strings, `custom.dialog.*` for dialog titles and texts, `custom.loading.*`, `custom.error.*`.
+- `custom.parameter.*` for a feature's UI strings, `custom.dialog.*` for dialog titles and texts, `custom.loading.*`, `custom.error.*`.
 - English defaults go into the generator override extra fragment ([[i18n-generator-override-extra-fragment]]); other locales go into the locale file, protected as in [[generator-ignore-i18n-layout]].
 - Always pass a `defaultValue` so the text still shows when a key is missing.
 
 ```typescript
 import { t } from 'i18next';            // outside React
-t('custom.dimension.select-row', { defaultValue: 'Select row' });
+t('custom.parameter.select-row', { defaultValue: 'Select row' });
 
 const { t } = useTranslation();         // inside a component
 t('custom.dialog.row-selection.title', { groupLabel, defaultValue: `Select Row from "${groupLabel}"` });
@@ -52,7 +52,7 @@ The prefix cannot clash with generated keys, so regeneration and model changes d
 
 ## Example
 
-rackinspect: about 15 `custom.*` keys for a dimension-parameter UI (select row, add new row, no selection), a row-selection dialog with a `groupLabel` placeholder, loading states and fetch-error messages. English defaults come from the override fragment; Hungarian ones from `application_hu-HU.json`.
+One app: keys under one `custom.<area>.*` prefix for a configurable-parameter UI (select row, add new row, no selection), a row-selection dialog with a `groupLabel` placeholder, loading states and fetch-error messages. English defaults come from the override fragment; Hungarian ones from `application_hu-HU.json`.
 
 ## When to avoid
 

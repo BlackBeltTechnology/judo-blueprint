@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "projec
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: [contact-info-composition-cluster, partner-generalization-hierarchy]
 fragment: partner-with-contact-details
 diagram: { kinds: [entity, enum], members: types }
@@ -31,8 +31,8 @@ A custom validate operation re-checks business rules and writes the findings as 
 
 - **Partner**: name (required), active flag (required, default true), VAT ids, notes, a validity flag (default true).
 - **Composed, 0..\***: addresses, bankAccounts, emailAddresses, phoneNumbers, ratings and errors (PartnerError with a field location and a message).
-- **Associations, 0..1**: headquarters, billingAddress, postalAddress (to an Address), primaryBankAccount, primaryEmail, primaryPhone, and the reference data paymentMethod, currency and language.
-- **Rating**: result from the RatingResult enumeration (EXCELLENT, ACCEPTABLE, NOT_ACCEPTABLE).
+- **Associations, 0..1**: headquarters, billingAddress, postalAddress (to an Address), primaryBankAccount, a primary e-mail contact, a primary phone contact, and the reference data paymentMethod, currency and language.
+- **Rating**: result from the RatingResult enumeration (three grades: A, B and C).
 - **Operations**: a toggle for the active flag and a validate operation (see backend.md).
 
 ## Constraints

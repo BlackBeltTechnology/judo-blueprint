@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 fragment: publish-delete-edit-operations
 diagram: { kinds: [entity, enum], members: types }

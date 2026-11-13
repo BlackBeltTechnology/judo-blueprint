@@ -11,7 +11,7 @@ The task list and the task pages are generated. The example project adds one nav
 
 ## Examples
 
-### workflow-poc
+### Example
 
 - Framework: React (example project code).
 - Key files: `custom/application-customizer.tsx` (registers the flow handler) and `generator-overrides/ui-react/actor/src/fragments/operations/operation-primary-output-handler.fragment.hbs` (adds the redirect call).

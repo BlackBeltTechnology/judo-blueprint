@@ -31,7 +31,7 @@ Declare a derived attribute (`memberType = DERIVED`) with a getter expression th
 
 ### Boolean constants as UI switches
 
-`hiddenBy`, `enabledBy` and `requiredBy` must reference a boolean data member of the same transfer object that owns the widget ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md), `hiddenBy` / `enabledBy` / `requiredBy`). When the control should be on or off unconditionally, an always-true or always-false derived attribute provides that boolean. This is project practice: the platform has no "constant" element for it. Prefer a real condition ([[ui-control-transfer-fields]]) wherever one exists, and remove the control when it can never be on.
+`hiddenBy`, `enabledBy` and `requiredBy` must reference a boolean data member of the same transfer object that owns the widget ([UI authoring guide](../../agent-docs/model/ui-authoring-guide.md), `hiddenBy` / `enabledBy` / `requiredBy`). When the control should be on or off unconditionally, an always-true or always-false derived attribute provides that boolean. This is a convention: the platform has no "constant" element for it. Prefer a real condition ([[ui-control-transfer-fields]]) wherever one exists, and remove the control when it can never be on.
 
 ### Do not confuse it with an access getter
 

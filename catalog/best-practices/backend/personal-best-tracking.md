@@ -1,7 +1,7 @@
 ---
 id: personal-best-tracking
 title: Boolean Flag Personal Best Tracking with Recalculation
-description: Project practice for marking the best record among related records with a stored boolean flag, set by comparing a new record with the current best and recalculated when the best is excluded.
+description: Practice for marking the best record among related records with a stored boolean flag, set by comparing a new record with the current best and recalculated when the best is excluded.
 aliases: [personal best flag, best record flag, high score flag]
 keywords: [boolean, flag, personal best, tracking, recalculation, score, tiebreaker, leaderboard]
 tags: ["domain:backend", "layer:backend", "project:trivia", "status:single-project"]
@@ -16,25 +16,25 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Find the best record per owner (for example a player's best test result in a contest) with a plain boolean filter instead of computing the best on every read. This is project practice (trivia); the platform has no "best record" concept.
+Find the best record per owner (for example an owner's best result in a group) with a plain boolean filter instead of computing the best on every read. This is a convention built on the platform; the platform has no "best record" concept.
 
 ## Practice
 
 ### Platform: what the pattern builds on
 
-- Multi-valued relation queries on a DAO (for example `contestDao.queryTests(contest)`) return a query customizer that supports `filterBy...`, `maskedBy` and `selectList()`/`selectOne()`; `selectOne()` returns an `Optional` ([relation queries and result methods](../../agent-docs/backend/data-access-guide.md#query-result-methods)). Boolean attributes are filtered with `BooleanFilter.isTrue()` / `isFalse()`, not `equalTo(true)`.
+- Multi-valued relation queries on a DAO (for example `groupDao.queryResults(group)`) return a query customizer that supports `filterBy...`, `maskedBy` and `selectList()`/`selectOne()`; `selectOne()` returns an `Optional` ([relation queries and result methods](../../agent-docs/backend/data-access-guide.md#query-result-methods)). Boolean attributes are filtered with `BooleanFilter.isTrue()` / `isFalse()`, not `equalTo(true)`.
 - Relation query customizers have no ordering methods; to order candidates, sort in Java after fetching ([common query mistakes](../../agent-docs/backend/data-access-guide.md#common-query-mistakes)).
 - The flag changes are plain entity updates ([[mutable-entity-update-pattern]]). All changes of one operation run in that operation's transaction, so the old best is cleared and the new one set together; two concurrent submissions by the same owner are not serialized by the platform, so the flag can still end up wrong under a race (the docs do not describe locking for this case).
 
-### Project practice: compare on create, recalculate on exclusion
+### Practice notes: compare on create, recalculate on exclusion
 
 The record carries a `personalBest` boolean and the compared values (score, duration).
 
 ```java
-// Example project code: Test, Contest, TestDao and ContestDao are generated types
-Optional<Test> best = contestDao.queryTests(contest)
+// Example code: Result, Group, ResultDao and GroupDao are generated types
+Optional<Result> best = groupDao.queryResults(group)
     .filterByPersonalBest(BooleanFilter.isTrue())
-    .filterByPlayerEmail(StringFilter.equalTo(email))
+    .filterByOwnerEmail(StringFilter.equalTo(email))
     .selectOne();
 
 if (best.isEmpty()) {
@@ -42,15 +42,15 @@ if (best.isEmpty()) {
 } else if (score > best.get().getScore()
         || (score == best.get().getScore() && duration < best.get().getDuration())) {
     best.get().setPersonalBest(false);
-    testDao.update(best.get());
+    resultDao.update(best.get());
     current.setPersonalBest(true);                 // higher score, or same score and faster
 }
-testDao.update(current);
+resultDao.update(current);
 ```
 
 - On submit: compare the new record with the owner's current best; the primary criterion is the score, the tiebreaker is the shorter duration.
 - On exclusion of the current best: load the owner's remaining finished records, pick the new best with the same comparison, and set the flag. This runs in memory over all candidates of that owner.
-- Keep the comparison in one helper used by both operations; the project duplicated it, which is the main weakness.
+- Keep the comparison in one helper used by both operations; the code duplicated it, which is the main weakness.
 
 ## Rationale
 
@@ -59,7 +59,7 @@ testDao.update(current);
 
 ## Example
 
-A player submits a test with score 80 in 120 s; the earlier best had 80 in 150 s, so the earlier flag is cleared and the new record is flagged. An administrator then excludes the new record: the operation reloads the player's other finished tests in the contest and flags the best of them.
+An owner submits a result with score 80 in 120 s; the earlier best had 80 in 150 s, so the earlier flag is cleared and the new record is flagged. An administrator then excludes the new record: the operation reloads the owner's other finished results in the group and flags the best of them.
 
 ## When to avoid
 

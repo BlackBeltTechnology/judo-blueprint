@@ -208,7 +208,7 @@
         <table xmi:id="_D0DuQNzeEfGIzIT5pxy6Ig" name="BusinessError_Table" label="BusinessError Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
         <view xmi:id="_D0DHMNzeEfGIzIT5pxy6Ig" name="BusinessError_View_Edit" label="BusinessError View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:EntityType" xmi:id="_EEhzMNzeEfGIzIT5pxy6Ig" name="Contest" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_EEhzMNzeEfGIzIT5pxy6Ig" name="Event" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_ELR7cNzeEfGIzIT5pxy6Ig" name="name" dataType="_nhZUUuOjEeuTFeBuQgBSDg" required="true" defaultExpression="" binding="_ELR7cNzeEfGIzIT5pxy6Ig" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_ELR7cdzeEfGIzIT5pxy6Ig"/>
         </attributes>
@@ -217,9 +217,9 @@
           <faults xmi:id="_EVuQ4NzeEfGIzIT5pxy6Ig" lower="1" upper="1" target="_D0BSANzeEfGIzIT5pxy6Ig" name="fault" createable="false" updateable="false" deleteable="false" rangeType="ANY" wrapAsOptional="true"/>
           <inherited xmi:id="_EVsbsNzeEfGIzIT5pxy6Ig"/>
         </operations>
-        <form xmi:id="_EEiaQdzeEfGIzIT5pxy6Ig" name="Contest_Form" label="Contest Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_EEiaQtzeEfGIzIT5pxy6Ig" name="Contest_Table" label="Contest Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_EEiaQNzeEfGIzIT5pxy6Ig" name="Contest_View_Edit" label="Contest View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_EEiaQdzeEfGIzIT5pxy6Ig" name="Event_Form" label="Event Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_EEiaQtzeEfGIzIT5pxy6Ig" name="Event_Table" label="Event Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_EEiaQNzeEfGIzIT5pxy6Ig" name="Event_View_Edit" label="Event View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

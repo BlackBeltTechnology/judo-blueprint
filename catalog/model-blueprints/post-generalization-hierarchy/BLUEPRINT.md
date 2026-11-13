@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [credential-generalization-hierarchy]
 fragment: post-generalization-hierarchy
 diagram: { kinds: [entity, enum], members: types }
@@ -29,7 +29,7 @@ News, Offer, Request and Announcement each extend Post and add their own attribu
 
 ## Structure
 
-Post is abstract and is not created directly; its subtypes are created. Post carries a status enumeration (draft, published, deleted), a post-type enumeration that names the kind, and the common text, timestamp and date attributes. Post has a required association to User (the author) and a required association to Organization. Post also has a composition to Inquiry (a list the subtypes may use).
+Post is abstract and is not created directly; its subtypes are created. Post carries a status enumeration (draft, published, expired, deleted and pending review), a post-type enumeration that names the kind, and the common text, timestamp and date attributes. Post has a required association to User (the author) and a required association to Organization. Post also has a composition to Inquiry (a list the subtypes may use).
 
 Each subtype generalizes Post. News adds an optional image. Offer adds required validity dates, an optional price and an expired flag, and an association to Capability (zero or more). Request adds a required deadline, an expired flag and the same capability association. Announcement adds two optional flags and an association to documents.
 

@@ -8,7 +8,7 @@ tags: [domain:model, layer:frontend, project:mlszksz-platform, project:park-here
 category: pattern
 status: emerging
 projects: [mlszksz-platform, park-here]
-evidence: [mlszksz-platform:unrecorded, park-here:unrecorded]
+evidence: [mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/android/app/src/main/java/hu/mlszksz/platform/StatusBarThemePlugin.java, mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/theme/index.tsx, park-here:unrecorded]
 alternatives: [model-defined-color-palette]
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -20,7 +20,7 @@ Brand a React application beyond what the model-defined palette gives: custom pa
 
 ## Structure
 
-The theme files under `src/theme/` are replaced by project code and listed in `.generator-ignore`, so the generator stops overwriting them. The pieces are a palette pair (light and dark), a theme builder that wires locale bundles and component overrides, a density configuration, a font setup, and optional i18n JSON and layout overrides. The native part is an optional Capacitor plugin (`StatusBarTheme`) that sets the Android background color, while `StatusBar` sets icon style. No model element is involved.
+The theme files under `src/theme/` are replaced by application code and listed in `.generator-ignore`, so the generator stops overwriting them. The pieces are a palette pair (light and dark), a theme builder that wires locale bundles and component overrides, a density configuration, a font setup, and optional i18n JSON and layout overrides. The native part is an optional Capacitor plugin (`StatusBarTheme`) that sets the Android background color, while `StatusBar` sets icon style. No model element is involved.
 
 ## Constraints
 
@@ -49,5 +49,5 @@ The theme files under `src/theme/` are replaced by project code and listed in `.
 
 ## Related
 
-- [[model-defined-color-palette]] — set brand colors in the model before writing theme code
-- [[dark-theme-override]] — dark mode override pattern that this entry builds on
+- [[model-defined-color-palette]]: set brand colors in the model before writing theme code
+- [[dark-theme-override]]: dark mode override pattern that this entry builds on

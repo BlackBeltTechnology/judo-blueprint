@@ -54,7 +54,7 @@ The picker and body-access rows come from the old project notes; the agent-docs 
 
 ## Example
 
-Observed in compsych-letter-demo: the document-generation API inputs (start and confirm generation) needed pickers for template, data object, design and generation handle. Three of these had only dashboard projections with derived attributes (variant count, tokens, an embedded variants grid) that API consumers do not need; the data-object projection was already thin. The change added three reference transfer objects in the API package (template: name and original language; design: name; generation handle: handle id, document id and state) and four transient one-to-one relations on the input transfer objects pointing at the four references.
+Observed in one project: the generation API inputs (start and confirm) needed pickers for a template, a data object, a design and a generation handle. Three of these had only dashboard projections with derived attributes (a derived count, a derived total, an embedded grid) that API consumers do not need; the data-object projection was already thin. The change added three reference transfer objects in the API package (template: name and language; design: name; generation handle: identifier, document identifier and state) and four transient one-to-one relations on the input transfer objects pointing at the four references.
 
 In the diagram, a template entity is mapped by a reference transfer object with two members, and an unmapped input holds a transient relation to it.
 

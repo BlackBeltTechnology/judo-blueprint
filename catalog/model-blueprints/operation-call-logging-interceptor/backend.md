@@ -39,8 +39,7 @@ log.info("OPERATION {} called by {}", "Order#confirm", currentUser);
 
 ## Examples
 
-### rackinspect
-- Key file: `interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/LogOperationCallInterceptor.java`
+### Example
 - Pattern: interceptor without a `getOperations()` override, so it logs every built-in operation call. The commented-out `getOperations()` shows the named-operation variant using `asmUtils.resolveOperation("[MODEL].[PACKAGE...].[TRANSFER]#[OPERATION]")` with lazy initialization.
-- Notable: `@Component(property={"judo.model.name=rackinspect"})` binds the model. `preCall()` logs at INFO with a marker that makes the lines easy to grep. Custom operations of the project are not in this log.
+- Notable: `@Component(property={"judo.model.name=<model-name>"})` binds the model. `preCall()` logs at INFO with a marker that makes the lines easy to grep. Custom operations of the project are not in this log.
 - DI wiring: no `@Reference` dependencies. OSGi DS registers it when the bundle is active.

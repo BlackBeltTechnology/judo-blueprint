@@ -15,7 +15,5 @@ The verification flow is implemented by custom operations on the request entity.
 
 ## Examples
 
-### mlszksz-platform
-
-- Key files (example project code): the registration and user service implementations, the token utility, and the cleanup job.
+- Example project code: the registration and user service implementations, a token utility, and a cleanup job.
 - The two request entities use the same token helper and the same hash-and-verify logic. They differ only in the names of the token and expiry fields and in the status enumeration.

@@ -26,9 +26,9 @@ Replace callback-style dialogs with `await openXDialog(...)` calls in a frontend
 - The generated frontend already creates its dialogs from the model: input forms for operations and create or edit, range selection dialogs for relations, with hook extension points for the dialog's behaviour ([UI model to frontend mapping](../../agent-docs/frontend/model-screen-layout.md), [action hooks](../../agent-docs/frontend/hooks/action-hooks.md)). Use those first.
 - A hand-built UI that consumes only the generated service layer and transfer object types has to supply its own dialogs; see [[complete-frontend-replacement]]. This pattern is for that case.
 
-### Project practice: a context-provided Promise dialog set
+### Practice notes: a context-provided Promise dialog set
 
-This is project code, not a platform feature:
+This is custom code, not a platform feature:
 
 - A `DialogProvider` wraps the app and renders four dialogs once: filter, range, confirmation and page.
 - Each dialog is opened by its own hook returning a function that returns a Promise: `openFilterDialog(options, current)` resolves with the chosen filters, `openRangeDialog({ columns, rangeCall, single, alreadySelectedItems, filterOptions })` with the selected entities, `openConfirmDialog(message, title)` with a boolean, and `openPageDialog(component)` renders an output component in a modal.
@@ -50,7 +50,7 @@ Linear async/await flows are easier to read than nested callbacks, and dialog st
 
 ## Example
 
-actiongroup-test-react: `DialogProvider` in `src/components/dialog/DialogContext.tsx` combines the four dialogs. `PageDialog` renders action group output components in modals.
+A hand-built app: `DialogProvider` in `src/components/dialog/DialogContext.tsx` combines the four dialogs. `PageDialog` renders action group output components in modals.
 
 ## When to avoid
 

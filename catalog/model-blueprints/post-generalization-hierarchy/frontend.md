@@ -13,8 +13,8 @@ The hook and component names belong to the example project; the framework's hook
 
 ## Examples
 
-### mlszksz-platform
+### Example (project code)
 - Framework: React.
-- Key files: one custom view per subtype (news, offer, request, announcement), a shared layout component and a shared contact component, and one container hook per subtype.
+- Structure: one custom view per subtype, a shared layout component and a shared contact component, and one container hook per subtype.
 - Pattern: each hook uses a DOM observer to hide the generated container and portal the custom view in its place. Views receive the loaded data and a loading flag and render a card layout suited to mobile screens.
 - Notable: the shared layout and contact components keep the four views consistent.

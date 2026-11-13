@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, project:rackinspect, status:sin
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: []
 fragment: history-audit-trail-entity
 diagram: { kinds: [entity, enum], members: types }
@@ -44,7 +44,7 @@ The parent entity composes History rows through a zero-to-many composition relat
 
 - **Enumeration of actions.** Replace the free-text action with an enumeration so events can be filtered and counted. See [[audit-log-entity]].
 - **Shared audit table.** Keep one log for all entities instead of a history per parent. See [[audit-log-entity]].
-- **Versioned snapshots.** Store the frozen state of the parent at each event instead of a text description. See [[forecast-versioning-snapshot]] for the versioned pattern.
+- **Versioned snapshots.** Store the frozen state of the parent at each event instead of a text description. See [[plan-versioning-snapshot]] for the versioned pattern.
 
 ## When to use
 
@@ -60,6 +60,6 @@ The parent entity composes History rows through a zero-to-many composition relat
 
 ## Related
 
-- [[audit-log-entity]] — a shared audit table with an enumeration of action types
-- [[entity-change-history-snapshot]] — flat attribute snapshots of one entity
-- [[forecast-versioning-snapshot]] — versioned monthly snapshots composed by a parent
+- [[audit-log-entity]]: a shared audit table with an enumeration of action types
+- [[entity-change-history-snapshot]]: flat attribute snapshots of one entity
+- [[plan-versioning-snapshot]]: versioned monthly snapshots composed by a parent

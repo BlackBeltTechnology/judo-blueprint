@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "project:park
 category: component
 status: emerging
 projects: [rackinspect, park-here]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditGenerateAssessmentSheetPreviewInputFormActionsHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditGenerateReviewReportPreviewInputFormActionsHook.tsx"]
 alternatives: []
 related: [pandino-action-hook-override, generator-override-extra-dependencies]
 fragment: "none: frontend-only"
@@ -26,12 +26,12 @@ Let users look at a generated PDF right after the operation that produced it, wi
 - The generated `fileHandling` helpers (`downloadFile`, `uploadFile`, `exportFile`, `extractFileNameFromToken`) wrap the two-phase token flow. `downloadFile` calls the download path with `?disposition=inline|attachment` and the token in the `X-Token` header; per the platform docs an inline download renders in a dialog frame ([custom attachments: token flow](../../agent-docs/frontend/advanced-patterns.md), [client side of the upload token flow](../../agent-docs/backend/platform-behavior-reference.md)).
 - Page and dialog hook types have optional `post<Operation>Action` handlers whose parameters are generated for the page. Return the handler from the actions hook created from the generated `register<Page>ActionsHook` scaffold; check the generated types for the exact names ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 
-### Project practice: preview in the post-operation hook (rackinspect)
+### Practice notes: preview in the post-operation hook
 
 - In the post-operation handler of the input dialog, call the close callback first, then open the file with `downloadFile(..., 'inline')`. Closing first keeps the input dialog from staying open behind the PDF.
 - Accept the token as a string or as an object holding the identifier; if the output has no file, only close the dialog and show no error.
-- The `post<Operation>Action` name and signature below are illustrative; rackinspect opens the PDF in a new browser tab, so check what your generated version does for `inline`.
-- The PDF viewer libraries (`@react-pdf-viewer/core`, `@react-pdf-viewer/page-navigation`, `pdfjs-dist`) are project additions, put into the generated `package.json` through a generator override fragment ([[generator-override-extra-dependencies]]). That fragment list is not part of the platform docs' fragment table, which covers pom and Karaf files.
+- The `post<Operation>Action` name and signature below are illustrative; The example app opens the PDF in a new browser tab, so check what your generated version does for `inline`.
+- The PDF viewer libraries (`@react-pdf-viewer/core`, `@react-pdf-viewer/page-navigation`, `pdfjs-dist`) are additions, put into the generated `package.json` through a generator override fragment ([[generator-override-extra-dependencies]]). That fragment list is not part of the platform docs' fragment table, which covers pom and Karaf files.
 
 ```typescript
 // Illustrative handler shape; the generated hook type gives the real one.
@@ -50,7 +50,7 @@ The user stays in the application flow and sees the result at once. The cost is 
 
 ## Example
 
-rackinspect has two dialog hooks of this kind: an assessment sheet preview and a review report preview. Both close the input dialog, take the token from the operation output and call `downloadFile` inline. The review report hook also sets default dates in `postGetTemplateAction`.
+One app has several dialog hooks of this kind, each for a different generated document. Each closes the input dialog, takes the token from the operation output and calls `downloadFile` inline. One of them also sets default dates in `postGetTemplateAction`.
 
 ## When to avoid
 

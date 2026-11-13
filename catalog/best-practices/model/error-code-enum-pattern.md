@@ -42,12 +42,12 @@ The enumeration is model data; adding a reason needs a model change and a regene
 
 - Clients get a stable, typed contract for failures instead of message strings.
 - Declared faults give the generated SDK a checked exception, so callers must handle it.
-- Project practice (not platform behaviour): four source projects used one shared fault with an error-code enumeration; the platform also supports one fault type per failure.
+- Practice note (not platform behaviour): four source projects used one shared fault with an error-code enumeration; the platform also supports one fault type per failure.
 - A validation problem on one input field is better reported as a `ValidationException`; use a fault for a business rule that deserves its own handling.
 
 ## Example
 
-`BusinessError` is an unmapped transfer object with `message` and a required `code` of type `ErrorCode` (NOT_FOUND, NOT_OPEN, ALREADY_STARTED, PERMISSION_DENIED). The instance operation `Contest.open` declares `BusinessError` as its fault and is implemented in Java, where it throws the generated exception with the code `NOT_OPEN` when the contest is not open. Names are neutral stand-ins. The diagram shows the entity, the enumeration and the fault on the operation.
+`BusinessError` is an unmapped transfer object with `message` and a required `code` of type `ErrorCode` (NOT_FOUND, NOT_OPEN, ALREADY_STARTED, PERMISSION_DENIED). The instance operation `Event.open` declares `BusinessError` as its fault and is implemented in Java, where it throws the generated exception with the code `NOT_OPEN` when the event is not open. Names are neutral stand-ins. The diagram shows the entity, the enumeration and the fault on the operation.
 
 ## When to avoid
 
@@ -70,17 +70,17 @@ classDiagram
     +String message
     +ErrorCode code [1]
   }
-  class Contest {
-    <<Entity>>
-    +String name [1]
-    +open()
-  }
   class ErrorCode {
     <<Enumeration>>
     NOT_FOUND
     NOT_OPEN
     ALREADY_STARTED
     PERMISSION_DENIED
+  }
+  class Event {
+    <<Entity>>
+    +String name [1]
+    +open()
   }
   BusinessError ..> ErrorCode : code
 ```

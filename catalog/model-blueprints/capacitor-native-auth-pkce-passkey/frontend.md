@@ -1,6 +1,6 @@
 ## Frontend guidance
 
-This entry is a frontend pattern for a React app that runs inside Capacitor on Android. The auth modules described below are project code. The platform does not provide them, so copy the design and not the names.
+This entry is a frontend pattern for a React app that runs inside Capacitor on Android. The auth modules described below are application code. The platform does not provide them, so copy the design and not the names.
 
 ### Use a native login path only on native
 
@@ -13,7 +13,7 @@ Check the platform at startup. On the web, keep the standard OIDC redirect flow 
 
 ### Store tokens in two layers
 
-Keep tokens in encrypted storage for persistence, and mirror them in session storage. Shape the mirror in the format the OIDC client expects, so existing HTTP interceptors keep working without change. In the source project the layout loaded the principal (`__signedIdentifier`) early on start-up, so the mirror had to exist before that call; check when your generated layout first requests the principal.
+Keep tokens in encrypted storage for persistence, and mirror them in session storage. Shape the mirror in the format the OIDC client expects, so existing HTTP interceptors keep working without change. In one project the layout loaded the principal (`__signedIdentifier`) early on start-up, so the mirror had to exist before that call; check when your generated layout first requests the principal.
 
 ### Handle the callback after a WebView restart
 

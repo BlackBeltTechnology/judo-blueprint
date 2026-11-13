@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszks
 category: service
 status: established
 projects: [rackinspect, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner]
-evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
+evidence: ["rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/position/DeletePositionCustomImplementation.java", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/city/ActivateToggleCustomImplementation.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AuditLogServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: [facade-service-pattern]
 related: [custom-operation-osgi-component, test-data-builder-factory, facade-service-pattern, action-delegation-workflow, role-based-invitation-guard]
 fragment: "none: backend-only"
@@ -25,29 +25,29 @@ The generated operation interface fixes the method signature and the declared fa
 
 - This is the platform's documented "custom service layer": the generated `Operation` implementation stays thin and delegates to a handwritten `Service` that contains the logic and injects DAOs ([architectural patterns](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)).
 - Both the operation implementation and the service are OSGi Declarative Services components. `@Component(service = ...)` registers them and `@Reference` injects DAOs and other services ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern), [component annotations](../../agent-docs/backend/patterns-and-best-practices.md)).
-- The operation must declare every fault it can throw. A fault that is thrown from a service must be declared on the operation or the SDK interface has no matching `throws` clause ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)). Fault classes are generated per project.
+- The operation must declare every fault it can throw. A fault that is thrown from a service must be declared on the operation or the SDK interface has no matching `throws` clause ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)). Fault classes are generated per application.
 - Interceptors do not fire for custom operations, and a service called from an operation is not intercepted either. Permission and state checks go into the service or the adapter ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - The agent-docs state that synchronous interceptors run inside the operation's transaction; they do not describe the transaction of a service called from an operation, so verify rollback behaviour of a delegated call in a test.
 
-### Project practice: how the projects shape it
+### Practice notes: how applications shape it
 
-This layer is project practice (six projects), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
-- Group services by domain object (`OfferService`, `UserService`, `ReservationService`), not by operation. Several operations, including the same operation on several actor views, call one method.
+- Group services by domain object (`ItemService`, `UserService`, `BookingService`), not by operation. Several operations, including the same operation on several actor views, call one method.
 - The adapter body is one to three lines: call the service, then optionally write an audit entry or recalculate something. Typical sizes: a single call, or two calls such as validate then create.
 - Put code that must not depend on OSGi in plain service classes taking DAOs as collaborators, so it can be unit-tested; wire it with `@Reference` in the component.
-- A project helper such as `ActorService`, `EmailSenderService` or `AuditLogService` is itself such a service. Services may call other services.
+- A helper such as `ActorService`, `EmailSenderService` or `AuditLogService` is itself such a service. Services may call other services.
 - Convert identifiers at the adapter: pass `_this.identifier().getIdentifier()` or the entity, whichever the service wants, and keep platform types out of the service API when it is shared with jobs.
 
 ```java
-// Example project code: OperationInterface, SharedService, Entity, Input are project/generated types
+// Example code: OperationInterface, SharedService, Entity, Input are generated types
 @Component(immediate = true, service = OperationInterface.class)
 public class OperationCustomImplementation implements OperationInterface {
     @Reference SharedService sharedService;
 
     @Override
     public ReturnType method(Entity _this, Input input) throws BusinessErrorException {
-        // BusinessErrorException is a fault modeled by the project, not a platform class
+        // BusinessErrorException is a fault modeled by the application, not a platform class
         return sharedService.doBusinessLogic(_this, input);
     }
 }
@@ -69,12 +69,12 @@ public class SharedServiceImpl implements SharedService {
 
 ## Example
 
-- RackInspect: about 80% of custom operations delegate to twelve services (offers, fault registry, items, price modifiers, job tasks, reports, e-mail, warehouse). The close-offer operation is one line that calls the offer service.
-- mlszksz-platform: over sixty-five operations delegate to more than fifteen services; each operation delegates, then writes an audit entry.
-- Ubives: forty-two operations over seven services, mostly one-liners, repeated across several actor views.
-- ParkHere: twenty operations over seven services; the reservation operation validates input, then creates the reservation.
-- Indamedia-AdTrack: seventeen operations over six services; untracking calls the tracked-campaign service, then recalculates spendings.
-- judo-partner: fifteen operations over seven services; partner creation calls the partner service, then logs the action.
+- One application: most custom operations delegate to a set of services (orders, audit registry, items, price modifiers, job tasks, reports, e-mail, containers). The close-order operation is one line that calls the order service.
+- One application: many operations delegate to many services; each operation delegates, then writes an audit entry.
+- Another application: many mostly one-line operations, repeated across several actor views.
+- One application: a set of operations over a few services; the booking operation validates input, then creates the booking.
+- Another application: a set of operations over a few services; untracking calls the tracked-item service, then recalculates spendings.
+- A third application: a set of operations over a few services; account creation calls the account service, then logs the action.
 
 ## When to avoid
 

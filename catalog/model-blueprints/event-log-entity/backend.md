@@ -22,9 +22,9 @@ A failure to create the event is a platform failure, not a business rule. Do not
 
 ## Examples
 
-### alba
+### Variant seen in practice
 
 - Each product lifecycle operation (finalize, approve, revoke, create) creates one event at the end of the operation.
 - The event type is chosen per operation. Draft-new-version is the only product operation that writes no event.
 - Event messages are human-readable and carry the version number.
-- The project's own data-access wrappers and helper classes are project code. Copy the pattern, not the names.
+- The application's own data-access wrappers and helper classes are application code. Copy the pattern, not the names.

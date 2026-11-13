@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "projec
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 fragment: feed-entry-denormalization
 diagram: { kinds: [entity, enum], members: types }
@@ -60,7 +60,7 @@ The FeedEntry entity is not createable, updateable or deleteable, so the generat
 
 ## Related
 
-- [[derived-attribute-flattening]] — computing the display value on read instead of copying it
-- [[audit-log-entity]] — another entity that copies names so a row stays readable after a change
-- [[infinite-scroll-feed-component]] — the frontend feed that reads these rows
-- [[event-log-entity]] — an event log entity that links to the affected entity
+- [[derived-attribute-flattening]]: computing the display value on read instead of copying it
+- [[audit-log-entity]]: another entity that copies names so a row stays readable after a change
+- [[infinite-scroll-feed-component]]: the frontend feed that reads these rows
+- [[event-log-entity]]: an event log entity that links to the affected entity

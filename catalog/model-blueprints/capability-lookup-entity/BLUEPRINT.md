@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [reference-data-lookup-entity]
 fragment: capability-lookup-entity
 diagram: { kinds: [entity, enum], members: types }
@@ -34,7 +34,7 @@ The Capability entity has a required name identifier, an optional description te
 ## Constraints
 
 - A capability is a shared lookup. It is never composed inside an organization or an offer.
-- The name is the identifier and is required. Uniqueness is enforced by project logic in a service, not by the model (project practice).
+- The name is the identifier and is required. Uniqueness is enforced by application logic in a service, not by the model (common practice).
 - Choice lists show only active capabilities. Existing tags show all of them.
 - Administrators manage the list. Other actors see it through a read-only transfer object. Create, update and delete are flags on transfer-object relations, so the entity itself carries no CRUD rule.
 
@@ -58,6 +58,6 @@ The Capability entity has a required name identifier, an optional description te
 
 ## Related
 
-- [[reference-data-lookup-entity]] — the general reference list pattern this entry specialises with a flag and many-to-many tags
-- [[active-inactive-status-enum]] — a two-state status when the on/off state is not a managed list
-- [[contact-info-composition-cluster]] — owned parts that are composed rather than tagged
+- [[reference-data-lookup-entity]]: the general reference list pattern this entry specialises with a flag and many-to-many tags
+- [[active-inactive-status-enum]]: a two-state status when the on/off state is not a managed list
+- [[contact-info-composition-cluster]]: owned parts that are composed rather than tagged

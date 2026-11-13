@@ -50,5 +50,5 @@ One enumeration with three members, DEV, TEST and PROD, stored with ordinals 1, 
 
 ## Related
 
-- [[category-enum-pattern]] — choosing between an enumeration and an entity for a fixed set of values
-- [[active-inactive-status-enum]] — another small fixed enumeration used as a status
+- [[category-enum-pattern]]: choosing between an enumeration and an entity for a fixed set of values
+- [[active-inactive-status-enum]]: another small fixed enumeration used as a status

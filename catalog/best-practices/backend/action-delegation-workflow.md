@@ -27,16 +27,16 @@ A workflow engine must run side effects when a token enters or leaves a state or
 - A concrete action type that overrides an abstract inherited `run` must be marked `stateful`, and the flag must match every overload ([rules for custom operations](../../agent-docs/backend/custom-operations.md#rules-for-custom-operations)).
 - Interceptors and write guards do not fire for custom operations, so any permission check belongs inside the implementation ([interceptors](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 
-### Project practice: actions as pluggable entities
+### Practice notes: actions as pluggable entities
 
-This layer is project practice (workflow-poc), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - Model an action entity with optional single relations from `State` (on enter, on leave) and from `Transition`; each action type is a subtype with its own `run` implementation.
 - The engine resolves the action for the current event through DAO relation queries and calls the generated `run` interface with a small input carrying a correlation id and the token id. The action re-loads whatever it needs from that id.
 - Adding an action type means adding an entity subtype and its implementation; the engine is untouched.
 
 ```java
-// Example project code: ActionOperation is the generated interface, WorkflowUtils is a project class
+// Example code: ActionOperation is the generated interface, WorkflowUtils is a helper class
 @Reference
 private ActionOperation actionOperation;
 
@@ -52,7 +52,7 @@ private void executeAction(Object target, ActionType type, Token token) {
 }
 
 private Optional<Action> getAction(ActionType type, Object target) {
-    // the project wrapped the relation queries in Optional; check the generated
+    // the code wrapped the relation queries in Optional; check the generated
     // DAO signature, single-valued relation queries may return the entity directly
     return switch (type) {
         case ON_LEAVE      -> Optional.ofNullable(stateDao.queryOnLeave((State) target));
@@ -88,7 +88,7 @@ public class RunCustomImplementation implements Run {
 
 ## Example
 
-In workflow-poc a utility method checks for an on-enter, on-leave or on-transition action through DAO relation queries and, when one exists, calls `run` with the correlation id and token id. One concrete action loads the token by id, reads its context, changes the context label and persists it. The action's own changes can raise further events in the same correlation chain.
+A utility method checks for an on-enter, on-leave or on-transition action through DAO relation queries and, when one exists, calls `run` with the correlation id and token id. One concrete action loads the token by id, reads its context, changes the context label and persists it. The action's own changes can raise further events in the same correlation chain.
 
 ## When to avoid
 

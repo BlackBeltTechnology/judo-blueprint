@@ -8,9 +8,9 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
-alternatives: [code-based-player-authentication]
-related: [code-based-player-authentication, invitation-with-recipients, invitation-with-key-based-acceptance]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
+alternatives: [email-code-guest-authentication]
+related: [email-code-guest-authentication, invitation-with-recipients, invitation-with-key-based-acceptance]
 fragment: token-based-verification-entity
 diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
@@ -54,12 +54,12 @@ The VerificationRequest entity has a stored token hash, an expiry timestamp, a v
 
 ## When to avoid
 
-- The entity is only a short code shown on screen, with no email step. See [[code-based-player-authentication]].
+- The entity is only a short code shown on screen, with no email step. See [[email-code-guest-authentication]].
 - The request is an invitation that a recipient accepts with a key, and no review step exists. See [[invitation-with-key-based-acceptance]].
 - Several recipients share one invitation. See [[invitation-with-recipients]].
 
 ## Related
 
-- [[code-based-player-authentication]] — a short code confirmation without an email token or hash
+- [[email-code-guest-authentication]] — a short code confirmation without an email token or hash
 - [[invitation-with-recipients]] — an invitation sent to several recipients
 - [[invitation-with-key-based-acceptance]] — an invitation accepted with a key

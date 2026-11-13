@@ -30,10 +30,10 @@ A screen receives a transfer object that contains more than it should show: an i
 - Operations are named by FQN, for example `<model>.services.<Service>#_getTemplate<Entity>` or `#_refreshInstance...`; resolve once and cache ([FQN format](../../agent-docs/backend/interceptors.md#operation-fqn-format-reference)).
 - Instance flags such as `__updateable` and `__deleteable` are separate payload metadata ([[interceptor-access-control-flags]]).
 
-### Project practice: remove what the screen must not carry
+### Practice notes: remove what the screen must not carry
 
 ```java
-// Example project code: the operation FQN, relation and field names are project specific
+// Example code: the operation FQN, relation and field names are application specific
 @Override
 public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload)
         throws InterceptorCallBusinessException {
@@ -61,7 +61,7 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
 
 ## Example
 
-A user-settings screen shows the garages a user may access. The template operation of the settings object returns, for each garage, an internal e-mail template, the list of users with access and an active flag. The interceptor removes those three keys from each garage payload, so the page shows only what it needs. A second project keeps the same class as a commented-out starting point for new interceptors.
+A user-settings screen shows the sites a user may access. The template operation of the settings object returns, for each site, an internal e-mail template, the list of users with access and an active flag. The interceptor removes those three keys from each site payload, so the page shows only what it needs. A second variant keeps the same class as a commented-out starting point for new interceptors.
 
 ## When to avoid
 

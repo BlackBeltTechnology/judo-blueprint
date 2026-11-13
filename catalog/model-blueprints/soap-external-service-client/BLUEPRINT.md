@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/mnb-soap-client/src/main/java/hu/mnb/webservices/osgi/ExchangeRateService.java", "rackinspect:application/mnb-soap-client/pom.xml"]
 alternatives: [external-api-adapter-provider-pattern]
 fragment: "none: backend-only"
 first_seen: 2026-03-09

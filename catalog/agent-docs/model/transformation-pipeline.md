@@ -98,7 +98,7 @@ The CLI keeps the loaded model in memory and tracks edits separately from disk:
                            └──────────┘
 ```
 
-A hidden side-car file next to the ESM, named `.<file-name>.dirty` (for example `.<app>.model.dirty`), holds the pending in-memory edits; the server writes it about every 500 ms (`PersistenceThread`). Further sidecars (`.base`, `.intent`) record the file the edits were made against. **Dirty state survives server restarts** — until a `save` or `discard --force` runs, the dirty edits remain.
+A hidden side-item file next to the ESM, named `.<file-name>.dirty` (for example `.<app>.model.dirty`), holds the pending in-memory edits; the server writes it about every 500 ms (`PersistenceThread`). Further sidecars (`.base`, `.intent`) record the file the edits were made against. **Dirty state survives server restarts** — until a `save` or `discard --force` runs, the dirty edits remain.
 
 ## Save / discard / transform-load — when to use which
 

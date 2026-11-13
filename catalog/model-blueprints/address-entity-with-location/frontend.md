@@ -17,13 +17,13 @@ The latitude and longitude come from a map step or a geocoding service, not from
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - Framework: React.
 - Form action hooks on the organization admin panel address fetch the address with the city and the postal code, and fill the city when one postal code maps to a single city.
 
-### rackinspect
+### Second variant seen in practice
 
 - Framework: React.
 - Five parallel hooks (form and view-edit for the partner address and the company address, plus the partner create form) recompute the address line on blur. The manual override flag lets the user keep their own text.
-- This project uses a country association instead of city and postal code lookups, so it has no postal code auto-fill.
+- This variant uses a country association instead of city and postal code lookups, so it has no postal code auto-fill.

@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "projec
 category: pattern
 status: established
 projects: [indamedia-adtrack, park-here, ubives, workflow-poc, trivia, mlszksz-platform]
-evidence: ["indamedia-adtrack:unrecorded", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "trivia:unrecorded", "mlszksz-platform:unrecorded"]
+evidence: ["indamedia-adtrack:unrecorded", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "trivia:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [validation-exception-hierarchy, typed-exception-error-handling]
 fragment: error-code-enum
 diagram: { kinds: [entity, enum, transfer], members: types }
@@ -29,7 +29,7 @@ One business error object with a code and a message is thrown across the operati
 
 ## Structure
 
-Three parts. An error code vocabulary, either a modeled enumeration (one member per error) or plain string constants in code. One business error object, a transfer object that is not mapped to an entity, with the code and the message, declared in the model as the fault of the operations that can fail. The platform generates a checked exception class from that fault in each project; the name `BusinessErrorException` exists only because the project models a fault called `BusinessError`. A factory in the application (project code) builds the error object and wraps it in that generated exception, so that no operation builds it inline.
+Three parts. An error code vocabulary, either a modeled enumeration (one member per error) or plain string constants in code. One business error object, a transfer object that is not mapped to an entity, with the code and the message, declared in the model as the fault of the operations that can fail. The platform generates a checked exception class from that fault in each project; the name `BusinessErrorException` exists only because the application models a fault called `BusinessError`. A factory in the application (application code) builds the error object and wraps it in that generated exception, so that no operation builds it inline.
 
 ## Constraints
 
@@ -38,14 +38,14 @@ Three parts. An error code vocabulary, either a modeled enumeration (one member 
 - Messages come from the application's translation service, not from string literals in operations.
 - A business failure is raised as a business error. It must not escape as a raw runtime exception, because the client would see a server error (500) instead of the business answer.
 - Field-level errors use the field validation mechanism (`ValidationException`, HTTP 400) with the attribute name as their location. They are not business errors. Rethrowing a validation exception as one business error loses its per-field result list.
-- Project practice, not platform behavior: the vocabulary, the factory and the translation of the codes are conventions of this blueprint.
+- Common practice, not platform behavior: the vocabulary, the factory and the translation of the codes are conventions of this blueprint.
 
 ## Variations
 
 - **Modeled enumeration.** The codes are an enumeration in the model, one member per error, with ordinals. Type-safe, and the vocabulary is part of the model. Used by projects that want the codes in the API contract.
 - **Plain string codes.** The business error object has a string code and a message, and the codes are constants in application code. Simpler: no enumeration to maintain, and a new code needs no model change. Used by projects that keep the vocabulary in code.
 - **Domain-scoped enumeration.** A separate enumeration per domain, such as workflow declaration validation, instead of one for the whole application.
-- **Actor-scoped enumeration.** The enumeration and the error object live in the namespace of one actor (for example a player), so that the codes belong to that actor's API.
+- **Actor-scoped enumeration.** The enumeration and the error object live in the namespace of one actor (for example an end user), so that the codes belong to that actor's API.
 - **Direct construction.** The service constructs the business error object itself and throws it, with no factory. Works, but the codes end up spread across the code base.
 
 ## When to use
@@ -62,6 +62,6 @@ Three parts. An error code vocabulary, either a modeled enumeration (one member 
 
 ## Related
 
-- [[error-handler-interceptor-customization]] — the frontend hook that shows the business error message from a 422 response
-- [[validation-exception-hierarchy]] — the separate field-level validation mechanism
-- [[typed-exception-error-handling]] — typed exception handling in the backend
+- [[error-handler-interceptor-customization]]: the frontend hook that shows the business error message from a 422 response
+- [[validation-exception-hierarchy]]: the separate field-level validation mechanism
+- [[typed-exception-error-handling]]: typed exception handling in the backend

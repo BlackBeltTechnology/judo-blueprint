@@ -8,7 +8,7 @@ tags: [domain:frontend, layer:frontend, project:rackinspect, status:single-proje
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/utils/priceCalculationHelper.ts"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09

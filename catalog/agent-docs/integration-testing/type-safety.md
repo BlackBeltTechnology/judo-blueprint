@@ -152,7 +152,7 @@ CreateChildEntityInput input = CreateChildEntityInput.builder()
 |------------------|---------------------|---------------------|
 | `UserDao.create()` → Entity User | `CreateInput.withUser()` → Service User | ✅ Yes |
 | `AddressDao.create()` → Entity Address | `CreateInput.withAddress()` → Service Address | ✅ Yes |
-| `CampaignDao.create()` → Entity Campaign | `CreateInput.withCampaign()` → Service Campaign | ✅ Yes |
+| `ActivityDao.create()` → Entity Activity | `CreateInput.withActivity()` → Service Activity | ✅ Yes |
 | `SettlementDao.create()` → Entity Settlement | `CreateInput.withSettlement()` → Service Settlement | ✅ Yes |
 
 ---
@@ -253,7 +253,7 @@ void testCreateAddress(JudoRuntimeFixture fixture) {
 
 ```java
 // ❌ WRONG - Service input doesn't expect Optional
-CreateCampaignInput input = CreateCampaignInput.builder()
+CreateActivityInput input = CreateActivityInput.builder()
     .withStartDate(Optional.of(startDate))  // Compilation error!
     .build();
 ```
@@ -262,7 +262,7 @@ CreateCampaignInput input = CreateCampaignInput.builder()
 
 ```java
 // ✅ CORRECT - Service input expects raw LocalDate
-CreateCampaignInput input = CreateCampaignInput.builder()
+CreateActivityInput input = CreateActivityInput.builder()
     .withStartDate(startDate)  // Direct value
     .build();
 ```

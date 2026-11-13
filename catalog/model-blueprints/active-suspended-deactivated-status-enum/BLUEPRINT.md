@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, project:mlszksz-platform, statu
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [active-inactive-status-enum]
 fragment: active-suspended-deactivated-status-enum
 diagram: { kinds: [entity, enum], members: types }
@@ -58,6 +58,6 @@ The enumeration has three members with unique integer ordinals: ACTIVE (0), SUSP
 
 ## Related
 
-- [[active-inactive-status-enum]] — the two-value form without a suspended state
-- [[toggle-active-operation]] — a single flip operation between two values
-- [[platform-configuration-singleton]] — another entity with an administrative lifecycle
+- [[active-inactive-status-enum]]: the two-value form without a suspended state
+- [[toggle-active-operation]]: a single flip operation between two values
+- [[platform-configuration-singleton]]: another entity with an administrative lifecycle

@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect
 category: config
 status: established
 projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, bhs-global-operation, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/app/.generator-ignore", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:application/.generator-ignore", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Code generation from the model rewrites files in the project. Files that developers own (runtime configuration, secrets, hand-written operation classes) must be listed in `.generator-ignore`, or the next build either overwrites them or fails.
+Code generation from the model rewrites files in the application. Files that developers own (runtime configuration, secrets, hand-written operation classes) must be listed in `.generator-ignore`, or the next build either overwrites them or fails.
 
 ## Practice
 
@@ -26,9 +26,9 @@ The platform docs describe the mechanism ([code generation and checksum protecti
 
 For custom operations the docs say: the generated `.default` file is a read-only blueprint that is regenerated on every build; create a new `.java` file with your logic and add the `.default` path to `.generator-ignore` ([understanding generated default implementations](../../agent-docs/backend/custom-operations.md)).
 
-### Project practice: the standard root list
+### Practice notes: the standard root list
 
-The root `.generator-ignore` of a freshly generated project is a short file, and the example projects keep this set:
+The root `.generator-ignore` of a freshly generated application is a short file, and the examples keep this set:
 
 ```
 .generator-ignore
@@ -39,10 +39,10 @@ generator-parameter.properties
 
 - The file lists itself so it is not overwritten.
 - `judo.properties` holds runtime configuration; `judo-karaf.env` holds environment values and secrets (SMTP credentials, identifier signer secret, filestore settings; see [application config](../../agent-docs/deployment/application-config.md)); `generator-parameter.properties` holds generation parameters.
-- Add further root files that the team edits (some projects add `judo.sh` or `.gitignore`).
+- Add further root files that the team edits (some applications add `judo.sh` or `.gitignore`).
 - Application-level `.generator-ignore` files list `.default` paths of implemented operations, or edited build files such as a `pom.xml`. Frontend submodules keep their own `.generator-ignore`.
-- Some projects keep custom operations in a separate `custom/` source directory instead, so no application-level entries are needed.
-- Some example projects list renamed `.java.default` files. That is project-observed; the platform docs advise a new `.java` file next to the untouched `.default` blueprint.
+- Some applications keep custom operations in a separate `custom/` source directory instead, so no application-level entries are needed.
+- Some examples list renamed `.java.default` files. That is observed in practice; the platform docs advise a new `.java` file next to the untouched `.default` blueprint.
 
 ## Rationale
 
@@ -52,11 +52,11 @@ generator-parameter.properties
 
 ## Example
 
-- Trivia, itracker, ALBA, viterra_demo, Indamedia-AdTrack, judo-partner, workflow-poc, ReserveApp, bhs-global-operation, judo-demo-miniworkflow: the standard four-entry root list. Frontend submodules have their own files. In bhs-global-operation, a project with no custom operations, the standard list is the minimal baseline.
-- RackInspect, Ubives: the standard list plus `judo.sh`. RackInspect also has application-level lists for 11 custom operation templates and a `pom.xml`.
-- mlszksz-platform: the standard list at the root and an application-level list of 44 operation templates, the largest observed, for 65+ custom operations.
-- ParkHere: standard list plus `.gitignore`, and a schema `pom.xml` entry.
-- InterfaceRegister: only `judo.properties`, an early-stage minimum.
+- Most examples: the standard four-entry root list. Frontend submodules have their own files. An application with no custom operations keeps the standard list as the minimal baseline.
+- Some examples: the standard list plus `judo.sh`. One also has application-level lists for custom operation templates and a `pom.xml`.
+- One application: the standard list at the root and an application-level list of several entries.
+- One example: standard list plus `.gitignore`, and a schema `pom.xml` entry.
+- One example: only `judo.properties`, an early-stage minimum.
 
 ## When to avoid
 

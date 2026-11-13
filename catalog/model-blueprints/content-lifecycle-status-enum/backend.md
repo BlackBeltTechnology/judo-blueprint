@@ -20,13 +20,13 @@ Write one audit entry per status change, inside the same transaction as the chan
 
 A moderation delete is a status change made by a platform administrator, not by the content owner. Check the role inside that operation before the change, and send any notifications only after the change succeeds.
 
-### Project code, not platform API
+### Application code, not platform API
 
-The example project implements these transitions with its own service classes, operation classes and audit service (example project code). Those names are project code. Copy the pattern, not the names.
+One reference implementation implements these transitions with its own service classes, operation classes and audit service (reference implementation code). Those names are application code. Copy the pattern, not the names.
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - Two enumerations: one for posts with the extra EXPIRED and PENDING_REVIEW values, and one for announcements with the three core values.
 - Thin operation classes for publish, delete, edit and expire delegate to a shared post service or announcement service.

@@ -32,14 +32,10 @@ Services that send email or compute expiries read the row through the same read 
 
 ## Examples
 
-### mlszksz-platform
 - The update is a custom operation `updateConfiguration` on the admin transfer object. It takes an input transfer object with all fields optional and applies the non-null ones to the Configuration row.
 - The row is read with the generated data access, selecting one row.
 
-### rackinspect
-- The entity is fully non-CRUD. Settings change through custom operations and a related list of minimum offer prices is maintained in the same operation.
+- The entity is fully non-CRUD. Settings change through custom operations and a related list of minimum prices is maintained in the same operation.
+- The configuration transfer object is mapped to the entity and carries a flag that tells the client whether the row exists. Two custom operations maintain two related lists.
 
-### park-here
-- The configuration transfer object is mapped to the entity and carries a flag that tells the client whether the row exists. Two custom operations maintain the related doorman and calendar-day lists.
-
-The helper classes named in these examples (for example the admin configuration services) are example project code, not platform classes.
+The helper classes in these examples (for example the admin configuration services) are project code, not platform classes.

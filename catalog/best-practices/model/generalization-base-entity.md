@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "project:mlszksz-pl
 category: entity
 status: established
 projects: [rackinspect, mlszksz-platform, ams-model, indamedia-adtrack, InterfaceRegister, workflow-poc]
-evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded", "ams-model:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model", "ams-model:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "workflow-poc:unrecorded"]
 alternatives: [flat-entity-model]
 related: [flat-entity-model, enum-state-machine, transfer-generalization, partner-generalization-hierarchy, post-generalization-hierarchy, credential-generalization-hierarchy, interface-specification-generalization-hierarchy]
 fragment: generalization-base-entity
@@ -29,7 +29,7 @@ Several entities share the same infrastructure: created and modified times, a re
 - A base entity can be marked abstract. An abstract entity cannot be created by itself, so a transfer object used for creation must map a concrete subtype ([model validation](../../agent-docs/model/model-validation-and-transformation.md); the generated DAO offers create only for mapped, non-abstract types: [data access guide](../../agent-docs/backend/data-access-guide.md)).
 - When an access targets an abstract base, the generated UI offers the choice of concrete subtypes on create ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), "Platform-Managed Polymorphic Creation"). Distinguish mixed subtypes in a list with separate view definitions per subtype.
 
-### Project practice: what goes on the base
+### Practice note: what goes on the base
 
 - Shared stored attributes (`created`, `modified`, `registryNumber`) and shared relations (`assignedTo`, `documents`, `history`).
 - The base may carry shared operations, for example publish or delete, and a shared status ([[enum-state-machine]]).
@@ -50,7 +50,7 @@ A derived attribute that navigates through a member inherited from a supertype c
 
 ## Example
 
-A Task base entity (abstract) holds `created`, `registryNumber`, an `assignedTo` relation to User and a `documents` composition. Offer and JobSheet extend Task; Offer adds a cost, JobSheet a work status. The diagram shows the shape. Source projects used the same idea for workflow tasks (six subtypes), content posts (four subtypes), requests with shared approve and reject operations, credentials per platform, and a two-level interface hierarchy. See [[post-generalization-hierarchy]], [[partner-generalization-hierarchy]], [[credential-generalization-hierarchy]] and [[interface-specification-generalization-hierarchy]]. Names here are neutral.
+A Task base entity (abstract) holds `created`, `registryNumber`, an `assignedTo` relation to User and a `documents` composition. Offer and WorkOrder extend Task; Offer adds a cost, WorkOrder a work status. The diagram shows the shape. Source projects used the same idea for work tasks (six subtypes), content posts (four subtypes), requests with shared approve and reject operations, credentials per external platform, and a two-level interface hierarchy. See [[post-generalization-hierarchy]], [[partner-generalization-hierarchy]], [[credential-generalization-hierarchy]] and [[interface-specification-generalization-hierarchy]]. Names here are neutral.
 
 ## When to avoid
 
@@ -60,13 +60,13 @@ A Task base entity (abstract) holds `created`, `registryNumber`, an `assignedTo`
 
 ## Related
 
-- [[flat-entity-model]] — the alternative without inheritance
-- [[enum-state-machine]] — a shared status on the base
-- [[transfer-generalization]] — transfer objects cannot inherit, so repeat the projections
-- [[post-generalization-hierarchy]] — blueprint: abstract post base
-- [[partner-generalization-hierarchy]] — blueprint: abstract partner base
-- [[credential-generalization-hierarchy]] — blueprint: base with strategy subtypes
-- [[interface-specification-generalization-hierarchy]] — blueprint: two-level hierarchy
+- [[flat-entity-model]]: the alternative without inheritance
+- [[enum-state-machine]]: a shared status on the base
+- [[transfer-generalization]]: transfer objects cannot inherit, so repeat the projections
+- [[post-generalization-hierarchy]]: blueprint: abstract post base
+- [[partner-generalization-hierarchy]]: blueprint: abstract partner base
+- [[credential-generalization-hierarchy]]: blueprint: base with strategy subtypes
+- [[interface-specification-generalization-hierarchy]]: blueprint: two-level hierarchy
 
 ## Structure diagram
 
@@ -76,10 +76,6 @@ classDiagram
   class Document {
     <<Entity>>
     +String fileName
-  }
-  class JobSheet {
-    <<Entity>>
-    +String workStatus
   }
   class Offer {
     <<Entity>>
@@ -94,9 +90,13 @@ classDiagram
     <<Entity>>
     +String name
   }
+  class WorkOrder {
+    <<Entity>>
+    +String workStatus
+  }
   Task *-- "*" Document : documents
   Task --> "0..1" User : assignedTo
-  Task <|-- JobSheet
   Task <|-- Offer
+  Task <|-- WorkOrder
 ```
 <!-- /mermaid:generated -->

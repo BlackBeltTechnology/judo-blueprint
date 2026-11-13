@@ -51,11 +51,11 @@ Count-then-create is not atomic. Two concurrent calls can both pass the check an
 - Per-user limits are plain data that admins edit, with sensible defaults.
 - The logic is simple and extends by adding an attribute and an enumeration member.
 - Cost: no model-level validation, so one forgotten creation path bypasses the limit, and the count query runs on each creation.
-- Types limited by time rather than count (ParkHere's quick reservations) need a different check.
+- Types limited by time rather than count (one project's quick reservations) need a different check.
 
 ## Example
 
-A Member entity has two required integer attributes, `maxNormalBookings` (default 5) and `maxGuestBookings` (default 2), and owns `bookings`. A Booking has a `type` (Normal, Guest) and a `status` (Active, Cancelled). The `book` operation on Member counts the active bookings of the requested type, compares with the matching quota and refuses when the quota is reached. The original ParkHere model had three reservation quotas and reported the failure as a typed `TOO_MANY_RESERVATION` error. Names are neutral stand-ins.
+A Member entity has two required integer attributes, `maxNormalBookings` (default 5) and `maxGuestBookings` (default 2), and owns `bookings`. A Booking has a `type` (Normal, Guest) and a `status` (Active, Cancelled). The `book` operation on Member counts the active bookings of the requested type, compares with the matching quota and refuses when the quota is reached. The original model had three quotas and reported the failure as a typed `TOO_MANY_BOOKINGS` error. Names are neutral stand-ins.
 
 ## When to avoid
 

@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:doors-
 category: integration
 status: emerging
 projects: [rackinspect, doors-model]
-evidence: ["rackinspect:unrecorded", "doors-model:unrecorded"]
+evidence: ["rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/OfferServiceImpl.java", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/services/fault_registry_services/document/GeneratePdfCustomImplementation.java", "doors-model:unrecorded"]
 alternatives: []
 related: [filestore-mediated-file-transfer, email-service-integration]
 fragment: "none: backend-only"
@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Business users want a Word or PDF document filled with application data (offer, report, contract) and want to change the layout without a release. Keep the template as a stored file, load the data through DAOs, merge them in a custom operation, and store the result in the file store.
+Business users want a Word or PDF document filled with application data (report, letter, certificate) and want to change the layout without a release. Keep the template as a stored file, load the data through DAOs, merge them in a custom operation, and store the result in the file store.
 
 ## Practice
 
@@ -25,8 +25,8 @@ Business users want a Word or PDF document filled with application data (offer, 
 
 1. Load the template. It lives in a configuration entity as a binary attribute or file-store token, so an administrator can replace it.
 2. Build the data model. Query the entity with a mask that names exactly the fields and nested relations the template uses. Masks control loading depth, and fields outside the mask are null (see [Pattern 3: Detail Views](../../agent-docs/backend/data-access-guide.md#pattern-3-detail-views-nested-masks)). Prepare derived values in a per-document helper class rather than in the template.
-3. Merge. XDocReport with Freemarker fills a DOCX template (the libraries are project dependencies, not platform ones).
-4. Convert to PDF if needed. The source project posted the DOCX to an external JODConverter REST service.
+3. Merge. XDocReport with Freemarker fills a DOCX template (the libraries are application dependencies, not platform ones).
+4. Convert to PDF if needed. One application posted the DOCX to an external JODConverter REST service.
 5. Watermark preview versions with a PDF library.
 6. Store the output in the file store and return or attach the reference.
 
@@ -41,7 +41,7 @@ Upload and download are token based: the client asks for an upload token for the
 ### Keep it safe and bounded
 
 - The external converter is a network dependency. Set timeouts and map its failures to a declared fault or `ValidationException`, because an unmapped runtime exception becomes a generic 500 (see [How the Runtime Maps Exceptions to HTTP](../../agent-docs/backend/error-handling-guide.md#how-the-runtime-maps-exceptions-to-http)).
-- Template engines and some PDF libraries are not thread safe. The source project serialized the generation methods.
+- Template engines and some PDF libraries are not thread safe. One application serialized the generation methods.
 - A custom operation is not protected by interceptors, so check the caller's right to the document inside the operation (see [Which Operations Are Intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - Modeled EXPORT operations are a different feature: the platform's Excel export uses a JXLS-based SPI (see [Excel Export Operations](../../agent-docs/backend/platform-behavior-reference.md#excel-export-operations)). This pipeline is for DOCX and PDF.
 
@@ -53,8 +53,8 @@ Upload and download are token based: the client asks for an upload token for the
 
 ## Example
 
-- RackInspect: a report service of about 1,200 lines produces six document types (assessment sheets, review reports, offers, job sheets, work reports, completion certificates). Each has a helper preparing its data model. Preview operations add a PREVIEW watermark. A conversion service calls JODConverter over HTTP.
-- doors-model: a `generateDocument` operation on a contract loads the DOCX template of the contract type, applies it, and replaces the stored document. The implementation lives in a separate backend repository.
+- A report service produces several document types (for example orders, review reports and completion certificates). Each has a helper preparing its data model. Preview operations add a PREVIEW watermark. A conversion service calls JODConverter over HTTP.
+- A `generateDocument` operation on a document loads the DOCX template of its type, applies it, and replaces the stored document. The implementation lives in a separate backend repository.
 
 ## When to avoid
 

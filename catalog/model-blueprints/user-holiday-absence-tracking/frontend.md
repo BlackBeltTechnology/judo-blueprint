@@ -11,8 +11,6 @@ The holiday list and the holiday form are part of the user's own panel. A date-r
 
 ## Examples
 
-### park-here
-
 - Framework: React (example project code).
 - The panel uses the generated list and form for holidays. The conflict preview is a custom step before the create action.
 - The panel shows the reservations that will be cancelled, so the user can see the effect before confirming.

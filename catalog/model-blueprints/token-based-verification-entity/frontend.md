@@ -13,9 +13,7 @@ The token-based verification flow runs in a separate frontend application. It ha
 
 ## Examples
 
-### mlszksz-platform
-
 - Framework: React (example project code).
-- Key files: the registration page, the verification page, the invitation verification page and the bot-check hook in the registration app.
+- Pages: the registration page, the verification page, the invitation verification page and a bot-check hook in the registration app.
 - Each page calls its backend operation through the registration app's generated service client. The registration form uses controlled inputs with client-side validation.
 - The registration app ignores generated output for its custom pages and its HTML entry, so regeneration does not overwrite them.

@@ -1,14 +1,14 @@
 ---
 id: permission-denormalization
 title: Permission Denormalization from Role Assignments
-description: Project practice that copies the permission flags of a user's roles onto boolean attributes of the user entity, recalculated by a custom operation that interceptors trigger when roles or assignments change.
+description: Practice that copies the permission flags of a user's roles onto boolean attributes of the user entity, recalculated by a custom operation that interceptors trigger when roles or assignments change.
 aliases: [denormalized permissions, permission flags on user, role to boolean flags]
 keywords: [permission, denormalization, role, flags, recalculate, interceptor, boolean, user, admin guard]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-project"]
 category: auth
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/user/roles/UserRolesChangeInterceptor.java"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Make permission checks a single boolean read. Instead of joining user, roles and permissions at query time, the flags granted by a user's roles are stored as boolean attributes on the user entity and recalculated whenever roles change. This is project practice (rackinspect); the platform provides the hooks it relies on but no such feature.
+Make permission checks a single boolean read. Instead of joining user, roles and permissions at query time, the flags granted by a user's roles are stored as boolean attributes on the user entity and recalculated whenever roles change. This is a convention built on the platform; the platform provides the hooks it relies on but no such feature.
 
 ## Practice
 
@@ -26,13 +26,13 @@ Make permission checks a single boolean read. Instead of joining user, roles and
 - Authorization belongs in the model's access control where possible; the stored flags are readable from access filters and expressions through the actor variables ([ACTOR vs PRINCIPAL vs USER](../../agent-docs/model/advanced-modeling-patterns.md#actor-vs-principal-vs-user-context-variables)). Which variable category applies depends on the actor shape; a wrong attribute name yields empty results silently.
 - The update call is the plain DAO update, with a mask limiting the written fields ([mutable entity update](../../agent-docs/backend/data-access-guide.md#using-masks-projections)).
 
-### Project practice: recalculate flags from roles
+### Practice notes: recalculate flags from roles
 
-- The user entity carries one boolean per permission (22 in the project: company data, roles, users, offers and so on). A permission enumeration lists the flags; roles hold a set of permissions.
-- A custom `RecalculatePermissions` operation (example project code) collects the permission values of all roles assigned to the user and sets each boolean:
+- The user entity carries one boolean per permission (a fixed set of flags, for example for data, roles, users and orders). A permission enumeration lists the flags; roles hold a set of permissions.
+- A custom `RecalculatePermissions` operation (example code) collects the permission values of all roles assigned to the user and sets each boolean:
 
 ```java
-// Example project code: User, Role, PermissionFlag and the DAOs are generated or project types
+// Example code: User, Role, PermissionFlag and the DAOs are generated types
 Set<PermissionFlag> flags = new HashSet<>();
 for (Role role : userDao.queryRoles(user).selectList()) {
     flags.addAll(roleDao.queryPermissions(role).selectList().stream()

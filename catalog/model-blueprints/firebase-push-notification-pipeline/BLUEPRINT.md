@@ -8,7 +8,7 @@ tags: [domain:model, layer:backend, project:mlszksz-platform, status:single-proj
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/firebase/src/main/java/hu/blackbelt/mlszksz/platform/firebase/FirebaseMessagingService.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PushNotificationServiceImpl.java", "mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/NotificationDeliveryJob.java"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-09
@@ -34,7 +34,7 @@ The pipeline has three parts:
 - **Notification service.** Creates pending notifications for eligible users, honouring their opt-in preferences, and delivers them. It also registers devices and refreshes their tokens.
 - **Scheduled jobs.** One job delivers pending and retriable notifications on a short cycle. A daily job deactivates devices whose token has not been refreshed for a set number of days.
 
-The pipeline is project practice built on platform mechanisms: OSGi components with references, the generated data-access objects (DAOs), and an OSGi-registered scheduler. The platform itself supplies no push or scheduling feature. The entities involved are the notification, the device (one per user and device token) and the user. A notification has a type that maps to a deep-link route in the app.
+The pipeline is common practice built on platform mechanisms: OSGi components with references, the generated data-access objects (DAOs), and an OSGi-registered scheduler. The platform itself supplies no push or scheduling feature. The entities involved are the notification, the device (one per user and device token) and the user. A notification has a type that maps to a deep-link route in the app.
 
 ## Constraints
 
@@ -66,7 +66,7 @@ The pipeline is project practice built on platform mechanisms: OSGi components w
 
 ## Related
 
-- [[safe-failure-pattern]] — when a side-effect failure must not break the business operation
-- [[operation-call-logging-interceptor]] — logging around operations that trigger notifications
-- [[external-api-adapter-provider-pattern]] — wrapping a third-party SDK behind an adapter
-- [[osgi-scheduled-background-jobs]] — the scheduled job framework that runs the delivery and cleanup jobs
+- [[safe-failure-pattern]]: when a side-effect failure must not break the business operation
+- [[operation-call-logging-interceptor]]: logging around operations that trigger notifications
+- [[external-api-adapter-provider-pattern]]: wrapping a third-party SDK behind an adapter
+- [[osgi-scheduled-background-jobs]]: the scheduled job framework that runs the delivery and cleanup jobs

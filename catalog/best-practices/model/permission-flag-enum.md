@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "status:single-proj
 category: enum
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: []
 related: [entity-crud-at-service-layer, toggle-operation-pattern, ui-control-transfer-fields, enum-sentinel-value]
 fragment: permission-flag-enum
@@ -47,7 +47,7 @@ The original project kept the booleans as stored attributes (default false) refr
 
 ## Example
 
-A neutral model: enumeration `PermissionFlag` (orders, invoices, users), entities `Permission`, `Role`, `User`. `Role.permissions` and `User.roles` are 0..* associations. `User.permissions` is derived as the roles' permissions; `User.permissionToOrders` and `User.permissionToUsers` are derived booleans over it. The original RackInspect model had 23 flags with matching booleans.
+A neutral model: enumeration `PermissionFlag` (orders, invoices, users), entities `Permission`, `Role`, `User`. `Role.permissions` and `User.roles` are 0..* associations. `User.permissions` is derived as the roles' permissions; `User.permissionToOrders` and `User.permissionToUsers` are derived booleans over it. One project's flag set has changed size over time: its current role enum has 12 members, each with a stored boolean on the user.
 
 ### Source evolution (2026-11-10)
 

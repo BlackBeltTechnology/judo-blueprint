@@ -27,7 +27,7 @@ One enumeration, `Status`, with two members: DRAFT (ordinal 0) and DONE (ordinal
 
 - Members persist by ordinal, and the ordinal is also the value on the wire (enumerations travel as integer ordinals). Ordinals must be unique and between 0 and 9999. Do not renumber them.
 - There is no deletion state. If the item must be withdrawn, use a separate entity or a different enumeration. See [[content-lifecycle-status-enum]].
-- Project practice: the transition belongs to one operation on the owning entity, and other code does not write the attribute directly. The platform does not enforce this. The operation is a custom operation, so no interceptor guards it.
+- Common practice: the transition belongs to one operation on the owning entity, and other code does not write the attribute directly. The platform does not enforce this. The operation is a custom operation, so no interceptor guards it.
 
 ## Variations
 
@@ -36,7 +36,7 @@ One enumeration, `Status`, with two members: DRAFT (ordinal 0) and DONE (ordinal
 
 ## When to extend
 
-The source project's status enums grow beyond two states: DRAFT, DONE, SUBMITTED, RETURNED and DRAFT, DONE, ACCEPTED, REJECTED. Once a review or hand-back step appears, move to [[enum-state-machine]]; this entry stays a two-state shape.
+The source application's status enums grow beyond two states: DRAFT, DONE, SUBMITTED, RETURNED and DRAFT, DONE, ACCEPTED, REJECTED. Once a review or hand-back step appears, move to [[enum-state-machine]]; this entry stays a two-state shape.
 
 ## When to use
 
@@ -51,6 +51,6 @@ The source project's status enums grow beyond two states: DRAFT, DONE, SUBMITTED
 
 ## Related
 
-- [[content-lifecycle-status-enum]] — the draft and published form with a soft-delete state, for content
-- [[document-review-state-machine]] — a richer document state machine with review and history
-- [[active-inactive-status-enum]] — another two-state enumeration, for activation rather than work progress
+- [[content-lifecycle-status-enum]]: the draft and published form with a soft-delete state, for content
+- [[document-review-state-machine]]: a richer document state machine with review and history
+- [[active-inactive-status-enum]]: another two-state enumeration, for activation rather than work progress

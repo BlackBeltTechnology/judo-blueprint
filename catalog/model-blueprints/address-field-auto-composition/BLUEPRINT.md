@@ -8,7 +8,7 @@ tags: [domain:frontend, layer:frontend, project:rackinspect, status:single-proje
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/FormActionsHooks/customServicesPartnerServiceAddressAddressFormActionsHook.tsx"]
 alternatives: [address-entity-with-location]
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -57,5 +57,5 @@ This is a frontend pattern with no model shape. The address entity holds the par
 
 ## Related
 
-- [[address-entity-with-location]] — the address entity whose parts this pattern composes
-- [[organization-entity]] — an owner with an address shown in forms
+- [[address-entity-with-location]]: the address entity whose parts this pattern composes
+- [[organization-entity]]: an owner with an address shown in forms

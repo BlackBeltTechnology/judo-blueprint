@@ -32,7 +32,7 @@ A type enumeration (normal, quick, guest, long) decides how a booking is created
 - `Reservation` with `date`, `startTime`, `endTime` (timestamps), `reservationStatus` (required enumeration: ACTIVE, DELETED, EXPIRED) and `reservationType` (required enumeration: NORMAL, QUICK, GUEST, LONG).
 - Audit attributes: `created`, `createdBy`, `modified`, `modifiedBy`.
 - Reminder flags: `hasToNotify`, `remindedBeforeStart`, `remindedBeforeEnd`. A scheduled job reads them to send reminders.
-- Associations: `owner` (1..1 to the user entity), `resource` (1..1 to the reserved thing, for example a parking slot) and optionally a vehicle or asset reference (0..1).
+- Associations: `owner` (1..1 to the user entity), `resource` (1..1 to the reserved thing, for example a bookable slot) and optionally a vehicle or asset reference (0..1).
 - `guest`: a composition (0..1) to a `Guest` part for bookings made for a third party. The guest is owned by the reservation.
 - Denormalized display attributes (reserver name, e-mail, vehicle id) may be kept on the reservation so lists need no joins. They are project practice; see [[aggregated-stored-field]].
 - The entity's createable, updateable and deleteable flags are off. Transfer objects and custom operations do the writing.
@@ -47,7 +47,7 @@ A type enumeration (normal, quick, guest, long) decides how a booking is created
 
 ## Variations
 
-- **Freight or logistics booking.** A longer lifecycle: not submitted, submitted, approved or rejected, arrived, finished, with delay states, and associations to gates, spots, loading types and vehicle types instead of one slot. See [[freight-logistics-state-enum]]. Interceptors on the built-in create can wire the acting partner into the new reservation instead of a custom operation.
+- **Capacity or logistics booking.** A longer lifecycle: not submitted, submitted, approved or rejected, arrived, finished, with delay states, and associations to gates, spots, loading types and vehicle types instead of one slot. See [[shipment-state-enum]]. Interceptors on the built-in create can wire the acting partner into the new reservation instead of a custom operation.
 - **Long booking.** One reservation per working day in a date range, created together.
 - **Copy-on-write modify.** Modify keeps the old row as deleted and adds a new row.
 - **Guest booking.** The composed guest holds the third party's name and vehicle data.
@@ -66,7 +66,7 @@ A type enumeration (normal, quick, guest, long) decides how a booking is created
 
 ## Related
 
-- [[freight-logistics-state-enum]] — the richer status enumeration for logistics bookings
+- [[shipment-state-enum]] — the richer status enumeration for logistics bookings
 - [[token-based-quota-limit]] — limit how many active bookings a user may hold
 - [[platform-email-template-service]] — e-mail on create, delete, modify and reminder
 - [[audit-log-entity]] — a separate audit trail instead of audit attributes

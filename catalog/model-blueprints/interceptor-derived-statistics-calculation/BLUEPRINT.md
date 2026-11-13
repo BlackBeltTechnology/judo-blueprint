@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, project:mlszksz-platform, statu
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/StatisticsActiveUsersInterceptor.java"]
 alternatives: [operation-call-logging-interceptor]
 fragment: interceptor-derived-statistics-calculation
 diagram: { kinds: [entity, transfer], members: types }
@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Some statistics need counts with a relative date filter, such as "accounts that logged in during the last 30 days". The platform expression language (JQL) does have date functions (`Timestamp!now()`, `!plusDays(n)`), so a plain model-level derived attribute is the first choice and should be tried first. The platform docs name the cases it cannot cover: values that need a lookup outside the model, collection-valued context, or logic that nested JQL scopes cannot express. For those the platform's escape hatch is a transient transfer object attribute with no binding, filled by an operation interceptor's postCall hook. This entry applies that escape hatch to date-filtered counts; the choice of an interceptor for this case is the project's (mlszksz-platform), not a platform requirement. The hook fills in the computed values on the response of a built-in list or refresh operation.
+Some statistics need counts with a relative date filter, such as "accounts that logged in during the last 30 days". The platform expression language (JQL) does have date functions (`Timestamp!now()`, `!plusDays(n)`), so a plain model-level derived attribute is the first choice and should be tried first. The platform docs name the cases it cannot cover: values that need a lookup outside the model, collection-valued context, or logic that nested JQL scopes cannot express. For those the platform's escape hatch is a transient transfer object attribute with no binding, filled by an operation interceptor's postCall hook. This entry applies that escape hatch to date-filtered counts; the choice of an interceptor for this case is the application's, not a platform requirement. The hook fills in the computed values on the response of a built-in list or refresh operation.
 
 ### The interceptor sees only built-in operations
 
@@ -61,6 +61,6 @@ The shape has a writable account entity with a stored timestamp (the last login)
 
 ## Related
 
-- [[operation-call-logging-interceptor]] — another postCall interceptor on built-in operations
-- [[audit-log-entity]] — shows that audit rows for custom operations must be written by the operation, because interceptors skip them
-- [[initializer-entity-with-init-operation]] — a custom static operation that interceptors do not wrap
+- [[operation-call-logging-interceptor]]: another postCall interceptor on built-in operations
+- [[audit-log-entity]]: shows that audit rows for custom operations must be written by the operation, because interceptors skip them
+- [[initializer-entity-with-init-operation]]: a custom static operation that interceptors do not wrap

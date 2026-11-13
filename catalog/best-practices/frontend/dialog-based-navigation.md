@@ -27,7 +27,7 @@ Some UIs (games, wizards, kiosks) are one continuous experience where URLs add n
 - Supported ways to add screens inside the generated app are extra React Router routes (`src/extra-routes.tsx`, prepended to the generated routes), the menu actions hook and custom visual elements ([extension points](../../agent-docs/frontend/extension-points.md), [custom component replacement](../../agent-docs/frontend/advanced-patterns.md)). Generated forms use the unsaved-changes confirmation hook `useNavigationConfirmation`; reuse it in custom editing components.
 - The state-machine navigation below is not a platform feature. It only applies where the generated routing and pages are not used at all (a replaced frontend, see [[complete-frontend-replacement]]).
 
-### Project practice: page state plus dialog flags
+### Practice notes: page state plus dialog flags
 
 ```typescript
 type PageType = 'list' | 'detail' | 'result' | 'none';
@@ -55,7 +55,7 @@ State transitions are explicit and dialogs give a natural modal flow without URL
 
 ## Example
 
-trivia, player frontend: a five-value page state and five dialog flags drive the flow contest list, registration, activation, contest detail, quiz, results and scoreboard, with a bottom navigation bar offering the list and a reset action.
+A game frontend: a five-value page state and five dialog flags drive the flow through a list, registration, activation, a detail view, a round, results and a ranking board, with a bottom navigation bar offering the list and a reset action.
 
 ## When to avoid
 

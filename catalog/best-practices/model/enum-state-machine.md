@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: enum
 status: established
 projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, judo-partner, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: [derived-state-from-history, entity-based-state-machine]
 related: [conditional-visibility-getter, default-value-patterns, derived-state-from-history, entity-based-state-machine]
 first_seen: 2026-03-04
@@ -46,7 +46,7 @@ In backend code, `query<Attribute>()` on an enumeration attribute can fail with 
 
 - The lifecycle is explicit in the model and checked at build time (literals are validated).
 - Transitions are ordinary operations, easy to secure per actor.
-- Project practice (not platform behaviour): twelve source projects model lifecycles this way; some derive the state from history instead ([[derived-state-from-history]]).
+- Practice note (not platform behaviour): twelve source projects model lifecycles this way; some derive the state from history instead ([[derived-state-from-history]]).
 - Limit: no guard conditions or actions beyond what the operation code does; adding a state needs a model change.
 
 ## Example

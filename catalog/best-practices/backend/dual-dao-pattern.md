@@ -41,13 +41,13 @@ When an input carries a service-layer object and the DAO wants an entity-layer o
 
 - Using only the DAOs you need keeps the operation readable and its dependency list short.
 - Two same-named types in different packages compile fine and import wrongly. Fully qualified names make the choice visible. With distinct names the service-layer DAO is told apart by its name alone.
-- The exact package layout depends on the generator version. This entry records what one project saw, not a platform contract. Check the generated sources of your project.
+- The exact package layout depends on the generator version. This entry records what one application saw, not a platform contract. Check the generated sources of your application.
 
 ## Example
 
-In Trivia, the custom implementation of an operation on `Test` injects the entity DAO for `Test` for all reads and writes. It also injects the DAO generated for the player actor's `Test` view, using its fully qualified name. The player-side DAO is never called in the current code, so the injection is redundant.
+A custom implementation of an operation on `Order` injects the entity DAO for `Order` for all reads and writes. It also injects the DAO generated for the customer actor's `Order` view, using its fully qualified name. The customer-side DAO is never called in the current code, so the injection is redundant.
 
-In adtrack, an operation on a tracked-campaign transfer object injects the service-layer `…TransferDao` and calls a `query...()` accessor, and scheduled jobs inject the aggregated-campaign transfer DAO. Their names do not clash with the entity DAOs.
+An operation on a tracked-item transfer object injects the service-layer `…TransferDao` and calls a `query...()` accessor, and scheduled jobs inject the grouped-item transfer DAO. Their names do not clash with the entity DAOs.
 
 ## When to avoid
 

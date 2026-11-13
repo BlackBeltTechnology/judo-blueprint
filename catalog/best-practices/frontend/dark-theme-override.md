@@ -28,9 +28,9 @@ An application should always render dark with its own brand colors. Start from t
 - Editing a generated theme file by hand requires a `.generator-ignore` entry; the file is then no longer regenerated and cross-actor consistency is lost ([customizing theme](../../agent-docs/frontend/theming.md)).
 - The docs show a dark palette variant (`mode: 'dark'`) and an in-app dark mode toggle that registers a component in the AppBar; the toggle is the choice when users must switch, a fixed dark theme when they must not.
 
-### Project practice: take over the theme file
+### Practice notes: take over the theme file
 
-Use only when palette plus fragments are insufficient. The project replaced the theme with one `createTheme` call, listed in `.generator-ignore`:
+Use only when palette plus fragments are insufficient. A replaced theme uses one `createTheme` call, listed in `.generator-ignore`:
 
 ```typescript
 // src/theme/index.tsx (listed in .generator-ignore)
@@ -59,7 +59,7 @@ One explicit theme gives complete control over the visual identity. The price is
 
 ## Example
 
-trivia, player frontend: a hardcoded dark theme with an orange primary, light grey text, semi-transparent black card and dialog backgrounds, extra-bold dialog titles and compact h6 typography. Its admin frontend keeps the generated theme.
+One app's participant frontend uses a hardcoded dark theme with an orange primary, light grey text, semi-transparent black card and dialog backgrounds, extra-bold dialog titles and compact h6 typography. Its admin frontend keeps the generated theme.
 
 ## When to avoid
 

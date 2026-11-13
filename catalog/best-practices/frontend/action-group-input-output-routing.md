@@ -28,9 +28,9 @@ Operations of an action group that take an input transfer object or return an ou
 - Bound operations are called with the instance's signed identifier, which the server issues in responses and which changes after every update of the entity. Never store or rebuild it; take it from the latest response ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
 - Custom routes are added in `src/extra-routes.tsx`; the generated `routes.tsx` prepends them ([extra routes](../../agent-docs/frontend/extension-points.md)).
 
-### Project practice: dedicated input and output routes
+### Practice notes: dedicated input and output routes
 
-This layer is project practice (actiongroup-test-react), not a platform feature:
+This layer is practice, not a platform feature:
 
 - Input route: `/{entity}/:signedIdentifier/{actionName}`. The page fetches the template on mount, edits it in a form, calls the bound operation with the signed identifier from the route and navigates back on success.
 - Output route: `/{entity}/{actionName}/:signedIdentifier`. The page shows the returned transfer object in view or edit mode and may carry further operation buttons.
@@ -38,19 +38,19 @@ This layer is project practice (actiongroup-test-react), not a platform feature:
 - Complex inputs with nested associations use a range dialog for multi-selection.
 
 ```typescript
-// Example project code: service names are generated per page, not fixed API
-const template = await matterCreatorService.getTemplate();
+// Example code: service names are generated per page, not fixed API
+const template = await orderService.getTemplate();
 setData(template);
 
-await galaxyService.createDarkMatter({ __signedIdentifier: signedIdentifier }, data);
+await orderService.createOrder({ __signedIdentifier: signedIdentifier }, data);
 back(); // navigate back on success
 ```
 
 ```typescript
 // Output page triggers a further operation and shows its result in a dialog
-const result = await creatureService.hateGod(data);
+const result = await productService.discontinue(data);
 if (result) {
-  await openPageDialog(<CreatureHateGodOutput data={result} />);
+  await openPageDialog(<ProductDiscontinueOutput data={result} />);
   await fetchData(); // refresh after the action
 }
 ```
@@ -61,7 +61,7 @@ Dedicated routes make operations linkable and keep each form small. Separating i
 
 ## Example
 
-actiongroup-test-react has three simple action inputs (create dark matter, interstellar dust, interstellar medium) as plain forms. One complex input (create creature) has a nested signs table that uses a range dialog for multi-selection. One output page (choose the messiah) works in view and edit mode and has three further action buttons; two of them render their results in a page dialog.
+One app has three simple action inputs (create order, add tag, add note) as plain forms. One complex input (create product) has a nested line-item table that uses a range dialog for multi-selection. One output page (choose the preferred supplier) works in view and edit mode and has three further action buttons; two of them render their results in a page dialog.
 
 ## When to avoid
 

@@ -28,16 +28,16 @@ Let the backend decide where the user goes after an operation: to a record, to a
 - Per-page `post<Operation>Action` handlers cover one operation ([[post-operation-navigation-hook]]).
 - Fragment overrides work by placing a same-named file in the override directory. The docs prefer hooks over template overrides because you maintain them at every upgrade ([template override process](../../agent-docs/frontend/README.md), [[handlebars-generator-template-override]]).
 
-### Project practice: redirect objects plus a fragment override
+### Practice notes: redirect objects plus a fragment override
 
-The `@redirect` annotation, the `processRedirect` call and the fragment path below are project practice (workflow-poc); they are not covered by the agent-docs. Confirm the fragment name and the template context on your generator version.
+The `@redirect` annotation, the `processRedirect` call and the fragment path below are practice from one example; they are not covered by the agent-docs. Confirm the fragment name and the template context on your generator version.
 
 - **Model**: operations that decide the next screen return a small redirect transfer object: target actor and access, plus either an id name and value (open a record) or an operation (start a follow-up). The output carries the `redirect` annotation.
-- **Fragment**: the project overrides the generated fragment that handles an operation's primary output, so that a result whose output type has the annotation goes to `processRedirect(result)` and any further code runs only when there is no redirect.
+- **Fragment**: the example overrides the generated fragment that handles an operation's primary output, so that a result whose output type has the annotation goes to `processRedirect(result)` and any further code runs only when there is no redirect.
 - **Manager**: `handleResult` maps the payload: with an id name and value return `filterRecords` on that attribute, with an operation return `operation`, otherwise only actor and access.
 
 ```typescript
-// Example project code (application-customizer.tsx)
+// Example code (application-customizer.tsx)
 const operationFlowManager: OperationFlowManager = {
   handleResult: (input) => {
     const { actor, access, idName, idValue, operation } = input as any;
@@ -59,7 +59,7 @@ One override and one manager serve every annotated operation, with no hook per p
 
 ## Example
 
-workflow-poc operations (start, navigate, execute, assign) return create or update redirect objects. The fragment routes them to `processRedirect`, and the manager opens the target record with a filter or triggers the next operation, giving a multi-step task flow without per-page hooks.
+One app's operations (start, navigate, execute, assign) return create or update redirect objects. The fragment routes them to `processRedirect`, and the manager opens the target record with a filter or triggers the next operation, giving a multi-step task flow without per-page hooks.
 
 ## When to avoid
 

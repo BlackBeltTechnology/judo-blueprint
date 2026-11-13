@@ -12,8 +12,7 @@ Conditional table row background coloring based on entity attribute values (typi
 
 ## Examples
 
-### rackinspect
+### Example
 - Framework: React
-- Key files: `custom/hooks/TableRowHighlightingHooks/offerItemsTableHighlightHook.tsx`, `custom/hooks/TableRowHighlightingHooks/ratingTableHighlightHook.tsx`
-- Pattern: Two hooks: offer items table highlights MATERIAL rows blue (`#0095ff`) and SERVICE rows orange (`#e88f00`); rating table highlights grade A rows green (`#00cc00`) and grade C rows red (`#cc0000`)
+- Pattern: Two hooks. One table highlights rows of one item type blue (`#0095ff`) and rows of another type orange (`#e88f00`); a rating table highlights grade A rows green (`#00cc00`) and grade C rows red (`#cc0000`)
 - Notable: Each hook is registered with a specific `component` property in `application-customizer.tsx` to scope the highlighting to the correct table

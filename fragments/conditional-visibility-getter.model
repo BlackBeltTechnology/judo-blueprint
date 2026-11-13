@@ -191,7 +191,7 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_8LjEwdzdEfGPMfIhXdtu5w" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_8f_DsNzdEfGPMfIhXdtu5w" name="conditional_visibility_getter">
-      <elements xsi:type="structure:EntityType" xmi:id="_8nCt8NzdEfGPMfIhXdtu5w" name="Quiz" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_8nCt8NzdEfGPMfIhXdtu5w" name="Questionnaire" createable="false" updateable="false" deleteable="false">
         <relations xsi:type="structure:OneWayRelationMember" xmi:id="_9zsHQNzdEfGPMfIhXdtu5w" lower="0" upper="-1" target="_8tvy4NzdEfGPMfIhXdtu5w" name="questions" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="COMPOSITION" memberType="STORED" rangeType="ANY" binding="_9zsHQNzdEfGPMfIhXdtu5w" getterExpression="">
           <inherited xmi:id="_9zsuUNzdEfGPMfIhXdtu5w"/>
         </relations>
@@ -199,9 +199,9 @@
           <inherited xmi:id="_9bSOUNzdEfGPMfIhXdtu5w"/>
         </attributes>
         <mapping xmi:id="_8nD8ENzdEfGPMfIhXdtu5w" target="_8nCt8NzdEfGPMfIhXdtu5w"/>
-        <form xmi:id="_8nFKMNzdEfGPMfIhXdtu5w" name="Quiz_Form" label="Quiz Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_8nFxQNzdEfGPMfIhXdtu5w" name="Quiz_Table" label="Quiz Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_8nEjINzdEfGPMfIhXdtu5w" name="Quiz_View_Edit" label="Quiz View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_8nFKMNzdEfGPMfIhXdtu5w" name="Questionnaire_Form" label="Questionnaire Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_8nFxQNzdEfGPMfIhXdtu5w" name="Questionnaire_Table" label="Questionnaire Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_8nEjINzdEfGPMfIhXdtu5w" name="Questionnaire_View_Edit" label="Questionnaire View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
       <elements xsi:type="structure:EntityType" xmi:id="_8tvy4NzdEfGPMfIhXdtu5w" name="Question" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_9knwgNzdEfGPMfIhXdtu5w" name="text" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_9knwgNzdEfGPMfIhXdtu5w" getterExpression="" identifier="false" memberType="STORED">
@@ -215,7 +215,7 @@
         <table xmi:id="_8tvy5NzdEfGPMfIhXdtu5w" name="Question_Table" label="Question Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
         <view xmi:id="_8tvy4tzdEfGPMfIhXdtu5w" name="Question_View_Edit" label="Question View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="type:EnumerationType" xmi:id="_8zi44NzdEfGPMfIhXdtu5w" name="QuizStatus">
+      <elements xsi:type="type:EnumerationType" xmi:id="_8zi44NzdEfGPMfIhXdtu5w" name="QuestionnaireStatus">
         <members xmi:id="_85DD8NzdEfGPMfIhXdtu5w" name="ACTIVE"/>
         <members xmi:id="_8-Q7INzdEfGPMfIhXdtu5w" name="FINISHED" ordinal="1"/>
       </elements>
@@ -224,20 +224,20 @@
         <members xmi:id="_9PUO4NzdEfGPMfIhXdtu5w" name="A" ordinal="1"/>
         <members xmi:id="_9U4rYNzdEfGPMfIhXdtu5w" name="B" ordinal="2"/>
       </elements>
-      <elements xsi:type="structure:TransferObjectType" xmi:id="_97EhoNzdEfGPMfIhXdtu5w" name="PlayerQuestion" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:TransferObjectType" xmi:id="_97EhoNzdEfGPMfIhXdtu5w" name="ParticipantQuestion" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_97FIstzdEfGPMfIhXdtu5w" name="answer" dataType="_9D9TcNzdEfGPMfIhXdtu5w" defaultExpression="" binding="_9sbBoNzdEfGPMfIhXdtu5w" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_97FIs9zdEfGPMfIhXdtu5w"/>
         </attributes>
         <attributes xsi:type="structure:DataMember" xmi:id="_-ImAQNzdEfGPMfIhXdtu5w" name="text" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_9knwgNzdEfGPMfIhXdtu5w" getterExpression="" identifier="false" memberType="MAPPED">
           <inherited xmi:id="_-ImnUNzdEfGPMfIhXdtu5w"/>
         </attributes>
-        <attributes xsi:type="structure:DataMember" xmi:id="_-ST88NzdEfGPMfIhXdtu5w" name="shownAnswer" dataType="_9D9TcNzdEfGPMfIhXdtu5w" defaultExpression="" getterExpression="self!container(Sandbox::bp::conditional_visibility_getter::Quiz).status == Sandbox::bp::conditional_visibility_getter::QuizStatus#FINISHED ? self.answer : Sandbox::bp::conditional_visibility_getter::Choice#NONE" identifier="false" memberType="DERIVED">
+        <attributes xsi:type="structure:DataMember" xmi:id="_-ST88NzdEfGPMfIhXdtu5w" name="shownAnswer" dataType="_9D9TcNzdEfGPMfIhXdtu5w" defaultExpression="" getterExpression="self!container(Sandbox::bp::conditional_visibility_getter::Questionnaire).status == Sandbox::bp::conditional_visibility_getter::QuestionnaireStatus#FINISHED ? self.answer : Sandbox::bp::conditional_visibility_getter::Choice#NONE" identifier="false" memberType="DERIVED">
           <inherited xmi:id="_-ST88dzdEfGPMfIhXdtu5w"/>
         </attributes>
         <mapping xmi:id="_97EhodzdEfGPMfIhXdtu5w" target="_8tvy4NzdEfGPMfIhXdtu5w"/>
-        <form xmi:id="_97FItdzdEfGPMfIhXdtu5w" name="PlayerQuestion_Form" label="PlayerQuestion Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_97FIttzdEfGPMfIhXdtu5w" name="PlayerQuestion_Table" label="PlayerQuestion Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_97FItNzdEfGPMfIhXdtu5w" name="PlayerQuestion_View_Edit" label="PlayerQuestion View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_97FItdzdEfGPMfIhXdtu5w" name="ParticipantQuestion_Form" label="ParticipantQuestion Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_97FIttzdEfGPMfIhXdtu5w" name="ParticipantQuestion_Table" label="ParticipantQuestion Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_97FItNzdEfGPMfIhXdtu5w" name="ParticipantQuestion_View_Edit" label="ParticipantQuestion View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

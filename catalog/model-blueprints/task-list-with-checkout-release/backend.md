@@ -14,7 +14,7 @@ The checkout, release, assign and execute operations are model-defined mapped op
 
 ## Examples
 
-### workflow-poc
+### Example
 
 - Key files: `custom/workflow/utils/WorkflowUtils.java` (automatic assignment, stepping, completion logging) and `custom/.../entities/token/TriggerCustomImplementation.java` (authorization and transition handling). Both are example project code.
 - Automatic assignment: the utility first filters the context's assignable users against the token's authorized users. It then looks up the most recent completion entries for that workflow and picks the user who is eligible and not already assigned in the same context. A random eligible user is the fallback.

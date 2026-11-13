@@ -4,11 +4,11 @@ title: Dirty-Check Before Update to Avoid Unnecessary Writes
 description: When code recomputes many fields of an entity, compare the new values with the loaded ones and call the DAO update only if something changed.
 aliases: [skip unchanged update, change detection, avoid redundant write]
 keywords: [dirty check, update, DAO, toMap, compare, mask, recursion, interceptor, unnecessary write]
-tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba", "status:emerging"]
+tags: ["domain:backend", "layer:backend", "project:alba", "status:single-project"]
 category: data-access
-status: emerging
-projects: [rackinspect, alba]
-evidence: ["rackinspect:unrecorded", "alba:unrecorded"]
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
 alternatives: []
 related: [mutable-entity-update-pattern, permission-denormalization]
 fragment: "none: backend-only"
@@ -46,12 +46,12 @@ Each write increments `__version`, and the signed identifier of the entity chang
 
 - Fewer writes and fewer version bumps in cascades.
 - Limit: the comparison costs memory and code. For a single field that is always set, an unconditional update is simpler.
-- This is project practice. The platform does not detect unchanged payloads for you.
+- This is a practice built on the platform. The platform does not detect unchanged payloads for you.
 
 ## Example
 
-- RackInspect: a permission recalculation iterates all users and recomputes 22 boolean flags from roles. It copies each user's map first and updates only the users whose map changed.
-- ALBA: a product update interceptor builds aggregated strings from related entities, compares each with the stored value, and calls update only if one differs.
+- A permission recalculation iterates all users and recomputes a set of boolean flags from roles. It copies each user's map first and updates only the users whose map changed.
+- A product update interceptor builds aggregated strings from related entities, compares each with the stored value, and calls update only if one differs.
 
 ## When to avoid
 

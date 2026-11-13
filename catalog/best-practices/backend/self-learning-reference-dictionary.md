@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "status:single-
 category: interceptor
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/services/CityPostalCodeService.java"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-07-12
@@ -25,14 +25,14 @@ Grow a reference dictionary (for example `City` and `PostalCode`, joined two-way
 - Interceptors fire only for the built-in behaviour operations (create, update, delete, reference operations and others). Custom, mapped and script operations never hit them, so a hook for a custom create or import operation has to be called from inside the implementation ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - Synchronous interceptors run inside the operation's transaction; an exception from one rolls back the write ([ordering and combining interceptors](../../agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors)).
 - A DAO call such as `createUserAddresses(...)` is not an operation and fires no operation interceptor. The generated DAO of a mapped type offers `create`, `createAll`, `getById`, `delete` and per-relation queries ([generated DAO behaviour](../../agent-docs/backend/data-access-guide.md#which-types-get-a-full-dao)).
-- Whether creating a parent with a nested child in one call fires the per-child create interceptor is not stated in the docs. The project observed it does not (below), *verify* for your model.
+- Whether creating a parent with a nested child in one call fires the per-child create interceptor is not stated in the docs. One application observed it does not (below), *verify* for your model.
 
-### Project practice: one primitive, all write paths
+### Practice notes: one primitive, all write paths
 
-This layer is project practice (rackinspect). The primitive lives in an OSGi component service in the project's common module, reachable from interceptors and custom operations; interceptor wiring goes in the interceptors module; the import operation is a thin custom implementation in the app module delegating to the service.
+This layer is a convention built on the platform. The primitive lives in an OSGi component service in the application's common module, reachable from interceptors and custom operations; interceptor wiring goes in the interceptors module; the import operation is a thin custom implementation in the app module delegating to the service.
 
 ```java
-// Example project code: City, PostalCode and the find/link helpers are project types
+// Example code: City, PostalCode and the find/link helpers are types
 public void learn(String cityName, String code) {
     if (cityName == null || code == null) return;
     final String name = cityName.trim(), postalCode = code.trim();
@@ -48,13 +48,13 @@ public void learn(String cityName, String code) {
 
 ### The parent-create interceptor gap
 
-Wiring `learn()` into the child's create-operation interceptor (for example the create-addresses operation on a partner) covers only adding a child to an already existing parent. Creating the parent with a nested child in one form did **not** fire the per-child interceptor in the project: the nested aggregate is created inside the parent-create behaviour, which emitted no per-child operation. Symptom: the address row and its city reach the database, but the city dictionary row never does, and the child interceptor logs zero invocations.
+Wiring `learn()` into the child's create-operation interceptor (for example the create-addresses operation on a account) covers only adding a child to an already existing parent. Creating the parent with a nested child in one form did **not** fire the per-child interceptor in the application: the nested aggregate is created inside the parent-create behaviour, which emitted no per-child operation. Symptom: the address row and its city reach the database, but the city dictionary row never does, and the child interceptor logs zero invocations.
 
 Fix: also wire `learn()` into the parent-create interceptors and iterate the created children.
 
 ```java
-// Example project code, parent-create interceptor: learn each address of the just-created partner
-for (Address a : partnerDao.queryAddresses(partner).selectList()) {
+// Example code, parent-create interceptor: learn each address of the just-created account
+for (Address a : accountDao.queryAddresses(account).selectList()) {
     cityPostalCodeService.learn(a.getCity(), a.getPostalCode());
 }
 // Another parent-create interceptor: learn from the input form fields (guaranteed populated)
@@ -84,7 +84,7 @@ About six times fewer round trips, and the per-pair find storm disappears. Re-im
 
 ## Example
 
-rackinspect learns city and postal code pairs from partner and user addresses through create and update interceptors on the child and the parent, and from a CSV import operation that runs the bulk path above.
+One application learns city and postal code pairs from account and user addresses through create and update interceptors on the child and the parent, and from a CSV import operation that runs the bulk path above.
 
 ## When to avoid
 

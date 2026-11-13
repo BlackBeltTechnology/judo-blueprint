@@ -2,7 +2,7 @@
 
 ### One service owns the feed rows
 
-A single project service (not platform API) creates and removes the rows through the generated data-access objects (DAOs). Publishing a source item creates its rows. Deleting or expiring the item removes them. Operations do not write feed rows directly.
+A single application service (not platform API) creates and removes the rows through the generated data-access objects (DAOs). Publishing a source item creates its rows. Deleting or expiring the item removes them. Operations do not write feed rows directly.
 
 - Provide one create method per content kind, and one delete method per content kind.
 - Each create method copies the display fields from the source and sets the type discriminator.
@@ -26,9 +26,9 @@ A failed feed write is a platform failure. Fail the publishing operation so the 
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - A feed service has create and delete methods for each content kind (announcement, news, offer, request) and a targeting strategy per kind.
 - Requests reach only organizations with matching capabilities. The other kinds reach all active organizations.
 - The admin dashboard triggers the bulk re-sync operation.
-- The project's own service and strategy classes are project code. Copy the pattern, not the names.
+- The application's own service and strategy classes are application code. Copy the pattern, not the names.

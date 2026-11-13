@@ -7,11 +7,11 @@ The shape has one enumeration of error codes and one general business error obje
 
 The model shows one enumeration and one error object. The variants below use different names and placement, and a project may omit the enumeration altogether.
 
-### Variants seen across projects
+### Variants seen in practice
 
-- **Modeled enumeration, application-wide.** One enumeration in the shared entities package, with the business error object beside it. Used in an identity project (about twenty codes) and a rental-property project (about eight codes).
+- **Modeled enumeration, application-wide.** One enumeration in the shared entities package, with the business error object beside it. Used in one project with about twenty codes and in another with about eight codes.
 - **Modeled enumeration, domain-scoped.** An enumeration for one domain only, such as workflow declaration validation, with one or a few codes that grow over time.
-- **Modeled enumeration, actor-scoped.** The enumeration and the error object live in one actor's namespace, so the codes belong to that actor's API. Used in a quiz project with five codes.
+- **Modeled enumeration, actor-scoped.** The enumeration and the error object live in one actor's namespace, so the codes belong to that actor's API. Used in one project with five codes.
 - **Plain string codes.** No enumeration. The business error object has a string `code` and a `message`, and the codes are constants in application code. Used in a platform project with several operations.
 - **Enumeration with a numeric gap.** One validation code is placed at a high ordinal, far from the domain codes. Keep the domain codes contiguous and put validation codes in their own block.
 

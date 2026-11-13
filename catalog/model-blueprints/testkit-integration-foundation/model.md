@@ -26,7 +26,7 @@ application/integration-test/
     │   │   │   ├── Calls.java
     │   │   │   ├── AuditAssertions.java
     │   │   │   ├── FieldInjector.java
-    │   │   │   ├── Layer0Module.java
+    │   │   │   ├── FoundationModule.java
     │   │   │   └── SdkFunctionRegistry.java
     │   │   ├── BootIT.java              #   Smoke (must turn green first)
     │   │   ├── access/                  #   12 access-link matrix ITs (Phase 2)
@@ -40,7 +40,7 @@ application/integration-test/
     │   ├── keycloak/                    # Tier 3 — pure-infra IT
     │   └── stack/                       # Tier 3 — full-stack IT (4-container compose)
     └── resources/
-        └── compsych-realm.json          # Keycloak realm import for Layer-2 / Tier-3
+        └── realm.json          # Keycloak realm import for Layer-2 / Tier-3
 ```
 
 **Why a separate `testkit/` directory?** Each tier has different runtime requirements and different lifecycle expectations. Putting the testkit suite under its own package keeps the surefire/failsafe configuration straightforward and lets future profiles (`-Pdocker`, `-Pnightly`, etc.) include or exclude it mechanically without resorting to `@Tag` indirection.
@@ -57,9 +57,9 @@ application/integration-test/
 
 ### Why two docker overlay sub-tiers (2b / 2c)?
 
-Same Guice module pattern (extend `Layer0Module`, swap one external-service `@Provides` via static flag), different concerns. Layer-1 isolates `DocumentConverterClient` (or any other backend HTTP client) so the IT can assert PDF-bytes / page-count properties impossible at Layer-0. Layer-2 isolates `AuthenticationInterceptor` wiring so the IT can mint a real JWT and prove the production claim-decoding path works.
+Same Guice module pattern (extend `FoundationModule`, swap one external-service `@Provides` via static flag), different concerns. Layer-1 isolates `DocumentConverterClient` (or any other backend HTTP client) so the IT can assert PDF-bytes / page-count properties impossible at Layer-0. Layer-2 isolates `AuthenticationInterceptor` wiring so the IT can mint a real JWT and prove the production claim-decoding path works.
 
-Both subclass `Layer0Module` to inherit every other binding — DAOs, `ActorVariableRegistrar`, `SdkFunctionRegistrar`, `OperationCallInterceptorRegistrar`. **Do not subclass-override `@Provides` methods** (Guice's `ProviderMethodScanner` registers both parent and child bindings for the same key → `DUPLICATE_BINDING`); use the static-flag pattern documented in `backend.md`.
+Both subclass `FoundationModule` to inherit every other binding; DAOs, `ActorVariableRegistrar`, `SdkFunctionRegistrar`, `OperationCallInterceptorRegistrar`. **Do not subclass-override `@Provides` methods** (Guice's `ProviderMethodScanner` registers both parent and child bindings for the same key → `DUPLICATE_BINDING`); use the static-flag pattern documented in `backend.md`.
 
 ## `pom.xml` shape
 
@@ -370,7 +370,7 @@ maven=3.9.10
 mvnd=1.0.2
 ```
 
-The compsych-letter-framework pins these as the only versions that build the testkit cleanly. Java 17 fails on `pattern-matching switch` (used in some custom-op impls); Maven 3.6 fails on `combine.self` semantics in the `-Pdocker` profile.
+The the reference project pins these as the only versions that build the testkit cleanly. Java 17 fails on `pattern-matching switch` (used in some custom-op impls); Maven 3.6 fails on `combine.self` semantics in the `-Pdocker` profile.
 
 ### How to run
 
@@ -387,10 +387,10 @@ REQUIRE_DOCKER_IMAGES=1 mvn -pl application/integration-test -Pdocker verify
 
 ### Build locally-required testcontainer images first (project-specific)
 
-The compsych-letter-framework Layer-1 expects a tagged image `compsych-document-converter:dev` built from the local Dockerfile:
+The the reference project Layer-1 expects a tagged image `document-converter:dev` built from the local Dockerfile:
 
 ```bash
-docker build -t compsych-document-converter:dev services/document-converter
+docker build -t document-converter:dev services/document-converter
 ```
 
 CI typically builds this image as a pre-step. Locally only needed when running the `-Pdocker` profile.

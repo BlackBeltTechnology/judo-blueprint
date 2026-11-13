@@ -36,7 +36,7 @@ Connections between applications, deployment instances and network interfaces ar
 ## Constraints
 
 - An application has exactly one vendor.
-- Name is an identifier for both the application and the vendor. The identifier flag marks the name as the natural key of a stored attribute on an entity. Uniqueness of names within the entity is intended; the agent-docs describe the flag only as a natural key field, so enforce the check in project logic if duplicates must be refused.
+- Name is an identifier for both the application and the vendor. The identifier flag marks the name as the natural key of a stored attribute on an entity. Uniqueness of names within the entity is intended; the agent-docs describe the flag only as a natural key field, so enforce the check in application logic if duplicates must be refused.
 - The category must be one of the enumeration values. A catch-all value is used when no other value fits.
 - The version is required. An unknown version is recorded with an explicit placeholder, not left empty.
 
@@ -61,6 +61,6 @@ Connections between applications, deployment instances and network interfaces ar
 
 ## Related
 
-- [[organization-entity]] — a similar entity that holds a name and an address
-- [[reference-data-lookup-entity]] — a lookup entity for shared reference values
-- [[partner-with-contact-details]] — a partner record that holds contact details
+- [[organization-entity]]: a similar entity that holds a name and an address
+- [[reference-data-lookup-entity]]: a lookup entity for shared reference values
+- [[partner-with-contact-details]]: a partner record that holds contact details

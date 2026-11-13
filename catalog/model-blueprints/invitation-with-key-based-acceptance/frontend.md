@@ -2,7 +2,7 @@
 
 ### Let the anonymous page read the key from the link
 
-The acceptance page belongs to an anonymous actor, so it is reached without signing in. The platform's guest-page hook (`supportGuestAccess`) only governs what an unauthenticated visitor sees at the root; this entry's page is an anonymous actor's own app. It reads the key from the query parameter of the link, and sends the key with each API call so the backend can find the invitation. Register one request interceptor for this (the generated frontend uses an axios request interceptor for header enrichment, see the platform's advanced patterns), not one per call. The key-in-URL scheme is project practice.
+The acceptance page belongs to an anonymous actor, so it is reached without signing in. The platform's guest-page hook (`supportGuestAccess`) only governs what an unauthenticated visitor sees at the root; this entry's page is an anonymous actor's own app. It reads the key from the query parameter of the link, and sends the key with each API call so the backend can find the invitation. Register one request interceptor for this (the generated frontend uses an axios request interceptor for header enrichment, see the platform's advanced patterns), not one per call. The key-in-URL scheme is common practice.
 
 ### Redirect after accept or cancel
 
@@ -22,7 +22,7 @@ When the backend refuses an expired or unknown key, show a clear message and no 
 
 ## Examples
 
-### ubives
+### Variant seen in practice
 
 - The anonymous actor's app registers the key-forwarding interceptor and a navigation interceptor so the key is kept.
 - Two post-operation hooks redirect to the signed-in account app after accept and after cancel.

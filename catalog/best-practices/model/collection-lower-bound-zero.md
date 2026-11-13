@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: relation
 status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 fragment: collection-lower-bound-zero
 first_seen: 2026-03-04
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Declare every collection relation with lower bound `0` (cardinality `0..*`) and keep "at least one" rules out of the model structure. The metamodel itself allows `1..*`; avoiding it is a project practice.
+Declare every collection relation with lower bound `0` (cardinality `0..*`) and keep "at least one" rules out of the model structure. The metamodel itself allows `1..*`; avoiding it is a convention.
 
 ## Practice
 
@@ -29,7 +29,7 @@ Declare every collection relation with lower bound `0` (cardinality `0..*`) and 
 
 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats `lower = 1` as a required relation with a required indicator ([ESM to UI mappings](../../agent-docs/frontend/esm-to-ui-mappings/README.md)). A required collection therefore forces the parent to be created together with at least one child, which breaks the usual create-then-add flow of a form and of generated create operations. Keeping `0` lets the parent exist first and the children be added afterwards (for example in a composition, see [[composition-ownership]]). The cost is that the model cannot state "non-empty"; the check moves into code.
 
-This is project practice layered on the platform: the platform accepts `1..*`, the catalog's projects consistently do not use it.
+This is a convention layered on the platform: the platform accepts `1..*`, the catalog's projects consistently do not use it.
 
 ## Example
 

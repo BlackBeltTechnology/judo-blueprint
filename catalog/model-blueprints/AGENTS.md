@@ -34,9 +34,6 @@
 | `bulk-json-upload-entity/BLUEPRINT.md` | An Upload entity that records one bulk JSON import batch and links the items it created back to that batch. |
 | `bulk-json-upload-entity/model.md` | bulk-json-upload-entity: model shape and generated structure diagram |
 | `bulk-json-upload-entity/backend.md` | bulk-json-upload-entity: backend guidance |
-| `campaign-lifecycle-status-enum/BLUEPRINT.md` | A three-state status enumeration for time-bounded operational entities, with members ONGOING, FINISHED and DELETED. |
-| `campaign-lifecycle-status-enum/model.md` | campaign-lifecycle-status-enum: model shape and generated structure diagram |
-| `campaign-lifecycle-status-enum/backend.md` | campaign-lifecycle-status-enum: backend guidance |
 | `capability-lookup-entity/BLUEPRINT.md` | A Capability lookup entity with a soft on/off flag, tagged onto other entities through many-to-many associations. |
 | `capability-lookup-entity/model.md` | capability-lookup-entity: model shape and generated structure diagram |
 | `capability-lookup-entity/backend.md` | capability-lookup-entity: backend guidance |
@@ -45,15 +42,11 @@
 | `capacitor-native-auth-pkce-passkey/frontend.md` | capacitor-native-auth-pkce-passkey: frontend guidance |
 | `capacitor-native-file-handling/BLUEPRINT.md` | A file download override for Capacitor Android apps that saves the file to the device's download folder, notifies the user and opens the file on tap, while the web keeps the browser download. |
 | `capacitor-native-file-handling/frontend.md` | capacitor-native-file-handling: frontend guidance |
+| `capacity-reservation-cluster/BLUEPRINT.md` | An entity cluster for capacity reservations at a shared site: a central reservation linked to reference data, parties, time slots, attachments and line items. |
+| `capacity-reservation-cluster/model.md` | capacity-reservation-cluster: model shape and generated structure diagram |
+| `capacity-reservation-cluster/backend.md` | capacity-reservation-cluster: backend guidance |
 | `cards-container-configuration-hook/BLUEPRINT.md` | A frontend pattern for replacing a cards container's row rendering with custom card components through the container's generated configuration hook, keeping paging and data loading. |
 | `cards-container-configuration-hook/frontend.md` | cards-container-configuration-hook: frontend guidance |
-| `client-account-multi-platform/BLUEPRINT.md` | A cluster where a client owns platform accounts and budget groups, and tracks campaigns found on several ad platforms. |
-| `client-account-multi-platform/model.md` | client-account-multi-platform: model shape and generated structure diagram |
-| `client-account-multi-platform/backend.md` | client-account-multi-platform: backend guidance |
-| `code-based-player-authentication/BLUEPRINT.md` | A lightweight sign-in pattern for anonymous or semi-anonymous users where access is granted with a short code sent by e-mail, instead of a full username and password flow. |
-| `code-based-player-authentication/model.md` | code-based-player-authentication: model shape and generated structure diagram |
-| `code-based-player-authentication/backend.md` | code-based-player-authentication: backend guidance |
-| `code-based-player-authentication/frontend.md` | code-based-player-authentication: frontend guidance |
 | `competence-skill-matrix-cluster/BLUEPRINT.md` | An entity cluster for recording what each person can do, at which level, with a self-assessed level, a manager-approved level and training targets. |
 | `competence-skill-matrix-cluster/model.md` | competence-skill-matrix-cluster: model shape and generated structure diagram |
 | `contact-info-composition-cluster/BLUEPRINT.md` | A set of small contact entities composed under one parent, each with an active flag and a primary designation, so the parent can hold several e-mails, phones and addresses with one preferred. |
@@ -94,6 +87,10 @@
 | `document-review-state-machine/model.md` | document-review-state-machine: model shape and generated structure diagram |
 | `draft-done-status-enum/BLUEPRINT.md` | A two-member status enumeration, DRAFT and DONE, for an item that is prepared and then finalized, with no soft-delete state. |
 | `draft-done-status-enum/model.md` | draft-done-status-enum: model shape and generated structure diagram |
+| `email-code-guest-authentication/BLUEPRINT.md` | A lightweight sign-in pattern for anonymous or semi-anonymous users where access is granted with a short code sent by e-mail, instead of a full username and password flow. |
+| `email-code-guest-authentication/model.md` | email-code-guest-authentication: model shape and generated structure diagram |
+| `email-code-guest-authentication/backend.md` | email-code-guest-authentication: backend guidance |
+| `email-code-guest-authentication/frontend.md` | email-code-guest-authentication: frontend guidance |
 | `entity-change-history-snapshot/BLUEPRINT.md` | A companion history entity that stores a snapshot of a parent entity's key attributes each time a significant change is saved, giving a dated trail of how the values evolved. |
 | `entity-change-history-snapshot/model.md` | entity-change-history-snapshot: model shape and generated structure diagram |
 | `entity-change-history-snapshot/backend.md` | entity-change-history-snapshot: backend guidance |
@@ -120,13 +117,6 @@
 | `feed-entry-denormalization/frontend.md` | feed-entry-denormalization: frontend guidance |
 | `firebase-push-notification-pipeline/BLUEPRINT.md` | A push notification delivery pipeline on Firebase Cloud Messaging: notifications are created as pending records, then delivered per device on a schedule with retry, token cleanup and email fallback. |
 | `firebase-push-notification-pipeline/backend.md` | firebase-push-notification-pipeline: backend guidance |
-| `forecast-versioning-snapshot/BLUEPRINT.md` | A versioning pattern for periodic financial forecasts where a parent entity keeps its current monthly forecasts and archived forecast versions, each version holding a frozen monthly breakdown. |
-| `forecast-versioning-snapshot/model.md` | forecast-versioning-snapshot: model shape and generated structure diagram |
-| `freight-logistics-state-enum/BLUEPRINT.md` | A multi-state lifecycle enumeration for freight, delivery or logistics reservation workflows, covering submission, approval, arrival, completion and schedule delays. |
-| `freight-logistics-state-enum/model.md` | freight-logistics-state-enum: model shape and generated structure diagram |
-| `freight-reservation-cluster/BLUEPRINT.md` | An entity cluster for freight and logistics reservations at a facility: a central reservation linked to reference data, parties, resource slots, attachments and cargo items. |
-| `freight-reservation-cluster/model.md` | freight-reservation-cluster: model shape and generated structure diagram |
-| `freight-reservation-cluster/backend.md` | freight-reservation-cluster: backend guidance |
 | `history-audit-trail-entity/BLUEPRINT.md` | A minimal non-CRUD History entity composed by a parent entity, recording who did what and when as plain text and timestamp values. |
 | `history-audit-trail-entity/model.md` | history-audit-trail-entity: model shape and generated structure diagram |
 | `history-audit-trail-entity/backend.md` | history-audit-trail-entity: backend guidance |
@@ -168,6 +158,9 @@
 | `multi-actor-role-based-projections/model.md` | multi-actor-role-based-projections: model shape and generated structure diagram |
 | `multi-actor-role-based-projections/backend.md` | multi-actor-role-based-projections: backend guidance |
 | `multi-actor-role-based-projections/frontend.md` | multi-actor-role-based-projections: frontend guidance |
+| `multi-platform-external-account-cluster/BLUEPRINT.md` | A cluster where a parent organization owns external platform accounts and groups, and tracks activities found on several external platforms. |
+| `multi-platform-external-account-cluster/model.md` | multi-platform-external-account-cluster: model shape and generated structure diagram |
+| `multi-platform-external-account-cluster/backend.md` | multi-platform-external-account-cluster: backend guidance |
 | `multiple-choice-question-entity/BLUEPRINT.md` | A non-CRUD Question entity with four fixed answer choices, a Choice enumeration for the correct answer and a review status. |
 | `multiple-choice-question-entity/model.md` | multiple-choice-question-entity: model shape and generated structure diagram |
 | `multiple-choice-question-entity/frontend.md` | multiple-choice-question-entity: frontend guidance |
@@ -175,6 +168,9 @@
 | `notification-entity/model.md` | notification-entity: model shape and generated structure diagram |
 | `notification-entity/backend.md` | notification-entity: backend guidance |
 | `notification-entity/frontend.md` | notification-entity: frontend guidance |
+| `ongoing-finished-deleted-status-enum/BLUEPRINT.md` | A three-state status enumeration for time-bounded entities, with members ONGOING, FINISHED and DELETED. |
+| `ongoing-finished-deleted-status-enum/model.md` | ongoing-finished-deleted-status-enum: model shape and generated structure diagram |
+| `ongoing-finished-deleted-status-enum/backend.md` | ongoing-finished-deleted-status-enum: backend guidance |
 | `open-close-status-toggle/BLUEPRINT.md` | A two-state status enumeration (OPEN and CLOSED) on an entity, changed by open and close instance operations, for availability windows that an admin can turn on and off. |
 | `open-close-status-toggle/model.md` | open-close-status-toggle: model shape and generated structure diagram |
 | `open-close-status-toggle/backend.md` | open-close-status-toggle: backend guidance |
@@ -197,6 +193,8 @@
 | `partner-with-contact-details/model.md` | partner-with-contact-details: model shape and generated structure diagram |
 | `partner-with-contact-details/backend.md` | partner-with-contact-details: backend guidance |
 | `partner-with-contact-details/frontend.md` | partner-with-contact-details: frontend guidance |
+| `plan-versioning-snapshot/BLUEPRINT.md` | A versioning pattern for periodic plans where a parent entity keeps its current period plans and archived plan versions, each version holding a frozen period breakdown. |
+| `plan-versioning-snapshot/model.md` | plan-versioning-snapshot: model shape and generated structure diagram |
 | `platform-configuration-singleton/BLUEPRINT.md` | A singleton Configuration entity that holds platform-wide settings, seeded once and then updated in place, never created or deleted. |
 | `platform-configuration-singleton/model.md` | platform-configuration-singleton: model shape and generated structure diagram |
 | `platform-configuration-singleton/backend.md` | platform-configuration-singleton: backend guidance |
@@ -223,13 +221,17 @@
 | `push-notification-system/frontend.md` | push-notification-system: frontend guidance |
 | `quote-lines-with-price-modifiers/BLUEPRINT.md` | A quote header that owns priced item lines and price modifier instances, where a modifier applies either to one line or to the whole quote, and the totals are derived from the lines. |
 | `quote-lines-with-price-modifiers/model.md` | quote-lines-with-price-modifiers: model shape and generated structure diagram |
+| `ranking-personal-best-pattern/BLUEPRINT.md` | A Ranking transfer object that aggregates ranked results (personal bests) for a competitive activity. |
+| `ranking-personal-best-pattern/model.md` | ranking-personal-best-pattern: model shape and generated structure diagram |
+| `ranking-personal-best-pattern/backend.md` | ranking-personal-best-pattern: backend guidance |
+| `ranking-personal-best-pattern/frontend.md` | ranking-personal-best-pattern: frontend guidance |
 | `recaptcha-waf-interceptor/BLUEPRINT.md` | An OperationCallInterceptor that refuses calls to public-facing built-in operations when the reCAPTCHA token in the input is missing, with a bypass for development and tests. |
 | `recaptcha-waf-interceptor/backend.md` | recaptcha-waf-interceptor: backend guidance |
 | `reference-data-lookup-entity/BLUEPRINT.md` | A minimal reference data entity with a `name` (required) attribute and optionally an `active` or `isEnabled` boolean attribute (default: true) for soft-enable/disable. |
 | `reference-data-lookup-entity/model.md` | reference-data-lookup-entity: model shape and generated structure diagram |
 | `reference-data-lookup-entity/backend.md` | reference-data-lookup-entity: backend guidance |
 | `reference-data-lookup-entity/frontend.md` | reference-data-lookup-entity: frontend guidance |
-| `registry-header-with-lines/BLUEPRINT.md` | A registry entity with a status enumeration that owns headers, where each header owns line items and each line owns its own qualification records, so a whole submission is stored and deleted as one ag |
+| `registry-header-with-lines/BLUEPRINT.md` | A registry entity with a status enumeration that owns headers, where each header owns line items and each line owns its own classification records, so a whole submission is stored and deleted as one a |
 | `registry-header-with-lines/model.md` | registry-header-with-lines: model shape and generated structure diagram |
 | `report-definition-with-run-operation/BLUEPRINT.md` | A report definition entity that captures report parameters (selected entities, filters) and produces report results via a `run` instance operation. |
 | `report-definition-with-run-operation/model.md` | report-definition-with-run-operation: model shape and generated structure diagram |
@@ -239,14 +241,12 @@
 | `reservation-booking-entity/frontend.md` | reservation-booking-entity: frontend guidance |
 | `risk-level-enum/BLUEPRINT.md` | A three-level risk classification enumeration with members LOW, MEDIUM and HIGH, used as an attribute for triage and filtering. |
 | `risk-level-enum/model.md` | risk-level-enum: model shape and generated structure diagram |
-| `scoreboard-personal-best-pattern/BLUEPRINT.md` | A Scoreboard transfer object that aggregates ranked results (personal bests) for a competitive activity. |
-| `scoreboard-personal-best-pattern/model.md` | scoreboard-personal-best-pattern: model shape and generated structure diagram |
-| `scoreboard-personal-best-pattern/backend.md` | scoreboard-personal-best-pattern: backend guidance |
-| `scoreboard-personal-best-pattern/frontend.md` | scoreboard-personal-best-pattern: frontend guidance |
 | `sensitive-field-double-entry-verification/BLUEPRINT.md` | A frontend-only pattern for preventing data entry errors on sensitive numeric fields by requiring the user to enter the value twice. |
 | `sensitive-field-double-entry-verification/frontend.md` | sensitive-field-double-entry-verification: frontend guidance |
 | `shared-service-helper-module/BLUEPRINT.md` | A frontend-only pattern for extracting shared form logic (field auto-computation, validation constraints, default initialization, and business rule application) into standalone TypeScript service modu |
 | `shared-service-helper-module/frontend.md` | shared-service-helper-module: frontend guidance |
+| `shipment-state-enum/BLUEPRINT.md` | A multi-state lifecycle enumeration for reservation workflows with handoffs between two parties, covering submission, approval, arrival, completion and schedule delays. |
+| `shipment-state-enum/model.md` | shipment-state-enum: model shape and generated structure diagram |
 | `soap-external-service-client/BLUEPRINT.md` | Wraps an external SOAP/WSDL web service behind a domain-oriented OSGi service interface, so custom operations and jobs never touch generated stubs or XML. |
 | `soap-external-service-client/backend.md` | soap-external-service-client: backend guidance |
 | `standard-type-and-measure-library/BLUEPRINT.md` | A shared types package (string, numeric, temporal primitives with fixed limits) and a measures package (SI measures and units) that every entity of a JUDO model draws its attribute types from. |
@@ -263,13 +263,13 @@
 | `task-list-with-checkout-release/model.md` | task-list-with-checkout-release: model shape and generated structure diagram |
 | `task-list-with-checkout-release/backend.md` | task-list-with-checkout-release: backend guidance |
 | `task-list-with-checkout-release/frontend.md` | task-list-with-checkout-release: frontend guidance |
-| `test-attempt-lifecycle-entity/BLUEPRINT.md` | An Attempt entity that records one participant's run through a timed activity, with a status enumeration from creation to completion, failure or exclusion and a timestamp per stage. |
-| `test-attempt-lifecycle-entity/model.md` | test-attempt-lifecycle-entity: model shape and generated structure diagram |
-| `test-attempt-lifecycle-entity/backend.md` | test-attempt-lifecycle-entity: backend guidance |
-| `test-attempt-lifecycle-entity/frontend.md` | test-attempt-lifecycle-entity: frontend guidance |
 | `testkit-integration-foundation/BLUEPRINT.md` | An in-process integration-test foundation for JUDO applications on the guice testkit and HSQLDB, with eight support classes, activation flags, a Maven tier layout and an optional docker overlay for re |
 | `testkit-integration-foundation/model.md` | testkit-integration-foundation: model shape and generated structure diagram |
 | `testkit-integration-foundation/backend.md` | testkit-integration-foundation: backend guidance |
+| `timed-attempt-lifecycle-entity/BLUEPRINT.md` | An Attempt entity that records one participant's run through a timed activity, with a status enumeration from creation to completion, failure or exclusion and a timestamp per stage. |
+| `timed-attempt-lifecycle-entity/model.md` | timed-attempt-lifecycle-entity: model shape and generated structure diagram |
+| `timed-attempt-lifecycle-entity/backend.md` | timed-attempt-lifecycle-entity: backend guidance |
+| `timed-attempt-lifecycle-entity/frontend.md` | timed-attempt-lifecycle-entity: frontend guidance |
 | `toggle-active-operation/BLUEPRINT.md` | An entity with a required active boolean (default true) and an instance operation that flips it, giving soft enable and disable without deletion. |
 | `toggle-active-operation/model.md` | toggle-active-operation: model shape and generated structure diagram |
 | `toggle-active-operation/backend.md` | toggle-active-operation: backend guidance |
@@ -306,6 +306,10 @@
 | `venue-with-bookable-resources/model.md` | venue-with-bookable-resources: model shape and generated structure diagram |
 | `venue-with-bookable-resources/backend.md` | venue-with-bookable-resources: backend guidance |
 | `venue-with-bookable-resources/frontend.md` | venue-with-bookable-resources: frontend guidance |
+| `work-order-report-completion-pipeline/BLUEPRINT.md` | An accepted offer generates a work order with numbered items; work reports of two kinds, and a completion certificate, close the work, with guards on item status and kind-based rules on completion. |
+| `work-order-report-completion-pipeline/model.md` | work-order-report-completion-pipeline: model shape and generated structure diagram |
+| `work-order-report-completion-pipeline/backend.md` | work-order-report-completion-pipeline: backend guidance |
+| `work-order-report-completion-pipeline/frontend.md` | work-order-report-completion-pipeline: frontend guidance |
 | `work-status-lifecycle-enum/BLUEPRINT.md` | A four-state work item status enumeration: NOT_STARTED, IN_PROGRESS, DONE and WONT_FIX, with two terminal outcomes. |
 | `work-status-lifecycle-enum/model.md` | work-status-lifecycle-enum: model shape and generated structure diagram |
 | `workflow-engine-state-machine-cluster/BLUEPRINT.md` | A data-driven workflow engine modeled as an entity cluster: workflow definitions, versions, states, transitions, guards and actions as entities, with runtime contexts and tokens that move through them |

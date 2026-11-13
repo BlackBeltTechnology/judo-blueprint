@@ -11,8 +11,6 @@ The generated UI already shows publish, delete and edit buttons for the content 
 
 ## Examples
 
-### mlszksz-platform
-
 - Framework: React with a registration-based hook system (project code).
-- The company-admin edit dialogs for news, offer, request and the admin announcement dialog each have a form-actions hook. Each hook reads the content with the parent service and a content-specific mask, then writes each field into the form.
+- The edit dialogs for each content type each have a form-actions hook. Each hook reads the content with the parent service and a content-specific mask, then writes each field into the form.
 - The publish, delete and moderation buttons use the generated UI with no custom rendering.

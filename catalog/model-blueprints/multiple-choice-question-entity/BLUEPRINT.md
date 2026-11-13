@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Store a question with a fixed set of labeled answers and one correct answer, so a quiz or assessment app can grade it. Questions are made by backend code (bulk import or generation), not by direct CRUD.
+Store a question with a fixed set of labeled answers and one correct answer, so an assessment or survey app can grade it. Questions are made by backend code (bulk import or generation), not by direct CRUD.
 
 ### Answers are fixed letters
 
@@ -42,23 +42,23 @@ The Question entity has a required question text, four required choice texts, a 
 ## Variations
 
 - **Admin view with moderation.** The admin projection exposes the full question, including the solution, and the status actions. Use it for editors.
-- **Player view without the solution.** A player projection shows the question and choices only. The solution appears after the answers are submitted, so the test does not reveal it early.
+- **Respondent view without the solution.** A respondent projection shows the question and choices only. The solution appears after the answers are submitted, so the test does not reveal it early.
 - **Status-free bank.** If questions do not need review, drop the status enumeration and keep Choice.
 
 ## When to use
 
-- A quiz, exam or survey has questions with a fixed set of labeled answers.
+- An exam, assessment or survey has questions with a fixed set of labeled answers.
 - Exactly one answer is correct and the correct letter must be stored.
 
 ## When to avoid
 
 - Questions have a variable number of answers. Use a relation to an answer entity instead of four fixed attributes.
 - More than one answer can be correct. A single Choice value cannot hold several answers.
-- Answers are free text that the player types. Use a text attribute, not an enumeration.
+- Answers are free text that the respondent types. Use a text attribute, not an enumeration.
 
 ## Related
 
-- [[multi-actor-role-based-projections]] — the admin and player views of the same question are separate projections
+- [[multi-actor-role-based-projections]] — the admin and respondent views of the same question are separate projections
 - [[open-close-status-toggle]] — a two-state status enumeration, compared with the review status here
 - [[sequence-based-identifier]] — the sequence default used for the identifier
 - [[notification-entity]] — another entity with status and type enumerations

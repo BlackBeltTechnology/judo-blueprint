@@ -36,7 +36,7 @@ For a transient relation the model offers a default expression (a preselected va
 
 ### Read the input in the operation
 
-The operation receives the parameter transfer object as `input`. The JCL reference states that `input` is immutable unless declared mutable, and that `mutable` is a unary prefix operator ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). The agent-docs do not describe what happens when a transient reference is read from `input` and linked to a stored record; test that on the target version before relying on it. Source projects used `mutable input.<relation>` in the body for this; treat it as project practice.
+The operation receives the parameter transfer object as `input`. The JCL reference states that `input` is immutable unless declared mutable, and that `mutable` is a unary prefix operator ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). The agent-docs do not describe what happens when a transient reference is read from `input` and linked to a stored record; test that on the target version before relying on it. Source projects used `mutable input.<relation>` in the body for this; treat it as a convention.
 
 ## Rationale
 

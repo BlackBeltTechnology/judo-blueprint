@@ -4,11 +4,11 @@ title: "Managed-Actor Admin Surface: Read-Only Relation + Custom-Op Delegation"
 description: "Admin user management on a managed actor uses a read-only users relation plus gated custom operations that write through the principal TO's DAO, so Keycloak realm sync fires."
 aliases: [admin user management, managed actor admin, invite user operation, Keycloak sync admin]
 keywords: [managed actor, Keycloak, realm sync, principal DAO, custom operation, enabledBy, read-only relation, invite user, OperationFlowManager]
-tags: ["domain:backend", "layer:backend", "project:compsych-letter-demo", "project:rackinspect", "status:emerging"]
+tags: ["domain:backend", "layer:backend", "project:compsych-letter-demo", "status:single-project"]
 category: auth
-status: emerging
-projects: [compsych-letter-demo, rackinspect]
-evidence: ["compsych-letter-demo:unrecorded", "rackinspect:unrecorded"]
+status: single-project
+projects: [compsych-letter-demo]
+evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-05-11
@@ -28,9 +28,9 @@ Give an admin a user-management surface on an actor with `managed=true` (princip
 - A custom operation is an OSGi component implementing the generated interface; it is not intercepted ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern), [which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). The relation access flags and `enabledBy` chain (the relation-CUD capability ladder, [access CRUD rules](../../agent-docs/model/esm_metamodel/accesspoint.md)) apply to direct relation create/update/delete only.
 - An actor's access targets must be mapped transfer objects, hence the admin view-model is a mapped TO (a self-mapped entity access).
 
-### Project practice: shape
+### Practice notes: shape
 
-Project practice (compsych-letter-demo), not platform API:
+Practice notes (one example), not platform API:
 
 - An admin dashboard access, mapped to the principal entity (self getter), with outer `createable`, `updateable` and `deleteable` all false, shown only when `self.isAdmin`.
 - A `users` relation of the principal entity TO (0..*) with no relation create/update/delete flags: read-only list with row click to detail.
@@ -40,7 +40,7 @@ Project practice (compsych-letter-demo), not platform API:
 - Each operation body writes through the principal TO's DAO. The frontend redirects the result to the access-context detail (`admin.users[id]`) with an OperationFlowManager hook ([[operation-flow-manager-redirect]]).
 
 ```java
-// Example project code: UserPrincipalDao / UserTODao are the project's generated DAOs
+// Example code: UserPrincipalDao / UserTODao are generated DAOs
 @Component(service = AdminDashboardInviteUser.class, immediate = true)   // generated interface name varies, verify
 public class AdminDashboardInviteUserCustomImpl implements AdminDashboardInviteUser {
 
@@ -64,25 +64,25 @@ public class AdminDashboardInviteUserCustomImpl implements AdminDashboardInviteU
 
 The DAO to call is the principal TO's one (`create`, `update`, `delete`): not the plain entity DAO (skips Keycloak) and not the admin TO's DAO (carries no sync trigger).
 
-### Variation: separate identity-server client module (rackinspect)
+### Variation: separate identity-server client module
 
-A second project provisions users through an identity-server user service with invitations. Instead of writing through the principal TO's DAO, it calls a separate client module that talks to the identity server. Whether realm sync fires on this path is not confirmed by the agent-docs: *verify*.
+A second variant provisions users through an identity-server user service with invitations. Instead of writing through the principal TO's DAO, it calls a separate client module that talks to the identity server. Whether realm sync fires on this path is not confirmed by the agent-docs: *verify*.
 
 ## Rationale
 
 - Custom operations are outside the capability ladder, so one `enabledBy` gate per operation is the whole check.
 - Principal-DAO routing is what triggers realm sync; a direct create/update on the admin TO through the relation would not.
 - Read-only relation avoids `updateable=true` on the dashboard. That would open the generated update endpoint for the admin's own row (the actor's own access), a self-elevation risk. One security surface: read-only relation plus gated operations.
-- Redirecting to the access-context detail gives one canonical URL per row with breadcrumbs, instead of the standalone mapped-TO view. The per-instance updatable/deletable flags of the result row are evaluated in the admin access context (project observation, *verify*).
+- Redirecting to the access-context detail gives one canonical URL per row with breadcrumbs, instead of the standalone mapped-TO view. The per-instance updatable/deletable flags of the result row are evaluated in the admin access context (observed in practice, *verify*).
 
 ## Example
 
-Anti-patterns seen or predicted in compsych-letter-demo:
+Anti-patterns seen or predicted in one example:
 
 | Anti-pattern | Consequence | Instead |
 |---|---|---|
 | Enable create on the users relation so the framework generates an "Add user" button | The auto-form uses the mapped shape, so the admin can set a user name and the Keycloak username derivation cannot be enforced | Outer createable false; custom `inviteUser` with the unmapped input |
-| Put `actorType` on the admin TO | The lean principal TO loses its back-link and a later generator step fails with a missing-attribute error (the project saw "Could not find attribute: userName") | Keep `actorType` on the lean principal TO; map the admin TO without it |
+| Put `actorType` on the admin TO | The lean principal TO loses its back-link and a later generator step fails with a missing-attribute error (one example saw "Could not find attribute: userName") | Keep `actorType` on the lean principal TO; map the admin TO without it |
 | Mutate through the entity DAO | Row updates, Keycloak does not | Use the principal TO's DAO |
 | `updateable=true` on the dashboard for inline edits | Admin can change an arbitrary user, including the admin flag, through the generated update endpoint | `updateable=false`; one gated operation per update |
 

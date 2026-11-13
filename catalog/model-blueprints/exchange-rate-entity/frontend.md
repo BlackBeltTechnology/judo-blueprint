@@ -14,8 +14,8 @@ The generated form shows the rate and its repeat as two separate inputs. A custo
 
 ## Examples
 
-### rackinspect
+### Variant seen in practice
 
 - The custom rate group replaces the generated rate input on the create-rate form. The rate field switches to a masked input after blur, and the repeat field is disabled until a rate is entered.
 - The form action hook disables future dates on the date picker.
-- The masking is specific to this project: it treats exchange rates as semi-confidential data that needs double-entry confirmation.
+- The masking is specific to this application: it treats exchange rates as semi-confidential data that needs double-entry confirmation.

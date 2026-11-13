@@ -37,7 +37,7 @@ If the input carries relations to existing entities (region, category), declare 
 
 - The entity graph is created together or not at all, and the business rule (always twelve children) lives in one place.
 - Clients make one call.
-- Project practice (not platform behaviour): two source projects used it for a yearly plan with twelve monthly rows and for a document with an initial history entry.
+- Practice note (not platform behaviour): two source projects used it for a yearly plan with twelve monthly rows and for a document with an initial history entry.
 - Cost: the number and shape of children are fixed, and a long body is harder to read.
 
 ## Example

@@ -30,9 +30,9 @@ A bulk import from a file or another system contains rows that may be wrong, dup
 - A transaction bounds each operation call; the agent-docs do not describe partial commits inside one call. A "validate all" over a large batch is one call, so test it for time and memory, or drive the slices from the client.
 - Faults the phases throw must be declared on the operations ([modeled faults](../../agent-docs/backend/error-handling-guide.md#modeled-faults)).
 
-### Project practice: three phases with status enums
+### Practice notes: three phases with status enums
 
-This layer is project practice (judo-partner), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - **Entities**: a batch entity and a staged-record entity owned by it. The staged record has a migration status (awaiting, migrated, disabled), a validation status (ok, failed) and an error code that categorises the failure.
 - **Stage**: parse the file, create the batch and one staged record per row, status awaiting, copying the source values including child rows such as addresses.
@@ -42,10 +42,10 @@ This layer is project practice (judo-partner), not a platform feature:
 - Status lets an interrupted run resume and lets a user retry only failed rows.
 
 ```java
-// Example project code: Import, StagedRecord, importDao, stagedRecordDao and statuses are project/generated types
+// Example code: Import, StagedRecord, importDao, stagedRecordDao and statuses are generated types
 Import batch = importDao.create(ImportForCreate.builder().build());
 for (RawRecord record : parsedData) {
-    importDao.createPartners(batch, StagedRecordForCreate.builder()
+    importDao.createAccounts(batch, StagedRecordForCreate.builder()
         .withName(record.name)
         .withStatus(MigrationStatus.AWAITING)
         .build());
@@ -69,7 +69,7 @@ void migrate(StagedRecord record) {
     stagedRecordDao.update(record);
 }
 
-// batch processing in slices of 100; the slice API shown is the project's usage, check your generated DAO
+// batch processing in slices of 100; the slice API shown is the example's usage, check your generated DAO
 int i = 0;
 List<StagedRecord> slice;
 do {
@@ -86,7 +86,7 @@ do {
 
 ## Example
 
-In judo-partner a partner import runs in three phases. The import operation reads partner JSON from the file store, parses the Hungarian-format fields and creates an import batch with staged partner records and their addresses. The validate operations (single and all) check each staged partner against the tax authority's online API by tax number and name, and set validation and migration status; the batch version processes 100 records at a time. The migrate operations (single and all) create real partners from validated records, copy the addresses and add the authority's headquarters data. A failed migration marks the record disabled with a duplicate-tax-id error.
+An account import runs in three phases. The import operation reads account JSON from the file store, parses the locale-specific fields and creates an import batch with staged account records and their addresses. The validate operations (single and all) check each staged account against an external registry API by tax number and name, and set validation and migration status; the batch version processes 100 records at a time. The migrate operations (single and all) create real accounts from validated records, copy the addresses and add the registry's headquarters data. A failed migration marks the record disabled with a duplicate-tax-id error.
 
 ## When to avoid
 

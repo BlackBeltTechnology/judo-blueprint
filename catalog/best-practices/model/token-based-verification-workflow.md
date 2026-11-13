@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single
 category: operation
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/utils/TokenUtils.java"]
 alternatives: []
 fragment: token-based-verification-workflow
 diagram: { kinds: [entity, enum, operation], members: types }
@@ -41,7 +41,7 @@ The operations write data, so they must be `stateful` ([operation reference](../
 
 The person verifying has no account. The submit and verify operations are exposed to an actor that is marked anonymous (an unauthenticated guest actor, see [accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md)). Because that actor is open to anyone, the operations must be written defensively: do not reveal whether a token exists, and rate-limit in project code if needed.
 
-### Token handling (project practice)
+### Token handling (a convention)
 
 - Generate the token with a cryptographically secure random source and make it long; see [[api-key-generation]].
 - Store only a hash of the token and send the plain token once, as the invitation blueprint does ([[invitation-with-recipients]]). The source project named the attribute `verificationToken` (or `invitationToken`); the diagram names it `tokenHash` because only the hash is stored.
@@ -56,7 +56,7 @@ The person verifying has no account. The submit and verify operations are expose
 
 ## Example
 
-A Request entity has a required `email`, a `tokenHash`, `expiresAt`, `verifiedAt` and a `status` (Pending, Verified, Approved, Rejected, Expired). A Configuration entity holds `verificationExpiryMinutes` and `invitationExpiryDays`. Operations `verify` and `approve` on Request are custom implementations. The original MLSZKSZPlatform used three entities this way (registration request, invitation recipient, user invitation request) with a registration operation that generated the token and a verify operation that checked it. Names are neutral stand-ins.
+A Request entity has a required `email`, a `tokenHash`, `expiresAt`, `verifiedAt` and a `status` (Pending, Verified, Approved, Rejected, Expired). A Configuration entity holds `verificationExpiryMinutes` and `invitationExpiryDays`. Operations `verify` and `approve` on Request are custom implementations. The original project used three entities this way (registration request, invitation recipient, user invitation request) with a registration operation that generated the token and a verify operation that checked it. In the source model the attribute is named `verificationToken`, not `tokenHash`; the names in this example are neutral stand-ins.
 
 ## When to avoid
 

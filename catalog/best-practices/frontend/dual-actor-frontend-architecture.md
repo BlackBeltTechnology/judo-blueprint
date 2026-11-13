@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Different roles need different experiences: back-office users want fast generated CRUD, customers or players want a tailored UI. The platform generates one frontend module per actor, so each can be customized to a different degree on top of one shared backend.
+Different roles need different experiences: back-office users want fast generated CRUD, customers or participants want a tailored UI. The platform generates one frontend module per actor, so each can be customized to a different degree on top of one shared backend.
 
 ## Practice
 
@@ -28,7 +28,7 @@ Different roles need different experiences: back-office users want fast generate
 - The backend resolves the actor from the token's `azp` claim (dashes become dots, the result must equal an actor FQN). A frontend client with another name needs the `JUDO_PLATFORM_ACCEPTABLE_CLIENTS` whitelist; each actor exposes `~meta` and `~principal` endpoints that a custom frontend uses to obtain a token ([authentication guide: several Keycloak clients in one realm](../../agent-docs/backend/authentication-guide.md)).
 - Customization options per module, from least to most: leave scaffolds inactive; activate hooks from `src/custom/`; sub-themes and custom visual elements; extra routes ([hooks overview](../../agent-docs/frontend/hooks/README.md), [extension points](../../agent-docs/frontend/extension-points.md)).
 
-### Project practice: pick a customization level per actor
+### Practice notes: pick a customization level per actor
 
 - Admin or reference-data actors: keep fully generated ([[admin-default-generated-ui]]) and improve the experience in the model.
 - Customer-facing actors: customize deliberately: hooks first ([[single-actor-heavy-customization]]), full replacement only when the generated layout cannot serve ([[complete-frontend-replacement]]). A replaced frontend gets no generator updates.
@@ -42,11 +42,11 @@ Each audience gets the fitting tool: generated CRUD costs nothing to maintain, a
 
 ## Example
 
-- trivia: a completely custom player SPA next to an admin actor that is a generated CRUD app with inactive scaffolds.
-- itracker: two actors (initiative tracking with approval workflow, reference data CRUD), both fully generated, with shared branding from model colors and the logo.
-- reserve-app: five actors, one with full CRUD and a single hook, one for reservation management with restricted transfer objects, three dashboard-only.
-- kozut-eugyfel-client and skillmatrix (Flutter): three actors each; the first mixes authenticated staff actors with an anonymous public portal.
-- doors-model: model-only; two actors (simple master-data admin, complex contract lifecycle employee) with no frontend generated yet.
+- A completely custom participant SPA next to an admin actor that is a generated CRUD app with inactive scaffolds.
+- Two actors (document tracking with an approval workflow, reference data CRUD), both fully generated, with shared branding from model colors and the logo.
+- A multi-actor app: one actor with full CRUD and a single hook, one for booking management with restricted transfer objects, and dashboard-only actors.
+- Two Flutter apps: one mixes authenticated staff actors with an anonymous public portal.
+- A model-only example: two actors (simple master-data admin, complex order lifecycle employee) with no frontend generated yet.
 
 ## When to avoid
 

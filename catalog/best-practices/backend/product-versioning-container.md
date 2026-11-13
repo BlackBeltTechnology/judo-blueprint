@@ -1,7 +1,7 @@
 ---
 id: product-versioning-container
 title: Version Container Pattern for Entity Versioning
-description: Project practice for versioning a product or document with a container entity that groups full-copy versions, creates a new version by cloning, and keeps exactly one version approved.
+description: Practice for versioning a product or document with a container entity that groups full-copy versions, creates a new version by cloning, and keeps exactly one version approved.
 aliases: [version container, full-copy versioning, draft new version, single approved version]
 keywords: [version, container, versioning, product, clone, draft, approve, rollback, state]
 tags: ["domain:backend", "layer:backend", "project:alba", "status:single-project"]
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Keep every version of a product (or document) as a full, editable copy, grouped by a container entity, with a rule that only one version is approved at a time. This is project practice (alba); the platform offers no versioning feature, only the DAO calls the operations use.
+Keep every version of a product (or document) as a full, editable copy, grouped by a container entity, with a rule that only one version is approved at a time. This is a convention built on the platform; the platform offers no versioning feature, only the DAO calls the operations use.
 
 ## Practice
 
@@ -28,14 +28,14 @@ Keep every version of a product (or document) as a full, editable copy, grouped 
 - State changes of existing versions are ordinary entity updates ([[mutable-entity-update-pattern]]), and all steps of an operation run in that operation's transaction.
 - Custom operations are not intercepted, so a rule enforced only in an interceptor would not apply here; the "one approved version" rule lives in the operations themselves ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 
-### Project practice: container, full copies, two operations
+### Practice notes: container, full copies, two operations
 
 Model shape (described in prose; the platform part is plain entities and relations): a container entity holds a collection of version-info records and a collection of all product copies; each product points back to its container and to its current version-info; each version-info has a version number and points to the product it represents.
 
 - `DraftNewVersion` clones the current product with all attributes and relations into a new product in state DRAFT, linked to the same container, and creates a version-info with number + 1:
 
 ```java
-// Example project code: Product, ProductVersion(s) and their DAOs are generated or project types
+// Example code: Product, ProductVersion(s) and their DAOs are generated types
 Product current = productDao.getById(id).orElseThrow();
 ProductVersion currentVersion = productDao.queryCurrentVersion(current).orElseThrow();
 ProductVersions container = productDao.queryProductVersions(current);
@@ -66,7 +66,7 @@ for (Product p : approved) {
 }
 ```
 
-- Relations are cloned by hand, relation type by relation type (audiences, curriculums, result types, attachments and aggregated fields in alba); a new relation on the product means a code change in the clone.
+- Relations are cloned by hand, relation type by relation type (for example tags, categories, attachments and aggregated fields); a new relation on the product means a code change in the clone.
 - A draft can exist while the approved version stays published.
 
 ## Rationale

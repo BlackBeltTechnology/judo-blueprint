@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: established
 projects: [mlszksz-platform, judo-demo-miniworkflow, trivia, itracker, doors-model, ams-model, skillmatrix-model]
-evidence: ["mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
 alternatives: [state-lifecycle-operation]
 fragment: accept-reject-operations
 diagram: { kinds: [entity, enum], members: types }
@@ -63,8 +63,8 @@ A Request entity has a required title, a required status (an enumeration with th
 
 ## Related
 
-- [[state-lifecycle-operation]] — the status flow the accept and reject steps belong to
-- [[active-inactive-status-enum]] — a two-value status enumeration for the simpler case
-- [[active-suspended-deactivated-status-enum]] — a three-value lifecycle status for comparison
-- [[toggle-active-operation]] — a single toggle operation instead of a decision pair
-- [[audit-log-entity]] — records each decision with the acting user
+- [[state-lifecycle-operation]]: the status flow the accept and reject steps belong to
+- [[active-inactive-status-enum]]: a two-value status enumeration for the simpler case
+- [[active-suspended-deactivated-status-enum]]: a three-value lifecycle status for comparison
+- [[toggle-active-operation]]: a single toggle operation instead of a decision pair
+- [[audit-log-entity]]: records each decision with the acting user

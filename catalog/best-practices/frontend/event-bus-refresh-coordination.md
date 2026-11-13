@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-When one page changes data, other open views of related data must refresh. This entry records what projects observed about the event bus in generated pages and states which documented mechanisms to build on.
+When one page changes data, other open views of related data must refresh. This entry records what was observed about the event bus in generated pages and states which documented mechanisms to build on.
 
 ## Practice
 
@@ -27,9 +27,9 @@ When one page changes data, other open views of related data must refresh. This 
 - Documented refresh mechanisms: page and dialog hooks (`<Container>PageActionsExtended`) have an optional `post<RefreshAction>` handler (for example `postRefreshAction`) that runs after a data refresh. Return it from the page actions hook created from the `register<Page>ActionsHook` scaffold; its parameters are generated per page ([PostRefresh action hook](../../agent-docs/frontend/advanced-patterns.md)). The `context.actions.refreshTable` style helpers in the docs are illustrative, so check the generated types.
 - Page actions hooks receive `(data, editMode, storeDiff, refresh, submit)` depending on the page kind, so a custom handler can call `refresh` itself ([action hooks: page actions](../../agent-docs/frontend/hooks/action-hooks.md)). Operation flows can request a refresh after an operation completes.
 
-### Project practice: observations and guidance
+### Practice notes: observations and guidance
 
-- Projects observed that a generated page publishes a "refreshed" event after a successful refresh, keyed by its UI model page definition, and that related generated pages (a relation page of the same data, an embedded tab and its parent view, a dashboard table after approve or reject operations) stay in sync through it. The keys contain opaque model identifiers.
+- Observed behavior: a generated page publishes a "refreshed" event after a successful refresh, keyed by its UI model page definition, and that related generated pages (a relation page of the same data, an embedded tab and its parent view, a dashboard table after approve or reject operations) stay in sync through it. The keys contain opaque model identifiers.
 - Do not hard-code those keys: they change when the model changes. If a custom page must react to another page's data change, use the documented post-refresh handler of the page that owns the data, or refresh on navigation.
 - When debugging stale data across pages, first check whether the operation triggers a refresh at all, then whether the second page was mounted during the change.
 - Event delivery order is not guaranteed; do not chain logic on it.
@@ -40,8 +40,8 @@ The bus gives generated pages loose coupling, so no page needs a direct referenc
 
 ## Example
 
-- trivia: the admin categories page publishes a refresh event after each successful refresh, and pages showing category data can stay in sync through it.
-- itracker: after approve, reject or send-for-approval operations on an initiative view, the event reaches the initiatives dashboard table, and coordinates embedded tabs with their parent view.
+- An admin page publishes a refresh event after each successful refresh, and pages showing the same data can stay in sync through it.
+- After approve, reject or send-for-approval operations on a document view, the event reaches the documents dashboard table, and coordinates embedded tabs with their parent view.
 
 ## When to avoid
 

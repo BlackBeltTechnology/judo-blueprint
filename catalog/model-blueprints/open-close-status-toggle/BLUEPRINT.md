@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Model an availability window that is explicitly turned on and off, such as a contest, a registration period or a campaign. The entity starts closed, an admin opens it, and it can be closed again.
+Model an availability window that is explicitly turned on and off, such as an event, a registration period or a sales window. The entity starts closed, an admin opens it, and it can be closed again.
 
 ### The state changes only through the operations
 
@@ -29,11 +29,11 @@ OPEN and CLOSED are the two members. Use an enumeration instead of a boolean so 
 
 ## Structure
 
-The Contest entity has a required status (ContestStatus) and a required title. The ContestStatus enumeration lists OPEN and CLOSED. The entity has two instance operations, open and close, which each set the status to their state. The status defaults to CLOSED.
+The Event entity has a required status (EventStatus) and a required title. The EventStatus enumeration lists OPEN and CLOSED. The entity has two instance operations, open and close, which each set the status to their state. The status defaults to CLOSED.
 
 ## Constraints
 
-- Createable, updateable and deleteable are all false on Contest, so the generated UI shows no create, edit or delete controls.
+- Createable, updateable and deleteable are all false on Event, so the generated UI shows no create, edit or delete controls.
 - Status and title are required. Status must be OPEN or CLOSED.
 - Both operations are custom implementations. They have `customImplementation` true: the body is Java in the backend, and the editor does not validate it as a JCL script.
 - An operation that opens an already open entity, or closes a closed one, is a choice for the backend. The model does not prevent it.
@@ -41,10 +41,10 @@ The Contest entity has a required status (ContestStatus) and a required title. T
 
 ## Variations
 
-- **Default OPEN.** When the entity should be available as soon as it is created, set the default to OPEN. The ams campaign example uses this form.
-- **Boolean flag.** A closed boolean (default false) replaces the enumeration. The skillmatrix example uses this form. It has less detail in queries but the same two states.
+- **Default OPEN.** When the entity should be available as soon as it is created, set the default to OPEN.
+- **Boolean flag.** A closed boolean (default false) replaces the enumeration. It has less detail in queries but the same two states.
 - **Guard attributes on the view.** Derived boolean attributes, such as isOpen and isClosed, tell the UI which action is available: the operation's `hiddenBy` or `enabledBy` references such a boolean on the same transfer object. Use them when the admin view should show only the valid operation.
-- **Load while empty.** A bulk load operation is allowed only while the entity has no children. The ams campaign example guards it with an isEmpty attribute.
+- **Load while empty.** A bulk load operation is allowed only while the entity has no children. A typical guard is an isEmpty attribute.
 
 ## When to use
 

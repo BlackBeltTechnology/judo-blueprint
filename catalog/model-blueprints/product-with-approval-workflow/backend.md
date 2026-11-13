@@ -16,8 +16,7 @@ The Product approval workflow is implemented through seven custom operation clas
 
 ## Examples
 
-### alba
-- Key files: `custom/.../entities/product/FinalizeCustomImplementation.java`, `custom/.../entities/product/ApproveVersionCustomImplementation.java`, `custom/.../entities/product/RevokeApprovalCustomImplementation.java`, `custom/.../entities/product/AssignApprovalCustomImplementation.java`, `custom/.../entities/product/DraftNewVersionCustomImplementation.java`, `custom/.../services/adminproduct/CreateProductCustomImplementation.java`, `custom/.../services/authorproduct/CreateProductCustomImplementation.java`
+### Example (project code)
 - Pattern: Seven custom operation classes implement the full DRAFT->FINALIZED->APPROVED lifecycle with state guards, versioning via ProductVersion/ProductVersions, event logging, and task creation for approval assignment
 - Notable: `ApproveVersionCustomImplementation` rolls back any previously APPROVED versions to FINALIZED before approving the current one (single-approved-version constraint); `DraftNewVersionCustomImplementation` deep-copies product content, relations, and attachments into a new DRAFT product with an incremented version number; `AssignApprovalCustomImplementation` creates Task entities as side effects for each selected assignee user
-- DI: All classes use OSGi `@Reference` to inject `ProductDao`, `UserDao`, `EventDao`, `VariableResolver`, and additional DAOs as needed (e.g., `TaskDao`, `ProductVersionDao`, `ProductVersionsDao`, `AudienceDao`, `CurriculumDao`, `ResultTypeDao`)
+- DI: All classes use OSGi `@Reference` to inject `ProductDao`, `UserDao`, `EventDao`, `VariableResolver`, and additional DAOs as needed (e.g., `TaskDao`, `ProductVersionDao`, `ProductVersionsDao`, and classification DAOs)

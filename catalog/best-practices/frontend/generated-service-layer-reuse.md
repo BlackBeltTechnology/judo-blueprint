@@ -26,17 +26,17 @@ A custom UI should talk to the backend through the REST client code the generato
 - For each page and relation the generator emits services under `src/services/data-axios/`: `{Entity}ServiceImpl.ts` and `{Entity}ServiceFor{Relation}Impl.ts`. They are constructed with the generated `judoAxiosProvider` (`~/services/data-axios/JudoAxiosProvider`) ([service generation](../../agent-docs/frontend/model-screen-layout.md), [accessing generated services](../../agent-docs/frontend/development-workflow.md)).
 - Because the services come from the UI model, regenerating after a model change updates them and the transfer object types together. Add the needed elements to the model's views instead of hand-writing replacements ([model features instead of custom components](../../agent-docs/frontend/ui-model-pitfalls.md)).
 
-### Project practice: use them from custom components
+### Practice notes: use them from custom components
 
-Instantiate the generated service once per component (for example with `useMemo`) and call its methods with generated types. The project also passes a `QueryCustomizer` with a `_mask` string to limit returned fields (see [[getmask-data-optimization]]).
+Instantiate the generated service once per component (for example with `useMemo`) and call its methods with generated types. The example also passes a `QueryCustomizer` with a `_mask` string to limit returned fields (see [[getmask-data-optimization]]).
 
 ```typescript
-const contestService = useMemo(() => new ContestServiceImpl(judoAxiosProvider), []);
-const [contests, setContests] = useState<ContestStored[]>([]);
+const orderService = useMemo(() => new OrderServiceImpl(judoAxiosProvider), []);
+const [orders, setOrders] = useState<OrderStored[]>([]);
 
-const data = await contestService.list(
+const data = await orderService.list(
   undefined,
-  { _mask: '{title,description}' } as QueryCustomizer<Contest>,
+  { _mask: '{number,total}' } as QueryCustomizer<Order>,
 );
 ```
 
@@ -48,8 +48,8 @@ The generated layer already handles transport, typing and the query customizer. 
 
 ## Example
 
-- trivia, player frontend: four generated services created via `useMemo` (contest entry, contest listing and scoreboard, quiz flow, registration), all on `judoAxiosProvider`.
-- actiongroup-test-react: imports generated services directly for root CRUD, entity view, nested entity and many-aggregation access, plus the generated types and mask builders.
+- A game frontend: four generated services created via `useMemo` (entry, listing and ranking, round flow, registration), all on `judoAxiosProvider`.
+- A hand-built reference app: imports generated services directly for root CRUD, entity view, nested entity and many-aggregation access, plus the generated types and mask builders.
 
 ## When to avoid
 

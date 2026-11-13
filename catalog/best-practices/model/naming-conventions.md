@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: namespace
 status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, transfer-object-multiplicity, unmapped-transfer-dto, attribute-renaming-in-transfer, standard-type-library, derived-attribute-flattening, dual-role-relation, toggle-operation-pattern, ui-control-transfer-fields]
 fragment: naming-conventions
@@ -49,7 +49,7 @@ Refinements seen in many projects:
 
 - Boolean attributes: `is` or `has` prefix (`isActive`, `hasSkills`); a negated twin `isNot...` for hiding controls ([[ui-control-transfer-fields]]).
 - Timestamps: `...At` suffix (`createdAt`, `expiresAt`); dates `...Date` or `dateOf...`.
-- Flattened derived attributes: relation name plus attribute (`competenceName`) ([[derived-attribute-flattening]]).
+- Flattened derived attributes: relation name plus attribute (`groupName`) ([[derived-attribute-flattening]]).
 - Dual roles to the same entity: role names (`homeTeam`, `visitorTeam`) ([[dual-role-relation]]).
 - Use the same enum member style within a model: most projects use UPPER_SNAKE_CASE, a few use camelCase.
 - Toggle and lifecycle operations use verbs: `toggleActive`, `publish`, `reject` ([[toggle-operation-pattern]]).

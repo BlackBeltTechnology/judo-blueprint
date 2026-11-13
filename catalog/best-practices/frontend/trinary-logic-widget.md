@@ -26,16 +26,16 @@ An optional boolean attribute has three states: true, false and not set. A check
 - A boolean attribute in the UI model has a `booleanWidget` setting with two values: `CHECKBOX` and `COMBO`, a dropdown with Yes/No options ([boolean type rules](../../agent-docs/model/esm_metamodel/ui-behaviour.md), [BooleanWidget](../../agent-docs/model/esm_metamodel/ui.md)). Neither documentation page describes a dedicated "unknown" option for the generated widgets, so check the generated form in the target version before building a custom one.
 - A model-level alternative is to avoid the third state: make the attribute required with a default, or use a small enumeration with an explicit "unknown" member, which the generated frontend renders natively.
 
-### Project practice: a custom three-option combobox
+### Practice notes: a custom three-option combobox
 
-This is project code (actiongroup-test-react), written for a frontend with hand-built pages:
+This is custom code, written for a frontend with hand-built pages:
 
 - A value-to-label map: `null` is "Unknown", `true` is "Yes", `false` is "No".
 - A select component with the usual form props: name, label, value, change handler, `readOnly`, error and helper text.
 - The same component serves as the `trinaryLogic` filter type of the filter dialog for boolean columns.
 
 ```typescript
-// Example project code
+// Example code
 const TRINARY_LOGIC = new Map<boolean | null, string>([
   [null, 'Unknown'], [true, 'Yes'], [false, 'No'],
 ]);
@@ -54,7 +54,7 @@ The widget maps one to one onto what the database and the REST layer carry for a
 
 ## Example
 
-actiongroup-test-react uses the component for several boolean fields of its Galaxy and Earth forms and for boolean column filters. It honours the read-only flag of [[view-edit-mode-toggle]].
+One hand-built app uses the component for several boolean fields of its forms and for boolean column filters. It honours the read-only flag of [[view-edit-mode-toggle]].
 
 ## When to avoid
 

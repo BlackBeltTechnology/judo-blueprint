@@ -14,7 +14,7 @@ An address field can compute its full text from the street, city and postal code
 
 ## Examples
 
-### rackinspect
+### Variant seen in practice
 
 - Framework: React.
 - Address hooks compute the full address from its parts on blur, in both the form and the view-edit page.

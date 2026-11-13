@@ -1,14 +1,14 @@
 ---
 id: feed-targeting-strategy
 title: Pluggable Feed Targeting Strategy Pattern
-description: "A project-level strategy interface, registered as OSGi components, that decides which organizations or users see a piece of feed content."
+description: "A strategy interface, registered as OSGi components, that decides which tenants or users see a piece of feed content."
 aliases: [feed targeting, audience strategy]
 keywords: [pluggable, feed, targeting, strategy, osgi, dao]
 tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
 category: service
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/feed/AllActiveOrganizationsTargetingStrategy.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/feed/RequestTargetingStrategy.java"]
 alternatives: [service-delegation-pattern]
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -16,40 +16,40 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Content in a feed must reach different audiences depending on its type: News goes to every active organization, a Request only to organizations with matching capabilities. A strategy interface keeps the targeting rules out of the feed service, so a new content type adds a strategy and does not change the feed logic.
+Content in a feed must reach different audiences depending on its type: Notice goes to every active account, a Request only to accounts with matching capabilities. A strategy interface keeps the targeting rules out of the feed service, so a new content type adds a strategy and does not change the feed logic.
 
 ## Practice
 
 ### Strategy interface with OSGi implementations
 
-This is project practice built on platform mechanisms: OSGi components with `@Reference` injection and generated DAOs with the fluent query builder (see [data access guide](../../agent-docs/backend/data-access-guide.md) and [patterns and best practices](../../agent-docs/backend/patterns-and-best-practices.md)). The platform has no feed or strategy concept.
+This is a convention built on platform mechanisms: OSGi components with `@Reference` injection and generated DAOs with the fluent query builder (see [data access guide](../../agent-docs/backend/data-access-guide.md) and [patterns and best practices](../../agent-docs/backend/patterns-and-best-practices.md)). The platform has no feed or strategy concept.
 
 - The interface offers a target-determination method and a target-filtering method.
 - Each implementation is an OSGi component injecting the DAOs it needs and building its candidate list with the generated query API (`filterBy...` with filter classes such as `EnumerationFilter`, ended by `selectList()`).
-- The feed service (an example project service) picks the strategy by content type and calls it.
+- The feed service (an example service) picks the strategy by content type and calls it.
 
 ```java
-// Example project code: FeedTargetingStrategy, Organization, Post, Request are project types
+// Example code: FeedTargetingStrategy, Account, Post, Request are types
 public interface FeedTargetingStrategy {
-    List<Organization> determineTargets(Post post);
-    List<Organization> filterTargets(FeedEntry entry, List<Organization> candidates);
+    List<Account> determineTargets(Post post);
+    List<Account> filterTargets(FeedEntry entry, List<Account> candidates);
 }
 
 @Component(immediate = true, service = FeedTargetingStrategy.class)
-public class AllActiveOrganizationsTargetingStrategy implements FeedTargetingStrategy {
-    @Reference OrganizationDao organizationDao;
+public class AllActiveAccountsTargetingStrategy implements FeedTargetingStrategy {
+    @Reference AccountDao accountDao;
 
-    public List<Organization> determineTargets(Post post) {
-        return organizationDao.query()
-            .filterByStatus(EnumerationFilter.equalTo(OrganizationStatus.ACTIVE))
+    public List<Account> determineTargets(Post post) {
+        return accountDao.query()
+            .filterByStatus(EnumerationFilter.equalTo(AccountStatus.ACTIVE))
             .selectList();
     }
 }
 
 // the feed service selects by content type
 FeedTargetingStrategy strategy = post instanceof Request
-    ? requestTargetingStrategy : allActiveOrganizationsTargetingStrategy;
-List<Organization> targets = strategy.determineTargets(post);
+    ? requestTargetingStrategy : allActiveAccountsTargetingStrategy;
+List<Account> targets = strategy.determineTargets(post);
 ```
 
 ### Select the strategy explicitly
@@ -60,11 +60,11 @@ Because several components provide the same service interface, inject each concr
 
 - Targeting rules are isolated and testable, and the feed service stays closed for modification.
 - Broadcast and targeted distribution use the same call.
-- Cost: the selection logic must be maintained per content type, and a capability-matching strategy that loads all active organizations and filters in memory does not scale; push such filters into the query where the model allows it.
+- Cost: the selection logic must be maintained per content type, and a capability-matching strategy that loads all active accounts and filters in memory does not scale; push such filters into the query where the model allows it.
 
 ## Example
 
-mlszksz-platform has two strategies. One broadcasts to all active organizations (News, Offer, Announcement), the other targets only organizations with matching capabilities (Request). The feed service can also re-run the strategy to add newly created organizations to existing feed entries.
+One application has two strategies. One broadcasts to all active accounts (Notice, Promotion, Announcement), the other targets only accounts with matching capabilities (Request). The feed service can also re-run the strategy to add newly created accounts to existing feed entries.
 
 ## When to avoid
 

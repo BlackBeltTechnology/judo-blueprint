@@ -24,12 +24,12 @@ Several transfer objects can be mapped to the same entity, each exposing differe
 
 Identifiers are type specific: an identifier of one transfer object type cannot be used for another type ([signed identifiers and wire contract](../../agent-docs/backend/platform-behavior-reference.md)). In custom operations the typed identifier is read with `identifier()` ([data access guide](../../agent-docs/backend/data-access-guide.md)). The integration-testing guide marks `adaptTo()` as unnecessary when you only want the identifier of an instance that already has the right type: use `identifier()` there ([anti-pattern: adaptTo to get identifiers](../../agent-docs/integration-testing/best-practices.md)). The agent-docs do not describe `adaptTo()` for converting between different transfer object types. That use is project-observed.
 
-### Project practice: adapt across views of one entity
+### Practice notes: adapt across views of one entity
 
 Use `adaptTo(<TargetIdentifier>.class)` only when the source and target transfer objects map the same underlying entity and the target DAO is the one that exposes what you need.
 
 ```java
-// Example project code: Test and PromptList are two transfer objects mapped to one entity
+// Example code: Order and OrderSummary are two transfer objects mapped to one entity
 PromptListIdentifier plId = _this.identifier().adaptTo(PromptListIdentifier.class);
 PromptList plist = promptListDao.getById(plId).orElseThrow();
 ```
@@ -47,8 +47,8 @@ PromptList plist = promptListDao.getById(plId).orElseThrow();
 
 ## Example
 
-- Trivia: a start operation bound to a test view returns a prompt-list view, adapting the identifier and loading it through the other DAO; a submit operation does the same.
-- ALBA: operations such as finalize, assign approval, approve version, draft new version and revoke approval adapt the bound `_this` identifier to the product identifier type required by the product DAO.
+- A start operation bound to an order view returns a summary view, adapting the identifier and loading it through the other DAO; a submit operation does the same.
+- Operations such as finalize, assign approval, approve version, draft new version and revoke approval adapt the bound `_this` identifier to the product identifier type required by the product DAO.
 
 ## When to avoid
 

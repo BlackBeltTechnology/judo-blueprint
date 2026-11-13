@@ -1,14 +1,14 @@
 ---
 id: recaptcha-precall-interceptor
 title: reCAPTCHA Pre-Call Interceptor for Bot Protection
-description: Project practice that checks for a reCAPTCHA token in the input payload of public operations from a preCall interceptor, with a bypass switch for development; it only tests presence, not validity.
+description: Practice that checks for a reCAPTCHA token in the input payload of public operations from a preCall interceptor, with a bypass switch for development; it only tests presence, not validity.
 aliases: [captcha check, bot protection interceptor, WAF interceptor, recaptcha token guard]
 keywords: [recaptcha, preCall, interceptor, bot, protection, captcha, public, registration, bypass]
 tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
 category: interceptor
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/RecaptchaWafInterceptor.java"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Keep bots away from public operations such as registration by requiring a reCAPTCHA token in the request. This is project practice (mlszksz-platform) built on the platform's `preCall` hook; the platform has no captcha support. The observed implementation is incomplete: it checks only that a token is present.
+Keep bots away from public operations such as registration by requiring a reCAPTCHA token in the request. This is a convention built on the platform's `preCall` hook; the platform has no captcha support. The observed implementation is incomplete: it checks only that a token is present.
 
 ## Practice
 
@@ -28,10 +28,10 @@ Keep bots away from public operations such as registration by requiring a reCAPT
 - Input validation of an exposed operation's parameters runs without interceptors ([interceptors](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)), so a guard on the input of a custom registration call cannot rely on an interceptor.
 - Public operations are exposed through an actor that needs no login (an anonymous actor, see [actor types in the screen layout](../../agent-docs/e2e-testing/model-screen-layout.md)); the operation input must declare the token as an attribute (here `recaptcha`) so the payload carries it.
 
-### Project practice: presence check with a bypass flag
+### Practice notes: presence check with a bypass flag
 
 ```java
-// Example project code: RecaptchaWafInterceptor is a project class
+// Example code: RecaptchaWafInterceptor is a class
 @Component(property = { "judo.model.name=<app>" })
 public class RecaptchaWafInterceptor implements OperationCallInterceptor {
 
@@ -59,7 +59,7 @@ public class RecaptchaWafInterceptor implements OperationCallInterceptor {
 }
 ```
 
-- The observed project threw a raw `RuntimeException` (a 500 for the client); the block above shows the typed form the platform documents instead.
+- The observed implementation threw a raw `RuntimeException` (a 500 for the client); the block above shows the typed form the platform documents instead.
 - Bypass via the system property `recaptcha.waf.bypass` or the environment variable `RECAPTCHA_WAF_BYPASS`, for development and tests.
 - The operation list names three registration-related operations (register, validate, verify invitation). Check each against the built-in rule above.
 - The token is not verified with Google; a real check calls the verification API with the secret key and the token and rejects low scores. Add it before relying on this.

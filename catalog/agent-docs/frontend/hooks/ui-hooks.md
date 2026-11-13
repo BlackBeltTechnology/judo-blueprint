@@ -176,7 +176,7 @@ export const QuickSearch: FC = () => {
 
   const searchResults = [
     // Replace with actual search logic
-    { id: '1', title: 'Campaign A', type: 'campaign' },
+    { id: '1', title: 'Activity A', type: 'activity' },
     { id: '2', title: 'Event B', type: 'event' },
   ];
 
@@ -190,7 +190,7 @@ export const QuickSearch: FC = () => {
           <TextField
             autoFocus
             fullWidth
-            placeholder="Search campaigns, events..."
+            placeholder="Search activities, events..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

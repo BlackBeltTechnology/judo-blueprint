@@ -26,16 +26,16 @@ Log the intercepted error to the console during development, so a missing messag
 
 ## Examples
 
-### rackinspect
+### Variant seen in practice
 
 - The hook intercepts every 422 and shows the first error's message as a three-second snackbar, instead of the generated fault dialog.
 - Its predicate and handler share the same detection callback.
-- The backend's business error type is a guard name rather than the business fault's full name (project code). The generated fault dialog therefore finds no translation for it, and the snackbar shows the message from the body instead. Using the fault's full name would let the generated dialog work.
+- The backend's business error type is a guard name rather than the business fault's full name (application code). The generated fault dialog therefore finds no translation for it, and the snackbar shows the message from the body instead. Using the fault's full name would let the generated dialog work.
 
-### park-here
+### Second variant seen in practice
 
 - The same hook structure, with the same shared detection callback, confirming the pattern is stable across projects.
 
-### mlszksz-platform
+### Third variant seen in practice
 
-- The same hook in a React frontend: a predicate matching HTTP 422, a handler that reads the first body key's `message` and shows a three-second error snackbar. The generated default hook already has this shape; the project keeps it.
+- The same hook in a React frontend: a predicate matching HTTP 422, a handler that reads the first body key's `message` and shows a three-second error snackbar. The generated default hook already has this shape; the application keeps it.

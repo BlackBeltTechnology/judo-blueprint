@@ -26,25 +26,25 @@ An entity needs a short, human-readable, increasing code (`PRT-00001`) that the 
 - `SEQUENCE` is one of the variable categories the platform resolves, next to actor and principal variables; the same `VariableResolver` serves them ([custom operations](../../agent-docs/backend/custom-operations.md), [reading the principal and actor](../../agent-docs/backend/interceptors.md#reading-the-principal-and-actor-in-an-interceptor)).
 - Sequences are database sequences by default (`sequenceType` `rdbms`). A custom implementation of the platform `Sequence` interface can replace them; transient sequences are not supported on multi-node deployments ([custom sequences](../../agent-docs/backend/platform-behavior-reference.md#custom-sequences)).
 - Sequences can have gaps: values of rolled-back transactions are not reused (same section). A code is unique and increasing, not gap-free.
-- Components that are bound to one model carry the `judo.model.name` property ([interceptor registration](../../agent-docs/backend/interceptors.md#interceptor-component-registration)). The agent-docs do not say whether `VariableResolver` needs a model-name target filter; the project below used one.
+- Components that are bound to one model carry the `judo.model.name` property ([interceptor registration](../../agent-docs/backend/interceptors.md#interceptor-component-registration)). The agent-docs do not say whether `VariableResolver` needs a model-name target filter; the example below used one.
 - When the number is only a stored attribute with a default, the model can do it without Java, see [[sequence-based-identifier]].
 
-### Project practice: format in Java
+### Practice notes: format in Java
 
-This layer is project practice (judo-partner), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
-- One sequence name per number space. A fixed name (`partner`) for one entity, or a dynamic name (the register code) when each register counts on its own.
+- One sequence name per number space. A fixed name (`account`) for one entity, or a dynamic name (the register code) when each register counts on its own.
 - Pad with `String.format("%05d", n)`; the width is fixed, larger numbers simply get longer.
 - Request the number once per created entity, in the same operation that creates it, so a failed operation does not hand out the code to anything else (the consumed number is still lost, which only causes a gap).
 - Do not compute the next code from a count or a max query: concurrent creates collide.
 
 ```java
-// Example project code: the model name filter and the sequence names are project choices
+// Example code: the model name filter and the sequence names are application choices
 @Reference(target = "(judo.model.name=AppName)")
 VariableResolver variableResolver;
 
 String code = String.format("PRT-%05d",
-    variableResolver.resolve(Long.class, "SEQUENCE", "partner").intValue());
+    variableResolver.resolve(Long.class, "SEQUENCE", "account").intValue());
 // PRT-00001, PRT-00002, ...
 
 String recordNumber = String.format("%s-%05d",
@@ -60,7 +60,7 @@ String recordNumber = String.format("%s-%05d",
 
 ## Example
 
-In judo-partner two sequences are used. The partner service builds partner codes `PRT-XXXXX` from the sequence named `partner`. The register service builds record numbers from a sequence named after the register's code, so each register numbers its records independently. Both use five-digit zero padding.
+Two sequences are used in one example. The account service builds account codes `ACC-XXXXX` from the sequence named `account`. A second service builds record numbers from a sequence named after the group code, so each group numbers its records independently. Both use five-digit zero padding.
 
 ## When to avoid
 

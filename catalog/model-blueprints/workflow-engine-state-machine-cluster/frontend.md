@@ -19,6 +19,6 @@ Keep the task list and task views; hide generated forms for the engine entities,
 
 ## Examples
 
-### workflow-poc
+### Example
 
 - React frontend with two custom components (diagram viewer, code viewer), a redirect flow manager and one generator override.

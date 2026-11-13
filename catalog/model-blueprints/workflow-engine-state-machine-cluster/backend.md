@@ -10,7 +10,7 @@ Each custom operation is an OSGi component that gets its DAOs and services injec
 
 ### Engine service (project helper)
 
-`WorkflowUtils` and `DiagramUtils` in the source project are example project code, plain OSGi service classes injected into the operations. The engine service holds the logic:
+The helper classes in the source project are example project code, plain OSGi service classes injected into the operations. The engine service holds the logic:
 
 - set the current state: clear the assignee, stamp the time, auto-assign, run onEnter actions and fire eventless transitions whose guards pass;
 - step: evaluate guards, run onLeave, onTransition and onEnter actions in order, log completion, and branch on one or several next states (fork);
@@ -25,7 +25,7 @@ Interceptors do not see custom operations (see [interceptors](../../agent-docs/b
 
 ## Examples
 
-### workflow-poc
+### Example
 
 - Three custom operations, two service classes and one concrete action class as OSGi components. The engine service is the largest class; upload is the second largest, using Java records for the definition format.
 - Operation and class names are example project code.

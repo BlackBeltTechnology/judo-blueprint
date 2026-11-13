@@ -37,7 +37,7 @@ Expose the attribute on transfer objects as a read-only (derived or mapped, non-
 
 ### Count-based variant on a transfer object
 
-One project (InterfaceRegister) put the default on the transfer object instead: `'APP-' + ((Application!count()+1)!asString())!lpad(4, "0")`, so the creation form is pre-filled. This is project practice, weaker than a sequence: the count falls after a delete (a number can be issued twice), and two concurrent creates can read the same count. It is only suitable for small, rarely deleted registers.
+One project put the default on the transfer object instead: `'APP-' + ((Application!count()+1)!asString())!lpad(4, "0")`, so the creation form is pre-filled. This is a convention, weaker than a sequence: the count falls after a delete (a number can be issued twice), and two concurrent creates can read the same count. It is only suitable for small, rarely deleted registers.
 
 ### Platform facts that limit the pattern
 
@@ -50,11 +50,11 @@ One project (InterfaceRegister) put the default on the transfer object instead: 
 - Uniqueness and ordering come from the database, not from application code.
 - The expression lives in the model, so every client and the API get the same behavior.
 - Sequential numbers reveal record counts and do not work across systems without coordination.
-- The same mechanism also serves as an ordering key: workflow-poc uses a required `sequence` attribute on an event entity to process events in order, not as a business identifier.
+- The same mechanism also serves as an ordering key: one project uses a required `sequence` attribute on an event entity to process events in order, not as a business identifier.
 
 ## Example
 
-A Ticket entity has a required `number` (Integer, identifier attribute, default from the `Ticket` sequence), a `title`, and a `reference` string whose default is `"TCK"` plus the zero-padded value of a second sequence (`TCK00001`). Trivia, itracker (Integer instead of Long) and MJSZ (prefix `MJSZ`, width 5) used the same shape. Names are neutral stand-ins.
+A Ticket entity has a required `number` (Integer, identifier attribute, default from the `Ticket` sequence), a `title`, and a `reference` string whose default is `"TCK"` plus the zero-padded value of a second sequence (`TCK00001`). Three projects used the same shape: one with an Integer number instead of Long, one with a fixed prefix and width 5. Names are neutral stand-ins.
 
 ## When to avoid
 

@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Deep entity hierarchies (for example galaxy, star, planet) make the browser back button an unreliable way to go up one level. A navigation hook that records a breadcrumb stack gives consistent back behavior and a visible trail.
+Deep entity hierarchies (for example customer, order, line item) make the browser back button an unreliable way to go up one level. A navigation hook that records a breadcrumb stack gives consistent back behavior and a visible trail.
 
 ## Practice
 
@@ -27,9 +27,9 @@ Deep entity hierarchies (for example galaxy, star, planet) make the browser back
 - A navigation interceptor (`NAVIGATION_INTERCEPTOR_INTERFACE_KEY`) can only rewrite the target of a navigation, for example to add sticky query parameters. It has no before-navigate veto, so it cannot implement a breadcrumb stack ([navigation interceptor](../../agent-docs/frontend/hooks/navigation-and-access.md)).
 - Custom routes are added in `src/extra-routes.tsx` ([extra routes](../../agent-docs/frontend/extension-points.md)). Generated forms with unsaved changes use the generated `useNavigationConfirmation` hook; custom navigation that leaves an edited form should reuse it.
 
-### Project practice: a breadcrumb provider behind the same hook API
+### Practice notes: a breadcrumb provider behind the same hook API
 
-This layer is project practice (actiongroup-test-react), not a platform feature. The project's own replacement frontend implements the provider; with the generated frontend, check what `useJudoNavigation` already provides before writing another one:
+This layer is practice, not a platform feature. A custom replacement frontend implements the provider; with the generated frontend, check what `useJudoNavigation` already provides before writing another one:
 
 - A provider wraps the routes and holds a stack of visited locations with their titles.
 - `navigate` pushes the current location and title, then goes forward; `back` pops and returns; `clearNavigate` empties the stack and goes to a root route, used by sidebar entries; `isBackDisabled` is true when the stack is empty.
@@ -37,15 +37,15 @@ This layer is project practice (actiongroup-test-react), not a platform feature.
 - Pages set their title through `setTitle`.
 
 ```tsx
-// Example project code
+// Example code
 <BreadcrumbProvider>
   <Outlet />
 </BreadcrumbProvider>
 
 const { navigate, back, clearNavigate, isBackDisabled, setTitle } = useJudoNavigation();
-navigate(`/galaxies/${row.__signedIdentifier}`); // push breadcrumb, go forward
-back();                                           // pop breadcrumb, go back
-clearNavigate('/galaxies');                       // reset the stack
+navigate(`/orders/${row.__signedIdentifier}`); // push breadcrumb, go forward
+back();                                        // pop breadcrumb, go back
+clearNavigate('/orders');                       // reset the stack
 ```
 
 ## Rationale
@@ -54,7 +54,7 @@ Back navigation stays consistent through deep chains, the trail is visible, and 
 
 ## Example
 
-actiongroup-test-react keeps the provider and the trail component in one components file. `navigate` stores the current location and title, `back` pops and navigates to the previous entry, the header shows at most two crumbs, and its back button is disabled when no history exists.
+One app keeps the provider and the trail component in one components file. `navigate` stores the current location and title, `back` pops and navigates to the previous entry, the header shows at most two crumbs, and its back button is disabled when no history exists.
 
 ## When to avoid
 

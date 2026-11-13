@@ -225,7 +225,7 @@
         <view xmi:id="_hp858t0gEfGkhKw5XIT0OA" name="RegistryHeader_View_Edit" label="RegistryHeader View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
       <elements xsi:type="structure:EntityType" xmi:id="_hu65gN0gEfGkhKw5XIT0OA" name="RegistryLine" createable="false" updateable="false" deleteable="false">
-        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_iaF9cN0gEfGkhKw5XIT0OA" lower="0" upper="-1" target="_hzDyoN0gEfGkhKw5XIT0OA" name="qualifications" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="COMPOSITION" memberType="STORED" rangeType="ANY" binding="_iaF9cN0gEfGkhKw5XIT0OA" getterExpression="">
+        <relations xsi:type="structure:OneWayRelationMember" xmi:id="_iaF9cN0gEfGkhKw5XIT0OA" lower="0" upper="-1" target="_hzDyoN0gEfGkhKw5XIT0OA" name="classifications" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="COMPOSITION" memberType="STORED" rangeType="ANY" binding="_iaF9cN0gEfGkhKw5XIT0OA" getterExpression="">
           <inherited xmi:id="_iaF9cd0gEfGkhKw5XIT0OA"/>
         </relations>
         <attributes xsi:type="structure:DataMember" xmi:id="_iCvNYN0gEfGkhKw5XIT0OA" name="description" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_iCvNYN0gEfGkhKw5XIT0OA" getterExpression="" identifier="false" memberType="STORED">
@@ -236,7 +236,7 @@
         <table xmi:id="_hu7gkd0gEfGkhKw5XIT0OA" name="RegistryLine_Table" label="RegistryLine Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
         <view xmi:id="_hu65gt0gEfGkhKw5XIT0OA" name="RegistryLine_View_Edit" label="RegistryLine View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:EntityType" xmi:id="_hzDyoN0gEfGkhKw5XIT0OA" name="LineQualification" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_hzDyoN0gEfGkhKw5XIT0OA" name="LineClassification" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_iGivUN0gEfGkhKw5XIT0OA" name="code" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_iGivUN0gEfGkhKw5XIT0OA" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_iGivUd0gEfGkhKw5XIT0OA"/>
         </attributes>
@@ -247,9 +247,9 @@
           <inherited xmi:id="_iOS9Id0gEfGkhKw5XIT0OA"/>
         </attributes>
         <mapping xmi:id="_hzDyod0gEfGkhKw5XIT0OA" target="_hzDyoN0gEfGkhKw5XIT0OA"/>
-        <form xmi:id="_hzDyo90gEfGkhKw5XIT0OA" name="LineQualification_Form" label="LineQualification Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_hzDypN0gEfGkhKw5XIT0OA" name="LineQualification_Table" label="LineQualification Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_hzDyot0gEfGkhKw5XIT0OA" name="LineQualification_View_Edit" label="LineQualification View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_hzDyo90gEfGkhKw5XIT0OA" name="LineClassification_Form" label="LineClassification Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_hzDypN0gEfGkhKw5XIT0OA" name="LineClassification_Table" label="LineClassification Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_hzDyot0gEfGkhKw5XIT0OA" name="LineClassification_View_Edit" label="LineClassification View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

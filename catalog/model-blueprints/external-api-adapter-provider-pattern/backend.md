@@ -22,7 +22,7 @@ Keep the three layers in separate modules, so the API module has no dependency o
 
 ### The factory
 
-- The provider is a component in the common module. It injects the data-access objects (DAOs) it needs and the project's file store service for credential files.
+- The provider is a component in the common module. It injects the data-access objects (DAOs) it needs and the application's file store service for credential files.
 - The lookup method does three things: load the entity, read its platform, load the platform's credentials. Then it constructs the adapter and returns it.
 - Dispatch on the platform with one branch per platform. An unknown or not-yet-implemented platform fails with a business fault that carries an error code and a localized message.
 
@@ -38,15 +38,15 @@ Keep the three layers in separate modules, so the API module has no dependency o
 - Custom operations and services reference the provider service, never an adapter.
 - A call looks like: obtain the client from the provider with the entity, then call the method with the platform's identifier. The provider can supply helpers that return that identifier.
 
-### Project code, not platform API
+### Application code, not platform API
 
-The example project's names for the provider, the adapter and the data objects, and its error helper, are project code (not platform API). Copy the pattern, not the names.
+One reference implementation's names for the provider, the adapter and the data objects, and its error helper, are application code (not platform API). Copy the pattern, not the names.
 
 ## Examples
 
-### indamedia-adtrack
+### Variant seen in practice
 
-- The API interface has seven methods, covering account information, connection status, the campaign list, budget and usage, campaign history, cost to date, and campaign details.
+- The API interface has seven methods, covering account information, connection status, the item list, totals and usage, item history, cost to date, and item details.
 - The Google Ads adapter is a plain object built from a developer token, a delegated account, an optional login customer id, and a service-account key. It uses the Google Ads Java SDK.
 - The provider switches on the platform enumeration (Google or Meta). The Google branch loads the key file through the file store service and passes it to the adapter as a string. The Meta branch is declared but throws a not-implemented business error, which marks the extension point.
-- Two campaign services consume the provider for their API calls.
+- Two services consume the provider for their API calls.

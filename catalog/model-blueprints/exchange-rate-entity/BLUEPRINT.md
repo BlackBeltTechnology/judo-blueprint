@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "layer:backend", "layer:frontend", "projec
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: []
 fragment: exchange-rate-entity
 diagram: { kinds: [entity, enum], members: types }
@@ -59,6 +59,6 @@ The ExchangeRate entity has a date, a rate value, a rate unit (how many units of
 
 ## Related
 
-- [[external-api-adapter-provider-pattern]] — isolating an external rate source behind an adapter
-- [[sensitive-field-double-entry-verification]] — the double-entry confirmation used for manual rates
-- [[active-inactive-status-enum]] — a small fixed enumeration of the same kind as the recording method
+- [[external-api-adapter-provider-pattern]]: isolating an external rate source behind an adapter
+- [[sensitive-field-double-entry-verification]]: the double-entry confirmation used for manual rates
+- [[active-inactive-status-enum]]: a small fixed enumeration of the same kind as the recording method

@@ -1,14 +1,14 @@
 ---
 id: gdpr-placeholder-user-on-delete
 title: Placeholder User Replaces a Deleted Person's References
-description: A singleton, flagged placeholder user (and organization) is created on demand so that deleting a person can erase their personal data while records they authored stay valid.
+description: A singleton, flagged placeholder user (and tenant) is created on demand so that deleting a person can erase their personal data while records they authored stay valid.
 aliases: [dummy user, deleted user placeholder, anonymize on delete, right to erasure]
 keywords: [GDPR, erasure, placeholder user, isDummy, getOrCreate, singleton, reassign, author, referential integrity, delete user]
 tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:single-project"]
 category: operation
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/DeleteUserServiceImpl.java"]
 alternatives: [soft-delete-archive-pattern, guarded-delete-with-deactivate-fallback]
 related: [soft-delete-archive-pattern, guarded-delete-with-deactivate-fallback, business-error-vs-generic-operation-error]
 fragment: "none: backend-only"
@@ -27,21 +27,21 @@ A person must be erasable (personal data removed) while content they authored, s
 - A refusal the user must see is a modeled fault thrown as a checked exception ([modeled faults](../../agent-docs/backend/error-handling-guide.md)).
 - Whether a hard delete is rejected by the platform while required relations still point at the entity is not settled by the agent-docs, *verify*; the practice below repoints first so the question does not arise.
 
-### Project practice: placeholder and reassign
+### Practice notes: placeholder and reassign
 
-This layer is project practice (mlszksz-platform), not a platform feature. It is not a seed or demo marker.
+This layer is a convention built on the platform, not a platform feature. It is not a seed or demo marker.
 
-- Model shape: a Boolean `isDummy` on both the user and the organization entity, default false.
+- Model shape: a Boolean `isDummy` on both the user and the account entity, default false.
 - A small service `getOrCreateDummyUser()` looks the placeholder up by `isDummy == true` and creates it on first use, so no seed step or migration is needed. Singleton by lookup: the first call creates, later calls reuse.
-- The placeholder is inert: suspended status, lowest read-only role, hidden from listings, notifications and e-mail switched off. It lives in its own placeholder organization, itself created on demand, suspended, flagged `isDummy`, with its user count hidden.
-- The delete service, in order: guard the caller (only a platform administrator, never oneself, never the placeholder: each a business fault with a machine code); fetch the placeholder; repoint each author or owner relation of the target user (scoped to the user's organization, loading identifiers only) with `set<Relation>(entity, placeholder)`; delete records that are purely personal (devices, notifications); remove the identity-server account best-effort; suspend the organization when the last active user leaves, except admin and placeholder organizations; finally `delete` the user.
-- Every other piece of code that lists or counts users or organizations must exclude the flagged rows (the placeholder carries the flag, so filters use `isDummy`).
+- The placeholder is inert: suspended status, lowest read-only role, hidden from listings, notifications and e-mail switched off. It lives in its own placeholder account, itself created on demand, suspended, flagged `isDummy`, with its user count hidden.
+- The delete service, in order: guard the caller (only a platform administrator, never oneself, never the placeholder: each a business fault with a machine code); fetch the placeholder; repoint each author or owner relation of the target user (scoped to the user's account, loading identifiers only) with `set<Relation>(entity, placeholder)`; delete records that are purely personal (devices, notifications); remove the identity-server account best-effort; suspend the account when the last active user leaves, except admin and placeholder accounts; finally `delete` the user.
+- Every other piece of code that lists or counts users or accounts must exclude the flagged rows (the placeholder carries the flag, so filters use `isDummy`).
 
 ```java
-// Example project code: dummyUserService and the DAOs are project/generated types
-User placeholder = dummyUserService.getOrCreateDummyUser();
-for (News news : organizationDao.queryNews(org).selectList()) {
-    if (isAuthoredBy(news, targetId)) newsDao.setAuthor(news, placeholder);   // keep content, drop identity
+// Example code: placeholderUserService and the DAOs are generated types
+User placeholder = placeholderUserService.getOrCreateDummyUser();
+for (Post post : accountDao.queryPost(org).selectList()) {
+    if (isAuthoredBy(post, targetId)) postDao.setAuthor(post, placeholder);   // keep content, drop identity
 }
 inquiryDao.setUser(inquiry, placeholder);
 deviceDao.delete(device);          // purely personal: remove
@@ -56,7 +56,7 @@ userDao.delete(targetUser);        // now nothing required points at it
 
 ## Example
 
-mlszksz-platform's `DeleteUserServiceImpl` repoints authored news, offers, requests and inquiries to the placeholder from `DummyUserServiceImpl`, deletes devices and notifications, and then deletes the user. The attempt to delete the placeholder itself is refused with a `CANNOT_DELETE_DUMMY` business fault.
+A delete service repoints authored records (for example posts and requests) to the placeholder from `PlaceholderUserServiceImpl`, deletes devices and notifications, and then deletes the user. The attempt to delete the placeholder itself is refused with a `CANNOT_DELETE_PLACEHOLDER` business fault.
 
 ## When to avoid
 

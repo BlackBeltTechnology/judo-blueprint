@@ -8,7 +8,7 @@ tags: [domain:frontend, layer:frontend, project:mlszksz-platform, status:single-
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: [mlszksz-platform:unrecorded]
+evidence: [mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/custom_views/StatisticsDashboardView.tsx]
 alternatives: []
 related: [custom-post-detail-views, interceptor-derived-statistics-calculation, custom-notification-card-inbox]
 fragment: none: frontend-only
@@ -57,6 +57,6 @@ No entity or attribute is added, but the statistics panel must be declared in th
 
 ## Related
 
-- [[custom-post-detail-views]] — another custom view that replaces a generated page
-- [[interceptor-derived-statistics-calculation]] — where the counters can be computed on the backend
-- [[custom-notification-card-inbox]] — a card-based custom view with a similar layout approach
+- [[custom-post-detail-views]]: another custom view that replaces a generated page
+- [[interceptor-derived-statistics-calculation]]: where the counters can be computed on the backend
+- [[custom-notification-card-inbox]]: a card-based custom view with a similar layout approach

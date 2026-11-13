@@ -43,7 +43,7 @@ The abstract Stage has a name (required), an order (required) and an activity ty
 - Stages are ordered by their order value. Two stages of one workflow do not share an order.
 - The status moves forward through the stages and reaches rejected only from pending. The enumeration does not enforce this; the operations do.
 - Interceptors do not run for custom operations (platform behaviour), so they do not run for the approval operations. Each one must check the current status and the caller's role. A refused transition is a business fault, which the operation must declare in its `faults`, or the generated interface has no matching `throws` clause.
-- The contract owns its runtime stages by composition, so deleting a contract deletes its stages. The link to the Workflow is an association and cascades nothing. Copying templates into runtime stages is project practice, not a platform feature.
+- The contract owns its runtime stages by composition, so deleting a contract deletes its stages. The link to the Workflow is an association and cascades nothing. Copying templates into runtime stages is common practice, not a platform feature.
 - A stage that does not match the contract's conditions is approved automatically and does not wait for a person.
 
 ## Variations
@@ -66,8 +66,8 @@ The abstract Stage has a name (required), an order (required) and an activity ty
 
 ## Related
 
-- [[approval-workflow-pattern]] — the general pattern for an approval that someone signs off
-- [[product-with-approval-workflow]] — an approval workflow on a product, a simpler form of the same need
-- [[document-review-state-machine]] — a review of a document with explicit state transitions
-- [[content-lifecycle-status-enum]] — a status enumeration used for lifecycle values
-- [[safe-failure-pattern]] — keeping the audit record when a stage side effect fails
+- [[approval-workflow-pattern]]: the general pattern for an approval that someone signs off
+- [[product-with-approval-workflow]]: an approval workflow on a product, a simpler form of the same need
+- [[document-review-state-machine]]: a review of a document with explicit state transitions
+- [[content-lifecycle-status-enum]]: a status enumeration used for lifecycle values
+- [[safe-failure-pattern]]: keeping the audit record when a stage side effect fails

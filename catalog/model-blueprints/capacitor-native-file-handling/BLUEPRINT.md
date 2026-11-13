@@ -8,7 +8,7 @@ tags: [domain:model, layer:frontend, project:mlszksz-platform, status:single-pro
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/utilities/native-file-handler.ts"]
 alternatives: [inline-pdf-preview-post-action]
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -24,7 +24,7 @@ On native, the file is written to the download folder, a local notification name
 
 ### The override keeps the generated interface
 
-The generated file utility is replaced by a project module with the same exports. Screens need no change, and only the save step differs by platform.
+The generated file utility is replaced by an application module with the same exports. Screens need no change, and only the save step differs by platform.
 
 ## Structure
 
@@ -56,6 +56,6 @@ The pattern is a frontend layer. A generator-ignore entry marks the generated fi
 
 ## Related
 
-- [[inline-pdf-preview-post-action]] — the inline preview that stays separate from the native save
-- [[document-file-attachment]] — the binary document attribute whose files this pattern downloads
-- [[capacitor-native-auth-pkce-passkey]] — the other Capacitor native concern in the same app
+- [[inline-pdf-preview-post-action]]: the inline preview that stays separate from the native save
+- [[document-file-attachment]]: the binary document attribute whose files this pattern downloads
+- [[capacitor-native-auth-pkce-passkey]]: the other Capacitor native concern in the same app

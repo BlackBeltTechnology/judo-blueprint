@@ -36,7 +36,7 @@ Generalization is a platform feature between entity types. An abstract entity ca
 
 - Simple to read and map: one entity, one table, no hierarchy rules.
 - No inherited-member surprises in generated code. The agent-docs list a known generated-DAO issue with derived attributes that navigate through an inherited member ([known issues](../../agent-docs/backend/data-access-guide.md)).
-- Project practice (not platform behaviour): twelve source projects stayed flat, mostly for small and medium models.
+- Practice note (not platform behaviour): twelve source projects stayed flat, mostly for small and medium models.
 - Cost: attributes repeated across similar entities, no shared base for audit fields and no polymorphic queries.
 
 ## Example

@@ -37,7 +37,7 @@ A parent operation iterates the collection and calls `approve` on each element (
 
 ### Guard the operation, not only the button
 
-The derived `approved` flag lets the UI enable or hide the button (see [[action-group-conditional-enabling]]). It does not stop an API call. Project practice, not platform behaviour: the approve operation checks that the caller may approve and that a requested value exists. If the check needs Java, make the operation custom and check in code (see [[mapped-operation-delegation]]).
+The derived `approved` flag lets the UI enable or hide the button (see [[action-group-conditional-enabling]]). It does not stop an API call. Practice note, not platform behaviour: the approve operation checks that the caller may approve and that a requested value exists. If the check needs Java, make the operation custom and check in code (see [[mapped-operation-delegation]]).
 
 ## Rationale
 

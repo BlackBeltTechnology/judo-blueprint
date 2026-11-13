@@ -19,8 +19,8 @@ A business fault is a transfer object declared as a fault parameter of the opera
 
 Put the transition and its checks in a service class, and let the two operations call it. The operations stay thin. Reject validates the same preconditions as accept and changes only the status.
 
-- The service is project code. Its name and layout belong to the example project, not to the platform.
-- Log an audit record after the transition, from the same operation (project practice). See [[audit-log-entity]] for the record shape.
+- The service is application code. Its name and layout belong to the reference implementation, not to the platform.
+- Log an audit record after the transition, from the same operation (common practice). See [[audit-log-entity]] for the record shape.
 
 ### Interceptors cannot guard these operations
 
@@ -28,9 +28,9 @@ An interceptor does not run for accept or reject, because they are custom operat
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - Two pairs of accept and reject operations: one for the registration request and one for the user invitation request. Each pair is a thin custom operation class that calls a shared service.
 - The registration service checks that the request is verified, creates the organization and user, and sends an approval email. The invitation service checks the organization access rule and then creates the user.
 - Each accept and reject writes an audit record with the action type and the email.
-- The service and class names are example project code. Copy the pattern, not the names.
+- The service and class names are application-specific. Copy the pattern, not the names.

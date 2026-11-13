@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "layer:backend", "project:rackinspect", "p
 category: pattern
 status: emerging
 projects: [rackinspect, mlszksz-platform]
-evidence: ["rackinspect:unrecorded", "mlszksz-platform:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 fragment: toggle-active-operation
 diagram: { kinds: [entity, operation], members: types }
@@ -40,7 +40,7 @@ One entity with a required boolean `active` (stored, default true) and one insta
 
 ## Variations
 
-- **Operation on the transfer object.** The mlszksz-platform project keeps the entity attribute as `isActive` and puts the operation, named `activateToggle`, on the admin transfer object instead of the entity. It is project naming; the shape is the same.
+- **Operation on the transfer object.** One project keeps the entity attribute as `isActive` and puts the operation, named `activateToggle`, on the admin transfer object instead of the entity. It is project naming; the shape is the same.
 - **Parent revalidation.** For child entities (address, phone, email) the toggle also reloads the owner and re-runs its business rules.
 - **Self-lock guard.** On a user entity, the toggle refuses to deactivate the current actor and keeps at least one active user with administrative permission.
 - **Status enumeration instead of a boolean.** When there are more than two states, use a status enumeration; see [[active-inactive-status-enum]].

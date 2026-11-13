@@ -1,9 +1,9 @@
 ---
 id: integer-boolean-for-aggregation
 title: Integer Boolean Flags for Aggregation Support
-description: "Type a derived true/false condition as an Integer 0 or 1 using a ternary expression, so that !sum can add the flags in standings, points and statistics."
+description: "Type a derived true/false condition as an Integer 0 or 1 using a ternary expression, so that !sum can add the flags in rankings, weighted totals and statistics."
 aliases: [integer flag, 0/1 flag, summable boolean]
-keywords: [integer flag, boolean, ternary, !sum, aggregation, derived attribute, JQL, standings]
+keywords: [integer flag, boolean, ternary, !sum, aggregation, derived attribute, JQL, rankings]
 tags: ["domain:model", "layer:model", "project:mjsz", "status:single-project"]
 category: entity
 status: single-project
@@ -18,7 +18,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-A true/false condition per row has to be counted or weighted across a collection (wins, draws, points). In JQL `!sum` accepts only integer and decimal values, so a derived Boolean cannot be summed. Model the condition as a derived Integer that is 1 or 0.
+A true/false condition per row has to be counted or weighted across a collection (for example, how many rows meet a condition, or a weighted total of such counts). In JQL `!sum` accepts only integer and decimal values, so a derived Boolean cannot be summed. Model the condition as a derived Integer that is 1 or 0.
 
 ## Practice
 
@@ -27,28 +27,28 @@ A true/false condition per row has to be counted or weighted across a collection
 On the entity, declare the flag as a derived attribute of type Integer:
 
 ```
-homeWin: Integer = self.homeScore - self.visitorScore > 0 ? 1 : 0
+firstWin: Integer = self.firstScore - self.secondScore > 0 ? 1 : 0
 ```
 
 The ternary `cond ? then : else` needs a logical condition and branches of the same kind ([JQL grammar quirks](../../agent-docs/model/model-development.md)). The enclosing entity can then aggregate the flag:
 
 ```
-points: Integer = 3 * self.homeMatches!sum(m | m.homeWin) + self.homeMatches!sum(m | m.draw)
+weightedTotal: Integer = 3 * self.firstPairings!sum(m | m.firstWin) + self.firstPairings!sum(m | m.draw)
 ```
 
 `!sum(i | selector)` works on integer and decimal selectors only; other types fail with `Invalid expression for aggregation` ([collection functions](../../agent-docs/model/model-development.md)). That is the platform fact behind this practice.
 
 ### Alternative that needs no flag
 
-`self.matches!filter(m | m.homeScore > m.visitorScore)!count()` gives the same count without a flag attribute, and a Boolean attribute can be used there. Use integer flags when the flag is weighted or summed in several places, or when it should itself appear on a transfer object as a number.
+`self.pairings!filter(m | m.firstScore > m.secondScore)!count()` gives the same count without a flag attribute, and a Boolean attribute can be used there. Use integer flags when the flag is weighted or summed in several places, or when it should itself appear on a transfer object as a number.
 
 ### Take care with missing values
 
-JQL propagates `undefined` through arithmetic and comparison, so a flag built from a missing score is `undefined`, not 0 ([undefined value](../../agent-docs/model/model-development.md)). Decide explicitly whether unplayed rows count as 0 and filter them out or default them. See [[null-safe-collection-aggregation]].
+JQL propagates `undefined` through arithmetic and comparison, so a flag built from a missing score is `undefined`, not 0 ([undefined value](../../agent-docs/model/model-development.md)). Decide explicitly whether empty rows count as 0 and filter them out or default them. See [[null-safe-collection-aggregation]].
 
 ### Name and keep it internal
 
-Name the flags as conditions (`homeWin`, `draw`). Keep them on the entity and map them only into transfer objects that need a number; a user-facing view normally wants a real Boolean.
+Name the flags as conditions (`firstWin`, `draw`). Keep them on the entity and map them only into transfer objects that need a number; a user-facing view normally wants a real Boolean.
 
 ## Rationale
 
@@ -58,7 +58,7 @@ Name the flags as conditions (`homeWin`, `draw`). Keep them on the entity and ma
 
 ## Example
 
-A Match has two scores and derived Integer flags `homeWin` and `draw`. A Team has a relation to its home matches and the derived `points`, which sums the flags with weights 3 and 1. The diagram shows the shape. Names are neutral; the source project used a league standings model.
+A Pairing has two scores and derived Integer flags `firstWin` and `draw`. A Participant has a relation to its first-side pairings and the derived `weightedTotal`, which sums the flags with weights 3 and 1. The diagram shows the shape. Names are neutral; the source project used a ranking table.
 
 ## When to avoid
 
@@ -77,18 +77,18 @@ A Match has two scores and derived Integer flags `homeWin` and `draw`. A Team ha
 <!-- mermaid:generated fragment=integer-boolean-for-aggregation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
-  class Match {
+  class Pairing {
     <<Entity>>
-    +Integer homeScore
-    +Integer visitorScore
-    +Integer /homeWin
+    +Integer firstScore
+    +Integer secondScore
+    +Integer /firstWin
     +Integer /draw
   }
-  class Team {
+  class Participant {
     <<Entity>>
     +String name
-    +Integer /points
+    +Integer /weightedTotal
   }
-  Team --> "*" Match : homeMatches
+  Participant --> "*" Pairing : firstPairings
 ```
 <!-- /mermaid:generated -->

@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: entity
 status: established
 projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 fragment: default-value-patterns
 first_seen: 2026-03-04
@@ -37,7 +37,7 @@ Give stored attributes and editable transfer members a `defaultExpression` that 
 
 Defaults remove boilerplate from creation operations and give forms a usable starting state. Enumeration defaults make the initial lifecycle state explicit. Transfer-level overrides let a form differ from the stored default without touching the entity.
 
-The cost is divergence: a transfer default that is not in step with the entity can surprise users. Defaults are project practice on top of the platform's `defaultExpression`; the values chosen are domain decisions.
+The cost is divergence: a transfer default that is not in step with the entity can surprise users. Defaults are conventions on top of the platform's `defaultExpression`; the values chosen are domain decisions.
 
 ## Example
 

@@ -4,11 +4,11 @@ title: Error Handler Interceptor Customization
 description: "A frontend hook that intercepts business errors (HTTP 422) and shows their message as a snackbar, instead of the generated fault dialog, while other errors keep the default handling."
 aliases: [error interceptor hook, 422 snackbar handler]
 keywords: [error, handler, interceptor, customization, 422, business error, snackbar, frontend]
-tags: ["domain:model", "layer:frontend", "project:rackinspect", "project:park-here", "project:mlszksz-platform", "status:emerging"]
+tags: ["domain:model", "layer:frontend", "project:park-here", "project:mlszksz-platform", "status:emerging"]
 category: pattern
 status: emerging
-projects: [rackinspect, park-here, mlszksz-platform]
-evidence: ["rackinspect:unrecorded", "park-here:unrecorded", "mlszksz-platform:unrecorded"]
+projects: [park-here, mlszksz-platform]
+evidence: ["park-here:unrecorded", "mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/hooks/register-error-handler-interceptor.ts"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Show a business error to the user as a short message, instead of the generated fault dialog. The platform already sends a modeled business fault as HTTP 422, with a body keyed by the fault; the generated frontend opens a fault dialog for it. This blueprint is project practice on top of that: the frontend registers an error handler interceptor and chooses a different display.
+Show a business error to the user as a short message, instead of the generated fault dialog. The platform already sends a modeled business fault as HTTP 422, with a body keyed by the fault; the generated frontend opens a fault dialog for it. This blueprint is common practice on top of that: the frontend registers an error handler interceptor and chooses a different display.
 
 ### The hook decides what to intercept
 
@@ -60,6 +60,6 @@ The application registers one error handler interceptor hook with the platform's
 
 ## Related
 
-- [[error-code-enum]] — the business error vocabulary whose message this hook shows
-- [[validation-exception-hierarchy]] — field-level validation errors, which this hook does not intercept
-- [[typed-exception-error-handling]] — typed exception handling in the backend
+- [[error-code-enum]]: the business error vocabulary whose message this hook shows
+- [[validation-exception-hierarchy]]: field-level validation errors, which this hook does not intercept
+- [[typed-exception-error-handling]]: typed exception handling in the backend

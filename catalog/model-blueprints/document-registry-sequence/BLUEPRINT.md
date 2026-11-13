@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, project:rackinspect, status:sin
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: [rackinspect:unrecorded]
+evidence: [rackinspect:model/rackinspect.model, rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/RegistryServiceImpl.java]
 alternatives: [enum-state-machine]
 fragment: document-registry-sequence
 diagram: { kinds: [entity, enum], members: types }
@@ -21,13 +21,13 @@ Give each kind of numbered document its own sequence, so that fault registries, 
 
 ## Structure
 
-One non-CRUD entity, `DocumentRegistry`, holds one row per document type and period. It has a `documentType` (an enumeration with one member per kind of document), a `prefix` string, a financial period (start and end dates), a transition period (start and end dates), and an index range (`startIndex`, `endIndex`) with a running `currentIndex`. The enumeration `DocumentType` holds one member per document kind. Each member has an ordinal that is persisted with the model. A custom service in project code picks the registry row for a date and advances `currentIndex`.
+One non-CRUD entity, `DocumentRegistry`, holds one row per document type and period. It has a `documentType` (an enumeration with one member per kind of document), a `prefix` string, a financial period (start and end dates), a transition period (start and end dates), and an index range (`startIndex`, `endIndex`) with a running `currentIndex`. The enumeration `DocumentType` holds one member per document kind. Each member has an ordinal that is persisted with the model. A custom service in application code picks the registry row for a date and advances `currentIndex`.
 
 ## Constraints
 
-- The platform already offers number sequences (the `SEQUENCE` variable category, database sequences by default). They are gap-tolerant and have no prefix, period or reset. This blueprint is project practice on top of the platform for gap-free, per-period, prefixed numbers.
+- The platform already offers number sequences (the `SEQUENCE` variable category, database sequences by default). They are gap-tolerant and have no prefix, period or reset. This blueprint is common practice on top of the platform for gap-free, per-period, prefixed numbers.
 - The registry row is not created, updated or deleted by clients. Rows are seeded at setup, and only the sequence service advances `currentIndex`.
-- The increment and the read happen inside one lock. Without it, two documents generated at the same time can get the same number. This is project code, not a platform feature.
+- The increment and the read happen inside one lock. Without it, two documents generated at the same time can get the same number. This is application code, not a platform feature.
 - A number is burned when it is issued, even if the document generation later fails. Decide how failures are handled before the sequence goes live.
 - The number width comes from the digit count of `endIndex`, so the width is fixed for a row.
 - Periods do not overlap within one document type, except for the transition period, which the lookup handles explicitly.
@@ -52,7 +52,7 @@ One non-CRUD entity, `DocumentRegistry`, holds one row per document type and per
 
 ## Related
 
-- [[enum-state-machine]] — the enumeration pattern used for the document type
-- [[document-review-state-machine]] — a document lifecycle that often runs after the number is issued
-- [[sequence-based-identifier]] — the platform sequence variable, for numbers without periods or prefixes
-- [[category-enum-pattern]] — choosing an enumeration for the document type
+- [[enum-state-machine]]: the enumeration pattern used for the document type
+- [[document-review-state-machine]]: a document lifecycle that often runs after the number is issued
+- [[sequence-based-identifier]]: the platform sequence variable, for numbers without periods or prefixes
+- [[category-enum-pattern]]: choosing an enumeration for the document type

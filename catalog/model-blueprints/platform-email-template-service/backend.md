@@ -30,14 +30,12 @@ Names are listed in prose rather than as template placeholders, so the guidance 
 
 ## Examples
 
-### mlszksz-platform
-- Key files: `common/services/PlatformEmailService.java`, `common/services/impl/PlatformEmailServiceImpl.java`, `common/services/ConfigurationTemplateService.java`
-- Pattern: `PlatformEmailServiceImpl` renders Handlebars templates stored in the database Configuration entity, using `ConfigurationTemplateService` to load templates and platform settings. Sends via JUDO's `EmailService` OSGi service.
-- Notable: Invitation emails construct a registration URL with token and email pre-fill. Approval emails include a magic link for one-click first login. Post-published emails are broadcast to all platform admins (queried by `UserRole.PLATFORM_ADMIN`). Moderation emails use inline HTML when no template is configured.
-- DI wiring: `ConfigurationTemplateService` (reads DB) + `EmailService` (JUDO provided) -> `PlatformEmailServiceImpl` -> consumed by custom operations, `FeedServiceImpl`, `PushNotificationServiceImpl`
+### Example (project code)
+- Pattern: the email service renders Handlebars templates stored in the database Configuration entity, using `ConfigurationTemplateService` to load templates and platform settings. Sends via JUDO's `EmailService` OSGi service.
+- Notable: Invitation emails construct a registration URL with token and email pre-fill. Approval emails include a magic link for one-click first login. Post-published emails are broadcast to all administrators (queried by an administrator role). Moderation emails use inline HTML when no template is configured.
+- DI wiring: the configuration template service (reads the database) + `EmailService` (JUDO provided) -> the email service implementation -> consumed by custom operations and by the feed and push notification services
 
-### rackinspect
-- Key files: `common/utils/services/EmailSenderService.java`, `common/utils/services/impl/EmailSenderServiceImpl.java`, `common/utils/services/ConfigurationTemplateService.java`, `common/utils/services/impl/ConfigurationTemplateServiceImpl.java`, `common/utils/email/EmailContext.java`
-- Pattern: `EmailSenderServiceImpl` sends documents (assessment sheets, review reports, offers) as email attachments. Uses `ConfigurationTemplateService` to load the email HTML template and sender address from the Configuration entity. Renders with `Handlebars.compileInline()` using an `EmailContext` builder POJO. Retrieves document files from `FileStoreService` and attaches via `BinaryAttachment`.
-- Notable: Three document-specific email methods (`sendAssessmentSheet`, `sendReviewReport`, `sendOffer`) that share a common `sendDocumentEmail()` pipeline. Company name is dynamically queried from `CompanyDataDao` with a mask (`CompanyDataMask.companyDataMask().withName()`). Uses `RackInspectI18n` for localized email subjects and error messages. `EmailContext` is a simple builder POJO with `title`, `partner`, `subjectName`, `companyName` fields.
-- DI wiring: `EmailSenderServiceImpl` `@Reference` `EmailService` (JUDO) + `FileStoreService` + `ConfigurationTemplateService` + `CompanyDataDao` + `RackInspectI18n` -> consumed by custom operations for sending documents to partners
+### Example (project code)
+- Pattern: the sender service sends documents (for example reports and offers) as email attachments. Uses the configuration template service to load the email HTML template and sender address from the Configuration entity. Renders with `Handlebars.compileInline()` using an `EmailContext` builder POJO. Retrieves document files from `FileStoreService` and attaches via `BinaryAttachment`.
+- Notable: Three document-specific email methods that share a common `sendDocumentEmail()` pipeline. The company name is queried from a company data DAO with a mask. An i18n interface provides localized email subjects and error messages. The context is a simple builder POJO with `title`, `recipient`, `subjectName` and `companyName` fields.
+- DI wiring: `EmailSenderServiceImpl` `@Reference` `EmailService` (JUDO) + `FileStoreService` + `ConfigurationTemplateService` + `CompanyDataDao` + the i18n interface -> consumed by custom operations for sending documents to recipients

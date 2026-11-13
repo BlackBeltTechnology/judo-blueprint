@@ -306,7 +306,7 @@ UI Element ID: Actor/(esm/_ZeK4oLK0EfCC_efogf7jJg)/AttributeType
 
 1. **ESM Source** (`model/\<app>.model`):
 ```xml
-<elements xsi:type="structure:EntityType" name="Campaign">
+<elements xsi:type="structure:EntityType" name="Activity">
   <attributes xsi:type="structure:DataMember"
     xmi:id="_ZeK4oLK0EfCC_efogf7jJg"
     name="code"

@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:mlszksz-platform", "status:
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/notifications/NotificationCard.tsx"]
 alternatives: []
 fragment: none: frontend-only
 first_seen: 2026-03-09
@@ -59,4 +59,4 @@ Each row has a type, a message, a time, and an optional reference to a feed entr
 
 ## Related
 
-- [[custom-post-detail-views]] — the post pages a notification card usually opens
+- [[custom-post-detail-views]]: the post pages a notification card usually opens

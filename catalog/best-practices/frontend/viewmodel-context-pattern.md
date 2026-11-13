@@ -23,12 +23,12 @@ Know what each generated page directory contains and how page state is shared wi
 
 ### Platform base
 
-This is a generator convention observed in two projects, not something to build:
+This is a generator convention observed in two apps, not something to build:
 
-- Each generated page lives in `src/pages/<PagePath>/` with an `index.tsx` and a `context.tsx` ([file path patterns](../../agent-docs/frontend/model-screen-layout.md)). In the observed projects the directory also holds `customization.ts` and `types.ts`.
+- Each generated page lives in `src/pages/<PagePath>/` with an `index.tsx` and a `context.tsx` ([file path patterns](../../agent-docs/frontend/model-screen-layout.md)). In the observed apps the directory also holds `customization.ts` and `types.ts`.
 - `customization.ts` carries the hook interface key and hook type of the page; `types.ts` carries the action definition types. A page action hook uses the per-page key `<PAGE>_ACTIONS_HOOK_INTERFACE_KEY`; the object it returns must match the generated types, so read `customization.ts` and `types.ts` before writing one ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 - The scaffolds that implement those hooks are generated only when the hook flag is set in the model; they sit under `src/custom/hooks/` as `.default` files ([hook files](../../agent-docs/frontend/extension-points.md)).
-- The agent-docs do not describe the contents of `context.tsx`. The shape below is taken from trivia and itracker and may differ by generator version; check the generated file.
+- The agent-docs do not describe the contents of `context.tsx`. The shape below is taken from two example apps and may differ by generator version; check the generated file.
 
 ```
 SomePage/
@@ -52,19 +52,19 @@ export const SomeViewModelContext = createContext<SomeViewModel>({} as any);
 
 The page component builds the ViewModel with its loading and edit-mode setters and a refresh function, then wraps its children in the context provider.
 
-### Project practice: consume it, do not copy it
+### Practice notes: consume it, do not copy it
 
 - Custom components placed inside a generated page read the context (loading, edit mode, refresh) instead of receiving props through every level.
 - Generated files carry a checksum and are not edited; change behaviour through hooks, not by editing `context.tsx` ([hook system](../../agent-docs/frontend/hooks/README.md)).
 
 ## Rationale
 
-One consistent structure across all pages (in itracker, every page of both actors) lets a developer find state, hooks and action types in the same place. Costs: generated boilerplate per page, possible extra re-renders when the context value changes, and tight coupling between the ViewModel and the page.
+One consistent structure across all pages (in one two-actor app, every page of both actors) lets a developer find state, hooks and action types in the same place. Costs: generated boilerplate per page, possible extra re-renders when the context value changes, and tight coupling between the ViewModel and the page.
 
 ## Example
 
-- trivia: admin pages such as a category view page each have a `context.tsx` defining the ViewModel, created in `index.tsx` with the setters and `refresh`.
-- itracker: all pages of both actors (nine for one, six for the other) and their containers follow the same layout.
+- A game app: admin pages such as a category view page each have a `context.tsx` defining the ViewModel, created in `index.tsx` with the setters and `refresh`.
+- A two-actor app: all pages of both actors and their containers follow the same layout.
 
 ## When to avoid
 

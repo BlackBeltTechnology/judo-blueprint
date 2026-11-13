@@ -1,9 +1,9 @@
 ---
 id: registry-header-with-lines
-title: Registry with Headers, Lines and Line Qualifications
-description: A registry entity with a status enumeration that owns headers, where each header owns line items and each line owns its own qualification records, so a whole submission is stored and deleted as one aggregate.
-aliases: [header line aggregate, registry header and lines, document header with line items]
-keywords: [header, line, registry, composition, qualification, aggregate, status, submission]
+title: Registry with Headers, Lines and Line Classifications
+description: A registry entity with a status enumeration that owns headers, where each header owns line items and each line owns its own classification records, so a whole submission is stored and deleted as one aggregate.
+aliases: [header line aggregate, registry header and lines, document header with line items, line qualification]
+keywords: [header, line, registry, composition, classification, aggregate, status, submission]
 tags: [domain:model, layer:model, project:rackinspect, status:single-project]
 category: pattern
 status: single-project
@@ -18,32 +18,32 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Store one submission that contains many findings as a single aggregate. A registry is the root. It owns headers, a header owns line items, and each line owns qualification records that say how that line was judged. The registry has a status that moves from draft to submitted and on to returned or done.
+Store one submission that contains many findings as a single aggregate. A registry is the root. It owns headers, a header owns line items, and each line owns classification records that say how that line was judged. The registry has a status that moves from draft to submitted and on to returned or done.
 
 ### The registry is the unit of work
 
 Users create, submit and return the registry as a whole. The headers and lines have no life of their own, so they are composed by the registry and removed with it.
 
-### Qualification data belongs to the line
+### Classification data belongs to the line
 
-A line is more than a description. Each line carries zero or more qualification records (a code, a passed flag and a remark). Keeping them under the line, not under the header, lets a header hold lines that were judged differently.
+A line is more than a description. Each line carries zero or more classification records (a code, a passed flag and a remark). Keeping them under the line, not under the header, lets a header hold lines that were judged differently.
 
 ## Structure
 
 - **Registry** has a stored `status` attribute of an enumeration with the values draft, submitted, returned and done, and a composition to many headers.
 - **RegistryHeader** has general attributes (a free-text finding, a creation timestamp) and a composition to many lines.
-- **RegistryLine** has descriptive attributes and a composition to many qualification records.
-- **LineQualification** has a code, a boolean passed flag and a text remark.
+- **RegistryLine** has descriptive attributes and a composition to many classification records.
+- **LineClassification** has a code, a boolean passed flag and a text remark.
 
 All three relations are compositions with cardinality 0..*. Every owned entity is reachable only through its owner.
 
 ## Constraints
 
-- Compositions delete the owned records with the owner, so no orphan header, line or qualification stays behind.
+- Compositions delete the owned records with the owner, so no orphan header, line or classification stays behind.
 - A back reference from a line to its header, or from a header to the registry, is a derived relation. The model stores the link in one direction only.
 - Status changes go through explicit operations, not through free editing of the status attribute; see [[draft-done-status-enum]].
 - Existing rows get a value for any attribute added later. A new required column needs a data step that backfills a default, because the generator emits a bare nullable column.
-- Per-line rules (for example a range check on a code) have to run on the line or its qualification, not only on the registry.
+- Per-line rules (for example a range check on a code) have to run on the line or its classification, not only on the registry.
 
 ## Variations
 
@@ -66,6 +66,6 @@ All three relations are compositions with cardinality 0..*. Every owned entity i
 
 ## Related
 
-- [[draft-done-status-enum]] — a small status enumeration with the same draft and done values
-- [[state-transition-history-entry]] — records each status change of the registry
-- [[quote-lines-with-price-modifiers]] — another header and line aggregate, with priced lines
+- [[draft-done-status-enum]]: a small status enumeration with the same draft and done values
+- [[state-transition-history-entry]]: records each status change of the registry
+- [[quote-lines-with-price-modifiers]]: another header and line aggregate, with priced lines

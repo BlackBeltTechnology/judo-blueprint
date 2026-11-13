@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: state
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/custom-implementations/DimensionParametersViewComponent.tsx"]
 alternatives: []
 related: [custom-visual-element-override]
 fragment: "none: frontend-only"
@@ -28,21 +28,21 @@ A custom component that edits its own data must decide when changes reach the ba
 - A bound call needs the instance's current signed identifier, which changes after every update of the entity. In lazy mode take it from the latest response and never cache it ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
 - A model-designated custom element renders your component ([[custom-visual-element-override]]).
 
-### Project practice: two modes in one component
+### Practice notes: two modes in one component
 
-The two modes are project practice (rackinspect), not platform features. The component picks a mode from its context.
+The two modes are practice, not platform features. The component picks a mode from its context.
 
 - **Greedy** (creation forms): template data is fetched up front, every change goes through `storeDiff`, and everything is submitted with the form save.
 - **Lazy** (view/edit pages): every change calls a backend service immediately. Local state is kept apart from the page form so the page does not enter edit mode or block the page save. Show a spinner while syncing, and on error revert the value and show the message.
 - Rows can be added or deleted independently in lazy mode, and selectable enum values can be loaded when a dropdown opens.
 
 ```typescript
-// Example project code: greedy
+// Example code: greedy
 const onValueChange = (id: string, value: unknown) => {
   storeDiff('groups', updateValue(groups, id, value)); // saved with the form
 };
 
-// Example project code: lazy
+// Example code: lazy
 const onValueChange = async (id: string, value: unknown) => {
   setLoading(id);
   try {
@@ -63,7 +63,7 @@ Creation forms need all-or-nothing saves, so batching fits. On an existing recor
 
 ## Example
 
-In rackinspect a dimension-parameters component runs greedy in the fault element creation form and lazy in the rack view/edit page, where rows are added and deleted directly.
+One app's parameters component runs greedy in a creation form and lazy in a view/edit page, where rows are added and deleted directly.
 
 ## When to avoid
 

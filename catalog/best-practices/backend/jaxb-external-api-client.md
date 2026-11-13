@@ -1,7 +1,7 @@
 ---
 id: jaxb-external-api-client
 title: JAXB-Based External API Client with Response Caching
-description: "An external XML API client built from JAXB classes generated from the provider's XSD schemas, in its own OSGi bundle, using the JDK HttpClient with retry and proxy support and a database-backed response cache with a time-to-live; all project practice around platform OSGi components."
+description: "An external XML API client built from JAXB classes generated from the provider's XSD schemas, in its own OSGi bundle, using the JDK HttpClient with retry and proxy support and a database-backed response cache with a time-to-live; all local practice around platform OSGi components."
 aliases: ["XSD client", "JAXB HTTP client", "external XML API cache"]
 keywords: ["JAXB", "XSD", "HttpClient", "OSGi bundle", "retry", "backoff", "proxy", "cache", "TTL", "external API"]
 tags: ["domain:backend", "layer:backend", "project:judo-partner", "status:single-project"]
@@ -24,12 +24,12 @@ An external provider publishes an XML API described by XSD schemas but not as a 
 
 ### Platform: what the application provides
 
-JUDO has no built-in client for external APIs. The application's own code runs as OSGi components in the runtime (custom operations and services are DS components that inject DAOs and other services with `@Reference`, see [custom operations](../../agent-docs/backend/custom-operations.md)). Everything below is project practice on top of that; [[osgi-karaf-bundle-architecture]] covers the bundle split and [[custom-operation-osgi-component]] the component model.
+JUDO has no built-in client for external APIs. The application's own code runs as OSGi components in the runtime (custom operations and services are DS components that inject DAOs and other services with `@Reference`, see [custom operations](../../agent-docs/backend/custom-operations.md)). Everything below is a convention on top of that; [[osgi-karaf-bundle-architecture]] covers the bundle split and [[custom-operation-osgi-component]] the component model.
 
-### Project practice
+### Practice notes
 
 ```java
-// Example project code: all types are project or generated types
+// Example code: all types are generated types
 // Separate bundle: src/main/xsd/*.xsd  ->  JAXB classes at build time
 
 @Component(immediate = true, service = ApiUtils.class)
@@ -79,7 +79,7 @@ public class CacheService {
 
 ## Example
 
-A partner application validates tax identifiers against a tax-authority XML API. A dedicated client bundle holds JAXB classes generated from six XSD schemas. A taxpayer service caches each query as a query record with taxpayer results for 24 hours. The API authenticates with a password hash and a request signature derived from a timestamp. A utility class does the HTTP call with three attempts, exponential backoff and optional proxy, and a custom operation clears the cache in batches of 100.
+An application validates tax identifiers against an external registry XML API. A dedicated client bundle holds JAXB classes generated from six XSD schemas. A lookup service caches each query as a query record with result records for 24 hours. The API authenticates with a password hash and a request signature derived from a timestamp. A utility class does the HTTP call with three attempts, exponential backoff and optional proxy, and a custom operation clears the cache in batches of 100.
 
 ## When to avoid
 

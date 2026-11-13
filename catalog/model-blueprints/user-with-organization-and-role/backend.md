@@ -14,7 +14,5 @@ The user lifecycle is handled by a user service. It creates the user with an org
 
 ## Examples
 
-### mlszksz-platform
-
-- Key files (example project code): the user service and its implementation, the authentication interceptor, and the suspend and change-role operations on the organization admin view.
+- Example project code: the user service and its implementation, the authentication interceptor, and the suspend and change-role operations on an admin view.
 - The last-administrator guards are the main rule. They are the reason the role check runs in the organization context.

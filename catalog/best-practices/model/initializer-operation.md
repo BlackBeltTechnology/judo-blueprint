@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: operation
 status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, InterfaceRegister, judo-partner, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [singleton-entity, custom-implementation-placeholder, init-data-seeding, initializer-entity-with-init-operation]
 fragment: initializer-operation
@@ -29,7 +29,7 @@ A new deployment needs reference data and a first account. Model one initializer
 - The body is a JCL script (`customImplementation = false`, see [JCL](../../agent-docs/model/jcl-operation-scripts.md)) or Java (`customImplementation = true`, see [custom operations](../../agent-docs/backend/custom-operations.md)).
 - The agent-docs do not say that the platform calls an initializer by itself at startup. The older wording "runs automatically on startup" is therefore not a documented guarantee. Verify in your runtime how the call is triggered, or call the operation from your deployment procedure. Backend seeding details: [[init-data-seeding]].
 
-### Project practice: where it lives and how it is guarded
+### Practice note: where it lives and how it is guarded
 
 - Host: a dedicated entity (`Initializer`, `Application`) kept out of navigation, or an existing singleton entity ([[singleton-entity]]). Placing it on a domain entity also occurs but mixes concerns.
 - Guard: begin with a check so a second run does nothing. Variants seen: `if (Category!empty())`, a count compared with zero, an `!exists(...)` check per record (per-record keys allow adding rows in later releases). The collection functions are JQL functions listed in the [model development guide](../../agent-docs/model/model-development.md).
@@ -46,7 +46,7 @@ A new deployment needs reference data and a first account. Model one initializer
 
 ## Example
 
-An Initializer entity has the static operation `init` (initializer, stateful, no input). Its body creates the default Category rows only when no Category exists yet. The diagram shows the entity and the operation. Projects seeded users with role flags, categories, regions, competence catalogs, or whole demo data sets (seasons, clubs, matches); several used a custom Java body instead of a script. Names here are neutral.
+An Initializer entity has the static operation `init` (initializer, stateful, no input). Its body creates the default Category rows only when no Category exists yet. The diagram shows the entity and the operation. Projects seeded users with role flags, categories, regions, reference catalogs, or whole demo data sets (periods, groups, items); several used a custom Java body instead of a script. Names here are neutral.
 
 ## When to avoid
 

@@ -27,16 +27,16 @@ A hand-built React frontend needs several cross-cutting services at the root: da
 - Replacing the root means protecting `App.tsx` with `.generator-ignore`; see [[complete-frontend-replacement]] and [[generator-ignore-app-theme]]. Only that case needs this pattern.
 - The generated frontend uses react-i18next. The react-intl provider below belongs to a hand-built stack ([[react-intl-flat-key-pattern]]).
 
-### Project practice: a provider stack in `App.tsx`
+### Practice notes: a provider stack in `App.tsx`
 
-This is project practice (actiongroup-test-react), not a platform feature.
+This is practice for a hand-built frontend, not a platform feature.
 
 - Order matters: an inner provider can read values of the outer ones. Put the theme and localization outside, and the providers that use them (dialogs, breadcrumbs) inside.
 - One provider per concern: date-picker locale, MUI theme, react-intl messages, notistack snackbars (with a dismiss action), a dialog provider ([[promise-based-dialog-system]]) and a breadcrumb provider ([[breadcrumb-navigation-context]]) as the innermost, wrapping the router outlet.
 - Pages call hooks (`useDialog`, `useSnackbar`, `useBreadcrumb`, `useIntl`), never the providers directly.
 
 ```tsx
-// Example project code: App.tsx
+// Example code: App.tsx
 <LocalizationProvider dateAdapter={AdapterDateFns}>
   <ThemeProvider theme={theme}>
     <IntlProvider locale={en.locale} messages={en.messages}>
@@ -58,7 +58,7 @@ Each concern is separate and testable, and the dependency order is visible in on
 
 ## Example
 
-actiongroup-test-react's `App.tsx` nests six providers, with the breadcrumb provider innermost. The layout around the outlet has a sidebar navigator (permanent on desktop, temporary on mobile), a header with back button and breadcrumbs, and a footer.
+A hand-built app's `App.tsx` nests six providers, with the breadcrumb provider innermost. The layout around the outlet has a sidebar navigator (permanent on desktop, temporary on mobile), a header with back button and breadcrumbs, and a footer.
 
 ## When to avoid
 

@@ -8,7 +8,7 @@ tags: [domain:model, layer:backend, project:mlszksz-platform, project:rackinspec
 category: pattern
 status: established
 projects: [mlszksz-platform, rackinspect, indamedia-adtrack, park-here]
-evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
+evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/PushNotificationService.java", "rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/RegistryServiceImpl.java", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
 alternatives: []
 fragment: none: backend-only
 related: [osgi-scheduled-background-jobs, identity-account-organization-cluster]

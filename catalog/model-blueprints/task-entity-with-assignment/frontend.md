@@ -1,6 +1,6 @@
 ## Overview
 
-The task has a close form in the author and approver views. The example project changes the result choices in that form so the initial state cannot be chosen when closing a task. The example also adds Hungarian labels for the task forms, enumerations and menu items.
+The task has a close form in the author and approver views. The example project changes the result choices in that form so the initial state cannot be chosen when closing a task. The example also adds localized labels for the task forms, enumerations and menu items.
 
 ## Implementation pattern
 
@@ -11,9 +11,7 @@ The task has a close form in the author and approver views. The example project 
 
 ## Examples
 
-### alba
-
 - Framework: React with a plugin-based hook registry (example project code).
-- Key file: `custom/hooks/dialogs/` (the close form hook for the author task view).
+- Pattern: a close-form hook for the author task view.
 - The hook receives the owner data, the form data, the edit mode, the store diff, the submit function and the submit callback. It returns `filterResultOptions`, which filters out the initial value of the TaskState enumeration.
-- The Hungarian file translates the close form title and result field, the approval form title, the TaskState and TaskType values, and the "My tasks" and "Tasks" menu entries.
+- A locale file translates the close form title and result field, the approval form title, the TaskState and TaskType values, and the menu entries.

@@ -12,8 +12,6 @@ The user entity appears in the React frontend in two places. The profile panel s
 
 ## Examples
 
-### mlszksz-platform
-
 - Framework: React (example project code).
 - The profile view uses switches for the notification flags, and it saves each change after a short debounce.
 - The view reads the principal's role to decide which actions to show.

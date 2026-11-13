@@ -30,7 +30,6 @@ The creation and lifecycle operations are custom, so an interceptor does not run
 
 ## Examples
 
-### mlszksz-platform
-- Key files: `common/services/PostService.java` (facade), `common/services/post/PostCreationService.java`, `common/services/post/PostLifecycleService.java`, `scheduler/PostExpirationJob.java`.
+### Example (project code)
 - Pattern: creation sets draft status and the type discriminator; publishing moves to published and creates a feed entry; delete is hard for drafts and soft for published posts.
 - Notable: the expiry job handles offers by their validity end and requests by their deadline. The `adaptTo` conversion lets feed code treat any subtype as a Post (project practice).

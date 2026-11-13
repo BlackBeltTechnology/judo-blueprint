@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, project:mlszksz-platform, proje
 category: pattern
 status: established
 projects: [mlszksz-platform, rackinspect, park-here, ubives, workflow-poc, judo-demo-miniworkflow, trivia, itracker, viterra_demo, InterfaceRegister, mjsz, doors-model, ams-model]
-evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "mjsz:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "rackinspect:model/rackinspect.model", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "mjsz:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded"]
 alternatives: [platform-configuration-singleton]
 fragment: initializer-entity-with-init-operation
 diagram: { kinds: [entity, enum], members: types }
@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Give the application one well-known place where reference data is seeded. A static operation named `init` on a dedicated entity is called once per deployment (by the project's startup or deployment routine) and fills the tables that the rest of the model depends on. The entity itself holds no business data and is not edited through the generated actions.
+Give the application one well-known place where reference data is seeded. A static operation named `init` on a dedicated entity is called once per deployment (by the application's startup or deployment routine) and fills the tables that the rest of the model depends on. The entity itself holds no business data and is not edited through the generated actions.
 
 ### Initializer is non-CRUD
 
@@ -63,6 +63,6 @@ The Initializer entity has a marker attribute and a single static operation. The
 
 ## Related
 
-- [[platform-configuration-singleton]] — a singleton entity for configuration; an initializer can create it
-- [[audit-log-entity]] — an audit row for the seed must be written inside `init`, because interceptors do not run for custom operations
-- [[interceptor-derived-statistics-calculation]] — interceptors do not wrap custom operations such as `init`
+- [[platform-configuration-singleton]]: a singleton entity for configuration; an initializer can create it
+- [[audit-log-entity]]: an audit row for the seed must be written inside `init`, because interceptors do not run for custom operations
+- [[interceptor-derived-statistics-calculation]]: interceptors do not wrap custom operations such as `init`

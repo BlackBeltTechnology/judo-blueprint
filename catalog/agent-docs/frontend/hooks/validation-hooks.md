@@ -362,7 +362,7 @@ Validate fields by calling external APIs or performing database checks.
 **IMPORTANT**: For async validation in JUDO, you can call custom validation operations through the `context.actions` object.
 
 ```typescript
-export const campaignFormHook: ServiceCampaignViewEditContainerHook = (data, editMode, storeDiff, context) => {
+export const activityFormHook: ServiceActivityViewEditContainerHook = (data, editMode, storeDiff, context) => {
   return {
     validateTitle: async (title: string) => {
       if (!title || title.length < 3) {
@@ -374,7 +374,7 @@ export const campaignFormHook: ServiceCampaignViewEditContainerHook = (data, edi
         const result = await context.actions.getAction('validateTitle')({ title });
 
         if (result.data?.exists) {
-          return 'Campaign title already exists';
+          return 'Activity title already exists';
         }
       } catch (error) {
         console.error('Validation error:', error);
@@ -404,7 +404,7 @@ function debounceAsync<A extends unknown[], R>(fn: (...args: A) => Promise<R>, w
     });
 }
 
-export const campaignFormHook: ServiceCampaignViewEditContainerHook = (data, editMode, storeDiff, context) => {
+export const activityFormHook: ServiceActivityViewEditContainerHook = (data, editMode, storeDiff, context) => {
   const checkTitleAvailability = debounceAsync(async (title: string) => {
     return await context.actions.getAction('validateTitle')({ title });
   }, 500);
@@ -419,7 +419,7 @@ export const campaignFormHook: ServiceCampaignViewEditContainerHook = (data, edi
         const result = await checkTitleAvailability(title);
 
         if (result.data?.exists) {
-          return 'This campaign title is already taken';
+          return 'This activity title is already taken';
         }
       } catch (error) {
         console.error('Validation error:', error);
@@ -669,10 +669,10 @@ await validateLocation(value);
 
 ```typescript
 // src/custom/hooks/containerActions.tsx
-import type { ServiceCampaignViewEditContainerHook } from '~/containers/Service/Campaign/ServiceCampaignViewEdit/customization';
+import type { ServiceActivityViewEditContainerHook } from '~/containers/Service/Activity/ServiceActivityViewEdit/customization';
 import { debounceAsync } from '~/custom/utils/debounceAsync';
 
-export const campaignFormHook: ServiceCampaignViewEditContainerHook = (data, editMode, storeDiff, context) => {
+export const activityFormHook: ServiceActivityViewEditContainerHook = (data, editMode, storeDiff, context) => {
   const checkTitleAvailability = debounceAsync(async (title: string) => {
     return await context.actions.getAction('validateTitle')({ title });
   }, 500);

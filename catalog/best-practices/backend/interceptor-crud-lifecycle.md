@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:alba",
 category: interceptor
 status: established
 projects: [rackinspect, alba, park-here, judo-partner, reserve-app]
-evidence: ["rackinspect:unrecorded", "alba:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
+evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/companydata/companyemail/CompanyEmailCreateInterceptor.java", "alba:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [interceptor-global-logging, interceptor-access-control-flags, interceptor-range-override, form-field-flattening, interceptor-call-replacement, interceptor-aggregation-postcall]
 fragment: "none: backend-only"
@@ -31,10 +31,10 @@ The generated create, update and delete operations cover the plain write. Real a
 - The only business-level exception an interceptor may throw is `InterceptorCallBusinessException` (REST 422 with `X-Fault`). A field rule on one attribute is a `ValidationException` (400). A raw `RuntimeException` becomes a 500. A generated `<Fault>Exception` from a service must be caught and rewrapped ([business error](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)).
 - Payload access: the create payload is `CreateInstanceCall.CreateInstanceCallPayload` (`getInput()`), the update payload `UpdateInstanceCall.UpdateInstanceCallPayload` (`getInput()`, `getInstance()`); the id of a returned payload is its `__identifier` key. `Payload.getAs` returns `null` for an absent key, so do not unbox it ([payload type](../../agent-docs/backend/data-access-guide.md#the-payload-type)).
 
-### Project practice: what the projects put in the hooks
+### Practice notes: what the hooks typically do
 
 ```java
-// Example project code: Entity, EntityDao, Child, ChildDao are generated types
+// Example code: Entity, EntityDao, Child, ChildDao are generated types
 @Override
 public Object preCall(EOperation operation, Object parameterPayload)
         throws InterceptorCallBusinessException {
@@ -58,7 +58,7 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
 - `preCall`: validate input (format by regular expression, required flags) and throw the right exception kind; flatten `form_*` fields into a nested payload ([[form-field-flattening]]).
 - `postCall` on create: load the created entity by the returned id (with a mask), set singular relations such as a primary or default child, trigger recalculation or validation services. Set only relations that the model declares settable.
 - `postCall` on update: cascade, for example normalise names, check uniqueness, recompute denormalized fields ([[interceptor-aggregation-postcall]]) or write an audit entry.
-- One project assigns ownership in the create `postCall`: it resolves the current user through `VariableResolver` and sets the owner relation on the new record ([[actor-resolution-variable-resolver]]).
+- One variant assigns ownership in the create `postCall`: it resolves the current user through `VariableResolver` and sets the owner relation on the new record ([[actor-resolution-variable-resolver]]).
 - Handle create and update in one class with `instanceof` pattern matching on the payload type, and throw `IllegalArgumentException` for an unexpected type.
 
 ## Rationale
@@ -69,7 +69,7 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
 
 ## Example
 
-Typical sets in the five projects: a partner create validates the headquarters address in `preCall`, turns fifteen flat form fields into a nested address payload, then sets headquarters, billing and postal relations in `postCall`; a bank-account create checks the account number format in `preCall` and sets the primary relation after; a car update enforces "one favourite per user" in `postCall` and surfaces a `ValidationException`; a partner update normalises names, flags duplicates and writes a log entry; a reservation create assigns the calling partner as owner.
+Typical sets across applications: an account create validates the primary address in `preCall`, turns flat form fields into a nested address payload, then sets primary, billing and postal relations in `postCall`; a bank-account create checks the account number format in `preCall` and sets the primary relation after; an item update enforces "one favourite per user" in `postCall` and surfaces a `ValidationException`; an account update normalises names, flags duplicates and writes a log entry; a booking create assigns the calling account as owner.
 
 ## When to avoid
 

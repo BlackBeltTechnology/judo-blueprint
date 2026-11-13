@@ -191,41 +191,41 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_cgyjMdzdEfGUi6wUf29nmA" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_c7BoINzdEfGUi6wUf29nmA" name="dual_role_relation">
-      <elements xsi:type="structure:EntityType" xmi:id="_d4hyMNzdEfGUi6wUf29nmA" name="Team" createable="false" updateable="false" deleteable="false">
-        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_e-kNMdzdEfGUi6wUf29nmA" lower="0" upper="-1" target="_eGD34NzdEfGUi6wUf29nmA" name="homeMatches" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_e-i_ENzdEfGUi6wUf29nmA" primary="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_d4hyMNzdEfGUi6wUf29nmA" name="Participant" createable="false" updateable="false" deleteable="false">
+        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_e-kNMdzdEfGUi6wUf29nmA" lower="0" upper="-1" target="_eGD34NzdEfGUi6wUf29nmA" name="firstPairings" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_e-i_ENzdEfGUi6wUf29nmA" primary="false">
           <inherited xmi:id="_e-kNMtzdEfGUi6wUf29nmA"/>
         </relations>
-        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_goGW0tzdEfGUi6wUf29nmA" lower="0" upper="-1" target="_eGD34NzdEfGUi6wUf29nmA" name="visitorMatches" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_goGW0NzdEfGUi6wUf29nmA" primary="false">
+        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_goGW0tzdEfGUi6wUf29nmA" lower="0" upper="-1" target="_eGD34NzdEfGUi6wUf29nmA" name="secondPairings" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_goGW0NzdEfGUi6wUf29nmA" primary="false">
           <inherited xmi:id="_goGW09zdEfGUi6wUf29nmA"/>
         </relations>
-        <attributes xsi:type="structure:DataMember" xmi:id="_hEf-8NzdEfGUi6wUf29nmA" name="goalsFor" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_hEf-8NzdEfGUi6wUf29nmA" getterExpression="self.homeMatches!sum(m | m.homeScore) + self.visitorMatches!sum(m | m.visitorScore)" identifier="false" memberType="DERIVED">
+        <attributes xsi:type="structure:DataMember" xmi:id="_hEf-8NzdEfGUi6wUf29nmA" name="scoreFor" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_hEf-8NzdEfGUi6wUf29nmA" getterExpression="self.firstPairings!sum(m | m.firstScore) + self.secondPairings!sum(m | m.secondScore)" identifier="false" memberType="DERIVED">
           <inherited xmi:id="_hEf-8dzdEfGUi6wUf29nmA"/>
         </attributes>
-        <attributes xsi:type="structure:DataMember" xmi:id="_hODjkNzdEfGUi6wUf29nmA" name="goalsAgainst" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_hODjkNzdEfGUi6wUf29nmA" getterExpression="self.homeMatches!sum(m | m.visitorScore) + self.visitorMatches!sum(m | m.homeScore)" identifier="false" memberType="DERIVED">
+        <attributes xsi:type="structure:DataMember" xmi:id="_hODjkNzdEfGUi6wUf29nmA" name="scoreAgainst" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_hODjkNzdEfGUi6wUf29nmA" getterExpression="self.firstPairings!sum(m | m.secondScore) + self.secondPairings!sum(m | m.firstScore)" identifier="false" memberType="DERIVED">
           <inherited xmi:id="_hODjkdzdEfGUi6wUf29nmA"/>
         </attributes>
         <mapping xmi:id="_d4mqsNzdEfGUi6wUf29nmA" target="_d4hyMNzdEfGUi6wUf29nmA"/>
-        <form xmi:id="_d4nRwdzdEfGUi6wUf29nmA" name="Team_Form" label="Team Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_d4n40NzdEfGUi6wUf29nmA" name="Team_Table" label="Team Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_d4nRwNzdEfGUi6wUf29nmA" name="Team_View_Edit" label="Team View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_d4nRwdzdEfGUi6wUf29nmA" name="Participant_Form" label="Participant Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_d4n40NzdEfGUi6wUf29nmA" name="Participant_Table" label="Participant Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_d4nRwNzdEfGUi6wUf29nmA" name="Participant_View_Edit" label="Participant View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:EntityType" xmi:id="_eGD34NzdEfGUi6wUf29nmA" name="Match" createable="false" updateable="false" deleteable="false">
-        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_e-i_ENzdEfGUi6wUf29nmA" lower="1" upper="1" target="_d4hyMNzdEfGUi6wUf29nmA" name="homeTeam" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_e-kNMdzdEfGUi6wUf29nmA" primary="true">
+      <elements xsi:type="structure:EntityType" xmi:id="_eGD34NzdEfGUi6wUf29nmA" name="Pairing" createable="false" updateable="false" deleteable="false">
+        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_e-i_ENzdEfGUi6wUf29nmA" lower="1" upper="1" target="_d4hyMNzdEfGUi6wUf29nmA" name="firstParticipant" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_e-kNMdzdEfGUi6wUf29nmA" primary="true">
           <inherited xmi:id="_e-kNMNzdEfGUi6wUf29nmA"/>
         </relations>
-        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_goGW0NzdEfGUi6wUf29nmA" lower="1" upper="1" target="_d4hyMNzdEfGUi6wUf29nmA" name="visitorTeam" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_goGW0tzdEfGUi6wUf29nmA" primary="true">
+        <relations xsi:type="structure:TwoWayRelationMember" xmi:id="_goGW0NzdEfGUi6wUf29nmA" lower="1" upper="1" target="_d4hyMNzdEfGUi6wUf29nmA" name="secondParticipant" createable="false" updateable="false" deleteable="false" reverseCascadeDelete="false" defaultExpression="" rangeExpression="" relationKind="ASSOCIATION" memberType="STORED" rangeType="ANY" partner="_goGW0tzdEfGUi6wUf29nmA" primary="true">
           <inherited xmi:id="_goGW0dzdEfGUi6wUf29nmA"/>
         </relations>
-        <attributes xsi:type="structure:DataMember" xmi:id="_g1pqoNzdEfGUi6wUf29nmA" name="homeScore" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_g1pqoNzdEfGUi6wUf29nmA" getterExpression="" identifier="false" memberType="STORED">
+        <attributes xsi:type="structure:DataMember" xmi:id="_g1pqoNzdEfGUi6wUf29nmA" name="firstScore" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_g1pqoNzdEfGUi6wUf29nmA" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_g1qRsNzdEfGUi6wUf29nmA"/>
         </attributes>
-        <attributes xsi:type="structure:DataMember" xmi:id="_g8XWoNzdEfGUi6wUf29nmA" name="visitorScore" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_g8XWoNzdEfGUi6wUf29nmA" getterExpression="" identifier="false" memberType="STORED">
+        <attributes xsi:type="structure:DataMember" xmi:id="_g8XWoNzdEfGUi6wUf29nmA" name="secondScore" dataType="_nhZUVOOjEeuTFeBuQgBSDg" defaultExpression="" binding="_g8XWoNzdEfGUi6wUf29nmA" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_g8XWodzdEfGUi6wUf29nmA"/>
         </attributes>
         <mapping xmi:id="_eGD34dzdEfGUi6wUf29nmA" target="_eGD34NzdEfGUi6wUf29nmA"/>
-        <form xmi:id="_eGD349zdEfGUi6wUf29nmA" name="Match_Form" label="Match Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_eGD35NzdEfGUi6wUf29nmA" name="Match_Table" label="Match Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_eGD34tzdEfGUi6wUf29nmA" name="Match_View_Edit" label="Match View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_eGD349zdEfGUi6wUf29nmA" name="Pairing_Form" label="Pairing Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_eGD35NzdEfGUi6wUf29nmA" name="Pairing_Table" label="Pairing Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_eGD34tzdEfGUi6wUf29nmA" name="Pairing_View_Edit" label="Pairing View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

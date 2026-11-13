@@ -37,7 +37,7 @@ Reference sets are changed only with `+=` and `-=` in scripts; a bare navigation
 
 The operation writes, so it must be modelled `stateful = true`; a write in a stateless operation throws `IllegalStateException` at runtime (see [operation reference](../../agent-docs/model/esm_metamodel/operation.md), statefulness section).
 
-### This is project practice
+### This is a convention
 
 The platform has no result-cache concept and no invalidation: nothing refreshes the stored results when the source data changes. Re-running the operation is the only refresh, and the timestamp tells users how old the result is.
 

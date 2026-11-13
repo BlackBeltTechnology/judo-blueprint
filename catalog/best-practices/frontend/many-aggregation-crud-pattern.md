@@ -28,9 +28,9 @@ A to-many aggregation (a list of independent entities linked to a parent) must b
 - Removing an aggregation link does not delete the target entity (a composition delete does).
 - Bound calls use the parent's current signed identifier from the latest response; it changes after every update ([signed identifiers](../../agent-docs/backend/platform-behavior-reference.md)).
 
-### Project practice: one table page with Add, Remove and Clear
+### Practice notes: one table page with Add, Remove and Clear
 
-This is project practice (actiongroup-test-react) for a frontend that builds its own pages, not a platform feature.
+This is practice for a frontend that builds its own pages, not a platform feature.
 
 - The page lives at a route below the parent, for example `/{parent}/:signedIdentifier/{relation}Table`.
 - **Add**: open a range dialog over the range call, pass the already linked identifiers so they are excluded, then call the add method with the parent and the picked rows ([[promise-based-dialog-system]]).
@@ -39,7 +39,7 @@ This is project practice (actiongroup-test-react) for a frontend that builds its
 - Reload the table after every call.
 
 ```typescript
-// Example project code: service and method names are generated per relation
+// Example code: service and method names are generated per relation
 const selected = await openRangeDialog({
   columns,
   rangeCall: (qc) => parentService.getRangeForItems(undefined, qc),
@@ -57,7 +57,7 @@ All association changes sit on one page, the range dialog handles selection, and
 
 ## Example
 
-actiongroup-test-react has a galaxy matter table that offers all three operations: Add opens a range dialog and excludes already linked matter, Remove is a row action, and a toolbar button clears the list. Every call refreshes the table.
+One app has an order line-item table that offers all three operations: Add opens a range dialog and excludes already linked items, Remove is a row action, and a toolbar button clears the list. Every call refreshes the table.
 
 ## When to avoid
 
@@ -68,6 +68,6 @@ actiongroup-test-react has a galaxy matter table that offers all three operation
 ## Related
 
 - [[promise-based-dialog-system]] — the range dialog used by Add
-- [[action-group-input-output-routing]] — other custom pages of the same project
+- [[action-group-input-output-routing]] — other custom pages of the same frontend
 - [[seek-based-table-pagination]] — paging for the table and range dialog
 - [[aggregation-input-widget]] — the single-relation counterpart

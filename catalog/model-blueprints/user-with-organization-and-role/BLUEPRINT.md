@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [user-with-boolean-role-flags, identity-account-organization-cluster]
 related: [organization-entity, identity-account-organization-cluster, user-with-boolean-role-flags]
 fragment: user-with-organization-and-role

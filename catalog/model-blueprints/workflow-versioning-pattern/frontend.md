@@ -14,6 +14,6 @@ Hide the create and edit forms of versions, but rely on the operations, not hidd
 
 ## Examples
 
-### workflow-poc
+### Example
 
 - React frontend, two custom components for the content and diagram attributes.

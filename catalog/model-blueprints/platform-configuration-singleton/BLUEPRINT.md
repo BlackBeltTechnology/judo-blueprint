@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: emerging
 projects: [mlszksz-platform, rackinspect, park-here]
-evidence: ["mlszksz-platform:unrecorded", "rackinspect:unrecorded", "park-here:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "rackinspect:model/rackinspect.model", "park-here:unrecorded"]
 alternatives: []
 fragment: platform-configuration-singleton
 diagram: { kinds: [entity, enum], members: types }

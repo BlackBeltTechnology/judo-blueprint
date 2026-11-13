@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:mlszksz-platform", "status:si
 category: testing
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/integration-test/src/test/java/hu/blackbelt/mlszksz/platform/integration/ReferenceInjector.java"]
 alternatives: []
 fragment: "none: backend-only"
 first_seen: 2026-03-04
@@ -26,12 +26,12 @@ The platform docs describe the integration testing setup: a `@JudoTest` class re
 
 Types the injector cannot provide, such as the `VariableResolver`, are replaced after injection with a reflective field set ([mocking VariableResolver](../../agent-docs/integration-testing/advanced-patterns.md)).
 
-### Project practice: hand-written wiring helpers for service chains
+### Practice notes: hand-written wiring helpers for service chains
 
-The mlszksz-platform project goes further and wires whole service chains in helper methods: instantiate the implementation, set each field by name through reflection, take DAOs from the fixture's injector, and set mocks for the rest.
+One application goes further and wires whole service chains in helper methods: instantiate the implementation, set each field by name through reflection, take DAOs from the fixture's injector, and set mocks for the rest.
 
 ```java
-// Example project code: ActorServiceImpl, VariableResolver mock helpers are project classes
+// Example code: ActorServiceImpl, VariableResolver mock helpers are classes
 private ActorService createActorService(JudoRuntimeFixture fixture, String email) throws Exception {
     ActorServiceImpl service = new ActorServiceImpl();
     setField(service, "variableResolver", createMockVariableResolver(email));
@@ -60,7 +60,7 @@ private void setField(Object target, String fieldName, Object value) throws Exce
 
 ## Example
 
-mlszksz-platform: more than twenty test classes use helper methods that build service chains (actor service, user service, post service). Mocks: a variable resolver returning a test e-mail, a no-op mail service, an in-memory file store, an i18n returning fixed English strings. The tests cover entities, operations, services and scheduled jobs, with rollback per test.
+One application: many test classes use helper methods that build service chains (actor service, user service, post service). Mocks: a variable resolver returning a test e-mail, a no-op mail service, an in-memory file store, an i18n returning fixed English strings. The tests cover entities, operations, services and scheduled jobs, with rollback per test.
 
 ## When to avoid
 

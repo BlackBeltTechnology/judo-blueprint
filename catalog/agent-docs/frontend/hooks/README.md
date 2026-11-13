@@ -73,7 +73,7 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 **Service Properties:**
 - Configuration objects: `{ component, column, page }`
 - Filter which components the hook applies to
-- Example: `{ component: 'ServiceCampaignForm', column: 'name' }`
+- Example: `{ component: 'ServiceActivityForm', column: 'name' }`
 
 **Hook Implementation:**
 - Must be React hooks for DI support
@@ -239,7 +239,7 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
     context.registerService<TableRowHighlightingHook>(
       TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
       myHighlightingHook,
-      { component: 'ServiceCampaignsTable' }
+      { component: 'ServiceActivitiesTable' }
     );
   }
 }
@@ -253,22 +253,22 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
     // Row highlighting
     context.registerService<TableRowHighlightingHook>(
       TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
-      campaignHighlighting,
-      { component: 'ServiceCampaignsTable' }
+      activityHighlighting,
+      { component: 'ServiceActivitiesTable' }
     );
 
     // Custom column
     context.registerService<ColumnCustomizerHook>(
       TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY,
       statusColumn,
-      { component: 'ServiceCampaignsTable', column: 'status' }
+      { component: 'ServiceActivitiesTable', column: 'status' }
     );
 
     // Sidekick component
     context.registerService<FC>(
       SIDEKICK_COMPONENT_INTERFACE_KEY,
-      CampaignChartSidekick,
-      { component: 'ServiceCampaignsTable' }
+      ActivityChartSidekick,
+      { component: 'ServiceActivitiesTable' }
     );
   }
 }
@@ -357,11 +357,11 @@ git diff src/custom/
 context.registerService<TableRowHighlightingHook>(
   TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
   myHook,
-  { component: 'ServiceCampaignsTable' }
+  { component: 'ServiceActivitiesTable' }
 );
 
 // ❌ Bad - Edit generated file
-// Editing src/containers/.../CampaignsTable.tsx
+// Editing src/containers/.../ActivitiesTable.tsx
 ```
 
 ### 2. Activate Scaffolds by Copying
@@ -383,7 +383,7 @@ src/custom/
 │   ├── usePrincipal.tsx
 │   └── validation.tsx
 ├── components/
-│   ├── CampaignChart.tsx
+│   ├── ActivityChart.tsx
 │   └── NotificationBell.tsx
 └── utils/
     └── helpers.ts
@@ -423,7 +423,7 @@ console.log('Registering hook');
 context.registerService<TableRowHighlightingHook>(
   TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY,
   myHook,
-  { component: 'ServiceCampaignsTable' }
+  { component: 'ServiceActivitiesTable' }
 );
 ```
 

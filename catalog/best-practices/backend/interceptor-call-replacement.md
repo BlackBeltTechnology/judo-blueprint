@@ -30,10 +30,10 @@ The generated create (or update) of a transfer object is not what the applicatio
 - The interceptor runs inside the operation's transaction; an exception from it rolls the write back. Refuse with `InterceptorCallBusinessException` only ([business error](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)).
 - The platform documents this as the "decoupled service creation" pattern: create the resource in another bounded context in `preCall` and suppress the original ([decoupled service creation](../../agent-docs/backend/interceptors.md#decoupled-service-creation-cqrs-like-pattern)).
 
-### Project practice: build the replacement from the input
+### Practice notes: build the replacement from the input
 
 ```java
-// Example project code: SourceProfile, AlternateEntityDao and AlternateEntityForCreate are generated types
+// Example code: SourceEntity, AlternateEntityDao and AlternateEntityForCreate are generated types
 @Reference AlternateEntityDao alternateDao;
 
 @Override
@@ -43,13 +43,13 @@ public boolean ignoreDecoratedCall() { return true; }   // skip the generated cr
 public Object preCall(EOperation operation, Object parameterPayload)
         throws InterceptorCallBusinessException {
     if (parameterPayload instanceof CreateInstanceCall.CreateInstanceCallPayload create) {
-        SourceProfile profile = SourceProfile.from(create.getInput());
+        SourceEntity profile = SourceEntity.from(create.getInput());
         AlternateEntity created = alternateDao.create(
                 AlternateEntityForCreate.builder()
                         .withEmail(profile.getEmail())
                         .withStatus(profile.getStatus())
                         .build());
-        return result(created);   // project helper: a Payload shaped like the operation's return type
+        return result(created);   // helper: a Payload shaped like the operation's return type
     }
     return OperationCallInterceptor.super.preCall(operation, parameterPayload);
 }

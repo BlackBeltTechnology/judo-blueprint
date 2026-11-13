@@ -16,13 +16,13 @@ When a contact is created with a flag that says it is primary, the operation tha
 
 The primary association has an upper bound of one. Setting a new primary replaces the old one; the old contact stays in the list with its active flag unchanged.
 
-### Project code, not platform API
+### Application code, not platform API
 
-The example project implements these rules in its own toggle classes and create interceptors (interceptors on the built-in create operations, which run inside the operation's transaction), with its own data-access classes. Those names are project code. Copy the pattern, not the names.
+One reference implementation implements these rules in its own toggle classes and create interceptors (interceptors on the built-in create operations, which run inside the operation's transaction), with its own data-access classes. Those names are application code. Copy the pattern, not the names.
 
 ## Examples
 
-### rackinspect
+### Variant seen in practice
 
 - Three parallel sets of contact entities exist, one for each parent type, with the same structure.
 - Create interceptors run after the parent's create operations and set the primary when the new contact is flagged as primary.

@@ -4,11 +4,11 @@ title: Post-Call Interceptor for Denormalized Aggregation Fields
 description: "A post-call interceptor on built-in update operations that keeps a denormalized, sorted, comma-separated name string on an entity in sync with its related collection, and the related transient-member variant for read-time values."
 aliases: ["denormalized aggregate maintenance", "aggregated string field"]
 keywords: ["interceptor", "postCall", "denormalization", "aggregation", "update", "transient member", "DAO", "mask"]
-tags: ["domain:backend", "layer:backend", "project:alba", "project:mlszksz-platform", "status:emerging"]
+tags: ["domain:backend", "layer:backend", "project:alba", "status:single-project"]
 category: interceptor
-status: emerging
-projects: [alba, mlszksz-platform]
-evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded"]
+status: single-project
+projects: [alba]
+evidence: ["alba:unrecorded"]
 alternatives: []
 related: [interceptor-crud-lifecycle, dirty-check-before-update, permission-denormalization, mask-field-projection, read-tracking-postcall-interceptor]
 fragment: "none: backend-only"
@@ -28,10 +28,10 @@ A list or search screen needs one display string per row, for example the names 
 - Interceptors fire only for the built-in behaviour operations (create, update, delete, list, refresh, set/add/remove reference and so on). Custom, mapped and script operations never reach them ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). `getOperations` must name the exact operations; an empty result means all built-in operations, which is rarely wanted here.
 - A synchronous interceptor runs inside the operation's transaction, so an exception from `postCall` rolls back the update itself. Only `InterceptorCallBusinessException` may be thrown ([business error from an interceptor](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)).
 
-### Project practice: refresh only when the value changed
+### Practice notes: refresh only when the value changed
 
 ```java
-// Example project code: Entity, EntityDao, EntityMask, Related are generated or project types
+// Example code: Entity, EntityDao, EntityMask, Related are generated types
 @Override
 public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload)
         throws InterceptorCallBusinessException {
@@ -57,7 +57,7 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
 - Register the interceptor for the update operation of every transfer-object service that edits the entity (one operation name per service, for example an author view and an admin view). The operation name formats are in the [operation FQN reference](../../agent-docs/backend/interceptors.md#operation-fqn-format-reference).
 - Load and write with masks so only the aggregate attribute is read and updated ([masks](../../agent-docs/backend/data-access-guide.md#using-masks-projections), [[mask-field-projection]]).
 - Sort the names so the string is deterministic, and compare before writing so an unchanged aggregate causes no write ([[dirty-check-before-update]]). The aggregate attribute is optional in the model, so the generated getter returns an `Optional` ([absent, null and empty](../../agent-docs/backend/data-access-guide.md#absent-null-and-empty-are-different)).
-- Variant for values nobody needs to filter on: do not store them. Declare a transient member without a binding on the transfer object and fill it in a `postCall` on the read operations (refresh and list) by putting the value into the returned `Payload` ([transient member pattern](../../agent-docs/backend/interceptors.md#pattern-backend-computed-to-attribute-jql-escape-hatch)). One project computes statistics counters this way, because the model expression language could not express them.
+- Variant for values nobody needs to filter on: do not store them. Declare a transient member without a binding on the transfer object and fill it in a `postCall` on the read operations (refresh and list) by putting the value into the returned `Payload` ([transient member pattern](../../agent-docs/backend/interceptors.md#pattern-backend-computed-to-attribute-jql-escape-hatch)). One variant computes statistics counters this way, because the model expression language could not express them.
 
 ## Rationale
 
@@ -68,7 +68,7 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
 
 ## Example
 
-An item entity has three many-to-many relations (audience, curriculum, result types). Each has a stored `...Aggregated` text attribute. Both the author-facing and the admin-facing update operation of the item are intercepted; after each update the three strings are rebuilt from the sorted related names and written only if one of them changed. A second project fills statistics counters (active users in the last 30 days, recent news items) into the payload of the statistics refresh and list operations instead of storing them.
+An item entity has three many-to-many relations (tags, categories, labels). Each has a stored `...Aggregated` text attribute. Both the author-facing and the admin-facing update operation of the item are intercepted; after each update the three strings are rebuilt from the sorted related names and written only if one of them changed. A second variant fills statistics counters (active users in the last 30 days, recent entries) into the payload of the statistics refresh and list operations instead of storing them.
 
 ## When to avoid
 

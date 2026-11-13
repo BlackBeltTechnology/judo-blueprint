@@ -1,6 +1,6 @@
 ## Backend guidance
 
-Project practice on top of the platform testkit. Class names such as `Calls`, `Seed`, `Roles`, `Layer0Module` are example project code, not platform API.
+Project practice on top of the platform testkit. Class names such as `Calls`, `Seed`, `Roles`, `FoundationModule` are example project code, not platform API.
 
 This layer covers the Java side of the testkit foundation: the eight reusable support classes, the activation-flag protocol, three coverage-grid templates, two docker overlay templates, ten hard-won gotchas, and a verbatim source appendix.
 
@@ -15,7 +15,7 @@ Seed                  fluent fixture builders + minimalWorld() aggregate
 Calls                 dispatcher helper (list/get/create/update/delete + static + bound-unexposed)
 AuditAssertions       window-based [testStart, now] audit row asserts
 FieldInjector         reflective injector for OSGi @Reference volatile fields
-Layer0Module          Guice module: DAO bindings via ReferenceInjector + 4 registrars
+FoundationModule          Guice module: DAO bindings via ReferenceInjector + 4 registrars
 SdkFunctionRegistry   mutable DispatcherFunctionProvider for custom-op exchange functions
 ```
 
@@ -28,7 +28,7 @@ SdkFunctionRegistry   mutable DispatcherFunctionProvider for custom-op exchange 
 | `SdkFunctionRegistry` | ✅ paste verbatim | nothing |
 | `Roles` | ✅ template | actor FQN, claim shape, role names, email host |
 | `Seed` | template | every fixture builder (project-specific entities) |
-| `Layer0Module` | template | every `@Provides` (project-specific DAOs and services) |
+| `FoundationModule` | template | every `@Provides` (project-specific DAOs and services) |
 
 ## Per-IT class shape
 
@@ -37,15 +37,15 @@ SdkFunctionRegistry   mutable DispatcherFunctionProvider for custom-op exchange 
         modelName = "<app>",            // app_name from judo.properties
         dialect = "hsqldb",
         transaction = TransactionHandling.AUTO_ROLLBACK,
-        modules = { Layer0Module.class })
+        modules = { FoundationModule.class })
 class MyAccessIT {
 
     @BeforeAll
     static void enableTestkit() {
-        Layer0Module.enableActorResolution();        // always
-        Layer0Module.enableSdkFunctions();           // operations/ ITs only
-        Layer0Module.enableOperationInterceptors();  // derived/ ITs only
-        Layer0Module.enableAuthInterceptors();       // Layer-2 docker overlay only
+        FoundationModule.enableActorResolution();        // always
+        FoundationModule.enableSdkFunctions();           // operations/ ITs only
+        FoundationModule.enableOperationInterceptors();  // derived/ ITs only
+        FoundationModule.enableAuthInterceptors();       // Layer-2 docker overlay only
     }
 
     @Test
@@ -64,7 +64,7 @@ class MyAccessIT {
 
 ## The activation-flag protocol
 
-Four global flags on `Layer0Module` are flipped from each IT class's `@BeforeAll`. They MUST run before the testkit's `JudoTestExtension.beforeEach` builds the injector — `@BeforeAll` is the only safe site (a static initializer on the module class fires too late because `@JudoTest(modules = Layer0Module.class)` resolves the class object without triggering static init).
+Four global flags on `FoundationModule` are flipped from each IT class's `@BeforeAll`. They MUST run before the testkit's `JudoTestExtension.beforeEach` builds the injector; `@BeforeAll` is the only safe site (a static initializer on the module class fires too late because `@JudoTest(modules = FoundationModule.class)` resolves the class object without triggering static init).
 
 | Flag | Purpose | Required by |
 |---|---|---|
@@ -150,12 +150,12 @@ CI sets `REQUIRE_DOCKER_IMAGES=1` to flip "skip with `assumeTrue`" to fail-fast.
 
 ### `Layer1DockerModule` (real document-converter)
 
-Extends `Layer0Module` purely to inherit every binding. The external-service swap is driven by a **static flag on `Layer0Module`** and consumed by the `@Provides DocumentConverterClient` method. Subclass-overriding `@Provides` is not safe — Guice's `ProviderMethodScanner` registers both parent and child bindings for the same key and fails with `DUPLICATE_BINDING`.
+Extends `FoundationModule` purely to inherit every binding. The external-service swap is driven by a **static flag on `FoundationModule`** and consumed by the `@Provides DocumentConverterClient` method. Subclass-overriding `@Provides` is not safe; Guice's `ProviderMethodScanner` registers both parent and child bindings for the same key and fails with `DUPLICATE_BINDING`.
 
 ```java
-public class Layer1DockerModule extends Layer0Module {
+public class Layer1DockerModule extends FoundationModule {
     public static void configure(String endpoint, String apiKey) {
-        Layer0Module.configureDockerDocumentConverter(endpoint, apiKey);
+        FoundationModule.configureDockerDocumentConverter(endpoint, apiKey);
     }
 }
 ```
@@ -181,7 +181,7 @@ These are testkit-vs-runtime gaps every JUDO project hits. Each line below cost 
 
 ### G2. `enableActorResolution()` MUST run before injector creation
 
-`JudoRuntimeFixture` captures `JudoDefaultModuleConfiguration.DEFAULT.getActorResolverCheckMappedActors()` during `prepare() → initModules()`, which fires *before* `JudoTestExtension` instantiates user-supplied modules. A static initializer on the module class fires too late because `@JudoTest(modules = Layer0Module.class)` resolves the class object without forcing static init. **Only `@BeforeAll` works.**
+`JudoRuntimeFixture` captures `JudoDefaultModuleConfiguration.DEFAULT.getActorResolverCheckMappedActors()` during `prepare() → initModules()`, which fires *before* `JudoTestExtension` instantiates user-supplied modules. A static initializer on the module class fires too late because `@JudoTest(modules = FoundationModule.class)` resolves the class object without forcing static init. **Only `@BeforeAll` works.**
 
 Without this flag, `getVariable('ACTOR', 'isAdmin')` evaluates to `null`, generating SQL `WHERE C_USER_NAME = NULL` which HSQLDB rejects under strict mode and which would silently match no rows under Postgres.
 
@@ -191,7 +191,7 @@ The builder generated by Lombok has two fields whose names differ only in case (
 
 **Consequence**: setters on `JudoDefaultModuleConfiguration.DEFAULT` for `dispatcherFunctionProvider`, `operationCallInterceptorProvider`, and `authenticationInterceptorProvider` do **not** propagate to the dispatcher.
 
-**Workaround**: each `*Registrar` eager singleton in `Layer0Module` injects the bound provider Guice produces and reaches into its closure-captured mutable list/map (the testkit's default providers are anonymous inner classes that close over local `ArrayList`/`HashMap`), populating it after injector construction. The dispatcher re-reads the collection on every call so late population is safe.
+**Workaround**: each `*Registrar` eager singleton in `FoundationModule` injects the bound provider Guice produces and reaches into its closure-captured mutable list/map (the testkit's default providers are anonymous inner classes that close over local `ArrayList`/`HashMap`), populating it after injector construction. The dispatcher re-reads the collection on every call so late population is safe.
 
 ### G4. `DefaultActorResolver` returns claim-only payloads under the testkit
 
@@ -243,9 +243,9 @@ For composition rows, the framework's `PayloadValidator` runs before the DAO aut
 
 # Appendix — Verbatim Source
 
-The four small reusable utilities below paste in essentially as-is. Replace `compsychletter` / `hu.blackbelt.compsych.letter` / `LetterUser` / `User` / `UserDao` with the local app name, package, actor type, and user entity.
+The four small reusable utilities below paste in essentially as-is. Replace the example model name, root package, actor type, `User` and `UserDao` with the local app name, package, actor type, and user entity.
 
-The two large project-specific files (`Layer0Module`, `Seed`, `SdkFunctionRegistry`) are skeletal — reproduce their *structure* (the registrar pattern, the DAO `@Provides` pattern, the fluent fixture builders) but every method body is project-specific. See the framework source at `compsych-letter-framework/application/integration-test/src/test/java/hu/blackbelt/compsych/letter/integration/testkit/support/` for the full implementations.
+The two large project-specific files (`FoundationModule`, `Seed`, `SdkFunctionRegistry`) are skeletal; reproduce their *structure* (the registrar pattern, the DAO `@Provides` pattern, the fluent fixture builders) but every method body is project-specific. See the reference project's integration-test support package for the full implementations.
 
 ## A. `TestContext.java` (paste verbatim)
 
@@ -605,7 +605,7 @@ public final class AuditAssertions {
 }
 ```
 
-## F. `Layer0Module.java` (skeleton — full file is ~900 LoC, mostly project-specific `@Provides`)
+## F. `FoundationModule.java` (skeleton; full file is ~900 LoC, mostly project-specific `@Provides`)
 
 ```java
 package <pkg>.integration.testkit.support;
@@ -630,7 +630,7 @@ import hu.blackbelt.judo.runtime.core.guice.testkit.util.ReferenceInjector;
 import java.util.List;
 import java.util.Map;
 
-public class Layer0Module extends AbstractModule {
+public class FoundationModule extends AbstractModule {
 
     // --- Activation flags (called from each IT's @BeforeAll) ---
     public static void enableActorResolution() {
@@ -792,7 +792,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * Mutable DispatcherFunctionProvider populated by Layer0Module's
+ * Mutable DispatcherFunctionProvider populated by FoundationModule's
  * SdkFunctionRegistrar after the Guice injector is built.
  * The dispatcher reads getSdkFunctions() on every callOperation,
  * so late population is safe.
@@ -993,9 +993,9 @@ public static JudoPrincipal principalFromToken(String jwt, String actorFqn) thro
 ```java
 @JudoTest(modelName = "<app>", dialect = "hsqldb",
         transaction = TransactionHandling.AUTO_ROLLBACK,
-        modules = { Layer0Module.class })
+        modules = { FoundationModule.class })
 class FoosAccessIT {
-    @BeforeAll static void wire() { Layer0Module.enableActorResolution(); }
+    @BeforeAll static void wire() { FoundationModule.enableActorResolution(); }
 
     private static final String OP_LIST    = "<app>.actors.<Actor>#_listFoos";
     private static final String OP_CREATE  = "<app>.actors.<Actor>#_createInstanceFoos";
@@ -1017,11 +1017,11 @@ class FoosAccessIT {
 ```java
 @JudoTest(modelName = "<app>", dialect = "hsqldb",
         transaction = TransactionHandling.AUTO_ROLLBACK,
-        modules = { Layer0Module.class })
+        modules = { FoundationModule.class })
 class ReserveBarcodeIT {
     @BeforeAll static void wire() {
-        Layer0Module.enableActorResolution();
-        Layer0Module.enableSdkFunctions();   // custom op exchange function
+        FoundationModule.enableActorResolution();
+        FoundationModule.enableSdkFunctions();   // custom op exchange function
     }
 
     private static final String OP = "<app>.operations.StaticOperations#reserveBarcode";
@@ -1055,8 +1055,8 @@ class KeycloakJwtToPrincipalIT extends BaseDockerIT {
             .withRealmImportFile("/<app>-realm.json");
 
     @BeforeAll static void wire() {
-        Layer0Module.enableActorResolution();
-        Layer0Module.enableAuthInterceptors();
+        FoundationModule.enableActorResolution();
+        FoundationModule.enableAuthInterceptors();
         Layer2KeycloakModule.enableDirectGrants(KEYCLOAK);
     }
 

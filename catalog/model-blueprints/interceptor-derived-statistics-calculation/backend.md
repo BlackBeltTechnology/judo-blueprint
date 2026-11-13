@@ -15,7 +15,7 @@ public Object postCall(EOperation op, Object paramPayload, Object returnPayload)
 }
 ```
 
-The postCall hook returns the (possibly modified) payload; that return value becomes the result. Calling the super method at the end is project style; the platform default simply returns the payload.
+The postCall hook returns the (possibly modified) payload; that return value becomes the result. Calling the super method at the end is a common style; the platform default simply returns the payload.
 
 ### Throw only the interceptor exception
 
@@ -23,7 +23,7 @@ If the count fails, throw `InterceptorCallBusinessException`, the only business 
 
 ### Compute the threshold from an injected clock
 
-Project practice: build the date threshold once per call from a clock that the interceptor receives (the `clock` and the count helper in the sample are example project code). Tests can then fix the time; one shared clock with a test override is described in [[injectable-business-clock]].
+Common practice: build the date threshold once per call from a clock that the interceptor receives (the `clock` and the count helper in the sample are reference implementation code). Tests can then fix the time; one shared clock with a test override is described in [[injectable-business-clock]].
 
 ```java
 LocalDateTime threshold = LocalDateTime.now(clock).minusDays(ACTIVE_DAYS);
@@ -39,9 +39,9 @@ Each call runs the count again. Filter on indexed columns, and keep the number o
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - One interceptor is attached to the built-in list and refresh operations of the statistics transfer objects, both global and per-organization.
 - The postCall hook counts users, news, offers, requests and announcements created or active in the last 30 days, and puts the counts into the payload.
 - For per-organization statistics the hook reads the organization identifier from the payload and counts the users under it.
-- The data-access services are generated SDK services for the entities, reached by injected references. Their names are project-specific.
+- The data-access services are generated SDK services for the entities, reached by injected references. Their names are application-specific.

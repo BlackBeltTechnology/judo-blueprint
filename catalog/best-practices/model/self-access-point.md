@@ -48,7 +48,7 @@ Different accesses may each resolve to the same row with a different target: a p
 
 ## Example
 
-A neutral Member entity has a required, identifying `email` and owns Skills. The actor `User` is a managed actor whose principal transfer object maps Member and carries an email claim. A second transfer object, `MyProfile`, maps Member too. The actor has one derived access `profile` (cardinality 0..1, update allowed) that returns the Member whose email equals the actor's email, targeting `MyProfile`. Alba, SkillMatrix and judo-partner used this shape for profile and dashboard entry points.
+A neutral Member entity has a required, identifying `email` and owns Skills. The actor `User` is a managed actor whose principal transfer object maps Member and carries an email claim. A second transfer object, `MyProfile`, maps Member too. The actor has one derived access `profile` (cardinality 0..1, update allowed) that returns the Member whose email equals the actor's email, targeting `MyProfile`. Three projects used this shape for profile and dashboard entry points.
 
 ## When to avoid
 

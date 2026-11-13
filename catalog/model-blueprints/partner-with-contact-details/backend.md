@@ -13,7 +13,6 @@ Interceptors cover the built-in create and update of the partner and its contact
 
 ## Examples
 
-### rackinspect (example project code, not platform API)
-- Key files: `interceptors/partner/PartnerCreateInterceptor.java`, `PartnerUpdateInterceptor.java`, `custom/.../partner/ValidateCustomImplementation.java`, `ToggleActiveCustomImplementation.java`, `common/services/AddressService.java`
+### Example (project code, not platform API)
 - Pattern: the create interceptor builds the nested address payload from flat form fields and sets the designations in `postCall`; the validate operation synchronizes the billing flags.
 - Notable: the validate operation is the shared consistency check, called from the contact toggles and create interceptors.

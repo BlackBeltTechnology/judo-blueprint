@@ -28,13 +28,13 @@ Branding and static media (logos, background images, QR codes, icons) belong in 
 - A generated file you edit by hand fails the checksum check on the next build unless it is listed in `.generator-ignore`, which stops the generator from writing it at all. `.generator-checksum-ignore` is the alternative: such files skip validation but are always regenerated ([build and deployment: checksum handling](../../agent-docs/frontend/build-and-deployment.md), [.generator-ignore](../../agent-docs/frontend/README.md)).
 - Files you add to `public/` are normal tracked files; only the generated i18n and asset files there are overwritten on regeneration.
 
-### Project practice: unique names, ignore only overrides
+### Practice notes: unique names, ignore only overrides
 
 - Add new assets under file names the generator does not produce (for example a background image or a QR code); these need no `.generator-ignore` entry.
 - When an asset replaces a generator-produced file (a customized `manifest.json`, a replaced `logo.svg`), list that file in `.generator-ignore`. Whether a given file is generator-produced is not stated in the agent-docs: check the generated header (`G E N E R A T E D   S O U R C E`) of the file.
 - Reference assets with root-relative paths (`/background.png`) from custom components or the logo hook.
 - Keep image weight low; assets in `public/` are not bundled but still cost load time.
-- Flutter frontends are a project-specific variant: projects copied assets into each actor app through a copy rule in the generator override configuration (`flutter.yaml`) with overwrite disabled, and declared them in the Flutter asset list. The agent-docs do not cover this.
+- Flutter frontends are a variant: some copy assets into each actor app through a copy rule in the generator override configuration (`flutter.yaml`) with overwrite disabled, and declare them in the Flutter asset list. The agent-docs do not cover this.
 
 ## Rationale
 
@@ -42,10 +42,10 @@ Unique names make the assets invisible to the generator, so nothing needs protec
 
 ## Example
 
-- trivia: three custom assets (a sharing QR code, a full-screen dark background, a white logo variant) plus a customized, generator-ignored `manifest.json`.
-- itracker: both actor frontends use a custom `public/logo.svg` for the drawer header.
-- workflow-poc: one background image in a format the generator does not produce, so no ignore entry.
-- Flutter projects (kozut-eugyfel-client, ams-frontend): organization logos copied to every actor app via a generator-override copy rule.
+- One app: three custom assets (a sharing QR code, a full-screen dark background, a white logo variant) plus a customized, generator-ignored `manifest.json`.
+- Two actor frontends use a custom `public/logo.svg` for the drawer header.
+- One app has a background image in a format the generator does not produce, so no ignore entry.
+- Flutter frontends: organization logos copied to every actor app via a generator-override copy rule.
 
 ## When to avoid
 

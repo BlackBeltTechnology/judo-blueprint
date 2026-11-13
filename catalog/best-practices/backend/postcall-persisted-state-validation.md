@@ -27,9 +27,9 @@ Some fields are required only when another flag is set, for example identity dat
 - Synchronous interceptors run inside the transaction of the operation. An exception from `preCall` or `postCall` rolls back the DAO write of the operation ([ordering and combining](../../agent-docs/backend/interceptors.md#ordering-and-combining-several-interceptors)).
 - For a field rule on one attribute, throw `ValidationException` (400) with the attribute name as `location` ([throwing a business error](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)). A raw `RuntimeException` becomes a generic 500.
 
-### Project practice: validate the reloaded entity
+### Practice notes: validate the reloaded entity
 
-This layer is project practice (park-here), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
 - **Intercept create and update together** by resolving both operation FQNs in `getOperations`, so one class holds the rule.
 - **Take the identifier from the return payload** (`__identifier`) and return unchanged when it is missing.
@@ -40,7 +40,7 @@ This layer is project practice (park-here), not a platform feature:
 - **Keep the UI in step.** The interceptor is the authoritative gate; any client-side rule only mirrors it.
 
 ```java
-// Example project code: entity, field and message names are illustrative
+// Example code: entity, field and message names are illustrative
 @Override
 public Object postCall(EOperation operation, Object parameterPayload, Object returnPayload) {
     UUID id = (UUID) ((Payload) returnPayload).get("__identifier");

@@ -28,9 +28,9 @@ Set the application's brand colors in the model, on the actor, instead of editin
 - Everything finer than the seven slots (typography, component overrides, per-card colors) is the second theming layer: sub-theme hooks and theme override fragments ([theming](../../agent-docs/frontend/theming.md), [extension points](../../agent-docs/frontend/extension-points.md)).
 - Code under `src/custom/` is not generated and needs no ignore entry; a file in the generated theme folder does.
 
-### Project practice: palette in the model only
+### Practice notes: palette in the model only
 
-This is project practice (itracker, ams-frontend, SkillMatrix), not an extra platform feature.
+This is practice, not an extra platform feature.
 
 - Give each human actor the same brand palette (same seven values) so every client looks alike.
 - Leave all theme files generated. Add no theme entry to `.generator-ignore`.
@@ -43,7 +43,7 @@ One source of truth: the model. Nothing to merge on generator upgrades, and no s
 
 ## Example
 
-itracker gives its user and admin actors the same palette: dark navy primary, orange-red secondary, near-black text and an off-white background; all theme files remain generated. ams-frontend does the same for its admin and manager actors, and SkillMatrix (a Flutter client) shares one palette across its three actors, which the generator encodes into the Flutter theme.
+Two actors in one app share the same palette: dark navy primary, orange-red secondary, near-black text and an off-white background; all theme files remain generated. Another app does the same for its admin and manager actors, and a Flutter client shares one palette across its actors, which the generator encodes into the Flutter theme.
 
 ## When to avoid
 

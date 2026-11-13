@@ -31,11 +31,11 @@ Both are stored, one-way relations to the same user entity (see [relation kinds]
 
 ### Fill the owner from the signed-in user
 
-A relation of a transfer object or entity can carry a default expression. For a persisted actor (the actor's principal is a mapped transfer object over a stored entity) the expression reads the actor's data with `!getVariable('ACTOR', ...)`; for a token-only actor it would be `USER`. Pick the category deliberately: the wrong one returns empty values without a compile error ([ACTOR vs PRINCIPAL vs USER](../../agent-docs/model/advanced-modeling-patterns.md)). Project practice: the owner defaults to the current user, and the admin overwrites it and fills the impersonation relation explicitly. See [[actor-context-variable-lookup]].
+A relation of a transfer object or entity can carry a default expression. For a persisted actor (the actor's principal is a mapped transfer object over a stored entity) the expression reads the actor's data with `!getVariable('ACTOR', ...)`; for a token-only actor it would be `USER`. Pick the category deliberately: the wrong one returns empty values without a compile error ([ACTOR vs PRINCIPAL vs USER](../../agent-docs/model/advanced-modeling-patterns.md)). Practice note: the owner defaults to the current user, and the admin overwrites it and fills the impersonation relation explicitly. See [[actor-context-variable-lookup]].
 
 ### Expose it only on the admin transfer object
 
-Each actor reaches the entity through its own transfer object ([[actor-based-transfer-projection]]). The admin transfer object maps both relations; the author's transfer object maps only `author`. Because a client can only send members that the transfer object contains, a normal author cannot set the impersonation relation. This is project practice built on the platform's per-actor access: the platform itself does not know the meaning of "impersonating".
+Each actor reaches the entity through its own transfer object ([[actor-based-transfer-projection]]). The admin transfer object maps both relations; the author's transfer object maps only `author`. Because a client can only send members that the transfer object contains, a normal author cannot set the impersonation relation. This is a convention built on the platform's per-actor access: the platform itself does not know the meaning of "impersonating".
 
 ## Rationale
 

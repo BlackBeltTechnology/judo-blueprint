@@ -19,7 +19,7 @@ last_updated: 2026-11-10
 
 Domain experts define configuration (workflow definitions, rule sets) as text, without code changes. A custom operation receives the uploaded YAML file, parses it into typed Java records, checks that every reference inside the document resolves, and creates the entity graph from it. Nothing is written until the whole document is valid.
 
-This is project code. The platform provides the upload mechanism and the DAOs; the YAML schema, parser and validation are written by the project.
+This is application code. The platform provides the upload mechanism and the DAOs; the YAML schema, parser and validation are written by the application.
 
 ## Practice
 
@@ -49,7 +49,7 @@ String text = new String(fileStore.get(input.getYaml()).readAllBytes());
 YamlData data = new ObjectMapper(new YAMLFactory()).readValue(text, YamlData.class);
 ```
 
-`fileStore` is the project's injected service; the exact call is an example.
+`fileStore` is the application's injected service; the exact call is an example.
 
 ### Validate before writing
 
@@ -71,7 +71,7 @@ A custom operation runs in one transaction, and a thrown exception rolls it back
 
 ## Example
 
-- workflow-poc: an upload operation parses YAML workflow definitions with record types for workflow, roles, events, states and transitions. It checks that the workflow name matches the target entity, that all state, role and event references exist, and that all roles exist in the database. It creates the workflow version, event types, states and transitions, generates a Mermaid diagram, stores the original YAML on the version, and replaces uncommitted head versions on re-upload.
+- A workflow example: an upload operation parses YAML workflow definitions with record types for workflow, roles, events, states and transitions. It checks that the workflow name matches the target entity, that all state, role and event references exist, and that all roles exist in the database. It creates the workflow version, event types, states and transitions, generates a Mermaid diagram, stores the original YAML on the version, and replaces uncommitted head versions on re-upload.
 
 ## When to avoid
 

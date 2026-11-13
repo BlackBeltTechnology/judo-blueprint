@@ -132,12 +132,12 @@ Tabs have model-generated testids that are language-independent:
 
 ```typescript
 // BAD - Depends on locale
-await page.getByRole("tab", { name: "Campaigns" }).click();
+await page.getByRole("tab", { name: "Activities" }).click();
 await page.getByRole("tab", { name: "Kampányok" }).click();
 
 // GOOD - Use testid from ESM model
-const CAMPAIGNS_TAB = "Actor/(esm/_5py-ULdkEfCCLY_eLVuHZA)/GroupTab-tab";
-await page.getByTestId(CAMPAIGNS_TAB).click();
+const ACTIVITIES_TAB = "Actor/(esm/_5py-ULdkEfCCLY_eLVuHZA)/GroupTab-tab";
+await page.getByTestId(ACTIVITIES_TAB).click();
 ```
 
 ### 3. Common Tab Testid Patterns
@@ -147,7 +147,7 @@ Tab testids follow this pattern: `Actor/(esm/_<ESM_ID>)/GroupTab-tab`
 Example testids (specific to this project):
 ```typescript
 // Top-level tabs
-const CAMPAIGNS_TAB = "Actor/(esm/_5py-ULdkEfCCLY_eLVuHZA)/GroupTab-tab";
+const ACTIVITIES_TAB = "Actor/(esm/_5py-ULdkEfCCLY_eLVuHZA)/GroupTab-tab";
 const ADDRESSES_TAB = "Actor/(esm/_sgp90LdkEfCCLY_eLVuHZA)/GroupTab-tab";
 const USERS_TAB = "Actor/(esm/_nXB48LdhEfCCLY_eLVuHZA)/GroupTab-tab";
 
@@ -155,7 +155,7 @@ const USERS_TAB = "Actor/(esm/_nXB48LdhEfCCLY_eLVuHZA)/GroupTab-tab";
 const COUNTIES_TAB = "Actor/(esm/_7DmxQLdhEfCCLY_eLVuHZA)/GroupTab-tab";
 const SETTLEMENTS_TAB = "Actor/(esm/__AzmoLdhEfCCLY_eLVuHZA)/GroupTab-tab";
 
-// Campaign event sub-tabs
+// Activity event sub-tabs
 const ADDRESS_EVENTS_TAB = "Actor/(esm/_APPy4LdmEfCCLY_eLVuHZA)/GroupTab-tab";
 const CANVASSING_EVENTS_TAB = "Actor/(esm/_Kx4rMLdmEfCCLY_eLVuHZA)/GroupTab-tab";
 ```
@@ -287,10 +287,10 @@ test("should navigate to addresses", async ({ page }) => {
 
 ## Nested Tab Navigation
 
-For pages with nested tabs (e.g., Campaigns > AddressEvents):
+For pages with nested tabs (e.g., Activities > AddressEvents):
 
 ```typescript
-const CAMPAIGNS_TAB = "Actor/(esm/_5py-ULdkEfCCLY_eLVuHZA)/GroupTab-tab";
+const ACTIVITIES_TAB = "Actor/(esm/_5py-ULdkEfCCLY_eLVuHZA)/GroupTab-tab";
 const ADDRESS_EVENTS_TAB = "Actor/(esm/_APPy4LdmEfCCLY_eLVuHZA)/GroupTab-tab";
 
 async function navigateToAddressEvents(page: any) {
@@ -305,7 +305,7 @@ async function navigateToAddressEvents(page: any) {
   await expect(page.getByTestId(ADMIN_VIEW_ELEMENT)).toBeVisible({ timeout: 15000 });
   
   // Click parent tab first
-  await page.getByTestId(CAMPAIGNS_TAB).click();
+  await page.getByTestId(ACTIVITIES_TAB).click();
   
   // Then click nested tab
   await page.getByTestId(ADDRESS_EVENTS_TAB).click();
@@ -314,7 +314,7 @@ async function navigateToAddressEvents(page: any) {
   await expect(
     page.getByTestId(
       ServiceAdmininstrationAdmininstration_View_Edit
-        .administrationTabBar.campaignsTabBar.addressEvents._id
+        .administrationTabBar.activitiesTabBar.addressEvents._id
     ).first()
   ).toBeVisible();
 }

@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Some data may not exist yet on first use: a single configuration record, a daily cost row per campaign, a country from an import file. One operation or service method handles both cases. It looks the record up, then creates or updates it. The platform has no upsert call: this is project code on top of the generated DAO.
+Some data may not exist yet on first use: a single configuration record, a daily cost row per item, a reference entry from an import file. One operation or service method handles both cases. It looks the record up, then creates or updates it. The platform has no upsert call: this is application code on top of the generated DAO.
 
 ## Practice
 
@@ -64,9 +64,9 @@ public void accept(Context _this, Input input) {
 
 ## Example
 
-- ParkHere: a configuration operation upserts the singleton configuration entity that stores e-mail templates (doorman, deletion, modification, reminder), the contact address and the sender address. The first call creates it, later calls update it.
-- Indamedia-AdTrack: a campaign service upserts the daily cost rows of tracked campaigns during the data sync. It looks up the cost by date, updates the amount if found and creates it otherwise, so a repeated sync does not duplicate days. Fetched-data snapshots are created fresh on each sync.
-- judo-partner: a country service imports countries from an ISO 3166 JSON file. For each country it queries by name and creates the record only if it is missing, so the import can run repeatedly.
+- One application: a configuration operation upserts the singleton configuration entity that stores e-mail templates (deletion, modification, reminder), the contact address and the sender address. The first call creates it, later calls update it.
+- Another application: an item service upserts the daily cost rows of tracked items during the data sync. It looks up the cost by date, updates the amount if found and creates it otherwise, so a repeated sync does not duplicate days. Fetched-data snapshots are created fresh on each sync.
+- A third application: a reference service imports countries from an ISO 3166 JSON file. For each country it queries by name and creates the record only if it is missing, so the import can run repeatedly.
 
 ## When to avoid
 

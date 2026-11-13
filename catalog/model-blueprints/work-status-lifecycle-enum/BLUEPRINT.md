@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:rackinspect", "status:single-proj
 category: pattern
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: [draft-done-status-enum]
 fragment: work-status-lifecycle-enum
 diagram: { kinds: [entity, enum], members: types }
@@ -25,13 +25,13 @@ A work item starts as NOT_STARTED, moves to IN_PROGRESS when work begins, and en
 
 ## Structure
 
-One enumeration, `WorkStatus`, with four members: NOT_STARTED (ordinal 0), IN_PROGRESS (1), DONE (2) and WONT_FIX (3). The owning entity (here WorkItem) has a required `workStatus` attribute of this type, with a default value. The default is a project choice: the source project defaulted new work items to IN_PROGRESS, while NOT_STARTED is the natural initial value when work is planned before it starts.
+One enumeration, `WorkStatus`, with four members: IN_PROGRESS (ordinal 1), DONE (ordinal 2), WONT_FIX (ordinal 3) and NOT_STARTED (ordinal 4). Each owning entity has a required `workStatus` attribute of this type. The default is a design choice: IN_PROGRESS suits work that starts at once, while NOT_STARTED is the natural initial value when work is planned before it starts.
 
 ## Constraints
 
 ### Ordinals are stored and sent
 
-Members persist by ordinal and enumerations travel as integer ordinals on the wire. Ordinals must be unique and between 0 and 9999 in the model. Do not renumber existing members; in the source project the ordinals are not in lifecycle order (IN_PROGRESS 1, DONE 2, WONT_FIX 3, NOT_STARTED 4), so never infer the order from the ordinal.
+Members persist by ordinal and enumerations travel as integer ordinals on the wire. Ordinals must be unique and between 0 and 9999 in the model. Do not renumber existing members. The ordinals are not in lifecycle order (NOT_STARTED has the highest ordinal), so never infer the order from the ordinal.
 
 ### The enumeration is not a state machine
 
@@ -39,7 +39,7 @@ Nothing in the platform stops a write of DONE over WONT_FIX. Project practice: a
 
 ## Variations
 
-- Several entities in a chain (for example a job sheet and the work report that follows it) can each carry the same enumeration so the status is comparable across them.
+- Several entities in a chain (for example a work order and the work report that follows it) can each carry the same enumeration so the status is comparable across them.
 - Drop WONT_FIX for the two-state form in [[draft-done-status-enum]].
 
 ## When to use
@@ -53,6 +53,6 @@ Nothing in the platform stops a write of DONE over WONT_FIX. Project practice: a
 
 ## Related
 
-- [[draft-done-status-enum]] — the two-state form without an abandoned outcome
-- [[document-review-state-machine]] — adds review steps and history
-- [[active-suspended-deactivated-status-enum]] — another small status enumeration with an inactive branch
+- [[draft-done-status-enum]]: the two-state form without an abandoned outcome
+- [[document-review-state-machine]]: adds review steps and history
+- [[active-suspended-deactivated-status-enum]]: another small status enumeration with an inactive branch

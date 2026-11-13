@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Create the rows of a parent's contained collection (answers of a test, addresses of a partner, states of a workflow version) through the parent's DAO, so the link to the parent is part of the call.
+Create the rows of a parent's contained collection (answers of a parent item, addresses of an account, states of a workflow version) through the parent's DAO, so the link to the parent is part of the call.
 
 ## Practice
 
@@ -27,10 +27,10 @@ Create the rows of a parent's contained collection (answers of a test, addresses
 - The same parent DAO has query methods for the relation. Multi-valued ones return a customizer (`filterBy...`, `maskedBy`, `selectList()`), single-valued ones return the entity directly, so adding `.selectOne()` does not compile ([relationship navigation](../../agent-docs/backend/data-access-guide.md#query-result-methods)).
 - Interceptors fire only for built-in behaviour operations, never for custom ones ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). Whether a DAO call made from Java triggers the create interceptors of the child is not described in the docs; do not rely on it, and repeat any logic such an interceptor would run.
 
-### Project practice: use the parent DAO when the relation is containment
+### Practice notes: use the parent DAO when the relation is containment
 
 ```java
-// Example project code: Parent, Child, ParentDao and the relation name "Children" are generated types
+// Example code: Parent, Child, ParentDao and the relation name "Children" are generated types
 Child child = parentDao.createChildren(parent, ChildForCreate.builder()
     .withNumber(i + 1)
     .withText(text)
@@ -40,9 +40,9 @@ List<Child> all = parentDao.queryChildren(parent).selectList();   // multi-value
 Owner owner = childDao.queryOwner(child);                         // single-valued, no selectOne
 ```
 
-- Five projects use this for composition children created in loops or batches: numbered prompts of a test, applications, invitations and users of an organization, cars and holidays of a user, addresses and contacts of a partner, events, states and transitions of a workflow version, log entries of a context.
+- Several applications use this for composition children created in loops or batches: numbered steps of a parent, applications, invitations and users of a tenant, items and calendar entries of a user, addresses and contacts of an account, events, states and transitions of a workflow version, log entries of a context.
 - The parent must already be persisted.
-- Lists are passed as a collection where the generated method accepts one (users of an organization, doormen of a configuration).
+- Lists are passed as a collection where the generated method accepts one (users of a tenantanization, doormen of a configuration).
 - When the child is not a contained part (an independent entity that merely references the parent), create it with its own DAO and set the relation in the builder, as in [[builder-pattern-entity-creation]].
 
 ## Rationale
@@ -53,7 +53,7 @@ Owner owner = childDao.queryOwner(child);                         // single-valu
 
 ## Example
 
-A contest entry creates a test and then, in a loop, one prompt per question through the test DAO's prompt-creating method; an import step creates an import record's partner rows through the import DAO. Reading them back is the matching query method of the same DAO.
+A group entry creates a result and then, in a loop, one step per item through the result DAO's step-creating method; an import step creates an import record's account rows through the import DAO. Reading them back is the matching query method of the same DAO.
 
 ## When to avoid
 

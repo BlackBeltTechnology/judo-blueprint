@@ -54,7 +54,7 @@ An API client can ignore the flag. The operation body or an interceptor must sti
 - The UI behaviour follows the model: one derived expression serves every page that shows the transfer object.
 - Different actors can have different flags on their own transfer objects over the same entity.
 - Cost: the transfer object grows beyond its entity and every extra flag is another member to keep correct. Combine conditions inside the expression, because the UI model accepts one reference per element.
-- Project practice: source projects used flags such as editable, `hide<Action>`, `isNot...`, permission booleans per operation and `isOpen` / `isClosed` state flags. Names such as these are conventions, not platform names.
+- Practice note: source projects used flags such as editable, `hide<Action>`, `isNot...`, permission booleans per operation and `isOpen` / `isClosed` state flags. Names such as these are conventions, not platform names.
 
 ## Example
 

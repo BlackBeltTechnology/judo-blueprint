@@ -38,7 +38,7 @@ This guide covers best practices for writing maintainable, efficient integration
 src/test/java/[your/package]/[yourmodel]/integration/
 ├── operations/          # Custom operation tests
 │   ├── CreateAddressIntegrationTest.java
-│   ├── CreateCampaignIntegrationTest.java
+│   ├── CreateActivityIntegrationTest.java
 │   └── CreatePollingStationIntegrationTest.java
 ├── fixtures/            # Test data builders
 │   ├── AddressTestFixtures.java

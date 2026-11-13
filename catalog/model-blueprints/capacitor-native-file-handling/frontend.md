@@ -1,6 +1,6 @@
 ## Frontend guidance
 
-The platform's generated `fileHandling` utility wraps a two-phase token flow: `downloadFile` calls the download path with `?disposition=inline|attachment` and the `X-Token` header, and an inline download renders in a dialog frame. In a browser this lets the user open or save the file. In a Capacitor app the browser path does not give the user a visible file, so this pattern replaces the save step on native platforms only. The helper modules are project code; their names are examples.
+The platform's generated `fileHandling` utility wraps a two-phase token flow: `downloadFile` calls the download path with `?disposition=inline|attachment` and the `X-Token` header, and an inline download renders in a dialog frame. In a browser this lets the user open or save the file. In a Capacitor app the browser path does not give the user a visible file, so this pattern replaces the save step on native platforms only. The helper modules are application code; their names are examples.
 
 ### Replace only the file utility module
 

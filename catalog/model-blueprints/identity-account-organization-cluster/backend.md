@@ -1,6 +1,6 @@
 ## Overview
 
-Platform facts: an `AuthenticationInterceptor` is a different mechanism from `OperationCallInterceptor`. It runs after a successful external login on the framework `#_principal` operation and receives the token claims, so it can create a local record on first login. Custom operations are never intercepted by `OperationCallInterceptor`, so permission checks on operations such as `changeAccessToAdmin` belong inside each custom implementation. Request-scoped values such as the selected organization are read through `VariableResolver` (category REQUEST; the client sends them in the `X-Judo-RequestParameters` header). Service names (`AccountService`, `Variables`, `RealmManager`, `ErrorCode`) below are example project code.
+Platform facts: an `AuthenticationInterceptor` is a different mechanism from `OperationCallInterceptor`. It runs after a successful external login on the framework `#_principal` operation and receives the token claims, so it can create a local record on first login. Custom operations are never intercepted by `OperationCallInterceptor`, so permission checks on operations such as `changeAccessToAdmin` belong inside each custom implementation. Request-scoped values such as the selected organization are read through `VariableResolver` (category REQUEST; the client sends them in the `X-Judo-RequestParameters` header). Service names (`AccountService`, `Variables`, `RealmManager`, `ErrorCode`) below are reference implementation code.
 
 The Identity-Account-Organization entity cluster is backed by a set of OSGi service layer classes that encapsulate multi-tenant account management, organization access control, and user lifecycle operations. Custom operation classes delegate to these services, and authentication interceptors ensure accounts are auto-provisioned on first login.
 
@@ -17,9 +17,7 @@ The Identity-Account-Organization entity cluster is backed by a set of OSGi serv
 
 ## Examples
 
-### ubives
-- Key files: `services/AccountService.java`, `services/AccessService.java`, `services/OrganizationService.java`, `services/UserService.java`, `services/Variables.java`
-- Key custom ops: `services/account/CreateOrganizationCustomImplementation.java`, `services/organizationaccount/ChangeAccessToAdminCustomImplementation.java`, `services/organizationaccount/CancelAccessCustomImplementation.java`, `services/user/DisableUserCustomImplementation.java`
+### Variant seen in practice
 - Pattern: Service layer classes are OSGi `@Component` beans injecting entity DAOs and peer services. `AccountService.getCurrentAccount()` resolves the authenticated user via `Variables.getActorUserName()` and queries `AccountEntityDao`. `AccountService.createAccount()` creates an `IdentityEntity` (if not existing), an `AccountEntity`, and a Keycloak user in the organization's realm via `RealmManager`
 - Notable: `AccessService.changeAccessTo(UUID, OrganizationAccessType)` loads the `OrganizationAccessEntity` by ID, sets the new type, and calls `update()`. Custom ops like `ChangeAccessToAdminCustomImplementation` are one-liners delegating to `accessService.changeAccessTo(id, OrganizationAccessType.ADMIN)`
 - Interceptors: `CreateAuthenticatedUserAuthenticationInterceptor` and `LogAuthenticationInterceptor` in the `interceptors` module implement `AuthenticationInterceptor`; the former auto-creates Account records from OIDC claims on first login

@@ -9,7 +9,7 @@ Creating the entity generates its View, Form and Table pages. Because rows come 
 The generated detail view shows the raw attributes. A custom visual element can replace that section with a readable view: one colored chip per action type, the parsed details as labeled key-value pairs, and a copy button for the entity id. Build the chip colors from the enumeration values so new values need no code change to be shown.
 
 - Parse the details JSON and fall back to the raw text when parsing fails.
-- Translate the labels through the project's i18n keys, not hard-coded text.
+- Translate the labels through the application's i18n keys, not hard-coded text.
 
 ### Add an export button to the table toolbar
 
@@ -17,8 +17,8 @@ A container hook can add an export button to the audit table toolbar. The button
 
 ## Examples
 
-### mlszksz-platform
+### Variant seen in practice
 
 - Framework: React.
-- The detail section and the toolbar button are registered in the project's custom implementation hooks.
-- Action-type colors cover all 32 enumeration values.
+- The detail section and the toolbar button are registered in the application's custom implementation hooks.
+- Action-type colors cover every enumeration value.

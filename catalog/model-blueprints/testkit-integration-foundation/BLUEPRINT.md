@@ -26,8 +26,8 @@ This is infrastructure, not a model shape: there is no fragment. The platform si
 graph TB
     DS["Tier 1 DS component<br/>dscomponent/*Test.java<br/>OSGi descriptor asserts<br/>surefire"]
     L0["Tier 2a Layer-0 testkit<br/>testkit/**/*IT.java<br/>HSQLDB + dispatcher<br/>stubbed external services<br/>failsafe"]
-    L1["Tier 2b Layer-1 docker<br/>testkit/docker/<br/>real document converter<br/>extends Layer0Module"]
-    L2["Tier 2c Layer-2 docker<br/>testkit/docker/<br/>real Keycloak and JWT<br/>extends Layer0Module"]
+    L1["Tier 2b Layer-1 docker<br/>testkit/docker/<br/>real document converter<br/>extends FoundationModule"]
+    L2["Tier 2c Layer-2 docker<br/>testkit/docker/<br/>real Keycloak and JWT<br/>extends FoundationModule"]
     INFRA["Tier 3 pure infra<br/>filestore, keycloak, stack<br/>testcontainers only<br/>no dispatcher"]
     L0 -->|"docker profile"| L1
     L0 -->|"docker profile"| L2
@@ -46,7 +46,7 @@ graph TB
 The shape is a test module, not a model. It sits next to the generated application modules.
 
 - **Module layout**: one integration-test module with the Maven wiring, a `dscomponent/` package (tier 1), a `testkit/` package (tier 2) with a `support/` package of eight reusable classes, `access/`, `operations/` and `derived/` IT packages and a `docker/` package, plus `filestore/`, `keycloak/` and `stack/` packages for tier 3. Details in [model.md](model.md).
-- **Eight support classes**: `TestContext`, `Roles`, `Seed`, `Calls`, `AuditAssertions`, `FieldInjector`, `Layer0Module`, `SdkFunctionRegistry`. Two are paste-verbatim, the others are templates with project-specific parts. Details in [backend.md](backend.md).
+- **Eight support classes**: `TestContext`, `Roles`, `Seed`, `Calls`, `AuditAssertions`, `FieldInjector`, `FoundationModule`, `SdkFunctionRegistry`. Two are paste-verbatim, the others are templates with project-specific parts. Details in [backend.md](backend.md).
 - **Four activation flags** on the Layer-0 module, switched on in each IT class before the runtime is built.
 - **Three coverage grids**: access-link role by ownership, custom-operation smoke, audit-window assertion.
 

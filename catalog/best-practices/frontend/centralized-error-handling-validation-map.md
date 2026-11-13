@@ -28,9 +28,9 @@ Every service call can fail with validation errors that belong to form fields or
 - Errors without `location` are grouped under an empty key and no field shows them; only three validation codes have default translations, others show the raw code ([validation errors without location](../../agent-docs/frontend/error-handling.md)).
 - A custom error handler interceptor runs before the default handling and can take a response over ([customizing the 422 handling](../../agent-docs/frontend/error-handling.md)).
 
-### Project practice: one function with a validation map
+### Practice notes: one function with a validation map
 
-This layer is project practice (actiongroup-test-react), a hand-written frontend that does not use the generated handler:
+This layer is practice for a hand-written frontend that does not use the generated handler:
 
 - A single `errorHandling(error, enqueueSnackbar, { setValidation })` function wraps every catch block of every service call.
 - For 400 it parses the response list into a `Map<fieldName, message>` keyed by `location` and passes it to `setValidation`; the form turns the map into `error` and `helperText` of each field. Errors without a `location` still need a toast, because no field can show them.
@@ -38,7 +38,7 @@ This layer is project practice (actiongroup-test-react), a hand-written frontend
 - Clear the map on edit-mode toggle and on a successful save.
 
 ```typescript
-// Example project code
+// Example code
 export const errorHandling = (error: any, enqueueSnackbar: EnqueueSnackbar,
     options?: { setValidation?: (v: Map<string, string>) => void }) => {
   const status = error?.response?.status;
@@ -60,7 +60,7 @@ One function gives consistent toasts and inline field feedback. The cost: parsin
 
 ## Example
 
-actiongroup-test-react uses the function in every create, update and delete call across more than twenty pages. 400 responses fill a validation map held in page state that drives the fields; 422 responses show a toast. The map is cleared when edit mode toggles or the save succeeds.
+One app uses the function in every create, update and delete call across all pages. 400 responses fill a validation map held in page state that drives the fields; 422 responses show a toast. The map is cleared when edit mode toggles or the save succeeds.
 
 ## When to avoid
 

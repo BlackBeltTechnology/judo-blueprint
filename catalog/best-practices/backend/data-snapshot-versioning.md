@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-A parent entity owns a set of mutable child records (for example monthly forecasts). At a significant moment (approval, publication, every change) the owner needs to keep what the data looked like. Copy the children into a version entity with a timestamp and summary values, and never change that copy afterwards.
+A parent entity owns a set of mutable child records (for example monthly plans). At a significant moment (approval, publication, every change) the owner needs to keep what the data looked like. Copy the children into a version entity with a timestamp and summary values, and never change that copy afterwards.
 
 ## Practice
 
@@ -34,7 +34,7 @@ All of this runs in the transaction of the operation, so an exception in step 4 
 
 ### Make the history immutable by design
 
-"Immutable" is a project rule, not a platform guarantee. Model the version and copy entities without update or delete operations and do not expose them for modification to any actor. Remember that only built-in operations pass interceptors, so a guard that rejects writes to version entities does not cover your own custom operations (see [Which Operations Are Intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+"Immutable" is a convention, not a platform guarantee. Model the version and copy entities without update or delete operations and do not expose them for modification to any actor. Remember that only built-in operations pass interceptors, so a guard that rejects writes to version entities does not cover your own custom operations (see [Which Operations Are Intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 
 ### Use one clock for the timestamp
 
@@ -52,11 +52,11 @@ Store the aggregates on the version when readers need them without loading the c
 
 ## Example
 
-Three projects use the idea; names are project code.
+Several applications use the idea; names are example code.
 
-- itracker: an `ArchiveForecast` operation creates a `ForecastVersion` with a timestamp and summed values, and copies each monthly forecast into a version copy. `Approve` calls it before setting the status to approved.
-- Indamedia-AdTrack: the aggregated-campaign service writes an `AggregatedCampaignHistory` record on every update (name, dates, budgets, remaining days) for budget audit.
-- workflow-poc: every upload creates a new `WorkflowVersion` holding states, transitions and roles; the workflow keeps references to its head version and to the published one.
+- Plan versioning: an `ArchivePlan` operation creates a `PlanVersion` with a timestamp and summed values, and copies each monthly plan into a version copy. `Approve` calls it before setting the status to approved.
+- Grouped-item service: writes a `GroupHistory` record on every update (name, dates, budgets, remaining days) for budget audit.
+- Workflow example: every upload creates a new `WorkflowVersion` holding states, transitions and roles; the workflow keeps references to its head version and to the published one.
 
 ## When to avoid
 

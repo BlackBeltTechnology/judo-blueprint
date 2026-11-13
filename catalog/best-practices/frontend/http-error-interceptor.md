@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: component
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/register-error-handler-interceptor.ts"]
 alternatives: [centralized-error-handling-validation-map]
 related: [error-code-mapping-pattern, application-customizer-hub, centralized-error-handling-validation-map]
 fragment: "none: frontend-only"
@@ -28,9 +28,9 @@ Show a short message for business errors everywhere, instead of the default faul
 - The hook is a React hook (it may call `useSnacks`, `useFaultDialog`, `useTranslation`) returning `{ shouldInterceptError(error, options), interceptError(error, options, payload, dataPath) }`. The 422 body is keyed by the modeled fault object: `{ <faultKey>: { <attribute>: value } }`. The 400 body is a list of `{ code, message, location }`.
 - Replacing the 422 handling skips the fault dialog, but the batch/CRUD dialog (`useCRUDDialog`) still renders `faults.*` messages itself, so test both paths ([customizing 422](../../agent-docs/frontend/error-handling.md)).
 
-### Project practice: 422 as a snackbar
+### Practice notes: 422 as a snackbar
 
-The project intercepts every 422 and shows the `message` of the first fault key:
+The example intercepts every 422 and shows the `message` of the first fault key:
 
 ```typescript
 const hook: ErrorHandlerInterceptorHook = () => {
@@ -57,7 +57,7 @@ One interceptor gives uniform error display and no per-call boilerplate. It repl
 
 ## Example
 
-rackinspect: intercepts HTTP 422 globally, takes the first key of the response body, reads its `message` and shows an error snackbar that hides after 3 seconds. Backend validation and business rule errors from all service calls appear this way.
+One app intercepts HTTP 422 globally, takes the first key of the response body, reads its `message` and shows an error snackbar that hides after 3 seconds. Backend validation and business rule errors from all service calls appear this way.
 
 ## When to avoid
 

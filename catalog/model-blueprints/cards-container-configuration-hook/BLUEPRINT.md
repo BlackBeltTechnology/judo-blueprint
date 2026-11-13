@@ -24,7 +24,7 @@ The hook replaces the card element and leaves the rest of the container alone. P
 
 ### Each container has its own generated hook
 
-The hook interface and its key are generated for each container (platform behaviour, see the agent-docs on container hook registration). The generator also emits a scaffold `register<Component>ConfigurationHook.tsx.default` under `src/custom/hooks/components/cards/`. A project copies it without `.default`, fills it in and calls its register function from `src/custom/application-customizer.tsx`. The copy is not generated, so it survives regeneration.
+The hook interface and its key are generated for each container (platform behaviour, see the agent-docs on container hook registration). The generator also emits a scaffold `register<Component>ConfigurationHook.tsx.default` under `src/custom/hooks/components/cards/`. A project copies it without `.default`, fills it in and calls its register function from `application-customizer.tsx`. The copy is not generated, so it survives regeneration.
 
 ## Structure
 
@@ -34,7 +34,7 @@ The pattern is a frontend layer. A customizer registers a configuration hook for
 
 - The hook key is generated per container. Take it from the container's generated `customization` module, not from a typed-in string. There is no `~/generated` barrel.
 - A `.default` scaffold is not compiled. Activate it by copying it, never by editing the `.default` file, which is regenerated on every build.
-- The agent-docs only state that cards containers are configured through the generated scaffold. The exact hook return shape (card element required, optional toolbar, action bar, layout, pagination) comes from the park-here project evidence. Check it against the generated types of your container.
+- The agent-docs only state that cards containers are configured through the generated scaffold. The exact hook return shape (card element required, optional toolbar, action bar, layout, pagination) comes from the evidence of one project. Check it against the generated types of your container.
 - Each card must sit in a responsive grid item, or the container lays cards out in a single column.
 - Actions a row does not allow must not be rendered. The server still enforces the rule.
 
@@ -58,6 +58,6 @@ The pattern is a frontend layer. A customizer registers a configuration hook for
 
 ## Related
 
-- [[address-field-auto-composition]] — another per-page hook registration pattern in the frontend
-- [[inline-pdf-preview-post-action]] — a post-action hook that opens a file from a container action
-- [[capability-lookup-entity]] — shows the generated hook-key rule for a lookup entity's frontend
+- [[address-field-auto-composition]]: another per-page hook registration pattern in the frontend
+- [[inline-pdf-preview-post-action]]: a post-action hook that opens a file from a container action
+- [[capability-lookup-entity]]: shows the generated hook-key rule for a lookup entity's frontend

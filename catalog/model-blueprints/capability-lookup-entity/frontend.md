@@ -12,7 +12,7 @@ export function useCapabilityOptions(capabilities: Capability[]) {
 }
 ```
 
-The hook is project code. Register it through the generated scaffold `register<Container>ActionsHook(context)` (copy the `.default` file) with `context.registerService(<CONTAINER>_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY, hook)`. Scaffolds exist only when the matching hook flag is set in the model.
+The hook is application code. Register it through the generated scaffold `register<Container>ActionsHook(context)` (copy the `.default` file) with `context.registerService(<CONTAINER>_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY, hook)`. Scaffolds exist only when the matching hook flag is set in the model.
 
 ### Show tags on cards
 

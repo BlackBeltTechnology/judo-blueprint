@@ -27,9 +27,9 @@ Custom pages that need a distinct visual identity beyond theme overrides share o
 - App-wide colors belong in the actor's palette in the model; one component's styling can be handled by a theme override fragment or a sub-theme. Taking over the theme file is a last resort ([theming](../../agent-docs/frontend/theming.md)).
 - Hand-written code lives in `src/custom/`; files you add there are not generated ([extension points](../../agent-docs/frontend/extension-points.md)). The documented layout does not prescribe a file for shared styled components.
 
-### Project practice: one glassmorphic component file
+### Practice notes: one glassmorphic component file
 
-The project keeps all of its styled components in a single `CustomComponents.tsx` in the custom component directory and reuses them in every custom page:
+The example keeps all of its styled components in a single `CustomComponents.tsx` in the custom component directory and reuses them in every custom page:
 
 ```typescript
 export const BlurCard = styled(Card)(({ theme }) => ({
@@ -56,11 +56,11 @@ export const ThreeDGlossyButton = styled(Button)({
 
 ## Rationale
 
-One component library keeps custom pages consistent and avoids repeating long style blocks. The cost is a project-specific design system that generated components do not share.
+One component library keeps custom pages consistent and avoids repeating long style blocks. The cost is a custom design system that generated components do not share.
 
 ## Example
 
-trivia, player frontend: `CustomComponents.tsx` holds ten styled components (`BlurCard`, `BlurDialog`, `ThreeDGlossyButton`, `OptionButton`, `OptionAvatar`, `UnderlineTypography`, `TransitionWrapper`, `TransitionHolder`, `Scoreboard`, `NumberInputAutoFocus`), all on `rgba(0,0,0,0.6)` backgrounds with a 3px blur, over the dark theme.
+One app's participant frontend: `CustomComponents.tsx` holds its styled components (`BlurCard`, `BlurDialog`, `ThreeDGlossyButton`, `OptionButton`, `OptionAvatar`, `UnderlineTypography`, `TransitionWrapper`, `TransitionHolder`, `Ranking board`, `NumberInputAutoFocus`), all on `rgba(0,0,0,0.6)` backgrounds with a 3px blur, over the dark theme.
 
 ## When to avoid
 

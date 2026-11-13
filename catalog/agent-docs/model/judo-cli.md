@@ -36,7 +36,7 @@ The tool groups its capabilities into a small set of concerns:
 | **Querying & introspection** | Read elements (entity types, transfer objects, relations, operations, UI definitions). Walk relationships. Use schema introspection (`__type`, `__schema`) to discover available fields and types. |
 | **Mutation** | Create, update, and delete ESM elements. Metamodel rules are enforced — invalid mutations fail fast, before they reach the build. |
 | **Transformation** | Run the platform pipeline ESM → PSM → ASM → RDBMS → Liquibase (plus esm2ui), producing derived models in `application/model/target/cli-generated/`. See [transformation-pipeline.md](transformation-pipeline.md). |
-| **State management** | Load, save, and discard model state. Track in-memory edits via the hidden `.<file-name>.dirty` side-car file (for example `.<app>.model.dirty`). |
+| **State management** | Load, save, and discard model state. Track in-memory edits via the hidden `.<file-name>.dirty` side-item file (for example `.<app>.model.dirty`). |
 | **Tracing** | Follow an element from its ESM origin through every derived model down to the runtime artifact (and back). |
 
 ## Mandatory rules

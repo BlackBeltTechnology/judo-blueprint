@@ -3,7 +3,7 @@ id: injectable-business-clock
 title: Injectable Business Clock with Shared Working-Day Helpers
 description: One injectable clock that every custom operation and interceptor uses for the current time, with a configuration or environment override for tests and demos, and one date service for working-day logic.
 aliases: [fake now, business clock, date service, working day service]
-keywords: [clock, now, time, fake now, override, working day, holiday, date service, deterministic, test]
+keywords: [clock, now, time, fake now, override, working day, closed day, date service, deterministic, test]
 tags: ["domain:backend", "layer:backend", "project:park-here", "status:single-project"]
 category: operation
 status: single-project
@@ -26,9 +26,9 @@ Business rules depend on "now": the next working day, a time window, an expiry. 
 - `Timestamp!now()` in model expressions follows the platform parameter `defaultZoneId`, while `LocalDateTime.now()` in custom Java follows the JVM time zone ([Time and Time Zones](../../agent-docs/backend/platform-behavior-reference.md#time-and-time-zones)). A single clock for custom Java removes that second source of divergence in Java code, but not in model expressions.
 - Custom operations are OSGi components that reach services with `@Reference` ([custom operations](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)). Interceptors are also components ([the interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)).
 
-### Project practice: one clock, one override
+### Practice notes: one clock, one override
 
-The classes below are example project code, not platform API.
+The classes below are example code, not platform API.
 
 1. A clock holder: a final class with static accessors (`today()`, `now()`, `nowUtc()`, `instant()`, `get()` and a UTC variant). It has no OSGi dependency, so common services, custom operations and interceptors all use it the same way. An injected `java.time.Clock` field is the alternative when the caller is a component that tests can construct.
 2. Production: no override, so it is `Clock.systemDefaultZone()`.
@@ -48,7 +48,7 @@ Every custom operation and interceptor takes "now" from this holder and never ca
 
 ### Shared working-day helpers
 
-A date service (an OSGi component) holds the calendar logic that several operations need: `isWorkingDay(date)`, `nextWorkingDay(date)`, `getWorkingDaysBetween(start, end)`. It combines weekends, fixed and moveable public holidays computed per year, and an entity of extra days (extra holidays and extra working days) that administrators maintain. Extra working days win over weekends and holidays. The operation reads the date from the clock and asks the date service for the rule, so a fake "now" also moves every working-day answer.
+A date service (an OSGi component) holds the calendar logic that several operations need: `isWorkingDay(date)`, `nextWorkingDay(date)`, `getWorkingDaysBetween(start, end)`. It combines weekends, fixed and moveable public closed days computed per year, and an entity of extra days (extra closed days and extra working days) that administrators maintain. Extra working days win over weekends and closed days. The operation reads the date from the clock and asks the date service for the rule, so a fake "now" also moves every working-day answer.
 
 ## Rationale
 
@@ -59,7 +59,7 @@ A date service (an OSGi component) holds the calendar logic that several operati
 
 ## Example
 
-A parking application has an operation that returns the selectable date window of a quick booking. It takes today from the clock holder, asks the date service for the next working day and the working-day flag of today, and returns the minimum and maximum dates. An end-to-end run sets the environment variable to a Monday morning and gets the same window every time.
+An application has an operation that returns the selectable date window of a quick booking. It takes today from the clock holder, asks the date service for the next working day and the working-day flag of today, and returns the minimum and maximum dates. An end-to-end run sets the environment variable to a Monday morning and gets the same window every time.
 
 ## When to avoid
 

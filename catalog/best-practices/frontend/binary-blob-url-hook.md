@@ -25,9 +25,9 @@ Show a stored binary (image, document) inside custom views where the generated w
 
 - Binary attributes hold a token, and the generated access service downloads the file with the token and a disposition (`inline` or `attachment`) ([custom attachments: token flow](../../agent-docs/frontend/advanced-patterns.md)). The download path is a separate authenticated request, so it cannot be used directly as an element `src` (*verify* for your generated version).
 
-### Project practice: one hook owns the URL lifecycle (mlszksz-platform)
+### Practice notes: one hook owns the URL lifecycle
 
-- The hook takes a token (or nothing) and returns a string URL or `null`. It creates the access service once with `useMemo`, using the project's shared axios provider.
+- The hook takes a token (or nothing) and returns a string URL or `null`. It creates the access service once with `useMemo`, using the shared axios provider.
 - The effect first revokes the URL held in a ref, then, if there is a token, downloads in `inline` mode, wraps the response data in a `Blob` with the response content type and stores the new object URL in the ref and in state.
 - A local `cancelled` flag is set in the effect cleanup; a response arriving after a token change or unmount does not set state.
 - Cleanup revokes the URL held in the ref. The ref, not the state value, is used so the cleanup always sees the latest URL.
@@ -70,7 +70,7 @@ Object URLs keep the blob in memory until revoked, so every create needs a match
 
 ## Example
 
-mlszksz-platform uses the hook in its custom views to render uploaded images from the binary token of the displayed record.
+One app uses the hook in its custom views to render uploaded images from the binary token of the displayed record.
 
 ## When to avoid
 

@@ -8,7 +8,7 @@ tags: ["domain:backend", "layer:backend", "project:trivia", "project:rackinspect
 category: integration
 status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "alba:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded", "park-here:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/services/job_task_services/jobsheet/SendEmailCustomImplementation.java", "alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PlatformEmailServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded"]
 alternatives: []
 related: [two-phase-registration, filestore-mediated-file-transfer, document-generation-pipeline, handlebars-email-template]
 fragment: "none: backend-only"
@@ -17,15 +17,15 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Custom operations send e-mail (activation codes, reports, reminders). Inject a mail service, build the message in a small project service, and take sender, server and templates from configuration rather than code.
+Custom operations send e-mail (activation codes, reports, reminders). Inject a mail service, build the message in a small service, and take sender, server and templates from configuration rather than code.
 
 ## Practice
 
 ### Inject a mail service and wrap it
 
-Custom operations get OSGi services with `@Reference` (see [Injecting DAOs and Services](../../agent-docs/backend/data-access-guide.md#injecting-daos-and-services)). Five of six source projects used the `EmailService` of the `hu.blackbelt.email.api` module with a builder-style message (from, to, subject, body). The agent-docs do not describe that API, so check the artifact version in your project. One project used a vendor SDK directly instead.
+Custom operations get OSGi services with `@Reference` (see [Injecting DAOs and Services](../../agent-docs/backend/data-access-guide.md#injecting-daos-and-services)). Most applications use the `EmailService` of the `hu.blackbelt.email.api` module with a builder-style message (from, to, subject, body). The agent-docs do not describe that API, so check the artifact version in your application. One application used a vendor SDK directly instead.
 
-Put the call in one project service (`EmailSenderService` in the examples) with a method per mail type. Operations then call the service, and tests replace it with a no-op implementation.
+Put the call in one service (`EmailSenderService` in the examples) with a method per mail type. Operations then call the service, and tests replace it with a no-op implementation.
 
 ### Take server settings from platform configuration
 
@@ -37,7 +37,7 @@ E-mail for user invitations is sent by Keycloak, not by the application. On ever
 
 ### Render bodies from templates
 
-Plain strings do not scale. Render HTML bodies from templates (Handlebars in four projects), stored in a configuration entity or as files, with variables substituted at send time (see [[handlebars-email-template]]). Attachments such as generated reports come from the file store (see [[filestore-mediated-file-transfer]] and [[document-generation-pipeline]]).
+Plain strings do not scale. Render HTML bodies from templates (Handlebars in most applications), stored in a configuration entity or as files, with variables substituted at send time (see [[handlebars-email-template]]). Attachments such as generated reports come from the file store (see [[filestore-mediated-file-transfer]] and [[document-generation-pipeline]]).
 
 ### Keep sending out of the business change
 
@@ -51,15 +51,15 @@ Run a mail catcher such as mailpit (SMTP 1025, web inbox 8025) and point `JUDO_P
 
 - One service isolates the mail API, so a change of provider or a test double touches one class.
 - Configuration through platform variables keeps secrets out of the model and the code.
-- Limit: the injected service is project infrastructure, not part of the model. The model cannot see or test it.
+- Limit: the injected service is application infrastructure, not part of the model. The model cannot see or test it.
 
 ## Example
 
-- Trivia: the registration operation sends a four-digit activation code through the injected service over a hosted SMTP relay.
-- RackInspect and ParkHere: an `EmailSenderService` wraps the mail service, renders Handlebars templates, attaches stored files and loads sender data from a configuration entity.
-- ALBA: SMTP relay settings come from environment variables, secrets from a secret manager.
-- mlszksz-platform: an interface with five mail types, templates stored in a configuration entity, and a no-op implementation in tests.
-- Ubives: a vendor SDK is called directly, with its settings from Config Admin and the component activated only when configured.
+- A registration operation sends a four-digit activation code through the injected service over a hosted SMTP relay.
+- One application: an `EmailSenderService` wraps the mail service, renders Handlebars templates, attaches stored files and loads sender data from a configuration entity.
+- One application: SMTP relay settings come from environment variables, secrets from a secret manager.
+- One application: an interface with five mail types, templates stored in a configuration entity, and a no-op implementation in tests.
+- Another application: a vendor SDK is called directly, with its settings from Config Admin and the component activated only when configured.
 
 ## When to avoid
 

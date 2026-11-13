@@ -17,7 +17,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Some entities must stay in the database because older records point to them (a car used in past reservations, a partner with history). Deleting the row would break those links. The delete action sets an archive flag and tidies related state, and all readers hide archived rows. This entry is the backend side; the model side (flag, defaults, hiding in the UI) is in [[soft-delete-active-flag]].
+Some entities must stay in the database because older records point to them (an item used in past bookings, an account with history). Deleting the row would break those links. The delete action sets an archive flag and tidies related state, and all readers hide archived rows. This entry is the backend side; the model side (flag, defaults, hiding in the UI) is in [[soft-delete-active-flag]].
 
 ## Practice
 
@@ -29,18 +29,18 @@ Some entities must stay in the database because older records point to them (a c
 - Interceptors fire only for built-in operations. A custom delete operation is not intercepted, and a range interceptor fires only for reference-range operations, not for plain lists ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). A range interceptor is the boundary for pickers; lists need a filter in the model or in the DAO query.
 - Permission checks for the operation belong inside the implementation, since no interceptor protects it.
 
-### Project practice: archive, clear, filter everywhere
+### Practice notes: archive, clear, filter everywhere
 
-This layer is project practice (ParkHere, judo-partner), not a platform feature:
+This layer is a convention built on the platform, not a platform feature:
 
-- The delete operation sets `isArchived = true` and clears flags that only make sense on live rows (a favourite flag). It can also free a unique value: judo-partner nulls the tax identifier so the number can be reused for a new partner.
+- The delete operation sets `isArchived = true` and clears flags that only make sense on live rows (a favourite flag). It can also free a unique value: One application nulls the tax identifier so the number can be reused for a new account.
 - Every query that feeds a normal view adds the archive filter. Forgetting it is the typical bug; put the filtered query in one service method so there is a single place.
 - Dropdown ranges exclude archived rows through a range interceptor ([[interceptor-range-override]]).
 - Derived computations such as duplicate flags are recalculated after archiving and exclude archived rows.
 - Archived rows are never physically removed; plan for the table growth.
 
 ```java
-// Example project code: service and entityDao are project/generated members
+// Example code: service and entityDao are generated members
 @Override
 public void accept(Entity _this) throws BusinessErrorException {
     Entity entity = service.getEntity(_this);
@@ -62,8 +62,8 @@ dao.queryCars(userId)
 
 ## Example
 
-- ParkHere: the delete-car operation sets `isArchived` to true and `isFavorite` to false instead of deleting. The range interceptor for the car picker of a reservation input filters on `isArchived = false`.
-- judo-partner: the delete-partner service method sets `isArchived` and clears the tax identifier. It then recalculates the duplicate-name flags, excluding archived partners with the archive filter. Partners are never physically deleted.
+- One application: the delete-item operation sets `isArchived` to true and `isFavorite` to false instead of deleting. The range interceptor for the item picker of a booking input filters on `isArchived = false`.
+- Another application: the delete-account service method sets `isArchived` and clears the tax identifier. It then recalculates the duplicate-name flags, excluding archived accounts with the archive filter. Accounts are never physically deleted.
 
 ## When to avoid
 

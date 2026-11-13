@@ -237,15 +237,15 @@
         <table xmi:id="_eZffVNzfEfGhaarV-ocTPA" name="Offer_Table" label="Offer Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
         <view xmi:id="_eZffUtzfEfGhaarV-ocTPA" name="Offer_View_Edit" label="Offer View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
-      <elements xsi:type="structure:EntityType" xmi:id="_eftcENzfEfGhaarV-ocTPA" name="JobSheet" createable="false" updateable="false" deleteable="false">
+      <elements xsi:type="structure:EntityType" xmi:id="_eftcENzfEfGhaarV-ocTPA" name="WorkOrder" createable="false" updateable="false" deleteable="false">
         <attributes xsi:type="structure:DataMember" xmi:id="_fOsB8NzfEfGhaarV-ocTPA" name="workStatus" dataType="_nhZUUuOjEeuTFeBuQgBSDg" defaultExpression="" binding="_fOsB8NzfEfGhaarV-ocTPA" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_fOsB8dzfEfGhaarV-ocTPA"/>
         </attributes>
         <generalizations xmi:id="_efuDINzfEfGhaarV-ocTPA" target="_eTb6oNzfEfGhaarV-ocTPA"/>
         <mapping xmi:id="_eftcEdzfEfGhaarV-ocTPA" target="_eftcENzfEfGhaarV-ocTPA"/>
-        <form xmi:id="_eftcE9zfEfGhaarV-ocTPA" name="JobSheet_Form" label="JobSheet Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_eftcFNzfEfGhaarV-ocTPA" name="JobSheet_Table" label="JobSheet Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_eftcEtzfEfGhaarV-ocTPA" name="JobSheet_View_Edit" label="JobSheet View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_eftcE9zfEfGhaarV-ocTPA" name="WorkOrder_Form" label="WorkOrder Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_eftcFNzfEfGhaarV-ocTPA" name="WorkOrder_Table" label="WorkOrder Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_eftcEtzfEfGhaarV-ocTPA" name="WorkOrder_View_Edit" label="WorkOrder View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>

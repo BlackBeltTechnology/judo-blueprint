@@ -4,11 +4,11 @@ title: Two-Phase Registration with Email Verification
 description: A lightweight code-based registration flow in custom operations, where registration stores and e-mails a temporary code and activation checks it and promotes it to a permanent credential, as an alternative to an identity provider.
 aliases: [email code registration, temporary code activation, code-based signup, registration with activation code]
 keywords: [registration, activation, temporary code, email verification, tmpCode, invitation, custom operation, authentication, DAO query]
-tags: ["domain:backend", "layer:backend", "project:trivia", "project:mlszksz-platform", "project:ubives", "status:emerging"]
+tags: ["domain:backend", "layer:backend", "project:trivia", "project:ubives", "status:emerging"]
 category: auth
 status: emerging
-projects: [trivia, mlszksz-platform, ubives]
-evidence: ["trivia:unrecorded", "mlszksz-platform:unrecorded", "ubives:unrecorded"]
+projects: [trivia, ubives]
+evidence: ["trivia:unrecorded", "ubives:unrecorded"]
 alternatives: [keycloak-jit-user-provisioning]
 related: [email-service-integration, typed-exception-error-handling, keycloak-jit-user-provisioning, magic-link-authentication, recaptcha-precall-interceptor, api-key-generation]
 fragment: "none: backend-only"
@@ -19,7 +19,7 @@ last_updated: 2026-11-10
 
 For small applications an e-mail address is enough proof of identity. Registration creates (or updates) a user with a temporary code and mails the code. Activation verifies the code and stores a permanent code that later calls present instead of a token from an identity provider.
 
-This is project practice built from custom operations and the DAO. It is not the platform's authentication. The platform authenticates through an external identity provider and an `AuthenticationInterceptor`, which resolves the principal to an actor ([Authentication Guide](../../agent-docs/backend/authentication-guide.md)). Use the pattern only where that route is not wanted, and read the weaknesses below first.
+This is a convention built from custom operations and the DAO. It is not the platform's authentication. The platform authenticates through an external identity provider and an `AuthenticationInterceptor`, which resolves the principal to an actor ([Authentication Guide](../../agent-docs/backend/authentication-guide.md)). Use the pattern only where that route is not wanted, and read the weaknesses below first.
 
 ## Practice
 
@@ -49,7 +49,7 @@ user.ifPresent(u -> {
 
 ### Known weaknesses
 
-A four-digit code can be brute-forced, the codes in the original projects do not expire, and nothing limits attempts. Add an expiry timestamp, an attempt counter and a long random code if you copy this. Prefer [[keycloak-jit-user-provisioning]] or [[magic-link-authentication]] when an identity provider is available.
+A four-digit code can be brute-forced, the codes in the original examples do not expire, and nothing limits attempts. Add an expiry timestamp, an attempt counter and a long random code if you copy this. Prefer [[keycloak-jit-user-provisioning]] or [[magic-link-authentication]] when an identity provider is available.
 
 ## Rationale
 
@@ -59,9 +59,9 @@ A four-digit code can be brute-forced, the codes in the original projects do not
 
 ## Example
 
-- Trivia: registration mails a 4-digit code through an SMTP provider. Activation verifies e-mail plus temporary code and stores a permanent `code`. A contest entry authenticates with e-mail, code and an active flag. Existing users can request a new code.
-- mlszksz-platform: multi-step organisation registration: submit with reCAPTCHA validation, verify e-mail by token, an admin accepts or rejects, approval creates the organisation, the user and the identity-provider account. Invitations follow the same token, verify, accept shape.
-- Ubives: invitation-based registration. An admin invites a user or account; an invitation entity with a one-month expiry and an API-key-style id is created and mailed as a link. The user submits credentials, the accept operation checks them, creates the user and the identity-provider user, and deletes the invitation. User and account invitations differ in access level.
+- One application: registration mails a 4-digit code through an SMTP provider. Activation verifies e-mail plus temporary code and stores a permanent `code`. A group entry authenticates with e-mail, code and an active flag. Existing users can request a new code.
+- Another application: multi-step account registration: submit with reCAPTCHA validation, verify e-mail by token, an admin accepts or rejects, approval creates the account, the user and the identity-provider account. Invitations follow the same token, verify, accept shape.
+- A third application: invitation-based registration. An admin invites a user or account; an invitation entity with a one-month expiry and an API-key-style id is created and mailed as a link. The user submits credentials, the accept operation checks them, creates the user and the identity-provider user, and deletes the invitation. User and account invitations differ in access level.
 
 ## When to avoid
 

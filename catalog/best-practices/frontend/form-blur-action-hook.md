@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:rackinspect", "status:singl
 category: hook
 status: single-project
 projects: [rackinspect]
-evidence: ["rackinspect:unrecorded"]
+evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/utils/partnerAddressInformation.ts", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/ViewEditActionHooks/customServicesCompanyDataServiceCompanyAddressCompanyAddressViewEditActionsHook.tsx"]
 alternatives: []
 related: [pandino-action-hook-override, post-refresh-validation-propagation]
 fragment: "none: frontend-only"
@@ -27,7 +27,7 @@ A form field should be filled automatically from other fields when the user leav
 - The handler is part of the object returned by the container or page actions hook, created from the `register<Container>ActionsHook` scaffold (copy it without `.default`, call its register function from `application-customizer.tsx`). The hook function receives `(data, editMode, storeDiff, ...)`; check `types.ts` of the generated container for the exact handler signature ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md), [hooks overview](../../agent-docs/frontend/hooks/README.md)).
 - Without the model switch there is no handler to implement, so first mark the fields in the model.
 
-### Project practice: compose a field from its parts
+### Practice notes: compose a field from its parts
 
 ```typescript
 const hookImpl = (data, editMode, storeDiff) => ({
@@ -60,7 +60,7 @@ The user sees the composed value immediately, and the logic lives in the hook, n
 
 ## Example
 
-rackinspect: address auto-composition for three entities, each with a form hook and a view/edit hook (six files). Blur handlers on street, category, number, building, staircase, floor, door and lot number rebuild the composite address, guarded by a manual-entry toggle.
+One app: address auto-composition for three entities, each with a form hook and a view/edit hook. Blur handlers on street, category, number, building, staircase, floor, door and lot number rebuild the composite address, guarded by a manual-entry toggle.
 
 ## When to avoid
 

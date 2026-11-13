@@ -19,7 +19,7 @@ last_updated: 2026-11-10
 
 A workflow definition (states and transitions) is data in the model. Each running workflow instance is represented by one or more `Token` entities, each holding the current state, an optional assignee, a timestamp and the last transition. Moving a token along a transition is a service method, not model logic. Fork splits a token into several, join merges them back. The persistent tokens let a workflow survive restarts.
 
-This is a project engine written on top of the platform DAOs. The platform provides entities, relations, DAOs and transactions; it has no workflow concept. The model side of the persistent `Token` is a plain entity ([[token-based-verification-entity]] describes a different kind of token, a verification code).
+This is a custom engine written on top of the platform DAOs. The platform provides entities, relations, DAOs and transactions; it has no workflow concept. The model side of the persistent `Token` is a plain entity ([[token-based-verification-entity]] describes a different kind of token, a verification code).
 
 ## Practice
 
@@ -62,7 +62,7 @@ public void step(Token token, State current, Transition transition) {
 }
 ```
 
-`tokenDao`, `transitionDao`, `evalGuards`, `executeAction` and `createNewToken` are example project code. `queryNextStates` is the DAO query method generated for a relation or query of the model.
+`tokenDao`, `transitionDao`, `evalGuards`, `executeAction` and `createNewToken` are example code. `queryNextStates` is the DAO query method generated for a relation or query of the model.
 
 ### Join
 
@@ -76,7 +76,7 @@ A join state collects tokens of the parallel branches. When the last incoming jo
 
 ### Auto-assignment
 
-Candidates are the users that hold the roles the state allows. Users already assigned are excluded, users who previously completed a task in the same workflow are preferred, and a random pick is the fallback. This is project policy.
+Candidates are the users that hold the roles the state allows. Users already assigned are excluded, users who previously completed a task in the same workflow are preferred, and a random pick is the fallback. This is a local policy.
 
 ## Rationale
 
@@ -86,7 +86,7 @@ Candidates are the users that hold the roles the state allows. Users already ass
 
 ## Example
 
-- workflow-poc: a workflow utility class implements the whole engine. State entry sets the state, clears the assignee, auto-assigns, runs ON_ENTER actions and fires eventless transitions. Stepping evaluates guards, runs ON_LEAVE and ON_TRANSITION actions, logs completion and handles single, join and fork next states. Joining compares the incoming join transitions against the last transitions of waiting tokens before merging.
+- A workflow example: a utility class implements the whole engine. State entry sets the state, clears the assignee, auto-assigns, runs ON_ENTER actions and fires eventless transitions. Stepping evaluates guards, runs ON_LEAVE and ON_TRANSITION actions, logs completion and handles single, join and fork next states. Joining compares the incoming join transitions against the last transitions of waiting tokens before merging.
 
 ## When to avoid
 

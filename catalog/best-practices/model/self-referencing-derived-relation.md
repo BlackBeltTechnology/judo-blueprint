@@ -3,7 +3,7 @@ id: self-referencing-derived-relation
 title: Self-Referencing Derived Relation
 description: "A transfer object has a derived relation whose getter is self and whose target is a different transfer object over the same entity, so one entity row is shown through two projections at once."
 aliases: [self relation, second projection, same entity two views, self getter relation]
-keywords: [derived relation, self, getter, transfer object, projection, same entity, scoreboard]
+keywords: [derived relation, self, getter, transfer object, projection, same entity, summary]
 tags: ["domain:model", "layer:model", "project:trivia", "status:single-project"]
 category: relation
 status: single-project
@@ -18,7 +18,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-One page needs the same entity in two shapes: for example a contest's own details and, next to them, its scoreboard with different attributes and filters. Give the first transfer object a derived relation to the second one, and let the relation return the same row.
+One page needs the same entity in two shapes: for example an event's own details and, next to them, its summary with different attributes and filters. Give the first transfer object a derived relation to the second one, and let the relation return the same row.
 
 ## Practice
 
@@ -42,7 +42,7 @@ The second transfer object should add something the first lacks (other attribute
 
 ## Example
 
-A neutral Contest entity is mapped by two transfer objects, `ContestView` and `ScoreboardView`. `ContestView` has a derived relation `scoreboard` (0..1) to `ScoreboardView` with getter `self`. A page of `ContestView` shows the contest and, inside it, the scoreboard projection. The original project (Trivia) used it for a player-side contest and its scoreboard.
+A neutral Event entity is mapped by two transfer objects, `EventView` and `SummaryView`. `EventView` has a derived relation `summary` (0..1) to `SummaryView` with getter `self`. A page of `EventView` shows the event and, inside it, the summary projection. The original project used it for a participant-side view of an event and its summary.
 
 ## When to avoid
 
@@ -63,20 +63,20 @@ A neutral Contest entity is mapped by two transfer objects, `ContestView` and `S
 <!-- mermaid:generated fragment=self-referencing-derived-relation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
-  class Contest {
+  class Event {
     <<Entity>>
     +String title
   }
-  class ContestView {
+  class EventView {
     <<Transfer>>
     +String title
   }
-  class ScoreboardView {
+  class SummaryView {
     <<Transfer>>
     +String title
   }
-  ContestView ..> Contest : maps
-  ContestView o-- "0..1" ScoreboardView : scoreboard
-  ScoreboardView ..> Contest : maps
+  EventView ..> Event : maps
+  EventView o-- "0..1" SummaryView : summary
+  SummaryView ..> Event : maps
 ```
 <!-- /mermaid:generated -->

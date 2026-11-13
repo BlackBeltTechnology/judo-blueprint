@@ -27,7 +27,7 @@ Give a hand-built frontend a simple, typed translation setup that uses the same 
 - Generated keys are flat dot-notation strings, not nested objects, for example `entities.User.User_View_Edit.firstName`, `enumerations.StatusType.ACTIVE`, `menuTree.<label>`; the full key is passed to `t` ([key naming conventions and flat keys](../../agent-docs/frontend/i18n.md)).
 - Do not use react-intl inside the generated frontend; this pattern is for a hand-built frontend that replaces it ([[complete-frontend-replacement]]). To add keys to the generated frontend, see [[i18n-custom-translation-keys]].
 
-### Project practice: react-intl with a TypeScript message file (actiongroup-test-react)
+### Practice notes: react-intl with a TypeScript message file
 
 - One `src/i18n/en.ts` exports `{ locale, messages }`, with messages as a plain object of flat keys (a `.ts` file, so keys are checked by the compiler, unlike JSON).
 - Key convention: `pages.<page>.<element>.<property>` for page strings, `navigator.<item>` for navigation, and `judo.const.<text>` for common constants.
@@ -37,10 +37,10 @@ Give a hand-built frontend a simple, typed translation setup that uses the same 
 ```typescript
 export const i18nEN = {
   locale: 'en',
-  messages: { 'navigator.Build': 'Build', 'pages.galaxies.table.Name': 'Name' },
+  messages: { 'navigator.Home': 'Home', 'pages.orders.table.Name': 'Name' },
 };
 const intl = useIntl();
-const label = intl.formatMessage({ id: 'pages.galaxies.table.Name', defaultMessage: 'Name' });
+const label = intl.formatMessage({ id: 'pages.orders.table.Name', defaultMessage: 'Name' });
 ```
 
 ## Rationale
@@ -49,7 +49,7 @@ Flat keys are simple and the TypeScript file adds type checking. The cost is a s
 
 ## Example
 
-actiongroup-test-react: `src/i18n/en.ts` holds navigator labels, table column headers, table actions and common constants; components read them with `useIntl()`, and the fallback text covers missing keys.
+A hand-built app: `src/i18n/en.ts` holds navigator labels, table column headers, table actions and common constants; components read them with `useIntl()`, and the fallback text covers missing keys.
 
 ## When to avoid
 

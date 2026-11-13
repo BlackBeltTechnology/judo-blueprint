@@ -29,9 +29,9 @@ A detail page that shows an entity and also lets the user edit it should not exp
 
 Use the generated pages when they fit. The pattern below applies to a frontend that builds its own detail pages (here an operation output page).
 
-### Project practice: hand-built edit mode
+### Practice notes: hand-built edit mode
 
-This is project code (actiongroup-test-react), not a platform feature:
+This is custom code, not a platform feature:
 
 - State: `editMode` (default false) and a validation map keyed by field name.
 - An effect clears the validation map whenever `editMode` changes, so stale errors do not follow the user into the other mode.
@@ -41,7 +41,7 @@ This is project code (actiongroup-test-react), not a platform feature:
 - Every custom field widget must honour the read-only flag (for example [[trinary-logic-widget]]).
 
 ```typescript
-// Example project code
+// Example code
 const [editMode, setEditMode] = useState(false);
 const [validation, setValidation] = useState<Map<string, string>>(new Map());
 useEffect(() => { setValidation(new Map()); }, [editMode]);
@@ -66,7 +66,7 @@ The page prevents accidental edits, makes the two modes visually distinct, and s
 
 ## Example
 
-In actiongroup-test-react the Galaxy view page and an operation output page use the toggle with the button sets above and shared read-only styling.
+In one hand-built app the detail view page and an operation output page use the toggle with the button sets above and shared read-only styling.
 
 ## When to avoid
 

@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:trivia", "project:rackinspect", "
 category: access
 status: established
 projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, derived-access-filtering]
 first_seen: 2026-03-04
@@ -24,7 +24,7 @@ Keep create, update and delete permissions out of the entity layer. Entities dec
 
 ### Entities closed, transfer objects and accesses open
 
-- The platform defines `createable`, `updateable` and `deleteable` on entities ([structure reference](../../agent-docs/model/esm_metamodel/structure.md)), on transfer objects, on relations and on Access entries ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md)). Project practice: set all three to false on every entity and decide per transfer object and per Access.
+- The platform defines `createable`, `updateable` and `deleteable` on entities ([structure reference](../../agent-docs/model/esm_metamodel/structure.md)), on transfer objects, on relations and on Access entries ([accesspoint reference](../../agent-docs/model/esm_metamodel/accesspoint.md)). Practice note: set all three to false on every entity and decide per transfer object and per Access.
 - A transfer object maps one entity. Give the actor that may edit a mutable view (`createable`/`updateable` as needed) and everyone else a read-only view of the same entity.
 - The Access entry carries the actor's own flags. The same entity can be fully editable for an administrator and read-only for a member, without any entity change.
 - Read is nearly always allowed; the write flags vary by role. Delete is often left off everywhere in favour of an active flag ([[soft-delete-active-flag]]).
@@ -43,7 +43,7 @@ See [[actor-based-transfer-projection]] for one transfer object per actor role a
 - Permissions live in one place per actor instead of being scattered over entities.
 - Different actors can have different rights over the same entity.
 - The entity stays a plain storage shape; change rules are explicit operations.
-- Cost: more transfer objects, and the entity flags look redundant because they are always false. Project practice (not a platform rule): fifteen source projects followed it; the platform does not require it.
+- Cost: more transfer objects, and the entity flags look redundant because they are always false. Practice note (not a platform rule): fifteen source projects followed it; the platform does not require it.
 
 ## Example
 

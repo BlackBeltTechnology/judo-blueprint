@@ -46,8 +46,7 @@ application/
 
 ## Examples
 
-### rackinspect
-- Key files: `mnb-soap-client/src/main/java/hu/mnb/webservices/osgi/ExchangeRateService.java` (interface), `ExchangeRateServiceImpl.java` (CXF implementation), `Rate.java` + `CurrencyRates.java` (domain DTOs)
-- Pattern: Integrates with Magyar Nemzeti Bank (Hungarian National Bank) SOAP API for daily exchange rates. WSDL (`arfolyamok.wsdl`) generates `MNBArfolyamServiceSoap` stubs. `ExchangeRateServiceImpl` creates proxy in `@Activate`, parses XML responses with DOM to extract `<Day>` and `<Rate>` elements into `CurrencyRates` / `Rate` POJOs.
-- Notable: Hungarian locale-aware `DecimalFormat` for parsing comma-separated decimal rates. Consumed by `UpdateExchangeRatesJobFirst/Second` scheduled jobs via `@Reference UpdateExchangeRates` (which internally uses `ExchangeRateService`). The module exports only the `hu.mnb.webservices.osgi` package.
-- DI wiring: `ExchangeRateServiceImpl` (OSGi component) -> consumed by scheduler jobs -> which call the generated `UpdateExchangeRates` custom operation
+### Example (project code)
+- Pattern: integrates with an external SOAP service that publishes daily exchange rates. The WSDL generates the service stubs. The implementation creates the proxy in `@Activate`, parses the XML responses with DOM and maps the day and rate elements into simple rate POJOs.
+- Notable: a locale-aware `DecimalFormat` parses comma-separated decimal rates. Scheduled jobs consume the service through an update operation. The client module exports only its own service package.
+- DI wiring: the service implementation (OSGi component) -> consumed by scheduler jobs -> which call a generated `UpdateExchangeRates` custom operation

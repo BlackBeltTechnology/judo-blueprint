@@ -28,7 +28,7 @@ The provider service reads the platform of an entity, loads its credentials, and
 
 ## Structure
 
-Three layers. The API module is a standalone bundle with the interface and its data objects, with no dependency on the model or on any platform SDK. Each adapter module depends on the API module and on one platform SDK. The provider service is a component in the common module. It loads the entity and its credentials, dispatches on the platform, and returns the adapter. Custom operations and services reference the provider service, never an adapter. The provider and the callers are OSGi components of the application (project practice; the platform only supplies the component and reference mechanism and the data-access objects).
+Three layers. The API module is a standalone bundle with the interface and its data objects, with no dependency on the model or on any platform SDK. Each adapter module depends on the API module and on one platform SDK. The provider service is a component in the common module. It loads the entity and its credentials, dispatches on the platform, and returns the adapter. Custom operations and services reference the provider service, never an adapter. The provider and the callers are OSGi components of the application (common practice).
 
 ## Constraints
 
@@ -36,7 +36,7 @@ Three layers. The API module is a standalone bundle with the interface and its d
 - Adapters are plain objects built by the provider with runtime credentials, not components of their own.
 - Callers reference the provider service, never an adapter class.
 - A platform with no adapter yet fails with a modeled business fault declared on the calling operation (HTTP 422), not with a bare runtime exception (which the client sees as a generic 500). The calling operation must declare the fault.
-- Credentials that are files (for example a key file) are read through the project's file store service, not from a path.
+- Credentials that are files (for example a key file) are read through the application's file store service, not from a path.
 
 ## Variations
 
@@ -59,7 +59,7 @@ Three layers. The API module is a standalone bundle with the interface and its d
 
 ## Related
 
-- [[exchange-rate-entity]] — an entity whose automatic fetch calls an external rate source
-- [[external-api-adapter-pattern]] — the best-practice version of this pattern, without the bundle layout
-- [[osgi-service-layer-delegation]] — how the provider and other services are wired together
-- [[safe-failure-pattern]] — when a failing external call must not break the business operation
+- [[exchange-rate-entity]]: an entity whose automatic fetch calls an external rate source
+- [[external-api-adapter-pattern]]: the best-practice version of this pattern, without the bundle layout
+- [[osgi-service-layer-delegation]]: how the provider and other services are wired together
+- [[safe-failure-pattern]]: when a failing external call must not break the business operation

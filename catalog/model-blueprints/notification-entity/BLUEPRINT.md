@@ -8,7 +8,7 @@ tags: [domain:model, layer:model, layer:backend, layer:frontend, project:mlszksz
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 fragment: notification-entity
 diagram: { kinds: [entity, enum], members: types }
@@ -29,7 +29,7 @@ The notification stores a reference id to the content it is about. It does not h
 
 ## Structure
 
-The Notification entity has a required type (NotificationType), title, created time and status (NotificationStatus), and optional message, reference id and retry count. It has one required association to User (1..1). The NotificationType enumeration lists ALERT, REMINDER and UPDATE. The NotificationStatus enumeration lists PENDING, SENT and FAILED.
+The Notification entity has a required type (NotificationType), title, created time and status (NotificationStatus), and optional message, reference id and retry count. It has one required association to User (1..1). The NotificationType enumeration has one value per kind of notification. The NotificationStatus enumeration holds the delivery state, such as pending, sent or failed.
 
 ## Constraints
 

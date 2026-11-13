@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:mlszksz-platform", "status:single
 category: operation
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 related: [audit-event-entity, enum-state-machine, soft-delete-active-flag, mapped-operation-delegation, unmapped-transfer-dto, guard-clause-delete, actor-based-transfer-projection]
 fragment: moderation-operation-pattern
@@ -32,7 +32,7 @@ Both operations write, so both are `stateful` ([operation reference](../../agent
 
 ### Who may call which
 
-Expose `delete` through the owner's transfer object and `moderationDelete` only through the moderator actor's transfer object, each as a mapped operation ([[mapped-operation-delegation]], [[actor-based-transfer-projection]]). Do not rely on that alone: interceptors never fire for custom, MAPPED or script operations, so a role or ownership check must sit inside the operation implementation ([interceptors](../../agent-docs/backend/interceptors.md), "Which Operations Are Intercepted"; [custom operations](../../agent-docs/backend/custom-operations.md)). A moderation role check that must refuse the caller needs a declared fault when the operation is a custom Java implementation ([error handling](../../agent-docs/backend/error-handling-guide.md), "Modeled Faults"). The distinction of the two paths is project practice; the platform only provides operations, parameters and access exposure.
+Expose `delete` through the owner's transfer object and `moderationDelete` only through the moderator actor's transfer object, each as a mapped operation ([[mapped-operation-delegation]], [[actor-based-transfer-projection]]). Do not rely on that alone: interceptors never fire for custom, MAPPED or script operations, so a role or ownership check must sit inside the operation implementation ([interceptors](../../agent-docs/backend/interceptors.md), "Which Operations Are Intercepted"; [custom operations](../../agent-docs/backend/custom-operations.md)). A moderation role check that must refuse the caller needs a declared fault when the operation is a custom Java implementation ([error handling](../../agent-docs/backend/error-handling-guide.md), "Modeled Faults"). The distinction of the two paths is a convention; the platform only provides operations, parameters and access exposure.
 
 ### Require the reason
 
@@ -46,7 +46,7 @@ Declare the reason attribute `required` on the input transfer object so that the
 
 ## Example
 
-A Post has a status (published or deleted) and two operations: `delete` and `moderationDelete(ModerationInput)`. ModerationInput carries `reason`. An AuditEntry entity has an action enum with two members, one per delete path, plus the reason and a timestamp. Both operations are custom implementations in this sketch. The source project had three content entities (news, offers, requests) with this pair, exposed through the company-admin service. Names are neutral.
+A Post has a status (published or deleted) and two operations: `delete` and `moderationDelete(ModerationInput)`. ModerationInput carries `reason`. An AuditEntry entity has an action enum with two members, one per delete path, plus the reason and a timestamp. Both operations are custom implementations in this sketch. The source project had three content entities (articles, offers, requests) with this pair, exposed through an admin service. Names are neutral.
 
 ## When to avoid
 

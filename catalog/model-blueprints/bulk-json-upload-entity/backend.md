@@ -1,6 +1,6 @@
 ## Backend guidance
 
-The import and export are custom operations. The platform does not generate their logic, so it lives in project code: a `*CustomImplementation` OSGi component (`@Component(immediate = true, service = <generated interface>.class)`) that implements the generated operation interface. An operation that writes must be modelled stateful. Faults it throws must be declared on the operation in the model.
+The import and export are custom operations. The platform does not generate their logic, so it lives in application code: a `*CustomImplementation` OSGi component (`@Component(immediate = true, service = <generated interface>.class)`) that implements the generated operation interface. An operation that writes must be modelled stateful. Faults it throws must be declared on the operation in the model.
 
 ### Import is a custom operation
 
@@ -8,7 +8,7 @@ A custom operation implements the generated operation interface and gets its col
 
 ```java
 public class UploadCustomImplementation implements UploadOperation {
-    private final FileStoreService fileStore;   // project service, reads the uploaded file
+    private final FileStoreService fileStore;   // application service, reads the uploaded file
     private final UploadDao uploadDao;          // generated DAO
     private final QuestionDao questionDao;      // generated DAO
 
@@ -28,11 +28,11 @@ public class UploadCustomImplementation implements UploadOperation {
 }
 ```
 
-The sketch is illustrative. `FileStoreService`, the `Q` record and the DAO names are project code, not platform API.
+The sketch is illustrative. `FileStoreService`, the `Q` record and the DAO names are application code, not platform API.
 
 ### Write the batch row first
 
-The Upload row is written before the items, so each item can refer to it. The count is set at the end. The project expects the operation to run in one transaction, so that an exception thrown out of it rolls back the batch row and the items together. The agent-docs do not state the transaction scope of a custom operation, so verify the rollback with an integration test before relying on it.
+The Upload row is written before the items, so each item can refer to it. The count is set at the end. The application expects the operation to run in one transaction, so that an exception thrown out of it rolls back the batch row and the items together. The agent-docs do not state the transaction scope of a custom operation, so verify the rollback with an integration test before relying on it.
 
 ### Skip duplicates, do not fail
 
@@ -40,7 +40,7 @@ Items that match an existing identifier are skipped. Validation failures on a re
 
 ### Reference data is resolved by name
 
-Categories named in the JSON are looked up by name. A category that does not exist is created at import time. This get-or-create step is project logic.
+Categories named in the JSON are looked up by name. A category that does not exist is created at import time. This get-or-create step is application logic.
 
 ### Export mirrors import
 

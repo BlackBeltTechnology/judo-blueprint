@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "layer:backend", "project:mlszksz-platform
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [draft-done-status-enum, active-suspended-deactivated-status-enum]
 fragment: content-lifecycle-status-enum
 diagram: { kinds: [enum], members: types }
@@ -35,7 +35,7 @@ A content entity holds one status attribute typed with this enumeration. Its ope
 
 ## Constraints
 
-- The status field is read-only for the generated edit pages. Only operations change it. This is project practice built on the entity's attribute and access flags.
+- The status field is read-only for the generated edit pages. Only operations change it. This is common practice built on the entity's attribute and access flags.
 - A new item starts as DRAFT. Publishing sets PUBLISHED and records a publication time.
 - Deletion is soft: the status becomes DELETED and the row stays in place.
 - Interceptors do not run for custom operations (platform behaviour), so they do not run for the status operations. Each one must check the current status and its own permission.
@@ -61,7 +61,7 @@ A content entity holds one status attribute typed with this enumeration. Its ope
 
 ## Related
 
-- [[draft-done-status-enum]] — a two-state draft and done enumeration, for work items rather than published content
-- [[active-suspended-deactivated-status-enum]] — a status for accounts, with suspension rather than publication
-- [[document-review-state-machine]] — a richer state machine for documents, with transitions and history
-- [[safe-failure-pattern]] — the rule for audit writes that must not block a status change
+- [[draft-done-status-enum]]: a two-state draft and done enumeration, for work items rather than published content
+- [[active-suspended-deactivated-status-enum]]: a status for accounts, with suspension rather than publication
+- [[document-review-state-machine]]: a richer state machine for documents, with transitions and history
+- [[safe-failure-pattern]]: the rule for audit writes that must not block a status change

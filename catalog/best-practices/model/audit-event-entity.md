@@ -8,7 +8,7 @@ tags: ["domain:model", "layer:model", "project:alba", "project:mlszksz-platform"
 category: entity
 status: established
 projects: [alba, mlszksz-platform, judo-demo-miniworkflow, judo-partner, workflow-poc]
-evidence: ["alba:unrecorded", "mlszksz-platform:unrecorded", "judo-demo-miniworkflow:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
+evidence: ["alba:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "judo-demo-miniworkflow:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
 fragment: audit-event-entity
@@ -38,7 +38,7 @@ The event is created by backend code, not by the user. Where the platform lets y
 
 ### Do not use the event as the source of truth by accident
 
-Project practice: one project derived the current state from the latest history entry (head of the entries ordered by time descending) instead of storing it. That works, but every state read then touches the history table; usually keep a stored status as in [[enum-state-machine]] and use the events as the trail.
+Practice note: one project derived the current state from the latest history entry (head of the entries ordered by time descending) instead of storing it. That works, but every state read then touches the history table; usually keep a stored status as in [[enum-state-machine]] and use the events as the trail.
 
 ## Rationale
 

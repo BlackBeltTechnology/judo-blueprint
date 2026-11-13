@@ -27,7 +27,7 @@ Call the close callback first. Then open the file. This keeps the dialog from st
 
 ### Open the file in inline mode
 
-The generated `fileHandling.downloadFile` helper requests the file with the token (`X-Token` header) and a disposition. Pass `inline` to render it instead of saving it; `attachment` saves it. Per the platform docs an inline download renders in a dialog frame; rackinspect (project practice) opens it in a new browser tab, so check what your generated version does.
+The generated `fileHandling.downloadFile` helper requests the file with the token (`X-Token` header) and a disposition. Pass `inline` to render it instead of saving it; `attachment` saves it. Per the platform docs an inline download renders in a dialog frame; One project (common practice) opens it in a new browser tab, so check what your generated version does.
 
 ### Handle both token shapes
 
@@ -39,7 +39,7 @@ If the output has no file, close the dialog and stop. Do not show an error for a
 
 ## Examples
 
-### rackinspect
+### Variant seen in practice
 
 - Two dialog hooks implement this pattern: one for an assessment sheet preview, one for a review report preview. Each closes its input dialog, then opens the PDF inline in a new browser tab.
 - Both hooks accept the file as a string token or an object with an identifier.

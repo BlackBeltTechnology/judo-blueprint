@@ -29,14 +29,14 @@ The history entity turns off generated create, update and delete. Only backend c
 
 ## Structure
 
-The parent entity has a list of history rows (0..*). Each history row is non-CRUD and holds the copied key attributes (for example a name, a start and an end date, and budget amounts) plus a required `changed` timestamp. Each row has one required association back to its parent.
+The parent entity has a list of history rows (0..*). Each history row is non-CRUD and holds the copied key attributes (for example a name, a start and an end date, and amounts) plus a required `changed` timestamp. Each row has one required association back to its parent.
 
 ## Constraints
 
 - Createable, updateable and deleteable are all false on the history entity.
 - The `changed` timestamp is required and is set when the snapshot is taken.
 - The copied fields are the fields a user can change. A field that never changes adds no value to the trail.
-- Project practice: write the snapshot inside the operation that changes the parent, so both succeed or fail together. The platform gives no snapshot mechanism of its own.
+- Common practice: write the snapshot inside the operation that changes the parent, so both succeed or fail together. The platform gives no snapshot mechanism of its own.
 - Interceptors run only for built-in operations (create, update, delete, list). A custom operation must write its own snapshot.
 - Deleting the parent must also delete its snapshots. In the shown shape the history is a plain association, so nothing cascades. Making the history a composition of the parent would let the platform delete the rows with it.
 
@@ -50,7 +50,7 @@ The parent entity has a list of history rows (0..*). Each history row is non-CRU
 ## When to use
 
 - Reports or billing must use the value an attribute had on a given date.
-- Configuration changes (budgets, prices, terms) must be traceable.
+- Configuration changes (amounts, prices, terms) must be traceable.
 - The entity is changed often, and the current row alone does not show how it got there.
 
 ## When to avoid
@@ -61,7 +61,7 @@ The parent entity has a list of history rows (0..*). Each history row is non-CRU
 
 ## Related
 
-- [[history-audit-trail-entity]] — a textual record of who did what, instead of attribute values
-- [[audit-log-entity]] — a platform-wide audit trail with denormalized actor names
-- [[event-log-entity]] — a typed event log linked to the affected entity and the acting user
-- [[operation-call-logging-interceptor]] — logs built-in operation calls from an interceptor
+- [[history-audit-trail-entity]]: a textual record of who did what, instead of attribute values
+- [[audit-log-entity]]: a platform-wide audit trail with denormalized actor names
+- [[event-log-entity]]: a typed event log linked to the affected entity and the acting user
+- [[operation-call-logging-interceptor]]: logs built-in operation calls from an interceptor

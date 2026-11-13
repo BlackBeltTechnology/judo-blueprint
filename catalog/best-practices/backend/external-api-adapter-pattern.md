@@ -23,16 +23,16 @@ An application talks to several external services that do the same job (several 
 
 ### Four parts
 
-1. An interface in business terms (connection check, list campaigns, read cost to date). It uses plain DTOs, not provider types and not generated entity types.
+1. An interface in business terms (connection check, list items, read cost to date). It uses plain DTOs, not provider types and not generated entity types.
 2. One adapter class per provider. It is the only place with provider SDK calls, query languages, unit conversions (for example micro-currency) and paging or streaming of big results.
 3. A provider service, an OSGi component, that reads the entity's platform attribute (an enumeration), loads the credentials and returns a new adapter instance.
 4. DTOs for the data crossing the boundary, mapped to entities by the calling service.
 
-The interface, adapters and provider service are project code. The platform only supplies the OSGi wiring (`@Reference`, `@Component`) used to reach the provider service from a custom operation (see [Example 3: External Service Integration](../../agent-docs/backend/custom-operations.md#example-3-external-service-integration) and [The Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)).
+The interface, adapters and provider service are application code. The platform only supplies the OSGi wiring (`@Reference`, `@Component`) used to reach the provider service from a custom operation (see [Example 3: External Service Integration](../../agent-docs/backend/custom-operations.md#example-3-external-service-integration) and [The Custom Service Layer](../../agent-docs/backend/architectural-patterns.md#2-the-custom-service-layer)).
 
 ### Keep credentials out of code
 
-Credentials live in entities or files, not constants. The source project kept the provider key as a stored file and read it through the file store (see [[filestore-mediated-file-transfer]]); an entity row can hold the other settings. Protect the entities with actor access and do not return them through any transfer object that an ordinary actor can read.
+Credentials live in entities or files, not constants. The source application kept the provider key as a stored file and read it through the file store (see [[filestore-mediated-file-transfer]]); an entity row can hold the other settings. Protect the entities with actor access and do not return them through any transfer object that an ordinary actor can read.
 
 ### Map failures on purpose
 
@@ -42,7 +42,7 @@ An external failure is a runtime exception to the platform and becomes a generic
 - a `ValidationException` with a code, for an input-related failure;
 - a clear "platform not implemented" fault for a provider that has no adapter yet.
 
-Helpers such as an `ExceptionUtils.createBusinessErrorException` in the source project are project code, not platform API.
+Helpers such as an `ExceptionUtils.createBusinessErrorException` in the source application are application code, not platform API.
 
 ### Time, money and idempotency
 
@@ -60,7 +60,7 @@ Interceptors run in the transaction of the operation. A slow external call holds
 
 ## Example
 
-Indamedia-AdTrack: an ads interface with seven methods covers campaign discovery, connection testing, cost retrieval and budget monitoring. The Google adapter uses the provider's query language, converts micro-currency units and streams large result sets. The provider service loads the stored key through the file store and returns the adapter for the account's platform. Meta is a placeholder that raises a "platform not implemented" error. Three DTOs carry campaign data.
+One application: an ads interface with a few methods covers item discovery, connection testing, cost retrieval and budget monitoring. A search-ads adapter uses the provider's query language, converts micro-currency units and streams large result sets. The provider service loads the stored key through the file store and returns the adapter for the account's platform. A second provider is a placeholder that raises a "platform not implemented" error. A few DTOs carry item data.
 
 ## When to avoid
 

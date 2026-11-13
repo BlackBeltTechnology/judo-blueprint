@@ -40,7 +40,7 @@ Data received from an external system should not go straight into domain entitie
 
 - External format changes are absorbed in one entity and one operation.
 - Deduplication and validation happen at one boundary.
-- Project practice (not platform behaviour): two source projects used staging for a road-inspection API, an advertising-platform API and a tax-authority lookup.
+- Practice note (not platform behaviour): two source projects used staging for external APIs: a batch-style API, a per-request API and a lookup service.
 - Cost: an extra entity, a transformation step and possibly stale staging rows to clean up.
 
 ## Example

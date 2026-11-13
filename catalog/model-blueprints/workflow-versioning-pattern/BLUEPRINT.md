@@ -9,7 +9,7 @@ category: pattern
 status: single-project
 projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
-alternatives: [forecast-versioning-snapshot]
+alternatives: [plan-versioning-snapshot]
 fragment: workflow-versioning-pattern
 diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-05
@@ -44,7 +44,7 @@ Upload, commit and publish are custom operations, which interceptors never see (
 ## Variations
 
 - Keep the denormalised version numbers as derived attributes (computed from head and published) so they cannot drift.
-- Snapshot the data at commit time instead of owning structure per version; see [[forecast-versioning-snapshot]].
+- Snapshot the data at commit time instead of owning structure per version; see [[plan-versioning-snapshot]].
 - Drop the committed flag when every upload is immediately publishable.
 
 ## When to use
@@ -60,6 +60,6 @@ Upload, commit and publish are custom operations, which interceptors never see (
 ## Related
 
 - [[workflow-engine-state-machine-cluster]] — the workflow engine that uses this pattern for its definitions
-- [[forecast-versioning-snapshot]] — versions as data snapshots
+- [[plan-versioning-snapshot]] — versions as data snapshots
 - [[data-snapshot-versioning]] — snapshot practice for versions
 - [[custom-operation-osgi-component]] — how upload, commit and publish are registered

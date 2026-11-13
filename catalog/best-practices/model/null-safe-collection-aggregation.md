@@ -23,7 +23,7 @@ A derived attribute that adds up a field over a collection must behave well when
 
 ### Choose the guard by the field's cardinality
 
-This is project practice on top of the platform's collection functions. The platform (see [model development, collection functions](../../agent-docs/model/model-development.md)) provides `!filter`, `!isDefined()`, `!count()`, `!sum`, `!avg`, `!min`, `!max` and the ternary `cond ? a : b`. It does not document how an undefined selector value or an empty collection is treated by `!sum`, so the practice does not rely on either.
+This is a convention on top of the platform's collection functions. The platform (see [model development, collection functions](../../agent-docs/model/model-development.md)) provides `!filter`, `!isDefined()`, `!count()`, `!sum`, `!avg`, `!min`, `!max` and the ternary `cond ? a : b`. It does not document how an undefined selector value or an empty collection is treated by `!sum`, so the practice does not rely on either.
 
 - **Required field**: sum it directly, `self.lines!sum(l | l.amount)`.
 - **Optional field**: filter first, `self.lines!filter(l | l.discount!isDefined())!sum(l | l.discount)`.
@@ -49,7 +49,7 @@ Declare the expression as a derived member of the entity (or of a transfer objec
 
 A neutral Order owns a composition collection of OrderLine items. OrderLine has a required `amount` and an optional `discount`. Order carries three derived members: `total` sums `amount` directly; `totalDiscount` filters on `discount!isDefined()` before summing; `guardedTotal` returns 0 when there are no lines.
 
-The original projects used the same three forms. itracker summed a required saving-potential field directly and used the filter form for an optional "actual saving" that is empty until entered. MJSZ guarded team points and goal totals with the count ternary, and counted played matches with filter plus `!count()`.
+The original projects used the same three forms. One summed a required saving-potential field directly and used the filter form for an optional "actual saving" that is empty until entered. Another guarded its point and total sums with the count ternary, and counted completed rows with filter plus `!count()`.
 
 <!-- mermaid:generated fragment=null-safe-collection-aggregation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid

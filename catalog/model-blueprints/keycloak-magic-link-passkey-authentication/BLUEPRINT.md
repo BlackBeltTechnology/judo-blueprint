@@ -8,7 +8,7 @@ tags: [domain:backend, layer:backend, project:mlszksz-platform, status:single-pr
 category: pattern
 status: single-project
 projects: [mlszksz-platform]
-evidence: ["mlszksz-platform:unrecorded"]
+evidence: ["mlszksz-platform:application/keycloak-extensions/src/main/java/hu/blackbelt/mlszksz/platform/keycloak/extensions/auth/token/MagicLinkActionTokenHandler.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/MagicLinkService.java"]
 alternatives: [capacitor-native-auth-pkce-passkey]
 fragment: none: backend-only
 first_seen: 2026-03-09
@@ -16,7 +16,7 @@ last_updated: 2026-11-10
 ---
 ## Intent
 
-Let users sign in without a password. A user gets a magic link by email, or registers a passkey, and the identity provider handles the sign-in. The JUDO platform does not implement authentication itself: it trusts a Keycloak access token and resolves its principal to an actor. The platform can already generate the realm and one client per actor from a `realm` annotation on the actor type (the platform's defaults are minimal: login with email, direct access grants). Everything in this entry on top of that, the extra realm setup, the magic link and the passkey flow, is project practice (mlszksz-platform) and not platform behaviour. The application configures Keycloak, calls Keycloak's admin interface, and adds a small extension to Keycloak for the magic-link step.
+Let users sign in without a password. A user gets a magic link by email, or registers a passkey, and the identity provider handles the sign-in. The JUDO platform does not implement authentication itself: it trusts a Keycloak access token and resolves its principal to an actor. The platform can already generate the realm and one client per actor from a `realm` annotation on the actor type (the platform's defaults are minimal: login with email, direct access grants). Everything in this entry on top of that, the extra realm setup, the magic link and the passkey flow, is project practice and not platform behaviour. The application configures Keycloak, calls Keycloak's admin interface, and adds a small extension to Keycloak for the magic-link step.
 
 ### Passwordless sign-in lives in the identity provider
 

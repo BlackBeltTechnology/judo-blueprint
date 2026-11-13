@@ -8,7 +8,7 @@ tags: ["domain:frontend", "layer:frontend", "project:trivia", "project:rackinspe
 category: component
 status: emerging
 projects: [trivia, rackinspect]
-evidence: ["trivia:unrecorded", "rackinspect:unrecorded"]
+evidence: ["trivia:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/register-error-handler-interceptor.ts"]
 alternatives: []
 related: [generated-service-layer-reuse, localstorage-session-persistence, http-error-interceptor]
 fragment: "none: frontend-only"
@@ -28,7 +28,7 @@ A custom frontend call can fail in known ways (invalid registration code, duplic
 - The generated frontend handles errors by status only: 400 shows the validation toast and inline field errors only when the first error has a `location`; 422 opens the fault dialog from the first body key; the `X-Fault` header is never read. Only three validation codes are translated by default; other codes fall back to the raw code string, and you add `judo.error.validation-failed.<CODE>` keys for your own ([frontend error handling](../../agent-docs/frontend/error-handling.md)).
 - A custom error handler interceptor (scaffold `register-error-handler-interceptor.ts.default`, key `ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY`) runs before default handling and can take over a response globally.
 
-### Project practice: switch on the code in custom calls
+### Practice notes: switch on the code in custom calls
 
 For custom code that calls the generated service layer directly (see [[generated-service-layer-reuse]]), inspect the response and branch on the code:
 
@@ -40,8 +40,8 @@ try {
   const results = Array.isArray(body) ? body : Object.values(body ?? {});
   const first = results[0] as { code?: string; message?: string } | undefined;
   switch (first?.code) {
-    case 'REGISTRATION_CODE_INVALID': // project-defined code
-      openRegistrationDialog();
+    case 'ACCESS_CODE_INVALID': // app-defined code
+      openAccessDialog();
       break;
     case 'PATTERN_VALIDATION_FAILED':
       showError(first.message);       // server text
@@ -54,7 +54,7 @@ try {
 
 - Handle both shapes: a list for 400 and a fault-keyed object for 422; do not assume one first key.
 - Show the server `message` when it is already translated; use your own text keyed by code when the product wording differs.
-- Keep the code-to-action table in one module so it follows the backend contract; project-defined codes come from your modeled faults or validations.
+- Keep the code-to-action table in one module so it follows the backend contract; app-defined codes come from your modeled faults or validations.
 - For one app-wide rule (for example a snack for every 422), use the error handler interceptor instead ([[http-error-interceptor]]); per-call mapping is for flows that need an action, such as opening a dialog.
 
 ## Rationale
@@ -63,8 +63,8 @@ Specific reactions improve recovery (re-registration, retry) and message quality
 
 ## Example
 
-- trivia, player frontend: three mapped codes: an invalid-code error reopens the registration dialog, a pattern failure shows the server message, a uniqueness violation shows a fixed text. Codes are read from the first key of the response body.
-- rackinspect: a global error handler interceptor takes every 422 response and shows its message as a short snackbar: the centralized alternative.
+- A game frontend with three mapped codes: an invalid-code error reopens the access dialog, a pattern failure shows the server message, a uniqueness violation shows a fixed text. Codes are read from the first key of the response body.
+- A frontend with a global error handler interceptor that takes every 422 response and shows its message as a short snackbar: the centralized alternative.
 
 ## When to avoid
 

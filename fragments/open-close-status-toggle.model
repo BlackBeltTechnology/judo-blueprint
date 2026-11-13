@@ -191,12 +191,12 @@
   </elements>
   <elements xsi:type="namespace:Package" xmi:id="_K4mGQdxVEfGmVLALNNdcIw" name="bp">
     <elements xsi:type="namespace:Package" xmi:id="_LDfusNxVEfGmVLALNNdcIw" name="open_close_status_toggle">
-      <elements xsi:type="type:EnumerationType" xmi:id="_LJ_YQNxVEfGmVLALNNdcIw" name="ContestStatus">
+      <elements xsi:type="type:EnumerationType" xmi:id="_LJ_YQNxVEfGmVLALNNdcIw" name="EventStatus">
         <members xmi:id="_LP-rgNxVEfGmVLALNNdcIw" name="OPEN" ordinal="1"/>
         <members xmi:id="_LVs5ANxVEfGmVLALNNdcIw" name="CLOSED" ordinal="2"/>
       </elements>
-      <elements xsi:type="structure:EntityType" xmi:id="_LbjCUNxVEfGmVLALNNdcIw" name="Contest" createable="false" updateable="false" deleteable="false">
-        <attributes xsi:type="structure:DataMember" xmi:id="_LiJZkNxVEfGmVLALNNdcIw" name="status" dataType="_LJ_YQNxVEfGmVLALNNdcIw" required="true" defaultExpression="Sandbox::bp::open_close_status_toggle::ContestStatus#CLOSED" binding="_LiJZkNxVEfGmVLALNNdcIw" getterExpression="" identifier="false" memberType="STORED">
+      <elements xsi:type="structure:EntityType" xmi:id="_LbjCUNxVEfGmVLALNNdcIw" name="Event" createable="false" updateable="false" deleteable="false">
+        <attributes xsi:type="structure:DataMember" xmi:id="_LiJZkNxVEfGmVLALNNdcIw" name="status" dataType="_LJ_YQNxVEfGmVLALNNdcIw" required="true" defaultExpression="Sandbox::bp::open_close_status_toggle::EventStatus#CLOSED" binding="_LiJZkNxVEfGmVLALNNdcIw" getterExpression="" identifier="false" memberType="STORED">
           <inherited xmi:id="_LiKAoNxVEfGmVLALNNdcIw"/>
         </attributes>
         <attributes xsi:type="structure:DataMember" xmi:id="_LoxmANxVEfGmVLALNNdcIw" name="title" dataType="_nhZUUuOjEeuTFeBuQgBSDg" required="true" defaultExpression="" binding="_LoxmANxVEfGmVLALNNdcIw" getterExpression="" identifier="false" memberType="STORED">
@@ -209,9 +209,9 @@
         <operations xmi:id="_P5fNQNxVEfGmVLALNNdcIw" name="close" customImplementation="true" body="" stateful="true" operationType="INSTANCE" binding="" initializer="false">
           <inherited xmi:id="_P5fNQdxVEfGmVLALNNdcIw"/>
         </operations>
-        <form xmi:id="_LblekdxVEfGmVLALNNdcIw" name="Contest_Form" label="Contest Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <table xmi:id="_LbmFoNxVEfGmVLALNNdcIw" name="Contest_Table" label="Contest Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
-        <view xmi:id="_LblekNxVEfGmVLALNNdcIw" name="Contest_View_Edit" label="Contest View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
+        <form xmi:id="_LblekdxVEfGmVLALNNdcIw" name="Event_Form" label="Event Form" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <table xmi:id="_LbmFoNxVEfGmVLALNNdcIw" name="Event_Table" label="Event Table" checkboxSelection="ENABLED" rowsPerPage="10" crudOperationsDisplayed="1" transferOperationsDisplayed="0" generateVisualPropertiesHook="false" generateActionsHook="false"/>
+        <view xmi:id="_LblekNxVEfGmVLALNNdcIw" name="Event_View_Edit" label="Event View / Edit" layout="VERTICAL" horizontal="LEFT" vertical="TOP" frame="false" titleFrom="LABEL" generateActionsHook="false" generateVisualPropertiesHook="false"/>
       </elements>
     </elements>
   </elements>
