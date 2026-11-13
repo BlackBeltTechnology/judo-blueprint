@@ -86,6 +86,20 @@ def all_ids():
     return ids
 
 
+def _project_names():
+    p = ROOT / "PROJECTS.md"
+    if not p.exists():
+        return []
+    names = re.findall(r"^\| \d+ \| \*\*([^*]+)\*\*", p.read_text(), re.M)
+    extra = ["RackInspect", "ParkHere", "AdTrack", "mlszksz"]
+    # skip names that are ordinary words (e.g. alba, trivia) to avoid false hits
+    common = {"alba", "trivia"}
+    return [n for n in names if n.lower() not in common] + extra
+
+
+PROJECT_NAMES = _project_names()
+
+
 def lint_content(path, text, errs, profile):
     body_nofence = strip_fences(text)
     for rx, name in CLI_PATTERNS:
@@ -103,6 +117,13 @@ def lint_content(path, text, errs, profile):
             errs.append(f"privacy: {name}")
     if HBS.search(GEN.sub("", body_nofence)):
         errs.append("Handlebars outside code fences")
+    # project names belong only in frontmatter (projects/evidence/tags)
+    body = re.sub(r"\A---\n.*?\n---\n", "", text, flags=re.S)
+    body = GEN.sub("", body)
+    for n in PROJECT_NAMES:
+        if re.search(r"(?i)(?<![\w-])" + re.escape(n) + r"(?![\w])", body):
+            errs.append(f"project name in body: {n}")
+            break
     # chunk size
     parts = re.split(r"^#{1,6} .*$", text, flags=re.M)
     for p in parts:

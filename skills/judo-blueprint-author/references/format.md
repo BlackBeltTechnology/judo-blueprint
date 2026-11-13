@@ -45,7 +45,7 @@ last_updated: 2026-11-09
   `format: legacy`.
 - `diagram` (optional): CLI render options, `kinds` from
   `entity, enum, transfer, actor, operation`, `members` from `types|names|none`.
-- `tags`: `domain:<model|backend|frontend|...>`, `layer:<model|backend|frontend>`
+- `tags`: `domain:<model|backend|frontend|project|...>` (`project` = repository-level layout), `layer:<model|backend|frontend>`
   (one per layer file present), `project:<p>` per project, `status:<s>`.
 - Dates are `YYYY-MM-DD`.
 
@@ -117,6 +117,10 @@ see [fragments.md](../../judo-model-mermaid/references/fragments.md).
 Never edit a `.model` file by hand, never commit the commands you used.
 
 ## Forbidden content (entry-lint rejects)
+
+- Project names (from `PROJECTS.md`) anywhere in the body: they belong only in
+  `projects:`, `evidence:` and `project:` tags. Write the body neutrally
+  ("one project", neutral names like `Order`, `Product`), with no client-domain terms.
 
 - ```` ```graphql ```` fences, `mutation {`, `query {` GraphQL blocks
 - CLI invocations: `java -jar`, `judo-cli`, `judo_cli`, `create -t`, `--ns `,
