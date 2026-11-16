@@ -43,7 +43,7 @@ The workflow rules live in the model next to the data they read, so every client
 
 ## Example
 
-- A document with four statuses (new, review, approved, rejected). The owner sees send-for-approval on new or rejected; an approver sees approve and reject on review; everyone sees archive on approved. All use mandatory confirmation. Twelve form fields follow one editability flag; one forecast field has dual control, with one value editable by owners and another only by approvers on approved documents.
+- A document with four statuses (new, review, approved, rejected). The owner sees send-for-approval on new or rejected; an approver sees approve and reject on review; everyone sees archive on approved. All use mandatory confirmation. Twelve form fields follow one editability flag; one planning field has dual control, with one value editable by owners and another only by approvers on approved documents.
 - An order with six statuses (created, pending, approved, rejected, shipped, closed). Five derived booleans (close, attach-file, attach-signed-file, ready-for-approval, ready-for-attachment) combine status with file presence and drive `enabledBy` on the operation forms.
 
 ## When to avoid

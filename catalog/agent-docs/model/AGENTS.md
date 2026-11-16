@@ -8,6 +8,7 @@
 |---|---|
 | `README.md` | Model documentation for JUDO applications: ESM metamodel, JUDO Model CLI, JQL, modeling patterns, validation and transformation. |
 | `advanced-modeling-patterns.md` | Advanced JUDO modeling patterns: view model panel transfer objects with derived relations (dashboards), actors and principals, role flags, polymorphism and polymorphic creation for abstract entities,  |
+| `esm_metamodel/` | Index of the ESM metamodel reference, one page per esm.ecore package. (11 files; index in `esm_metamodel/AGENTS.md`) |
 | `generalization-guide.md` | Placeholder conventions and generic code examples used across the JUDO agent documentation, so it applies to any application. |
 | `jcl-operation-scripts.md` | Syntax, restrictions and validation of JCL operation body scripts in JUDO models. |
 | `jsl-language-notes.md` | JSL identifiers, built-in libraries, actor grammar limits and the validator rules that fail a model build. |

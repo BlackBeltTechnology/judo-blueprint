@@ -21,7 +21,7 @@ Store a question with a fixed set of labeled answers and one correct answer, so 
 
 ### Answers are fixed letters
 
-The entity has exactly four choice texts (A to D) and a Choice enumeration for the correct one. The enumeration has a NONE member that means "not answered" and is used as the default for a player's answer.
+The entity has exactly four choice texts (A to D) and a Choice enumeration for the correct one. The enumeration has a NONE member that means "not answered" and is used as the default for a respondent's answer.
 
 ### Questions are created by the backend
 

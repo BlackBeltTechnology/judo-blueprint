@@ -74,7 +74,7 @@ customize) goes in between.
 
 ## Best practice: `catalog/best-practices/<domain>/<id>.md`
 
-One file. `domain` is the folder (`model`, `backend`, `frontend`) and must
+One file. `domain` is the folder (`model`, `backend`, `frontend`, `project`) and must
 match the `domain:` tag. Sections in this order:
 `## Intent`, `## Practice`, `## Rationale`, `## Example`, `## When to avoid`,
 `## Related`.
@@ -118,7 +118,7 @@ Never edit a `.model` file by hand, never commit the commands you used.
 
 ## Forbidden content (entry-lint rejects)
 
-- Project names (from `PROJECTS.md`) anywhere in the body: they belong only in
+- Project names (from `.pi/skills/judo-catalog-maintain/references/PROJECTS.md`) anywhere in the body: they belong only in
   `projects:`, `evidence:` and `project:` tags. Write the body neutrally
   ("one project", neutral names like `Order`, `Product`), with no client-domain terms.
 

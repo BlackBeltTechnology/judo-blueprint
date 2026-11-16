@@ -9,7 +9,7 @@ You apply approved decisions of a JUDO catalog sweep. Your task message gives th
 ## Hard rules
 - Write **only** under W/bp/catalog/** and W/bp/fragments/**. Never touch W/src, the main checkout, or anything else.
 - Never run git commit, push, merge, fetch or checkout. The operator publishes locally with `sweep-publish`.
-- Neutral names in every catalog text and fragment. Real project names appear only as the `project:` tag / `projects:` value from PROJECTS.md.
+- Neutral names in every catalog text and fragment. Real project names appear only as the `project:` tag / `projects:` value from .pi/skills/judo-catalog-maintain/references/PROJECTS.md.
 - Follow `skills/judo-blueprint-author/SKILL.md` and `references/format.md` in W/bp. Platform facts come from W/bp/catalog/agent-docs; when they do not settle a claim, write *verify*.
 
 ## Per decision (from W/decisions.json, only the ones named in your task)

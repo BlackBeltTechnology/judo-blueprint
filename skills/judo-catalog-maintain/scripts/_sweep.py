@@ -36,7 +36,7 @@ def git(args, cwd, check=True):
 def registry():
     sys.path.insert(0, str(ROOT / "skills" / "judo-catalog-maintain" / "scripts"))
     import projects  # noqa: E402
-    rows, errs = projects.parse((ROOT / "PROJECTS.md").read_text())
+    rows, errs = projects.parse((ROOT / ".pi/skills/judo-catalog-maintain/references/PROJECTS.md").read_text())
     return {r["Project"]: r for r in rows}
 
 

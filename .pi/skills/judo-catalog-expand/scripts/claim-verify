@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+"""claim-verify: mechanical check of agent findings before a human sees them.
+
+Usage:
+  claim-verify claims <work-dir> --session <session.jsonl> [--app <app-dir>]
+      Reads <work-dir>/validated/*.jsonl (miner + validator output). Checks each claim:
+      session:L<n> evidence shares >=2 words with the cited line (or its chunk line),
+      app:/webshop: paths and commit: SHAs exist, catalog targets exist
+      (add-catalog on an existing file is relabelled modify). Writes validated-all.json.
+  claim-verify findings <work-dir> <project>=<snapshot-src> [...]
+      Reads <work-dir>/<project>.jsonl (explore output). Checks every project_evidence
+      path exists in the snapshot (a leading `src/` is tolerated) and catalog_entry exists.
+
+Prints counts of every problem; exit 1 if any evidence is unresolved.
+"""
+import glob
+import json
+import os
+import pathlib
+import re
+import subprocess
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[4]
+WORDS = re.compile(r"[A-Za-z][A-Za-z0-9_]{4,}")
+
+
+def words(s):
+    return {w.lower() for w in WORDS.findall(s or "")}
+
+
+def claims(work, session, app):
+    sess = open(session).read().split("\n")
+    chunks = {pathlib.Path(f).name[:3]: open(f).read().split("\n") for f in glob.glob(f"{work}/chunks/*.txt")}
+    commits = set()
+    if app:
+        commits = set(subprocess.run(["git", "-C", app, "log", "--all", "--format=%h %H"],
+                                     capture_output=True, text=True).stdout.split())
+    rows, bad = [], 0
+    for f in sorted(glob.glob(f"{work}/validated/*.jsonl")):
+        for line in open(f):
+            if not line.strip():
+                continue
+            o = json.loads(line)
+            chk = []
+            ev = o.get("evidence") or []
+            cw = words(o.get("what"))
+            refs = [int(n) for e in ev for n in re.findall(r"session:L(\d+)", e)]
+            ok = False
+            for n in refs:
+                cands = [sess[n]] if n < len(sess) else []
+                ch = chunks.get(o.get("id", "")[:3]) or []
+                if n - 1 < len(ch):
+                    cands.append(" ".join(ch[max(0, n - 3):n + 3]))
+                ok = ok or any(len(cw & words(c[:20000])) >= 2 for c in cands)
+            chk.append("session-ok" if ok else ("session-weak" if refs else "no-session-ref"))
+            for e in ev:
+                m = re.match(r"(?:app|webshop):([^:]+)", e)
+                if m and app and not os.path.exists(os.path.join(app, m.group(1))):
+                    chk.append("file-missing:" + m.group(1))
+                m = re.match(r"commit:([0-9a-f]{7,})", e)
+                if m and app and not any(c.startswith(m.group(1)) for c in commits):
+                    chk.append("commit-missing:" + m.group(1))
+            t = (o.get("target") or "").split("#")[0].split(" ")[0]
+            if t.startswith("catalog/"):
+                exists = (ROOT / t).exists()
+                if o.get("disposition") == "modify-catalog" and not exists:
+                    chk.append("target-missing")
+                if o.get("disposition") == "add-catalog" and exists:
+                    o["disposition"] = "modify-catalog"
+                    chk.append("add-relabelled-modify")
+            bad += any(c.startswith(("session-weak", "file-missing", "commit-missing", "target-missing")) for c in chk)
+            o["_checks"] = chk
+            o["_batch"] = pathlib.Path(f).stem
+            rows.append(o)
+    json.dump(rows, open(f"{work}/validated-all.json", "w"), indent=0)
+    from collections import Counter
+    print(len(rows), "claims", dict(Counter(c.split(":")[0] for o in rows for c in o["_checks"])))
+    for o in rows:
+        if any(c.startswith(("session-weak", "file-missing", "commit-missing", "target-missing")) for c in o["_checks"]):
+            print(" check by hand:", o.get("id"), o["_checks"], (o.get("what") or "")[:90])
+    return 1 if bad else 0
+
+
+def findings(work, pairs):
+    bad = 0
+    for pair in pairs:
+        proj, src = pair.split("=", 1)
+        rows = [json.loads(l) for l in open(f"{work}/{proj}.jsonl") if l.strip()]
+        for r in rows:
+            paths = [e.split(":")[0].strip() for e in r.get("project_evidence") or []]
+            paths = [p[4:] if p.startswith("src/") else p for p in paths]
+            ok = any(os.path.exists(os.path.join(src, p)) for p in paths)
+            ce = (r.get("catalog_entry") or "").split("#")[0]
+            cat_ok = not ce.startswith("catalog/") or (ROOT / ce).exists()
+            if not ok or not cat_ok:
+                bad += 1
+                print(" unresolved:", r.get("id"), "evidence" if not ok else "", "catalog" if not cat_ok else "")
+        print(proj, len(rows), "findings")
+    return 1 if bad else 0
+
+
+def main(a):
+    if not a or a[0] not in ("claims", "findings"):
+        print(__doc__)
+        return 2
+    if a[0] == "claims":
+        s = a[a.index("--session") + 1]
+        app = a[a.index("--app") + 1] if "--app" in a else None
+        return claims(a[1], s, app)
+    return findings(a[1], a[2:])
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

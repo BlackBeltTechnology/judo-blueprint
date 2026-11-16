@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""gap-report: the deterministic steps between miners, validators and the human.
+
+Usage:
+  gap-report batch  <work-dir> [--gaps <APP_DIR>/GAPS.md] [--size 50]
+      Merge miners/*.jsonl, drop exact duplicates (same kind + same normalised `what`),
+      list GAPS.md refs (R<n>-<m>) no claim cites -> uncovered-gaps.txt (one reconciler agent),
+      split issues + platform claims into batches/<kind>-NN.jsonl of about --size.
+  gap-report render <work-dir> [--app <APP_DIR>]
+      Read validated-all.json (from claim-verify) or validated/*.jsonl, follow dup_of chains,
+      and write GAP-ANALYSIS.md: summary, built functions, decisions, then one checkbox block
+      per distinct item grouped by catalog target file, tickets, tool fixes, one-offs,
+      no-action and refuted.
+"""
+import collections
+import glob
+import json
+import pathlib
+import re
+import subprocess
+import sys
+
+KIND_GROUP = {"catalog-gap": "catalog", "catalog-wrong": "catalog", "builder-mistake": "builder",
+              "test-design": "test", "platform-bug": "platform", "platform-limit": "platform",
+              "cli-tool": "tools", "agent-tool": "tools"}
+
+
+def load(pattern):
+    out = []
+    for f in sorted(glob.glob(pattern)):
+        out += [json.loads(l) for l in open(f) if l.strip()]
+    return out
+
+
+def batch(work, gaps, size):
+    items = load(f"{work}/miners/*.jsonl")
+    seen, keep = set(), []
+    for i in items:
+        k = (i.get("type"), i.get("kind"), re.sub(r"\W+", " ", (i.get("what") or "").lower()).strip()[:120])
+        if k in seen:
+            continue
+        seen.add(k)
+        keep.append(i)
+    print(f"{len(items)} mined, {len(items) - len(keep)} exact duplicates dropped")
+    json.dump([i for i in keep if i.get("type") == "built"], open(f"{work}/built.json", "w"), indent=0)
+    json.dump([i for i in keep if i.get("type") == "decision"], open(f"{work}/decisions.json", "w"), indent=0)
+    if gaps:
+        refs = set(re.findall(r"^(R\d+-\d+)\.", open(gaps).read(), re.M))
+        cited = {r for i in keep for r in re.findall(r"R\d+-\d+", json.dumps(i))}
+        miss = sorted(refs - cited, key=lambda s: tuple(int(x) for x in s[1:].split("-")))
+        pathlib.Path(f"{work}/uncovered-gaps.txt").write_text("\n".join(miss) + "\n")
+        print(f"GAPS refs {len(refs)}, uncovered {len(miss)} -> uncovered-gaps.txt")
+    groups = collections.defaultdict(list)
+    for i in keep:
+        if i.get("type") in ("issue", "platform-claim"):
+            groups[KIND_GROUP.get(i.get("kind"), "process")].append(i)
+    pathlib.Path(f"{work}/batches").mkdir(exist_ok=True)
+    for g, rows in groups.items():
+        parts = max(1, -(-len(rows) // size))
+        for p in range(parts):
+            chunk = rows[p::parts]
+            f = f"{work}/batches/{g}-{p + 1:02d}.jsonl"
+            open(f, "w").write("".join(json.dumps(r) + "\n" for r in chunk))
+            print(f, len(chunk))
+
+
+def render(work, app):
+    p = pathlib.Path(f"{work}/validated-all.json")
+    v = json.load(open(p)) if p.exists() else load(f"{work}/validated/*.jsonl")
+    byid = {o["id"]: o for o in v}
+
+    def root(i, seen=()):
+        o = byid.get(i)
+        return i if not o or not o.get("dup_of") or i in seen else root(o["dup_of"], seen + (i,))
+    merged = collections.defaultdict(list)
+    for o in v:
+        if o.get("dup_of"):
+            merged[root(o["id"])].append(o["id"])
+    prim = [o for o in v if not o.get("dup_of") and o.get("verdict")]
+    live = [o for o in prim if o["verdict"] != "refuted"]
+    esc = lambda s: (s or "").replace("|", "\\|").replace("\n", " ").strip()
+    rk = lambda o: int((re.search(r"\d+", str(o.get("round"))) or [0])[0]) if re.search(r"\d+", str(o.get("round"))) else 0
+    L = ["# Build session: validated gap analysis", "",
+         "**How to confirm:** tick `Issue` if it is real, then ONE action. The validator's suggestion is pre-ticked.", "",
+         "## Summary", "",
+         f"- {len(v)} claims, {sum(map(len, merged.values()))} merged as duplicates, **{len(prim)} distinct**.",
+         "- Verdicts: " + ", ".join(f"{k} {n}" for k, n in collections.Counter(o["verdict"] for o in prim).most_common()) + ".",
+         "- Proposed: " + ", ".join(f"{k} {n}" for k, n in collections.Counter(o.get("disposition") for o in live).most_common()) + "."]
+    if app:
+        log = subprocess.run(["git", "-C", app, "log", "--reverse", "--format=%h %s"], capture_output=True, text=True).stdout
+        L += ["", "## Commits", "", "| Commit | Content |", "|---|---|"] + [f"| `{c[:7]}` | {esc(c[8:])} |" for c in log.splitlines()]
+    built = json.load(open(f"{work}/built.json")) if pathlib.Path(f"{work}/built.json").exists() else []
+    if built:
+        L += ["", "## Built", "", "| Round | Functions | What |", "|---|---|---|"]
+        L += [f"| {b.get('round')} | {', '.join(b.get('functions') or [])} | {esc(b.get('what'))[:160]} |" for b in sorted(built, key=rk)]
+    n = [0]
+    acts = {"add-catalog": "add", "modify-catalog": "modify", "one-off": "one-off", "platform-ticket": "ticket", "tool-fix": "tool", "no-action": "drop"}
+
+    def block(o):
+        n[0] += 1
+        ticks = " ".join(f"[{'x' if acts.get(o.get('disposition')) == a else ' '}] {a}" for a in ["add", "modify", "one-off", "ticket", "tool", "drop"])
+        ev = ", ".join(f"`{e}`" for e in (o.get("evidence") or [])[:4])
+        return [f"#### G{n[0]:03d} `{o['id']}` {o.get('round', '')}: {esc(o.get('what'))[:200]}", "",
+                f"- [ ] **Issue**  Action: {ticks}",
+                f"- **Proposed:** {o.get('disposition')}{' → `' + o['target'] + '`' if o.get('target') else ''}. {esc(o.get('note'))}",
+                f"- **Why:** {esc(o.get('why'))}",
+                f"- **Validation:** {o['verdict']}; catalog {o.get('catalog_status')}. Evidence: {ev}"
+                + (f". Merged: {', '.join(merged[o['id']][:8])}" if merged.get(o["id"]) else ""), ""]
+    L += ["", "## A. Catalog changes (by file)", ""]
+    bt = collections.defaultdict(list)
+    for o in live:
+        if o.get("disposition") in ("add-catalog", "modify-catalog"):
+            bt[(o.get("target") or "?").split("#")[0].split(" ")[0]].append(o)
+    for t, rows in sorted(bt.items(), key=lambda x: -len(x[1])):
+        L += [f"### `{t}` ({len(rows)})", ""]
+        for o in sorted(rows, key=rk):
+            L += block(o)
+    for title, disp in [("B. Platform tickets", "platform-ticket"), ("C. Tool / CLI / skill fixes", "tool-fix"), ("D. One-off", "one-off"), ("E. No action", "no-action")]:
+        L += [f"## {title}", ""]
+        for o in sorted([o for o in live if o.get("disposition") == disp], key=rk):
+            L += block(o)
+    L += ["## F. Refuted", "", "| ID | Claim | Finding |", "|---|---|---|"]
+    L += [f"| `{o['id']}` | {esc(o.get('what'))[:200]} | {esc(o.get('note'))[:260]} |" for o in prim if o["verdict"] == "refuted"]
+    pathlib.Path(f"{work}/GAP-ANALYSIS.md").write_text("\n".join(L) + "\n")
+    print(f"{work}/GAP-ANALYSIS.md: {n[0]} items")
+
+
+def main(a):
+    if len(a) < 2 or a[0] not in ("batch", "render"):
+        print(__doc__)
+        return 2
+    if a[0] == "batch":
+        batch(a[1], a[a.index("--gaps") + 1] if "--gaps" in a else None, int(a[a.index("--size") + 1]) if "--size" in a else 50)
+    else:
+        render(a[1], a[a.index("--app") + 1] if "--app" in a else None)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

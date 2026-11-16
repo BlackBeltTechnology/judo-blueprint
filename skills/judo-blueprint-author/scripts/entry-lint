@@ -87,7 +87,7 @@ def all_ids():
 
 
 def _project_names():
-    p = ROOT / "PROJECTS.md"
+    p = ROOT / ".pi/skills/judo-catalog-maintain/references/PROJECTS.md"
     if not p.exists():
         return []
     names = re.findall(r"^\| \d+ \| \*\*([^*]+)\*\*", p.read_text(), re.M)

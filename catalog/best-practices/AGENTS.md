@@ -6,3 +6,7 @@
 
 | File | Purpose |
 |---|---|
+| `backend/` | Backend practices (94 files; index in `backend/AGENTS.md`) |
+| `frontend/` | Frontend practices (74 files; index in `frontend/AGENTS.md`) |
+| `model/` | Modelling practices (77 files; index in `model/AGENTS.md`) |
+| `project/` | Repository-level layout practices (5 files; index in `project/AGENTS.md`) |

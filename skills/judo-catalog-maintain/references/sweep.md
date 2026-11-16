@@ -21,7 +21,7 @@ A sweep reads one JUDO project read-only and turns its recurring, hand-written p
 | 6 | author | `Agent judo-sweep-author`, one per batch of about 5 decisions; parallel only for disjoint entries | edits in `W/bp/catalog`, `W/bp/fragments` | |
 | 7 | gates | in `W/bp`: `skills/judo-catalog-maintain/scripts/check-all`; write `W/gates.json` `{"result":"pass"}` only when it passes | report | On fail, re-dispatch the author with the report, at most 3 rounds, then stop |
 | 8 | publish (local) | `scripts/sweep-publish <project>` | commit on `sweep/<project>-<sha7>`, `W/pr-body.md` (neutral names) | Review, then `git merge sweep/<project>-<sha7>` yourself |
-| 9 | record | update the project's `Swept SHA` in `PROJECTS.md` | | |
+| 9 | record | update the project's `Swept SHA` in `.pi/skills/judo-catalog-maintain/references/PROJECTS.md` | | |
 
 After several projects: `scripts/sweep-overlap` lists entries that more than one project supports. Their status moves from `single-project` to `emerging` or `established`. When a sweep branch is merged, `scripts/sweep-prepare --clean` removes its worktrees; unmerged ones are kept.
 

@@ -1,25 +1,51 @@
 # JUDO Blueprint
 
-The JUDO catalog: platform documentation, model blueprints and best practices for JUDO applications. It is built to be searched by the pi kb (`kb_search`, `kb_get`) and comes with pi skills that use, diagram and author it.
+> **Note for agents:** if `kb_search` returned this README, the kb settings index too much. Add `README.md` (and, if present, `.pi/skills/**`, `openspec/**`) to the `exclude` list in `.pi/dashboard/knowledge_base.json`, or index only `catalog/`. This file describes the repository; it is not catalog knowledge.
+
+The JUDO catalog: platform documentation, model blueprints and best practices for building JUDO applications. It is made to be searched by the pi kb (`kb_search`, `kb_get`), and it ships pi skills that use, diagram, author and grow it.
+
+## What this project is
+
+JUDO generates a full application (database, OSGi backend on Karaf, React frontend, Keycloak) from a model. Building real applications on it needs knowledge the generator does not give you: how the platform really behaves, which model shapes work, and which coding practices hold up. This repository collects that knowledge in one searchable catalog:
+
+- **Platform facts** (`agent-docs/`) are the source of truth. Every other entry must agree with them; where they are silent, an entry says *verify*.
+- **Model blueprints** and **best practices** are mined from real JUDO projects. Each entry is written generically: the reusable mechanism with neutral names (`Order`, `Product`, `WorkOrder`). The projects it was seen in appear only as metadata (`projects:`, `evidence:` with real file paths, `project:` tags), never in the text.
+- **Diagrams** are generated from small validated JUDO models (`fragments/`), so every model shape is known to be valid.
+- **Status** follows evidence: `single-project` (1 project), `emerging` (2 to 3), `established` (4 or more).
+
+The catalog is tested by use: an agent builds a real application with only the catalog as knowledge, and the gaps it hits are mined back into the catalog (see `judo-catalog-expand`).
 
 ## What's inside
 
 ```
-catalog/                     the kb source (consumers index only this folder)
-  agent-docs/                platform behaviour and rules, by area (83 docs)
+catalog/                       the kb source (consumers index only this folder)
+  agent-docs/                  platform behaviour and rules (83 docs)
     model/ backend/ frontend/ deployment/ integration-testing/ e2e-testing/
-  model-blueprints/<id>/     103 reusable domain shapes
-    BLUEPRINT.md             intent, structure, constraints, variations, when to use/avoid
-    model.md                 model shape + generated Mermaid diagram
-    backend.md frontend.md   layer guidance (project code is labelled as such)
-  best-practices/<domain>/   207 single practices (model 71, backend 74, frontend 62)
-fragments/<id>.model         144 validated fragment models behind the diagrams
-skills/                      pi skills (see below)
-PROJECTS.md                  projects the patterns were taken from
-openspec/                    change proposals and specs for this repository
+  model-blueprints/<id>/       110 reusable model shapes
+    BLUEPRINT.md               intent, structure, constraints, variations, when to use/avoid
+    model.md                   model shape + generated Mermaid diagram
+    backend.md frontend.md     layer guidance
+  best-practices/<domain>/     250 practices: model 77, backend 94, frontend 74,
+                               project 5 (repository layout)
+fragments/<id>.model           156 validated fragment models behind the diagrams
+skills/                        pi skills shipped to consumers and authors
+.pi/skills/                    maintainer skills and data (not indexed by kb)
+  judo-catalog-maintain/references/PROJECTS.md   registry of source projects (swept SHA, weight)
+  judo-catalog-expand/         workflows that grow the catalog with background agents
+openspec/                      change proposals, specs and working records
+target/                        ignored: CLI jar, project snapshots, agent work files
 ```
 
-Every directory under `catalog/` has a generated `AGENTS.md` index (`| File | Purpose |`) for the kb.
+Every directory under `catalog/` has a generated `AGENTS.md` index (`| File | Purpose |`), and parent indexes list their subfolders.
+
+```mermaid
+flowchart LR
+  P[JUDO projects] -->|sweep| C[catalog]
+  C -->|kb_search / kb_get| B[builder agent builds an app]
+  B -->|session log + GAPS.md| G[gap analysis]
+  G -->|confirmed by a human| C
+  P -->|compliance explore + evidence backfill| C
+```
 
 ## Use it in a project
 
@@ -39,8 +65,9 @@ Every directory under `catalog/` has a generated `AGENTS.md` index (`| File | Pu
 |---|---|
 | `judo-blueprint` | Consumers: search the catalog, apply a blueprint or practice, pin the kb source |
 | `judo-model-mermaid` | Render and check entry diagrams from `fragments/` |
-| `judo-blueprint-author` | Write or update entries (format, `entry-lint`, `spec-check`, `claim-check`, `dox-agents`) |
-| `judo-catalog-maintain` | `check-all`: every catalog gate in one run |
+| `judo-blueprint-author` | Write or update one entry (format, `entry-lint`, `spec-check`, `claim-check`, `dox-agents`) |
+| `judo-catalog-maintain` | `check-all` (every gate in one run) and project sweeps |
+| `.pi/skills/judo-catalog-expand` | Maintainers: build-session gap analysis, project compliance explore, then one catalog pass (evidence, neutral wording, generic renames) with parallel background agents and helper scripts |
 | `judo-session-distill` | Planned: turn development sessions into catalog candidates (not implemented yet) |
 
 ## Checks
@@ -50,11 +77,13 @@ Every directory under `catalog/` has a generated `AGENTS.md` index (`| File | Pu
 skills/judo-catalog-maintain/scripts/check-all        # all gates; --no-sandbox skips the CLI-based fragment check
 ```
 
-`check-all` runs `entry-lint`, `spec-check`, `claim-check`, the `AGENTS.md` freshness check, `kb dox lint`, no tracked jars, no legacy entries, and `check --all` on the fragments. CI runs the same in two jobs (lint, sandbox).
+`check-all` runs `entry-lint`, `spec-check`, `claim-check`, the `AGENTS.md` freshness check, the project registry check, unit tests, no tracked jars, no legacy entries, `kb dox lint`, the kb search-quality eval (`kb-eval`) and `check --all` on the fragments.
 
 ## Rules for contributors
 
-- Platform facts come from `catalog/agent-docs`. A catalog entry never contradicts them; when the docs are silent, the entry says *verify* instead of guessing.
-- Project code in entries is labelled as example project code, with neutral names.
-- Diagrams are generated. Change the fragment, then `render`.
+- Platform facts come from `catalog/agent-docs`. A catalog entry never contradicts them; when the docs are silent, the entry says *verify*.
+- No project-specific content in entry bodies: no project names (`entry-lint` rejects them), no client business words, no single-project counts. Use neutral names and generic ids.
+- Evidence is a real path in the project snapshot, never `unrecorded` when the code is available.
+- Diagrams are generated. Change the fragment with the JUDO CLI, then `render`.
+- Origin is read-only: commit locally, never push.
 - The old `.claude/` agents, commands and scoring scripts are retired. They remain readable at the local tag `archive/pre-kb-restructure`.

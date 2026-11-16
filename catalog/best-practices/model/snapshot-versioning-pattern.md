@@ -54,7 +54,7 @@ Nothing in the platform makes an entity immutable by itself. Turn off the update
 
 ## Example
 
-A Plan entity owns `lines` (PlanLine with an amount) and `snapshots` (PlanSnapshot with `takenAt` and `totalAmount`). Each PlanSnapshot owns its own `lines` of the copy type SnapshotLine. The operation `archive` on Plan creates a snapshot, sums the amounts, copies every line and attaches the result. This mirrors a forecast archive seen in one project (a parent archives its monthly figures into a version). Names are neutral stand-ins.
+A Plan entity owns `lines` (PlanLine with an amount) and `snapshots` (PlanSnapshot with `takenAt` and `totalAmount`). Each PlanSnapshot owns its own `lines` of the copy type SnapshotLine. The operation `archive` on Plan creates a snapshot, sums the amounts, copies every line and attaches the result. This mirrors a plan archive seen in one project (a parent archives its monthly figures into a version). Names are neutral stand-ins.
 
 ## When to avoid
 
@@ -69,7 +69,7 @@ A Plan entity owns `lines` (PlanLine with an amount) and `snapshots` (PlanSnapsh
 - [[audit-event-entity]] — event-based audit trail instead of copies
 - [[null-safe-collection-aggregation]] — summary values computed over optional data
 - [[workflow-versioning-pattern]] — the head/published variant as a blueprint
-- [[plan-versioning-snapshot]] — the forecast archive as a blueprint
+- [[plan-versioning-snapshot]] — the plan archive as a blueprint
 
 ## Structure diagram
 

@@ -5,7 +5,7 @@ Usage:
   sweep-prepare <project> [--src DIR] [--branch develop] [--sha SHA] [--json]
   sweep-prepare --clean [--dry-run]       remove sweep worktrees whose branch is merged into HEAD
 
-<project> must be a PROJECTS.md row. The source is a local checkout (--src, default ~/Projects/**/<project>);
+<project> must be a .pi/skills/judo-catalog-maintain/references/PROJECTS.md row. The source is a local checkout (--src, default ~/Projects/**/<project>);
 the script resolves <branch> there to a SHA (use --sha to pin) and adds a DETACHED worktree at W/src.
 It never fetches, clones over the network, or pushes. Re-running reuses existing worktrees (resume).
 """
@@ -75,7 +75,7 @@ def main():
         die("project required")
     reg = registry()
     if a.project not in reg:
-        die(f"{a.project} is not in PROJECTS.md")
+        die(f"{a.project} is not in .pi/skills/judo-catalog-maintain/references/PROJECTS.md")
     row = reg[a.project]
     src = pathlib.Path(a.src).expanduser().resolve() if a.src else find_checkout(a.project)
     if not src or not (src / ".git").exists():

@@ -11,7 +11,9 @@
 | `build-and-deployment.md` | Maven build modes, module properties, base href and context path, login metadata, MUI license plan and checksum handling of the generated React frontend. |
 | `development-workflow.md` | Dev server, build, testing and debugging workflow for the generated React frontend, including .default scaffolds and destructive prune warnings. |
 | `error-handling.md` | How the generated React frontend handles 400, 401, 403, 404, 422 and 500 responses, the operation fault dialog and fault translation keys. |
+| `esm-to-ui-mappings/` | ESM to UI Mapping: Overview: ESM to UI model mapping reference for the generated React frontend. (3 files; index in `esm-to-ui-mappings/AGENTS.md`) |
 | `extension-points.md` | Extra routes, guest page, sub-theme hooks, menu actions hook, application switcher, navigation confirmation and table state persistence in the generated React frontend. |
+| `hooks/` | Pandino-based hook system of the generated React frontend: hook categories, .default scaffolds, registration patterns and .generator-ignore guidance. (7 files; index in `hooks/AGENTS.md`) |
 | `i18n.md` | react-i18next setup, flat translation keys, generated translation files, language switching and custom translation providers. |
 | `model-screen-layout.md` | Mapping between UI model elements and generated React components, element ids, file paths, access control and ESM to UI traceability. |
 | `theming.md` | MUI theme palette, component override fragments, sub-themes, fonts, dark mode and responsive styling of the generated React frontend. |

@@ -10,10 +10,12 @@ The JUDO catalog (platform agent-docs, model blueprints, best practices) as a kb
 |---|---|
 | `catalog/agent-docs/` | Platform behaviour and rules. Source of truth for platform facts |
 | `catalog/model-blueprints/<id>/` | `BLUEPRINT.md`, `model.md` (generated diagram), `backend.md`, `frontend.md` |
-| `catalog/best-practices/<domain>/<id>.md` | Practices for model, backend, frontend |
+| `catalog/best-practices/<domain>/<id>.md` | Practices for model, backend, frontend, project (repository layout) |
 | `fragments/<id>.model` | Validated fragment models behind the diagrams |
 | `skills/` | `judo-blueprint`, `judo-model-mermaid`, `judo-blueprint-author`, `judo-catalog-maintain`, `judo-session-distill`, shared `_lib` |
 | `openspec/changes/restructure-blueprints-for-kb/` | The active change: proposal, design, specs, `tasks.md`, sweep and gap records |
+| `.pi/skills/judo-catalog-expand/` | Maintainer workflows that grow the catalog with background agents (gap analysis, compliance, evidence, generic wording); not indexed by kb |
+| `.pi/skills/judo-catalog-maintain/references/PROJECTS.md` | Registry of source projects (swept SHA, weight); maintenance data, not indexed by kb |
 | `target/` | Ignored: CLI jar, scratch models, batch work folders, read-only judo-ng clones |
 
 ## Gates

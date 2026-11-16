@@ -32,6 +32,17 @@ def desc(p):
     return d.replace("|", "\\|")[:200]
 
 
+SUBDIR_PURPOSE = {
+    "agent-docs": "Platform behaviour and rules; source of truth for platform facts",
+    "best-practices": "Practices by domain: model, backend, frontend, project",
+    "model-blueprints": "Reusable model shapes with generated diagram and layer guidance",
+    "model": "Modelling practices",
+    "backend": "Backend practices",
+    "frontend": "Frontend practices",
+    "project": "Repository-level layout practices",
+}
+
+
 def rows_for(d):
     rows = []
     for c in sorted(d.iterdir()):
@@ -48,7 +59,12 @@ def rows_for(d):
                                     ("backend.md", "backend guidance"), ("frontend.md", "frontend guidance")):
                     if (c / layer).exists():
                         rows.append((f"{c.name}/{layer}", f"{c.name}: {what}"))
-            continue  # other subdirectories carry their own AGENTS.md
+            # other subdirectories carry their own AGENTS.md; list them so parent indexes are navigable
+            n = sum(1 for _ in c.rglob("BLUEPRINT.md")) or sum(
+                1 for p in c.rglob("*.md") if p.name != "AGENTS.md")
+            purpose = desc(readme) if readme.exists() else SUBDIR_PURPOSE.get(c.name, c.name)
+            rows.append((f"{c.name}/", f"{purpose} ({n} files; index in `{c.name}/AGENTS.md`)"))
+            continue
         elif c.suffix == ".md":
             rows.append((c.name, desc(c)))
     return rows

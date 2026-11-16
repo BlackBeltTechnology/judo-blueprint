@@ -23,7 +23,7 @@ Entries are tagged in frontmatter `tags`:
 
 | Facet | Values |
 |---|---|
-| `domain:` | model, backend, frontend |
+| `domain:` | model, backend, frontend, project |
 | `layer:` | which layers the entry touches |
 | `project:` | the projects the pattern was seen in |
 | `status:` | `established` (4+ projects), `emerging` (2–3), `single-project` (1) |

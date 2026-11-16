@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""scope-split: plan balanced, non-overlapping agent scopes from the files that actually need work.
+
+Usage: scope-split <work-dir> <agents> [--pattern REGEX] [--paths catalog/...] [--by-entry]
+
+Lists catalog .md files (AGENTS.md skipped) under --paths (default catalog/) whose text matches
+--pattern (default: anything), groups them by entry (a blueprint folder is one unit, so its
+BLUEPRINT/model/backend/frontend stay with one agent), and splits the units into <agents>
+scopes of near-equal byte size. Writes <work-dir>/scopes/sNN.txt (one path per line) and prints
+the plan. Give each agent its scope file: real counts, no overlap, no guessing.
+"""
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[4]
+
+
+def main(a):
+    if len(a) < 2:
+        print(__doc__)
+        return 2
+    work, n = pathlib.Path(a[0]), int(a[1])
+    rx = re.compile(a[a.index("--pattern") + 1], re.I) if "--pattern" in a else None
+    roots = [a[a.index("--paths") + 1]] if "--paths" in a else ["catalog"]
+    units = {}
+    for r in roots:
+        for f in sorted((ROOT / r).rglob("*.md")):
+            if f.name == "AGENTS.md":
+                continue
+            if rx and not rx.search(f.read_text()):
+                continue
+            rel = f.relative_to(ROOT)
+            if (f.parent / "BLUEPRINT.md").exists():  # whole blueprint folder goes to one agent
+                units[str(rel.parent)] = [(str(g.relative_to(ROOT)), g.stat().st_size)
+                                          for g in sorted(f.parent.glob("*.md")) if g.name != "AGENTS.md"]
+            else:
+                units[str(rel)] = [(str(rel), f.stat().st_size)]
+    # greedy: biggest unit to the lightest scope
+    scopes = [[0, []] for _ in range(n)]
+    for key, files in sorted(units.items(), key=lambda kv: -sum(s for _, s in kv[1])):
+        tgt = min(scopes, key=lambda s: s[0])
+        tgt[0] += sum(s for _, s in files)
+        tgt[1] += [p for p, _ in files]
+    (work / "scopes").mkdir(parents=True, exist_ok=True)
+    for i, (size, files) in enumerate(scopes, 1):
+        f = work / "scopes" / f"s{i:02d}.txt"
+        f.write_text("\n".join(sorted(files)) + "\n")
+        print(f"{f}: {len(files)} files, {size // 1024} KB")
+    print(f"{sum(len(v) for v in units.values())} files in {len(units)} units")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

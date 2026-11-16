@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read and check PROJECTS.md, the registry of projects the catalog was taken from (tasks 2.4, 2.7).
+"""Read and check .pi/skills/judo-catalog-maintain/references/PROJECTS.md, the registry of projects the catalog was taken from (tasks 2.4, 2.7).
 
 Usage:
   projects.py list [--json]      print the registry rows
@@ -7,7 +7,7 @@ Usage:
                                  every row must parse; exit 1 on problems
   projects.py usage [--json]     catalog entries per project
 
-PROJECTS.md table columns: # | Project | Git URL | Kind | Branch | Swept SHA | First Commit | Last Commit | Commits | Weight [-10;+10]
+.pi/skills/judo-catalog-maintain/references/PROJECTS.md table columns: # | Project | Git URL | Kind | Branch | Swept SHA | First Commit | Last Commit | Commits | Weight [-10;+10]
 `Kind` is `app` or `demo`; `Branch` is the branch the catalog was taken from; `Swept SHA` is the last commit swept
 (`-` = not swept, `unreachable` = the recorded SHA no longer exists). Read-only: never clones, fetches or pushes.
 """
@@ -65,7 +65,7 @@ def main():
     ap.add_argument("cmd", choices=["list", "check", "usage"])
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
-    rows, errs = parse((ROOT / "PROJECTS.md").read_text())
+    rows, errs = parse((ROOT / ".pi/skills/judo-catalog-maintain/references/PROJECTS.md").read_text())
     names = {r["Project"] for r in rows}
     if a.cmd == "list":
         print(json.dumps(rows, indent=1) if a.json else "\n".join(f"{r['Project']:28} {r['Kind']:5} {r['Branch']:10} {r['Swept SHA']}" for r in rows))
@@ -81,7 +81,7 @@ def main():
     for f, ps in ep.items():
         for p in ps:
             if p not in names:
-                errs.append(f"{f}: project {p!r} not in PROJECTS.md")
+                errs.append(f"{f}: project {p!r} not in .pi/skills/judo-catalog-maintain/references/PROJECTS.md")
     if a.json:
         print(json.dumps({"rows": len(rows), "errors": errs}))
     else:

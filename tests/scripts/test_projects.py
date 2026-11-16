@@ -6,7 +6,7 @@ mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
 
 class ProjectsTest(unittest.TestCase):
     def test_every_row_parses(self):
-        rows, errs = mod.parse((ROOT / "PROJECTS.md").read_text())
+        rows, errs = mod.parse((ROOT / ".pi/skills/judo-catalog-maintain/references/PROJECTS.md").read_text())
         self.assertEqual(errs, [])
         self.assertGreaterEqual(len(rows), 21)
         self.assertRegex({r["Project"]: r["Swept SHA"] for r in rows}["mlszksz-platform"], r"^[0-9a-f]{7,40}$")
