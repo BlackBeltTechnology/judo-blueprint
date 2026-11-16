@@ -7,7 +7,7 @@ Sources (read-only):
 - Application repo <APP_DIR>: GAPS.md, TRACE.md, git log/show, source files.
 - Catalog: kb_search + kb_get FIRST (never the `kb` CLI), then grep catalog/ if needed.
 - judo-ng read-only clones under target/judo-ng-read/wt for platform-bug claims (check briefly; do not spend long).
-- Existing records: openspec/changes/restructure-blueprints-for-kb/judo-doc-problems.md and judo-knowledge-check-developer-corrections.md (already-known issues).
+- Existing records: openspec/changes/archive/2026-11-16-restructure-blueprints-for-kb/judo-doc-problems.md and judo-knowledge-check-developer-corrections.md (already-known issues).
 
 For EACH claim decide:
 - `verdict`: confirmed | partly | refuted | unverifiable

@@ -1,7 +1,6 @@
 # catalog-kb-indexing Specification
 
 ## Purpose
-
 Makes the catalog fully conformant with the pi-dashboard kb index format, so `kb_search`, `kb_get` and `kb_neighbors` retrieve the right entry without helper scripts, both in this repo and in consumer projects.
 
 ## Requirements

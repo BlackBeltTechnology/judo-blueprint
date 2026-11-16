@@ -1,7 +1,6 @@
 # catalog-contribution-branches Specification
 
 ## Purpose
-
 The catalog grows from use. Each JUDO project contributes on its own branch of this repository, its own kb reads that branch, and the maintainer merges what meets published criteria into `develop`, from which new projects branch. This replaces a separate contributor-consent record: pushing to a project branch is the contribution.
 
 ## Requirements

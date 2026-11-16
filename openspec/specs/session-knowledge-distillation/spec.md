@@ -1,7 +1,6 @@
 # session-knowledge-distillation Specification
 
 ## Purpose
-
 Turns real JUDO development history (exported pi sessions and CLI audit logs) from any JUDO project into reviewed, evidence-backed catalog knowledge. Personal data never enters the repository.
 
 ## Requirements

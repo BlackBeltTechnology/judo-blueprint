@@ -30,7 +30,7 @@ holding `catalog/`, `skills/`, `fragments/`).
 2. **Search before writing.** Use the `kb_search` / `kb_get` tools (never the
    `kb` CLI from an agent: parallel CLI processes lock the index) for the
    topic: related entries, agent-docs facts, and known problems in
-   `openspec/changes/restructure-blueprints-for-kb/judo-doc-problems.md`.
+   `openspec/changes/archive/2026-11-16-restructure-blueprints-for-kb/judo-doc-problems.md`.
    Never copy a platform claim the docs mark as wrong.
 3. **Write the text** in the format: abstract sections, layer files, neutral
    wording, wikilinks in `## Related`.

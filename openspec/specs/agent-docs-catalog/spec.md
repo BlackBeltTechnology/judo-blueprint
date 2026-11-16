@@ -1,7 +1,6 @@
 # agent-docs-catalog Specification
 
 ## Purpose
-
 agent-docs are owned by this repository: the JUDO project template no longer ships them. They are imported once from the template's last version, made kb-conformant, and verified against the judo-ng platform code. The operator reviews every finding before any doc changes.
 
 ## Requirements

@@ -1,7 +1,6 @@
 # blueprint-format Specification
 
 ## Purpose
-
 Defines the tool-agnostic shape of every catalog entry (model blueprint and best practice). The knowledge stays valid when JUDO tooling changes, and its structure diagrams always reflect what the CLI really builds.
 
 ## Requirements

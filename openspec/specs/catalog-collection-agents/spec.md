@@ -1,7 +1,6 @@
 # catalog-collection-agents Specification
 
 ## Purpose
-
 Provides reusable pi skills, each with scripts it calls, to consume, diagram, author, distill and maintain the catalog. They replace all Claude Code commands, agents and scripts, and are installable by any JUDO project at the catalog's release tag.
 
 ## Requirements

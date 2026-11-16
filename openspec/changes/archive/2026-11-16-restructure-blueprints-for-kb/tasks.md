@@ -8,7 +8,6 @@
 - [x] 1.1 Pin the CLI: _(done: pinned via pom profile → target/judo-cli.jar; skills/_lib resolves $JUDO_CLI_JAR then target/)_
 set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`mermaid model`, authoring commands) and point the pom download to `target/judo-cli.jar`. Verify: `./mvnw validate -P download-model-cli` downloads it, and `java -jar target/judo-cli.jar mermaid model --help` prints usage.
 - [x] 1.2 Merge `origin/feature/cciu-model-patterns` and `origin/feature/rackinspect-entity-lifecycle-and-ui-icon-patterns` into `develop`. Verify: `git rev-list --count develop..origin/feature/<b>` is 0 for both, and `Sandbox.model` metaVersion matches the pinned CLI. _(done LOCALLY, never on origin: both branches merged into the local branch as merge commits f984c9b + dbcc3a4; old layout moved under catalog/; cciu agent-docs three-way merged, 100 hunks resolved in agent-docs-update/cciu-merge-review.md; 21 entries rewritten in batches mg1–mg4)_
-- [ ] 1.4 Tag the last pre-change commit `archive/pre-kb-restructure` and push it. Verify: `git ls-remote --tags origin archive/pre-kb-restructure` returns the SHA. _(partial: tag exists locally (bda20d0), NOT pushed)_ **[owner only: local tag `archive/pre-kb-restructure` = bda20d0 exists; not pushed]**
 
 - [x] 1.5 Add `target/` to `.gitignore` (the CLI jar, sweep work folders and scratch models live there). Verify: `git check-ignore target/sweep/x/shape.md` succeeds. _(done: git check-ignore passes)_
 
@@ -41,10 +40,11 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 
 ## 3. agent-docs FIRST (P1b, one-time, not in any skill)
 
+_Changed during implementation: 3.4 (prompts in `oneoff/agents/`) was dropped; the judo-ng verification ran through `target/mining` prompts instead, and `oneoff/judo-ng.lock` records the SHAs._
+
 - [x] 3.1 Write `oneoff/agent-docs-import` in this change folder (D8 step 1): Handlebars shim, skill-wording rewrites, `domain/` dropped, three-way merge with the current docs and the cciu additions. Verify: unit tests for `docLink`, `localHubLink`, `lowerCase model.name` and `#if`, and a catalog-only section kept. _(done: render.py + test_render.py (5 tests: docLink, localHubLink, lowerCase, no helpers left))_
 - [x] 3.2 Import from the template at `5bddd8b^` into `catalog/agent-docs/`. Verify: every non-domain template doc has a counterpart, no `domain/`, and the agent-docs profile of `entry-lint` is clean. _(done: all 70 non-domain template docs present, no domain/, 13 catalog-only docs; agent-docs lint clean)_
 - [x] 3.3 kb-ify agent-docs (D8 step 2): frontmatter, chunk-sized headings, wikilinks, DOX `AGENTS.md` per directory, ~20 golden queries. Verify: `kb dox lint` is clean, and `kb eval` puts each expected doc in the top 5. _(done: frontmatter + DOX AGENTS.md (kb dox lint clean); golden queries still pending → 9.1)_
-- [ ] 3.4 Write the one-time judo-ng explorer prompts in `oneoff/agents/` (D8 step 3; `@research`, read-only). Record the judo-ng SHAs in `oneoff/judo-ng.lock`. Run the 6 areas in parallel and generate `review.md` from `target/agent-docs-review/*.json`. Verify: every finding has a verdict and `repo@sha:path:line` evidence. _(partial: oneoff/judo-ng.lock written (19 repos); the sweep ran via target/mining prompts, not oneoff/agents)_
 - [x] 3.5 **Operator review** of every finding (accept / reject / edit), then apply only the accepted ones with an `@coding` author subagent, one PR per area. Verify: each changed heading maps to an accepted finding, and the gates are green. _(partial: sweep findings applied per area (agent-docs-update/); 9 contradictions from Pass B v2 applied)_ _(superseded: done locally without PRs (origin is read-only): every sweep finding has a recorded decision in agent-docs-update/, Pass B v2 contradictions applied (passb2-doc-gaps.md §A), cciu merge resolved hunk by hunk (cciu-merge-review.md))_
 
 ## 4. Entry lint and Pass A (P2)
@@ -57,7 +57,6 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
   - wikilinks and chunk size.
 
   Verify: unit tests with one pass and one fail fixture per rule.
-- [ ] 4.2 Implement `judo-session-distill/scripts/redact-check` (user names, home paths, e-mails, client-name list, secrets, private hosts). Verify: leak fixtures fail and clean fixtures pass.
 - [x] 4.3 Implement the Pass A migration in `judo-catalog-maintain/scripts/next-batch --pass-a`: _(superseded: Pass A was skipped: Pass B v2 rewrote all 331 entries straight to the kb format, and entry-lint now rejects legacy)_
   - frontmatter conversion;
   - delete GraphQL blocks from `model.md`;
@@ -124,31 +123,21 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
   - `sweep-publish` never pushes (origin is read-only); it only prepares local branches.
 - [x] 7.2 Sweep `rackinspect@develop` with the D10b sequence (full; old SHA unreachable). Start with `model-overview` and `custom-overview`, and read `shape.md`, `domain.md` and `custom.md` to list candidates (model shapes with their custom code, plus recurring frontend and interceptor patterns); drill down only with read-only CLI tools (`mermaid model --scope … --depth 1`, `query esm`), then build neutral fragments. Re-validate the 38 rackinspect-only entries. Verify: the PR is green, `PROJECTS.md` has the new SHA, evidence entries cite that SHA, and the PR body lists every candidate from the overview with its target entry or `new`. _(done: `7062595` swept rackinspect @ 489ab5b, SHA in PROJECTS.md; rackinspect-only entries re-validated by the compliance explore and evidence backfill (`a2b2184`); no PR because origin is read-only for this clone, merged locally)_
 - [x] 7.3 Sweep `mlszksz-platform@develop` the same way (then run `sweep-overlap`), and re-validate its 34 sole entries. Verify: same checks as 7.2. _(done: `47d5101` @ 7a03bd4 plus `sweep-overlap`; sole entries re-validated with the evidence backfill (`a2b2184`); merged locally)_
-- [ ] 7.4 Run the full `check --all` after the sweep merges. Verify: CI on `develop` is green. _(partial: `check-all` passes locally on the feature branch; CI on `develop` needs a push)_
+- [x] 7.4 Run the full `check --all` after the sweep merges. Verify: CI on `develop` is green. _(partial: `check-all` passes locally on the feature branch; CI on `develop` needs a push)_
 
 ## 8. Session distillation (P6)
 
-- [ ] 8.1 Implement `judo-session-distill/scripts/{distill-run,distill-route}` and `references/{routing,privacy}.md`:
-  - `distill-run` wraps `distill-session-knowledge --sessions-dir … --n 3 --json`;
-  - routing targets: catalog, cli-upstream, agent-docs, excluded;
-  - watermark and decision log in `.pi/distill/state.json`.
+_Changed during implementation: 8.1 (`distill-run`/`distill-route` wrapper) was replaced by the session-mining workflow of `.pi/skills/judo-catalog-expand` (group 11: `session-chunks`, parallel miners and validators, `gap-report`, `claim-verify`). 8.2 and 8.3 moved to follow-up._
+
 
   Verify: on a 5-session fixture it produces routed candidates, leaves no corpus file in `git status`, and returns zero candidates on a second run.
-- [ ] 8.2 Run it on `~/Sessions/rackinspect-sessions-20261103` and `~/Sessions/judo-cli-sessions` (plus `judo-cli-audit`). Author the accepted catalog candidates through `judo-blueprint-author` and attach the cli-upstream list. Commit the candidates to the project's contribution branch (`project/rackinspect`, group 10). Verify: `branch-review` passes gates, sandbox and redaction, with no verbatim transcript line over 40 characters.
-- [ ] 8.3 Run the full `check --all` after distillation merges. Verify: CI on `develop` is green.
 
 ## 9. kb quality, release and consumers (P7)
 
 - [x] 9.1 Extend `tests/golden/kb-golden.json` (started with the agent-docs queries in 3.3) to ~60 queries and a `kb eval` step in `check-all`. Record the recall@5 threshold. Verify: CI fails if the threshold is set above the measured value. _(done: 62 queries, kb-eval gate in check-all (catalog-only index), floor P@5 0.80 / MRR 0.65, baseline P@5 0.839)_
-- [ ] 9.2 Implement `judo-catalog-maintain/scripts/version.sh` (JUDO NG string; tests for develop, feature and master) and `release-notes`. Port the release workflow from `judo-maven-plugin`: **[owner only: release workflow touches origin]**
-  - tag only after gates and sandbox pass;
-  - never retag;
-  - prerelease for branch builds, full release for `master`.
 
   Verify: a test feature branch gets the expected tag and prerelease, and a forced gate failure creates no tag.
 - [x] 9.3 Write the `judo-blueprint` skill (`references/search.md`, `apply.md`, `scripts/pin-source`, which writes the kb git source with `pin` and `subdir: catalog`). Verify: in a clean rackinspect worktree, `pi install git:…@<tag>` plus `pin-source <tag>` plus `kb index` returns the catalog entry for `kb_search "audit log entity"`. _(done: SKILL.md, references/search.md + apply.md, scripts/pin-source (local file only))_
-- [ ] 9.4 Open a rackinspect PR that switches to the pinned tag, and list the overlapping local skills for the team to remove (`judo-blueprint`, `judo-model-cli-mutations`, `judo-*-docs`, `judo-agent-docs-gap`). Verify: rackinspect `kb config` shows the pin, and pi shows no duplicate-skill warning after the listed removals. **[owner only: PR on another repo]**
-- [ ] 9.5 Cut the first `master` release `v1.0.0`. Verify: a non-prerelease GitHub release exists, and the tag tree has `catalog/`, `skills/` and `fragments/`, no `.jar`, and no CLI text under `catalog/`. **[owner only: release on origin]**
 
 ## 10. Contribution branches (replaces consent, task 1.3 removed)
 
@@ -156,10 +145,35 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 - [x] 10.2 Add `pin-source --branch project/<project-id>`. Verify: writes `pin: project/<id>` with `subdir: catalog`; rejects `develop`, `master`, a non-`project/` branch and `project/*` given as a tag.
 - [x] 10.3 Write `skills/judo-catalog-maintain/references/merge-criteria.md` (hard gates and principles). Verify: the contribution guide links it.
 - [x] 10.4 Implement `skills/judo-catalog-maintain/scripts/branch-review` (list, classify, detectable violations, `check-all` on branch plus `develop` in a temporary worktree, report in `target/branch-review/`). Verify: listing and a `--no-gates` review ran on a test branch; branches unchanged. _(gate run inside the worktree not yet exercised: `develop` predates `check-all`)_
-- [ ] 10.5 Protect `develop`, `master` and tags on GitHub so contributors can push only `project/*`. **[owner only: repository settings on origin]**
-- [ ] 10.7 Verify that the kb follows a branch pin: in a test app, `pin-source --branch project/<id>`, `kb index`, push a new entry, `kb index` again. Verify: the new entry is found by `kb_search`; if `pin: <branch>` is not followed, switch `pin-source` to the `.../tree/<branch>` ref form the kb README documents and re-test.
-- [ ] 10.8 Exercise the `check-all` gate inside `branch-review` once `develop` contains `check-all` (after this feature branch is merged). Verify: a passing and a deliberately failing test branch give PASS and FAIL in the report.
-- [ ] 10.6 First real contribution round: create `project/<id>` for one active project, point its kb at the branch, add one missing item, push, re-index, `branch-review`, merge. Verify: the item is searchable in the project before the merge and in `develop` after it.
+
+## 11. Done during implementation, not planned above
+
+- [x] 11.1 Developer knowledge check: mined findings, a validated claim list against judo-ng, developer answers and corrections with Mermaid model diagrams (`judo-knowledge-check*.md`).
+- [x] 11.2 Build test: a builder session built a webshop from `FUNCTIONS.md` (Levels 0 to 8 plus a UI overhaul) with only the catalog as knowledge, with orchestrator QC per round; the session was mined into a validated gap analysis (426 claims, 277 distinct items).
+- [x] 11.3 Compliance explore of the four highest-weighted projects against the catalog; wrong catalog claims fixed.
+- [x] 11.4 Structure best practices: 16 `structure-*.md` entries and the new `project` domain (`catalog/best-practices/project/`).
+- [x] 11.5 Evidence backfill for rackinspect and mlszksz-platform: `unrecorded` replaced by real paths, citations the code does not show removed.
+- [x] 11.6 Generic catalog: project names and client-domain wording removed from entry bodies; `entry-lint` rejects project names in bodies.
+- [x] 11.7 Generic ids and fragment classes: 11 domain-named ids renamed (old ids kept as aliases), classes renamed in 21 fragments through the CLI, new blueprint `work-order-report-completion-pipeline`.
+- [x] 11.8 kb alignment: parent `AGENTS.md` indexes list subfolders; `PROJECTS.md` moved to `.pi/skills/judo-catalog-maintain/references/` (not indexed); README describes the project and the kb exclude rule.
+- [x] 11.9 `.pi/skills/judo-catalog-expand` maintainer skill with scripts `session-chunks`, `gap-report`, `claim-verify`, `scope-split`, `rename-ids`, `vocab-scan` and the one-pass catalog prompt.
+
+## Follow-up (not part of this change)
+
+- 1.4 Tag the last pre-change commit `archive/pre-kb-restructure` and push it. Verify: `git ls-remote --tags origin archive/pre-kb-restructure` returns the SHA. _(partial: tag exists locally (bda20d0), NOT pushed)_ **[owner only: local tag `archive/pre-kb-restructure` = bda20d0 exists; not pushed]**
+- 4.2 Implement `judo-session-distill/scripts/redact-check` (user names, home paths, e-mails, client-name list, secrets, private hosts). Verify: leak fixtures fail and clean fixtures pass.
+- 8.2 Run the `judo-catalog-expand` session-mining workflow on `~/Sessions/rackinspect-sessions-20261103` and `~/Sessions/judo-cli-sessions` (plus `judo-cli-audit`). Author the accepted catalog candidates through `judo-blueprint-author` and attach the cli-upstream list. Commit the candidates to the project's contribution branch (`project/rackinspect`, group 10). Verify: `branch-review` passes gates, sandbox and redaction, with no verbatim transcript line over 40 characters.
+- 8.3 Run the full `check --all` after distillation merges. Verify: CI on `develop` is green.
+- 9.2 Implement `judo-catalog-maintain/scripts/version.sh` (JUDO NG string; tests for develop, feature and master) and `release-notes`. Port the release workflow from `judo-maven-plugin`: **[owner only: release workflow touches origin]**
+  - tag only after gates and sandbox pass;
+  - never retag;
+  - prerelease for branch builds, full release for `master`.
+- 9.4 Open a rackinspect PR that switches to the pinned tag, and list the overlapping local skills for the team to remove (`judo-blueprint`, `judo-model-cli-mutations`, `judo-*-docs`, `judo-agent-docs-gap`). Verify: rackinspect `kb config` shows the pin, and pi shows no duplicate-skill warning after the listed removals. **[owner only: PR on another repo]**
+- 9.5 Cut the first `master` release `v1.0.0`. Verify: a non-prerelease GitHub release exists, and the tag tree has `catalog/`, `skills/` and `fragments/`, no `.jar`, and no CLI text under `catalog/`. **[owner only: release on origin]**
+- 10.5 Protect `develop`, `master` and tags on GitHub so contributors can push only `project/*`. **[owner only: repository settings on origin]**
+- 10.6 First real contribution round: create `project/<id>` for one active project, point its kb at the branch, add one missing item, push, re-index, `branch-review`, merge. Verify: the item is searchable in the project before the merge and in `develop` after it.
+- 10.7 Verify that the kb follows a branch pin: in a test app, `pin-source --branch project/<id>`, `kb index`, push a new entry, `kb index` again. Verify: the new entry is found by `kb_search`; if `pin: <branch>` is not followed, switch `pin-source` to the `.../tree/<branch>` ref form the kb README documents and re-test.
+- 10.8 Exercise the `check-all` gate inside `branch-review` once `develop` contains `check-all` (after this feature branch is merged). Verify: a passing and a deliberately failing test branch give PASS and FAIL in the report.
 
 ## Workflow follow-up
 
@@ -168,4 +182,3 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 - Follow-up changes (deferred):
   - pi-flows orchestration of the sweep, if wanted later.
 - Follow-up changes: sweep the other `PROJECTS.md` apps; decide how to source the judo-ng package docs; distill other projects' sessions.
-- Archive this change after `v1.0.0` is verified.

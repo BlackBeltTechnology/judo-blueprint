@@ -1,7 +1,6 @@
 # blueprint-sandbox-validation Specification
 
 ## Purpose
-
 Proves that every model-shaped catalog entry is a valid JUDO model fragment for the pinned JUDO CLI, and that its published diagram is exactly what the CLI renders for it. No CLI commands are stored anywhere in the repository.
 
 ## Requirements

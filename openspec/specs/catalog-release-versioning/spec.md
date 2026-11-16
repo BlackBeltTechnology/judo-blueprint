@@ -1,7 +1,6 @@
 # catalog-release-versioning Specification
 
 ## Purpose
-
 Gives every catalog build an immutable, JUDO NG-style version and git tag. Any project, on any branch, can then pin the exact catalog it was built against as a kb `git` source.
 
 ## Requirements
