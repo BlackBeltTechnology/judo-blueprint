@@ -157,6 +157,8 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 - [x] 10.3 Write `skills/judo-catalog-maintain/references/merge-criteria.md` (hard gates and principles). Verify: the contribution guide links it.
 - [x] 10.4 Implement `skills/judo-catalog-maintain/scripts/branch-review` (list, classify, detectable violations, `check-all` on branch plus `develop` in a temporary worktree, report in `target/branch-review/`). Verify: listing and a `--no-gates` review ran on a test branch; branches unchanged. _(gate run inside the worktree not yet exercised: `develop` predates `check-all`)_
 - [ ] 10.5 Protect `develop`, `master` and tags on GitHub so contributors can push only `project/*`. **[owner only: repository settings on origin]**
+- [ ] 10.7 Verify that the kb follows a branch pin: in a test app, `pin-source --branch project/<id>`, `kb index`, push a new entry, `kb index` again. Verify: the new entry is found by `kb_search`; if `pin: <branch>` is not followed, switch `pin-source` to the `.../tree/<branch>` ref form the kb README documents and re-test.
+- [ ] 10.8 Exercise the `check-all` gate inside `branch-review` once `develop` contains `check-all` (after this feature branch is merged). Verify: a passing and a deliberately failing test branch give PASS and FAIL in the report.
 - [ ] 10.6 First real contribution round: create `project/<id>` for one active project, point its kb at the branch, add one missing item, push, re-index, `branch-review`, merge. Verify: the item is searchable in the project before the merge and in `develop` after it.
 
 ## Workflow follow-up
