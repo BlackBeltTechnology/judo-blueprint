@@ -1,0 +1,160 @@
+{
+ "batch": "bp01",
+ "entries": {
+  "accept-reject-operations": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "custom operation interceptor built-in operations fault",
+    "guard attributes operation enabled hidden transfer object",
+    "page action hook refresh filter",
+    "fault parameter operation checked exception 422 header"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/interceptors.md#OperationCallInterceptor Interface",
+    "catalog/agent-docs/model/ui-authoring-guide.md#hiddenBy / enabledBy / requiredBy",
+    "catalog/agent-docs/frontend/advanced-patterns.md#PostRefresh Action Hook"
+   ],
+   "fixes": [
+    "removed unsupported single-transaction claim",
+    "guard attribute described as boolean derived attr on owner TO bound via enabledBy/hiddenBy",
+    "interceptor refusal must be InterceptorCallBusinessException, not fault",
+    "pre-filter via page hook: docs only describe post-refresh handler; model-level filtered relation preferred",
+    "ValidationException vs fault distinction; project practice labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "active-inactive-status-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "EnumerationType EnumerationMember ordinal stored"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md#EnumerationMember Attribute Rules",
+    "catalog/agent-docs/model/jsl-language-notes.md"
+   ],
+   "fixes": [
+    "ordinal uniqueness and 0-9999 range added",
+    "removed unverified stored-as-ordinals and chip claims"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "active-suspended-deactivated-status-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "custom operation interceptor built-in operations fault",
+    "guard attributes operation enabled hidden transfer object",
+    "EnumerationType EnumerationMember ordinal stored"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/interceptors.md",
+    "catalog/agent-docs/model/ui-authoring-guide.md#hiddenBy / enabledBy / requiredBy"
+   ],
+   "fixes": [
+    "interceptor scope stated precisely",
+    "fault vs ValidationException, interceptor must use InterceptorCallBusinessException",
+    "removed unverified transaction claims",
+    "guard attribute mechanism specified",
+    "ordinal claims aligned"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "address-entity-with-location": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "derived attribute getterExpression composition relation DERIVED",
+    "composition relation deleted with owner cascade containment",
+    "createable updateable deleteable entity generated actions",
+    "custom operation interceptor built-in operations fault"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "composition cascade stated per structure.md",
+    "createable flags worded as flags",
+    "removed unverified in-transaction reread claim",
+    "fault (422 checked) vs ValidationException (400) clarified",
+    "interceptor scope precise; project code labelled",
+    "UI location read-only claim softened"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "address-field-auto-composition": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "onBlur field change handler form hook storeDiff"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/ui.md#Hook Generation Attributes",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Container Actions"
+   ],
+   "fixes": [
+    "blur handler only generated when onBlur flag on DataField is enabled in UI model",
+    "handler names/params come from generated hook type"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "application-vendor-integration-registry": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "identifier attribute DataMember identifier flag duplicate unique constraint",
+    "createable updateable deleteable entity generated actions",
+    "EnumerationType EnumerationMember ordinal stored"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#DataMember Attribute Rules",
+    "catalog/agent-docs/model/esm_metamodel/type.md#EnumerationMember"
+   ],
+   "fixes": [
+    "identifier is natural key; uniqueness not claimed as platform-enforced",
+    "createable flags wording",
+    "ordinals claim aligned"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "audit-log-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "interceptor DAO write inside transaction post-call create audit row variable resolver user",
+    "file store service filestore token binary download",
+    "dispatcher operation executes in a transaction rolled back on exception custom operation",
+    "custom operation interceptor built-in operations fault"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors",
+    "catalog/agent-docs/backend/error-handling-guide.md#Exceptions Thrown from Interceptors",
+    "catalog/agent-docs/backend/custom-operations.md#Example 1",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens"
+   ],
+   "fixes": [
+    "interceptor scope: built-in only, variation not baseline (inventory item)",
+    "removed unverified custom-operation transaction claims; kept only documented interceptor-in-transaction fact",
+    "interceptor refusal via InterceptorCallBusinessException",
+    "UserDao/audit service labelled project code",
+    "file store described via tokens, removed inject-with-reference claim",
+    "ordinal and createable wording aligned"
+   ],
+   "inventory": {
+    "Audit interceptor does not cover custom operations": "applied"
+   },
+   "lint": "pass"
+  }
+ }
+}

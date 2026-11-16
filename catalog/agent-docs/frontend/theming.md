@@ -1,0 +1,592 @@
+---
+title: Frontend Theming and Styling
+description: MUI theme palette, component override fragments, sub-themes, fonts, dark mode and responsive styling of the generated React frontend.
+---
+
+# Theming and Styling
+
+## Overview
+
+The frontend uses Material-UI (MUI) theming system for consistent styling. Themes can be customized through palette configuration and applied globally or to specific components.
+
+JUDO theming is **two-layered**:
+
+1. **Actor palette (model-driven)** — the `ActorType` in the ESM model carries 7 color attributes (`primaryColor`, `secondaryColor`, `backgroundColor`, `paperBackgroundColor`, `textPrimaryColor`, `textSecondaryColor`, `subtitleColor`) plus `applicationLogo`. The generator renders these into `src/theme/palette.ts`. **To change the app-wide brand palette, edit the ActorType in the ESM model — not `palette.ts` directly** (editing `palette.ts` requires a `.generator-ignore` entry and loses cross-actor consistency).
+2. **Component sub-themes (frontend)** — a `subTheme` name set on a widget in the UI model selects a registered `SubThemeHook` service that returns partial MUI overrides, applied via a nested `ThemeProvider`. Use this for per-card, per-view, per-table color variations.
+
+For the **authoring side** (ESM mutations to set ActorType colors, plan sub-theme keys via consistent Group naming, and enable data-driven `generateVisualPropertiesHook` / `TableRowHighlightingHook`), see the `judo-model-cli` skill's `ui-mutations.md` — specifically the **Visual Language → Theming & colors** section and **Recipes 18 (sub-theme card colors) and 19 (row highlighting)**.
+
+## Color Palette
+
+### Light Theme
+
+**File:** `src/theme/palette.ts`
+
+```typescript
+import { createTheme } from '@mui/material/styles';
+
+export const paletteThemeLight = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#3c4166ff',
+      light: '#6a6f94',
+      dark: '#25283d',
+      contrastText: '#ffffff',
+    },
+    secondary: {
+      main: '#ff5722',
+      light: '#ff8a50',
+      dark: '#c41c00',
+      contrastText: '#ffffff',
+    },
+    error: {
+      main: '#f44336',
+    },
+    warning: {
+      main: '#ff9800',
+    },
+    info: {
+      main: '#2196f3',
+    },
+    success: {
+      main: '#4caf50',
+    },
+    background: {
+      default: '#fafafa',
+      paper: '#ffffff',
+    },
+    text: {
+      primary: 'rgba(0, 0, 0, 0.87)',
+      secondary: 'rgba(0, 0, 0, 0.6)',
+      disabled: 'rgba(0, 0, 0, 0.38)',
+    },
+  },
+});
+```
+
+### Dark Theme
+
+```typescript
+export const paletteThemeDark = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#90caf9',
+      light: '#e3f2fd',
+      dark: '#42a5f5',
+      contrastText: 'rgba(0, 0, 0, 0.87)',
+    },
+    secondary: {
+      main: '#f48fb1',
+      light: '#ffc1e3',
+      dark: '#bf5f82',
+      contrastText: 'rgba(0, 0, 0, 0.87)',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: 'rgba(255, 255, 255, 0.7)',
+      disabled: 'rgba(255, 255, 255, 0.5)',
+    },
+  },
+});
+```
+
+## Customizing Theme
+
+> **Prefer the model.** Brand colours belong on the `ActorType` colour attributes (layer 1 above); regenerating then updates the palette. Edit `src/theme/palette.ts` only for values the actor attributes cannot express. Because the generator overwrites `palette.ts`, a hand edit must be listed in `.generator-ignore`, and from then on model colour changes no longer reach it.
+
+### Step 1: Modify Palette File
+
+```bash
+cd application/frontend-react/<app>__[actor_fqn]
+
+# Edit theme file
+vim src/theme/palette.ts
+```
+
+### Step 2: Add to .generator-ignore
+
+```bash
+# Protect from regeneration
+echo "src/theme/palette.ts" >> .generator-ignore
+```
+
+### Step 3: Customize Colors
+
+```typescript
+// src/theme/palette.ts
+export const paletteThemeLight = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#1976d2',  // Custom primary color
+    },
+    secondary: {
+      main: '#dc004e',  // Custom secondary color
+    },
+  },
+});
+```
+
+### Step 4: Test Changes
+
+```bash
+# Start dev server
+pnpm run dev
+
+# Changes apply immediately via HMR
+```
+
+## Advanced Theme Customization
+
+### Typography
+
+```typescript
+import { createTheme } from '@mui/material/styles';
+
+export const customTheme = createTheme({
+  palette: {
+    // ... palette config
+  },
+  typography: {
+    fontFamily: [
+      'Roboto',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+    h1: {
+      fontSize: '2.5rem',
+      fontWeight: 500,
+    },
+    h2: {
+      fontSize: '2rem',
+      fontWeight: 500,
+    },
+    button: {
+      textTransform: 'none', // Disable uppercase buttons
+    },
+  },
+});
+```
+
+### Component Overrides
+
+```typescript
+export const customTheme = createTheme({
+  palette: {
+    // ... palette config
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          padding: '8px 16px',
+        },
+        contained: {
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          },
+        },
+      },
+      defaultProps: {
+        disableElevation: true,
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+    },
+  },
+});
+```
+
+### Spacing and Breakpoints
+
+```typescript
+export const customTheme = createTheme({
+  spacing: 8, // Default spacing unit (8px)
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+});
+```
+
+## Theme Override Fragments
+
+The generated theme (`src/theme/index.tsx`) is assembled from fixed fragments that you can override by creating a same-named file in the application's `actor/src/theme/` override directory (see [Template Override Process](./README.md#template-override-process)):
+
+- `index.ts.mui-<component>.fragment.hbs` for `app-bar`, `autocomplete`, `avatar`, `button`, `card`, `chip`, `data-grid`, `data-grid-pro`, `dialog`, `divider`, `drawer`, `form-control`, `icon`, `input-base`, `list`, `paper`, `radio`, `select`, `stack`, `tab`, `text-field`, `tooltip`
+- `index.ts.extra-components.fragment.hbs` and `index.ts.theme-options.fragment.hbs`
+- `palette.ts.extra-imports.fragment.hbs`, `palette.ts.extra-attributes.fragment.hbs`, `palette.ts.extra-palette-attributes.fragment.hbs`
+
+Prefer a fragment override over a full `.generator-ignore` of `index.tsx` when you only change one component's styling.
+
+## Sub-Themes for Components
+
+A sub-theme applies different MUI styling to widgets that have a `subTheme` name set in the UI model. The generated widget is wrapped in `SubThemeWrapper`, which looks up a Pandino service under `SUB_THEME_HOOK_INTERFACE_KEY` (value `'SubThemeHook'`) with the matching `name` property, calls it with the parent theme and deep-merges the result into the theme for that subtree.
+
+### Configuration
+
+The generator emits a scaffold per sub-theme name: `src/custom/hooks/sub-themes/register<Name>SubThemeHook.tsx.default`. Copy it, remove the `.default` suffix and call the register function from `application-customizer.tsx`:
+
+```typescript
+// src/custom/hooks/sub-themes/registerServiceEntityCardSubThemeHook.tsx
+import { type Theme, alpha } from '@mui/material';
+import type { BundleContext } from '@pandino/pandino-api';
+import { type SubThemeHook, SUB_THEME_HOOK_INTERFACE_KEY } from '~/theme/SubThemeWrapper';
+
+export function registerServiceEntityCardSubThemeHook(context: BundleContext) {
+  context.registerService<SubThemeHook>(SUB_THEME_HOOK_INTERFACE_KEY, serviceEntityCardSubTheme, {
+    name: 'serviceEntityCard', // toSafeCamelCase of the sub-theme name from the model
+  });
+}
+
+const serviceEntityCardSubTheme = (parentTheme: Theme, data?: any) => ({
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          background: alpha(parentTheme.palette.secondary.main, 0.97),
+          color: parentTheme.palette.common.white,
+        },
+      },
+    },
+  },
+});
+```
+
+The function receives `(parentTheme: Theme, data?: any)` where `data` is the data of the wrapped widget, so styling can depend on values (for example a status colour).
+
+### Use Cases
+
+- Highlight a dashboard card or a status field with a different surface colour.
+- Give an administrative section a different palette or table style (override `MuiDataGrid` `styleOverrides`).
+
+## CSS-in-JS Styling
+
+Material-UI uses Emotion for CSS-in-JS. You can use the `sx` prop or styled components.
+
+### Using sx Prop
+
+```typescript
+import { Box, Typography } from '@mui/material';
+
+export const CustomComponent = () => (
+  <Box
+    sx={{
+      backgroundColor: 'primary.main',
+      color: 'primary.contrastText',
+      padding: 2,
+      borderRadius: 1,
+      '&:hover': {
+        backgroundColor: 'primary.dark',
+      },
+    }}
+  >
+    <Typography variant="h6">Styled with sx</Typography>
+  </Box>
+);
+```
+
+### Using Styled Components
+
+```typescript
+import { styled } from '@mui/material/styles';
+import { Card } from '@mui/material';
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  padding: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[3],
+  '&:hover': {
+    boxShadow: theme.shadows[6],
+  },
+}));
+
+export const CustomCard = () => (
+  <StyledCard>
+    Content
+  </StyledCard>
+);
+```
+
+### Accessing Theme
+
+```typescript
+import { useTheme } from '@mui/material/styles';
+
+export const ThemedComponent = () => {
+  const theme = useTheme();
+  
+  return (
+    <div style={{ color: theme.palette.primary.main }}>
+      Themed content
+    </div>
+  );
+};
+```
+
+## Responsive Styling
+
+### Breakpoint-based Styling
+
+```typescript
+import { Box } from '@mui/material';
+
+export const ResponsiveComponent = () => (
+  <Box
+    sx={{
+      width: {
+        xs: '100%',    // 0-600px
+        sm: '80%',     // 600-960px
+        md: '60%',     // 960-1280px
+        lg: '50%',     // 1280-1920px
+        xl: '40%',     // 1920px+
+      },
+      padding: {
+        xs: 1,
+        sm: 2,
+        md: 3,
+      },
+    }}
+  >
+    Responsive content
+  </Box>
+);
+```
+
+### Using useMediaQuery
+
+```typescript
+import { useMediaQuery, useTheme } from '@mui/material';
+
+export const AdaptiveComponent = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  
+  return (
+    <div>
+      {isMobile && <MobileView />}
+      {isTablet && <TabletView />}
+      {!isMobile && !isTablet && <DesktopView />}
+    </div>
+  );
+};
+```
+
+## Dark Mode Toggle
+
+### Implementation
+
+```typescript
+// src/custom/components/ThemeToggle.tsx
+import { FC, useState } from 'react';
+import { IconButton } from '@mui/material';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
+
+export const ThemeToggle: FC = () => {
+  const [darkMode, setDarkMode] = useState(false);
+  
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+    // Implement theme switching logic
+    // This would typically update a context or state management
+  };
+  
+  return (
+    <IconButton onClick={toggleTheme} color="inherit">
+      {darkMode ? <Brightness7 /> : <Brightness4 />}
+    </IconButton>
+  );
+};
+```
+
+### Register in AppBar
+
+```typescript
+// src/custom/application-customizer.tsx
+import { ThemeToggle } from './components/ThemeToggle';
+
+export const applicationCustomizer: ApplicationCustomizer = {
+  appBarComponents: [ThemeToggle],
+};
+```
+
+## Custom Fonts
+
+### Step 1: Add Font Files
+
+```bash
+# Create fonts directory
+mkdir -p public/fonts
+
+# Add font files
+cp ~/Downloads/CustomFont.woff2 public/fonts/
+```
+
+### Step 2: Define Font Face
+
+```typescript
+// src/theme/typography.ts
+import { createTheme } from '@mui/material/styles';
+
+export const customTheme = createTheme({
+  typography: {
+    fontFamily: 'CustomFont, Roboto, Arial, sans-serif',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'CustomFont';
+          font-style: normal;
+          font-weight: 400;
+          src: url('/fonts/CustomFont.woff2') format('woff2');
+        }
+      `,
+    },
+  },
+});
+```
+
+### Step 3: Apply Theme
+
+```bash
+# Generator emits src/theme/typography.ts. Hand-edit in place = case 1 of the
+# .generator-ignore rule — add to protect from regeneration.
+echo "src/theme/typography.ts" >> .generator-ignore
+```
+
+## Global Styles
+
+### Using CssBaseline
+
+```typescript
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { paletteThemeLight } from './theme/palette';
+
+export const App = () => (
+  <ThemeProvider theme={paletteThemeLight}>
+    <CssBaseline />
+    {/* Your app components */}
+  </ThemeProvider>
+);
+```
+
+### Custom Global Styles
+
+```typescript
+import { GlobalStyles } from '@mui/material';
+
+const customGlobalStyles = (
+  <GlobalStyles
+    styles={{
+      body: {
+        backgroundColor: '#fafafa',
+      },
+      '*::-webkit-scrollbar': {
+        width: '8px',
+      },
+      '*::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        borderRadius: '4px',
+      },
+    }}
+  />
+);
+```
+
+## Best Practices
+
+1. **Use Theme Variables** - Don't hardcode colors
+```typescript
+// Good
+sx={{ color: 'primary.main' }}
+
+// Bad
+sx={{ color: '#1976d2' }}
+```
+
+2. **Leverage sx Prop** - For one-off styles
+```typescript
+<Box sx={{ mt: 2, p: 1 }}>Content</Box>
+```
+
+3. **Styled Components for Reusable Styles** - When used multiple times
+```typescript
+const StyledCard = styled(Card)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+```
+
+4. **Consistent Spacing** - Use theme spacing units
+```typescript
+sx={{ padding: theme.spacing(2) }} // 16px (8px * 2)
+```
+
+5. **Responsive Design** - Use breakpoints
+```typescript
+sx={{
+  display: { xs: 'block', md: 'flex' }
+}}
+```
+
+## Troubleshooting
+
+### "Theme changes not applying"
+
+**Clear cache and rebuild:**
+```bash
+rm -rf node_modules/.cache
+pnpm run dev
+```
+
+### "Custom fonts not loading"
+
+**Check font path:**
+```typescript
+// Font file should be in public/fonts/
+src: url('/fonts/CustomFont.woff2')  // Correct
+src: url('./fonts/CustomFont.woff2') // Wrong
+```
+
+### "Sub-theme not working"
+
+- The `name` in `registerService(..., { name })` must equal the `toSafeCamelCase` form of the sub-theme name set in the model (see the `Sub Theme Name:` comment in the generated scaffold).
+- The scaffold must be renamed without `.default` and its register function called from `application-customizer.tsx`.
+
+## Related Documentation
+
+- [Material-UI Theming](https://mui.com/material-ui/customization/theming/)
+- [Material-UI Palette](https://mui.com/material-ui/customization/palette/)
+- [Material-UI Typography](https://mui.com/material-ui/customization/typography/)
+- [Material-UI Breakpoints](https://mui.com/material-ui/customization/breakpoints/)
+- [Development Workflow](./development-workflow.md)
+- [Main README](./README.md)

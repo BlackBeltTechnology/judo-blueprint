@@ -1,0 +1,1123 @@
+{
+ "area": "model",
+ "items": {
+  "MO-001": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "Bug in template-generated domain doc scripts (generate-domain-docs / diagram_generator); not a model doc change"
+  },
+  "MO-002": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "Bug in template-generated domain doc scripts (generate-domain-docs / diagram_generator); not a model doc change"
+  },
+  "MO-003": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "Bug in template-generated domain doc scripts (generate-domain-docs / diagram_generator); not a model doc change"
+  },
+  "MO-004": {
+   "action": "framework-only",
+   "file": null,
+   "heading": "",
+   "note": "Bug in template-generated domain doc scripts (generate-domain-docs / diagram_generator); not a model doc change"
+  },
+  "MO-005": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-009": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-010": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-011": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-012": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-066": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-067": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-068": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-069": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-070": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-071": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-072": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-073": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-074": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-075": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-076": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-077": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-078": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-079": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-080": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-081": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Concerns import process, template, backend/generator docs or the domain/ area, not catalog/agent-docs/model"
+  },
+  "MO-006": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation engines (ETL and ZETA)",
+   "note": "OSGi path ETL only, tracker needs configuration"
+  },
+  "MO-007": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-008": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-018": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-023": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-024": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-025": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-026": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-027": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-028": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-029": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-030": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-031": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-032": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-033": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-034": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-035": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-037": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-039": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-040": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-041": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-044": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-053": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-055": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-056": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-057": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-060": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-061": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-062": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-063": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-064": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-065": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Runtime/REST/security/deployment/testing topic belongs to backend, deployment or integration-testing docs"
+  },
+  "MO-013": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "heading": "Statements and syntax",
+   "note": "JCL reference created (syntax checked against JclDsl.xtext and JclScriptBuilder)"
+  },
+  "MO-054": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "heading": "Statements and syntax",
+   "note": "JCL reference created (syntax checked against JclDsl.xtext and JclScriptBuilder)"
+  },
+  "MO-107": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "heading": "Statements and syntax",
+   "note": "JCL reference created (syntax checked against JclDsl.xtext and JclScriptBuilder)"
+  },
+  "MO-014": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Validation entry points",
+   "note": "EVL/validator entry points, constraint vs critique"
+  },
+  "MO-015": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Actor declarations",
+   "note": "Actor grammar limits (JslDsl.xtext:627)"
+  },
+  "MO-016": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "heading": "Authenticated actor in scripts",
+   "note": "principal / iscurrentactor"
+  },
+  "MO-017": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Payload library belongs to backend data-access docs"
+  },
+  "MO-019": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Command reference",
+   "note": "Full command surface added"
+  },
+  "MO-020": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Tracing an element through the pipeline",
+   "note": "trace queries"
+  },
+  "MO-021": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mermaid diagrams of the model",
+   "note": "mermaid command"
+  },
+  "MO-022": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Session, daemon and unsaved edits",
+   "note": "daemon/session/overlay"
+  },
+  "MO-036": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation engines (ETL and ZETA)",
+   "note": "Engine selection, defaults per path, metrics; ESM2UI default ETL"
+  },
+  "MO-142": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation engines (ETL and ZETA)",
+   "note": "Engine selection, defaults per path, metrics; ESM2UI default ETL"
+  },
+  "MO-143": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation engines (ETL and ZETA)",
+   "note": "Engine selection, defaults per path, metrics; ESM2UI default ETL"
+  },
+  "MO-144": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation engines (ETL and ZETA)",
+   "note": "Engine selection, defaults per path, metrics; ESM2UI default ETL"
+  },
+  "MO-038": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Maven workflow plugin",
+   "note": "default-model-workflow parameters"
+  },
+  "MO-042": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Scaffolding and version pinning",
+   "note": "version-updater goals"
+  },
+  "MO-043": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Identity",
+   "note": "Invocation form; alias not available non-interactively"
+  },
+  "MO-045": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Known limitations and gotchas",
+   "note": "EVL only on build, discard reverts all, verify generated artifacts"
+  },
+  "MO-046": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Known limitations and gotchas",
+   "note": "Reference-derived UI elements and duplicate FQNs"
+  },
+  "MO-047": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Version and jar pitfalls",
+   "note": "jar location, stale --version"
+  },
+  "MO-048": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Known limitations and gotchas",
+   "note": "where vs filter, -w, containment+target, dirty accumulation"
+  },
+  "MO-049": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Known limitations and gotchas",
+   "note": "Misleading name error is ambiguous FQN; XML workaround"
+  },
+  "MO-050": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mandatory rules",
+   "note": "Rule 1 already forbids reading XMI directly"
+  },
+  "MO-051": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Version and jar pitfalls",
+   "note": "version pins, jar redownload, save, git show"
+  },
+  "MO-052": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "Testkit performance belongs to integration-testing docs"
+  },
+  "MO-058": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Annotations and RDBMS tailoring",
+   "note": "Excel workbooks"
+  },
+  "MO-059": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation engines (ETL and ZETA)",
+   "note": "judo.zeta.metrics property; performance-test script flags not added (framework dev tool)"
+  },
+  "MO-082": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "Related documentation",
+   "note": "Dangling skill links replaced with links to judo-cli.md"
+  },
+  "MO-083": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "JQL string functions",
+   "note": "ltrim/rtrim/lpad/rpad/capitalize/ilike rows"
+  },
+  "MO-084": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "JQL grammar quirks",
+   "note": "Ternary typing"
+  },
+  "MO-085": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Measures",
+   "note": "Stored-unit measured types"
+  },
+  "MO-086": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "heading": "Primitive Types",
+   "note": "Password/XML types abort transformation (type.etl:109,149)"
+  },
+  "MO-087": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "Wrapper-script suggestion concerns blueprint tooling, not model docs"
+  },
+  "MO-088": {
+   "action": "unverified",
+   "file": null,
+   "heading": "",
+   "note": "Reported-unvalidated; only .generator-ignore confirmed; belongs to frontend/general docs"
+  },
+  "MO-089": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/ui.md",
+   "heading": "ActionButton",
+   "note": "VIRTUAL literal verified esm.ecore:984-988"
+  },
+  "MO-090": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Validation entry points",
+   "note": "constraint=ERROR, critique=WARNING stated; per-rule counts not added"
+  },
+  "MO-091": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "Embedded tables bind the member or its inherited reference",
+   "note": "purifyAttribute exists (EsmUtils:3789)"
+  },
+  "MO-092": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Temporal functions",
+   "note": "Verified in JqlTransformers.java"
+  },
+  "MO-093": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Other environment-variable categories",
+   "note": "SYSTEM/PARAMETER verified"
+  },
+  "MO-094": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Measured Numeric",
+   "note": "Literal syntax and duration addability verified"
+  },
+  "MO-095": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Collection Functions",
+   "note": "head/tail/heads/tails already present; boolean aggregators detail added; join marked unsupported by engine"
+  },
+  "MO-096": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "JQL string functions",
+   "note": "String variants and ternary"
+  },
+  "MO-097": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "heading": "Statements and syntax",
+   "note": "JCL reference"
+  },
+  "MO-098": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Known issues",
+   "note": "Reported by operator; marked as known issue with workaround"
+  },
+  "MO-099": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "Faults and the generated exception",
+   "note": "Top-level <Name>Exception verified dao.fault.java.hbs"
+  },
+  "MO-100": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Authoritative function registry",
+   "note": "Template content already merged in catalog copy; JQL pitfalls present"
+  },
+  "MO-101": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "Faults and the generated exception",
+   "note": "Custom operation must declare faults"
+  },
+  "MO-102": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "Operation bodies (JCL) and validation",
+   "note": "ScriptValid verified esmjcl.evl:3-9"
+  },
+  "MO-103": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "Operation naming and shape constraints",
+   "note": "naming/shape rules"
+  },
+  "MO-104": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Other environment-variable categories",
+   "note": "SYSTEM, PARAMETER, typed variables"
+  },
+  "MO-105": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Measured Numeric",
+   "note": "Measure literal and durations; bracket form kept (grammar MEASURE_NAME terminal is bracketed, content may be measure#unit)"
+  },
+  "MO-106": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Collection Functions",
+   "note": "sum/avg type limits, round(scale)"
+  },
+  "MO-108": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Identifiers and reserved words",
+   "note": "backtick escaping"
+  },
+  "MO-109": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Constraints that fail the build",
+   "note": "enumeration ordinals"
+  },
+  "MO-110": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "heading": "Primitive Types",
+   "note": "JSL binary modifiers"
+  },
+  "MO-111": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "JQL grammar quirks",
+   "note": "Equality ops, ^, ternary"
+  },
+  "MO-112": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Constraints that fail the build",
+   "note": "JSL validator rules"
+  },
+  "MO-113": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Measures",
+   "note": "derived measures and rates"
+  },
+  "MO-114": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "GET_RANGE and GET_TEMPLATE behaviours",
+   "note": "GET_RANGE contract"
+  },
+  "MO-115": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Creatable transfer objects",
+   "note": "required binding rule"
+  },
+  "MO-116": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "heading": "Parameterized queries in scripts",
+   "note": "dispatch order and errors"
+  },
+  "MO-117": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Validation entry points",
+   "note": "RDBMS naming critiques"
+  },
+  "MO-118": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Temporal functions",
+   "note": "<Type>!now() as attribute default"
+  },
+  "MO-119": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "Statefulness derived from behaviour",
+   "note": "DAO checkState"
+  },
+  "MO-120": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Measures",
+   "note": "unit conversion contract"
+  },
+  "MO-121": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Other environment-variable categories",
+   "note": "ENVIRONMENT/SEQUENCE/REQUEST"
+  },
+  "MO-122": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "Statefulness derived from behaviour",
+   "note": "behaviour-to-stateful table"
+  },
+  "MO-123": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "What makes members orderable and filterable",
+   "note": "capability rules"
+  },
+  "MO-124": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Validation entry points",
+   "note": "validateModels gate"
+  },
+  "MO-125": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "Selecting a custom React component from the model",
+   "note": "use prefix verified ReactStoredVariableHelper:77"
+  },
+  "MO-126": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "heading": "Primitive Types",
+   "note": "Numeric to Java mapping verified JavaApiHelper"
+  },
+  "MO-127": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "Conditional confirmation",
+   "note": "root type rule"
+  },
+  "MO-128": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "Reference-derived elements have no writable name",
+   "note": "adding a DataField via CLI"
+  },
+  "MO-129": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "Reference-derived elements have no writable name",
+   "note": "name not in CreateInput"
+  },
+  "MO-130": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "A button representation still needs columns",
+   "note": "warning"
+  },
+  "MO-131": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Known limitations and gotchas",
+   "note": "rename keeps xmi:id"
+  },
+  "MO-132": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Built-in libraries",
+   "note": "iterator lambda restriction"
+  },
+  "MO-133": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Generated model files",
+   "note": "sub-model files"
+  },
+  "MO-134": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Annotations and RDBMS tailoring",
+   "note": "ExtendedMetadata namespace"
+  },
+  "MO-135": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Temporal functions",
+   "note": "Temporal function family"
+  },
+  "MO-136": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Collection Functions",
+   "note": "boolean aggregators; !join clarified"
+  },
+  "MO-137": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Built-in libraries",
+   "note": "judo::types/functions"
+  },
+  "MO-138": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Static navigations and static data",
+   "note": ""
+  },
+  "MO-139": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Static navigations and static data",
+   "note": ""
+  },
+  "MO-140": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "GET_RANGE and GET_TEMPLATE behaviours",
+   "note": ""
+  },
+  "MO-141": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mandatory rules",
+   "note": "merge conflict kinds and exit codes"
+  },
+  "MO-145": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Built-in libraries",
+   "note": "JSL to JQL renames"
+  },
+  "MO-146": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Queries with parameters",
+   "note": ""
+  },
+  "MO-147": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Reusing schema fragments",
+   "note": ""
+  },
+  "MO-148": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Known issues",
+   "note": "CRUD flags on relations"
+  },
+  "MO-149": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Known issues",
+   "note": "SYSTEM actor realm DEFAULT/menu item"
+  },
+  "MO-150": {
+   "action": "rejected",
+   "file": null,
+   "heading": "",
+   "note": "elapsedTimeInMinutes is not a registered JQL function; the function is elapsedTimeFrom(other[, measure]) (JqlTransformers:391); documented that instead"
+  },
+  "MO-151": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/structure.md",
+   "heading": "EntityType",
+   "note": "EntityTypeHasMapping (entityType.evl:10)"
+  },
+  "MO-152": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/structure.md",
+   "heading": "Mapping",
+   "note": "target is Class (esm.ecore:312)"
+  },
+  "MO-153": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+   "heading": "Three actor shapes (authoring reference)",
+   "note": "claimPrincipal removed; also in model-development.md and advanced-modeling-patterns.md"
+  },
+  "MO-154": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/transformation-pipeline.md",
+   "heading": "In-memory state model",
+   "note": "side-car .<file>.dirty (PersistenceThread:172)"
+  },
+  "MO-155": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/structure.md",
+   "heading": "Mapping",
+   "note": "Composite of MO-151..154/156..161"
+  },
+  "MO-156": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/structure.md",
+   "heading": "EntityType",
+   "note": ""
+  },
+  "MO-157": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/structure.md",
+   "heading": "Mapping",
+   "note": ""
+  },
+  "MO-158": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/structure.md",
+   "heading": "TwoWayRelationMember",
+   "note": "target/lower/upper inherited, not declared (esm.ecore:148-157)"
+  },
+  "MO-159": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+   "heading": "Three actor shapes (authoring reference)",
+   "note": ""
+  },
+  "MO-160": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/ui.md",
+   "heading": "ActionButton",
+   "note": "VIRTUAL added"
+  },
+  "MO-161": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/esm_metamodel/generator-reserved-names.md",
+   "heading": "Reserved Member Names",
+   "note": "getTemplate emitted when TO is templateable (create via relation or operation input), not by createable flag"
+  },
+  "MO-162": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/README.md",
+   "heading": "Model Design & Development",
+   "note": "change-architect/judo-model-designer references removed"
+  },
+  "MO-163": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/advanced-modeling-patterns.md",
+   "heading": "Role Flags on the Principal Entity",
+   "note": "link points to ui-authoring-guide section 5"
+  },
+  "MO-164": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/generalization-guide.md",
+   "heading": "Backend - Custom Operation",
+   "note": "stray '.' removed"
+  },
+  "MO-165": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/generalization-guide.md",
+   "heading": "Backend - Interceptor",
+   "note": "asmUtils built from asmModel; getIdOf replaced; marked as illustrative project code"
+  },
+  "MO-166": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mandatory rules",
+   "note": "Rules 4-5 present"
+  },
+  "MO-167": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mandatory rules",
+   "note": "Rules 4 and 5 already present; added saved-file note"
+  },
+  "MO-168": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mermaid diagrams of the model",
+   "note": ""
+  },
+  "MO-169": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Command reference",
+   "note": ""
+  },
+  "MO-170": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Command reference",
+   "note": "read via query/status/mermaid; session loading"
+  },
+  "MO-171": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Known limitations and gotchas",
+   "note": "merge needs --base; WARN harmless"
+  },
+  "MO-172": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Command reference",
+   "note": "move/relocate/fill/split"
+  },
+  "MO-173": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Command reference",
+   "note": "flags --no-check, --schema, --brief, --ns"
+  },
+  "MO-174": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mandatory rules",
+   "note": "transform output list corrected (+Measure/Expression/Script/Keycloak, esm2ui)"
+  },
+  "MO-175": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "myapp/webshop samples are in frontend/backend docs; model dir already uses <app>"
+  },
+  "MO-176": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Do not edit the model file by hand",
+   "note": "Rule present"
+  },
+  "MO-177": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/advanced-modeling-patterns.md",
+   "heading": "Asymmetric bidirectional relations (AGGREGATION \u00d7 ASSOCIATION)",
+   "note": "Removed claim that entity ASSOCIATION is forbidden"
+  },
+  "MO-178": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/advanced-modeling-patterns.md",
+   "heading": "Derived-member self-binding",
+   "note": "Now a convention; EVL emits no such error"
+  },
+  "MO-179": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Do not edit the model file by hand",
+   "note": "Already corrected; also Part 5 CRITICAL section and Part 2 wording aligned with CLI"
+  },
+  "MO-180": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mandatory rules",
+   "note": "Rule 8 present"
+  },
+  "MO-181": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Alternative Data Representations",
+   "note": "autocomplete removed; enum TableRepresentation TABLE/TAG/CARD (+BUTTON in esm per ui docs)"
+  },
+  "MO-182": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Authoritative function registry",
+   "note": "!join caveat made consistent (not supported by query engine)"
+  },
+  "MO-183": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/transformation-pipeline.md",
+   "heading": "In-memory state model",
+   "note": ""
+  }
+ },
+ "files": {
+  "catalog/agent-docs/model/judo-cli.md": "Command reference, merge, mermaid, trace, session, pitfalls, known limitations; corrected transform/dirty facts",
+  "catalog/agent-docs/model/transformation-pipeline.md": "Dirty side-car name, CLI transform runs esm2ui, UI model note",
+  "catalog/agent-docs/model/model-development.md": "claimPrincipal removed; USER/PRINCIPAL/ACTOR semantics; string/numeric/temporal/measured/aggregator additions; env categories; grammar quirks; join fixed; skill refs and project names replaced",
+  "catalog/agent-docs/model/advanced-modeling-patterns.md": "claimPrincipal removed; asymmetric relation claim corrected; self-binding is convention; hiddenBy link; sub-headings; <app>",
+  "catalog/agent-docs/model/generalization-guide.md": "Fixed stray line and interceptor example",
+  "catalog/agent-docs/model/ui-authoring-guide.md": "Skill refs replaced; new section on reference-derived elements, custom components, capability rules",
+  "catalog/agent-docs/model/README.md": "Removed change-architect/YAML/skill refs; links to new pages",
+  "catalog/agent-docs/model/jcl-operation-scripts.md": "New: JCL reference",
+  "catalog/agent-docs/model/jsl-language-notes.md": "New: JSL rules",
+  "catalog/agent-docs/model/model-validation-and-transformation.md": "New: validation, engines, Maven, measures, known issues",
+  "catalog/agent-docs/model/esm_metamodel/structure.md": "EntityTypeHasMapping, Mapping.target, TwoWayRelationMember",
+  "catalog/agent-docs/model/esm_metamodel/accesspoint.md": "claimPrincipal removed",
+  "catalog/agent-docs/model/esm_metamodel/ui.md": "ActionButton VIRTUAL",
+  "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md": "action VIRTUAL",
+  "catalog/agent-docs/model/esm_metamodel/operation.md": "Faults, naming, stateful, GET_RANGE/GET_TEMPLATE, JCL validation",
+  "catalog/agent-docs/model/esm_metamodel/type.md": "Password/XML unsupported, numeric mapping, binary modifiers",
+  "catalog/agent-docs/model/esm_metamodel/generator-reserved-names.md": "getTemplate trigger corrected",
+  "(all files)": "Added frontmatter (title, description) for lint"
+ }
+}

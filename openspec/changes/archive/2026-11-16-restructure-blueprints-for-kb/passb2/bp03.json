@@ -1,0 +1,150 @@
+{
+ "batch": "bp03",
+ "entries": {
+  "cards-container-configuration-hook": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "cards container configuration hook",
+    "frontend customizer hook registration generated key"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/extension-points.md#Cards Configuration Hook",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Container Hook Registration",
+    "catalog/agent-docs/frontend/hooks/README.md#Using .default Scaffold Files"
+   ],
+   "fixes": [
+    "added generated .default scaffold path and activation via application-customizer",
+    "added no ~/generated barrel; key from container customization module",
+    "flagged return shape as project evidence not documented"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "client-account-multi-platform": {
+   "status": "rechecked-fixed",
+   "fragment": "client-account-multi-platform",
+   "kb": [
+    "interceptors operation custom implementation not invoked",
+    "composition aggregation association containment cascade delete",
+    "business fault operation throws declared faults",
+    "AGGREGATION relationKind entity allowed values"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Faults and the generated exception",
+    "catalog/agent-docs/backend/interceptors.md#Overview"
+   ],
+   "fixes": [
+    "fragment lacked totalBudget/totalCost and AggregatedCampaign->TrackedCampaign link; rebuilt",
+    "aggregation not accepted by CLI for entity relations (only ASSOCIATION/COMPOSITION); text changed to association",
+    "fault must be declared in faults or build fails",
+    "labelled services as example project code",
+    "composition cascade vs association stated"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "code-based-player-authentication": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "actor application transfer object static operation unauthenticated access anonymous",
+    "unmapped transfer object operation input custom implementation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#unmapped TO operation types",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#anonymous actor",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Faults and the generated exception"
+   ],
+   "fixes": [
+    "actor wording: unmapped TO static ops reached by actor; anonymous flag meaning",
+    "added static-only rule for unmapped TO",
+    "fault must be declared in faults",
+    "labelled mail service as project code",
+    "interceptor note attributed to platform"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "competence-skill-matrix-cluster": {
+   "status": "rechecked-fixed",
+   "fragment": "competence-skill-matrix-cluster",
+   "kb": [
+    "derived attribute getterExpression computed on read not stored"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour/memberType DERIVED"
+   ],
+   "fixes": [
+    "fragment had accidental two-way Competence<->Skill/SkillTarget relations contradicting text; rebuilt as one-way required associations",
+    "derived display attributes: marked as DERIVED/getterExpression and absent from fragment",
+    "text on cascade vs association"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "contact-info-composition-cluster": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "interceptor postCall transaction rollback same transaction",
+    "composition aggregation association containment cascade delete"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Faults and the generated exception"
+   ],
+   "fixes": [
+    "fault must be declared in faults",
+    "cascade vs association stated",
+    "interceptor claim attributed to platform, runs in operation transaction"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "content-lifecycle-status-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "enumeration member ordinal stored database",
+    "readonly attribute updateable false generated form read-only"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md#EnumerationMember ordinal",
+    "catalog/agent-docs/model/jsl-language-notes.md",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Faults and the generated exception"
+   ],
+   "fixes": [
+    "ordinal range 0-9999 unique, runtime delivers ordinal",
+    "fault declaration",
+    "interceptor claim attributed to platform",
+    "read-only status labelled as project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "contract-management-workflow-cluster": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "abstract entity generalization extends inheritance",
+    "interceptors operation custom implementation not invoked"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#Class (Abstract)",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Faults and the generated exception",
+    "catalog/agent-docs/backend/interceptors.md#Overview"
+   ],
+   "fixes": [
+    "abstract meaning stated",
+    "fault declaration",
+    "interceptor attributed to platform",
+    "cascade vs association; template copy labelled project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

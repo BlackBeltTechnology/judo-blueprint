@@ -1,0 +1,210 @@
+{
+ "batch": "pf03",
+ "entries": {
+  "generated-service-layer-reuse": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "generated services judoAxiosProvider ServiceImpl QueryCustomizer mask",
+    "custom UI replace frontend transfer object types generated services reuse",
+    "mask query customizer selected attributes performance"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/development-workflow.md#Accessing Generated Services",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Service Generation",
+    "catalog/agent-docs/frontend/ui-model-pitfalls.md#Model Features Instead of Custom Components"
+   ],
+   "fixes": [
+    "legacy rewrite; added platform base (data-axios paths, JudoAxiosProvider); example names marked illustrative"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "generator-ignore-app-theme": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "App.tsx theme index.tsx generator-ignore theme override fragments",
+    ".generator-ignore checksum protection regeneration",
+    "theme override fragments palette actor"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/README.md#Understanding .generator-ignore",
+    "catalog/agent-docs/frontend/README.md#Code Generation and Checksum Protection",
+    "catalog/agent-docs/frontend/theming.md#Theme Override Fragments"
+   ],
+   "fixes": [
+    "legacy rewrite; added checksum failure and fragment-first guidance"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "generator-ignore-i18n-layout": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "public/i18n locale files regenerated hand-edited checksum hu-HU",
+    "translations generated from model i18n extra fragment override custom keys",
+    ".generator-ignore checksum protection regeneration"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/i18n.md#Directory Structure",
+    "catalog/agent-docs/frontend/i18n.md#Best Practices",
+    "catalog/agent-docs/frontend/README.md#Code Generation and Checksum Protection"
+   ],
+   "fixes": [
+    "legacy rewrite; layout.ts flagged as project code not in docs"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "generator-override-extra-dependencies": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "package.json.dependencies.extra.fragment.hbs extra npm dependencies override",
+    "generator-overrides directory fragment survives regeneration no generator-ignore",
+    "handlebars template override process"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/deployment/build-process.md#Extending Generated Files via Fragment Overrides",
+    "catalog/agent-docs/frontend/README.md#Template Override Process"
+   ],
+   "fixes": [
+    "legacy rewrite; frontend package.json fragment name flagged as not in docs; workflow-poc ignore alternative noted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "getmask-data-optimization": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "getMask action hook page",
+    "mask query customizer selected attributes performance",
+    "X-Judo-Mask protocol headers projection"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Protocol Headers",
+    "catalog/agent-docs/backend/data-access-guide.md#Mask Basics",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Page Actions"
+   ],
+   "fixes": [
+    "legacy rewrite; getMask()/_mask syntax flagged as not documented"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "glassmorphic-styled-components": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "styled components sx prop theme MUI css-in-js",
+    "theme override fragments sub-themes",
+    "src/custom gitignored custom components"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/theming.md#CSS-in-JS Styling",
+    "catalog/agent-docs/frontend/extension-points.md#Hook Files and the Custom Folder"
+   ],
+   "fixes": [
+    "legacy rewrite; platform styling layers added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "handlebars-generator-template-override": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "elementHasAnnotation handlebars template helpers generator override fragment",
+    "OperationFlowManager redirect template override prefer hooks",
+    "template override process generator-overrides"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/README.md#Template Variables",
+    "catalog/agent-docs/frontend/README.md#Template Override Process",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#OperationFlowManager"
+   ],
+   "fixes": [
+    "legacy rewrite; override layering and -DtemplateDebug added; helper names flagged as undocumented"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "hook-scaffold-default-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "hook scaffold .default src/custom/hooks generateActionsHook",
+    ".default scaffold copy activate application-customizer gitignored custom",
+    "hook flag model scaffold only generated when enabled"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/README.md#Using .default Scaffold Files",
+    "catalog/agent-docs/frontend/extension-points.md#Hook Files and the Custom Folder"
+   ],
+   "fixes": [
+    "legacy rewrite; rename corrected to copy; no ignore needed; scaffold only with model flag"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "http-error-interceptor": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "error handler interceptor axios frontend error handling hook",
+    "422 fault dialog useFaultDialog interceptor snack",
+    "interceptor shouldInterceptError interceptError 5xx"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/error-handling.md#Generated Error Handling Matrix",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Error Interceptor Hook",
+    "catalog/agent-docs/frontend/error-handling.md#Customizing the 422 Handling"
+   ],
+   "fixes": [
+    "legacy rewrite; registration key/function corrected to documented ones; useCRUDDialog caveat added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "hungarian-full-localization": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "translations generated from model i18n extra fragment override custom keys",
+    "enumerations _null menuTree key conventions add language",
+    "public/i18n locale files regenerated hand-edited checksum hu-HU"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/i18n.md#Key Naming Conventions",
+    "catalog/agent-docs/frontend/i18n.md#Best Practices",
+    "catalog/agent-docs/frontend/i18n.md#Directory Structure"
+   ],
+   "fixes": [
+    "legacy rewrite; removed dead flutter-arb-localization link; generated vs hand-edited locale files clarified"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "i18n-custom-translation-keys": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "translations generated from model i18n extra fragment override custom keys",
+    "flat translation keys t() custom prefix",
+    "extra.localization.operation key pattern"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/i18n.md#Flat Translation Keys",
+    "catalog/agent-docs/frontend/i18n.md#Key Naming Conventions"
+   ],
+   "fixes": [
+    "legacy rewrite; platform key patterns added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

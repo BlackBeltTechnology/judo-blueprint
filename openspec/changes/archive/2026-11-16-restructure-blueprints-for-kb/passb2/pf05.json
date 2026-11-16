@@ -1,0 +1,237 @@
+{
+ "batch": "pf05",
+ "entries": {
+  "pdf-preview-inline-display": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "dialog action hook post operation output",
+    "downloadFile inline token fileHandling",
+    "extra npm dependencies generator override package.json"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Custom Attachments: Token Flow",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Client Side of the Upload Token Flow",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Container Actions",
+    "catalog/agent-docs/deployment/build-process.md#Available Fragment Extension Points"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "inline renders in dialog frame per platform; rackinspect opens tab labelled project practice",
+    "npm fragment not in platform fragment table, labelled project practice",
+    "hook names marked illustrative"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "pin-code-auto-submit-input": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "custom component replacement input field text field widget",
+    "IMaskInput integration masked input",
+    "TextField widget ui mapping"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Custom Component Replacement",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md#TextField"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "platform extension mechanism (CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY) added",
+    "component labelled project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "post-operation-navigation-hook": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "dialog action hook post operation output",
+    "OperationFlowManager navigation after operation",
+    "post operation action refresh snackbar navigate"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#OperationFlowManager",
+    "catalog/agent-docs/frontend/advanced-patterns.md#PostRefresh Action Hook"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added OperationFlowManager as platform alternative",
+    "hook names marked generated/illustrative"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "post-refresh-validation-propagation": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "validation hooks server-side validation errors form",
+    "PostRefresh action hook",
+    "frontend error handling validation errors location"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#PostRefresh Action Hook",
+    "catalog/agent-docs/frontend/hooks/validation-hooks.md#Overview",
+    "catalog/agent-docs/frontend/error-handling.md#Validation Errors Without Location"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "no PostRefreshActionHook type: generated handler",
+    "platform error shape {location,code,message} vs project errors list distinguished"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "promise-based-dialog-system": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "dialog open close promise dialog context custom dialog",
+    "generated range dialog filter dialog entity selection table dialog",
+    "complete frontend replacement generated service layer"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/model-screen-layout.md#UI Model to Frontend Mapping",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Overview"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added generated-dialog platform base; scoped to hand-built frontend",
+    "labelled provider/hooks as project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "pwa-manifest-customization": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "PWA manifest service worker icons theme color",
+    "generator-ignore protect file from regeneration",
+    "manifest.json public folder generated"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/README.md#Code Generation and Checksum Protection",
+    "catalog/agent-docs/frontend/README.md#Understanding .generator-ignore",
+    "catalog/agent-docs/deployment/generator-plugins.md#Surviving Regeneration"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added checksum build-failure semantics",
+    "stated docs do not cover PWA content; project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "react-intl-flat-key-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "react-i18next translation keys public/i18n generated",
+    "flat translation keys dot notation",
+    "i18n key naming conventions entities enumerations"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/i18n.md#Internationalization (i18n) > Key Naming Conventions",
+    "catalog/agent-docs/frontend/i18n.md#Flat Translation Keys",
+    "catalog/agent-docs/frontend/i18n.md#Directory Structure"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "contrasted with generated react-i18next JSON files",
+    "added generated key forms; marked react-intl as hand-built-only project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "seek-based-table-pagination": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "seek pagination _seek limit reverse cursor table query customizer",
+    "DAO query seek order by pageable limit",
+    "list call without seek returns all rows pagination"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Pagination",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Resource verbs / list queries _seek",
+    "catalog/agent-docs/backend/data-access-guide.md#Low-Level DAO and QueryCustomizer"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "added: platform pagination is opt-in, no seek returns all rows",
+    "_seek shape from platform reference; client next/previous handling labelled project practice",
+    "dropped unresolvable related ids"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "session-storage-table-state": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "table state filters sort persisted sessionStorage generated table",
+    "table uniqueId LazyTable EagerTable",
+    "sessionStorage persistence"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/extension-points.md#Frontend Extension Points > Table State Persistence",
+    "catalog/best-practices/frontend/localstorage-session-persistence.md#Practice > Platform base"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "key fact: generated tables already persist state by uniqueId; pattern scoped to hand-built tables",
+    "uniqueId uniqueness warning added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "single-access-entity-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "single access singleton entity view page cardinality one access",
+    "signed identifier get create root access service generated",
+    "masks detail view nested"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers",
+    "catalog/agent-docs/backend/data-access-guide.md#Using Masks (Projections) > Pattern 3: Detail Views",
+    "catalog/best-practices/model/singleton-entity.md#Practice"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "signed identifier changes after every update and cannot be minted added",
+    "no platform singleton construct; missing row must be handled",
+    "godService empty-key call labelled project service-layer convention"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "single-actor-heavy-customization": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "application-customizer registration hooks scaffold src/custom gitignored",
+    "custom visual element component replacement hook",
+    "hook scaffold default pattern"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/README.md#Hook System Overview > Using .default Scaffold Files",
+    "catalog/agent-docs/frontend/README.md#Key Concepts",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Custom Component Replacement"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "src/custom gitignored; .generator-ignore only for taken-over files",
+    "visual element replacement mechanism added",
+    "folder layout labelled project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

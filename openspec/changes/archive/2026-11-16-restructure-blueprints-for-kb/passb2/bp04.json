@@ -1,0 +1,130 @@
+{
+ "batch": "bp04",
+ "entries": {
+  "credential-generalization-hierarchy": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "generalization abstract entity subtype polymorphic",
+    "interceptors custom operation not invoked"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Platform-Managed Polymorphic Creation",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "added: DAO only for non-abstract types",
+    "labelled provider service/error codes as project code",
+    "noted no interceptors on custom ops",
+    "added platform polymorphic Create note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-notification-card-inbox": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "custom visual element registration Pandino application-customizer"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook"
+   ],
+   "fixes": [
+    "replacement needs a custom implementation element in UI model",
+    "labelled project helpers",
+    "removed frontend-only no-model claim"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-post-detail-views": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "container hook replace generated layout"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook"
+   ],
+   "fixes": [
+    "container hooks return actions not layouts; custom implementation element route",
+    "labelled project helpers"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-statistics-dashboard": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "query customizer data mask hook relation view page nested fetch",
+    "data-name attribute selector theme override"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook"
+   ],
+   "fixes": [
+    "custom implementation element requirement",
+    "data-mask hook and data-name style marked as undocumented project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "custom-theme-with-native-status-bar": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "theme override generator-ignore src/theme palette density"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/theming.md#Theme Override Fragments"
+   ],
+   "fixes": [
+    "added fragment override route and model-driven palette note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "dashboard-transfer-object": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "unmapped transfer object transient attribute computed derived interceptor",
+    "mapped operation transfer object delegates entity operation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Backend-Computed TO Attribute",
+    "catalog/agent-docs/model/model-development.md#Mapped vs. Unmapped Transfer Objects",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook"
+   ],
+   "fixes": [
+    "transient attrs filled by interceptor on mapped reads",
+    "custom implementation element route",
+    "page mask marked project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "dimension-template-hierarchy": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "InterceptorCallBusinessException preCall postCall registration order business fault"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Throwing a Business Error from an Interceptor",
+    "catalog/agent-docs/backend/interceptors.md#Ordering"
+   ],
+   "fixes": [
+    "interceptor example used wrong signature; rewritten with real preCall(EOperation,payload) and fault type FQN",
+    "postCall not reversed",
+    "custom implementation element route"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

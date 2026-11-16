@@ -1,0 +1,126 @@
+{
+ "batch": "bp13",
+ "entries": {
+  "soap-external-service-client": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "external service OSGi component custom operation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#OSGi Component Registration Pattern",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults"
+   ],
+   "fixes": [
+    "legacy rewritten; project classes labelled as example code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "standard-type-and-measure-library": {
+   "status": "rewritten",
+   "fragment": "standard-type-and-measure-library",
+   "kb": [
+    "measure unit MeasuredType precision scale"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md",
+    "catalog/agent-docs/model/esm_metamodel/other.md#measure Package",
+    "catalog/agent-docs/model/model-validation-and-transformation.md#Measures"
+   ],
+   "fixes": [
+    "legacy rewritten, GraphQL removed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "state-transition-history-entry": {
+   "status": "rewritten",
+   "fragment": "state-transition-history-entry",
+   "kb": [
+    "composition ownership audit history",
+    "createable updateable deleteable flags"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/README.md#CRUD Flags",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "legacy rewritten, GraphQL removed, fragment built"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "table-row-highlighting-system": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY row highlighting hook"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/table-hooks.md#Table Row Highlighting"
+   ],
+   "fixes": [
+    "legacy rewritten; domain tag set to frontend; frontend.md hook names tied to docs"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "task-entity-with-assignment": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "InterceptorCallBusinessException",
+    "modeled fault 422",
+    "filterResultOptions hook"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#Exceptions Thrown from Interceptors",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md"
+   ],
+   "fixes": [
+    "model.md lacked transfer object/UI/access notes: added",
+    "backend.md toggle built-in vs custom interceptor behaviour clarified with doc link",
+    "last_updated bumped"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "task-list-with-checkout-release": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "mapped operation binding"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Mapped Operation Rules",
+    "catalog/agent-docs/backend/interceptors.md",
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations"
+   ],
+   "fixes": [
+    "backend: mapped binding, interceptor non-firing and fault declaration requirement tied to docs"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "test-attempt-lifecycle-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "custom operation faults declared",
+    "interceptors custom operations"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "backend: modeled fault must be declared in the model; permission checks inside operation"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""Regex re-check of the catalog against verified platform facts (passb2-doc-gaps.md section A plus old Pass B errors).
+
+Usage: claim-check [N]   (N = hits shown per check, default 6). Exit 1 on any hit.
+Each check: id, regex, optional path predicate, why, allow regex (same line). ALLOW lists reviewed false positives as (check-prefix, path) pairs.
+"""
+import re,pathlib,sys
+ROOT=pathlib.Path(__file__).resolve().parents[3]/'catalog'
+ALLOW={
+ ("A1 AGGREGATION unqualified","best-practices/model/api-package-thin-ref-projection.md"),  # keyword only
+ ("A1 AGGREGATION unqualified","model-blueprints/testkit-integration-foundation/backend.md"),  # says TO relations, reviewed
+ ("A2","best-practices/model/service-based-transfer-organization.md"),
+ ("A2","best-practices/model/panel-dashboard-transfer.md"),
+ ("A3","model-blueprints/custom-theme-with-native-status-bar/frontend.md"),
+ ("A3","best-practices/frontend/dark-theme-override.md"),
+ ("A8","*"),  # reviewed: all hits state TO inheritance is unsupported, or are MUI color="inherit" / supertype wording
+ ("old: raw RuntimeException","agent-docs/backend/custom-operations.md"),
+ ("old: raw RuntimeException","agent-docs/integration-testing/advanced-patterns.md"),
+ ("old: init runs","best-practices/model/initializer-operation.md"),
+}
+def allowed(cid,p):
+    rel=str(p.relative_to(ROOT))
+    return any(cid.startswith(c) and (f=="*" or f==rel) for c,f in ALLOW)
+files=[p for p in ROOT.rglob('*.md') if p.name!='AGENTS.md']
+def body(p): return p.read_text()
+def strip_code_comments(t): return t
+checks=[
+ # (id, regex, scope predicate, explanation, allow-context regex on the same line)
+ ("A1 AGGREGATION via CLI", r"(create|update)[^\n`]*relationKind=AGGREGATION|--set aggregation=true", None, "CLI cannot set AGGREGATION", None),
+ ("A1 AGGREGATION unqualified on entity rel", r"\bAGGREGATION\b", lambda p:'agent-docs' not in str(p), "entry mentions AGGREGATION, check it is not presented as CLI-settable", r"not valid|rejects|modeling tool|XMI|asymmetric|owner end|cannot|only accepts|ASSOCIATION"),
+ ("A2 unmapped panel as access target", r"unmapped[^.\n]{0,80}(panel|dashboard|view model)|(panel|dashboard|view model)[^.\n]{0,80}unmapped", None, "Access target must be mapped", r"must be mapped|have to be mapped|not as an access target|operation input|rejected|rejects"),
+ ("A3 palette.ts edit without model hint", r"palette\.ts", lambda p:'agent-docs/frontend/theming.md' not in str(p) and 'README' not in p.name, "prefer ActorType colours", r"ActorType|actor colour|actor color|model-driven|Prefer the model|only for values|generated"),
+ ("A5 self in JCL body", r"(?i)(jcl|script|body)[^\n]{0,60}\bself\.", None, "JCL uses this", r"this|not self|Unknown symbol"),
+ ("A6 !isEmpty", r"!isEmpty\(\)", None, "no such JQL function", r"no `!isEmpty|fails|Unknown function|There is no"),
+ ("A7 inline new tab claimed as platform", r"inline[^\n]{0,80}new tab|new tab[^\n]{0,80}inline", None, "dialog frame is default", r"project|rackinspect|check|version"),
+ ("A8 transfer object inheritance", r"(?i)\b(transfer objects?|TOs?)\b[^\n]{0,40}\b(inherits?|inheritance|extends|superTypes?|generaliz\w*)\b", None, "TO inheritance unsupported", r"not supported|unsupported|cannot|entity generalization|entities only|instead|no inheritance|superTypes`, but|exposes"),
+ ("old: one transaction claim", r"(?i)runs? in (one|a single) transaction", lambda p:'agent-docs' not in str(p), "custom-op transaction scope undocumented (B1)", r"verify|interceptor|test|undocumented|not documented|check|@JudoTest|AUTO_"),
+ ("old: postCall reverse order", r"(?i)postCall[^\n]{0,60}reverse", None, "postCall runs in registration order", r"not reverse|rather than reverse|not in reverse|instead of reverse"),
+ ("old: raw RuntimeException for business error", r"throw new RuntimeException", None, "use ValidationException / modeled fault", r"500|anti|don't|avoid|wrong|❌"),
+ ("old: init runs on startup", r"(?i)initiali[sz]er[^\n]{0,60}(runs?|called|executed) (automatically )?(on|at) (startup|boot)", None, "B3 undocumented", r"not documented|project|verify|does not say|undocumented|claim"),
+ ("old: findAllById platform", r"findAllById", None, "not in agent-docs", r"project|not in|unverified|verify|isn't"),
+ ("old: judo.sh command", r"\bjudo\.sh\s+(build|start|generate|stop|clean|prune|reckless|run|test|install)", lambda p:'agent-docs' not in str(p), "no CLI commands in entries", None),
+ ("src/custom gitignored", r"src/custom/?`?[^\n]{0,40}\bis gitignored|gitignored in the frontend module|gitignored folder", None, "only *.default files are gitignored (judo-ui-react actor/gitignore); src/custom is committed", r"not gitignored|only the `?\.default"),
+ ("old: Decimal Sandbox", r"Sandbox::types::Decimal", None, "not a Sandbox type", None),
+]
+bad=0
+for cid,rx,pred,why,allow in checks:
+    hits=[]
+    for p in files:
+        if pred and not pred(p): continue
+        if allowed(cid,p): continue
+        for i,l in enumerate(body(p).split('\n'),1):
+            if re.search(rx,l) and not (allow and re.search(allow,l)):
+                hits.append(f"{p}:{i}: {l.strip()[:150]}")
+    print(f"[{len(hits):3}] {cid} — {why}")
+    for h in hits[:int(sys.argv[1]) if len(sys.argv)>1 else 6]: print("      ",h)
+    bad+=len(hits)
+# broken #anchors (a link whose file exists but heading does not)
+def _slug(h):
+    h=h.strip().lower(); h=re.sub(r'[`*]','',h); h=re.sub(r'[^\w\- ]','',h); return h.replace(' ','-')
+_heads={}
+for _p in ROOT.rglob('*.md'):
+    _t=re.sub(r'```.*?```','',_p.read_text(),flags=re.S)
+    _heads[_p.resolve()]={_slug(m) for m in re.findall(r'^#{1,6} (.+)$',_t,re.M)}
+_anch=[]
+for _p in ROOT.rglob('*.md'):
+    _t=re.sub(r'```.*?```','',_p.read_text(),flags=re.S)
+    for _m in re.finditer(r'\]\(([^)\s]*)#([^)\s]+)\)',_t):
+        _f=(_p.parent/_m.group(1)).resolve() if _m.group(1) else _p.resolve()
+        if _f in _heads and _m.group(2).lower() not in _heads[_f]: _anch.append(f"{_p}: {_m.group(1) or '(self)'}#{_m.group(2)}")
+print(f"[{len(_anch):3}] broken anchors — link target heading does not exist")
+for h in _anch[:int(sys.argv[1]) if len(sys.argv)>1 else 6]: print("      ",h)
+bad+=len(_anch)
+print("TOTAL",bad)
+sys.exit(1 if bad else 0)

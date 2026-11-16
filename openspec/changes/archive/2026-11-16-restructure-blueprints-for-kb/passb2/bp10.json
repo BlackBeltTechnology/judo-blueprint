@@ -1,0 +1,150 @@
+{
+ "batch": "bp10",
+ "entries": {
+  "organization-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "relation kinds cascade",
+    "interceptor custom operation",
+    "fault 422 400"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations"
+   ],
+   "fixes": [
+    "name uniqueness / ACTIVE-only listing / rename restriction labelled project rule",
+    "composition vs association cascade stated",
+    "interceptor claim aligned"
+   ],
+   "inventory": {
+    "jb-038 project specifics mixed with platform facts": "applied"
+   },
+   "lint": "pass"
+  },
+  "osgi-scheduled-background-jobs": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "scheduler background job OSGi",
+    "DAO outside request context transaction"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "interceptors only built-in stated",
+    "no request transaction / no principal in job (project practice) added",
+    "related quartz-scheduled-job"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "osgi-service-layer-delegation": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "BusinessErrorException ValidationException I18n",
+    "InterceptorCallBusinessException"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/internationalization-guide.md"
+   ],
+   "fixes": [
+    "BusinessErrorException is per-project generated fault, not platform",
+    "ExceptionUtils labelled project helper",
+    "interceptors-skip-custom-ops added to backend.md",
+    "intent states keep logic out of app module; related i18n-osgi-service"
+   ],
+   "inventory": {
+    "jb-023 keep custom operation logic out of app module": "applied"
+   },
+   "lint": "pass"
+  },
+  "partner-generalization-hierarchy": {
+   "status": "rewritten",
+   "fragment": "partner-generalization-hierarchy",
+   "kb": [
+    "generalization abstract subtype",
+    "polymorphic creation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: Platform-Managed Polymorphic Creation",
+    "catalog/agent-docs/model/jsl-language-notes.md (abstract)"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "mainBankAccount modeled as association (CLI rejected AGGREGATION on unidirectional relation)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "partner-with-contact-details": {
+   "status": "rewritten",
+   "fragment": "partner-with-contact-details",
+   "kb": [
+    "view edit actions hook postRefreshAction",
+    "interceptor preCall postCall flat nested",
+    "relation kinds"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#PostRefresh Action Hook",
+    "catalog/agent-docs/frontend/hooks/table-hooks.md",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "labelled project classes",
+    "postRefreshAction mechanism per docs"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "platform-configuration-singleton": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "DAO query selectOne",
+    "createable updateable deleteable false"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Query Result Methods",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md#CRUD Flags and UI Element Visibility",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "selectOne returns Optional, sample fixed",
+    "interceptors only built-in wording",
+    "generated UI hides create/delete via flags, not manual hide",
+    "fault class generated per project"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "platform-email-template-service": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "EmailService sendMessage",
+    "FileStoreService"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md"
+   ],
+   "fixes": [
+    "project classes labelled",
+    "interceptor claim aligned",
+    "send failure vs modeled fault clarified",
+    "EmailService not in agent-docs noted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

@@ -1,0 +1,108 @@
+{
+ "batch": "mg1",
+ "entries": {
+  "testkit-integration-foundation": {
+   "status": "rewritten",
+   "fragment": "none: infrastructure",
+   "kb": [
+    "testkit integration test dispatcher HSQLDB actor resolution",
+    "signed identifier access getterExpression update refresh",
+    "operation interceptor custom operation OSGi Reference DAO",
+    "enableActorResolution Layer0Module activation flag interceptors testkit",
+    "Docker testcontainers Keycloak JWT AuthenticationInterceptor testkit overlay"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/integration-testing/interceptor-testing.md#Deferred Injection of Interceptor Dependencies",
+    "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md#Runtime Caching Details",
+    "catalog/agent-docs/integration-testing/access-and-derived-testing.md#Limitations to be aware of",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers"
+   ],
+   "fixes": [
+    "rewritten to kb format; fragment none: infrastructure",
+    "labelled project helpers as example code",
+    "bypass note on refresh/update marked verify",
+    "signed identifier changes after each update added",
+    "pointed to documented interceptor registration route",
+    "removed judo.sh mention, split oversized sections"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "transient-relation-multi-select-input": {
+   "status": "rewritten",
+   "fragment": "transient-relation-multi-select-input",
+   "kb": [
+    "transient relation unmapped transfer object input operation parameter",
+    "getRangeFor range expression choice lookup RangeDialog",
+    "AggregationInput RangeDialog embedded table add remove selection frontend",
+    "transient relation must be aggregation unmapped transfer object relation member constraints"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Backend Platform Behavior Reference > REST Wire Contract > Range and Choice Operations",
+    "catalog/agent-docs/model/jcl-operation-scripts.md#Statements and syntax",
+    "catalog/best-practices/model/transient-relation-parameter.md#Practice",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Single Relation (Link)"
+   ],
+   "fixes": [
+    "GraphQL/YAML removed, fragment built",
+    "JCL example uses this",
+    "mutable semantics marked verify",
+    "aggregation set by tool, not CLI",
+    "unmapped target claim marked verify",
+    "interceptors-not-around-custom note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "transient-relation-single-select-input": {
+   "status": "rewritten",
+   "fragment": "transient-relation-single-select-input",
+   "kb": [
+    "transient relation unmapped transfer object input operation parameter",
+    "getRangeFor range expression choice lookup RangeDialog",
+    "single relation selector generated range operation view set unset embedded table add",
+    "transient relation mutable input range getRangeFor transfer object"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Backend Platform Behavior Reference > REST Wire Contract > Range and Choice Operations",
+    "catalog/agent-docs/model/jcl-operation-scripts.md#Statements and syntax",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Single Relation (Link)",
+    "catalog/best-practices/frontend/aggregation-input-widget.md#Practice > Platform base"
+   ],
+   "fixes": [
+    "GraphQL/YAML removed, fragment built",
+    "mutable semantics marked verify",
+    "custom Java route marked verify",
+    "behaviors RANGE/REFRESH claim marked verify",
+    "widget labelled project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "two-call-generation-state": {
+   "status": "rewritten",
+   "fragment": "two-call-generation-state",
+   "kb": [
+    "handle document two-phase confirm expiry FaultException custom operation DAO create",
+    "filestore binary attribute FileStoreService FileResponse put get Java custom operation",
+    "Signed identifiers reserved payload keys optimistic locking",
+    "operation interceptor custom operation OSGi Reference DAO"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Optimistic Locking and `__version`",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/best-practices/backend/custom-operation-osgi-component.md"
+   ],
+   "fixes": [
+    "GraphQL removed, fragment built (binary attrs omitted: no binary type in Sandbox)",
+    "FaultException replaced by modeled-fault guidance",
+    "optimistic locking for atomic confirm",
+    "FileStoreService labelled example code, verify",
+    "interceptors-not-around-custom note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

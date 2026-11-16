@@ -1,0 +1,158 @@
+{
+ "batch": "bp05",
+ "entries": {
+  "document-file-attachment": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "FileStore binary file upload download",
+    "interceptors built-in operations custom operations",
+    "custom operation implementation DAO create child composition"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO"
+   ],
+   "fixes": [
+    "FileStore id claim replaced by token-based two-phase upload",
+    "binary is FileType in generated Java; built-in create/upload token exist besides custom op",
+    "interceptor claim clarified: built-in ops incl. upload token do run interceptors",
+    "project practice (access-checked download) labelled",
+    "TOs marked as service layer not drawn in diagram"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "document-registry-sequence": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "sequence SEQUENCE variable provider getVariable",
+    "SEQUENCE category sequence next value counter transaction rollback"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Custom Sequences",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Variable Providers",
+    "catalog/agent-docs/backend/error-handling-guide.md#Platform Exceptions",
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO"
+   ],
+   "fixes": [
+    "added platform sequence (SEQUENCE category, gaps) context and distinction",
+    "exhaustion thrown as ValidationException instead of IllegalStateException (would be 500)",
+    "DAO needs mapped TO noted",
+    "related sequence-based-identifier added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "document-review-state-machine": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "derived boolean guard attribute enable button transfer object operation",
+    "instance operation mapped operation transfer object custom implementation state transition"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/error-handling-guide.md#Platform Exceptions"
+   ],
+   "fixes": [
+    "transition rejection mechanism named (ValidationException or declared fault)",
+    "interceptors cannot enforce transitions on custom ops",
+    "mapped operations delegating to custom instance ops; guards derived/mapped clarified"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "draft-done-status-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "enumeration ordinal default value expression enum literal"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jsl-language-notes.md",
+    "catalog/agent-docs/model/esm_metamodel/type.md#EnumerationMember",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Response Metadata and Wire Conversion"
+   ],
+   "fixes": [
+    "ordinal range 0-9999, unique, wire ordinals added",
+    "transition guard labelled project practice, not platform-enforced"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "entity-change-history-snapshot": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "custom operation transaction rollback dispatcher",
+    "deleting parent entity relation cascade delete reverseCascadeDelete"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO",
+    "catalog/agent-docs/backend/error-handling-guide.md#How the Runtime Maps Exceptions to HTTP",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#TwoWayRelationMember"
+   ],
+   "fixes": [
+    "unsupported transaction-rollback claim removed/softened",
+    "cascade delete: association vs composition clarified",
+    "DAO needs mapped TO",
+    "error behaviour: runtime exception -> 500, ValidationException for input"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "environment-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "enumeration ordinal default value expression enum literal",
+    "sequence SEQUENCE variable provider getVariable"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jsl-language-notes.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Variable Providers",
+    "catalog/agent-docs/backend/data-access-guide.md#Known Issues of the Generated DAO"
+   ],
+   "fixes": [
+    "ordinal range/unique/wire value added",
+    "distinguished from platform ENVIRONMENT variable category"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "error-code-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "fault dialog X-Fault 422 frontend error handler",
+    "immutable bound instance AccessDeniedException not updatable operation",
+    "interceptors built-in operations custom operations"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/error-handling-guide.md#Exceptions Thrown from Interceptors",
+    "catalog/agent-docs/backend/error-handling-guide.md#Example Project Helpers (Not Platform API)",
+    "catalog/agent-docs/frontend/error-handling.md#Operation Fault Dialog (HTTP 422)",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers"
+   ],
+   "fixes": [
+    "BusinessErrorException is project-generated from modeled fault, not platform",
+    "ExceptionUtils labelled project code",
+    "interceptor wrapper InterceptorCallBusinessException, FQN type, details non-null",
+    "ValidationException vs business error; per-row list loss",
+    "default fault dialog behaviour vs snack hook (project practice)",
+    "immutable bound instance AccessDeniedException added",
+    "diagram now includes transfer (BusinessError) via kinds"
+   ],
+   "inventory": {
+    "Catalog blueprint practice for business errors": "applied"
+   },
+   "lint": "pass"
+  }
+ }
+}

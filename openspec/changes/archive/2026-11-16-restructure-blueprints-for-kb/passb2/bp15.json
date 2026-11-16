@@ -1,0 +1,102 @@
+{
+ "batch": "bp15",
+ "entries": {
+  "venue-with-bookable-resources": {
+   "status": "rewritten",
+   "fragment": "venue-with-bookable-resources",
+   "kb": [
+    "relation kinds CRUD flags endpoints ASSOCIATION AGGREGATION COMPOSITION",
+    "range interceptor getRangeReference OperationCallInterceptor",
+    "access control per-user visibility"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: Asymmetric bidirectional relations",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "legacy full rewrite; relation kinds stated per validator rules",
+    "range interceptor scope stated per docs",
+    "project helpers labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "work-status-lifecycle-enum": {
+   "status": "rewritten",
+   "fragment": "work-status-lifecycle-enum",
+   "kb": [
+    "enumeration ordinal default value"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jsl-language-notes.md (ordinals 0..9999 unique)",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "ordinals normalised, order not inferred from ordinal"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "workflow-engine-state-machine-cluster": {
+   "status": "rewritten",
+   "fragment": "workflow-engine-state-machine-cluster",
+   "kb": [
+    "custom operation static instance OSGi component DAO injection",
+    "custom visual element component registration Pandino"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/custom-operations.md",
+    "catalog/agent-docs/frontend/hooks/ui-hooks.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "interceptor bypass for custom ops stated",
+    "SpEL guards / helpers labelled project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "workflow-versioning-pattern": {
+   "status": "rewritten",
+   "fragment": "workflow-versioning-pattern",
+   "kb": [
+    "file upload binary token FileStoreService custom operation input"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Asymmetric bidirectional relations"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "upload-token flow added",
+    "bidirectional composition rule stated"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "xdocreport-document-generation-pipeline": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "OSGi configuration Designate environment variable service",
+    "file upload binary token FileStoreService"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens",
+    "catalog/agent-docs/deployment/application-config.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "fragment none: backend-only",
+    "domain tag changed to backend",
+    "project helpers labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

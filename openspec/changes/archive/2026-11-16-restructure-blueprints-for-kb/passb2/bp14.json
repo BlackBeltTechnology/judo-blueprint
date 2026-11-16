@@ -1,0 +1,143 @@
+{
+ "batch": "bp14",
+ "entries": {
+  "toggle-active-operation": {
+   "status": "rewritten",
+   "fragment": "toggle-active-operation",
+   "kb": [
+    "custom operation instance operation implementation DAO update",
+    "boolean flag default value attribute required",
+    "interceptor not invoked custom operation fault"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#example-1-simple-toggle-operation",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#modeled-faults",
+    "catalog/agent-docs/backend/data-access-guide.md#pattern-4-partial-updates"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "new fragment (entity, active, custom toggleActive)",
+    "interceptor and fault claims added; project helpers labelled"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "token-based-verification-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "rebuilt (added email)",
+   "kb": [
+    "modeled fault HTTP 422 validation exception 400",
+    "hook key generated page container custom hook",
+    "scheduled job OSGi scheduler cleanup"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#modeled-faults",
+    "catalog/agent-docs/frontend/advanced-patterns.md#page-and-container-action-hooks"
+   ],
+   "fixes": [
+    "fault must be declared on operation",
+    "links to interceptor doc",
+    "email missing from fragment shape",
+    "UI pages note added"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "user-holiday-absence-tracking": {
+   "status": "rechecked-fixed",
+   "fragment": "rebuilt (composition + derived owner via container)",
+   "kb": [
+    "derived relation navigation container opposite composition owner"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#modeled-faults",
+    "catalog/best-practices/model/container-back-reference.md"
+   ],
+   "fixes": [
+    "fragment lacked composition and owner relation",
+    "owner relation described as container navigation",
+    "fault declaration",
+    "UI pages note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "user-with-boolean-role-flags": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "actor type access principal realm claim mapping filter expression",
+    "actor access control multiple actors same user"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#pattern-role-flags-on-the-principal-entity",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#actortype",
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted"
+   ],
+   "fixes": [
+    "actor active expression claim tied to isActiveExpression/guard",
+    "ACTOR category for role flags added",
+    "tags missing project:*"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "user-with-organization-and-role": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "actor type access principal realm claim mapping filter expression"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#modeled-faults",
+    "catalog/agent-docs/backend/authentication-guide.md",
+    "catalog/agent-docs/frontend/advanced-patterns.md#page-and-container-action-hooks"
+   ],
+   "fixes": [
+    "interceptor wording (authentication interceptor is separate extension point)",
+    "fault declaration",
+    "UI pages note"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "user-with-role-and-rolegroup-entities": {
+   "status": "rewritten",
+   "fragment": "user-with-role-and-rolegroup-entities",
+   "kb": [
+    "derived relation union getter expression collection !union"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/best-practices/model/derived-relation-navigation.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "effectiveRoles only direct roles in source: stated"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "user-with-role-permission-entity": {
+   "status": "rewritten",
+   "fragment": "user-with-role-permission-entity",
+   "kb": [
+    "custom operation instance operation implementation DAO update"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#which-operations-are-intercepted",
+    "catalog/best-practices/model/derived-relation-navigation.md"
+   ],
+   "fixes": [
+    "legacy full rewrite",
+    "new fragment with derived permissions and recalculate operation"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

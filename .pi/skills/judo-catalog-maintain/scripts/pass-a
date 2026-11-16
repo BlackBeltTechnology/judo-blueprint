@@ -1,0 +1,202 @@
+#!/usr/bin/env python3
+"""Pass A migration (design D7): legacy entries -> kb frontmatter, no GraphQL.
+
+Usage: pass-a [--dry-run] [--json] [ids...]
+
+For every model blueprint and best practice:
+- frontmatter converted to single-line kb form; score/usage_count/alternative_count dropped;
+  title/description/aliases/keywords/tags/status/evidence/alternatives/fragment added;
+- `format: legacy`, `fragment: pending` (blueprints and model practices) or `none: <layer>-only`;
+- GraphQL fences and "Detection Query"/"Creation Mutations" sections removed from model.md;
+- "Related Patterns" -> wikilinked "Related".
+Idempotent: entries already without `format: legacy` and with kb frontmatter are skipped.
+"""
+import argparse
+import json
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[4]
+CAT = ROOT / "catalog"
+STATUS = {1: "single-project", 2: "emerging", 3: "emerging"}
+
+
+def parse_legacy_fm(text):
+    m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+    if not m:
+        return {}, text
+    fm, key = {}, None
+    for line in m.group(1).splitlines():
+        if re.match(r"^\s+-\s", line) and key:
+            fm.setdefault(key, [])
+            if not isinstance(fm[key], list):
+                fm[key] = [fm[key]] if fm[key] else []
+            fm[key].append(line.strip()[2:].strip().strip("\"'"))
+            continue
+        mm = re.match(r"^([\w-]+):\s*(.*)$", line)
+        if mm:
+            key = mm.group(1)
+            v = mm.group(2).strip()
+            if v.startswith("[") and v.endswith("]"):
+                fm[key] = [x.strip().strip("\"'") for x in v[1:-1].split(",") if x.strip()]
+            else:
+                fm[key] = v.strip("\"'")
+    return fm, text[m.end():]
+
+
+def q(v):
+    v = str(v).replace("\n", " ").strip()
+    if v == "" or re.search(r"[:#\[\]{},&*!|>'\"%@`]", v) or v[0] in "-?":
+        return '"' + v.replace("\\", "\\\\").replace('"', '\\"') + '"'
+    return v
+
+
+def flow(items):
+    return "[" + ", ".join(q(i) for i in items) + "]"
+
+
+def first_sentence(body):
+    m = re.search(r"^## (?:Description|Intent|Overview)\s*\n+(.+?)(?:\n\n|\Z)", body, re.S | re.M)
+    txt = (m.group(1) if m else body.strip().split("\n\n")[0]).replace("\n", " ").strip()
+    txt = re.sub(r"\s+", " ", txt)
+    s = re.split(r"(?<=[.!?])\s", txt)[0]
+    return (s[:237] + "...") if len(s) > 240 else s
+
+
+def keywords_from(title, ident):
+    stop = {"the", "a", "an", "of", "for", "and", "with", "via", "to", "in", "on", "by", "pattern", "entity"}
+    words = re.findall(r"[a-z][a-z0-9]+", (title + " " + ident.replace("-", " ")).lower())
+    out = []
+    for w in words:
+        if w not in stop and w not in out:
+            out.append(w)
+    return out[:8]
+
+
+def related_ids(body, ids):
+    m = re.search(r"^## Related(?: Patterns)?\s*\n(.*?)(?=^## |\Z)", body, re.S | re.M)
+    if not m:
+        return []
+    found = []
+    for line in m.group(1).splitlines():
+        for cand in re.findall(r"\[\[([\w-]+)\]\]|\[[^\]]*\]\(([\w./-]+?)(?:\.md)?\)|^\s*-\s*`?([a-z0-9][\w-]+)`?", line):
+            for c in cand:
+                c = pathlib.Path(c).name.replace(".md", "") if c else ""
+                if c and c in ids and c not in found:
+                    found.append(c)
+    return found
+
+
+def rewrite_related(body, ids):
+    m = re.search(r"^## Related(?: Patterns)?\s*\n(.*?)(?=^## |\Z)", body, re.S | re.M)
+    if not m:
+        return body
+    lines = []
+    for line in m.group(1).splitlines():
+        if not line.strip():
+            continue
+        new = line
+        new = re.sub(r"\[([^\]]*)\]\(([\w./-]+?)(?:\.md)?\)", lambda mm: f"[[{pathlib.Path(mm.group(2)).name}]]" if pathlib.Path(mm.group(2)).name in ids else mm.group(0), new)
+        new = re.sub(r"^(\s*-\s*)`?([a-z0-9][\w-]+)`?(\s|$)", lambda mm: f"{mm.group(1)}[[{mm.group(2)}]]{mm.group(3)}" if mm.group(2) in ids else mm.group(0), new)
+        lines.append(new)
+    return body[: m.start()] + "## Related\n\n" + "\n".join(lines) + "\n\n" + body[m.end():]
+
+
+def strip_graphql(text):
+    text = re.sub(r"```\s*graphql.*?```\s*\n?", "", text, flags=re.S | re.I)
+    text = re.sub(r"^## (Detection Query|Creation Mutations|Detection Queries|Mutations)\s*\n(.*?)(?=^## |\Z)", "", text, flags=re.S | re.M)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text
+
+
+def build_fm(fm, body, ident, domain, kind, ids, layers):
+    title = fm.get("title") or ident.replace("-", " ").title()
+    projects = fm.get("projects") or []
+    projects = projects if isinstance(projects, list) else [projects]
+    status = STATUS.get(len(set(projects)), "established") if projects else "single-project"
+    alts = fm.get("alternatives") or []
+    alts = [a for a in (alts if isinstance(alts, list) else [alts]) if a in ids]
+    rel = [r for r in related_ids(body, ids) if r != ident]
+    tags = [f"domain:{domain}"] + [f"layer:{l}" for l in layers] + [f"project:{p}" for p in projects] + [f"status:{status}"]
+    if kind == "bp" or domain == "model":
+        frag = "pending"
+    else:
+        frag = f"none: {domain}-only"
+    out = [
+        "---",
+        f"id: {ident}",
+        f"title: {q(title)}",
+        f"description: {q(fm.get('description') or first_sentence(body))}",
+        f"aliases: {flow(fm.get('aliases') if isinstance(fm.get('aliases'), list) else [])}",
+        f"keywords: {flow(keywords_from(title, ident))}",
+        f"tags: {flow(tags)}",
+        f"category: {q(fm.get('category') or ('pattern' if kind == 'bp' else domain))}",
+        f"status: {status}",
+        f"projects: {flow(projects)}",
+        f"evidence: {flow([p + ':unrecorded' for p in projects])}",
+        f"alternatives: {flow(alts or [])}",
+        f"related: {flow(rel)}" if rel else None,
+        f"fragment: {q(frag)}",
+        f"first_seen: {fm.get('first_seen') or '2026-03-05'}",
+        f"last_updated: {fm.get('last_updated') or '2026-03-05'}",
+        "format: legacy",
+        "---",
+    ]
+    return "\n".join(x for x in out if x is not None) + "\n"
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0], formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
+    ap.add_argument("ids", nargs="*")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+    bps = sorted(p for p in (CAT / "model-blueprints").iterdir() if (p / "BLUEPRINT.md").exists())
+    prs = sorted(p for p in (CAT / "best-practices").glob("*/*.md") if p.name not in ("AGENTS.md", "README.md"))
+    ids = {p.name for p in bps} | {p.stem for p in prs}
+    done = []
+    for d in bps:
+        if a.ids and d.name not in a.ids:
+            continue
+        bp = d / "BLUEPRINT.md"
+        text = bp.read_text()
+        fm, body = parse_legacy_fm(text)
+        if "format" in fm and fm.get("format") != "legacy" and "score" not in fm:
+            continue
+        if fm.get("format") == "legacy" and "score" not in fm:
+            continue
+        layers = [l for l in ["model", "backend", "frontend"] if (d / f"{l}.md").exists()]
+        new = build_fm(fm, body, d.name, "model", "bp", ids, layers) + rewrite_related(body, ids)
+        changes = {"file": str(bp.relative_to(ROOT))}
+        if not a.dry_run:
+            bp.write_text(new)
+            mm = d / "model.md"
+            if mm.exists():
+                mt = mm.read_text()
+                ms = strip_graphql(mt)
+                if ms != mt:
+                    mm.write_text(ms)
+                    changes["graphql_removed"] = True
+        done.append(changes)
+    for f in prs:
+        if a.ids and f.stem not in a.ids:
+            continue
+        text = f.read_text()
+        fm, body = parse_legacy_fm(text)
+        if fm.get("format") == "legacy" and "score" not in fm:
+            continue
+        domain = f.parent.name
+        new = build_fm(fm, body, f.stem, domain, "bp-practice", ids, [domain]) + rewrite_related(strip_graphql(body), ids)
+        if not a.dry_run:
+            f.write_text(new)
+        done.append({"file": str(f.relative_to(ROOT))})
+    if a.json:
+        print(json.dumps({"migrated": len(done), "entries": done}, indent=2))
+    else:
+        print(f"migrated {len(done)} entries" + (" (dry run)" if a.dry_run else ""))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

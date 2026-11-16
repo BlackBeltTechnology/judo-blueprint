@@ -1,0 +1,765 @@
+{
+ "items": {
+  "MO-005": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "change task agent-docs-import (render.py / template sync)",
+   "note": "import/render process of the catalog, not doc content"
+  },
+  "MO-010": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "change task agent-docs-import (render.py / template sync)",
+   "note": "import/render process of the catalog, not doc content"
+  },
+  "MO-066": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "change task agent-docs-import (render.py / template sync)",
+   "note": "import/render process of the catalog, not doc content"
+  },
+  "MO-067": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "change task agent-docs-import (render.py / template sync)",
+   "note": "import/render process of the catalog, not doc content"
+  },
+  "MO-009": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "kb/consumer setup docs (skill judo-blueprint-author / kb config)",
+   "note": "kb source configuration and frontmatter searchability"
+  },
+  "BA-004": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "kb/consumer setup docs (skill judo-blueprint-author / kb config)",
+   "note": "kb source configuration and frontmatter searchability"
+  },
+  "MO-011": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "change task agent-docs-import (cciu merge)",
+   "note": "merge of cciu branch content into synced docs"
+  },
+  "MO-012": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "knowledge-gaps-report / change planning",
+   "note": "gap theme index; individual topics handled by own items"
+  },
+  "FR-001": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "knowledge-gaps-report / change planning",
+   "note": "gap theme index; individual topics handled by own items"
+  },
+  "BA-005": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "change task agent-docs-import / parity check",
+   "note": "drift and inventory notes"
+  },
+  "BA-006": {
+   "action": "process",
+   "file": null,
+   "heading": null,
+   "home": "change task agent-docs-import / parity check",
+   "note": "drift and inventory notes"
+  },
+  "MO-068": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-ng docs / agent-docs of judo-runtime-core, community-documentation",
+   "note": "wrong statement in judo-ng own docs; not edited"
+  },
+  "BA-021": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-ng docs / agent-docs of judo-runtime-core, community-documentation",
+   "note": "wrong statement in judo-ng own docs; not edited"
+  },
+  "BA-022": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-ng docs / agent-docs of judo-runtime-core, community-documentation",
+   "note": "wrong statement in judo-ng own docs; not edited"
+  },
+  "BA-023": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-ng docs / agent-docs of judo-runtime-core, community-documentation",
+   "note": "wrong statement in judo-ng own docs; not edited"
+  },
+  "MO-070": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "MO-071": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "MO-072": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "MO-073": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "MO-074": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "MO-075": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "MO-076": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "FR-007": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "FR-008": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "FR-009": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "FR-010": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "FR-011": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "FR-012": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "FR-013": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "FR-014": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-generator-commons agent-docs",
+   "note": "wrong statement in judo-ng agent-docs (verified); not an app-developer doc"
+  },
+  "MO-077": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-esm-fullstack-project-template domain/README.md.hbs",
+   "note": "template doc refers to files never generated"
+  },
+  "MO-078": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-esm-fullstack-project-template domain/README.md.hbs",
+   "note": "template doc refers to files never generated"
+  },
+  "MO-079": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-esm-fullstack-project-template domain/README.md.hbs",
+   "note": "template doc refers to files never generated"
+  },
+  "MO-080": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-esm-fullstack-project-template domain/README.md.hbs",
+   "note": "template doc refers to files never generated"
+  },
+  "MO-081": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-esm-fullstack-project-template domain/README.md.hbs",
+   "note": "template doc refers to files never generated"
+  },
+  "MO-069": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/README.md",
+   "heading": "Platform CLI",
+   "home": "catalog/agent-docs/README.md",
+   "note": "README already has Platform CLI section"
+  },
+  "MO-007": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Swagger UI Serving Location",
+   "home": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "note": ""
+  },
+  "MO-008": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Protocol Headers",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-064": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Protocol Headers",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-018": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/authentication-guide.md",
+   "heading": "Discovery endpoints for custom frontends",
+   "home": "catalog/agent-docs/backend/authentication-guide.md",
+   "note": ""
+  },
+  "MO-023": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Deploying a Model as an OSGi Bundle",
+   "home": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "note": ""
+  },
+  "MO-024": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Keycloak Connector and Realm Synchronizer Configuration",
+   "home": "Verified in OSGi/Guice sources",
+   "note": ""
+  },
+  "MO-034": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Keycloak Connector and Realm Synchronizer Configuration",
+   "home": "Verified in OSGi/Guice sources",
+   "note": ""
+  },
+  "MO-035": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Keycloak Connector and Realm Synchronizer Configuration",
+   "home": "Verified in OSGi/Guice sources",
+   "note": ""
+  },
+  "MO-037": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Keycloak Connector and Realm Synchronizer Configuration",
+   "home": "Verified in OSGi/Guice sources",
+   "note": ""
+  },
+  "MO-057": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Keycloak Connector and Realm Synchronizer Configuration",
+   "home": "Verified in OSGi/Guice sources",
+   "note": ""
+  },
+  "MO-025": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "CORS Filter per Model",
+   "home": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "note": ""
+  },
+  "MO-026": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Signed Identifiers",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-044": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Signed Identifiers",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-027": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "heading": "Runtime Caching Details",
+   "home": "judo.testkit.shareModel not found in source, omitted",
+   "note": ""
+  },
+  "MO-031": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "heading": "Runtime Caching Details",
+   "home": "judo.testkit.shareModel not found in source, omitted",
+   "note": ""
+  },
+  "MO-052": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "heading": "Runtime Caching Details",
+   "home": "judo.testkit.shareModel not found in source, omitted",
+   "note": ""
+  },
+  "MO-028": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/authentication-guide.md",
+   "heading": "Principal-to-Actor Resolution and Multi-Client Mapping",
+   "home": "catalog/agent-docs/backend/authentication-guide.md",
+   "note": ""
+  },
+  "MO-029": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/authentication-guide.md",
+   "heading": "Principal-to-Actor Resolution and Multi-Client Mapping",
+   "home": "catalog/agent-docs/backend/authentication-guide.md",
+   "note": ""
+  },
+  "MO-033": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/authentication-guide.md",
+   "heading": "Principal-to-Actor Resolution and Multi-Client Mapping",
+   "home": "catalog/agent-docs/backend/authentication-guide.md",
+   "note": ""
+  },
+  "MO-065": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/authentication-guide.md",
+   "heading": "Principal-to-Actor Resolution and Multi-Client Mapping",
+   "home": "catalog/agent-docs/backend/authentication-guide.md",
+   "note": ""
+  },
+  "MO-030": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Excel Export Operations",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-032": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core-jsl itest internals",
+   "note": "test-model Maven wiring of judo-ng own tests"
+  },
+  "MO-039": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "REST Wire Contract",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-040": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "REST Wire Contract",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-041": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Response Metadata and Wire Conversion",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-053": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Response Metadata and Wire Conversion",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-055": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Response Metadata and Wire Conversion",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-056": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Response Metadata and Wire Conversion",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-060": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Actor metadata generated from JSL and ESM",
+   "home": "catalog/agent-docs/model/jsl-language-notes.md",
+   "note": ""
+  },
+  "MO-061": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Actor metadata generated from JSL and ESM",
+   "home": "catalog/agent-docs/model/jsl-language-notes.md",
+   "note": ""
+  },
+  "MO-062": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Report Generator / REST Assured Test Client",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "MO-063": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Report Generator / REST Assured Test Client",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "BA-016": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Report Generator / REST Assured Test Client",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "MO-017": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Payload Type",
+   "home": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "note": ""
+  },
+  "MO-175": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/model/model-development.md",
+   "heading": "Do not edit the model file by hand",
+   "home": "remaining myapp sample fixed in frontend/development-workflow.md",
+   "note": ""
+  },
+  "BA-003": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Custom Keycloak Login Theme",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "BA-012": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Custom Keycloak Login Theme",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "BA-017": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Custom Keycloak Login Theme",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "BA-009": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Filestore S3 Backend Details",
+   "home": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "note": ""
+  },
+  "BA-010": {
+   "action": "already-correct",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "OpenAPI / Swagger Documentation",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "BA-019": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "OpenAPI Client for OSGi (jaxrs-cxf-client-osgi-ds)",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "BA-040": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Running Liquibase Changelogs from a Bundle",
+   "home": "Known issue noted (swallowed exceptions)",
+   "note": ""
+  },
+  "BA-044": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "Generator Fragment Slots",
+   "home": "verified against template fragment files",
+   "note": ""
+  },
+  "BA-048": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+   "heading": "Keycloak Connector and Realm Synchronizer Configuration",
+   "home": "defaults added; qualifier count not stated in docs",
+   "note": ""
+  },
+  "BA-111": {
+   "action": "applied",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "SDK Generator Template Parameters",
+   "home": "catalog/agent-docs/deployment/generator-plugins.md",
+   "note": ""
+  },
+  "BA-015": {
+   "action": "catalog-entry",
+   "file": null,
+   "heading": null,
+   "home": "e2e best practice: prepared baseline dump reused across parallel stacks (new id)",
+   "note": "unverified project practice"
+  },
+  "BA-011": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/authentication-guide.md",
+   "heading": "Discovery endpoints for custom frontends",
+   "home": "logout/gating verified in react template",
+   "note": ""
+  },
+  "BA-070": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-genmodel-generator",
+   "note": "eclipse tooling internals, not app-developer"
+  },
+  "BA-118": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-121": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-122": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-124": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-125": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-126": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-128": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-129": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-130": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-131": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-132": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-runtime-core / tatami AGENTS docs",
+   "note": "wrong statement in judo-ng internal docs; not edited"
+  },
+  "BA-120": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "judo-ng AGENTS docs",
+   "note": "catalog already says only hsqldb/postgresql (deployment/spring-boot-runtime.md)"
+  },
+  "FR-006": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Querying and UI FQNs",
+   "home": "catalog/agent-docs/model/judo-cli.md",
+   "note": ""
+  },
+  "DE-004": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Querying and UI FQNs",
+   "home": "catalog/agent-docs/model/judo-cli.md",
+   "note": ""
+  },
+  "BA-083": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation Mode and Generation Switches",
+   "home": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "note": ""
+  },
+  "BA-084": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation Mode and Generation Switches",
+   "home": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "note": ""
+  },
+  "BA-085": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation Mode and Generation Switches",
+   "home": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "note": ""
+  },
+  "BA-086": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation Mode and Generation Switches",
+   "home": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "note": ""
+  },
+  "BA-109": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "heading": "Transformation Mode and Generation Switches",
+   "home": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "note": ""
+  },
+  "BA-013": {
+   "action": "applied",
+   "file": "catalog/agent-docs/model/jsl-language-notes.md",
+   "heading": "Editor Support for JSL",
+   "home": "catalog/agent-docs/model/jsl-language-notes.md",
+   "note": ""
+  },
+  "DE-071": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "community-documentation",
+   "note": "wrong in judo community docs; catalog already uses keycloakAuthPublicUrl and mail 1025"
+  },
+  "DE-072": {
+   "action": "framework-only",
+   "file": null,
+   "heading": null,
+   "home": "community-documentation",
+   "note": "wrong in judo community docs; catalog already uses keycloakAuthPublicUrl and mail 1025"
+  },
+  "FR-003": {
+   "action": "applied",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Client Side of the Upload Token Flow",
+   "home": "also linked from frontend/advanced-patterns.md",
+   "note": ""
+  }
+ },
+ "files": {
+  "catalog/agent-docs/backend/platform-behavior-reference.md": "Protocol headers, response metadata/wire conversion, upload token client, export, Payload",
+  "catalog/agent-docs/backend/authentication-guide.md": "Principal-to-actor resolution, acceptable clients, discovery endpoints",
+  "catalog/agent-docs/deployment/osgi-runtime-services.md": "Keycloak config, CORS, swagger, S3, liquibase executor",
+  "catalog/agent-docs/deployment/generator-plugins.md": "SDK params, report, restassured, OSGi client, fragments, theme",
+  "catalog/agent-docs/model/model-validation-and-transformation.md": "Transformation mode, switches, embedding",
+  "catalog/agent-docs/model/judo-cli.md": "Query operators, UI FQNs",
+  "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md": "Runtime caching details",
+  "catalog/agent-docs/model/jsl-language-notes.md": "Editor support",
+  "catalog/agent-docs/frontend/advanced-patterns.md": "Token flow pointer",
+  "catalog/agent-docs/frontend/development-workflow.md": "myapp -> <app>"
+ }
+}

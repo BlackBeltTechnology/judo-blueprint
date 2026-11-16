@@ -1,0 +1,242 @@
+{
+ "batch": "pm04",
+ "entries": {
+  "guard-clause-delete": {
+   "status": "rewritten",
+   "fragment": "guard-clause-delete",
+   "kb": [
+    "delete operation guard precondition cascade delete JCL",
+    "operation fault throw error from operation body",
+    "deleteable DELETE_INSTANCE",
+    "interceptor before delete reject"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jcl-operation-scripts.md#Statements and syntax",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Faults and the generated exception",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Statefulness derived from behaviour",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "guard is project practice; platform has no declarative delete precondition",
+    "operation must be stateful",
+    "fault from custom Java must be declared"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "impersonation-relation": {
+   "status": "rewritten",
+   "fragment": "impersonation-relation",
+   "kb": [
+    "defaultExpression actor principal relation default current user",
+    "actor access transfer object exposed per actor"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#ACTOR vs. PRINCIPAL vs. USER Context Variables",
+    "catalog/agent-docs/model/esm_metamodel/structure.md#RelationKind Behaviour"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "getVariable category depends on actor shape",
+    "admin-only exposure is project practice over per-actor transfer objects"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "initializer-operation": {
+   "status": "rewritten",
+   "fragment": "initializer-operation",
+   "kb": [
+    "INITIALIZER operation startup runs static initializer",
+    "initializer grep agent-docs"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#INITIALIZER Special Handling",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Operation naming and shape constraints",
+    "catalog/agent-docs/model/jcl-operation-scripts.md",
+    "catalog/agent-docs/backend/custom-operations.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "removed undocumented claim that initializer runs automatically on startup",
+    "stateful required",
+    "initializer must be static, no input",
+    "guard variants labelled project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "integer-boolean-for-aggregation": {
+   "status": "rewritten",
+   "fragment": "integer-boolean-for-aggregation",
+   "kb": [
+    "JQL ternary, sum, undefined in model-development"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#JQL grammar quirks",
+    "catalog/agent-docs/model/model-development.md#undefined Value",
+    "catalog/agent-docs/model/model-development.md (collection functions !sum)"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "platform reason: !sum accepts only integer/decimal",
+    "undefined propagation caveat added",
+    "filter+count alternative noted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "literal-derived-attribute": {
+   "status": "rewritten",
+   "fragment": "literal-derived-attribute",
+   "kb": [
+    "derived attribute transfer object getterExpression literal constant",
+    "hiddenBy enabledBy boolean attribute transfer object"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/ui-authoring-guide.md#9. hiddenBy / enabledBy / requiredBy",
+    "catalog/agent-docs/backend/architectural-patterns.md#Rules for accesses[*].getterExpression"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "hiddenBy/enabledBy must reference boolean on same TO",
+    "literal boolean invalid as access getter",
+    "constant-flag is project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "mapped-operation-delegation": {
+   "status": "rewritten",
+   "fragment": "mapped-operation-delegation",
+   "kb": [
+    "mapped operation binding entity operation transfer object",
+    "interceptors mapped operations"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Mapped Operation Rules",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#OperationType Context Constraints",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations",
+    "catalog/agent-docs/frontend/model-screen-layout.md#Operation Types"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "MAPPED only on mapped TOs, binding by name",
+    "interceptors never fire for MAPPED operations",
+    "stateful requirement",
+    "fault declaration"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "moderation-operation-pattern": {
+   "status": "rewritten",
+   "fragment": "moderation-operation-pattern",
+   "kb": [
+    "operation input transfer object reason parameter unmapped input stateful"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Statefulness derived from behaviour",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/error-handling-guide.md#Modeled Faults",
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "role checks must be inside implementation (no interceptors for custom/mapped)",
+    "stateful",
+    "fault declaration for refusal",
+    "distinction is project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "multi-role-single-entity": {
+   "status": "rewritten",
+   "fragment": "multi-role-single-entity",
+   "kb": [
+    "actor isActiveExpression realm claim principal actor type authentication"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#Three actor shapes",
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#ActorType Attribute Rules",
+    "catalog/agent-docs/backend/authentication-guide.md#Principal-to-Actor Resolution and Multi-Client Mapping",
+    "catalog/agent-docs/model/ui-authoring-guide.md#9. hiddenBy / enabledBy / requiredBy"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "managed actor needs mapped principal + EMAIL/USERNAME claim on identifier",
+    "actor resolved by azp claim; isActiveExpression runtime evaluation not documented (flagged)",
+    "hiddenBy on principal TO boolean"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "notification-entity-pattern": {
+   "status": "rewritten",
+   "fragment": "notification-entity-pattern",
+   "kb": [
+    "notification entity background job scheduled delivery system-managed not createable"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/README.md#CRUD Flags",
+    "catalog/agent-docs/model/esm_metamodel/structure.md (createable/updateable/deleteable)",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Statefulness derived from behaviour"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "CRUD flags affect generated API/UI, not backend DAO writes",
+    "no built-in notification mechanism: delivery is project practice",
+    "references to blueprints"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "generalization-base-entity": {
+   "status": "rewritten",
+   "fragment": "generalization-base-entity",
+   "kb": [
+    "entity generalization extends abstract inheritance polymorphic",
+    "Generalization superTypes abstract DAO transfer inheritance not supported"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/model-development.md#Pattern: Polymorphism with Inheritance",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: Platform-Managed Polymorphic Creation",
+    "catalog/agent-docs/model/model-validation-and-transformation.md#Known issues",
+    "catalog/agent-docs/backend/data-access-guide.md (mapped non-abstract CRUD)"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "transfer inheritance unsupported",
+    "abstract entity cannot be created; creation TO maps concrete",
+    "inherited-member derived attribute join bug",
+    "polymorphic create UI choice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "naming-conventions": {
+   "status": "rewritten",
+   "fragment": "naming-conventions",
+   "kb": [
+    "reserved names generator naming restrictions identifier operation name set get"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jsl-language-notes.md#Identifiers and reserved words",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Operation naming and shape constraints",
+    "catalog/agent-docs/model/esm_metamodel/generator-reserved-names.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Reserved Payload Keys"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "separated platform-fixed names from project convention",
+    "added reserved names: set/get operation names, template member, __ payload keys, backtick-quoted keywords"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

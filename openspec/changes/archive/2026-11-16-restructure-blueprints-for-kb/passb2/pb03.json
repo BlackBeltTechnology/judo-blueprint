@@ -1,0 +1,202 @@
+{
+ "batch": "pb03",
+ "entries": {
+  "facade-service-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "custom service layer",
+    "OSGi @Reference"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/architectural-patterns.md#2. The Custom Service Layer",
+    "catalog/agent-docs/backend/custom-operations.md#Example 4"
+   ],
+   "fixes": [
+    "facade layer labelled project practice; platform base is thin operation + service",
+    "project helpers labelled example"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "feed-targeting-strategy": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "DAO query filterBy EnumerationFilter selectList"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/data-access-guide.md#Query Result Methods"
+   ],
+   "fixes": [
+    "labelled as project practice; no platform feed concept",
+    "added scalability caveat"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "filestore-mediated-file-transfer": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "FileStore",
+    "upload token flow"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Client Side of the Upload Token Flow",
+    "catalog/agent-docs/deployment/application-config.md#Quick Reference",
+    "catalog/agent-docs/deployment/osgi-runtime-services.md#Filestore S3 Backend Details",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Wrapper TO for binary outputs"
+   ],
+   "fixes": [
+    "added two-phase token flow, binary types, S3 backend",
+    "rdbms value and FileStoreService API flagged as project-observed (not in docs)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "form-field-flattening": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "OperationCallInterceptor preCall payload"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Example 4 / Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "form_ convention labelled project practice",
+    "custom operations are never intercepted (when to avoid)",
+    "getAs null-safe Boolean.TRUE.equals",
+    "ValidationException in preCall"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "generator-ignore-config-protection": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "generator-ignore",
+    "default files"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/README.md#Code Generation and Checksum Protection",
+    "catalog/agent-docs/backend/custom-operations.md#Understanding Generated Default Implementations"
+   ],
+   "fixes": [
+    "checksum failure mechanism added",
+    "docs: never rename .default, create new .java (renaming projects flagged as project-observed)",
+    "generator parameters / generator-overrides preferred"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "handlebars-email-template": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "email SMTP config",
+    "handlebars"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/deployment/application-config.md#6. Email (SMTP)"
+   ],
+   "fixes": [
+    "Handlebars and EmailService flagged as project-used, not in agent-docs"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "i18n-osgi-service": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "i18n ApplicationI18n"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/internationalization-guide.md",
+    "catalog/agent-docs/backend/error-handling-guide.md"
+   ],
+   "fixes": [
+    "platform i18n interface vs project proxy/ThreadLocal wiring separated",
+    "validation 400 vs fault 422; interceptor cannot throw modeled fault"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "identifier-adaptation-pattern": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "adaptTo identifier",
+    "signed identifier type specific"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers",
+    "catalog/agent-docs/integration-testing/best-practices.md#Anti-Pattern 7"
+   ],
+   "fixes": [
+    "docs call adaptTo for same-type ids an anti-pattern; cross-view use flagged project-observed"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "init-data-seeding": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "initializer operation",
+    "Init"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#INITIALIZER",
+    "catalog/agent-docs/backend/custom-operations.md#Example 4",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "initializer = static, no input (platform); startup invocation is project convention",
+    "fixed wrong con 'no guard' into practice: guard"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "integration-test-reflection-injection": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "JudoTest fixture",
+    "ReferenceInjector"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/integration-testing/getting-started.md#Pattern 2 ReferenceInjector",
+    "catalog/agent-docs/integration-testing/advanced-patterns.md#Mocking VariableResolver"
+   ],
+   "fixes": [
+    "added testkit ReferenceInjector (injects by type, not @Reference) as platform base"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "interceptor-access-control-flags": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "__updateable __deleteable",
+    "interceptor contract"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/e2e-testing/language-independent-testing.md#Runtime Override via JSON",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "flags are UI only; enforce with preCall",
+    "precedence of model flag vs payload flag",
+    "only built-in ops intercepted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

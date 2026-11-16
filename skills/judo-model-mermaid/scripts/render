@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+"""Render the Mermaid structure diagram of a catalog fragment into its entry.
+
+Usage:
+  render <id> [--json] [--stdout]          fragment -> generated block in the entry
+  render --all [--json]                    every entry that declares a fragment
+  render --model <path> --scope <fqn> [--depth N] [--kinds k,..] [--members m]
+                                           a project's own model (read-only, stdout)
+
+The fragment is fragments/<id>.model; it is drawn with
+  mermaid model --scope Sandbox::bp::<pkg> --split none [--kinds ..] [--members ..]
+where <pkg> is the id with '-' replaced by '_'. Diagram options come from the
+entry frontmatter `diagram: { kinds: [..], members: .. }`.
+The block is written between
+  <!-- mermaid:generated fragment=<id> cli=<version> -->  and  <!-- /mermaid:generated -->
+in model.md (blueprints) or the entry file (best practices).
+"""
+import argparse
+import json
+import pathlib
+import re
+import sys
+import tempfile
+import shutil
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "_lib"))
+from judo_common import repo_root, run_cli, run_cli_once, cli_version, die  # noqa: E402
+
+START = re.compile(r"<!-- mermaid:generated fragment=(\S+) cli=(\S+) -->")
+END = "<!-- /mermaid:generated -->"
+
+
+def pkg_of(fid: str) -> str:
+    return "Sandbox::bp::" + fid.replace("-", "_")
+
+
+def frontmatter(text: str) -> dict:
+    m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+    fm = {}
+    if not m:
+        return fm
+    for line in m.group(1).splitlines():
+        if ":" in line and not line.startswith(" "):
+            k, v = line.split(":", 1)
+            fm[k.strip()] = v.strip()
+    return fm
+
+
+def entry_files(fid: str) -> list[pathlib.Path]:
+    root = repo_root() / "catalog"
+    out = []
+    bp = root / "model-blueprints" / fid
+    if (bp / "BLUEPRINT.md").exists():
+        out.append(bp / "model.md")
+    out += list((root / "best-practices").glob(f"*/{fid}.md"))
+    return out
+
+
+def diagram_opts(fm: dict) -> list[str]:
+    opts = []
+    d = fm.get("diagram", "")
+    k = re.search(r"kinds:\s*\[([^\]]*)\]", d)
+    if k:
+        opts += ["--kinds", ",".join(x.strip() for x in k.group(1).split(",") if x.strip())]
+    m = re.search(r"members:\s*(\w+)", d)
+    if m:
+        opts += ["--members", m.group(1)]
+    return opts
+
+
+def render_fragment(fid: str, opts: list[str]) -> str:
+    frag = repo_root() / "fragments" / f"{fid}.model"
+    if not frag.exists():
+        die(f"fragment missing: {frag}")
+    # scratch copy so the CLI session never touches the tracked file
+    with tempfile.TemporaryDirectory() as tmp:
+        m = pathlib.Path(tmp) / "Sandbox.model"
+        shutil.copy(frag, m)
+        r = run_cli_once(["mermaid", "model", "--scope", pkg_of(fid), "--split", "none", *opts], cwd=tmp, model=str(m))
+    return r.stdout.strip()
+
+
+def block(fid: str, diagram: str, ver: str) -> str:
+    return f"<!-- mermaid:generated fragment={fid} cli={ver} -->\n```mermaid\n{diagram}\n```\n{END}"
+
+
+def write_block(path: pathlib.Path, fid: str, new_block: str) -> bool:
+    text = path.read_text() if path.exists() else ""
+    s = START.search(text)
+    if s and END in text[s.end():]:
+        e = text.index(END, s.end()) + len(END)
+        updated = text[: s.start()] + new_block + text[e:]
+    else:
+        heading = "\n## Structure diagram\n\n" if "## Structure diagram" not in text else "\n"
+        updated = text.rstrip() + "\n" + heading + new_block + "\n"
+    if updated != text:
+        path.write_text(updated)
+        return True
+    return False
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0], formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
+    ap.add_argument("id", nargs="?")
+    ap.add_argument("--all", action="store_true")
+    ap.add_argument("--model")
+    ap.add_argument("--scope")
+    ap.add_argument("--depth")
+    ap.add_argument("--kinds")
+    ap.add_argument("--members")
+    ap.add_argument("--stdout", action="store_true", help="print the block instead of writing it")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+
+    if a.model:
+        if not a.scope:
+            die("--model needs --scope")
+        args = ["mermaid", "model", "--scope", a.scope]
+        if a.depth:
+            args += ["--depth", a.depth]
+        if a.kinds:
+            args += ["--kinds", a.kinds]
+        if a.members:
+            args += ["--members", a.members]
+        m = pathlib.Path(a.model).resolve()
+        r = run_cli(args, cwd=str(m.parent), model=str(m))
+        print(json.dumps({"scope": a.scope, "mermaid": r.stdout}) if a.json else r.stdout)
+        return 0
+
+    ids = []
+    if a.all:
+        ids = sorted(p.stem for p in (repo_root() / "fragments").glob("*.model"))
+    elif a.id:
+        ids = [a.id]
+    else:
+        ap.print_help()
+        return 2
+    ver = cli_version()
+    results = []
+    for fid in ids:
+        files = entry_files(fid)
+        if not files:
+            results.append({"id": fid, "ok": False, "error": "no entry"})
+            continue
+        bp = repo_root() / "catalog" / "model-blueprints" / fid / "BLUEPRINT.md"
+        fm = frontmatter((bp if bp.exists() else files[0]).read_text())
+        diagram = render_fragment(fid, diagram_opts(fm))
+        nb = block(fid, diagram, ver)
+        if a.stdout:
+            print(nb)
+            results.append({"id": fid, "ok": True})
+            continue
+        changed = write_block(files[0], fid, nb)
+        results.append({"id": fid, "ok": True, "file": str(files[0].relative_to(repo_root())), "changed": changed})
+    if a.json:
+        print(json.dumps(results, indent=2))
+    elif not a.stdout:
+        for r in results:
+            print(("ok  " if r["ok"] else "FAIL") + f" {r['id']} " + (r.get("file", r.get("error", "")) + (" (changed)" if r.get("changed") else "")))
+    return 0 if all(r["ok"] for r in results) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

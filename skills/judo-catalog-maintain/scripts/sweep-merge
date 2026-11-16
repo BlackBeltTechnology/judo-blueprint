@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+"""Join the explorer lanes of a sweep into candidates (design D10b step 4).
+
+Usage: sweep-merge <project> [--json]
+
+Input:  W/lanes/{model,backend,frontend,schema}.json, each {"lane": ..., "candidates": [...]} where a candidate is
+        {"name": neutral-kebab-name, "kind": "blueprint"|"practice", "domain": "model|backend|frontend",
+         "elements": [model element FQNs], "evidence": [source paths], "match": catalog id or null,
+         "match_score": 0..1, "summary": one line}
+Output: W/candidates.json: candidates joined by shared model element or neutral name (one candidate may span
+        shape + interceptor + hook), lanes listed per candidate, match chosen by the highest score.
+Missing lanes are reported; existing ones are still merged.
+"""
+import argparse
+import json
+import pathlib
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from _sweep import LANES, die, latest_work_dir, load_state, save_state, slug  # noqa: E402
+
+REQUIRED = ("name", "kind", "summary")
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("project")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+    w = latest_work_dir(a.project)
+    raw, missing, bad = [], [], []
+    for lane in LANES:
+        p = w / "lanes" / f"{lane}.json"
+        if not p.exists():
+            missing.append(lane)
+            continue
+        try:
+            data = json.loads(p.read_text())
+        except json.JSONDecodeError as e:
+            die(f"lanes/{lane}.json is not valid JSON: {e}")
+        for c in data.get("candidates", []):
+            if any(k not in c for k in REQUIRED):
+                bad.append(f"{lane}: {c.get('name', '?')}")
+                continue
+            c["name"] = slug(c["name"])
+            c["lanes"] = [lane]
+            raw.append(c)
+    # union-find over shared element or same name
+    parent = list(range(len(raw)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    # Join only across lanes (one pattern seen as shape + interceptor + hook), and only on specific keys:
+    # the same neutral name, or a shared model element that few candidates use. Broad elements
+    # (used by > MAX_SHARE candidates, e.g. a central entity) would chain unrelated patterns together.
+    MAX_SHARE = 2
+    use = {}
+    for c in raw:
+        for e in set(c.get("elements", [])):
+            use[e] = use.get(e, 0) + 1
+    owner = {}
+    for i, c in enumerate(raw):
+        keys = [f"n:{c['name']}"] + [f"e:{e}" for e in c.get("elements", []) if use[e] <= MAX_SHARE]
+        for key in keys:
+            j = owner.get(key)
+            if j is None:
+                owner[key] = i
+            elif key.startswith("n:") or raw[j]["lanes"][0] != c["lanes"][0]:
+                parent[find(i)] = find(j)
+    groups = {}
+    for i, c in enumerate(raw):
+        groups.setdefault(find(i), []).append(c)
+    out = []
+    for g in groups.values():
+        best = max(g, key=lambda c: (c.get("match_score") or 0))
+        out.append({
+            "name": g[0]["name"],
+            "kind": "blueprint" if any(c["kind"] == "blueprint" for c in g) else "practice",
+            "domains": sorted({c.get("domain", "") for c in g} - {""}),
+            "lanes": sorted({l for c in g for l in c["lanes"]}),
+            "elements": sorted({e for c in g for e in c.get("elements", [])}),
+            "evidence": sorted({e for c in g for e in c.get("evidence", [])}),
+            "match": best.get("match"), "match_score": best.get("match_score") or 0,
+            "summaries": [f"[{c['lanes'][0]}] {c['summary']}" for c in g],
+        })
+    out.sort(key=lambda c: (-len(c["lanes"]), c["name"]))
+    (w / "candidates.json").write_text(json.dumps({"project": a.project, "missing_lanes": missing,
+                                                   "candidates": out}, indent=1))
+    st = load_state(w)
+    st.setdefault("steps", {})["merge"] = "done" if not missing else f"partial (missing {','.join(missing)})"
+    save_state(w, st)
+    msg = {"candidates": len(out), "from": len(raw), "multi_lane": sum(len(c["lanes"]) > 1 for c in out),
+           "matched": sum(bool(c["match"]) for c in out), "missing_lanes": missing, "malformed": bad}
+    print(json.dumps(msg) if a.json else
+          f"{msg['candidates']} candidates from {msg['from']} lane items ({msg['multi_lane']} span lanes, "
+          f"{msg['matched']} matched an entry); missing lanes: {missing or 'none'}; malformed: {bad or 'none'}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

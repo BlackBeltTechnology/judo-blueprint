@@ -1,0 +1,78 @@
+{
+ "batch": "mg4",
+ "entries": {
+  "component-proxy-placeholder-page": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "ComponentProxy Pandino custom visual element dashboard page",
+    "routes.tsx menu-items generator-ignore dashboard MenuItemAccess",
+    "application-customizer registerService custom directory generator-ignore"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#4. Keep Custom Hooks Under src/custom"
+   ],
+   "fixes": [
+    "new format; platform vs project split; generator-skips-page and ComponentProxy props marked verify"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "operation-flow-manager-redirect": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "OperationFlowManager shouldUseCustomFlow handleResult",
+    "application-customizer registerService custom directory generator-ignore",
+    "operation flow redirect access-context"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Action Hooks > OperationFlowManager",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Basic Implementation"
+   ],
+   "fixes": [
+    "import path now ~/utilities/application",
+    "input shape is result with __entityType, not input.operation; id/refresh marked verify"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "string-field-typeahead-self-learning": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "typeAhead TextWithTypeAhead getForm Options hook",
+    "isTypeAheadField autocomplete previous values StringType",
+    "self-learning reference dictionary"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Typeahead/Autocomplete",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md#Widget Type Attributes"
+   ],
+   "fixes": [
+    "widget/getter names marked verify; judo.sh command removed; platform vs project split"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "table-row-action-icon-from-operation-form": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "table row action iconName operationForm",
+    "TableOperation rowOperations tableOperations",
+    "chevron_right icon"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/ui.md#TableOperation",
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md#TableOperation"
+   ],
+   "fixes": [
+    "GraphQL removed; docs list TableOperation.iconName as action icon, so operationForm rule marked verify"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

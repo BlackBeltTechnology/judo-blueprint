@@ -1,0 +1,251 @@
+[
+ {
+  "q": "which operations do interceptors run around",
+  "expect": "catalog/agent-docs/backend/interceptors.md"
+ },
+ {
+  "q": "preCall postCall order of interceptors",
+  "expect": "catalog/agent-docs/backend/interceptors.md"
+ },
+ {
+  "q": "throw business error from custom operation 422 fault",
+  "expect": "catalog/agent-docs/backend/error-handling-guide.md"
+ },
+ {
+  "q": "ValidationException location field error 400",
+  "expect": "catalog/agent-docs/backend/error-handling-guide.md"
+ },
+ {
+  "q": "DAO selectList query customizer filter orderBy",
+  "expect": "catalog/agent-docs/backend/data-access-guide.md"
+ },
+ {
+  "q": "single-valued relation query returns entity directly",
+  "expect": "catalog/agent-docs/backend/data-access-guide.md"
+ },
+ {
+  "q": "implement a custom operation in Java OSGi component",
+  "expect": "catalog/agent-docs/backend/custom-operations.md"
+ },
+ {
+  "q": "JudoTest transaction AUTO_ROLLBACK integration test",
+  "expect": "catalog/agent-docs/backend/custom-operations.md"
+ },
+ {
+  "q": "upload token flow for binary attribute",
+  "expect": "catalog/agent-docs/backend/platform-behavior-reference.md"
+ },
+ {
+  "q": "optimistic locking __version conflict",
+  "expect": "catalog/agent-docs/backend/platform-behavior-reference.md"
+ },
+ {
+  "q": "signed identifier in REST url",
+  "expect": "catalog/agent-docs/backend/platform-behavior-reference.md"
+ },
+ {
+  "q": "keycloak realm client generated from model azp",
+  "expect": "catalog/agent-docs/backend/authentication-guide.md"
+ },
+ {
+  "q": "actor access getter has no self",
+  "expect": "catalog/agent-docs/backend/architectural-patterns.md"
+ },
+ {
+  "q": "JCL operation body this instead of self",
+  "expect": "catalog/agent-docs/model/jcl-operation-scripts.md"
+ },
+ {
+  "q": "JQL collection functions empty count any",
+  "expect": "catalog/agent-docs/model/model-development.md"
+ },
+ {
+  "q": "relationKind COMPOSITION ASSOCIATION cascade delete",
+  "expect": "catalog/agent-docs/model/esm_metamodel/structure.md"
+ },
+ {
+  "q": "bidirectional relation cannot be composition aggregation owner end",
+  "expect": "catalog/agent-docs/model/advanced-modeling-patterns.md"
+ },
+ {
+  "q": "view model panel transfer object derived relations dashboard",
+  "expect": "catalog/agent-docs/model/advanced-modeling-patterns.md"
+ },
+ {
+  "q": "abstract entity generalization polymorphic create",
+  "expect": "catalog/agent-docs/model/advanced-modeling-patterns.md",
+  "why": "generalization-guide.md is about doc placeholders, not entity generalization (golden-set error)"
+ },
+ {
+  "q": "hiddenBy enabledBy boolean on same transfer object",
+  "expect": "catalog/agent-docs/model/ui-authoring-guide.md"
+ },
+ {
+  "q": "JSL built-in types precision Long Integer",
+  "expect": "catalog/agent-docs/model/jsl-language-notes.md"
+ },
+ {
+  "q": "judo-cli validate strict save model",
+  "expect": "catalog/agent-docs/model/judo-cli.md"
+ },
+ {
+  "q": "frontend hook registration application customizer pandino",
+  "expect": "catalog/agent-docs/frontend/hooks"
+ },
+ {
+  "q": "post refresh action hook page",
+  "expect": "catalog/agent-docs/frontend/advanced-patterns.md"
+ },
+ {
+  "q": "actor palette colors theme override",
+  "expect": "catalog/agent-docs/frontend/theming.md"
+ },
+ {
+  "q": "generator-ignore checksum .default scaffold files",
+  "expect": "catalog/agent-docs/frontend/README.md"
+ },
+ {
+  "q": "422 error handling dialog frontend",
+  "expect": "catalog/agent-docs/frontend/error-handling.md"
+ },
+ {
+  "q": "translations i18n frontend json keys",
+  "expect": "catalog/agent-docs/frontend/i18n.md"
+ },
+ {
+  "q": "build process generator fragments pom.xml",
+  "expect": "catalog/agent-docs/deployment/build-process.md"
+ },
+ {
+  "q": "JUDO_PLATFORM environment variables configuration",
+  "expect": "catalog/agent-docs/deployment/application-config.md"
+ },
+ {
+  "q": "liquibase schema evolution migration",
+  "expect": "catalog/agent-docs/deployment/schema-evolution.md"
+ },
+ {
+  "q": "playwright e2e test data-testid helpers",
+  "expect": "catalog/agent-docs/e2e-testing"
+ },
+ {
+  "q": "integration test interceptor testing",
+  "expect": "catalog/agent-docs/integration-testing/interceptor-testing.md"
+ },
+ {
+  "q": "audit log of who changed what",
+  "expect": "catalog/model-blueprints/audit-log-entity"
+ },
+ {
+  "q": "approve or reject a request with reason",
+  "expect": "catalog/model-blueprints/accept-reject-operations"
+ },
+ {
+  "q": "invite users by email with a key to accept",
+  "expect": "catalog/model-blueprints/invitation-with-key-based-acceptance"
+ },
+ {
+  "q": "organization with users and roles",
+  "expect": "catalog/model-blueprints/user-with-organization-and-role"
+ },
+ {
+  "q": "bank account entity iban",
+  "expect": "catalog/model-blueprints/bank-account-entity"
+ },
+ {
+  "q": "document review state machine draft submitted approved",
+  "expect": "catalog/model-blueprints/document-review-state-machine"
+ },
+ {
+  "q": "file attachment on a document",
+  "expect": "catalog/model-blueprints/document-file-attachment"
+ },
+ {
+  "q": "sequence numbering for document registry",
+  "expect": "catalog/model-blueprints/document-registry-sequence"
+ },
+ {
+  "q": "history snapshot of entity changes",
+  "expect": "catalog/model-blueprints/entity-change-history-snapshot"
+ },
+ {
+  "q": "notification entity read unread",
+  "expect": "catalog/model-blueprints/notification-entity"
+ },
+ {
+  "q": "singleton platform configuration settings",
+  "expect": "catalog/model-blueprints/platform-configuration-singleton"
+ },
+ {
+  "q": "reservation booking of a resource time slot",
+  "expect": "catalog/model-blueprints/reservation-booking-entity"
+ },
+ {
+  "q": "product approval workflow",
+  "expect": "catalog/model-blueprints/product-with-approval-workflow"
+ },
+ {
+  "q": "toggle active inactive operation",
+  "expect": "catalog/model-blueprints/toggle-active-operation"
+ },
+ {
+  "q": "user role permission entities",
+  "expect": "catalog/model-blueprints/user-with-role-permission-entity"
+ },
+ {
+  "q": "email verification token",
+  "expect": "catalog/model-blueprints/token-based-verification-entity"
+ },
+ {
+  "q": "scheduled background job osgi",
+  "expect": "catalog/model-blueprints/osgi-scheduled-background-jobs"
+ },
+ {
+  "q": "soft delete with active flag",
+  "expect": "catalog/best-practices/model/soft-delete-active-flag.md"
+ },
+ {
+  "q": "enum as state machine",
+  "expect": "catalog/best-practices/model/enum-state-machine.md"
+ },
+ {
+  "q": "dashboard panel transfer object",
+  "expect": "catalog/best-practices/model/panel-dashboard-transfer.md"
+ },
+ {
+  "q": "transfer object inheritance not supported",
+  "expect": "catalog/best-practices/model/transfer-generalization.md"
+ },
+ {
+  "q": "guard delete when children exist",
+  "expect": "catalog/best-practices/model/guard-clause-delete.md"
+ },
+ {
+  "q": "recaptcha check before registration",
+  "expect": "catalog/best-practices/backend/recaptcha-precall-interceptor.md"
+ },
+ {
+  "q": "quartz scheduled job",
+  "expect": "catalog/best-practices/backend/quartz-scheduled-job.md"
+ },
+ {
+  "q": "upsert create or update",
+  "expect": "catalog/best-practices/backend/upsert-create-or-update.md"
+ },
+ {
+  "q": "typed exception business error handling",
+  "expect": "catalog/best-practices/backend/typed-exception-error-handling.md"
+ },
+ {
+  "q": "dark theme override",
+  "expect": "catalog/best-practices/frontend/dark-theme-override.md"
+ },
+ {
+  "q": "seek pagination in tables",
+  "expect": "catalog/best-practices/frontend/seek-based-table-pagination.md"
+ },
+ {
+  "q": "http error interceptor frontend",
+  "expect": "catalog/best-practices/frontend/http-error-interceptor.md"
+ }
+]

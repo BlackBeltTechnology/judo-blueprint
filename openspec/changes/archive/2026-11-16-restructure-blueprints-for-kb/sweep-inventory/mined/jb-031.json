@@ -1,0 +1,288 @@
+{
+ "chunk": "miller-Projects-judo-blueprint__2026-11-06T10-49-13-527Z__031.md",
+ "total_lines": 626,
+ "windows": [
+  [
+   1,
+   200
+  ],
+  [
+   201,
+   400
+  ],
+  [
+   401,
+   600
+  ],
+  [
+   601,
+   626
+  ]
+ ],
+ "items": [
+  {
+   "kind": "wrong-fact",
+   "topic": "Interceptors do not run for SDK/script operations",
+   "area": "backend",
+   "target": "judo-ng/runtime__judo-runtime-core",
+   "claim": "OperationCallInterceptor Javadoc (:11-17, :26-28): supports behaviour calls, script operations and SDK implementations; empty getOperations means all operation calls are intercepted.",
+   "fact": "Interceptors run only for default behaviour operations (Create, Update, Delete, List, Set/Add/Remove/UnsetReference, Refresh, GetTemplate, GetPrincipal, GetUploadToken, Export, ValidateCreate/Update/OperationInput, GetInputRange/GetReferenceRange, GetMetadata). They are called from behaviours/*Call.java via CallInterceptorUtil (20 call sites). Custom (SDK) and script operations are only wrapped in TransactionalOperationCall (DefaultDispatcher.java:716-737, 776-778) and are never intercepted. The Javadoc is wrong and should be fixed.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, runtime__judo-runtime-core/judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/DefaultDispatcher.java:716-778",
+   "status": "validated",
+   "line": 230
+  },
+  {
+   "kind": "missing",
+   "topic": "Document that interceptors apply only to built-in operations",
+   "area": "backend",
+   "target": "agent-docs/backend/interceptors.md",
+   "claim": "Catalog interceptors.md does not say which operations are intercepted.",
+   "fact": "State that interceptors never fire for custom/SDK/script operations. Range interceptors fire only on _getRangeReference*/range calls. With several interceptors each preCall gets the original payload and sees peers' in-place mutations; the return value is last-non-null-wins (gap report S26-01, S05-03, S04-02).",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, knowledge-gaps-report.md:270-272",
+   "status": "reported-unvalidated",
+   "line": 300
+  },
+  {
+   "kind": "bug",
+   "topic": "terminateOnException() is never read",
+   "area": "backend",
+   "target": "judo-ng/runtime__judo-runtime-core",
+   "claim": "Javadoc and extension-points.md:17,31 say terminateOnException() defaults to true and controls stopping the call on interceptor error.",
+   "fact": "The method is declared (OperationCallInterceptor.java:52) but never read anywhere in wt/. A sync interceptor exception always terminates the call, and for async the exception is lost. The flag is dead. The webhook-interceptor.java.example (terminateOnException=false, log only) therefore does not behave as documented.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, grep across wt/",
+   "status": "validated",
+   "line": 36
+  },
+  {
+   "kind": "bug",
+   "topic": "Async interceptor postCall path calls preCall",
+   "area": "backend",
+   "target": "judo-ng/runtime__judo-runtime-core",
+   "claim": "CallInterceptorUtil.postCallInterceptors async branch",
+   "fact": "In CallInterceptorUtil.java:81 the async branch of postCallInterceptors calls interceptor.preCall(...) instead of postCall. An async interceptor's postCall is never invoked and its preCall runs twice. Expected: call postCall.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, runtime__judo-runtime-core/judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/CallInterceptorUtil.java:54-56,80-82",
+   "status": "validated",
+   "line": 36
+  },
+  {
+   "kind": "bug",
+   "topic": "Async interceptor exceptions are swallowed",
+   "area": "backend",
+   "target": "judo-ng/runtime__judo-runtime-core",
+   "claim": "Async interceptors run via CompletableFuture.runAsync",
+   "fact": "The future is discarded, with no logging, handler or join, so exceptions are lost. Async interceptors have no transaction and no context variables and cannot change the payload. Expected: at least log failures.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, CallInterceptorUtil.java:54-56,80-82",
+   "status": "validated",
+   "line": 36
+  },
+  {
+   "kind": "bug",
+   "topic": "BusinessException cause is always null",
+   "area": "backend",
+   "target": "judo-ng/runtime__judo-dispatcher-api",
+   "claim": "DefaultDispatcher.java:767 does map.put(FAULT_CAUSE, e.getCause()) and the mapper outputs 'cause' when includeBusinessCause.",
+   "fact": "BusinessException (@Getter @AllArgsConstructor extends RuntimeException) stores the Throwable in a field 'throwable' and never passes it to super, so getCause() is always null. The cause output in RuntimeExceptionMapper is never populated for InterceptorCallBusinessException. Fix: initCause(throwable) in the constructor or read getThrowable() at DefaultDispatcher.java:768.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, judo-dispatcher-api BusinessException.java:29-38",
+   "status": "validated",
+   "line": 60
+  },
+  {
+   "kind": "missing",
+   "topic": "Throwing a business error from an interceptor: InterceptorCallBusinessException",
+   "area": "backend",
+   "target": "agent-docs/backend/interceptors.md",
+   "claim": "Catalog interceptor examples throw raw RuntimeException (recaptcha-waf-interceptor/backend.md:19,26) or wrap GenericOperationErrorException in RuntimeException (interceptors.md:234,294,479). A raw RuntimeException gives a 500.",
+   "fact": "preCall/postCall are declared throws InterceptorCallBusinessException(String type, String errorCode, Map<String,Object> details, Throwable throwable, Locale locale), a BusinessException subclass (behaviours/InterceptorCallBusinessException.java:8-11). The dispatcher converts it to a _fault payload and then a BusinessException (DefaultDispatcher.java:764-771, 402-414). REST returns 422 with X-Fault: <type>, and a body {<type>: details without _-keys/nulls, code: errorCode}. Interceptors run inside the behaviour's transaction, so the throw rolls back the DAO write, including from postCall. Any other RuntimeException becomes InternalServerException and a 500. Locale is replaced by the dispatcher's locale. A generated checked <Fault>Exception cannot be thrown from an interceptor.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, RuntimeExceptionMapper.java:60-119",
+   "status": "validated",
+   "line": 60
+  },
+  {
+   "kind": "missing",
+   "topic": "Fault type string not validated; use modeled fault FQN",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "No guidance on what type string to use.",
+   "fact": "Neither type nor details are validated against the model or the operation's declared faults (the dispatcher never checks them). Use the ASM FQN of a modeled fault transfer object (e.g. northwind.services.AlreadyShipped) as type, even if no operation declares it. The frontend translation keys faults.<fqn>.<attr> depend on it; a typo still gives a 422 but the dialog falls back to raw attribute names. Null details would NPE in the mapper (RuntimeExceptionMapper ~L88-90).",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore",
+   "status": "validated",
+   "line": 60
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "ExceptionUtils and GenericOperationErrorException exist only in docs",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "error-handling-guide.md:36 'ExceptionUtils recommended way': createBusinessErrorException, createValidationResult, createValidationException, createBusinessException; :121 GenericOperationErrorException (BusinessException) 500; also in interceptors.md, internationalization-guide.md, advanced-patterns.md.",
+   "fact": "No ExceptionUtils class or GenericOperationErrorException exists in any platform or template source under wt/ (no .java, .hbs). They only appear as call sites in agent-docs. They may be in a runtime jar or per-project code, which is unverified. Treat them as unconfirmed and do not teach them as platform API.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore Where ExceptionUtils comes from",
+   "status": "reported-unvalidated",
+   "line": 262
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "BusinessErrorException is not a platform type",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "error-handling-guide: BusinessErrorException is 'modeled, type-safe business rule violations' with 422; template says 'model custom fault types (BusinessError)'.",
+   "fact": "No BusinessErrorException Java class or BusinessError fault exists in the platform. It is generated per project from a user-modeled fault TO named BusinessError via dao.fault.java.hbs (<ClassName>Exception). The docs must say the project has to model it.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, template__judo-esm-fullstack-project-template error-handling-guide.md.hbs:27,47,120",
+   "status": "reported-unvalidated",
+   "line": 78
+  },
+  {
+   "kind": "missing",
+   "topic": "Modeled fault -> generated <Name>Exception details",
+   "area": "model",
+   "target": "agent-docs/model/",
+   "claim": "Docs say the exception is nested, AlreadyShipped.Exception (03_business_fault.adoc:12-14,38).",
+   "fact": "A fault is a Parameter in Operation.faults (0..*) whose target is a TransferObjectType (esm.ecore:584-588). EVL rules: OperationFaultTargetsAreDefined, FaultCardinalityIsValid (1..1). The SDK generates one top-level checked <Name>Exception extends java.lang.Exception per fault TO (template dao.fault.java.hbs, psm-sdk-core.yaml:14-18), in the same API package as the DTO. Constructors: (details), (errorCode, details), (errorCode, details, cause); getErrorCode()=getMessage(); getDetails(). It is generated once per TO and reusable across operations. The nested form in the official docs is outdated. The generated throws clause lists declared faults (OperationHelper.java:77-84).",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore",
+   "status": "validated",
+   "line": 115
+  },
+  {
+   "kind": "missing",
+   "topic": "Fault handling and declared-fault filtering in SDK wrapper",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "Implicitly that the dispatcher checks faults against the declaration.",
+   "fact": "The dispatcher does not check faults against the operation. The only check is in the generated SDK client wrapper (dto.dispatcher.wrapper.java.hbs:43-55): it matches BusinessException.getType() against declared faults and rethrows the typed <Name>Exception, else IllegalStateException. If the operation declares no faults the raw BusinessException passes through. Over REST, any fault type string works (422 with X-Fault).",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore",
+   "status": "validated",
+   "line": 120
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "Catalog/template/official docs disagree on business-rule error type and status",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "error-handling-guide.md:121 GenericOperationErrorException 500; template .hbs: ValidationException with ERR_ prefix, 400; official 03_business_fault.adoc:24: modeled fault 422.",
+   "fact": "The three sources give three answers. Correct: platform errors (ValidationException 400, AccessDenied 403, AuthenticationRequired 401, NotFound 404) are ClientException subclasses; modeled faults give 422 plus X-Fault. Also: generalization-guide.md:196 uses new ValidationException(String), which the template says does not exist; NotFoundException/AccessDeniedException need a ValidationResult constructor. Template says 'no BusinessException class in runtime-core' but judo-dispatcher-api has BusinessException. validation-exception-hierarchy.md:48 wraps Exception into createBusinessErrorException('UNEXPECTED') making bugs 422.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore docs-vs-docs comparison",
+   "status": "reported-unvalidated",
+   "line": 190
+  },
+  {
+   "kind": "missing",
+   "topic": "ValidationResult.location is optional",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "error-handling-guide.md:73-80 and :119 present ValidationException as field-bound input errors; 03_business_fault.adoc:133 says validation is based on model elements.",
+   "fact": "ValidationResult {code, level, location, details} has location of type Object and optional (ValidationResult.java:33-38). The platform itself emits errors without location (ERROR_INVALID_IDENTIFIER, ACCESS_DENIED) or with non-field locations (_mask, _identifier). The official docs example throws ValidationException with only a code (SHIPPED_TIME_MUST_AFTER_ORDER_TIME). Not all errors map to model attributes.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore + operator point",
+   "status": "validated",
+   "line": 110
+  },
+  {
+   "kind": "bug",
+   "topic": "Frontend error handler ignores unlocated errors, crashes on mixed locations",
+   "area": "frontend",
+   "target": "judo-ng/template__judo-ui-react-template",
+   "claim": "Generated useErrorHandler 400 branch",
+   "fact": "In judo-ui-react/src/main/resources/actor/src/utilities/error-handling.ts.hbs:140-161: always shows toast judo.error.validation-failed, with inline errors only if errorList[0].location exists (:151). Unlocated errors show only the generic toast, and their message is never shown. Locations not matching a field are stored via setValidation but never rendered. If the first error has a location and a later one is null, error.location.split/startsWith throws (:58,183,241). Expected: null-guard and show unlocated messages. Message key is judo.error.validation-failed.<code>.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore frontend",
+   "status": "validated",
+   "line": 320
+  },
+  {
+   "kind": "missing",
+   "topic": "Frontend 422 fault dialog behaviour",
+   "area": "frontend",
+   "target": "agent-docs/frontend/",
+   "claim": "No docs of how modeled faults render.",
+   "fact": "error-handling.ts.hbs:136-139: 422 detected by status only (isErrorOperationFault :228-230); the X-Fault header is never read. It takes only the first key of the body (Object.keys(data)[0]) and opens OperationFaultDialog (title judo.error.error, body judo.error.business-fault). Each detail is translated as t('faults.<faultObjectKey>.<attr>', {defaultValue: key}). Batch variant in useCRUDDialog.tsx.hbs:155-170 uses faults.<faultPrefix>.<key>.<attr>. Other statuses: 500 internal-server-error toast; 401 clears storage and reloads (axiosInterceptor.ts.hbs:65-68) so the toast is mostly unseen; 403, 404 toasts; other statuses use error.unknown. A custom hook custom/default-error-handler-interceptor.ts.hbs runs first (not reviewed).",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore frontend",
+   "status": "validated",
+   "line": 325
+  },
+  {
+   "kind": "bug",
+   "topic": "Guice defaults leak stack traces: returnRuntimeExceptions and includeBusinessCause default true",
+   "area": "deployment",
+   "target": "judo-ng/runtime__judo-runtime-core",
+   "claim": "",
+   "fact": "JudoCxfModuleConfiguration.java:31,33 set both flags to true, bound in JudoCxfModule.java:47-48,149-150 and RuntimeExceptionMapperProvider. A 500 then sends the full stack trace in details.exception (RuntimeExceptionMapper.java:100-110), and BusinessException cause is serialized by Jackson (:94-96). OSGi/Karaf defaults are false (RuntimeExceptionMapperComponent.java:44,47; CxfActivator.java:73,76; properties returnRuntimeExceptions, includeBusinessCause). The mapper's own defaults are false. The same trace leak applies to WebApplicationException with a non-Jackson cause (:71-81). Expected: safe default false under Guice.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore",
+   "status": "validated",
+   "line": 345
+  },
+  {
+   "kind": "missing",
+   "topic": "Exception mapping HTTP details",
+   "area": "backend",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "",
+   "fact": "RuntimeExceptionMapper.java:60-119: BusinessException maps to 422, X-Fault: <type>, body {<type>: details minus _-keys and nulls, code, cause only if includeBusinessCause}. Other RuntimeException maps to 500 code INTERNAL_SERVER_ERROR. In the dispatcher outer catch (:812-816) ClientException/BusinessException are rethrown, other RuntimeException/ExecutionException become InternalServerException('Operation failed'). FaultInterceptor (jaxrs-cxf) handles only exceptions escaping the mapper. ValidationException extends ClientException (ValidationException.java:28). For exposed operations the dispatcher validates parameters in a transaction that is rolled back (:696-714) with no interceptors.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore",
+   "status": "validated",
+   "line": 100
+  },
+  {
+   "kind": "correction",
+   "topic": "Operator: not all business errors are modeled exceptions, not all errors map to attributes, interceptors cannot send faults",
+   "area": "process",
+   "target": "agent-docs/backend/error-handling-guide.md",
+   "claim": "Agent Part A line 'business errors are modeled faults'.",
+   "fact": "The operator pointed out that: (1) not all business errors are modeled exceptions; (2) not all errors connect to model attributes; (3) a modeled fault cannot be sent from an interceptor; (4) interceptors do not handle business problems. Source checks confirmed all of them, so the Part A error-handling item needed a rewrite. Distinguish platform errors (ValidationException, 400, location optional) from modeled faults (422, checked exception).",
+   "evidence": "session 2026-11-06T10-49-13-527Z, operator, about 2026-11-09T13:10",
+   "status": "operator-stated",
+   "line": 520
+  },
+  {
+   "kind": "workflow",
+   "topic": "Operator: use the fast role for parallel exploration",
+   "area": "process",
+   "target": "skill/subagents",
+   "claim": "",
+   "fact": "Operator: 'use fast paralell epxplore jsuta swe discsovered the error useing fast role'. Run parallel explore subagents with model @fast (claude-haiku-5-5; roles listed via list_roles: fast, explore=inception/mercury-3) for narrow follow-up checks. Subagent prompts: read-only, 'be fast and concise', give the source path and numbered questions.",
+   "evidence": "session part 31, operator 2026-11-09T13:10:18",
+   "status": "operator-stated",
+   "line": 395
+  },
+  {
+   "kind": "decision",
+   "topic": "Operator: derive developer practice from real models, not agent speculation",
+   "area": "process",
+   "target": "change-process",
+   "claim": "Agent asked whether to model the fault and wrap it in InterceptorCallBusinessException or use its own wrapper class.",
+   "fact": "Operator: 'No find in the models what do developers do in these situations'. Search the real application models/blueprints on disk to see how developers actually handle business errors from interceptors before writing docs. Earlier sweep found no real app with an interceptor throwing a business error; the only interceptor source is judo-platform-northwind-esm-app InternationalOrderInfoInterceptor, which throws only in getOperations. Catalog blueprints show BusinessErrorException from custom operations (error-code-enum/backend.md, exchange-rate-entity/backend.md:12).",
+   "evidence": "session 2026-11-06T10-49-13-527Z, operator 2026-11-09T13:26:31",
+   "status": "operator-stated",
+   "line": 610
+  },
+  {
+   "kind": "missing",
+   "topic": "Catalog blueprint practice for business errors",
+   "area": "catalog",
+   "target": "catalog/model-blueprints/error-code-enum",
+   "claim": "",
+   "fact": "In catalog blueprints, custom operations throw BusinessErrorException carrying an ErrorCode, via ExceptionUtils.createBusinessErrorException(ErrorCode,msg), a string-code variant, or new BusinessErrorException(BusinessError.builder().withCode().build()). BusinessError is an unmapped TO with code and message; the frontend maps 422 to a snack with message (error-code-enum/frontend.md:3). ValidationException is used for field-level errors (exchange-rate-entity/backend.md:12). Cases: last admin guard (active-suspended-deactivated-status-enum/backend.md:7), quotas/permissions (error-code-enum/backend.md:33), Keycloak failures (idm-realm-keycloak-integration/backend.md:13), external connection failures (external-api-adapter-provider-pattern/backend.md:45). A custom operation that rethrows a ValidationException as one BusinessError loses the per-row gap list (S01-07). The dispatcher refuses operations on immutable bound instances with AccessDeniedException (S05-01).",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore, knowledge-gaps-report.md:183-185",
+   "status": "reported-unvalidated",
+   "line": 245
+  },
+  {
+   "kind": "wrong-fact",
+   "topic": "recaptcha-waf-interceptor blueprint: raw RuntimeException from preCall",
+   "area": "model",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor",
+   "claim": "backend.md:19,26: preCall throws RuntimeException('Request blocked: reCAPTCHA token required') and the dispatcher translates it into an error response.",
+   "fact": "A plain RuntimeException becomes InternalServerException and a 500, not a typed fault. Use InterceptorCallBusinessException (422 plus X-Fault), or a 403-style platform error. Same issue in best-practices/backend/interceptor-security-filter-validation.md:45 (its own Cons :62 says use a typed error).",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore",
+   "status": "validated",
+   "line": 262
+  },
+  {
+   "kind": "workflow",
+   "topic": "Subagent reports contain unverified claims",
+   "area": "process",
+   "target": "skill/subagents",
+   "claim": "",
+   "fact": "Subagent answers listed explicit uncertainties and unchecked items (ValidationException superclass was later confirmed as ClientException; OSGi tracker wiring and SDK-op interceptor wiring untraced). Mark such claims reported-unvalidated and have a follow-up verification wave.",
+   "evidence": "session 2026-11-06T10-49-13-527Z part 31, subagent explore",
+   "status": "reported-unvalidated",
+   "line": 230
+  }
+ ]
+}

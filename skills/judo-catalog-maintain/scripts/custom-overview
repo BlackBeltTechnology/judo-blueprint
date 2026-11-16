@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""Inventory a project's hand-written code by JUDO conventions, read-only (design D10a).
+
+Usage: custom-overview <project> [--json]
+
+Fast rule: in a clean checkout everything generated is gitignored, so every TRACKED file under a
+generator-owned folder is custom. File headers are never used. No build, no generation.
+Writes W/custom.md (tables per mechanism: item -> model element -> kind, an unmapped list, counts)
+and W/custom.json. The `--generate` deep check of design D10a is not implemented (it would run the
+project's generator); read a custom file whole and compare it with its .default only when needed.
+"""
+import argparse
+import collections
+import json
+import pathlib
+import re
+import subprocess
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from _sweep import latest_work_dir, load_state, save_state  # noqa: E402
+
+GEN_MODULES = {"sdk", "rest", "internal", "model", "karaf-features"}  # only pom.xml is tracked there
+
+
+def tracked(src):
+    return subprocess.run(["git", "ls-files"], cwd=src, capture_output=True, text=True).stdout.split("\n")
+
+
+def read(src, f):
+    try:
+        return (src / f).read_text(errors="replace")
+    except OSError:
+        return ""
+
+
+def custom_operations(src, files):
+    impl = [f for f in files if f.endswith("CustomImplementation.java")]
+    stubs = [f for f in files if f.endswith("CustomImplementation.java.default")]
+    rows = []
+    for f in impl:
+        t = read(src, f)
+        m = re.search(r"^import\s+[\w.]+\.operation\.([\w.]+)\.(\w+);", t, re.M)
+        cls = re.search(r"class\s+\w+\s+implements\s+(\w+)", t)
+        op = f"{m.group(1)}.{m.group(2)}" if m else None
+        rows.append({"file": f, "operation": op or (cls.group(1) if cls else "?"), "lines": t.count("\n"),
+                     "uses_dao": bool(re.search(r"\w+Dao\b", t)), "throws_fault": "Exception(" in t})
+    return rows, len(stubs)
+
+
+def interceptors(src, files):
+    rows = []
+    java = [f for f in files if f.endswith(".java") and ("interceptor" in f.lower() or "/interceptors/" in f)]
+    for f in java:
+        t = read(src, f)
+        if not re.search(r"implements\s+[\w, ]*OperationCallInterceptor|extends\s+\w*(Guard|Interceptor)\b|implements\s+\w*Guard\b", t):
+            continue
+        kinds = [k for k, rx in (("pre", r"\bpreCall\s*\("), ("post", r"\bpostCall\s*\("),
+                                 ("guard", r"\bpermitted\s*\(|Guard\b")) if re.search(rx, t)]
+        ops = sorted(set(re.findall(r'"([A-Za-z_][\w.]*[#.]_?\w+)"', t)))[:12]
+        roles = sorted(set(re.findall(r"\b(?:ActorRole|Role)\.([A-Z_]+)", t)))[:8]
+        rows.append({"file": f, "class": pathlib.Path(f).stem, "kind": "+".join(kinds) or "?",
+                     "async": "async()" in t and "return true" in t, "operations": ops, "roles": roles})
+    return rows
+
+
+def frontend(src, files):
+    out = []
+    for cust in [f for f in files if f.endswith("src/custom/application-customizer.tsx")]:
+        actor = cust.split("/")[2] if cust.startswith("application/frontend-react/") else cust
+        t = read(src, cust)
+        imports = re.findall(r"import\s*\{\s*(\w+_INTERFACE_KEY)\s*\}\s*from\s*'~/([^']+)'", t)
+        for key, path in imports:
+            kind = ("page-actions" if "PAGE_ACTIONS_HOOK" in key or "ACTIONS_HOOK" in key else
+                    "custom-implementation" if "CUSTOM_IMPLEMENTATION" in key else
+                    "row-highlighting" if "ROW_HIGHLIGHTING" in key else
+                    "access-filter" if "ACCESS_FILTER" in key else
+                    "visual-properties" if "VISUAL_PROPERTIES" in key else "other")
+            target = re.sub(r"/customization$", "", path)
+            out.append({"actor_app": actor, "kind": kind, "target": target, "key": key})
+        # register...() functions imported from ./hooks/** (multi-line imports, comments skipped)
+        body = re.sub(r"//[^\n]*", "", t)
+        for names, path in re.findall(r"import\s*\{([^}]*)\}\s*from\s*'\./(hooks/[^']+)'", body, re.S):
+            for n in re.findall(r"\b(register\w+)\b", names):
+                if re.search(rf"\b{n}\s*\(", body.split("export", 1)[-1]):
+                    kind = ("custom-implementation" if "CustomImplementation" in n or "custom-implementations" in path else
+                            "page-actions" if "ActionsHook" in n else "row-highlighting" if "Highlight" in n else
+                            "visual-properties" if "VisualProperties" in n else "hook")
+                    out.append({"actor_app": actor, "kind": kind, "target": n[len("register"):], "key": path})
+        others = [f for f in files if f.startswith(cust.rsplit("/", 1)[0] + "/") and not f.endswith(".default")
+                  and f != cust]
+        out.append({"actor_app": actor, "kind": "custom-files", "target": f"{len(others)} files under src/custom/",
+                    "key": ""})
+    overrides = [f for f in files if "generator-overrides/" in f]
+    return out, overrides
+
+
+def schema(src, files):
+    steps = sorted({f.split("/")[3] for f in files if f.startswith("application/schema/migration/") and f.count("/") > 3})
+    data = []
+    for f in files:
+        if re.search(r"application/schema/migration/[^/]+/.*0[46]_updateData(Before|After)", f):
+            body = read(src, f)
+            if re.search(r"<(sql|update|insert|delete)\b", body):
+                data.append(f)
+    return steps, data
+
+
+def area_counts(files):
+    c = collections.Counter()
+    for f in files:
+        p = f.split("/")
+        if len(p) > 2 and p[0] == "application":
+            mod = p[1]
+            c[("generated-module" if mod in GEN_MODULES else mod)] += 1
+    return dict(c.most_common())
+
+
+def md(res):
+    L = [f"# Custom code inventory: {res['project']} @ {res['sha'][:7]}", "",
+         "Read-only inventory (design D10a fast rule: tracked files under generator-owned folders are custom). "
+         "Contains client names and code: never commit this file.", "", "## Counts", ""]
+    L += [f"- {k}: {v}" for k, v in res["counts"].items()]
+    L += ["", "## Custom operations", "", "| operation | lines | uses DAO | file |", "|---|---|---|---|"]
+    L += [f"| `{r['operation']}` | {r['lines']} | {'yes' if r['uses_dao'] else ''} | {r['file'].split('/custom/')[-1]} |"
+          for r in sorted(res["custom_operations"], key=lambda r: -r["lines"])]
+    L += ["", "## Interceptors", "", "| class | kind | operations | roles |", "|---|---|---|---|"]
+    L += [f"| {r['class']} | {r['kind']}{' async' if r['async'] else ''} | {', '.join(r['operations'][:4])} | {', '.join(r['roles'])} |"
+          for r in res["interceptors"]]
+    L += ["", "## Frontend registrations", "", "| app | kind | target |", "|---|---|---|"]
+    L += [f"| {r['actor_app']} | {r['kind']} | {r['target']} |" for r in res["frontend"]]
+    L += ["", "## Generator overrides", ""] + [f"- {f}" for f in res["generator_overrides"]]
+    L += ["", "## Schema migrations", "", f"{len(res['schema_steps'])} steps; hand-edited data changesets:", ""]
+    L += [f"- {f}" for f in res["schema_data"]] or ["- none"]
+    L += ["", "## Rationale docs (read these next)", ""] + [f"- {f}" for f in res["docs"]]
+    L += ["", "## Unmapped", ""] + ([f"- {r['file']}" for r in res["custom_operations"] if r["operation"] == "?"] or ["- none"])
+    return "\n".join(L) + "\n"
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("project")
+    ap.add_argument("--json", action="store_true")
+    a = ap.parse_args()
+    w = latest_work_dir(a.project)
+    st = load_state(w)
+    src = pathlib.Path(st["src"])
+    files = [f for f in tracked(src) if f]
+    ops, stub_only = custom_operations(src, files)
+    ints = interceptors(src, files)
+    fe, overrides = frontend(src, files)
+    steps, data = schema(src, files)
+    docs = [f for f in files if re.search(r"(^|/)(INTERCEPTORS|CUSTOM-OPERATIONS)\.md$|^application/[^/]+/AGENTS\.md$", f)]
+    res = {"project": a.project, "sha": st["sha"], "custom_operations": ops, "interceptors": ints,
+           "frontend": fe, "generator_overrides": overrides, "schema_steps": steps, "schema_data": data, "docs": docs,
+           "counts": {"tracked_files": len(files), "custom_operations": len(ops),
+                      "tracked_default_stubs": stub_only, "interceptors": len(ints),
+                      "frontend_registrations": sum(1 for r in fe if r["kind"] != "custom-files"),
+                      "generator_overrides": len(overrides), "schema_steps": len(steps),
+                      "schema_data_changesets": len(data), **{f"module:{k}": v for k, v in area_counts(files).items()}}}
+    (w / "custom.json").write_text(json.dumps(res, indent=1))
+    (w / "custom.md").write_text(md(res))
+    st.setdefault("steps", {})["custom-overview"] = "done"
+    save_state(w, st)
+    if a.json:
+        print(json.dumps(res["counts"]))
+    else:
+        c = res["counts"]
+        print(f"wrote custom.md ({len(md(res)) // 4} tokens approx) to {w}")
+        print(f"  custom operations {c['custom_operations']}, interceptors {c['interceptors']}, "
+              f"frontend registrations {c['frontend_registrations']}, overrides {c['generator_overrides']}, "
+              f"schema steps {c['schema_steps']} ({c['schema_data_changesets']} with data changes)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

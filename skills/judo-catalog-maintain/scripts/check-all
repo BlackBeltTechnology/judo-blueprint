@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+# check-all — every catalog gate in one run (task 4.5). Exit 1 if any gate fails.
+#
+# Usage: check-all [--no-sandbox] [--require-kb] [--json]
+#   --no-sandbox  skip the fragment check (needs the JUDO CLI jar: $JUDO_CLI_JAR or target/judo-cli.jar)
+#   --require-kb  fail (not skip) the kb gates when the kb CLI is missing (CI)
+#   --json        print one JSON object {gate: "pass"|"fail"|"skip"} at the end
+#
+# Gates: entry-lint, spec-check, claim-check, dox-agents --check, projects, unit, no tracked jars,
+#        no format: legacy, kb dox lint, kb-index (consumer index covers every catalog doc),
+#        kb-eval (golden + holdout search quality), fragments check --all.
+# kb CLI: $KB_CLI, else the global pi-dashboard-kb-extension, else a global @blackbelt-technology/pi-dashboard-kb.
+set -u
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
+cd "$ROOT"
+SANDBOX=1; JSON=0; REQUIRE_KB=0
+for a in "$@"; do
+  case "$a" in
+    --no-sandbox) SANDBOX=0 ;;
+    --json) JSON=1 ;;
+    --require-kb) REQUIRE_KB=1 ;;
+    -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "unknown argument: $a" >&2; exit 2 ;;
+  esac
+done
+A=skills/judo-blueprint-author/scripts
+declare -a NAMES RESULTS
+FAILED=0
+gate() { # name, command...
+  local name="$1"; shift
+  local out; out="$("$@" 2>&1)"; local rc=$?
+  if [ $rc -eq 0 ]; then RESULTS+=("pass"); echo "PASS  $name: $(echo "$out" | tail -1)"
+  else RESULTS+=("fail"); FAILED=1; echo "FAIL  $name"; echo "$out" | tail -15 | sed 's/^/      /'; fi
+  NAMES+=("$name")
+}
+skip() { NAMES+=("$1"); RESULTS+=("skip"); echo "SKIP  $1: $2"; }
+kbskip() { # missing kb CLI: skip locally, fail under --require-kb
+  if [ $REQUIRE_KB -eq 1 ]; then NAMES+=("$1"); RESULTS+=("fail"); FAILED=1; echo "FAIL  $1: $2 (--require-kb)"
+  else skip "$1" "$2"; fi; }
+
+gate entry-lint  "$A/entry-lint" --profile all
+gate spec-check  "$A/spec-check"
+gate claim-check "$A/claim-check" 3
+gate dox-agents  "$A/dox-agents" --check
+gate projects  skills/judo-catalog-maintain/scripts/projects.py check
+gate unit     python3 -m unittest discover -s tests/scripts -q
+gate no-jars     bash -c '! git ls-files "*.jar" | grep -v "^\.mvn/wrapper/"'
+gate no-legacy   bash -c '! grep -rl "^format: legacy" catalog'
+
+NPMG="$(npm root -g 2>/dev/null)"
+KBCLI="${KB_CLI:-}"
+for c in "$NPMG/@blackbelt-technology/pi-dashboard-kb-extension/node_modules/@blackbelt-technology/pi-dashboard-kb/dist/cli.js" \
+         "$NPMG/@blackbelt-technology/pi-dashboard-kb/dist/cli.js"; do
+  [ -z "$KBCLI" ] && [ -f "$c" ] && KBCLI="$c"
+done
+KBCLI="${KBCLI:-/nonexistent}"
+if [ -f "$KBCLI" ]; then
+  # --json to a FILE: piped output is cut at 64 KB (node exits before the pipe drains), which hid every
+  # issue listed after the ~1.8k `missing` rows for target/. Only catalog/ counts. missing-companion
+  # (<doc>.agent.md for docs past 300 lines) is advisory: the catalog has not adopted companions.
+  gate kb-dox-lint bash -c "f=\$(mktemp); node '$KBCLI' dox lint --json > \$f 2>/dev/null; python3 -c \"
+import json,sys,collections
+r=json.load(open(sys.argv[1]))['issues']
+bad=[i for i in r if i.get('path','').startswith('catalog/') and i['kind'] not in ('over-threshold','missing-companion')]
+adv=collections.Counter(i['kind'] for i in r if i.get('path','').startswith('catalog/') and i['kind']=='missing-companion')
+[print(i['kind'],i['path'],sep='\\t') for i in bad[:20]]
+print('advisory: %d catalog docs past the companion threshold' % adv['missing-companion'], file=sys.stderr)
+sys.exit(1 if bad else 0)\" \$f; rc=\$?; rm -f \$f; exit \$rc"
+else
+  kbskip kb-dox-lint "kb CLI not installed"
+fi
+
+# Consumer index: a catalog-only copy indexed exactly as a consumer's kb does (subdir catalog).
+KBD=""
+if [ -f "$KBCLI" ]; then
+  KBD="$(mktemp -d)"; trap 'rm -rf "$KBD"' EXIT
+  mkdir -p "$KBD/.pi/dashboard"; cp -R catalog "$KBD/catalog"
+  printf '{"sources":[{"kind":"filesystem","ref":".","priority":0}],"include":["catalog/**/*.md"],"dbPath":".pi/dashboard/kb/index.db"}' > "$KBD/.pi/dashboard/knowledge_base.json"
+  kb_index() {
+    (cd "$KBD" && node "$KBCLI" index) >/dev/null 2>"$KBD/index.err" || { cat "$KBD/index.err"; return 1; }
+    python3 - "$KBD" <<'PY'
+import pathlib,sqlite3,sys
+d=pathlib.Path(sys.argv[1]); c=sqlite3.connect(d/".pi/dashboard/kb/index.db")
+idx={p for (p,) in c.execute("select path from files")}
+want={str(p.relative_to(d)) for p in (d/"catalog").rglob("*.md")}
+miss=sorted(want-idx); extra=sorted(p for p in idx if not p.startswith("catalog/"))
+for p in miss[:20]: print("not indexed:",p)
+for p in extra[:20]: print("outside catalog:",p)
+print(f"{len(idx & want)}/{len(want)} catalog docs indexed")
+sys.exit(1 if miss or extra else 0)
+PY
+  }
+  gate kb-index kb_index
+else
+  kbskip kb-index "kb CLI not installed"
+fi
+
+# kb eval on the consumer index. Floor: tests/golden/threshold.json
+if [ -f "$KBCLI" ] && [ -f tests/golden/kb-golden.json ]; then
+  kb_eval() {
+    local d="$KBD"
+    local out out2; out="$(cd "$d" && node "$KBCLI" eval --golden "$ROOT/tests/golden/kb-golden.json" --limit 10 --no-reindex 2>&1 | tail -1)"
+    out2="$(cd "$d" && node "$KBCLI" eval --golden "$ROOT/tests/golden/kb-holdout.json" --limit 10 --no-reindex 2>&1 | tail -1)"
+    python3 - "$out" "$out2" "$ROOT/tests/golden/threshold.json" <<'PY'
+import json,sys
+r=json.loads(sys.argv[1]); h=json.loads(sys.argv[2]); th=json.load(open(sys.argv[3]))
+bad=[f"golden {k}" for k,v in th["min"].items() if r.get(k,0)<v]+[f"holdout {k}" for k,v in th["holdout_min"].items() if h.get(k,0)<v]
+print(f"golden P@5={r['P@5']} MRR={r['MRR']} | holdout P@5={h['P@5']} MRR={h['MRR']}"+(f"  below floor: {bad}" if bad else ""))
+sys.exit(1 if bad else 0)
+PY
+  }
+  gate kb-eval kb_eval
+else
+  kbskip kb-eval "kb CLI or golden set missing"
+fi
+
+if [ $SANDBOX -eq 1 ]; then
+  if [ -n "${JUDO_CLI_JAR:-}" ] || [ -f target/judo-cli.jar ]; then
+    gate fragments skills/judo-model-mermaid/scripts/check --all
+  else
+    skip fragments "no CLI jar (./mvnw validate -P download-model-cli)"
+  fi
+else
+  skip fragments "--no-sandbox"
+fi
+
+if [ $JSON -eq 1 ]; then
+  printf '{'; for i in "${!NAMES[@]}"; do [ $i -gt 0 ] && printf ','; printf '"%s":"%s"' "${NAMES[$i]}" "${RESULTS[$i]}"; done; printf '}\n'
+fi
+exit $FAILED

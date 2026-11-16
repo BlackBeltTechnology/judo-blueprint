@@ -1,0 +1,66 @@
+{
+ "area": "e2e-testing",
+ "items": {
+  "E2-001": {
+   "action": "applied",
+   "file": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "heading": "Backend test suite reports green but test classes never ran",
+   "note": "new section"
+  },
+  "E2-002": {
+   "action": "applied",
+   "file": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "heading": "Environment Issues",
+   "note": "getRowCheckbox, data-id, retries, baseURL fixed (see E2-003/004/007/008)"
+  },
+  "E2-003": {
+   "action": "applied",
+   "file": "catalog/agent-docs/e2e-testing/README.md",
+   "heading": "Running tests",
+   "note": "URL pattern uses model name + application name (verified PlaywrightGeneralHelper.getActorNameForAppUrl)"
+  },
+  "E2-004": {
+   "action": "applied",
+   "file": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+   "heading": "VisualElementIds Usage",
+   "note": "getByTestId; React emits data-testid (index.tsx.hbs:397)"
+  },
+  "E2-005": {
+   "action": "already-correct",
+   "file": null,
+   "heading": "VisualElementIds",
+   "note": "VisualElementHelper.java:208-210 emits _id/_label root and id/label leaves; doc matches"
+  },
+  "E2-006": {
+   "action": "applied",
+   "file": "catalog/agent-docs/e2e-testing/model-screen-layout.md",
+   "heading": "Tab Bar Component",
+   "note": "closed the unclosed typescript fence"
+  },
+  "E2-007": {
+   "action": "applied",
+   "file": "catalog/agent-docs/e2e-testing/model-screen-layout.md",
+   "heading": "Testing Association Tables",
+   "note": "TableHelper has no getRowCheckbox; use getRow(...).getByRole('checkbox')"
+  },
+  "E2-008": {
+   "action": "applied",
+   "file": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "heading": "Tests work locally but fail in CI",
+   "note": "verified retries: 4 unconditional in playwright.config.ts.hbs:15; documented"
+  },
+  "E2-009": {
+   "action": "applied",
+   "file": "catalog/agent-docs/e2e-testing/writing-tests.md",
+   "heading": "Get Table Rows",
+   "note": "getRow index 0 is header; first data row is 1"
+  }
+ },
+ "files": {
+  "catalog/agent-docs/e2e-testing/README.md": "app URL pattern",
+  "catalog/agent-docs/e2e-testing/helpers-reference.md": "data-id -> getByTestId",
+  "catalog/agent-docs/e2e-testing/model-screen-layout.md": "closed fence; row checkbox",
+  "catalog/agent-docs/e2e-testing/troubleshooting.md": "retries fact; heap OOM section",
+  "catalog/agent-docs/e2e-testing/writing-tests.md": "getRow index comment"
+ }
+}

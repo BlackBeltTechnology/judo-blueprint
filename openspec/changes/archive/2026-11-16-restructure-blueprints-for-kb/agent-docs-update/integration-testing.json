@@ -1,0 +1,107 @@
+{
+ "area": "integration-testing",
+ "items": {
+  "IN-001": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "heading": "Guice Injector Composition in Tests",
+   "note": "new file"
+  },
+  "IN-002": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "heading": "Keep Integration Tests Self-Contained",
+   "note": "new section"
+  },
+  "IN-003": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/getting-started.md",
+   "heading": "Writing Your First Tests",
+   "note": "imports/JudoRuntimeFixture/begin|commitTransaction/getInjector; removed RegisterExtension and TransactionHandling import fixed, across all files"
+  },
+  "IN-004": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/getting-started.md",
+   "heading": "Table Truncation Behavior",
+   "note": "verified JudoTestExtension.afterEach:386-397: no truncation in AUTO_ROLLBACK; truncate after test in AUTO_COMMIT/MANUAL"
+  },
+  "IN-005": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/README.md",
+   "heading": "Required Tool Versions",
+   "note": "java 21.0.4-zulu, maven 3.9.9"
+  },
+  "IN-006": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/access-and-derived-testing.md",
+   "heading": "Pattern B/C",
+   "note": "replaced literal \\u2014 with em dash"
+  },
+  "IN-007": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/getting-started.md",
+   "heading": "Writing Your First Tests",
+   "note": "imports from guice.testkit.fixture"
+  },
+  "IN-008": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/getting-started.md",
+   "heading": "Basic Test Structure",
+   "note": "parameter type JudoRuntimeFixture (JudoTestExtension.supportsParameter:437)"
+  },
+  "IN-009": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/getting-started.md",
+   "heading": "MANUAL",
+   "note": "beginTransaction/commitTransaction/rollbackTransaction"
+  },
+  "IN-010": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/getting-started.md",
+   "heading": "Table Truncation Behavior",
+   "note": "truncate AFTER test, only AUTO_COMMIT/MANUAL; also best-practices.md; param table extended"
+  },
+  "IN-011": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/osgi-ds-descriptor-tests.md",
+   "heading": "Complete Example",
+   "note": "two assertions / two classes"
+  },
+  "IN-012": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/supplementary-patterns.md",
+   "heading": "Common Validation Utilities",
+   "note": "equal dates now rejected (!isAfter), javadoc fixed; also advanced date range snippet"
+  },
+  "IN-013": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/supplementary-patterns.md",
+   "heading": "Common Validation Utilities",
+   "note": "link -> ../backend/patterns-and-best-practices.md#validationutils"
+  },
+  "IN-014": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/supplementary-patterns.md",
+   "heading": "Common Validation Utilities",
+   "note": "link -> ../backend/error-handling-guide.md#validation-strategy"
+  },
+  "IN-015": {
+   "action": "applied",
+   "file": "catalog/agent-docs/integration-testing/supplementary-patterns.md",
+   "heading": "Idempotent Operations",
+   "note": "link -> backend/patterns-and-best-practices.md#idempotent-operation-pattern"
+  }
+ },
+ "files": {
+  "catalog/agent-docs/integration-testing/README.md": "sdkmanrc versions, testkit name, links to 2 new files",
+  "catalog/agent-docs/integration-testing/getting-started.md": "fixture API, imports, truncation semantics, @JudoTest parameter table, ReferenceInjector by-type",
+  "catalog/agent-docs/integration-testing/access-and-derived-testing.md": "\\u2014 escapes fixed",
+  "catalog/agent-docs/integration-testing/advanced-patterns.md": "fixture API/imports/ReferenceInjector.createAndInject",
+  "catalog/agent-docs/integration-testing/best-practices.md": "fixture API, truncation comments, <app> name, subheadings",
+  "catalog/agent-docs/integration-testing/supplementary-patterns.md": "links, date range bug, fixture API, ValidationUtils marked example code",
+  "catalog/agent-docs/integration-testing/type-safety.md": "fixture API/imports",
+  "catalog/agent-docs/integration-testing/osgi-ds-descriptor-tests.md": "four->two assertions, <app>, subheading, no RegisterExtension",
+  "catalog/agent-docs/integration-testing/interceptor-testing.md": "NEW: interceptor testing, registration order for pre and postCall",
+  "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md": "NEW: injector composition, lifecycle, test scoping"
+ }
+}

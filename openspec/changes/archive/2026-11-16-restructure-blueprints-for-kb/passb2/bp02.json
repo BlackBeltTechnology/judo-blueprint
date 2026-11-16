@@ -1,0 +1,155 @@
+{
+ "batch": "bp02",
+ "entries": {
+  "authentication-event-interceptor": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "interceptor built-in operations custom operations",
+    "authentication interceptor principal login"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/authentication-guide.md#Example: Just-in-Time User Provisioning",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors"
+   ],
+   "fixes": [
+    "custom/mapped/script ops never intercepted; postCall registration order stated",
+    "managed-actor auto-insert does not work in verified runtime: fixed Variations/When to avoid",
+    "added judo.model.name property, #_principal, runs before actor lookup, claims map names",
+    "lock vs unique-constraint alternative"
+   ],
+   "inventory": {
+    "Interceptors fire on custom operations / postCall reverse": "applied"
+   },
+   "lint": "pass"
+  },
+  "bank-account-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "composition association owner identifier required relation range",
+    "default range expression association restrict candidates",
+    "entity has no UI; pages generated from transfer object access point"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Pattern: Asymmetric bidirectional relations (AGGREGATION x ASSOCIATION)",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Scope"
+   ],
+   "fixes": [
+    "bidirectional composition rule: owner=aggregation, back pointer=association",
+    "range expressions are on transfer-object relations, not entity",
+    "UI pages come from transfer objects/access, not entities"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "bulk-json-upload-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "custom operation implementation DAO create transaction rollback",
+    "upload token binary attribute",
+    "validation exception field errors 400"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Statefulness derived from behaviour",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "CRUD flags are transfer-level, not entity",
+    "writing custom op must be stateful",
+    "upload token generated for transfer binary field, INVALID_FILE_TOKEN",
+    "UI from transfer objects",
+    "OSGi component registration and faults declared",
+    "rollback marked as project expectation"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "campaign-lifecycle-status-enum": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "enumeration ordinal members default value enum stored",
+    "scheduled job OSGi component background scheduler"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/type.md#EnumerationMember Attribute Rules",
+    "catalog/agent-docs/model/jsl-language-notes.md",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "ordinal rules: unique, 0..9999, explicit",
+    "interceptor scope wording: custom/mapped/script never intercepted",
+    "UI from transfer objects",
+    "scheduled job context outside request transaction + link"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "capability-lookup-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "frontend action hook template pre-fill update form filter hook options registration key",
+    "dashboard operation create unbound static operation instance bound operation toggle"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Container Actions",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md#Registration",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/custom-operations.md#Rules for Custom Operations",
+    "catalog/agent-docs/model/esm_metamodel/operation.md#GET_RANGE and GET_TEMPLATE behaviours"
+   ],
+   "fixes": [
+    "CRUD flags on transfer relations, UI from transfer objects",
+    "hook registration via generated scaffold and real key pattern, handler names illustrative",
+    "custom op OSGi component and fault declaration",
+    "interceptor wording"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "capacitor-native-auth-pkce-passkey": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "Capacitor native login OIDC token storage redirect custom frontend",
+    "Keycloak client direct access grants public client PKCE passkey WebAuthn"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/authentication-guide.md#Several Keycloak clients in one realm",
+    "catalog/agent-docs/backend/authentication-guide.md#Discovery endpoints for custom frontends",
+    "catalog/agent-docs/deployment/osgi-runtime-services.md#Realm and client generation from the model"
+   ],
+   "fixes": [
+    "azp to actor mapping / acceptableClients / clientToActorMap added",
+    "generated client has directAccessGrants and redirectUris *",
+    "web sign-out signoutRedirect detail, principal wait"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "capacitor-native-file-handling": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "generator-ignore override generated file utility download token disposition"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Client Side of the Upload Token Flow",
+    "catalog/agent-docs/frontend/advanced-patterns.md#Custom Attachments: Token Flow",
+    "catalog/agent-docs/frontend/README.md"
+   ],
+   "fixes": [
+    "fileHandling helper exports and token/disposition flow",
+    "generator-ignore checksum protection"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

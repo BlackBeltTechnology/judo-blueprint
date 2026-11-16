@@ -1,0 +1,23 @@
+{
+  "sources": [
+    {
+      "kind": "filesystem",
+      "ref": ".",
+      "priority": 0
+    }
+  ],
+  "include": [
+    "**/*.md"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "**/archive/**",
+    "fragments/**",
+    "skills/*/scripts/**",
+    ".pi/skills/*/scripts/**",
+    "tests/**",
+    "target/**",
+    "openspec/changes/archive/**"
+  ],
+  "dbPath": ".pi/dashboard/kb/index.db"
+}

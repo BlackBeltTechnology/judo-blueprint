@@ -1,0 +1,167 @@
+{
+ "items": {
+  "gaps:scope-decisions-needed:8356761d90:b62650f6e3": {
+   "decision": "reject",
+   "updated": "2026-11-06T11:15:14"
+  },
+  "gaps:scope-decisions-needed:8356761d90:781dee0708": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:23"
+  },
+  "gaps:scope-decisions-needed:8356761d90:b1cc92da0f": {
+   "decision": "reject",
+   "updated": "2026-11-06T12:15:26"
+  },
+  "gaps:how-to-read-an-item:45792fbda6": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:43"
+  },
+  "gaps:how-to-read-an-item:45792fbda6:6f0c5b43f7": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:45"
+  },
+  "gaps:how-to-read-an-item:45792fbda6:8c2f6a8e03": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:46"
+  },
+  "gaps:how-to-read-an-item:45792fbda6:6acca1770b": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:47"
+  },
+  "gaps:how-to-read-an-item:45792fbda6:974742c04f": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:48"
+  },
+  "gaps:1-summary:bab6242e44:1e44a57b4b": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:53"
+  },
+  "gaps:1-summary:bab6242e44": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:53"
+  },
+  "gaps:1-summary:bab6242e44:97e7685f88": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:55"
+  },
+  "gaps:1-summary:bab6242e44:6781496712": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:56"
+  },
+  "gaps:1-summary:bab6242e44:cc1ba4fc83": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:56"
+  },
+  "gaps:1-summary:bab6242e44:ddcef757be": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:58"
+  },
+  "gaps:1-summary:bab6242e44:5d603740d1": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:15:59"
+  },
+  "gaps:1-summary:bab6242e44:3143954a87": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:00"
+  },
+  "gaps:1-summary:bab6242e44:57f6e22d19": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:01"
+  },
+  "gaps:1-summary:bab6242e44:e6f1abf97e": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:03"
+  },
+  "gaps:1-summary:bab6242e44:cd83a6695d": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:04"
+  },
+  "gaps:1-summary:bab6242e44:39017827f9": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:04"
+  },
+  "gaps:1-summary:bab6242e44:1f1fbcb563": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:06"
+  },
+  "gaps:1-summary:bab6242e44:7fc927a596": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:07"
+  },
+  "gaps:1-summary:bab6242e44:a55f206203": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:08"
+  },
+  "gaps:method:88306943fe": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:11"
+  },
+  "gaps:method:88306943fe:e9315545cf": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:12"
+  },
+  "gaps:method:88306943fe:26258de6dd": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:14"
+  },
+  "gaps:method:88306943fe:0440539909": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:16"
+  },
+  "gaps:limits:61a0ae3b84": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:23"
+  },
+  "gaps:limits:61a0ae3b84:c9bf6dd0bd": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:23"
+  },
+  "gaps:limits:61a0ae3b84:88992baa4d": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:28"
+  },
+  "gaps:limits:61a0ae3b84:ffa9b6c7f6": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:30"
+  },
+  "gaps:limits:61a0ae3b84:35d124b634": {
+   "decision": "accept",
+   "updated": "2026-11-06T12:16:31"
+  },
+  "gap:P13-01": {
+   "decision": "accept",
+   "note": "boti: approved, directly derived from a CLI change. Catalog only links to the judo-cli skill (no syntax); boti writes the content on the CLI side.",
+   "updated": "2026-11-06T13:55:52"
+  },
+  "gap:P13-06": {
+   "decision": "accept",
+   "note": "boti: approved, directly derived from a CLI change. Catalog only links to the judo-cli skill (no syntax); boti writes the content on the CLI side.",
+   "updated": "2026-11-06T13:55:52"
+  },
+  "gap:P13-07": {
+   "decision": "accept",
+   "note": "boti: approved, directly derived from a CLI change. Catalog only links to the judo-cli skill (no syntax); boti writes the content on the CLI side.",
+   "updated": "2026-11-06T13:55:52"
+  },
+  "gap:P13-08": {
+   "decision": "accept",
+   "note": "boti: approved, directly derived from a CLI change. Catalog only links to the judo-cli skill (no syntax); boti writes the content on the CLI side.",
+   "updated": "2026-11-06T13:55:52"
+  },
+  "gap:P13-03": {
+   "decision": "accept",
+   "note": "boti: approved, directly derived from a CLI change. Catalog only links to the judo-cli skill (no syntax); boti writes the content on the CLI side.",
+   "updated": "2026-11-06T13:55:52"
+  },
+  "gap:P13-02": {
+   "decision": "accept",
+   "note": "boti: approved, directly derived from a CLI change. Catalog only links to the judo-cli skill (no syntax); boti writes the content on the CLI side.",
+   "updated": "2026-11-06T13:55:52"
+  },
+  "gap:S25-01": {
+   "decision": "accept",
+   "note": "boti: approved, directly derived from a CLI change. Catalog only links to the judo-cli skill (no syntax); boti writes the content on the CLI side.",
+   "updated": "2026-11-06T13:55:52"
+  }
+ }
+}

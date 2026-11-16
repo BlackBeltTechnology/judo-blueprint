@@ -1,0 +1,142 @@
+{
+ "batch": "bp12",
+ "entries": {
+  "risk-level-enum": {
+   "status": "rewritten",
+   "fragment": "risk-level-enum",
+   "kb": [
+    "enumeration type members ordinal",
+    "enumeration ordinals persisted form reordering"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jsl-language-notes.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/model/esm_metamodel/type.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "reference-data-lookup-entity": {
+   "status": "rewritten",
+   "fragment": "reference-data-lookup-entity",
+   "kb": [
+    "non-creatable entity createable flags",
+    "DAO findAllById",
+    "seed data initializer",
+    "DAO generated methods"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md#CRUD Flags",
+    "catalog/agent-docs/backend/data-access-guide.md#Generated DAO Behaviour and Known Issues",
+    "catalog/agent-docs/model/esm_metamodel/operation.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy; dropped findAllById (not in docs, use getById)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "report-definition-with-run-operation": {
+   "status": "rewritten",
+   "fragment": "report-definition-with-run-operation",
+   "kb": [
+    "bound operation instance operation",
+    "excel export binary",
+    "!container navigation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/operation.md#Operation",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Signed Identifiers"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "binary attribute not drawn: Sandbox has no Binary type"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "reservation-booking-entity": {
+   "status": "rewritten",
+   "fragment": "reservation-booking-entity",
+   "kb": [
+    "range interceptor reference range",
+    "cards container config hook",
+    "postGetTemplateAction form action hook"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/backend/platform-behavior-reference.md",
+    "catalog/agent-docs/frontend/hooks/action-hooks.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "label project helpers (ReservationService, ReservationInputServices) as examples",
+    "range interceptors only for reference range; custom ops not intercepted"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "scoreboard-personal-best-pattern": {
+   "status": "rewritten",
+   "fragment": "scoreboard-personal-best-pattern",
+   "kb": [
+    "filterBy BooleanFilter query filter",
+    "transfer object mapped query relation DAO",
+    "derived relation getterExpression JQL"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md",
+    "catalog/agent-docs/backend/data-access-guide.md",
+    "catalog/agent-docs/model/model-development.md#JQL cheatsheet"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "mapped transfer objects auto-create members (fragment built accordingly)"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "sensitive-field-double-entry-verification": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "TRANSIENT attribute transfer object input form validation hook",
+    "custom visual element component replaces generated group"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook",
+    "catalog/agent-docs/frontend/hooks/validation-hooks.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "server-side validation caveat; registration key from generated code",
+    "domain tag set to frontend"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "shared-service-helper-module": {
+   "status": "rewritten",
+   "fragment": "none",
+   "kb": [
+    "hiddenByCustom storeDiff form action hook",
+    "frontend service client axios provider"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/hooks/action-hooks.md",
+    "catalog/agent-docs/frontend/hooks/data-hooks.md",
+    "catalog/agent-docs/backend/interceptors.md"
+   ],
+   "fixes": [
+    "full rewrite from legacy",
+    "project names labelled as examples"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

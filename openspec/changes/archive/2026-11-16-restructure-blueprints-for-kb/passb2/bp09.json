@@ -1,0 +1,144 @@
+{
+ "batch": "bp09",
+ "entries": {
+  "masked-input-integration": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "input mask text field widget frontend",
+    "textMask"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Custom Component Replacement",
+    "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md#String Type"
+   ],
+   "fixes": [
+    "added model-level textMask (INPUT, non-multiline) as the first option",
+    "registration needs model custom-implementation element + per-element key from customization.ts/scaffold",
+    "props names labelled as rackinspect/scaffold-dependent"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "multi-actor-role-based-projections": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "actor access realm anonymous principal getter ALL",
+    "interceptor built-in operations only"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/esm_metamodel/accesspoint.md#ActorType Attribute Rules",
+    "catalog/agent-docs/model/advanced-modeling-patterns.md#Role-scoped access getters",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "realm rule corrected to effectively-anonymous semantics (default DEFAULT realm)",
+    "added role-flag-on-principal variation",
+    "custom operations never intercepted wording"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "multiple-choice-question-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "createable updateable deleteable flags",
+    "enumeration default sequence identifier"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md#CRUD Flags and UI Element Visibility",
+    "catalog/best-practices/model/sequence-based-identifier.md"
+   ],
+   "fixes": [
+    "CRUD flags effect on generated UI stated instead of 'hide Form'",
+    "identifier = sequence default expression, linked to sequence-based-identifier"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "notification-entity": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "scheduled job transaction custom operation",
+    "custom visual element list page"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "CRUD flags effect on UI",
+    "custom inbox needs model custom-implementation element and generated key",
+    "transaction advice labelled project practice"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "open-close-status-toggle": {
+   "status": "rechecked-fixed",
+   "fragment": "kept",
+   "kb": [
+    "operation hiddenBy enabledBy",
+    "custom operation customImplementation"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/model/jcl-operation-scripts.md#Validation",
+    "catalog/agent-docs/model/ui-authoring-guide.md#9. hiddenBy / enabledBy / requiredBy",
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted"
+   ],
+   "fixes": [
+    "customImplementation=true: Java body, not validated as JCL",
+    "guard booleans wired via operation hiddenBy/enabledBy",
+    "'never intercepted' wording",
+    "CRUD flags UI effect"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  },
+  "operation-call-logging-interceptor": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "OperationCallInterceptor getOperations built-in operations custom operations not intercepted",
+    "interceptor InterceptorCallBusinessException"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/backend/interceptors.md#Which Operations Are Intercepted",
+    "catalog/agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors",
+    "catalog/agent-docs/backend/interceptors.md#The Interceptor Contract"
+   ],
+   "fixes": [
+    "full built-in set listed; MAPPED/script/custom never intercepted even if listed in getOperations",
+    "pre and postCall both registration order",
+    "transaction/rollback, async and terminateOnException semantics added"
+   ],
+   "inventory": {
+    "operation-call-logging-interceptor claims global interceptor logs every call": "applied (already corrected; verified and extended)",
+    "Interceptors only see built-in operations": "applied"
+   },
+   "lint": "pass"
+  },
+  "organization-discovery-search-component": {
+   "status": "rechecked-fixed",
+   "fragment": "none",
+   "kb": [
+    "seek pagination cursor table query filter",
+    "binary attribute file token download"
+   ],
+   "docs_used": [
+    "catalog/agent-docs/frontend/advanced-patterns.md#Component Replacement Hook",
+    "catalog/agent-docs/backend/platform-behavior-reference.md#Binary Upload Tokens"
+   ],
+   "fixes": [
+    "registration via model custom-implementation element, TableProxyProps",
+    "ACTIVE filter is client-side not security; use access getter",
+    "access service labelled project code"
+   ],
+   "inventory": {},
+   "lint": "pass"
+  }
+ }
+}

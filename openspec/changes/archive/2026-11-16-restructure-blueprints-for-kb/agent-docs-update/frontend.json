@@ -1,0 +1,507 @@
+{
+ "area": "frontend",
+ "items": {
+  "FR-001": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "index of topics from knowledge-gaps-report; frontend topics handled by their own items, others belong to other areas"
+  },
+  "FR-002": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Guest Page",
+   "note": "new section"
+  },
+  "FR-003": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "binary upload/download token flow is REST client / data access behaviour, cross-area"
+  },
+  "FR-004": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "heading": "End-to-End Testing Approach",
+   "note": "UI-first E2E guidance, base dump, 2-minute budget; links to e2e-testing area"
+  },
+  "FR-005": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "heading": "End-to-End Testing Approach",
+   "note": "UI-first E2E guidance, base dump, 2-minute budget; links to e2e-testing area"
+  },
+  "FR-006": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "UI FQN conventions belong to the model/CLI docs"
+  },
+  "FR-007": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator-commons agent-docs (helpers/template-system/generator-ignore) are not in catalog/agent-docs/frontend"
+  },
+  "FR-008": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator-commons agent-docs (helpers/template-system/generator-ignore) are not in catalog/agent-docs/frontend"
+  },
+  "FR-009": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator-commons agent-docs (helpers/template-system/generator-ignore) are not in catalog/agent-docs/frontend"
+  },
+  "FR-010": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator-commons agent-docs (helpers/template-system/generator-ignore) are not in catalog/agent-docs/frontend"
+  },
+  "FR-011": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator-commons agent-docs (helpers/template-system/generator-ignore) are not in catalog/agent-docs/frontend"
+  },
+  "FR-012": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator-commons agent-docs (helpers/template-system/generator-ignore) are not in catalog/agent-docs/frontend"
+  },
+  "FR-013": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator-commons agent-docs (helpers/template-system/generator-ignore) are not in catalog/agent-docs/frontend"
+  },
+  "FR-014": {
+   "action": "out-of-area",
+   "file": null,
+   "heading": "",
+   "note": "generator-commons agent-docs (helpers/template-system/generator-ignore) are not in catalog/agent-docs/frontend"
+  },
+  "FR-015": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/validation-hooks.md",
+   "heading": "Password Confirmation",
+   "note": "else-if chain so the first failing rule is reported"
+  },
+  "FR-016": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/validation-hooks.md",
+   "heading": "Business Days Only",
+   "note": "holiday check uses local date parts instead of toISOString (UTC)"
+  },
+  "FR-017": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/validation-hooks.md",
+   "heading": "Debounced Async Validation / Complete Example",
+   "note": "lodash debounce replaced by promise-based debounceAsync; result.data?.exists used consistently"
+  },
+  "FR-018": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "heading": "Reordering Menu Items",
+   "note": "sort on a copy"
+  },
+  "FR-019": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Table State Persistence / Hook Files and the Custom Folder",
+   "note": "sessionStorage keys, uniqueId uniqueness; hooks generated only when flag set, src/custom gitignored"
+  },
+  "FR-020": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/error-handling.md",
+   "heading": "Frontend Error Handling",
+   "note": "handling matrix, 422 fault dialog, location-less 400, interceptor override, faults.* keys"
+  },
+  "FR-021": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/theming.md",
+   "heading": "Theme Override Fragments",
+   "note": "lists the per-component and palette fragments"
+  },
+  "FR-022": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Table State Persistence / Hook Files and the Custom Folder",
+   "note": "sessionStorage keys, uniqueId uniqueness; hooks generated only when flag set, src/custom gitignored"
+  },
+  "FR-023": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/error-handling.md",
+   "heading": "Frontend Error Handling",
+   "note": "handling matrix, 422 fault dialog, location-less 400, interceptor override, faults.* keys"
+  },
+  "FR-024": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/error-handling.md",
+   "heading": "Frontend Error Handling",
+   "note": "handling matrix, 422 fault dialog, location-less 400, interceptor override, faults.* keys"
+  },
+  "FR-025": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/error-handling.md",
+   "heading": "Frontend Error Handling",
+   "note": "handling matrix, 422 fault dialog, location-less 400, interceptor override, faults.* keys"
+  },
+  "FR-026": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "heading": "Frontend Build and Deployment",
+   "note": "metadata descriptor, context path/base href, build modes, MUI license plan, checksum ignore"
+  },
+  "FR-027": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "heading": "Frontend Build and Deployment",
+   "note": "metadata descriptor, context path/base href, build modes, MUI license plan, checksum ignore"
+  },
+  "FR-028": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "heading": "Frontend Build and Deployment",
+   "note": "metadata descriptor, context path/base href, build modes, MUI license plan, checksum ignore"
+  },
+  "FR-029": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Sub-Theme Hooks",
+   "note": "registration API; theming.md sub-theme section rewritten to SubThemeHook"
+  },
+  "FR-030": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Extra Routes",
+   "note": "new section"
+  },
+  "FR-031": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "heading": "UI Model Pitfalls",
+   "note": "renames/retargeting fallout, opaque UiValidationException bisect, breaking widget values, model-driven features"
+  },
+  "FR-032": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "heading": "UI Model Pitfalls",
+   "note": "renames/retargeting fallout, opaque UiValidationException bisect, breaking widget values, model-driven features"
+  },
+  "FR-033": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "heading": "UI Model Pitfalls",
+   "note": "renames/retargeting fallout, opaque UiValidationException bisect, breaking widget values, model-driven features"
+  },
+  "FR-034": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/README.md",
+   "heading": "Template Variables",
+   "note": "descriptor fields, context variables and override layering added to README"
+  },
+  "FR-035": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "heading": "Menu Operation Actions",
+   "note": "registerMenuActionsHook and MENU_ACTIONS_HOOK objectClass gotcha"
+  },
+  "FR-036": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "heading": "UI Model Pitfalls",
+   "note": "renames/retargeting fallout, opaque UiValidationException bisect, breaking widget values, model-driven features"
+  },
+  "FR-037": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "heading": "UI Model Pitfalls",
+   "note": "renames/retargeting fallout, opaque UiValidationException bisect, breaking widget values, model-driven features"
+  },
+  "FR-038": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "heading": "Frontend Build and Deployment",
+   "note": "metadata descriptor, context path/base href, build modes, MUI license plan, checksum ignore"
+  },
+  "FR-039": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "heading": "Frontend Build and Deployment",
+   "note": "metadata descriptor, context path/base href, build modes, MUI license plan, checksum ignore"
+  },
+  "FR-040": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "heading": "Frontend Build and Deployment",
+   "note": "metadata descriptor, context path/base href, build modes, MUI license plan, checksum ignore"
+  },
+  "FR-041": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Multi-Application Switcher",
+   "note": "new section"
+  },
+  "FR-042": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Unsaved-Changes Navigation Confirmation",
+   "note": "new section"
+  },
+  "FR-043": {
+   "action": "unverified",
+   "file": "catalog/agent-docs/frontend/error-handling.md",
+   "heading": "Known Issue: Long-Running Operations",
+   "note": "no request timeout found in generated service templates; only a hedged proxy/gateway note added"
+  },
+  "FR-044": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "heading": "Frontend Build and Deployment",
+   "note": "metadata descriptor, context path/base href, build modes, MUI license plan, checksum ignore"
+  },
+  "FR-045": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/README.md",
+   "heading": "Architecture / Project Structure / Code Generation Templates",
+   "note": "src/generated replaced by real output paths"
+  },
+  "FR-046": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/README.md",
+   "heading": "Key Concepts / hooks README",
+   "note": "application-customizer.tsx is a plain generated file; .default scaffolds are copied, not edited"
+  },
+  "FR-047": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "heading": "Container Actions / Page Actions",
+   "note": "nonexistent generic keys replaced by per-container/per-page keys; error handler key fixed in advanced-patterns"
+  },
+  "FR-048": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "heading": "Hook Generation",
+   "note": "links now point to ../hooks/action-hooks.md#container-actions"
+  },
+  "FR-049": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "heading": "Hook Generation",
+   "note": "links now point to ../hooks/action-hooks.md#container-actions"
+  },
+  "FR-050": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/data-hooks.md",
+   "heading": "useViewData Hook",
+   "note": "rewritten to the real ~/hooks API"
+  },
+  "FR-051": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "heading": "Page Actions bulk operations",
+   "note": "context.refresh() replaced by the refresh() hook argument"
+  },
+  "FR-052": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "heading": "Debounced Autocomplete",
+   "note": "lodash debounce caveat and undefined handling"
+  },
+  "FR-053": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/validation-hooks.md",
+   "heading": "Debounced Async Validation / Complete Example",
+   "note": "lodash debounce replaced by promise-based debounceAsync; result.data?.exists used consistently"
+  },
+  "FR-054": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "heading": "Complete Example",
+   "note": "APPBAR_COMPONENTS_INTERFACE_KEY replaced by CustomVisualElement registration"
+  },
+  "FR-055": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/README.md",
+   "heading": "Key Concepts / hooks README",
+   "note": "application-customizer.tsx is a plain generated file; .default scaffolds are copied, not edited"
+  },
+  "FR-056": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/README.md",
+   "heading": "Common Template Patterns",
+   "note": "table rewritten with real scaffold paths"
+  },
+  "FR-057": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/README.md",
+   "heading": "Complete Workflow Example",
+   "note": "hook path/import corrected; no generator-ignore needed in src/custom"
+  },
+  "FR-058": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "heading": "Registration",
+   "note": "imports from ~/containers/<path>/customization and ~/pages/<path>/customization"
+  },
+  "FR-059": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "heading": "Registration",
+   "note": "imports from ~/containers/<path>/customization and ~/pages/<path>/customization"
+  },
+  "FR-060": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "heading": "Registration",
+   "note": "imports from ~/containers/<path>/customization and ~/pages/<path>/customization"
+  },
+  "FR-061": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "heading": "Registration",
+   "note": "imports from ~/containers/<path>/customization and ~/pages/<path>/customization"
+  },
+  "FR-062": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "heading": "Menu Manipulation Registration",
+   "note": "key imported from ~/layout/Drawer/DrawerContent/Navigation"
+  },
+  "FR-063": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/README.md",
+   "heading": "Common Template Patterns",
+   "note": "table rewritten with real scaffold paths"
+  },
+  "FR-064": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "heading": "Menu Operation Actions",
+   "note": "registerMenuActionsHook and MENU_ACTIONS_HOOK objectClass gotcha"
+  },
+  "FR-065": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Guest Page",
+   "note": "registerGuestPage / GUEST_PAGE_INTERFACE_KEY"
+  },
+  "FR-066": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Sub-Theme Hooks",
+   "note": "registration API; theming.md sub-theme section rewritten to SubThemeHook"
+  },
+  "FR-067": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Cards Configuration Hook",
+   "note": "scaffold path documented"
+  },
+  "FR-068": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/README.md",
+   "heading": "Architecture / Project Structure / Code Generation Templates",
+   "note": "src/generated replaced by real output paths"
+  },
+  "FR-069": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/README.md",
+   "heading": "Understanding .generator-ignore",
+   "note": "removed nonexistent usePrincipal/useCustomAuth entries"
+  },
+  "FR-070": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "heading": "Inline Dialog Creation Pattern",
+   "note": "dialog returned as element, not component defined in hook body"
+  },
+  "FR-071": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "heading": "IMaskInput Integration",
+   "note": "added import IMask from 'imask'"
+  },
+  "FR-072": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "heading": "Configuration Patterns",
+   "note": "VITE_API_DEFAULT_BASE_URL used"
+  },
+  "FR-073": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "heading": "PostRefresh Action Hook",
+   "note": "result.location replaces result.field"
+  },
+  "FR-074": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "heading": "Error Interceptor / Cascade / PostRefresh / Row Highlighting / Custom Component Replacement",
+   "note": "@judo/web-react imports and nonexistent keys replaced with real mechanisms"
+  },
+  "FR-075": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "heading": "Error Interceptor / Cascade / PostRefresh / Row Highlighting / Custom Component Replacement",
+   "note": "@judo/web-react imports and nonexistent keys replaced with real mechanisms"
+  },
+  "FR-076": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/development-workflow.md",
+   "heading": "CRITICAL: prune",
+   "note": "judo.sh clean is destructive; alternative is build -i"
+  },
+  "FR-077": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/i18n.md",
+   "heading": "Best Practices",
+   "note": "application_hu-HU.json is generated; edits need .generator-ignore"
+  },
+  "FR-078": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/i18n.md",
+   "heading": "Flat Translation Keys",
+   "note": "nested example replaced with flat keys"
+  },
+  "FR-079": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/i18n.md",
+   "heading": "Custom Translation Provider",
+   "note": "imports from ~/l10n/l10n-context"
+  },
+  "FR-080": {
+   "action": "applied",
+   "file": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "heading": "Example TextField Generation",
+   "note": "label key uses entities.[Entity].[Component].[field]"
+  }
+ },
+ "files": {
+  "catalog/agent-docs/frontend/README.md": "Fixed generated output paths, .default semantics, application-customizer plain file, bogus ignore entries; template descriptor fields; links to new files; frontmatter",
+  "catalog/agent-docs/frontend/error-handling.md": "NEW: error matrix, 422 fault dialog, location-less 400, interceptor override, 503 note",
+  "catalog/agent-docs/frontend/extension-points.md": "NEW: extra routes, guest page, sub-theme, menu actions, cards config, app switcher, navigation confirmation, table state keys",
+  "catalog/agent-docs/frontend/build-and-deployment.md": "NEW: build modes, module properties, base href, GET_METADATA, MUI license plan, checksum-ignore",
+  "catalog/agent-docs/frontend/ui-model-pitfalls.md": "NEW: model-first, generator-breaking values, UiValidationException bisect, renames, E2E approach",
+  "catalog/agent-docs/frontend/development-workflow.md": "Fixed .default semantics, judo.sh clean warning, service import example, links; frontmatter",
+  "catalog/agent-docs/frontend/theming.md": "Sub-themes rewritten to SubThemeHook, theme override fragments list, lint fixes; frontmatter",
+  "catalog/agent-docs/frontend/i18n.md": "Flat keys, generated locale files, l10n imports, <app> placeholder; frontmatter",
+  "catalog/agent-docs/frontend/model-screen-layout.md": "Label key convention, <APP> placeholder; frontmatter",
+  "catalog/agent-docs/frontend/advanced-patterns.md": "Real error interceptor API, blur/postRefresh/row highlighting/custom implementation mechanisms, env var, ValidationResult.location, IMask import, inline dialog fix, project-code Java marked; frontmatter",
+  "catalog/agent-docs/frontend/hooks/README.md": "Rewrote .default scaffold semantics, imports, generator-ignore guidance; frontmatter",
+  "catalog/agent-docs/frontend/hooks/action-hooks.md": "Real container/page keys and types, OperationFlowManager, debounce caveat, refresh arg; frontmatter",
+  "catalog/agent-docs/frontend/hooks/data-hooks.md": "Real usePrincipal/useViewData API; frontmatter",
+  "catalog/agent-docs/frontend/hooks/navigation-and-access.md": "Real RedirectServiceHook, AccessFilter, NavigationInterceptor, useJudoNavigation; hotkeys via fragments; frontmatter",
+  "catalog/agent-docs/frontend/hooks/table-hooks.md": "Real imports; sidekick via CustomVisualElement; frontmatter",
+  "catalog/agent-docs/frontend/hooks/ui-hooks.md": "Real AppBar/hero/logo/footer/menu hooks; menu actions hook; sort copy; frontmatter",
+  "catalog/agent-docs/frontend/hooks/validation-hooks.md": "Real hook names/keys, debounceAsync, local-date holiday check, password else-if; frontmatter",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md": "Fixed broken hook links and hook generation table; frontmatter",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md": "Sub-headings for long section; frontmatter",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md": "Sub-headings for long section; frontmatter"
+ }
+}
