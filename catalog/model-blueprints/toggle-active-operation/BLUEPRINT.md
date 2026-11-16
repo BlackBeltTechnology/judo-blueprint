@@ -2,7 +2,7 @@
 id: toggle-active-operation
 title: Toggle Active Boolean Operation Pattern
 description: "An entity with a required active boolean (default true) and an instance operation that flips it, giving soft enable and disable without deletion."
-aliases: [toggleActive, activateToggle, enable disable operation]
+aliases: [toggleActive, activateToggle, enable disable operation, toggle active inactive, activate deactivate operation]
 keywords: [toggle, active, boolean, operation, instance operation, custom implementation]
 tags: ["domain:model", "layer:model", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "status:emerging"]
 category: pattern

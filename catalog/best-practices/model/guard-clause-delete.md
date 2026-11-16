@@ -2,7 +2,7 @@
 id: guard-clause-delete
 title: Guard Clause for Conditional Delete Operations
 description: "A delete operation on the entity checks its preconditions first, returns without deleting when they fail, and otherwise removes dependent parts and the entity itself."
-aliases: [conditional delete, protected delete]
+aliases: [conditional delete, protected delete, block delete when children exist, delete guard]
 keywords: [guard clause, delete, precondition, cascade, early return, JCL, operation body]
 tags: ["domain:model", "layer:model", "project:skillmatrix-model", "status:single-project"]
 category: operation
