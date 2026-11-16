@@ -59,6 +59,17 @@ flowchart LR
    This writes a `git` source with `pin: <tag>` and `subdir: catalog` into the project's `.pi/dashboard/knowledge_base.json`. Reload the kb afterwards. Pin a tag or SHA, never a branch.
 3. Ask with domain words; the `judo-blueprint` skill explains search and apply.
 
+## Contribute: your own project branch
+
+The catalog grows from use. Each JUDO project works on its own branch, `project/<project-id>`, created from `develop`, and its kb reads that branch:
+
+```bash
+git checkout develop && git pull && git checkout -b project/<project-id> && git push -u origin project/<project-id>
+skills/judo-blueprint/scripts/pin-source --branch project/<project-id> --project /path/to/your/app
+```
+
+When your agents miss something, add it in your branch, run `check-all`, push, and re-index your app's kb (`kb index` or `/reload`). The maintainer reviews project branches with `skills/judo-catalog-maintain/scripts/branch-review` and merges what meets [the merge criteria](skills/judo-catalog-maintain/references/merge-criteria.md) into `develop`; you then merge `develop` back. New projects branch from `develop`. Guide: [contribute.md](skills/judo-blueprint/references/contribute.md).
+
 ## Skills
 
 | Skill | For |
@@ -66,7 +77,7 @@ flowchart LR
 | `judo-blueprint` | Consumers: search the catalog, apply a blueprint or practice, pin the kb source |
 | `judo-model-mermaid` | Render and check entry diagrams from `fragments/` |
 | `judo-blueprint-author` | Write or update one entry (format, `entry-lint`, `spec-check`, `claim-check`, `dox-agents`) |
-| `judo-catalog-maintain` | `check-all` (every gate in one run) and project sweeps |
+| `judo-catalog-maintain` | `check-all` (every gate in one run), project sweeps, `branch-review` and merge criteria for project branches |
 | `.pi/skills/judo-catalog-expand` | Maintainers: build-session gap analysis, project compliance explore, then one catalog pass (evidence, neutral wording, generic renames) with parallel background agents and helper scripts |
 | `judo-session-distill` | Planned: turn development sessions into catalog candidates (not implemented yet) |
 
@@ -85,5 +96,5 @@ skills/judo-catalog-maintain/scripts/check-all        # all gates; --no-sandbox 
 - No project-specific content in entry bodies: no project names (`entry-lint` rejects them), no client business words, no single-project counts. Use neutral names and generic ids.
 - Evidence is a real path in the project snapshot, never `unrecorded` when the code is available.
 - Diagrams are generated. Change the fragment with the JUDO CLI, then `render`.
-- Origin is read-only: commit locally, never push.
+- Contributors push only their `project/<project-id>` branch, never `develop`, `master` or tags. Different methods are added as variations or alternatives, never as replacements.
 - The old `.claude/` agents, commands and scoring scripts are retired. They remain readable at the local tag `archive/pre-kb-restructure`.

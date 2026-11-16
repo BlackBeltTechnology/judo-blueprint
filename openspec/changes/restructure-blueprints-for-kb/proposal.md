@@ -66,7 +66,7 @@ Only the released CLI jar is used. Its command documentation (`--help`, `--schem
 - **Session distillation:** 550 exported pi sessions (2 developers building rackinspect, ~1 GB, kept outside the repo) and the CLI audit log are run through the existing `distill-session-knowledge` engine.
   - Only patterns that recur in at least 3 sessions become candidates.
   - Each candidate is routed to exactly one target: catalog entry, CLI note upstream (for the CLI's own skill), or excluded. agent-docs findings from a sweep go to a review list, never straight into the docs.
-  - A redaction check, contributor consent, and human review gate every candidate.
+  - A redaction check and human review gate every candidate. Candidates land in the project's contribution branch (`project/<project-id>`) and reach `develop` through the merge criteria; there is no separate consent record.
   - `MEMORY.md` is optional reading for the reviewer. It is not mined by a separate script.
 
 ### 5. Reusable pi skills (replace all Claude tooling)
@@ -77,7 +77,7 @@ The repo is a **pi package**. `package.json` `pi.skills` exports the reusable sk
 | `judo-blueprint` | yes | any JUDO project: find and apply catalog entries with `kb_search`, pin the catalog version | `pin-source` |
 | `judo-model-mermaid` | yes | any JUDO project: render Mermaid for a fragment or for a scope of the project's own model; check that a fragment is valid and matches its diagram | `render`, `check` |
 | `judo-blueprint-author` | yes | write or update one entry (description, fragment built with the CLI, generated Mermaid), also from consumer projects as a PR back here | `scaffold-entry` (entry + scratch Sandbox), `entry-lint` |
-| `judo-session-distill` | yes | distill any JUDO project's pi sessions into reviewed candidates | `consent-check`, `distill-run`, `distill-route`, `redact-check` |
+| `judo-session-distill` | yes | distill any JUDO project's pi sessions into reviewed candidates | `distill-run`, `distill-route`, `redact-check` |
 | `judo-catalog-maintain` | no (`.pi/skills/`) | this repo only: sweep projects, rewrite batches, gates, release (blueprints and best practices only; no agent-docs/platform-knowledge update) | `sweep-plan`, `clone-project`, `record-sweep`, `projects.py`, `next-batch`, `sweep-prepare`, `model-overview`, `custom-overview`, `sweep-merge`, `sweep-publish`, `sweep-overlap`, `check-all`, `version.sh`, `release-notes` |
 
 - **Judgement work** (analysis, authoring, routing ambiguous candidates) is done by the model in the session, guided by each skill's `references/`.
@@ -139,7 +139,8 @@ In mlszksz, `.claude/skills/{judo-cli,cli-tester}` are stale copies of skills th
 - `catalog-release-versioning`: JUDO NG versions, immutable gated tags, releases, and consumer pinning for both kb and the pi package.
 - `agent-docs-catalog`: agent-docs owned by this repo: one-time import from the last template version, kb conformance, and a review-gated verification against judo-ng; static lint only, no template sync.
 - `blueprint-sandbox-validation`: each fragment model passes the pinned CLI's `validate --strict`, and its generated Mermaid matches a fresh `mermaid model` render; release gate.
-- `session-knowledge-distillation`: exported sessions turned into reviewed candidates: corpus contract, routing, evidence, redaction, consent, review, and incremental re-runs.
+- `session-knowledge-distillation`: exported sessions turned into reviewed candidates: corpus contract, routing, evidence, redaction, review, and incremental re-runs.
+- `catalog-contribution-branches`: per-project contribution branches (`project/<project-id>`) that the project's kb reads, a contribution guide that aligns contributors with the catalog's methods, published merge criteria, and a `branch-review` tool; replaces contributor consent.
 - `catalog-collection-agents`: the reusable pi skills package (exported versus internal skills, scripts usable standalone and by CI, composition, and the sweep).
 
 ### Modified Capabilities
@@ -153,11 +154,10 @@ In mlszksz, `.claude/skills/{judo-cli,cli-tester}` are stale copies of skills th
   - `fragments/` (ESM fragment models, outside the catalog);
   - release and lint workflows, pom `revision`;
   - kb config and the golden set;
-  - `CONSENT.md`.
+  - `skills/judo-blueprint/references/contribute.md`, `skills/judo-catalog-maintain/references/merge-criteria.md`, `scripts/branch-review`.
 - **Prerequisites:**
   - the new CLI is merged (done: `develop` @ `9f6a4bd`, 2026-11-03, with `mermaid model` and the authoring commands). Its build version is pinned when work starts;
   - `feature/cciu-model-patterns` and `feature/rackinspect-…` are merged to `develop`;
-  - contributor consent for the sessions.
 - **Cross-repo:** the template's stage 2 unblocks once this lands. Consumers switch to the tag pin.
 - **Open:** whether judo-ng package docs (`judo-runtime-core` agent-docs, `SKILL.md` in `judo-meta-*`, `judo-model-cli`, `osgi-filestore`) are referenced as extra kb sources or distilled. This is a follow-up.
 - **Out of scope:**

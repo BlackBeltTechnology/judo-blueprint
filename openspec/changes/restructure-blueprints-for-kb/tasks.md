@@ -8,7 +8,6 @@
 - [x] 1.1 Pin the CLI: _(done: pinned via pom profile → target/judo-cli.jar; skills/_lib resolves $JUDO_CLI_JAR then target/)_
 set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`mermaid model`, authoring commands) and point the pom download to `target/judo-cli.jar`. Verify: `./mvnw validate -P download-model-cli` downloads it, and `java -jar target/judo-cli.jar mermaid model --help` prints usage.
 - [x] 1.2 Merge `origin/feature/cciu-model-patterns` and `origin/feature/rackinspect-entity-lifecycle-and-ui-icon-patterns` into `develop`. Verify: `git rev-list --count develop..origin/feature/<b>` is 0 for both, and `Sandbox.model` metaVersion matches the pinned CLI. _(done LOCALLY, never on origin: both branches merged into the local branch as merge commits f984c9b + dbcc3a4; old layout moved under catalog/; cciu agent-docs three-way merged, 100 hunks resolved in agent-docs-update/cciu-merge-review.md; 21 entries rewritten in batches mg1–mg4)_
-- [ ] 1.3 Add `CONSENT.md` listing the session contributors, and get their approval on the PR. Verify: both contributors approved, or group 8 is deferred.
 - [ ] 1.4 Tag the last pre-change commit `archive/pre-kb-restructure` and push it. Verify: `git ls-remote --tags origin archive/pre-kb-restructure` returns the SHA. _(partial: tag exists locally (bda20d0), NOT pushed)_ **[owner only: local tag `archive/pre-kb-restructure` = bda20d0 exists; not pushed]**
 
 - [x] 1.5 Add `target/` to `.gitignore` (the CLI jar, sweep work folders and scratch models live there). Verify: `git check-ignore target/sweep/x/shape.md` succeeds. _(done: git check-ignore passes)_
@@ -123,19 +122,19 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
   - on two fixture projects that share an entry, `sweep-overlap` lists it;
   - `--clean` removes only merged sweep worktrees;
   - `sweep-publish` never pushes (origin is read-only); it only prepares local branches.
-- [ ] 7.2 Sweep `rackinspect@develop` with the D10b sequence (full; old SHA unreachable). Start with `model-overview` and `custom-overview`, and read `shape.md`, `domain.md` and `custom.md` to list candidates (model shapes with their custom code, plus recurring frontend and interceptor patterns); drill down only with read-only CLI tools (`mermaid model --scope … --depth 1`, `query esm`), then build neutral fragments. Re-validate the 38 rackinspect-only entries. Verify: the PR is green, `PROJECTS.md` has the new SHA, evidence entries cite that SHA, and the PR body lists every candidate from the overview with its target entry or `new`.
-- [ ] 7.3 Sweep `mlszksz-platform@develop` the same way (then run `sweep-overlap`), and re-validate its 34 sole entries. Verify: same checks as 7.2.
-- [ ] 7.4 Run the full `check --all` after the sweep merges. Verify: CI on `develop` is green.
+- [x] 7.2 Sweep `rackinspect@develop` with the D10b sequence (full; old SHA unreachable). Start with `model-overview` and `custom-overview`, and read `shape.md`, `domain.md` and `custom.md` to list candidates (model shapes with their custom code, plus recurring frontend and interceptor patterns); drill down only with read-only CLI tools (`mermaid model --scope … --depth 1`, `query esm`), then build neutral fragments. Re-validate the 38 rackinspect-only entries. Verify: the PR is green, `PROJECTS.md` has the new SHA, evidence entries cite that SHA, and the PR body lists every candidate from the overview with its target entry or `new`. _(done: `7062595` swept rackinspect @ 489ab5b, SHA in PROJECTS.md; rackinspect-only entries re-validated by the compliance explore and evidence backfill (`a2b2184`); no PR because origin is read-only for this clone, merged locally)_
+- [x] 7.3 Sweep `mlszksz-platform@develop` the same way (then run `sweep-overlap`), and re-validate its 34 sole entries. Verify: same checks as 7.2. _(done: `47d5101` @ 7a03bd4 plus `sweep-overlap`; sole entries re-validated with the evidence backfill (`a2b2184`); merged locally)_
+- [ ] 7.4 Run the full `check --all` after the sweep merges. Verify: CI on `develop` is green. _(partial: `check-all` passes locally on the feature branch; CI on `develop` needs a push)_
 
 ## 8. Session distillation (P6)
 
-- [ ] 8.1 Implement `judo-session-distill/scripts/{consent-check,distill-run,distill-route}` and `references/{routing,privacy}.md`:
+- [ ] 8.1 Implement `judo-session-distill/scripts/{distill-run,distill-route}` and `references/{routing,privacy}.md`:
   - `distill-run` wraps `distill-session-knowledge --sessions-dir … --n 3 --json`;
   - routing targets: catalog, cli-upstream, agent-docs, excluded;
   - watermark and decision log in `.pi/distill/state.json`.
 
   Verify: on a 5-session fixture it produces routed candidates, leaves no corpus file in `git status`, and returns zero candidates on a second run.
-- [ ] 8.2 Run it on `~/Sessions/rackinspect-sessions-20261103` and `~/Sessions/judo-cli-sessions` (plus `judo-cli-audit`). Author the accepted catalog candidates through `judo-blueprint-author` and attach the cli-upstream list. Verify: the review PR passes gates, sandbox and redaction, with no verbatim transcript line over 40 characters.
+- [ ] 8.2 Run it on `~/Sessions/rackinspect-sessions-20261103` and `~/Sessions/judo-cli-sessions` (plus `judo-cli-audit`). Author the accepted catalog candidates through `judo-blueprint-author` and attach the cli-upstream list. Commit the candidates to the project's contribution branch (`project/rackinspect`, group 10). Verify: `branch-review` passes gates, sandbox and redaction, with no verbatim transcript line over 40 characters.
 - [ ] 8.3 Run the full `check --all` after distillation merges. Verify: CI on `develop` is green.
 
 ## 9. kb quality, release and consumers (P7)
@@ -150,6 +149,15 @@ set `judo-model-cli-version` to the `develop` build at or after `9f6a4bd` (`merm
 - [x] 9.3 Write the `judo-blueprint` skill (`references/search.md`, `apply.md`, `scripts/pin-source`, which writes the kb git source with `pin` and `subdir: catalog`). Verify: in a clean rackinspect worktree, `pi install git:…@<tag>` plus `pin-source <tag>` plus `kb index` returns the catalog entry for `kb_search "audit log entity"`. _(done: SKILL.md, references/search.md + apply.md, scripts/pin-source (local file only))_
 - [ ] 9.4 Open a rackinspect PR that switches to the pinned tag, and list the overlapping local skills for the team to remove (`judo-blueprint`, `judo-model-cli-mutations`, `judo-*-docs`, `judo-agent-docs-gap`). Verify: rackinspect `kb config` shows the pin, and pi shows no duplicate-skill warning after the listed removals. **[owner only: PR on another repo]**
 - [ ] 9.5 Cut the first `master` release `v1.0.0`. Verify: a non-prerelease GitHub release exists, and the tag tree has `catalog/`, `skills/` and `fragments/`, no `.jar`, and no CLI text under `catalog/`. **[owner only: release on origin]**
+
+## 10. Contribution branches (replaces consent, task 1.3 removed)
+
+- [x] 10.1 Write `skills/judo-blueprint/references/contribute.md`: branch `project/<project-id>` from `develop`, kb on the branch, what to add and how (evidence, variations not replacements, generic wording), `check-all`, push, re-index, merge `develop` back. Verify: linked from the `judo-blueprint` skill and the README.
+- [x] 10.2 Add `pin-source --branch project/<project-id>`. Verify: writes `pin: project/<id>` with `subdir: catalog`; rejects `develop`, `master`, a non-`project/` branch and `project/*` given as a tag.
+- [x] 10.3 Write `skills/judo-catalog-maintain/references/merge-criteria.md` (hard gates and principles). Verify: the contribution guide links it.
+- [x] 10.4 Implement `skills/judo-catalog-maintain/scripts/branch-review` (list, classify, detectable violations, `check-all` on branch plus `develop` in a temporary worktree, report in `target/branch-review/`). Verify: listing and a `--no-gates` review ran on a test branch; branches unchanged. _(gate run inside the worktree not yet exercised: `develop` predates `check-all`)_
+- [ ] 10.5 Protect `develop`, `master` and tags on GitHub so contributors can push only `project/*`. **[owner only: repository settings on origin]**
+- [ ] 10.6 First real contribution round: create `project/<id>` for one active project, point its kb at the branch, add one missing item, push, re-index, `branch-review`, merge. Verify: the item is searchable in the project before the merge and in `develop` after it.
 
 ## Workflow follow-up
 

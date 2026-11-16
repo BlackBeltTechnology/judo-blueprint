@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""branch-review: review project/* contribution branches against develop (read-only for both).
+
+Usage:
+  branch-review                       list project/* branches (local and origin) ahead of develop
+  branch-review <branch> [--base develop] [--no-gates]
+      classify the branch's changes, check the hard gates it can detect, run check-all on the
+      branch merged with the base in a temporary worktree, write target/branch-review/<branch>.md
+
+Never pushes, never changes develop or the branch. Criteria: references/merge-criteria.md.
+Exit codes: 0 no violations, 1 violations or gates failed, 2 usage error.
+"""
+import pathlib
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+
+ROOT = pathlib.Path(__file__).resolve().parents[3]
+REG = ".pi/skills/judo-catalog-maintain/references/PROJECTS.md"
+
+
+def git(*a, cwd=ROOT, check=True):
+    r = subprocess.run(["git", *a], cwd=cwd, capture_output=True, text=True)
+    if check and r.returncode:
+        raise SystemExit(f"git {' '.join(a)}: {r.stderr.strip()}")
+    return r.stdout
+
+
+def ref_of(branch):
+    for r in (branch, f"origin/{branch}"):
+        if subprocess.run(["git", "rev-parse", "--verify", "-q", r], cwd=ROOT, capture_output=True).returncode == 0:
+            return r
+    raise SystemExit(f"unknown branch {branch}")
+
+
+def listing(base):
+    git("fetch", "-q", "origin", check=False)
+    refs = set(git("for-each-ref", "--format=%(refname:short)", "refs/heads/project/", "refs/remotes/origin/project/").split())
+    names = sorted({r.removeprefix("origin/") for r in refs})
+    if not names:
+        print("no project/* branches")
+    for n in names:
+        r = ref_of(n)
+        ahead = git("rev-list", "--count", f"{base}..{r}").strip()
+        behind = git("rev-list", "--count", f"{r}..{base}").strip()
+        last = git("log", "-1", "--format=%cs %an", r).strip()
+        print(f"{n:40s} ahead {ahead:>4s}  behind {behind:>4s}  last {last}")
+
+
+def kind(path, status):
+    if path == REG:
+        return "projects-row"
+    if path.startswith("catalog/agent-docs/"):
+        return "agent-docs"
+    if path.startswith("fragments/"):
+        return "fragment"
+    if path.startswith("catalog/") and path.endswith("AGENTS.md"):
+        return "index (generated)"
+    if path.startswith("catalog/"):
+        return "new entry file" if status == "A" else ("deleted entry file" if status == "D" else "entry changed")
+    return "OUT OF SCOPE (separate review)"
+
+
+def review(branch, base, gates):
+    git("fetch", "-q", "origin", check=False)
+    r = ref_of(branch)
+    mb = git("merge-base", base, r).strip()
+    commits = git("log", "--format=%h %s", f"{mb}..{r}").strip().splitlines()
+    files = [l.split("\t") for l in git("diff", "--name-status", mb, r).strip().splitlines() if l]
+    rows, viol = [], []
+    project = branch.split("/", 1)[1].split("-")[0] if "/" in branch else branch
+    for f in files:
+        st, path = f[0][0], f[-1]
+        k = kind(path, st)
+        rows.append((k, st, path))
+        if k.startswith("OUT OF SCOPE"):
+            viol.append(f"out of scope: {path}")
+        if k == "deleted entry file":
+            viol.append(f"deletes an entry file (needs evidence it is wrong): {path}")
+    diff = git("diff", mb, r, "--", "catalog", REG)
+    if re.search(r"^\+.*\bunrecorded\b", diff, re.M):
+        viol.append("adds `unrecorded` evidence (needs a real path)")
+    removed_cites = re.findall(r'^-\s*(?:projects|evidence):.*', diff, re.M)
+    if removed_cites:
+        viol.append(f"changes projects:/evidence: lines ({len(removed_cites)}): check no other project's citation was removed")
+    gate = "skipped"
+    if gates:
+        tmp = pathlib.Path(tempfile.mkdtemp(prefix="branch-review-"))
+        try:
+            git("worktree", "add", "-q", "--detach", str(tmp), base)
+            m = subprocess.run(["git", "merge", "--no-edit", "-q", r], cwd=tmp, capture_output=True, text=True)
+            if m.returncode:
+                gate = "MERGE CONFLICT with " + base
+                viol.append("does not merge cleanly with " + base + ": contributor merges develop first")
+            else:
+                for jar in (ROOT / "target").glob("judo-cli*.jar"):
+                    (tmp / "target").mkdir(exist_ok=True)
+                    shutil.copy(jar, tmp / "target" / jar.name)
+                c = subprocess.run([str(tmp / "skills/judo-catalog-maintain/scripts/check-all")], cwd=tmp,
+                                   capture_output=True, text=True)
+                lines = [l for l in c.stdout.splitlines() if l.startswith(("PASS", "FAIL"))]
+                gate = ("PASS" if c.returncode == 0 else "FAIL") + "\n\n" + "\n".join(f"    {l}" for l in lines)
+                if c.returncode:
+                    viol.append("check-all fails on branch + " + base)
+        finally:
+            subprocess.run(["git", "worktree", "remove", "--force", str(tmp)], cwd=ROOT, capture_output=True)
+    out = ROOT / "target" / "branch-review" / (branch.replace("/", "_") + ".md")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    L = [f"# Review of `{branch}` against `{base}`", "",
+         f"Project: `{project}` · merge base `{mb[:7]}` · {len(commits)} commits · {len(files)} files", "",
+         "## Hard-gate findings", ""] + ([f"- [ ] {v}" for v in viol] or ["- none detected (still judge content by the principles)"])
+    L += ["", "## check-all on branch merged with base", "", gate, "", "## Commits", ""] + [f"- `{c}`" for c in commits]
+    L += ["", "## Changed files", "", "| Kind | Status | Path |", "|---|---|---|"]
+    L += [f"| {k} | {s} | `{p}` |" for k, s, p in sorted(rows)]
+    L += ["", "## Decide per change (merge-criteria.md principles)", "",
+          "- [ ] new entries are reusable and not duplicates (kb_search each title)",
+          "- [ ] differing methods added as variations / alternatives, not replacements",
+          "- [ ] platform claims have evidence or *verify*",
+          "- [ ] status matches the number of projects with real evidence"]
+    out.write_text("\n".join(L) + "\n")
+    print(f"{out.relative_to(ROOT)}: {len(commits)} commits, {len(files)} files, {len(viol)} findings, gates {gate.split(chr(10))[0]}")
+    return 1 if viol else 0
+
+
+def main(a):
+    if a and a[0] in ("-h", "--help"):
+        print(__doc__)
+        return 0
+    base = a[a.index("--base") + 1] if "--base" in a else "develop"
+    pos = [x for i, x in enumerate(a) if not x.startswith("--") and (i == 0 or a[i - 1] != "--base")]
+    if not pos:
+        listing(base)
+        return 0
+    return review(pos[0], base, "--no-gates" not in a)
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

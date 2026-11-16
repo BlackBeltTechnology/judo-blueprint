@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""Add (or update) the JUDO catalog as a pinned kb git source in a consuming project.
+"""Add (or update) the JUDO catalog as a kb git source in a consuming project.
 
 Usage: pin-source <tag-or-sha> [--project DIR] [--url URL] [--dry-run] [--json]
+       pin-source --branch project/<project-id> [--project DIR] ...
 
 Writes into <project>/.pi/dashboard/knowledge_base.json:
-  {"kind": "git", "ref": <url>, "pin": <tag-or-sha>, "subdir": "catalog", "priority": 10}
+  {"kind": "git", "ref": <url>, "pin": <tag-or-sha-or-branch>, "subdir": "catalog", "priority": 10}
+A tag or SHA is for consumers. --branch is for a contributing project that works on its own
+catalog branch (references/contribute.md); only project/* branches are accepted, and after each
+push the project re-indexes (`kb index` or /reload in pi).
 Only the `catalog/` folder is indexed (agent-docs, best-practices, model-blueprints).
 Existing sources are kept; an earlier judo-blueprint git source is replaced, not duplicated.
 This only edits a local file. It never pushes or changes any remote.
@@ -20,14 +24,23 @@ DEFAULT_URL = "git@github.com:BlackBeltTechnology/judo-blueprint.git"
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("pin", help="release tag (e.g. v1.0.0) or commit SHA")
+    ap.add_argument("pin", nargs="?", help="release tag (e.g. v1.0.0) or commit SHA")
+    ap.add_argument("--branch", help="contribution branch project/<project-id> instead of a tag")
     ap.add_argument("--project", default=".", help="consuming project root (default: cwd)")
     ap.add_argument("--url", default=DEFAULT_URL)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
-    if a.pin in ("develop", "master", "main", "HEAD"):
-        print("pin must be a tag or SHA, not a moving branch", file=sys.stderr)
+    if a.branch:
+        if a.pin or not a.branch.startswith("project/") or a.branch == "project/":
+            print("--branch takes one project/<project-id> branch and no tag", file=sys.stderr)
+            return 2
+        a.pin = a.branch
+    elif not a.pin:
+        print("give a tag or SHA, or --branch project/<project-id>", file=sys.stderr)
+        return 2
+    elif a.pin in ("develop", "master", "main", "HEAD") or a.pin.startswith("project/"):
+        print("pin must be a tag or SHA; use --branch project/<id> for a contribution branch", file=sys.stderr)
         return 2
     cfg_path = pathlib.Path(a.project).resolve() / ".pi" / "dashboard" / "knowledge_base.json"
     cfg = json.loads(cfg_path.read_text()) if cfg_path.exists() else {}
@@ -46,6 +59,8 @@ def main():
         print(f"{verb} {cfg_path}: judo-blueprint@{a.pin} (subdir catalog)")
         if changed and not a.dry_run:
             print("next: reload the kb (/reload in pi) so the catalog is cloned and indexed")
+            if a.branch:
+                print("after every push to the branch: `kb index` (or /reload) in this project")
     return 0
 
 

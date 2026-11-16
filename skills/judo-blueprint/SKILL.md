@@ -1,6 +1,6 @@
 ---
 name: judo-blueprint
-description: Find and apply JUDO catalog knowledge (model blueprints, best practices, agent-docs) through the kb. Use when designing or changing a JUDO model, backend, or frontend and you need a proven pattern, a platform rule, or a model shape to copy. Also sets up the catalog as a pinned kb source in a consuming project.
+description: Find and apply JUDO catalog knowledge (model blueprints, best practices, agent-docs) through the kb. Use when designing or changing a JUDO model, backend, or frontend and you need a proven pattern, a platform rule, or a model shape to copy. Also sets up the catalog as a pinned kb source in a consuming project, or a project contribution branch (`project/<id>`) that the project grows and the maintainer merges.
 ---
 
 # judo-blueprint
@@ -26,4 +26,14 @@ The JUDO catalog is indexed by the kb (`kb_search`, `kb_get`). It has three part
 skills/judo-blueprint/scripts/pin-source v1.0.0 --project /path/to/project
 ```
 
-This adds a pinned kb git source with `subdir: catalog` to the project's `.pi/dashboard/knowledge_base.json`, then you reload the kb. Pin a tag or SHA, never a branch. The script only edits the local file.
+This adds a pinned kb git source with `subdir: catalog` to the project's `.pi/dashboard/knowledge_base.json`, then you reload the kb. Consumers pin a tag or SHA. The script only edits the local file.
+
+## Contribute from your project
+
+The catalog grows from the projects that use it. A contributing project works on its own branch of this repository, `project/<project-id>`, branched from `develop`, and points its kb at that branch:
+
+```bash
+skills/judo-blueprint/scripts/pin-source --branch project/<project-id> --project /path/to/project
+```
+
+When the catalog lacks something, add it in the branch (facts with evidence, new entries via `judo-blueprint-author`, your evidence on existing entries, a different method as a variation), run `check-all`, push, and re-index the project's kb (`kb index` or `/reload`). The maintainer merges what meets the merge criteria into `develop`. Full guide: [references/contribute.md](references/contribute.md); criteria: [merge-criteria.md](../judo-catalog-maintain/references/merge-criteria.md).

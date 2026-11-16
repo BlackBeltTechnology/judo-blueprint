@@ -73,9 +73,9 @@ The pipeline SHALL keep a watermark per corpus. On a re-run it processes only se
 - **WHEN** a newer session export is added and the pipeline re-runs
 - **THEN** only the new sessions are mined, and previously decided candidates are not proposed again
 
-### Requirement: Contributor consent
-The pipeline SHALL refuse to run on a corpus whose contributors are not listed as consenting in a repository-tracked consent record.
+### Requirement: Contributions arrive through project branches
+Distilled candidates for a project SHALL be authored in that project's contribution branch (`project/<project-id>`, see capability `catalog-contribution-branches`) and merged into `develop` by the maintainer under the published merge criteria. There is no separate consent record; redaction and review still apply.
 
-#### Scenario: Unlisted contributor
-- **WHEN** the corpus contains sessions from a user not in the consent record
-- **THEN** the run stops before extraction and names that user
+#### Scenario: Distilled candidates for a project
+- **WHEN** a distillation run on a project's sessions yields accepted candidates
+- **THEN** they are committed to `project/<project-id>`, pass `redact-check` and `check-all`, and reach `develop` only through `branch-review` and a maintainer merge

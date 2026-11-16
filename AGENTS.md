@@ -24,7 +24,7 @@ Run `skills/judo-catalog-maintain/scripts/check-all` before committing catalog c
 
 ## Hard rules
 
-- **Origin is read-only.** Never push, merge, tag or release on `origin`. All work stays local. A local `pre-push` hook enforces this.
+- **Origin is read-only in this maintainer clone.** Never push, merge, tag or release on `origin` from here; a local `pre-push` hook enforces it. Contributors push only their own `project/<project-id>` branch (see `skills/judo-blueprint/references/contribute.md`); `develop`, `master` and tags are changed only by the maintainer, after `branch-review` and the merge criteria.
 - **judo-ng is read-only.** The clones under `target/` are references; fixes go only into local docs in this repo.
 - Never edit inside generated diagram blocks; change the fragment and run `render`.
 - Platform claims must be backed by `catalog/agent-docs`; otherwise write *verify*.

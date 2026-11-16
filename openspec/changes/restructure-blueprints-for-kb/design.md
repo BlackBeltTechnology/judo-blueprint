@@ -46,7 +46,7 @@ skills/                           exported, reusable
   judo-blueprint/                 SKILL.md, references/{search.md,apply.md}, scripts/pin-source
   judo-model-mermaid/             SKILL.md, references/{fragments.md,diagram-options.md}, scripts/{render,check}
   judo-blueprint-author/          SKILL.md, references/{format.md,model.md,backend.md,frontend.md,specs.md}, scripts/{scaffold-entry,entry-lint}
-  judo-session-distill/           SKILL.md, references/{routing.md,privacy.md}, scripts/{consent-check,distill-run,distill-route,redact-check}
+  judo-session-distill/           SKILL.md, references/{routing.md,privacy.md}, scripts/{distill-run,distill-route,redact-check}
 .pi/skills/judo-catalog-maintain/ internal: SKILL.md, references/{sweep.md,agent-docs.md,release.md},
                                   scripts/{sweep-plan,clone-project,model-overview,custom-overview,record-sweep,projects.py,next-batch,
                                            check-all,version.sh,release-notes}
@@ -57,7 +57,7 @@ catalog/                          kb subdir for consumers
   **/AGENTS.md
 fragments/<id>.model             ESM fragment models built and saved by the CLI (blueprints + model-shaped best practices)
 tests/fixtures/Sandbox.model, tests/golden/kb-golden.json, tests/<script>/…
-PROJECTS.md  CONSENT.md  README.md  AGENTS.md  pom.xml (revision, CLI download → target/)
+PROJECTS.md  README.md  AGENTS.md  pom.xml (revision, CLI download → target/)
 ```
 **Why `skills/` at the root, not under `.pi/`:** pi package discovery reads the manifest paths. Dot-directories need explicit listing. Only reusable skills ship; the internal one stays project-local in `.pi/skills/`.
 
@@ -180,12 +180,11 @@ Phase P1b, right after the layout move and before Pass A. Everything here is **o
 
 ### D9. Distillation
 `judo-session-distill`:
-1. `consent-check` (`CONSENT.md`);
-2. `distill-run` (wraps `distill-session-knowledge --sessions-dir <d> --cwd <repo> --n 3 --json`, dry-run);
-3. `distill-route` (rules first; the model decides the rest, following `references/routing.md`);
-4. authoring via `judo-blueprint-author`;
-5. `redact-check`;
-6. review PR.
+1. `distill-run` (wraps `distill-session-knowledge --sessions-dir <d> --cwd <repo> --n 3 --json`, dry-run);
+2. `distill-route` (rules first; the model decides the rest, following `references/routing.md`);
+3. authoring via `judo-blueprint-author`, in the project's contribution branch (D14);
+4. `redact-check`;
+5. `branch-review` and a maintainer merge into `develop`.
 
 The watermark and decision log live in `.pi/distill/state.json` (ids and hashes only). `MEMORY.md` is optional reviewer reading; there is no dedicated miner.
 
@@ -321,7 +320,7 @@ A port of the `judo-maven-plugin` workflows:
 
 ### D13. Ordering
 ```
-P0  pin CLI version; merge cciu + rackinspect branches; consent; tag archive/pre-kb-restructure; record judo-ng SHAs
+P0  pin CLI version; merge cciu + rackinspect branches; tag archive/pre-kb-restructure; record judo-ng SHAs
 P1  layout + package.json + skills skeletons + script contract + jar untracked + removals
 P1b agent-docs FIRST: one-time import, kb-ify, verify against judo-ng (operator reviews every finding)
 P2  Pass A + entry-lint + check-all (blocking)
@@ -331,12 +330,31 @@ P6  distill sessions                         -> full check
 P7  kb eval, release CI, consumer pin + pi install, first master release
 ```
 
+### D14. Contribution branches replace consent
+The catalog grows from projects that use it. There is no consent record; contributing is pushing to the project's own branch.
+
+```mermaid
+flowchart LR
+  D[develop] -->|branch| P[project/&lt;id&gt;]
+  P -->|kb git source, re-index after push| K[project kb]
+  P -->|branch-review + merge criteria| D
+  D -->|merge back| P
+```
+
+- **Branch:** `project/<project-id>` from `develop`, one per project; topic branches `project/<project-id>-<topic>` merge into it. Contributors never push `develop`, `master` or tags.
+- **kb:** `pin-source --branch project/<project-id>` writes a git source for the branch; `kb index` (or a pi reload) after each push. Non-contributing consumers pin a release tag.
+- **Alignment:** `skills/judo-blueprint/references/contribute.md` says how to add facts (evidence or *verify*), entries (`judo-blueprint-author`), evidence on existing entries, and differing methods (variation or alternative, never replacement). `check-all` before push.
+- **Merge:** `skills/judo-catalog-maintain/references/merge-criteria.md` (hard gates plus principles) and `scripts/branch-review` (classified diff, detectable violations, `check-all` on branch plus `develop` in a temporary worktree). The maintainer merges whole commits or single entries and records what was not merged.
+- **Status grows with usage:** each project branch that adds real evidence to an entry raises its project count; status follows (1 / 2 to 3 / 4 or more).
+- **`PROJECTS.md`:** a new project adds its row in its branch; the maintainer sets the weight on merge.
+
 ## Risks / Trade-offs
 
 - **The CLI's `mermaid` output format changes between versions** → Generated blocks record the CLI version. A CLI bump is one PR that re-runs `render --all`. Fragments, being model data, do not change.
 - **The rendered diagram is larger than the fragment, e.g. Sandbox types leak in** → `--scope bp::<id> --split none --kinds` limits the output, and outside targets render as `<<external>>` stubs. `check` fails on anything else.
 - **Pass B effort, ~330 entries** → Batches, `established` first. `format: legacy` is allowed until P4 ends.
-- **Personal data in sessions** → External corpus, consent, redaction, no transcript text, review.
+- **Personal data in sessions** → External corpus, redaction, no transcript text, review before merge.
+- **Contribution branches drift from `develop`** → Contributors merge `develop` back after each maintainer merge; `branch-review` shows commits behind and merge conflicts.
 - **Consumers with old local skills shadow the packaged ones** (pi keeps the first discovered skill) → The consumer docs list the overlapping local skills to remove (proposal §7).
 - **Tags are trust-on-first-use in kb** → The consumer docs cover a one-time interactive approval.
 

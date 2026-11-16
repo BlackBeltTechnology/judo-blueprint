@@ -51,6 +51,10 @@ Workflows that grow the catalog beyond single entries (`judo-blueprint-author`).
 
 One agent per area (backend `application/`, frontend `application/frontend-react/`, repository root), writing `catalog/best-practices/<backend|frontend|project>/structure-*.md` in neutral wording from the start, kb-searching existing coverage first. Then run workflow 2's explore on that project: it catches wrong counts and paths.
 
+## 4. Merge project contribution branches
+
+Contributors grow the catalog in `project/<project-id>` branches ([contribute.md](../../../skills/judo-blueprint/references/contribute.md)). `skills/judo-catalog-maintain/scripts/branch-review` lists them; `branch-review project/<id>` writes the classified report and runs `check-all` on the branch merged with `develop`. Judge each change by [merge-criteria.md](../../../skills/judo-catalog-maintain/references/merge-criteria.md); for a large branch, use one `@review` agent per scope from `scope-split --paths` over the branch's changed files. Merge commits or single entries, record what was not merged, and ask the contributor to merge `develop` back.
+
 ## Finish (parent only)
 
 ```bash
