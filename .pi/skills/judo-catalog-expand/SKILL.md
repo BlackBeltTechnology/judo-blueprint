@@ -1,6 +1,6 @@
 ---
 name: judo-catalog-expand
-description: Grow and harden the judo-blueprint catalog with parallel background agents - mine a build session into a validated gap analysis, audit swept projects for compliance, then fix the catalog in ONE edit pass per file (evidence backfill, neutral wording, generic ids and diagram class names), and mine structure best practices. Use on "mine this build session", "gap analysis", "check projects against the catalog", "backfill evidence", "remove project specific wording", "make blueprints generic", "structure best practices from project X", "run a build test".
+description: Grow and harden the judo-blueprint catalog with parallel background agents - mine a build session into a validated gap analysis, audit swept projects for compliance, then fix the catalog in ONE edit pass per file (evidence backfill, neutral wording, generic ids and diagram class names), apply verified findings to agent-docs with a reconciled ledger, and mine structure best practices. Use on "apply the findings", "update agent-docs from the review", "mine this build session", "gap analysis", "check projects against the catalog", "backfill evidence", "remove project specific wording", "make blueprints generic", "structure best practices from project X", "run a build test".
 ---
 
 # judo-catalog-expand
@@ -16,7 +16,9 @@ Workflows that grow the catalog beyond single entries (`judo-blueprint-author`).
 5. **Dedupe before validation.** `gap-report batch` drops duplicates and batches by kind, so validators judge each problem once.
 6. **Background, disjoint, no gates in agents.** `Agent(run_in_background: true)`, `@coding` for miners, explorers and editors, `@review` for validators. Agents never edit outside their scope, never run `check-all` or `dox-agents`, never commit.
 7. **Short agent answers.** Prompts ask for a 3-line final answer; the detail lives in the agent's JSONL log. Do not relay every late report: compare with what you verified and report only news.
-8. **Verify once, at the end.** `claim-verify` / `vocab-scan` / `rename-ids`, then `dox-agents` and `check-all` (its `kb-eval` catches search regressions).
+8. **Account for every finding.** A pass is done only when `findings-ledger reconcile` reports 0 unaccounted. Every exclusion (not-platform, rejected, open) is reported to the user with counts from `SUMMARY.md`, never presented as a fact in one line. Never drop findings by a path or source rule: route by content (`findings-ledger route`), and give leftovers to triage agents.
+9. **Content is add-or-correct only.** Agents never rename, reorder or remove headings and never shorten or reword correct text, also not for "format" or "kb" work. `content-guard` (in `check-all`) fails on lost headings and pure deletions. Approved work is applied in the same session, not left in a report.
+10. **Verify once, at the end.** `claim-verify` / `vocab-scan` / `rename-ids`, then `dox-agents` and `check-all` (its `kb-eval` catches search regressions).
 
 ## Scripts
 
@@ -30,6 +32,10 @@ Workflows that grow the catalog beyond single entries (`judo-blueprint-author`).
 | `scope-split <work> <N> --pattern RX` | Balanced, non-overlapping scope files for N agents |
 | `rename-ids <logs...>` | Rewrite links, `related:`, `alternatives:` after id renames |
 | `vocab-scan` | Project names and client words left in bodies and diagrams |
+| `findings-ledger route <work> <items.jsonl>` | Content-route findings to agent-doc files; leftovers to `triage/unrouted.txt` |
+| `findings-ledger plan <work>` | Batches with one writer per file (`batches/`, `file-owners.json`) |
+| `findings-ledger wave2 <work>` | Research proposals, triage facts and handoffs → per-owner wave-2 lists |
+| `findings-ledger reconcile <work>` | Every finding accounted for; writes `SUMMARY.md` and `OPEN-ITEMS.md`; exit 1 if not |
 
 ## 1. Build session → gap analysis
 
@@ -54,6 +60,18 @@ One agent per area (backend `application/`, frontend `application/frontend-react
 ## 4. Merge project contribution branches
 
 Contributors grow the catalog in `project/<project-id>` branches ([contribute.md](../../../skills/judo-blueprint/references/contribute.md)). `skills/judo-catalog-maintain/scripts/branch-review` lists them; `branch-review project/<id>` writes the classified report and runs `check-all` on the branch merged with `develop`. Judge each change by [merge-criteria.md](../../../skills/judo-catalog-maintain/references/merge-criteria.md); for a large branch, use one `@review` agent per scope from `scope-split --paths` over the branch's changed files. Merge commits or single entries, record what was not merged, and ask the contributor to merge `develop` back.
+
+## 5. Apply findings to agent-docs (reviews, knowledge checks, gap analyses)
+
+Work dir `target/apply-findings/`. About 20 agents for ~400 findings; not one agent per finding.
+
+1. Build `inventory.jsonl` (`id`, `src`, `target`, `text`) from every source: gap analysis, developer answers, judo-ng reviews, doc-gap lists, earlier unverified items. `findings-ledger route` the items without a target file; split `triage/unrouted.txt` for 2–3 `@coding` triage agents (keep platform facts app developers need, write `triage/kept-*.jsonl`).
+2. `findings-ledger plan`; one `@research` applier per batch with [findings-apply-prompt.md](references/findings-apply-prompt.md) (quick check, ≤3 lookups).
+3. Items left `unverified`: `@research` researchers with [findings-research-prompt.md](references/findings-research-prompt.md) (≤8 lookups, propose text, no edits).
+4. `findings-ledger wave2`; one applier per owner batch again (wave 2), so each file still has one writer.
+5. One `@review` checker per batch with [findings-check-prompt.md](references/findings-check-prompt.md), after the batch's last wave. Spot-check a few `ok` verdicts yourself against the source.
+6. Rewrite the `.agent.md` companions of every changed doc from the corrected text (one `@coding` agent per ~10 files).
+7. `findings-ledger reconcile` must pass; report `SUMMARY.md` and send `OPEN-ITEMS.md` to the developers. Then Finish.
 
 ## Finish (parent only)
 

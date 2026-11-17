@@ -5,7 +5,7 @@
 #   --require-kb  fail (not skip) the kb gates when the kb CLI is missing (CI)
 #   --json        print one JSON object {gate: "pass"|"fail"|"skip"} at the end
 #
-# Gates: entry-lint, spec-check, claim-check, dox-agents --check, projects, unit, no tracked jars,
+# Gates: entry-lint, spec-check, claim-check, content-guard (agent-docs add-or-correct only vs develop), dox-agents --check, projects, unit, no tracked jars,
 #        no format: legacy, kb dox lint, kb-index (consumer index covers every catalog doc),
 #        kb-eval (golden + holdout search quality).
 # kb CLI: $KB_CLI, else the global pi-dashboard-kb-extension, else a global @blackbelt-technology/pi-dashboard-kb.
@@ -39,6 +39,7 @@ kbskip() { # missing kb CLI: skip locally, fail under --require-kb
 gate entry-lint  "$A/entry-lint" --profile all
 gate spec-check  "$A/spec-check"
 gate claim-check "$A/claim-check" 3
+gate content-guard "$A/content-guard"
 gate dox-agents  "$A/dox-agents" --check
 gate projects  skills/judo-catalog-maintain/scripts/projects.py check
 gate unit     python3 -m unittest discover -s tests/scripts -q

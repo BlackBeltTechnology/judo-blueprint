@@ -28,6 +28,8 @@ Run `skills/judo-catalog-maintain/scripts/check-all` before committing catalog c
 - **judo-ng is read-only.** The clones under `target/` are references; fixes go only into local docs in this repo.
 - No model files in this repo: diagrams are plain Mermaid (`judo-model-mermaid` renders them from real models).
 - Platform claims must be backed by `catalog/agent-docs`; otherwise write *verify*.
+- **agent-docs are add-or-correct only.** Never rename, reorder or remove headings or shorten correct text, also not for format or kb work; correct wrong sentences in place. `content-guard` (in `check-all`) enforces it.
+- **No finding is dropped silently.** Findings passes run through `.pi/skills/judo-catalog-expand/scripts/findings-ledger`; `reconcile` must report 0 unaccounted, and every exclusion is reported with counts. Approved changes are applied in the same session.
 
 ## Writing Instructions
 
