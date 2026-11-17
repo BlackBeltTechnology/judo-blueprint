@@ -1,8 +1,8 @@
 ---
 title: UI Authoring Guide
 description: "How to compose form, table and view scaffolds on transfer objects and wire them onto an actor menu: bindings, hiddenBy/enabledBy/requiredBy booleans on the same transfer object, layout rules, pitfalls and audits."
-aliases: [ui authoring, build a form table or view in the model, actor menu wiring, widget selection for data field, layout grid columns, hide field by boolean, layout debt repair, menu item missing]
-keywords: [TransferObjectView, TransferObjectForm, TransferObjectTable, DataField, DataColumn, DataFilter, TabularReferenceField, OperationForm, MenuItemAccess, hiddenBy, enabledBy, requiredBy, dataFeature, relationFeature, xsi:type]
+aliases: [ui authoring, build a form table or view in the model, actor menu wiring, widget selection for data field, layout grid columns, hide field by boolean, layout debt repair, menu item missing, field order on a form, reorder fields in a view, column order, move a widget in a container]
+keywords: [TransferObjectView, TransferObjectForm, TransferObjectTable, DataField, DataColumn, DataFilter, TabularReferenceField, OperationForm, MenuItemAccess, hiddenBy, enabledBy, requiredBy, dataFeature, relationFeature, xsi:type, components order, move]
 tags: [domain:model, layer:model, status:platform]
 ---
 

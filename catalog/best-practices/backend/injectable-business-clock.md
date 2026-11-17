@@ -2,8 +2,8 @@
 id: injectable-business-clock
 title: Injectable Business Clock with Shared Working-Day Helpers
 description: One injectable clock that every custom operation and interceptor uses for the current time, with a configuration or environment override for tests and demos, and one date service for working-day logic.
-aliases: [fake now, business clock, date service, working day service]
-keywords: [clock, now, time, fake now, override, working day, closed day, date service, deterministic, test]
+aliases: [fake now, business clock, date service, working day service, time zone of now, business clock time zone, testable current time]
+keywords: [clock, now, time, fake now, override, working day, closed day, date service, deterministic, test, defaultZoneId, ZoneId, time zone, systemDefaultZone]
 tags: ["domain:backend", "layer:backend", "project:park-here", "status:single-project"]
 category: operation
 status: single-project

@@ -39,7 +39,7 @@ public/i18n/
   update-localization.py    # merge newly generated keys with manual ones
 ```
 
-The scripts are custom tools, not platform features. This setup keeps `application_hu-HU.json` and `system_hu-HU.json` in `.generator-ignore` and runs them after model changes.
+The scripts are custom tools, not platform features. This setup lists `application_hu-HU.json` and `system_hu-HU.json` in `.generator-ignore` and runs the scripts after model changes. The ignore entries are optional: the generator does not write these locale files, so they survive regeneration either way (see Platform base above).
 
 - Translate enumerations including `_null`, menu labels and every entity field.
 - Diff the key set against `application_default.json` to find untranslated keys after each model change.

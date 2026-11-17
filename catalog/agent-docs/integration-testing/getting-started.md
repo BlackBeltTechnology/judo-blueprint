@@ -1,8 +1,8 @@
 ---
 title: Integration Testing - Getting Started Guide
 description: "Target Audience: Beginners, new developers starting with JUDO integration tests"
-aliases: [first integration test, junit setup, run integration tests, transaction handling in tests, test table truncation, beginner integration testing]
-keywords: [@JudoTest, JudoRuntimeFixture, ReferenceInjector, TransactionHandling, truncateTables, AUTO_ROLLBACK, AUTO_COMMIT, MANUAL, mvn clean test, logback-test.xml, maven-surefire-plugin]
+aliases: [first integration test, junit setup, run integration tests, transaction handling in tests, test table truncation, beginner integration testing, integration-test pom empty version, i18n-api version missing, integration-test module build fails]
+keywords: [@JudoTest, JudoRuntimeFixture, ReferenceInjector, TransactionHandling, truncateTables, AUTO_ROLLBACK, AUTO_COMMIT, MANUAL, mvn clean test, logback-test.xml, maven-surefire-plugin, i18n-api, integration-test pom]
 tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - Getting Started Guide
