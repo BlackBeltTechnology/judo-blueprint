@@ -32,6 +32,7 @@ Workflows that grow the catalog beyond single entries (`judo-blueprint-author`).
 | `scope-split <work> <N> --pattern RX` | Balanced, non-overlapping scope files for N agents |
 | `rename-ids <logs...>` | Rewrite links, `related:`, `alternatives:` after id renames |
 | `vocab-scan` | Project names and client words left in bodies and diagrams |
+| `blueprint-scan`, then `blueprint-scan-bm25 25` | After an agent-docs findings pass: match EVERY finding to blueprint and best-practice sections (identifier + BM25); unmatched findings get a recorded `no-blueprint-match` verdict. Check the pairs with `references/blueprint-check-prompt.md` |
 | `findings-ledger route <work> <items.jsonl>` | Content-route findings to agent-doc files; leftovers to `triage/unrouted.txt` |
 | `findings-ledger plan <work>` | Batches with one writer per file (`batches/`, `file-owners.json`) |
 | `findings-ledger wave2 <work>` | Research proposals, triage facts and handoffs → per-owner wave-2 lists |

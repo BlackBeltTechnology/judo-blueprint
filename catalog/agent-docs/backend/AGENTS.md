@@ -19,7 +19,7 @@
 | `error-handling-guide.agent.md` | Condensed map of `error-handling-guide.md`: read first, then `kb_get` one section |
 | `error-handling-guide.md` | Backend errors: ValidationException with field location (400), modeled business faults declared on the operation (422), platform exceptions (403, 404), what interceptors may throw, and HTTP mapping. |
 | `interceptors.agent.md` | Condensed map of `interceptors.md`: read first, then `kb_get` one section |
-| `interceptors.md` | OperationCallInterceptor contract: which operations interceptors run around (built-in CRUD only, never custom, mapped or script operations), preCall and postCall ordering, throwing business errors fro |
+| `interceptors.md` | OperationCallInterceptor contract: which operations interceptors run around (built-in behaviour operations only, never custom (SDK) or script operations), preCall and postCall ordering, throwing busin |
 | `internationalization-guide.agent.md` | Condensed map of `internationalization-guide.md`: read first, then `kb_get` one section |
 | `internationalization-guide.md` | Backend i18n service, localized validation messages and translation files. |
 | `patterns-and-best-practices.agent.md` | Condensed map of `patterns-and-best-practices.md`: read first, then `kb_get` one section |

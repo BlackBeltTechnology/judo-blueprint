@@ -27,7 +27,7 @@ The model defines an initializer operation kind: it must be static and take no i
 
 - Put the init operation on a dedicated entity or a singleton entity. It takes no input and returns nothing.
 - Simple data sets: a model script body creates the rows. Larger or conditional sets: Java with the generated DAOs ([[excel-data-seed-import]] for spreadsheet-driven seeding).
-- Make it repeatable: check before creating (for example an existence check, an emptiness check on the entity, or a counter of completed migration steps). Without a guard a second run creates duplicates.
+- Make it repeatable: check before creating (for example an existence check, an emptiness check on the entity, or a counter of completed migration steps). Without a guard a second run creates duplicates. In the OSGi runtime the platform runs every initializer on each start of the model bundle ([platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md#initializer-operations)), so the guard applies on every start.
 - Split big seeds into several small named operations, one per reference data group.
 - Do not use the principal or actor: there is no signed-in user when it runs.
 - For a running-app (browser automation) test the DAO-based initializer is not a test hook. Seed state in the database instead: the `dump` and `import` commands of the generated `judo.sh` script manage PostgreSQL dumps, so build a base dump once and derive test data from it. Values the application sets itself (for example creation timestamps) probably cannot be set through the generated REST API (*verify*); backdate them with SQL against the PostgreSQL container, or leave that rule untested.

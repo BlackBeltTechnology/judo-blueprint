@@ -4,7 +4,7 @@
 
 The generated operation buttons use the guard attributes of the transfer object. Derive the guard from the status, so the buttons appear only while the request is pending. No custom button is needed for the basic case.
 
-- Use one derived boolean per operation (for example, an accept-available flag) and bind it to the button's enabled or hidden state.
+- Use one derived boolean per operation (for example, an accept-available flag) and bind it to the button's enabled or hidden state. Caveat: in a multi-button FAB group, a non-featured button in the speed-dial menu does not apply the hidden guard; only featured buttons do. Check the generated fragment before relying on it.
 - The guard only controls the UI. The operation itself must still refuse a request that is not pending.
 
 ### Pre-filter the approval table

@@ -204,7 +204,7 @@
 | `language-proficiency-enum/model.md` | language-proficiency-enum: model shape and generated structure diagram |
 | `language-proficiency-enum/backend.md` | language-proficiency-enum: backend guidance |
 | `language-proficiency-enum/` | language-proficiency-enum (1 files; index in `language-proficiency-enum/AGENTS.md`) |
-| `masked-input-integration/BLUEPRINT.md` | A frontend-only pattern that renders a group of text fields as a custom implementation element with react-imask masks, for structured identifiers such as VAT IDs; the model's own textMask is the first |
+| `masked-input-integration/BLUEPRINT.md` | A frontend-only pattern that renders a group of text fields as a custom implementation element with react-imask masks, for structured identifiers such as VAT IDs; the model's own textMask is stored bu |
 | `masked-input-integration/frontend.md` | masked-input-integration: frontend guidance |
 | `masked-input-integration/` | masked-input-integration (1 files; index in `masked-input-integration/AGENTS.md`) |
 | `multi-actor-role-based-projections/BLUEPRINT.md` | The same entities are exposed through a separate transfer object set per actor, so each role sees only the fields and operations it needs. |

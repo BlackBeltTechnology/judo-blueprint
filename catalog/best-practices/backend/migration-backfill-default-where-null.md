@@ -22,7 +22,7 @@ When a model change adds an attribute, the generated schema migration adds a pla
 
 ### Platform base
 
-- The schema generator writes one folder per model step under `application/schema/migration/`, with nine changesets. The two data-migration changesets (`updateDataBeforeIncremental` and `updateDataAfterIncremental`) are generated empty, and you write them when the change needs data work ([schema evolution, manual scripts](../../agent-docs/deployment/schema-evolution.md#step-3-manual-migration-scripts-optional)).
+- The schema generator writes one folder per model step under `application/schema/migration/`, with nine changesets. The two data-migration changesets (`updateDataBeforeIncremental` and `updateDataAfterIncremental`) are generated empty, and you write them when the change needs data work ([schema evolution, manual scripts](../../agent-docs/deployment/schema-evolution.md#step-3-manual-migration-scripts-optional)). `schema-upgrade` generates and applies in one step, so it leaves no point to edit these changesets; for a backfill, run generate, edit the changeset, then execute separately ([build process, command reference](../../agent-docs/deployment/build-process.md#command-reference)).
 - Entity tables are named `T_ENTITIES_<NAME>` and columns `C_<NAME>`. Check the generated changelog for the exact names (same guide).
 - Generation overwrites the files of the output folder except review files, so confirm against the guide that a hand-written changeset survives regenerating the folder, and re-check it after every regeneration (*verify*).
 

@@ -1,6 +1,6 @@
 ---
 title: Operation Call Interceptors Guide
-description: "OperationCallInterceptor contract: which operations interceptors run around (built-in CRUD only, never custom, mapped or script operations), preCall and postCall ordering, throwing business errors from interceptors, and examples."
+description: "OperationCallInterceptor contract: which operations interceptors run around (built-in behaviour operations only, never custom (SDK) or script operations), preCall and postCall ordering, throwing business errors from interceptors, and examples."
 aliases: [interceptor order, preCall postCall, operation hooks, business error from interceptor, intercept create update, interceptor not running on custom operation]
 keywords: [OperationCallInterceptor, preCall, postCall, getOperations, ignoreDecoratedCall, terminateOnException, InterceptorCallBusinessException, AsmUtils, resolveOperation, getOperationFQName, judo.model.name, AuthenticationInterceptor]
 tags: [domain:backend, layer:backend, status:platform]

@@ -2,7 +2,7 @@
 
 ### Show the business error message from a 422 response
 
-A business error arrives as HTTP 422 with an `X-Fault` header. The response body is keyed by the fault's type name, and the business error's `message` is the text to show. By default the generated handler takes only the first key of the body and opens the fault dialog, which shows every detail as a key and value; labels come from translation keys `faults.<fault name>.<attribute>` and fall back to the raw attribute name. Common practice: an error hook for the 422 status reads the message instead and shows it as a snack. See [[error-handler-interceptor-customization]].
+A business error arrives as HTTP 422 with an `X-Fault` header. The response body is an object with two keys: the fault's type name (holding the business error's `message`) and a `code` key. The business error's `message` is the text to show. By default the generated handler takes only the first key of the body; the server sorts the keys, so that is usually `code` rather than the fault name, and the handler opens the fault dialog for it, which shows every detail as a key and value; labels come from translation keys `faults.<fault name>.<attribute>` and fall back to the raw attribute name. Common practice: an error hook for the 422 status reads the message instead and shows it as a snack. See [[error-handler-interceptor-customization]].
 
 ### Translate the codes, not the messages
 

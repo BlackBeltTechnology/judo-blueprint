@@ -36,7 +36,7 @@ The access targets a transfer object mapped to the same entity as the principal 
 
 ### Several self accesses, one per purpose
 
-Different accesses may each resolve to the same row with a different target: a profile editor, an approval overview, a bulk-action dashboard ([[panel-dashboard-transfer]]). Each access needs a matching menu item to be reachable in the UI ([accesspoint reference, pairing rule](../../agent-docs/model/esm_metamodel/accesspoint.md)).
+Different accesses may each resolve to the same row with a different target: a profile editor, an approval overview, a bulk-action dashboard ([[panel-dashboard-transfer]]). Each access needs a matching menu item to be reachable in the UI ([accesspoint reference, pairing rule](../../agent-docs/model/esm_metamodel/accesspoint.md)). Model tooling may create this `MenuItemAccess` together with the access; check for it and do not add a second one ([model development guide](../../agent-docs/model/model-development.md), Part 2).
 
 ## Rationale
 

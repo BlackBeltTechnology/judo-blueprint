@@ -25,7 +25,7 @@ A new deployment needs reference data and a first account. Model one initializer
 - An `INITIALIZER` operation is stored as a `STATIC` operation with the `initializer` flag; it must be static and take no input ([operation reference](../../agent-docs/model/esm_metamodel/operation.md), "INITIALIZER Special Handling" and "Operation naming and shape constraints"). It may sit on an entity or a transfer object, mapped or unmapped.
 - It is `stateful` so it may write: a write in a stateless operation throws `IllegalStateException` ("Statefulness derived from behaviour" in the same reference).
 - The body is a JCL script (`customImplementation = false`, see [JCL](../../agent-docs/model/jcl-operation-scripts.md)) or Java (`customImplementation = true`, see [custom operations](../../agent-docs/backend/custom-operations.md)).
-- The agent-docs do not say that the platform calls an initializer by itself at startup. The older wording "runs automatically on startup" is therefore not a documented guarantee. Verify in your runtime how the call is triggered, or call the operation from your deployment procedure. Backend seeding details: [[init-data-seeding]].
+- In the OSGi runtime the platform calls every initializer by itself when the model component activates, on every start, with an empty exchange (no principal, no `ACTOR`) and in its own transaction ([platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md#initializer-operations)). The Spring Boot runtime is not verified; check there before relying on it. Backend seeding details: [[init-data-seeding]].
 
 ### Practice note: where it lives and how it is guarded
 

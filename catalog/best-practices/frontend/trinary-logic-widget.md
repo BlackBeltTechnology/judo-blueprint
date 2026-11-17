@@ -22,7 +22,7 @@ An optional boolean attribute has three states: true, false and not set. A check
 
 ### Platform base
 
-- A boolean attribute in the UI model has a `booleanWidget` setting with two values: `CHECKBOX` and `COMBO`, a dropdown with Yes/No options ([boolean type rules](../../agent-docs/model/esm_metamodel/ui-behaviour.md), [BooleanWidget](../../agent-docs/model/esm_metamodel/ui.md)). Neither documentation page describes a dedicated "unknown" option for the generated widgets, so check the generated form in the target version before building a custom one.
+- A boolean attribute in the UI model has a `booleanWidget` setting with two values: `CHECKBOX` and `COMBO`, a dropdown with Yes/No options ([boolean type rules](../../agent-docs/model/esm_metamodel/ui-behaviour.md), [BooleanWidget](../../agent-docs/model/esm_metamodel/ui.md)). The agent-docs say the generated `COMBO` adds an `Unknown` entry for a null value ([widgets: widget attributes per data type](../../agent-docs/frontend/esm-to-ui-mappings/widgets.md#widget-attributes-per-data-type)), so check the generated form in the target version before building a custom one.
 - A model-level alternative is to avoid the third state: make the attribute required with a default, or use a small enumeration with an explicit "unknown" member, which the generated frontend renders natively.
 
 ### Practice notes: a custom three-option combobox

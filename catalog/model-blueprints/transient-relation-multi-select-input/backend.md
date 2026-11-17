@@ -19,7 +19,7 @@ operation assignApproval(input: ApprovalTaskInput): Void {
 This is the old projects' form, adapted to use `this` (JCL bodies use `this`, never `self`; see [JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). The agent-docs do not describe what happens when a transient collection is assigned to a stored relation, so treat the following as project experience, *verify* it:
 
 - `input.users` is a transient collection of references to mapped transfer object instances.
-- `mutable input.users` turned it into a collection assignable to the stored relation, element by element.
+- `mutable input.users` turned it into a collection assignable to the stored relation, element by element. The agent-docs say that navigation from `input`, including a transient reference, stays immutable and that changing a collection through an immutable object fails ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)), so this exact form is the first thing to verify.
 - A body without `mutable` persisted the owning entity with an empty collection and raised no error.
 
 Projects: one uses a filtered picker of eligible users in an assign-approval operation, and another uses `mutable input.signs` in a create operation.

@@ -34,7 +34,7 @@ A role can be stored as an enumeration on the user entity (for example PARTNER a
 - A DERIVED attribute has a getter expression. The getter is evaluated on the transfer object and must return a value of the declared type.
 - An actor's access getter has no `self`. Its filter starts from the entity FQN, not from the transfer object.
 - A DERIVED access requires a reference-returning expression. For an unrestricted access, use ALL with no getter.
-- An actor type that is not effectively anonymous has a realm (default `DEFAULT`) and claims. An anonymous actor (anonymous flag set, or no mapped principal) shows neither.
+- An actor type that is not effectively anonymous has a realm (default `DEFAULT`) and claims. An anonymous actor (`anonymous` flag set and no mapped principal) shows neither; a mapped principal makes the actor authenticated, whatever the flag.
 - Restricted actors need the referenced transfer objects in their closure too. A nested object that the restricted actor reaches must be exposed to that actor, or the reads fail.
 
 ## Variations

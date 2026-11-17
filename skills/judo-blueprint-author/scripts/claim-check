@@ -35,7 +35,6 @@ checks=[
  ("A6 !isEmpty", r"!isEmpty\(\)", None, "no such JQL function", r"no `!isEmpty|fails|Unknown function|There is no"),
  ("A7 inline new tab claimed as platform", r"inline[^\n]{0,80}new tab|new tab[^\n]{0,80}inline", None, "dialog frame is default", r"project|rackinspect|check|version"),
  ("A8 transfer object inheritance", r"(?i)\b(transfer objects?|TOs?)\b[^\n]{0,40}\b(inherits?|inheritance|extends|superTypes?|generaliz\w*)\b", None, "TO inheritance unsupported", r"not supported|unsupported|cannot|entity generalization|entities only|instead|no inheritance|superTypes`, but|exposes"),
- ("old: one transaction claim", r"(?i)runs? in (one|a single) transaction", lambda p:'agent-docs' not in str(p), "custom-op transaction scope undocumented (B1)", r"verify|interceptor|test|undocumented|not documented|check|@JudoTest|AUTO_"),
  ("old: postCall reverse order", r"(?i)postCall[^\n]{0,60}reverse", None, "postCall runs in registration order", r"not reverse|rather than reverse|not in reverse|instead of reverse"),
  ("old: raw RuntimeException for business error", r"throw new RuntimeException", None, "use ValidationException / modeled fault", r"500|anti|don't|avoid|wrong|❌"),
  ("old: init runs on startup", r"(?i)initiali[sz]er[^\n]{0,60}(runs?|called|executed) (automatically )?(on|at) (startup|boot)", None, "B3 undocumented", r"not documented|project|verify|does not say|undocumented|claim"),

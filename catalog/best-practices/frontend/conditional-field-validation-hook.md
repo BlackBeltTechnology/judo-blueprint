@@ -49,7 +49,7 @@ export function registerEntityAccessViewPageActionsHook(context: BundleContext) 
 
 const entityActionsHook: EntityActionsHook = () => ({
   // required only while the other field is set (handler name per generated type)
-  isFieldRequired: (data) => !!data.someOtherField,
+  isSomeFieldRequired: (data) => !!data.someOtherField,
 });
 ```
 
