@@ -13,7 +13,6 @@ Generated UI pages follow from the entity. Because the entity is not CRUD, no ge
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=document-registry-sequence cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class DocumentRegistry {
@@ -36,4 +35,3 @@ classDiagram
   }
   DocumentRegistry ..> DocumentType : documentType
 ```
-<!-- /mermaid:generated -->

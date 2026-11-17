@@ -11,7 +11,6 @@ projects: [trivia, itracker, park-here]
 evidence: ["trivia:unrecorded", "itracker:unrecorded"]
 alternatives: []
 related: [viewmodel-context-pattern, pandino-action-hook-override]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -10,8 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: [rackinspect:model/rackinspect.model, rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/RegistryServiceImpl.java]
 alternatives: [enum-state-machine]
-fragment: document-registry-sequence
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

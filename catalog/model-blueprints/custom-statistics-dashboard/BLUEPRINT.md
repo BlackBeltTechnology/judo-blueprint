@@ -11,7 +11,6 @@ projects: [mlszksz-platform]
 evidence: [mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/custom_views/StatisticsDashboardView.tsx]
 alternatives: []
 related: [custom-post-detail-views, interceptor-derived-statistics-calculation, custom-notification-card-inbox]
-fragment: none: frontend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

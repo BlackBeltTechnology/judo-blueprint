@@ -11,7 +11,6 @@ projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: [model-defined-color-palette, mui-extensive-component-overrides]
 related: [generator-ignore-app-theme, glassmorphic-styled-components, model-defined-color-palette, mui-extensive-component-overrides]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -11,8 +11,6 @@ projects: [rackinspect, judo-partner]
 evidence: ["rackinspect:model/rackinspect.model", "judo-partner:unrecorded"]
 alternatives: []
 related: [toggle-operation-pattern, composition-ownership, container-back-reference]
-fragment: primary-selection-pattern
-diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -62,7 +60,6 @@ A neutral Partner owns `accounts` (composition, 0..*) and has `primaryAccount` (
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=primary-selection-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Account {
@@ -78,4 +75,3 @@ classDiagram
   Partner *-- "*" Account : accounts
   Partner --> "0..1" Account : primaryAccount
 ```
-<!-- /mermaid:generated -->

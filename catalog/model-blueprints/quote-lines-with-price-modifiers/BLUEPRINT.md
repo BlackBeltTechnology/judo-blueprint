@@ -11,8 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: []
 related: [price-margin-calculation-utilities, registry-header-with-lines, draft-done-status-enum]
-fragment: quote-lines-with-price-modifiers
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-09-24
 last_updated: 2026-11-10
 ---

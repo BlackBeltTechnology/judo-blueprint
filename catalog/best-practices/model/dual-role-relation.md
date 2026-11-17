@@ -12,8 +12,6 @@ evidence: ["mjsz:unrecorded"]
 alternatives: []
 related: [bidirectional-relation, derived-attribute-flattening, null-safe-collection-aggregation]
 first_seen: 2026-03-04
-fragment: dual-role-relation
-diagram: { kinds: [entity], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -58,7 +56,6 @@ Derived members of the target navigate each role collection on its own and combi
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=dual-role-relation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Pairing {
@@ -74,4 +71,3 @@ classDiagram
   Pairing "*" -- "1" Participant : firstParticipant / firstPairings
   Pairing "*" -- "1" Participant : secondParticipant / secondPairings
 ```
-<!-- /mermaid:generated -->

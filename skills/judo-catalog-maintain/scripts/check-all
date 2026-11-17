@@ -1,25 +1,23 @@
 #!/usr/bin/env bash
 # check-all — every catalog gate in one run (task 4.5). Exit 1 if any gate fails.
 #
-# Usage: check-all [--no-sandbox] [--require-kb] [--json]
-#   --no-sandbox  skip the fragment check (needs the JUDO CLI jar: $JUDO_CLI_JAR or target/judo-cli.jar)
+# Usage: check-all [--require-kb] [--json]
 #   --require-kb  fail (not skip) the kb gates when the kb CLI is missing (CI)
 #   --json        print one JSON object {gate: "pass"|"fail"|"skip"} at the end
 #
 # Gates: entry-lint, spec-check, claim-check, dox-agents --check, projects, unit, no tracked jars,
 #        no format: legacy, kb dox lint, kb-index (consumer index covers every catalog doc),
-#        kb-eval (golden + holdout search quality), fragments check --all.
+#        kb-eval (golden + holdout search quality).
 # kb CLI: $KB_CLI, else the global pi-dashboard-kb-extension, else a global @blackbelt-technology/pi-dashboard-kb.
 set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
-SANDBOX=1; JSON=0; REQUIRE_KB=0
+JSON=0; REQUIRE_KB=0
 for a in "$@"; do
   case "$a" in
-    --no-sandbox) SANDBOX=0 ;;
     --json) JSON=1 ;;
     --require-kb) REQUIRE_KB=1 ;;
-    -h|--help) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "unknown argument: $a" >&2; exit 2 ;;
   esac
 done
@@ -56,15 +54,15 @@ done
 KBCLI="${KBCLI:-/nonexistent}"
 if [ -f "$KBCLI" ]; then
   # --json to a FILE: piped output is cut at 64 KB (node exits before the pipe drains), which hid every
-  # issue listed after the ~1.8k `missing` rows for target/. Only catalog/ counts. missing-companion
-  # (<doc>.agent.md for docs past 300 lines) is advisory: the catalog has not adopted companions.
+  # issue listed after the ~1.8k `missing` rows for target/. Only catalog/ counts; every kind is an error
+  # (missing-companion included: kb's contract), except over-threshold on large generated indexes.
   gate kb-dox-lint bash -c "f=\$(mktemp); node '$KBCLI' dox lint --json > \$f 2>/dev/null; python3 -c \"
 import json,sys,collections
 r=json.load(open(sys.argv[1]))['issues']
-bad=[i for i in r if i.get('path','').startswith('catalog/') and i['kind'] not in ('over-threshold','missing-companion')]
-adv=collections.Counter(i['kind'] for i in r if i.get('path','').startswith('catalog/') and i['kind']=='missing-companion')
+bad=[i for i in r if (i.get('path') or i.get('agentsFile') or '').startswith('catalog/') and i['kind']!='over-threshold']
+adv=collections.Counter(i['kind'] for i in r if (i.get('agentsFile') or '').startswith('catalog/') and i['kind']=='over-threshold')
 [print(i['kind'],i['path'],sep='\\t') for i in bad[:20]]
-print('advisory: %d catalog docs past the companion threshold' % adv['missing-companion'], file=sys.stderr)
+print('advisory: %d large AGENTS.md indexes' % adv['over-threshold'], file=sys.stderr)
 sys.exit(1 if bad else 0)\" \$f; rc=\$?; rm -f \$f; exit \$rc"
 else
   kbskip kb-dox-lint "kb CLI not installed"
@@ -112,16 +110,6 @@ PY
   gate kb-eval kb_eval
 else
   kbskip kb-eval "kb CLI or golden set missing"
-fi
-
-if [ $SANDBOX -eq 1 ]; then
-  if [ -n "${JUDO_CLI_JAR:-}" ] || [ -f target/judo-cli.jar ]; then
-    gate fragments skills/judo-model-mermaid/scripts/check --all
-  else
-    skip fragments "no CLI jar (./mvnw validate -P download-model-cli)"
-  fi
-else
-  skip fragments "--no-sandbox"
 fi
 
 if [ $JSON -eq 1 ]; then

@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/mnb-soap-client/src/main/java/hu/mnb/webservices/osgi/ExchangeRateServiceImpl.java", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/exchangerate/UpdateExchangeRatesCustomImplementation.java"]
 alternatives: [jaxb-external-api-client]
 related: [quartz-scheduled-job, custom-operation-osgi-component, jaxb-external-api-client, soap-external-service-client]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

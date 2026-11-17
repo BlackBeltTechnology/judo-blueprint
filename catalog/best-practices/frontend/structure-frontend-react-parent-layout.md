@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/pom.xml", "rackinspect:application/frontend-react/README.adoc", "rackinspect:application/frontend-react/rackinspect__services__ai_service__ai_service/.generator-ignore"]
 alternatives: []
 related: [dual-actor-frontend-architecture, structure-cross-actor-shared-overrides, custom-component-directory]
-fragment: "none: frontend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

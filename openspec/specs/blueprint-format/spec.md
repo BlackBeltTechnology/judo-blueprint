@@ -45,21 +45,6 @@ Catalog content SHALL consist only of descriptive prose, Mermaid diagrams, and g
 - **WHEN** `frontend.md` contains `sx={{ width: '100%' }}` in a `tsx` fence
 - **THEN** entry lint passes that file
 
-### Requirement: Generated structure diagrams
-Every entry with a model shape SHALL declare `fragment: <id>` and SHALL contain a structure diagram, rendered by the JUDO CLI from that fragment, inside generated markers that name the fragment and the CLI version. Entries without a model shape SHALL declare `fragment: none: <reason>`. Generated blocks SHALL NOT be edited by hand.
-
-#### Scenario: Missing generated block
-- **WHEN** an entry declares `fragment: audit-log-entity` but has no generated block
-- **THEN** entry lint fails
-
-#### Scenario: Hand edit detected
-- **WHEN** the content between generated markers differs from a fresh render
-- **THEN** the Sandbox check fails and names the entry
-
-#### Scenario: Backend-only practice
-- **WHEN** a backend best practice declares `fragment: none: backend-only`
-- **THEN** entry lint requires no generated block
-
 ### Requirement: Hand-written behaviour diagrams
 Lifecycle and interaction diagrams (`stateDiagram-v2`, `sequenceDiagram`) MAY be hand-written outside the generated markers, and every `mermaid` block SHALL parse.
 
@@ -82,3 +67,18 @@ Entries SHALL carry the following and SHALL NOT carry `score`:
 #### Scenario: Score rejected
 - **WHEN** frontmatter contains `score:`
 - **THEN** entry lint fails
+
+### Requirement: Plain Mermaid structure diagrams
+Every entry with a model shape SHALL contain a structure diagram as a plain ```mermaid block under `## Structure diagram` (blueprints in `model.md`). The diagram SHALL use neutral names and match the entry's model-shape prose. Entries SHALL NOT carry `fragment:` or `diagram:` frontmatter keys.
+
+#### Scenario: Retired key
+- **WHEN** an entry declares `fragment: audit-log-entity`
+- **THEN** entry lint fails and names the retired key
+
+#### Scenario: Empty diagram section
+- **WHEN** `model.md` has `## Structure diagram` without a mermaid block
+- **THEN** entry lint fails
+
+#### Scenario: Invalid Mermaid
+- **WHEN** a mermaid block does not start with a known diagram type
+- **THEN** spec-check fails

@@ -8,7 +8,6 @@ A deployment-related entity carries a required attribute of type `Environment`. 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=environment-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Environment {
@@ -18,4 +17,3 @@ classDiagram
     PROD
   }
 ```
-<!-- /mermaid:generated -->

@@ -12,8 +12,6 @@ evidence: ["itracker:unrecorded", "judo-demo-miniworkflow:unrecorded"]
 alternatives: []
 related: [unmapped-transfer-dto, transient-relation-parameter, actor-context-variable-lookup]
 first_seen: 2026-03-04
-fragment: factory-operation-with-prepopulation
-diagram: { kinds: [entity, transfer, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -60,7 +58,6 @@ If the input carries relations to existing entities (region, category), declare 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=factory-operation-with-prepopulation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Period {
@@ -85,4 +82,3 @@ classDiagram
   Plan *-- "*" Period : periods
   PlanView ..> Plan : maps
 ```
-<!-- /mermaid:generated -->

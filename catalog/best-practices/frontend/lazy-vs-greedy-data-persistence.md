@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/custom-implementations/DimensionParametersViewComponent.tsx"]
 alternatives: []
 related: [custom-visual-element-override]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

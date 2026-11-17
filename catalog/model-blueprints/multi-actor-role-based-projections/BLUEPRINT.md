@@ -10,8 +10,6 @@ status: established
 projects: [reserve-app, viterra_demo, doors-model, ams-model, skillmatrix-model, mlszksz-platform]
 evidence: ["reserve-app:unrecorded", "viterra_demo:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [actor-based-transfer-projection]
-fragment: multi-actor-role-based-projections
-diagram: { kinds: [entity, enum, transfer, actor], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

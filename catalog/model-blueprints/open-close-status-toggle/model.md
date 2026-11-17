@@ -10,7 +10,6 @@ Generated UI pages follow from the entity: a View and Table page for Event. With
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=open-close-status-toggle cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Event {
@@ -25,4 +24,3 @@ classDiagram
   }
   Event ..> EventStatus : status
 ```
-<!-- /mermaid:generated -->

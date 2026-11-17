@@ -9,9 +9,8 @@ The JUDO catalog (platform agent-docs, model blueprints, best practices) as a kb
 | Path | What |
 |---|---|
 | `catalog/agent-docs/` | Platform behaviour and rules. Source of truth for platform facts |
-| `catalog/model-blueprints/<id>/` | `BLUEPRINT.md`, `model.md` (generated diagram), `backend.md`, `frontend.md` |
+| `catalog/model-blueprints/<id>/` | `BLUEPRINT.md`, `model.md` (Mermaid diagram), `backend.md`, `frontend.md` |
 | `catalog/best-practices/<domain>/<id>.md` | Practices for model, backend, frontend, project (repository layout) |
-| `fragments/<id>.model` | Validated fragment models behind the diagrams |
 | `skills/` | `judo-blueprint`, `judo-model-mermaid`, `judo-blueprint-author`, `judo-catalog-maintain`, `judo-session-distill`, shared `_lib` |
 | `openspec/specs/` | Main specs (8 capabilities) |
 | `openspec/changes/archive/2026-11-16-restructure-blueprints-for-kb/` | The archived restructure change: proposal, design, `tasks.md` (follow-ups at the end), sweep and gap records |
@@ -27,7 +26,7 @@ Run `skills/judo-catalog-maintain/scripts/check-all` before committing catalog c
 
 - **Origin is read-only in this maintainer clone.** Never push, merge, tag or release on `origin` from here; a local `pre-push` hook enforces it. Contributors push only their own `project/<project-id>` branch (see `skills/judo-blueprint/references/contribute.md`); `develop`, `master` and tags are changed only by the maintainer, after `branch-review` and the merge criteria.
 - **judo-ng is read-only.** The clones under `target/` are references; fixes go only into local docs in this repo.
-- Never edit inside generated diagram blocks; change the fragment and run `render`.
+- No model files in this repo: diagrams are plain Mermaid (`judo-model-mermaid` renders them from real models).
 - Platform claims must be backed by `catalog/agent-docs`; otherwise write *verify*.
 
 ## Writing Instructions

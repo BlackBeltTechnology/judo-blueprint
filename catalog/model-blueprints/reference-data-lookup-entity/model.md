@@ -17,7 +17,6 @@ Lookup rows are normally created by a seeding step at startup, or by administrat
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=reference-data-lookup-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Category {
@@ -31,4 +30,3 @@ classDiagram
   }
   Order --> "0..1" Category : category
 ```
-<!-- /mermaid:generated -->

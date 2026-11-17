@@ -11,8 +11,6 @@ projects: [itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-pl
 evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: category-enum-pattern
-diagram: { kinds: [entity, enum], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -61,7 +59,6 @@ A Ticket entity has a required Priority (low, medium, high; default medium) and 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=category-enum-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Channel {
@@ -84,4 +81,3 @@ classDiagram
   Ticket ..> Channel : channel
   Ticket ..> Priority : priority
 ```
-<!-- /mermaid:generated -->

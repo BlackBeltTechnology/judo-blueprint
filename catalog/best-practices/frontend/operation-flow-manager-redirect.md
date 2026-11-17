@@ -10,7 +10,6 @@ status: single-project
 projects: [compsych-letter-demo]
 evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: [operation-flow-redirect-pattern, post-operation-navigation-hook]
-fragment: "none: frontend-only"
 first_seen: 2026-05-11
 last_updated: 2026-11-10
 ---

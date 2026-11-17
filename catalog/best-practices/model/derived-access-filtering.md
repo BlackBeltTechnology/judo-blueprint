@@ -10,8 +10,6 @@ status: established
 projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-model, park-here, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: derived-access-filtering
-diagram: { kinds: [entity, enum, transfer, actor], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -35,6 +33,7 @@ Restrict what an actor can reach by giving its access a `DERIVED` type and a get
 - Inside a derived attribute on the principal's own transfer object, `self` is the actor's row (used for flags such as `isNotAdmin`); that is a different place from the access getter.
 - Admin actors commonly use `ALL`.
 - `isActiveExpression` on the actor decides whether the actor may log in, a separate switch from access filtering.
+- Treat the filter as a read-side restriction and verify direct access by identifier: a signed identifier is a JWS with subject = identifier and claims entity type, version and issuer (the reference or operation that produced it); it carries no user or actor claim, and verification only checks that the type matches. Do not assume that opening another actor's record by its page address is refused. *Verify* with the dispatcher, and enforce ownership in the model or in a write/read guard (interceptor or checks inside custom operations).
 
 ## Rationale
 
@@ -61,7 +60,6 @@ Seen in 13 projects, mostly for status, ownership and singleton accesses.
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=derived-access-filtering cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Event {
@@ -91,4 +89,3 @@ classDiagram
   EventView ..> EventStatus : status
   Participant ..> ParticipantPrincipal : principal
 ```
-<!-- /mermaid:generated -->

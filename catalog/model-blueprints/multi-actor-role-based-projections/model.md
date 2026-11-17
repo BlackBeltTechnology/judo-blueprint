@@ -14,7 +14,6 @@ Derived and mapped fields in a projection do not add a stored column. They are c
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=multi-actor-role-based-projections cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Admin {
@@ -42,4 +41,3 @@ classDiagram
     ADMIN
   }
 ```
-<!-- /mermaid:generated -->

@@ -10,7 +10,6 @@ status: emerging
 projects: [InterfaceRegister, judo-partner]
 evidence: ["InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-fragment: composite-identifier-pattern
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -48,7 +47,6 @@ A `Country` entity has two required String attributes flagged as identifiers, `c
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=composite-identifier-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Country {
@@ -58,4 +56,3 @@ classDiagram
     +Integer population
   }
 ```
-<!-- /mermaid:generated -->

@@ -11,7 +11,6 @@ projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
 related: [complete-frontend-replacement, localstorage-session-persistence]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -10,8 +10,6 @@ status: single-project
 projects: [doors-model]
 evidence: ["doors-model:unrecorded"]
 alternatives: [credential-generalization-hierarchy, post-generalization-hierarchy, partner-with-contact-details]
-fragment: partner-generalization-hierarchy
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

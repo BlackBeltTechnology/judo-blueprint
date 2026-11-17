@@ -10,7 +10,6 @@ status: single-project
 projects: [alba]
 evidence: ["alba:unrecorded"]
 alternatives: [data-snapshot-versioning]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/ViewEditActionHooks/customServicesPartnerServicePartnerPartnerViewEditActionsHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/utils/partnerErrorValidation.ts"]
 alternatives: []
 related: [pandino-action-hook-override, error-code-mapping-pattern, form-blur-action-hook]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

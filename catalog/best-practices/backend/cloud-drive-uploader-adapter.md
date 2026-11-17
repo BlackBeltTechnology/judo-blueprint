@@ -11,7 +11,6 @@ projects: [park-here]
 evidence: ["park-here:application/google-drive/src/main/java/hu/blackbelt/park/here/google/drive/DriveUploader.java", "park-here:application/google-drive/src/main/java/hu/blackbelt/park/here/google/drive/DriveUploaderImpl.java", "park-here:application/google-drive/src/main/java/hu/blackbelt/park/here/google/drive/UploadOutcome.java"]
 alternatives: [external-api-adapter-pattern]
 related: [external-api-adapter-pattern, filestore-mediated-file-transfer]
-fragment: "none: backend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

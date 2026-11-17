@@ -11,7 +11,6 @@ projects: [trivia, rackinspect, itracker, reserve-app, park-here]
 evidence: ["trivia:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx", "itracker:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [hook-scaffold-default-pattern, application-customizer-hub, custom-visual-element-override]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

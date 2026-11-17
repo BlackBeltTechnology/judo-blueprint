@@ -10,7 +10,6 @@ status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack]
 evidence: ["rackinspect:pom.xml", "mlszksz-platform:pom.xml", "park-here:src/", "indamedia-adtrack:src/"]
 alternatives: []
-fragment: "none: infrastructure"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

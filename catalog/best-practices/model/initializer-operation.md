@@ -11,8 +11,6 @@ projects: [trivia, rackinspect, itracker, actiongroup-test-react, skillmatrix-mo
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [singleton-entity, custom-implementation-placeholder, init-data-seeding, initializer-entity-with-init-operation]
-fragment: initializer-operation
-diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -63,7 +61,6 @@ An Initializer entity has the static operation `init` (initializer, stateful, no
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=initializer-operation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Category {
@@ -75,4 +72,3 @@ classDiagram
     +init()
   }
 ```
-<!-- /mermaid:generated -->

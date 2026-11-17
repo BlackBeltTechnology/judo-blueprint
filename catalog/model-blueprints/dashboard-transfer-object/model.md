@@ -12,7 +12,6 @@ Generated UI pages follow from the transfer objects. The Dashboard is the landin
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=dashboard-transfer-object cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Dashboard {
@@ -31,4 +30,3 @@ classDiagram
   }
   Dashboard ..> User : maps
 ```
-<!-- /mermaid:generated -->

@@ -11,8 +11,6 @@ projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, Interfac
 evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [service-based-transfer-organization, unmapped-transfer-dto, derived-access-filtering, self-access-point]
-fragment: panel-dashboard-transfer
-diagram: { kinds: [entity, transfer, operation, actor], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -63,7 +61,6 @@ A neutral Employee entity owns a collection of Order entities. `OrderView` maps 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=panel-dashboard-transfer cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Clerk {
@@ -92,4 +89,3 @@ classDiagram
   EmployeePanel o-- "*" OrderView : openOrders
   OrderView ..> Order : maps
 ```
-<!-- /mermaid:generated -->

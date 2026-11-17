@@ -13,7 +13,6 @@ Generated UI pages: keep the task list table and the task view as the main user 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=workflow-engine-state-machine-cluster cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Action {
@@ -165,4 +164,3 @@ classDiagram
   WorkflowVersion --> "0..1" Role : defaultRole
   WorkflowVersion --> "0..1" State : initialState
 ```
-<!-- /mermaid:generated -->

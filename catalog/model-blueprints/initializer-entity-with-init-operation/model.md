@@ -9,7 +9,6 @@ The init operation seeds reference data such as codes, default configuration and
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=initializer-entity-with-init-operation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Initializer {
@@ -17,4 +16,3 @@ classDiagram
     +Timestamp createdAt [1]
   }
 ```
-<!-- /mermaid:generated -->

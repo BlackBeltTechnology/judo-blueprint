@@ -11,8 +11,6 @@ projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: []
 related: [derived-attribute-flattening, ui-control-transfer-fields]
-fragment: action-group-conditional-enabling
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -62,7 +60,6 @@ An Item entity has a derived boolean `available` and two operations (`start`, `a
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=action-group-conditional-enabling cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Item {
@@ -79,4 +76,3 @@ classDiagram
   }
   ItemView ..> Item : maps
 ```
-<!-- /mermaid:generated -->

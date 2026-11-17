@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/components/LandingRedirect.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx"]
 alternatives: [operation-flow-redirect-pattern]
 related: [operation-flow-redirect-pattern, post-operation-navigation-hook, access-paired-with-menu-item]
-fragment: "none: frontend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

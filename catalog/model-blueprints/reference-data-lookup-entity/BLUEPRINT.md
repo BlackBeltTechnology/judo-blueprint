@@ -10,8 +10,6 @@ status: established
 projects: [reserve-app, alba, trivia, itracker, viterra_demo, InterfaceRegister, doors-model, ams-model, skillmatrix-model, mlszksz-platform]
 evidence: ["reserve-app:unrecorded", "alba:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
-fragment: reference-data-lookup-entity
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

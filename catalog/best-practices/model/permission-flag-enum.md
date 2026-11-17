@@ -11,8 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: []
 related: [entity-crud-at-service-layer, toggle-operation-pattern, ui-control-transfer-fields, enum-sentinel-value]
-fragment: permission-flag-enum
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -68,7 +66,6 @@ The source project has since replaced the Permission entity with a Role entity w
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=permission-flag-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Permission {
@@ -96,4 +93,3 @@ classDiagram
   User --> "*" Permission : permissions
   User --> "*" Role : roles
 ```
-<!-- /mermaid:generated -->

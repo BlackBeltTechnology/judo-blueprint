@@ -11,7 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/DeleteUserServiceImpl.java"]
 alternatives: [soft-delete-archive-pattern, guarded-delete-with-deactivate-fallback]
 related: [soft-delete-archive-pattern, guarded-delete-with-deactivate-fallback, business-error-vs-generic-operation-error]
-fragment: "none: backend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

@@ -15,7 +15,6 @@ Generated UI pages follow from the entities. The Contract's stage list is shown 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=contract-management-workflow-cluster cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Contract {
@@ -66,4 +65,3 @@ classDiagram
   Stage <|-- WorkflowStage
   Workflow *-- "*" WorkflowStage : stages
 ```
-<!-- /mermaid:generated -->

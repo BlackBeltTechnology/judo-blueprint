@@ -11,7 +11,6 @@ projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: []
 related: [singleton-entity, action-group-input-output-routing, view-edit-mode-toggle]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

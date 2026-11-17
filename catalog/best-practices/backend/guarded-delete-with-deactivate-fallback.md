@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/EntityLifecycleServiceImpl.java"]
 alternatives: [guard-clause-delete, soft-delete-active-flag]
-fragment: "none: backend-only"
 first_seen: 2026-07-09
 last_updated: 2026-11-10
 ---

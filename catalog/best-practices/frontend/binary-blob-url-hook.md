@@ -11,7 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/hooks/useBlobUrl.ts"]
 alternatives: [pdf-preview-inline-display]
 related: [filestore-mediated-file-transfer, custom-component-directory, pdf-preview-inline-display]
-fragment: "none: frontend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

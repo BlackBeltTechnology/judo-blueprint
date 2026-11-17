@@ -10,7 +10,6 @@ status: emerging
 projects: [compsych-letter-demo, rackinspect, indamedia-adtrack]
 evidence: ["compsych-letter-demo:unrecorded", "rackinspect:application/generator-overrides/karaf-features/src/main/feature/feature.xml.extra-bundles.fragment.hbs", "indamedia-adtrack:unrecorded"]
 alternatives: []
-fragment: "none: infrastructure"
 first_seen: 2026-05-12
 last_updated: 2026-11-11
 ---

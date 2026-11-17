@@ -12,7 +12,6 @@ evidence: ["skillmatrix-model:unrecorded"]
 alternatives: []
 related: [category-enum-pattern, initializer-operation, range-expression-filtering]
 first_seen: 2026-03-04
-fragment: entity-as-enum-pattern
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -59,7 +58,6 @@ A `SkillLevel` entity has `name` and `score`, both required. A `Task` references
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=entity-as-enum-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class SkillLevel {
@@ -74,4 +72,3 @@ classDiagram
   Task --> "0..1" SkillLevel : level
   Task --> "0..1" SkillLevel : requestedLevel
 ```
-<!-- /mermaid:generated -->

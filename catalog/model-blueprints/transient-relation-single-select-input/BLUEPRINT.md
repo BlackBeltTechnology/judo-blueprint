@@ -10,8 +10,6 @@ status: single-project
 projects: [itracker]
 evidence: ["itracker:unrecorded"]
 alternatives: [transient-relation-multi-select-input]
-fragment: transient-relation-single-select-input
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-05-13
 last_updated: 2026-11-10
 ---

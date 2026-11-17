@@ -1,21 +1,23 @@
 ---
 name: judo-model-mermaid
-description: Render and check the Mermaid structure diagrams of JUDO catalog entries from their fragment models (fragments/<id>.model). Use when building or changing a blueprint's model shape, or when a diagram looks out of date.
+description: Draw a Mermaid diagram of a scope of a real JUDO model with the JUDO model CLI, read-only. Use when writing or updating the structure diagram of a catalog entry from a project's model, or to get an overview of your own model before analysis.
 ---
 
 # judo-model-mermaid
 
-Every catalog entry with a model shape has a fragment: `fragments/<id>.model`, a small JUDO model built with the JUDO model CLI and validated with `validate --strict`. The entry's `model.md` holds a generated Mermaid diagram of that fragment between generated-block markers. Never edit inside the markers by hand.
+Catalog diagrams are plain ```mermaid blocks. The catalog stores no model files: a diagram is text, so it stays valid when the ESM metamodel changes.
 
-## Scripts
+## Script
 
 | Script | Does |
 |---|---|
-| `scripts/render <id>` / `--all` | Writes the diagram of `fragments/<id>.model` into the entry. `--stdout` prints it instead. |
-| `scripts/check <id>` / `--all` | Fails unless the fragment passes `validate --strict` and the diagram in the entry equals a fresh render. Also fails when an entry declares `fragment: <id>` with no fragment file. |
+| `scripts/render --model <path> --scope <fqn> [--depth N] [--kinds k,..] [--members m]` | Prints the Mermaid diagram of that scope of the model. The model is not changed. |
 
-Both need the JUDO CLI jar: `$JUDO_CLI_JAR`, else `target/judo-cli.jar` (`./mvnw validate -P download-model-cli`).
+It needs the JUDO CLI jar: `$JUDO_CLI_JAR`, else `target/judo-cli.jar` (`./mvnw validate -P download-model-cli`).
 
-## Building a fragment
+## Writing an entry's structure diagram
 
-See [references/fragments.md](references/fragments.md): a fresh `tests/fixtures/Sandbox.model` copy in a scratch directory, package `Sandbox::bp::<id_with_underscores>`, neutral names, `validate --strict`, `save`, copy to `fragments/<id>.model`, then `render` and `check`.
+1. Render the pattern's scope from the real project model the entry's evidence points at.
+2. Paste the output under `## Structure diagram` in `model.md` (blueprints) or the entry file (best practices).
+3. Replace project and client names with neutral ones, and drop classes that are not part of the pattern.
+4. Hand-written diagrams are fine when no model is at hand; keep them consistent with the entry's prose.

@@ -11,8 +11,6 @@ projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
 alternatives: []
 related: [soft-delete-active-flag, mapped-operation-delegation, ui-control-transfer-fields]
-fragment: guard-clause-delete
-diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -68,7 +66,6 @@ A Project entity has a boolean `active` and owns Task entities by composition. I
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=guard-clause-delete cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Project {
@@ -83,4 +80,3 @@ classDiagram
   }
   Project *-- "*" Task : tasks
 ```
-<!-- /mermaid:generated -->

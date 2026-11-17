@@ -11,7 +11,6 @@ projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
 related: [timed-step-auto-advance, dialog-based-navigation, input-masking-react-imask]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

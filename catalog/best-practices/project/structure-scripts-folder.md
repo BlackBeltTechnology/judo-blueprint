@@ -10,7 +10,6 @@ status: emerging
 projects: [rackinspect, mlszksz-platform, park-here]
 evidence: ["rackinspect:scripts/", "rackinspect:apps-script/", "mlszksz-platform:scripts/extract-i18n-keys.py", "park-here:src/scripts/", "park-here:src/schema-migrate.sh"]
 alternatives: []
-fragment: "none: infrastructure"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

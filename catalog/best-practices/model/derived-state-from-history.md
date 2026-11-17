@@ -10,7 +10,6 @@ status: single-project
 projects: [judo-demo-miniworkflow]
 evidence: ["judo-demo-miniworkflow:unrecorded"]
 alternatives: [enum-state-machine]
-fragment: derived-state-from-history
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -49,7 +48,6 @@ There is one source of truth and every transition is recorded as a side effect. 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=derived-state-from-history cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Document {
@@ -75,4 +73,3 @@ classDiagram
   HistoryEntry ..> State : fromState
   HistoryEntry ..> State : toState
 ```
-<!-- /mermaid:generated -->

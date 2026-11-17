@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: collection-lower-bound-zero
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -49,7 +48,6 @@ Seen in 18 projects, none of which declares a collection with a lower bound abov
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=collection-lower-bound-zero cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Customer {
@@ -69,4 +67,3 @@ classDiagram
   Order --> "0..1" Customer : approver
   Order --> "1" Customer : customer
 ```
-<!-- /mermaid:generated -->

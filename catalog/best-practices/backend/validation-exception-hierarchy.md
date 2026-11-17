@@ -11,7 +11,6 @@ projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, judo-par
 evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/partner/PartnerCreateInterceptor.java", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/partner/bankaccount/BankAccountCreateAndUpdateInterceptor.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/utils/ExceptionUtils.java", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: [typed-exception-error-handling]
 related: [typed-exception-error-handling, interceptor-crud-lifecycle, i18n-osgi-service, error-code-enum, safe-failure-pattern]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

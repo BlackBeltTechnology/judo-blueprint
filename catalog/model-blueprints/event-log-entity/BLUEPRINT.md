@@ -10,8 +10,6 @@ status: single-project
 projects: [alba]
 evidence: ["alba:unrecorded"]
 alternatives: [audit-event-trail]
-fragment: event-log-entity
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

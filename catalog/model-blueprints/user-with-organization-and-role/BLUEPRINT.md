@@ -11,8 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [user-with-boolean-role-flags, identity-account-organization-cluster]
 related: [organization-entity, identity-account-organization-cluster, user-with-boolean-role-flags]
-fragment: user-with-organization-and-role
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

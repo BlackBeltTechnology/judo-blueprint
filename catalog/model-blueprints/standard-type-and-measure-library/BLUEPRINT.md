@@ -10,10 +10,8 @@ status: established
 projects: [bhs-global-operation, viterra_demo, InterfaceRegister, mjsz, sanctuary-backend, doors-model, ams-model, skillmatrix-model]
 evidence: ["bhs-global-operation:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "mjsz:unrecorded", "sanctuary-backend:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
 alternatives: []
-fragment: standard-type-and-measure-library
 first_seen: 2026-03-05
 last_updated: 2026-11-10
-diagram: { kinds: [entity], members: types }
 ---
 ## Intent
 

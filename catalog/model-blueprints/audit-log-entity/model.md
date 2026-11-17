@@ -12,7 +12,6 @@ Generated UI pages follow from the entity: View and Table pages for AuditLog, an
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=audit-log-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AuditActionType {
@@ -38,4 +37,3 @@ classDiagram
   AuditLog --> "0..1" User : user
   AuditLog ..> AuditActionType : actionType
 ```
-<!-- /mermaid:generated -->

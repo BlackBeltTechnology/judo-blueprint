@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/generator-overrides/pom.xml.extra-modules.fragment.hbs", "rackinspect:application/generator-overrides/karaf-features/src/main/feature/feature.xml.extra-bundles.fragment.hbs", "rackinspect:application/generator-overrides/app/pom.xml.extra-dependencies.fragment.hbs"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

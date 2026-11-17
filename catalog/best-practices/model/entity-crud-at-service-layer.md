@@ -12,8 +12,6 @@ evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker
 alternatives: []
 related: [actor-based-transfer-projection, derived-access-filtering]
 first_seen: 2026-03-04
-fragment: entity-crud-at-service-layer
-diagram: { kinds: [entity, transfer, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -63,7 +61,6 @@ Entities `Item` and `Category` have all three flags false. `Item` maps to two tr
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=entity-crud-at-service-layer cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Category {
@@ -86,4 +83,3 @@ classDiagram
   ItemAdminView ..> Item : maps
   ItemReadView ..> Item : maps
 ```
-<!-- /mermaid:generated -->

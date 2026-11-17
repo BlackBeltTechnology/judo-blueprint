@@ -11,7 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/UserServiceImpl.java"]
 alternatives: []
 related: [actor-resolution-variable-resolver, typed-exception-error-handling, service-delegation-pattern]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -11,7 +11,6 @@ projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, 
 evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/services/ai_service/aidefectticket/UpdateAnalysisOutcomeCustomImplementation.java", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/post/impl/PostLifecycleServiceImpl.java", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
 alternatives: [script-driven-operations]
 related: [entity-re-fetch-pattern, typed-exception-error-handling, data-snapshot-versioning, audit-event-trail, enum-state-machine, script-driven-operations, spel-guard-evaluation, role-based-invitation-guard]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

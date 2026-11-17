@@ -11,7 +11,6 @@ projects: [rackinspect, mlszksz-platform, ubives, park-here, indamedia-adtrack, 
 evidence: ["rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/position/DeletePositionCustomImplementation.java", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/city/ActivateToggleCustomImplementation.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AuditLogServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: [facade-service-pattern]
 related: [custom-operation-osgi-component, test-data-builder-factory, facade-service-pattern, action-delegation-workflow, role-based-invitation-guard]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

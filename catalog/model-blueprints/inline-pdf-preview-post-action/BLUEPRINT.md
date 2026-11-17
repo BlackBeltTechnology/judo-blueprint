@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesOffer_servicesOfferOffer_View_EditPreviewOfferDocumentInputFormActionsHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditGenerateAssessmentSheetPreviewInputFormActionsHook.tsx"]
 alternatives: []
-fragment: none: frontend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

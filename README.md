@@ -10,7 +10,7 @@ JUDO generates a full application (database, OSGi backend on Karaf, React fronte
 
 - **Platform facts** (`agent-docs/`) are the source of truth. Every other entry must agree with them; where they are silent, an entry says *verify*.
 - **Model blueprints** and **best practices** are mined from real JUDO projects. Each entry is written generically: the reusable mechanism with neutral names (`Order`, `Product`, `WorkOrder`). The projects it was seen in appear only as metadata (`projects:`, `evidence:` with real file paths, `project:` tags), never in the text.
-- **Diagrams** are generated from small validated JUDO models (`fragments/`), so every model shape is known to be valid.
+- **Diagrams** are plain Mermaid, drawn from real project models with the JUDO CLI; no model files are stored, so diagrams survive ESM changes.
 - **Status** follows evidence: `single-project` (1 project), `emerging` (2 to 3), `established` (4 or more).
 
 The catalog is tested by use: an agent builds a real application with only the catalog as knowledge, and the gaps it hits are mined back into the catalog (see `judo-catalog-expand`).
@@ -19,15 +19,18 @@ The catalog is tested by use: an agent builds a real application with only the c
 
 ```
 catalog/                       the kb source (consumers index only this folder)
-  agent-docs/                  platform behaviour and rules (83 docs)
+  agent-docs/                  platform behaviour and rules (83 docs, source of truth)
     model/ backend/ frontend/ deployment/ integration-testing/ e2e-testing/
+    <name>.md                  frontmatter: title, description, aliases, keywords,
+                               tags [domain, layer, status:platform]; subject-named headings
+    <name>.agent.md            companion for docs over 300 lines / 15 KB: condensed map,
+                               same ## headings; read it first, then kb_get one section
   model-blueprints/<id>/       110 reusable model shapes
     BLUEPRINT.md               intent, structure, constraints, variations, when to use/avoid
     model.md                   model shape + generated Mermaid diagram
-    backend.md frontend.md     layer guidance
+    backend.md frontend.md     layer guidance (no frontmatter; companion if large)
   best-practices/<domain>/     250 practices: model 77, backend 94, frontend 74,
                                project 5 (repository layout)
-fragments/<id>.model           156 validated fragment models behind the diagrams
 skills/                        pi skills shipped to consumers and authors
 .pi/skills/                    maintainer skills and data (not indexed by kb)
   judo-catalog-maintain/references/PROJECTS.md   registry of source projects (swept SHA, weight)
@@ -37,6 +40,16 @@ target/                        ignored: CLI jar, project snapshots, agent work f
 ```
 
 Every directory under `catalog/` has a generated `AGENTS.md` index (`| File | Purpose |`), and parent indexes list their subfolders.
+
+**kb contract for every catalog file** (enforced by `entry-lint` and `kb dox lint` in `check-all` and CI; full rules in `skills/judo-blueprint-author/references/format.md`):
+
+| File | Frontmatter | Headings | Large files |
+|---|---|---|---|
+| Entry (`BLUEPRINT.md`, best practice) | id, title, description, aliases, keywords, tags (domain, layer, project, status), evidence | fixed section order per format | companion `<name>.agent.md` |
+| Blueprint layer file | none | free, descriptive | companion |
+| Agent-doc | title, description, aliases, keywords, tags (domain, layer, status:platform) | name the subject; no generic or TOC headings; ≤ 4000 chars per section | companion |
+| Companion `*.agent.md` | none | `# <name>.md — index`, `Source:` line, same `##` as the source | ≤ 250 lines |
+| `AGENTS.md` | none (generated) | `## DOX — <dir>` table | — |
 
 ```mermaid
 flowchart LR
@@ -75,7 +88,7 @@ When your agents miss something, add it in your branch, run `check-all`, push, a
 | Skill | For |
 |---|---|
 | `judo-blueprint` | Consumers: search the catalog, apply a blueprint or practice, pin the kb source |
-| `judo-model-mermaid` | Render and check entry diagrams from `fragments/` |
+| `judo-model-mermaid` | Draw a Mermaid diagram of a scope of a real JUDO model |
 | `judo-blueprint-author` | Write or update one entry (format, `entry-lint`, `spec-check`, `claim-check`, `dox-agents`) |
 | `judo-catalog-maintain` | `check-all` (every gate in one run), project sweeps, `branch-review` and merge criteria for project branches |
 | `.pi/skills/judo-catalog-expand` | Maintainers: build-session gap analysis, project compliance explore, then one catalog pass (evidence, neutral wording, generic renames) with parallel background agents and helper scripts |
@@ -85,16 +98,16 @@ When your agents miss something, add it in your branch, run `check-all`, push, a
 
 ```bash
 ./mvnw validate -P download-model-cli                 # pinned JUDO CLI → target/judo-cli.jar (never tracked)
-skills/judo-catalog-maintain/scripts/check-all        # all gates; --no-sandbox skips the CLI-based fragment check
+skills/judo-catalog-maintain/scripts/check-all        # all gates
 ```
 
-`check-all` runs `entry-lint`, `spec-check`, `claim-check`, the `AGENTS.md` freshness check, the project registry check, unit tests, no tracked jars, no legacy entries, `kb dox lint`, the kb search-quality eval (`kb-eval`) and `check --all` on the fragments.
+`check-all` runs `entry-lint`, `spec-check`, `claim-check`, the `AGENTS.md` freshness check, the project registry check, unit tests, no tracked jars, no legacy entries, `kb dox lint`, and the kb search-quality eval (`kb-eval`).
 
 ## Rules for contributors
 
 - Platform facts come from `catalog/agent-docs`. A catalog entry never contradicts them; when the docs are silent, the entry says *verify*.
 - No project-specific content in entry bodies: no project names (`entry-lint` rejects them), no client business words, no single-project counts. Use neutral names and generic ids.
 - Evidence is a real path in the project snapshot, never `unrecorded` when the code is available.
-- Diagrams are generated. Change the fragment with the JUDO CLI, then `render`.
+- Diagrams are plain Mermaid under `## Structure diagram`; keep them consistent with `## Model shape`.
 - Contributors push only their `project/<project-id>` branch, never `develop`, `master` or tags. Different methods are added as variations or alternatives, never as replacements.
 - The old `.claude/` agents, commands and scoring scripts are retired. They remain readable at the local tag `archive/pre-kb-restructure`.

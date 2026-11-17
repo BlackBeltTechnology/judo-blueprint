@@ -11,7 +11,6 @@ projects: [park-here, judo-partner]
 evidence: ["park-here:unrecorded", "judo-partner:unrecorded"]
 alternatives: [soft-delete-active-flag]
 related: [mutable-entity-update-pattern, dao-fluent-query-filter, soft-delete-active-flag, interceptor-range-override, toggle-boolean-operation]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

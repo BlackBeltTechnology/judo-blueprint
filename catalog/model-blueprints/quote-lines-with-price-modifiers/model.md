@@ -12,7 +12,6 @@ Make the quote the access root. Product and PriceModifier are reference data and
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=quote-lines-with-price-modifiers cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class ModifierScope {
@@ -67,4 +66,3 @@ classDiagram
   QuoteLine *-- "*" PriceModifierInstance : modifiers
   QuoteLine --> "1" Product : product
 ```
-<!-- /mermaid:generated -->

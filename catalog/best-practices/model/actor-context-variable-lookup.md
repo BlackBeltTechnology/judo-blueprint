@@ -11,8 +11,6 @@ projects: [itracker, alba, viterra_demo, judo-demo-miniworkflow, InterfaceRegist
 evidence: ["itracker:unrecorded", "alba:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: actor-context-variable-lookup
-diagram: { kinds: [entity, transfer, actor], members: types }
 last_updated: 2026-11-11
 ---
 ## Intent
@@ -68,7 +66,6 @@ An Order has an owner (a User with a unique email). The actor's principal is a m
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=actor-context-variable-lookup cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AppUser {
@@ -99,4 +96,3 @@ classDiagram
   OrderView ..> Order : maps
   UserPrincipal ..> User : maps
 ```
-<!-- /mermaid:generated -->

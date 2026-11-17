@@ -8,7 +8,6 @@ Some content types add a third kind of value, for example EXPIRED for time-based
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=content-lifecycle-status-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class ContentStatus {
@@ -18,4 +17,3 @@ classDiagram
     DELETED
   }
 ```
-<!-- /mermaid:generated -->

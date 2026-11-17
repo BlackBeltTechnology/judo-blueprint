@@ -10,7 +10,6 @@ Owning entities usually expose operations for each transition in the UI. The tra
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=active-suspended-deactivated-status-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Status {
@@ -20,4 +19,3 @@ classDiagram
     DEACTIVATED
   }
 ```
-<!-- /mermaid:generated -->

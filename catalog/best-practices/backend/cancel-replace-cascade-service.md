@@ -10,7 +10,6 @@ status: single-project
 projects: [compsych-letter-demo]
 evidence: ["compsychletter:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-05-13
 last_updated: 2026-11-10
 ---

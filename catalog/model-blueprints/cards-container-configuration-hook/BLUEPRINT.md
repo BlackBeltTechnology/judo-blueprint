@@ -10,7 +10,6 @@ status: single-project
 projects: [park-here]
 evidence: ["park-here:unrecorded"]
 alternatives: [address-field-auto-composition]
-fragment: none: frontend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

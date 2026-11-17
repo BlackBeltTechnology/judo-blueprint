@@ -11,7 +11,6 @@ projects: [judo-partner]
 evidence: ["judo-partner:unrecorded"]
 alternatives: [soap-client-integration]
 related: [soap-client-integration, external-api-adapter-pattern, osgi-karaf-bundle-architecture, custom-operation-osgi-component]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -10,8 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:unrecorded"]
 alternatives: [user-with-boolean-role-flags, user-with-role-and-rolegroup-entities]
-fragment: user-with-role-permission-entity
-diagram: { kinds: [entity, enum, operation], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

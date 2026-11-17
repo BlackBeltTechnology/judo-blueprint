@@ -11,7 +11,6 @@ Platform note: the operation never passes through interceptors, so no model-leve
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=toggle-active-operation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Account {
@@ -21,4 +20,3 @@ classDiagram
     +toggleActive()
   }
 ```
-<!-- /mermaid:generated -->

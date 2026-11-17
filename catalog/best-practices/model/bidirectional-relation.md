@@ -11,8 +11,6 @@ projects: [itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-pl
 evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: bidirectional-relation
-diagram: { kinds: [entity], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -24,6 +22,7 @@ Two entities need to navigate to each other and the platform should keep both en
 ### Declare both ends and point them at each other
 
 - A TwoWayRelationMember exists only on entities, never on transfer objects. Each end names the other as its `partner`. The two ends may have different cardinalities: a Customer has `0..*` orders, an Order has `0..1` customer.
+- When the CLI creates a `TwoWayRelationMember`, it also creates the partner end, named after the target type in lower case (for example `a` for type `A`) and with cardinality `0..1`. Rename the partner and set its cardinality (`0..*` for many-to-many) right after creating it; a JQL expression over a collection fails if the partner is still `0..1`.
 - Setting the relation from either side changes the other, because it is one stored relation seen from two ends. There is no second column to keep in step.
 - Many-to-many is allowed (`0..*` on both ends). Exactly one end of each pair is `primary`, which resolves ownership of the stored relation; a convention is to make the "many"/owning side primary.
 
@@ -67,7 +66,6 @@ Customer has an `orders` collection (`0..*`) and Order has a `customer` (`0..1`)
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=bidirectional-relation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Customer {
@@ -85,4 +83,3 @@ classDiagram
   Customer "0..1" -- "*" Order : orders / customer
   Order "*" -- "*" Tag : tags / orders
 ```
-<!-- /mermaid:generated -->

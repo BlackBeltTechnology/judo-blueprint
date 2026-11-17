@@ -11,8 +11,6 @@ projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: attribute-renaming-in-transfer
-diagram: { kinds: [entity, transfer], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -60,7 +58,6 @@ A Questionnaire entity has a stored integer `score` and a stored timestamp `crea
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=attribute-renaming-in-transfer cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Questionnaire {
@@ -75,4 +72,3 @@ classDiagram
   }
   QuestionnaireView ..> Questionnaire : maps
 ```
-<!-- /mermaid:generated -->

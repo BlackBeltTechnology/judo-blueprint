@@ -13,7 +13,6 @@ Generated UI pages follow from the entity: a View and Table page for Notificatio
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=notification-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Notification {
@@ -45,4 +44,3 @@ classDiagram
   Notification ..> NotificationStatus : status
   Notification ..> NotificationType : type
 ```
-<!-- /mermaid:generated -->

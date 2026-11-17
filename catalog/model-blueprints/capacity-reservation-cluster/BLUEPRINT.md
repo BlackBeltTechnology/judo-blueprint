@@ -10,8 +10,6 @@ status: single-project
 projects: [reserve-app]
 evidence: ["reserve-app:unrecorded"]
 alternatives: []
-fragment: capacity-reservation-cluster
-diagram: { kinds: [entity, enum, transfer], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

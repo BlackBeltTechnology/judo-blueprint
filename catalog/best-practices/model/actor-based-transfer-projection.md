@@ -11,8 +11,6 @@ projects: [trivia, itracker, alba, skillmatrix-model, viterra_demo, mjsz, judo-d
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "reserve-app:unrecorded"]
 alternatives: [service-based-transfer-organization]
 first_seen: 2026-03-04
-fragment: actor-based-transfer-projection
-diagram: { kinds: [entity, transfer, actor], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -24,6 +22,7 @@ Different actors (roles) need different views of the same entity. Give each acto
 ### One entity, one transfer object per actor role
 
 - Entities stay in one shared package. A transfer object is a mapped projection of an entity (it has a `mapping` to the entity) and selects which entity attributes and relations the actor can see.
+- Never point a restricted actor's Access at a transfer object designed for another role: every member of that transfer object (for example internal quantities or status flags) is returned in the actor's list and detail responses. Define a separate mapped transfer object per actor and leave admin-only members out of it.
 - Each ActorType gets its Access entries pointing at that actor's own transfer objects. An Access carries the permissions (`createable`, `updateable`, `deleteable`) and an optional `getterExpression` that narrows the visible rows (see the platform's accesspoint reference). Entities and transfer objects are separate layers: the transfer object's own `createable`, `updateable` and `deleteable` flags say what the transfer type allows, the Access says what this actor may do through it.
 - A full-access projection (admin) exposes many members and the CRUD flags. A restricted projection exposes few members, usually MAPPED read-only or DERIVED ones, with the flags off.
 - A member that exists only for one actor (a display label, a flag for the UI) is a DERIVED member of that actor's transfer object, not a new entity attribute. A transfer-object member cannot reference another transfer object's members: `hiddenBy`, `enabledBy` and `requiredBy` must name a boolean on the same transfer object.
@@ -65,7 +64,6 @@ An Order entity has a number, a total and an internal note. AdminOrder maps all 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=actor-based-transfer-projection cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AdminActor {
@@ -94,4 +92,3 @@ classDiagram
   AdminOrder ..> Order : maps
   CustomerOrder ..> Order : maps
 ```
-<!-- /mermaid:generated -->

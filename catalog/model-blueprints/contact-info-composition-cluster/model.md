@@ -13,7 +13,6 @@ Generated UI pages follow from the entities: a View, Form and Table page for eac
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=contact-info-composition-cluster cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Address {
@@ -45,4 +44,3 @@ classDiagram
   Partner *-- "*" PhoneNumber : phoneNumbers
   Partner --> "0..1" EmailAddress : primaryEmail
 ```
-<!-- /mermaid:generated -->

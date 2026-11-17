@@ -27,10 +27,10 @@ A merge to `master` SHALL produce the plain base version and a non-prerelease Gi
 - **THEN** CI creates tag `v1.0.0` and a GitHub release that is not marked prerelease
 
 ### Requirement: Gated, immutable tags
-CI SHALL create the tag `v<version>` and a GitHub release only after every gate passes: docs-lint, `kb eval`, agent-docs parity, the redaction check and Sandbox validation. CI SHALL never move or overwrite an existing tag.
+CI SHALL create the tag `v<version>` and a GitHub release only after every gate passes: docs-lint, `kb eval`, agent-docs parity and the redaction check. CI SHALL never move or overwrite an existing tag.
 
 #### Scenario: Gate failure
-- **WHEN** Sandbox validation fails on a feature build
+- **WHEN** `check-all` fails on a feature build
 - **THEN** no tag and no release are created for that build
 
 #### Scenario: Tag exists
@@ -57,8 +57,8 @@ Both SHALL resolve to exactly the tagged tree.
 - **THEN** the consumer's index does not change until its `pin` is edited
 
 ### Requirement: Release notes
-Each GitHub release SHALL list the catalog entries added, changed and removed since the previous tag on the same branch line, and the Sandbox validation summary.
+Each GitHub release SHALL list the catalog entries added, changed and removed since the previous tag on the same branch line, and the gate summary.
 
 #### Scenario: Notes generated
 - **WHEN** a release is created
-- **THEN** its body contains added/changed/removed entry ids and the count of passed fragment checks
+- **THEN** its body contains added/changed/removed entry ids and the `check-all` gate results

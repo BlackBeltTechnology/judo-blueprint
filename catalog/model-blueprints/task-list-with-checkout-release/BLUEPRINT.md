@@ -11,8 +11,6 @@ projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
 alternatives: [task-entity-with-assignment]
 related: [workflow-engine-state-machine-cluster, task-entity-with-assignment]
-fragment: task-list-with-checkout-release
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

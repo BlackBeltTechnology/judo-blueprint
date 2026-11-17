@@ -11,8 +11,6 @@ projects: [rackinspect, mlszksz-platform, ams-model, indamedia-adtrack, Interfac
 evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model", "ams-model:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "workflow-poc:unrecorded"]
 alternatives: [flat-entity-model]
 related: [flat-entity-model, enum-state-machine, transfer-generalization, partner-generalization-hierarchy, post-generalization-hierarchy, credential-generalization-hierarchy, interface-specification-generalization-hierarchy]
-fragment: generalization-base-entity
-diagram: { kinds: [entity], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -70,7 +68,6 @@ A Task base entity (abstract) holds `created`, `registryNumber`, an `assignedTo`
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=generalization-base-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Document {
@@ -99,4 +96,3 @@ classDiagram
   Task <|-- Offer
   Task <|-- WorkOrder
 ```
-<!-- /mermaid:generated -->

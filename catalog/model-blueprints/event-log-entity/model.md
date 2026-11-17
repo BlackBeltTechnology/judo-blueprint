@@ -11,7 +11,6 @@ Both associations are optional (0..1) and of kind ASSOCIATION, so deleting the t
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=event-log-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Event {
@@ -38,4 +37,3 @@ classDiagram
   Event ..> EventType : type
   Product --> "*" Event : events
 ```
-<!-- /mermaid:generated -->

@@ -10,7 +10,6 @@ status: established
 projects: [alba, mlszksz-platform, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, judo-partner, reserve-app, doors-model, rackinspect]
 evidence: ["alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/ActorServiceImpl.java", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded", "rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/ActorServiceImpl.java"]
 alternatives: [keycloak-jit-user-provisioning]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

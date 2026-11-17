@@ -10,8 +10,6 @@ status: established
 projects: [trivia, itracker, mlszksz-platform, viterra_demo, mjsz, park-here, InterfaceRegister, judo-partner]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-fragment: singleton-entity
-diagram: { kinds: [entity, transfer, actor, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -73,7 +71,6 @@ A Configuration entity has `senderEmail` and `baseUrl`. ConfigurationView maps b
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=singleton-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AppUser {
@@ -95,4 +92,3 @@ classDiagram
   }
   ConfigurationView ..> Configuration : maps
 ```
-<!-- /mermaid:generated -->

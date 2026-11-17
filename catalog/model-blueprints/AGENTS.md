@@ -358,6 +358,8 @@
 | `testkit-integration-foundation/BLUEPRINT.md` | An in-process integration-test foundation for JUDO applications on the guice testkit and HSQLDB, with eight support classes, activation flags, a Maven tier layout and an optional docker overlay for re |
 | `testkit-integration-foundation/model.md` | testkit-integration-foundation: model shape and generated structure diagram |
 | `testkit-integration-foundation/backend.md` | testkit-integration-foundation: backend guidance |
+| `testkit-integration-foundation/backend.agent.md` | testkit-integration-foundation: condensed map of `backend.md` |
+| `testkit-integration-foundation/model.agent.md` | testkit-integration-foundation: condensed map of `model.md` |
 | `testkit-integration-foundation/` | testkit-integration-foundation (1 files; index in `testkit-integration-foundation/AGENTS.md`) |
 | `timed-attempt-lifecycle-entity/BLUEPRINT.md` | An Attempt entity that records one participant's run through a timed activity, with a status enumeration from creation to completion, failure or exclusion and a timestamp per stage. |
 | `timed-attempt-lifecycle-entity/model.md` | timed-attempt-lifecycle-entity: model shape and generated structure diagram |

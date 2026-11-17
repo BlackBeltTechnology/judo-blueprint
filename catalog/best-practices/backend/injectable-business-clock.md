@@ -11,7 +11,6 @@ projects: [park-here]
 evidence: ["park-here:application/common/src/main/java/hu/blackbelt/park/here/common/utils/ParkHereClock.java", "park-here:application/common/src/main/java/hu/blackbelt/park/here/common/impl/DateServiceImpl.java"]
 alternatives: []
 related: [interceptor-derived-statistics-calculation, data-snapshot-versioning]
-fragment: "none: backend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

@@ -10,7 +10,6 @@ status: single-project
 projects: [ubives]
 evidence: ["ubives:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -26,6 +25,7 @@ Give every tenant its own Keycloak realm, so users and authentication policies a
 - The realm synchronizer provisions those realms, clients and users when the runtime starts, only if `managementEnabled` is `true` ([connector and synchronizer configuration](../../agent-docs/deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration)).
 - The actor is derived from the token's `azp` claim (dashes become dots and must equal an actor FQN); several clients in one realm are whitelisted with `acceptableClients` ([several Keycloak clients in one realm](../../agent-docs/backend/authentication-guide.md#several-keycloak-clients-in-one-realm)).
 - The runtime then reads the actor row from the database on every authenticated request; a missing row gives `AUTHENTICATED_ENTITY_NOT_FOUND` ([principal-to-actor resolution](../../agent-docs/backend/authentication-guide.md#principal-to-actor-resolution-and-multi-client-mapping)). Users created in a tenant realm therefore still need a matching actor row ([[keycloak-jit-user-provisioning]]).
+- The exported realm JSON contains only `id`, `realm`, `enabled`, `loginWithEmailAllowed` and the clients. It does not set `registrationAllowed`, so Keycloak's default (self sign-up off) applies and the login page hides the registration link. There is no model setting for it; enable self sign-up through the Keycloak admin API (`registrationAllowed=true` on the realm) or in the realm configuration after import.
 
 Realms known at model time need no custom code. Tenants created while the application runs do not fit that mechanism, which is what the practice below covers.
 

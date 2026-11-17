@@ -15,6 +15,7 @@ For a content question, pass `doc_type: "doc"` to `kb_search`. It drops the dire
 
 - Each hit is `<path> :: <heading>`. A hit on `AGENTS.md` is a directory index: its rows name the files, so open the file the row points to.
 - `(+N more sections)` means the same file matched in several places. Read it with `kb_get <path>`, then `kb_get <path> section=<heading path>` for one section.
+- A large doc has a companion `<name>.agent.md` (a condensed map with the same `##` headings). Read it first, then `kb_get` only the section you need from the full doc.
 - `kb_get` needs the **full** heading path (from `format: "json"` output, `headingPath`), not just the last heading.
 
 ## Entry facets
@@ -23,10 +24,10 @@ Entries are tagged in frontmatter `tags`:
 
 | Facet | Values |
 |---|---|
-| `domain:` | model, backend, frontend, project |
+| `domain:` | model, backend, frontend, project (entries); model, backend, frontend, deployment, testing (agent-docs) |
 | `layer:` | which layers the entry touches |
 | `project:` | the projects the pattern was seen in |
-| `status:` | `established` (4+ projects), `emerging` (2–3), `single-project` (1) |
+| `status:` | `platform` (agent-docs: platform facts), `established` (4+ projects), `emerging` (2–3), `single-project` (1) |
 
 Prefer `status:established`. A `single-project` entry was seen in one project only; read its *When to avoid* section before adopting it.
 

@@ -10,8 +10,6 @@ status: emerging
 projects: [mlszksz-platform, doors-model]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "doors-model:unrecorded"]
 alternatives: [address-field-auto-composition]
-fragment: address-entity-with-location
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

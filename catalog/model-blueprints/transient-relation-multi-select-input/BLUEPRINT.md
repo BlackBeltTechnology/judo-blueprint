@@ -10,8 +10,6 @@ status: emerging
 projects: [alba, actiongroup-test-react]
 evidence: ["alba:unrecorded", "actiongroup-test-react:unrecorded"]
 alternatives: [transient-relation-single-select-input]
-fragment: transient-relation-multi-select-input
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-05-13
 last_updated: 2026-11-10
 ---

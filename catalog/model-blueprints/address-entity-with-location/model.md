@@ -11,7 +11,6 @@ Generated UI: the address form lets the user pick the city and postal code throu
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=address-entity-with-location cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Address {
@@ -37,4 +36,3 @@ classDiagram
   Address --> "1" City : city
   Address --> "1" PostalCode : postalCode
 ```
-<!-- /mermaid:generated -->

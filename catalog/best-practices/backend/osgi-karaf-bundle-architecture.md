@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:application/karaf-features/src/main/feature/feature.xml", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:application/karaf-features/src/main/feature/feature.xml", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

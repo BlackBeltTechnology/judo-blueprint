@@ -10,7 +10,6 @@ status: emerging
 projects: [mlszksz-platform, park-here]
 evidence: [mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/android/app/src/main/java/hu/mlszksz/platform/StatusBarThemePlugin.java, mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/theme/index.tsx, park-here:unrecorded]
 alternatives: [model-defined-color-palette]
-fragment: none: frontend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

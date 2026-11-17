@@ -10,8 +10,6 @@ status: single-project
 projects: [InterfaceRegister]
 evidence: ["InterfaceRegister:unrecorded"]
 alternatives: []
-fragment: application-vendor-integration-registry
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

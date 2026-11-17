@@ -10,8 +10,6 @@ status: single-project
 projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
 alternatives: [plan-versioning-snapshot]
-fragment: workflow-versioning-pattern
-diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

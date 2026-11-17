@@ -13,7 +13,6 @@ Generated UI pages follow from the entity. The Request table and view pages stay
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=accept-reject-operations cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Request {
@@ -34,4 +33,3 @@ classDiagram
   Request --> "0..1" User : requester
   Request ..> RequestStatus : status
 ```
-<!-- /mermaid:generated -->

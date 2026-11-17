@@ -10,8 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/utils/TokenUtils.java"]
 alternatives: []
-fragment: token-based-verification-workflow
-diagram: { kinds: [entity, enum, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -75,7 +73,6 @@ A Request entity has a required `email`, a `tokenHash`, `expiresAt`, `verifiedAt
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=token-based-verification-workflow cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Configuration {
@@ -103,4 +100,3 @@ classDiagram
   }
   Request ..> RequestStatus : status
 ```
-<!-- /mermaid:generated -->

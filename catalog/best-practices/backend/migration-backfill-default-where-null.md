@@ -11,7 +11,6 @@ projects: [rackinspect, park-here]
 evidence: ["rackinspect:application/schema/migration/1_0_0_20260923_100755_SNAPSHOT_to_1_0_0_20260924_103958_SNAPSHOT/06_updateDataAfterIncremental_postgresql.changeset.xml", "park-here:application/schema/migration/1_0_0_20260713_124306_SNAPSHOT_to_1_0_0_20260727_155508_SNAPSHOT/06_updateDataAfterIncremental_postgresql.changeset.xml"]
 alternatives: []
 related: [init-data-seeding, excel-data-seed-import]
-fragment: "none: backend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

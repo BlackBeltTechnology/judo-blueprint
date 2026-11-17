@@ -11,7 +11,6 @@ projects: [itracker, viterra_demo, judo-demo-miniworkflow, ubives, park-here, In
 evidence: ["itracker:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded"]
 alternatives: []
 related: [custom-operation-osgi-component, dual-dao-pattern, script-driven-operations]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

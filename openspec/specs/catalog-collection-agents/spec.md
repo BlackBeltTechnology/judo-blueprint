@@ -26,18 +26,11 @@ The skills SHALL use only the pinned JUDO CLI jar. For command documentation the
 - **WHEN** CI searches this repository for a copy of the CLI command reference
 - **THEN** none is found, and skill references link to the CLI skill instead
 
-### Requirement: Fragments built only through the CLI
-Fragments SHALL be created and changed only through CLI commands and `save`, never by editing the model file by hand.
-
-#### Scenario: Fragment written by the CLI
-- **WHEN** an author changes a fragment
-- **THEN** the change comes from CLI commands followed by `save`, and the PR shows the `save` change summary
-
 ### Requirement: One job per skill
 Each skill's `SKILL.md` description SHALL name one job and when to use it. Skills compose by calling each other's scripts through documented relative paths, never by copying them.
 
 #### Scenario: Author renders through the Mermaid skill
-- **WHEN** `judo-blueprint-author` finishes an entry with a fragment
+- **WHEN** `judo-blueprint-author` needs a structure diagram from a real model
 - **THEN** it calls the `judo-model-mermaid` render script, and no second render implementation exists in the repository
 
 ### Requirement: Scripts usable standalone and by CI
@@ -58,7 +51,7 @@ CI SHALL call these same scripts for gates, Sandbox checks and versioning.
 - **THEN** it prints usage and exits 0
 
 ### Requirement: Diagram a project's own model
-`judo-model-mermaid` SHALL also render Mermaid for a scope of the caller's own JUDO model, not only for fragments.
+`judo-model-mermaid` SHALL render Mermaid for a scope of a real JUDO model, read-only. It is the only rendering mode.
 
 #### Scenario: Consumer diagram
 - **WHEN** a rackinspect session asks for a diagram of `rackinspect::entities::Fault` with depth 1
@@ -162,9 +155,9 @@ A project sweep SHALL:
 - **WHEN** a sweep fails on `mlszksz-platform` after `rackinspect` completed
 - **THEN** a re-run skips `rackinspect`
 
-### Requirement: Output conforms before review
-Every entry a skill writes SHALL pass entry lint, redaction and the Sandbox check before it is offered for review.
+### Requirement: Authored entries conform before review
+Every entry a skill writes SHALL pass entry lint, spec-check and redaction before it is offered for review.
 
-#### Scenario: Entry without fragment
-- **WHEN** an authored model-shaped entry lacks a passing fragment
+#### Scenario: Entry with a retired key
+- **WHEN** an authored entry carries `fragment:` or `diagram:` frontmatter
 - **THEN** it is not offered for merge

@@ -11,7 +11,6 @@ projects: [rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adt
 evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/user/management/UserDeleteInterceptor.java", "alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PushNotificationServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [dao-fluent-query-filter, mutable-entity-update-pattern, entity-re-fetch-pattern, dirty-check-before-update]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

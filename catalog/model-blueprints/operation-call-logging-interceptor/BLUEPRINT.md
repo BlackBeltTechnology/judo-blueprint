@@ -10,7 +10,6 @@ status: emerging
 projects: [rackinspect, park-here]
 evidence: [rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/LogOperationCallInterceptor.java, park-here:unrecorded]
 alternatives: []
-fragment: none: backend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

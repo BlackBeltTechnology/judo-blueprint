@@ -9,7 +9,6 @@ The composition means the recipients are owned by the invitation and removed wit
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=invitation-with-recipients cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Account {
@@ -30,4 +29,3 @@ classDiagram
   Invitation *-- "*" InvitationRecipient : recipients
   Invitation --> "1" Account : createdBy
 ```
-<!-- /mermaid:generated -->

@@ -10,8 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/StatisticsActiveUsersInterceptor.java"]
 alternatives: [operation-call-logging-interceptor]
-fragment: interceptor-derived-statistics-calculation
-diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

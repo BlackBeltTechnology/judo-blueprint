@@ -6,7 +6,6 @@ If the user is the principal of a managed actor, the flags are projected as mapp
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=user-with-boolean-role-flags cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class User {
@@ -18,4 +17,3 @@ classDiagram
     +Boolean isOperator [1]
   }
 ```
-<!-- /mermaid:generated -->

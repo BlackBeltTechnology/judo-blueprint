@@ -5,7 +5,7 @@ Usage: sweep-publish <project> [--dry-run] [--json]
 
 Origin is read-only: this script NEVER pushes, never opens a PR and never touches a remote. It:
   1. refuses unless W/gates.json says pass (written by the operator from check-all, or by --check);
-  2. commits catalog/** and fragments/** in the blueprint worktree on its sweep/<project>-<sha> branch;
+  2. commits catalog/** in the blueprint worktree on its sweep/<project>-<sha> branch;
   3. writes W/pr-body.md (counts + candidate -> entry list, neutral names only) and runs redact-check
      on it when skills/judo-session-distill/scripts/redact-check exists;
   4. prints the local branch name. Merging it into your branch is a separate, manual `git merge`.
@@ -47,11 +47,11 @@ def main():
         r = subprocess.run([str(rc), str(w / "pr-body.md")], capture_output=True, text=True)
         if r.returncode:
             die(f"redact-check failed on pr-body.md:\n{r.stdout}{r.stderr}", 1)
-    status = git(["status", "--porcelain", "--", "catalog", "fragments"], bp)
+    status = git(["status", "--porcelain", "--", "catalog"], bp)
     if not status:
         print("nothing to commit in the blueprint worktree")
     elif not a.dry_run:
-        git(["add", "--", "catalog", "fragments"], bp)
+        git(["add", "--", "catalog"], bp)
         git(["commit", "-q", "-m", f"feat(catalog): sweep {st['project']} @ {st['sha'][:7]}", "-m", body], bp)
     st.setdefault("steps", {})["publish"] = "dry-run" if a.dry_run else "committed locally"
     save_state(w, st)

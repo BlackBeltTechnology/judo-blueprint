@@ -25,7 +25,6 @@ The library adds no pages. Entities that use its types get the usual generated V
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=standard-type-and-measure-library cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Item {
@@ -37,4 +36,3 @@ classDiagram
     +Timestamp createdOn
   }
 ```
-<!-- /mermaid:generated -->

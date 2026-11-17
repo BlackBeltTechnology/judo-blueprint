@@ -11,8 +11,6 @@ projects: [alba, skillmatrix-model, judo-partner]
 evidence: ["alba:unrecorded", "skillmatrix-model:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [derived-access-filtering, actor-based-transfer-projection, transfer-generalization, panel-dashboard-transfer]
-fragment: self-access-point
-diagram: { kinds: [entity, transfer, actor], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -65,7 +63,6 @@ A neutral Member entity has a required, identifying `email` and owns Skills. The
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=self-access-point cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Member {
@@ -95,4 +92,3 @@ classDiagram
   MyProfile ..> Member : maps
   User ..> MemberPrincipal : principal
 ```
-<!-- /mermaid:generated -->

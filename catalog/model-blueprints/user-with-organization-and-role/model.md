@@ -6,7 +6,6 @@ Generated UI pages: the User View, Form and Table pages show the role and a link
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=user-with-organization-and-role cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Organization {
@@ -26,4 +25,3 @@ classDiagram
   User --> "1" Organization : organization
   User ..> UserRole : role
 ```
-<!-- /mermaid:generated -->

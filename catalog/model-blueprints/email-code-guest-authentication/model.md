@@ -14,7 +14,6 @@ Generated UI pages follow from the entities. The generated Form for User should 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=email-code-guest-authentication cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Admin {
@@ -31,4 +30,3 @@ classDiagram
     +Boolean active [1]
   }
 ```
-<!-- /mermaid:generated -->

@@ -12,7 +12,6 @@ Generated UI pages follow from the entities and the transfer objects: a Table an
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=user-with-role-and-rolegroup-entities cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Role {
@@ -34,4 +33,3 @@ classDiagram
   RoleGroup --> "*" Role : roles
   User --> "*" Role : effectiveRoles
 ```
-<!-- /mermaid:generated -->

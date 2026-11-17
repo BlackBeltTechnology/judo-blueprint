@@ -11,7 +11,6 @@ projects: [trivia, rackinspect, alba, mlszksz-platform, judo-demo-miniworkflow, 
 evidence: ["trivia:unrecorded", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/LogOperationCallInterceptor.java", "alba:unrecorded", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/LogAuthenticationInterceptor.java", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [interceptor-security-filter-validation, interceptor-template-postcall, interceptor-crud-lifecycle, keycloak-jit-user-provisioning]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

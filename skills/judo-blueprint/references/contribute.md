@@ -48,7 +48,7 @@ When your agent (or you) hits something the catalog does not answer, add it in y
 | You found | Do this |
 |---|---|
 | A platform fact is missing or wrong | Edit `catalog/agent-docs/...`. Add evidence: a judo-ng `repo@sha:path:line`, or a reproducible check. Unproven: write *verify*. |
-| A pattern your project uses that the catalog lacks | New entry with the `judo-blueprint-author` skill (frontmatter, fragment built with the JUDO CLI, generated diagram). |
+| A pattern your project uses that the catalog lacks | New entry with the `judo-blueprint-author` skill (frontmatter, Mermaid structure diagram drawn from your model). |
 | An existing entry your project also uses | Add your project to `projects:`, a real path to `evidence:`, the `project:` tag; recompute `status`. This is how entries become `established`. |
 | Your method differs from an entry | Do not overwrite the entry's method. Add it under `## Variations`, or as a new entry listed in `alternatives:` of both. Overwrite only when the existing text is wrong, with evidence. |
 | An entry is wrong for your case | Fix the claim and add the evidence that shows why; keep the rest. |
@@ -59,14 +59,14 @@ Write generically: no project names or client business words in the body (`entry
 
 ```bash
 skills/judo-catalog-maintain/scripts/check-all              # must pass before you push
-git add -A catalog fragments .pi/skills/judo-catalog-maintain/references/PROJECTS.md
+git add -A catalog .pi/skills/judo-catalog-maintain/references/PROJECTS.md
 git commit -m "catalog(<project-id>): <what and why>"
 git push
 # then in your app: kb index   (or /reload in pi)
 ```
 
 - One topic per commit, so the maintainer can merge it on its own.
-- Only `catalog/`, `fragments/` and your `PROJECTS.md` row. Skill or script changes go in a separate commit with a reason; they are reviewed separately.
+- Only `catalog/` and your `PROJECTS.md` row. Skill or script changes go in a separate commit with a reason; they are reviewed separately.
 - Never push to `develop`, `master` or tags.
 
 ## 5. Stay current

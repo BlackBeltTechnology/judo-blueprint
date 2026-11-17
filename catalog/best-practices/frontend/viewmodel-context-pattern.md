@@ -11,7 +11,6 @@ projects: [trivia, itracker]
 evidence: ["trivia:unrecorded", "itracker:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, event-bus-refresh-coordination, hook-scaffold-default-pattern]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

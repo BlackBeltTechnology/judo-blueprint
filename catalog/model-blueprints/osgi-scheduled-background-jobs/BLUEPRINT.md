@@ -10,7 +10,6 @@ status: established
 projects: [mlszksz-platform, rackinspect, indamedia-adtrack, park-here]
 evidence: ["mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/SingleInstanceSchedulerActivator.java", "rackinspect:application/scheduler/src/main/java/hu/blackbelt/rackinspect/scheduler/SingleInstanceSchedulerActivator.java", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
 alternatives: []
-fragment: none: backend-only
 related: [osgi-service-layer-delegation, ongoing-finished-deleted-status-enum]
 first_seen: 2026-03-09
 last_updated: 2026-11-10

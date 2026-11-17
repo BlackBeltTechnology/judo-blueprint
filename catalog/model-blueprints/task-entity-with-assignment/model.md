@@ -6,7 +6,6 @@ Transfer objects and UI: the example exposes the entity through role-specific tr
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=task-entity-with-assignment cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Product {
@@ -36,4 +35,3 @@ classDiagram
   Task ..> TaskState : state
   Task ..> TaskType : type
 ```
-<!-- /mermaid:generated -->

@@ -9,7 +9,6 @@ The counts exist only on the built-in list and refresh operations the intercepto
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=interceptor-derived-statistics-calculation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Account {
@@ -21,4 +20,3 @@ classDiagram
     +Integer activeAccounts
   }
 ```
-<!-- /mermaid:generated -->

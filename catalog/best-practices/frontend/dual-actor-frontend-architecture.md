@@ -11,7 +11,6 @@ projects: [trivia, itracker, reserve-app, doors-model]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
 alternatives: [single-actor-heavy-customization]
 related: [complete-frontend-replacement, admin-default-generated-ui, single-actor-heavy-customization]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -24,6 +23,7 @@ Different roles need different experiences: back-office users want fast generate
 ### Platform base
 
 - A frontend module is generated per modeled actor, named `<app>__<actor path>` (for example `<app>__service__admin`) under `application/frontend-react/`, next to a shared `model/` folder that holds the generated UI model. Each module has its own `.generator-ignore`, `src/custom/` folder and hook scaffolds ([frontend guide](../../agent-docs/frontend/README.md)).
+- Each actor also gets its own generated Playwright e2e project, with its own `node_modules`, so tests and helpers are split per actor and each project points at its own actor's frontend ([E2E troubleshooting](../../agent-docs/e2e-testing/troubleshooting.md)).
 - What an actor sees is defined by its accesses and menu in the model; each access becomes a navigation entry and page of that actor's frontend ([navigation controller and actor accesses](../../agent-docs/frontend/model-screen-layout.md)).
 - The backend resolves the actor from the token's `azp` claim (dashes become dots, the result must equal an actor FQN). A frontend client with another name needs the `JUDO_PLATFORM_ACCEPTABLE_CLIENTS` whitelist; each actor exposes `~meta` and `~principal` endpoints that a custom frontend uses to obtain a token ([authentication guide: several Keycloak clients in one realm](../../agent-docs/backend/authentication-guide.md)).
 - Customization options per module, from least to most: leave scaffolds inactive; activate hooks from `src/custom/`; sub-themes and custom visual elements; extra routes ([hooks overview](../../agent-docs/frontend/hooks/README.md), [extension points](../../agent-docs/frontend/extension-points.md)).

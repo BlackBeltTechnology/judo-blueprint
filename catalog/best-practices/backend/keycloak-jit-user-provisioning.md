@@ -11,7 +11,6 @@ projects: [alba, mlszksz-platform, ubives, park-here, indamedia-adtrack]
 evidence: ["alba:unrecorded", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/LogAuthenticationInterceptor.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: [two-phase-registration]
 related: [two-phase-registration, actor-resolution-variable-resolver, dao-fluent-query-filter, mask-field-projection, interceptor-global-logging, safe-failure-pattern, magic-link-authentication]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

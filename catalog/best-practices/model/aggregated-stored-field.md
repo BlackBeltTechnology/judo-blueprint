@@ -11,8 +11,6 @@ projects: [alba, indamedia-adtrack]
 evidence: ["alba:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: aggregated-stored-field
-diagram: { kinds: [entity], members: types }
 last_updated: 2026-11-11
 ---
 ## Intent
@@ -59,7 +57,6 @@ A Product has a title, a 0..* relation to Tag and a stored text attribute that h
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=aggregated-stored-field cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Product {
@@ -73,4 +70,3 @@ classDiagram
   }
   Product --> "*" Tag : tags
 ```
-<!-- /mermaid:generated -->

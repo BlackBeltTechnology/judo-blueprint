@@ -10,8 +10,6 @@ status: established
 projects: [mlszksz-platform, rackinspect, park-here, ubives, workflow-poc, judo-demo-miniworkflow, trivia, itracker, viterra_demo, InterfaceRegister, mjsz, doors-model, ams-model]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "rackinspect:model/rackinspect.model", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "mjsz:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded"]
 alternatives: [platform-configuration-singleton]
-fragment: initializer-entity-with-init-operation
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

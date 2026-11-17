@@ -11,8 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 related: [audit-event-entity, enum-state-machine, soft-delete-active-flag, mapped-operation-delegation, unmapped-transfer-dto, guard-clause-delete, actor-based-transfer-projection]
-fragment: moderation-operation-pattern
-diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -66,7 +64,6 @@ A Post has a status (published or deleted) and two operations: `delete` and `mod
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=moderation-operation-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AuditAction {
@@ -99,4 +96,3 @@ classDiagram
   AuditEntry ..> AuditAction : action
   Post ..> Status : status
 ```
-<!-- /mermaid:generated -->

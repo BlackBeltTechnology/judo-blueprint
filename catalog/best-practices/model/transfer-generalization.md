@@ -11,8 +11,6 @@ projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
 alternatives: [generalization-base-entity]
 related: [actor-based-transfer-projection, transfer-object-multiplicity]
-fragment: transfer-generalization
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -65,7 +63,6 @@ A Person entity has name, email and phone, a composed collection of Skill, and a
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=transfer-generalization cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Person {
@@ -101,4 +98,3 @@ classDiagram
   PersonSummary ..> Person : maps
   SkillView ..> Skill : maps
 ```
-<!-- /mermaid:generated -->

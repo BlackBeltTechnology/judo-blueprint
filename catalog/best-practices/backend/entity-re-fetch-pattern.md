@@ -11,7 +11,6 @@ projects: [trivia, rackinspect, alba, mlszksz-platform, park-here, indamedia-adt
 evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/unit/ToggleActiveCustomImplementation.java", "alba:unrecorded", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/admindashboard/DeleteUserCustomImplementation.java", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 related: [dao-fluent-query-filter, state-lifecycle-operation]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

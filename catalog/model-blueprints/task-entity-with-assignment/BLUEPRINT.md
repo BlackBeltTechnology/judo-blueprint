@@ -11,8 +11,6 @@ projects: [alba]
 evidence: ["alba:unrecorded"]
 alternatives: []
 related: [task-list-with-checkout-release, accept-reject-operations, toggle-active-operation]
-fragment: task-entity-with-assignment
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

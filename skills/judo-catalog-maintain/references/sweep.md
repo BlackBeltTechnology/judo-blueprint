@@ -18,7 +18,7 @@ A sweep reads one JUDO project read-only and turns its recurring, hand-written p
 | 3 | explore | 4 `Agent` calls **in one turn**: `judo-sweep-explore-{model,backend,frontend,schema}`, prompt `Work folder: <abs W>` | `W/lanes/<lane>.json` each | Re-run a weak lane alone; it overwrites only its own file |
 | 4 | merge | `scripts/sweep-merge <project>` | `W/candidates.json` | Missing lanes are reported |
 | 5 | cross-validate | `Agent judo-sweep-cross-validate`, prompt `Work folder: <abs W>` | `W/decisions.json` | **Approve or edit decisions** before step 6 |
-| 6 | author | `Agent judo-sweep-author`, one per batch of about 5 decisions; parallel only for disjoint entries | edits in `W/bp/catalog`, `W/bp/fragments` | |
+| 6 | author | `Agent judo-sweep-author`, one per batch of about 5 decisions; parallel only for disjoint entries | edits in `W/bp/catalog` | |
 | 7 | gates | in `W/bp`: `skills/judo-catalog-maintain/scripts/check-all`; write `W/gates.json` `{"result":"pass"}` only when it passes | report | On fail, re-dispatch the author with the report, at most 3 rounds, then stop |
 | 8 | publish (local) | `scripts/sweep-publish <project>` | commit on `sweep/<project>-<sha7>`, `W/pr-body.md` (neutral names) | Review, then `git merge sweep/<project>-<sha7>` yourself |
 | 9 | record | update the project's `Swept SHA` in `.pi/skills/judo-catalog-maintain/references/PROJECTS.md` | | |

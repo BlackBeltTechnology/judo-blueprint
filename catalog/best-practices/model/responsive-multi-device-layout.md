@@ -11,7 +11,6 @@ projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: []
 related: [action-group-conditional-enabling, ui-control-transfer-fields]
-fragment: none: generated-ui-model, no entity or transfer shape
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

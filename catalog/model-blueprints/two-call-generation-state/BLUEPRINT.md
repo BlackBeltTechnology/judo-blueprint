@@ -10,8 +10,6 @@ status: single-project
 projects: [compsych-letter-demo]
 evidence: ["compsychletter:unrecorded"]
 alternatives: []
-fragment: two-call-generation-state
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-05-12
 last_updated: 2026-11-10
 ---

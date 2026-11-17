@@ -10,8 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [draft-done-status-enum, active-suspended-deactivated-status-enum]
-fragment: content-lifecycle-status-enum
-diagram: { kinds: [enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

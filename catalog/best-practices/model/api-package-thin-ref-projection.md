@@ -11,8 +11,6 @@ projects: [compsych-letter-demo]
 evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: []
 first_seen: 2026-05-13
-fragment: api-package-thin-ref-projection
-diagram: { kinds: [entity, transfer], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -72,7 +70,6 @@ In the diagram, a template entity is mapped by a reference transfer object with 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=api-package-thin-ref-projection cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class StartGenerationInput {
@@ -92,4 +89,3 @@ classDiagram
   StartGenerationInput o-- "1" TemplateApiRef : template
   TemplateApiRef ..> Template : maps
 ```
-<!-- /mermaid:generated -->

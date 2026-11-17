@@ -4,12 +4,12 @@ Project branches (`project/<project-id>`) are where the catalog grows. The maint
 
 ## Hard gates (all must hold, otherwise no merge)
 
-1. **Gates pass** on the branch, merged with current `develop`: `check-all` (entry-lint, spec-check, claim-check, dox-agents, projects, fragments, kb-eval).
-2. **Scope:** catalog changes touch only `catalog/**`, `fragments/**` and the project's own row in `PROJECTS.md`. Changes to `skills/`, `.pi/`, `tests/` or CI are a separate review, never merged with catalog content.
+1. **Gates pass** on the branch, merged with current `develop`: `check-all` (entry-lint, spec-check, claim-check, dox-agents, projects, kb-eval).
+2. **Scope:** catalog changes touch only `catalog/**` and the project's own row in `PROJECTS.md`. Changes to `skills/`, `.pi/`, `tests/` or CI are a separate review, never merged with catalog content.
 3. **Platform truth:** a new or changed platform claim in `agent-docs/` or an entry has evidence (judo-ng `repo@sha:path:line`, or a reproducible check), or says *verify*. An entry never contradicts `agent-docs`.
 4. **Generic:** no project names, client business words or single-project facts in bodies. Project only in `projects:`, `evidence:`, `project:` tags.
 5. **Real evidence:** the contributing project's evidence is a path that exists in its repository (at the swept or stated SHA), not `unrecorded`.
-6. **Fragments by CLI:** model shapes are built with the JUDO CLI and pass `validate --strict`; generated Mermaid matches a fresh render.
+6. **No model files:** structure diagrams are plain Mermaid; no `.model` file is added anywhere in the repo.
 7. **No loss:** a change does not delete another project's citation, variation or entry unless it is shown wrong, with evidence.
 
 ## Principles for judging content
@@ -33,7 +33,7 @@ skills/judo-catalog-maintain/scripts/branch-review                  # all projec
 skills/judo-catalog-maintain/scripts/branch-review project/<id>     # one branch: classified diff + gate run
 ```
 
-`branch-review` writes `target/branch-review/<branch>.md`: commits, changed files by kind (new entry, entry changed, agent-docs, fragments, PROJECTS.md, out of scope), hard-gate violations it can detect, and the `check-all` result on the branch merged with `develop` in a temporary worktree.
+`branch-review` writes `target/branch-review/<branch>.md`: commits, changed files by kind (new entry, entry changed, agent-docs, PROJECTS.md, out of scope), hard-gate violations it can detect, and the `check-all` result on the branch merged with `develop` in a temporary worktree.
 
 - Merge whole commits that pass (`git cherry-pick` or a merge commit), or single entries (`git checkout project/<id> -- <paths>`, then gates, commit `merge(<id>): <what>`).
 - Record what was not merged and why in the merge commit body, so the contributor can fix it in their branch.

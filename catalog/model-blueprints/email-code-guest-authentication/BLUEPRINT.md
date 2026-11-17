@@ -10,8 +10,6 @@ status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: [token-based-verification-entity, keycloak-magic-link-passkey-authentication]
-fragment: email-code-guest-authentication
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

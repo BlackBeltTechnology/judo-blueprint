@@ -11,8 +11,6 @@ projects: [compsych-letter-demo]
 evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: []
 first_seen: 2026-05-13
-fragment: thin-identifiable-result-for-parent-relation-create
-diagram: { kinds: [entity, transfer, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -80,7 +78,6 @@ A project view has a tasks relation to a mapped task view (the canonical list an
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=thin-identifiable-result-for-parent-relation-create cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class IdentifiableTask {
@@ -117,4 +114,3 @@ classDiagram
   ProjectView o-- "*" TaskView : tasks
   TaskView ..> Task : maps
 ```
-<!-- /mermaid:generated -->

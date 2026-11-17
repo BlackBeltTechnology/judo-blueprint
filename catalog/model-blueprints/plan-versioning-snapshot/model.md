@@ -19,7 +19,6 @@ The user-facing transfer objects mirror the entities: the parent exposes the cur
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=plan-versioning-snapshot cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class PeriodPlan {
@@ -49,4 +48,3 @@ classDiagram
   Plan *-- "*" PlanVersion : planVersions
   PlanVersion *-- "*" PeriodPlanVersion : periodPlans
 ```
-<!-- /mermaid:generated -->

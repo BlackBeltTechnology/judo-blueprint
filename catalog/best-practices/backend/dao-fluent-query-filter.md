@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/ticketing/RangeActor.java", "alba:unrecorded", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/LogAuthenticationInterceptor.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

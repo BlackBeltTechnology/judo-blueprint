@@ -11,7 +11,6 @@ projects: [ubives]
 evidence: ["ubives:unrecorded"]
 alternatives: []
 related: [keycloak-jit-user-provisioning, two-phase-registration, email-service-integration, multi-tenant-keycloak-realm, keycloak-magic-link-passkey-authentication]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

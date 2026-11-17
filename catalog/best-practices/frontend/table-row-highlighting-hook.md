@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/TableRowHighlightingHooks/ratingTableHighlightHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/TableRowHighlightingHooks/offerItemsTableHighlightHook.tsx"]
 alternatives: []
 related: [pandino-action-hook-override, custom-visual-element-override, application-customizer-hub]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

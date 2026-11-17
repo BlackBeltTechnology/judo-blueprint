@@ -10,7 +10,6 @@ status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack]
 evidence: ["rackinspect:application/scheduler/src/main/java/hu/blackbelt/rackinspect/scheduler/RdbmsBasedSchedulerActivator.java", "rackinspect:application/scheduler/src/main/java/hu/blackbelt/rackinspect/scheduler/UpdateExchangeRatesJobFirst.java", "mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/SingleInstanceSchedulerActivator.java", "mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/PostExpirationJob.java", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

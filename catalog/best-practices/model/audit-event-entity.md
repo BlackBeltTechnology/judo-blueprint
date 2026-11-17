@@ -11,8 +11,6 @@ projects: [alba, mlszksz-platform, judo-demo-miniworkflow, judo-partner, workflo
 evidence: ["alba:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "judo-demo-miniworkflow:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: audit-event-entity
-diagram: { kinds: [entity, enum], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -65,7 +63,6 @@ An Event entity has a required EventType (created, approved, rejected), a requir
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=audit-event-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Document {
@@ -92,4 +89,3 @@ classDiagram
   Event --> "0..1" User : performedBy
   Event ..> EventType : type
 ```
-<!-- /mermaid:generated -->

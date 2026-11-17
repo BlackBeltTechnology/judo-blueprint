@@ -11,8 +11,6 @@ projects: [itracker, alba, skillmatrix-model, viterra_demo, judo-demo-miniworkfl
 evidence: ["itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, conditional-visibility-getter, literal-derived-attribute, guard-clause-delete, action-group-conditional-enabling]
-fragment: ui-control-transfer-fields
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -76,7 +74,6 @@ A Report entity has a title and a stored `closed` flag. The ReportView transfer 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=ui-control-transfer-fields cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Report {
@@ -97,4 +94,3 @@ classDiagram
   }
   ReportView ..> Report : maps
 ```
-<!-- /mermaid:generated -->

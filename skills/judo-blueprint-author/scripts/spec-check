@@ -7,7 +7,6 @@ Adds the spec requirements that entry-lint does not cover:
   blueprint-format     duplicate ids; evidence/first_seen/last_updated/alternatives/status present
   catalog-kb-indexing  no block scalars; title, description, keywords, aliases, tags with domain:/layer:/status: facets;
                        Related links ([[id]] or relative .md) resolve; no generic-only headings
-  sandbox              fragment entries: fragments/<id>.model exists, generated block names fragment + cli version
   mermaid              every mermaid fence starts with a known diagram type and has balanced braces/quotes
 Runs from any cwd. Exit 1 on any error.
 """
@@ -21,7 +20,6 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 CAT = ROOT / "catalog"
 GENERIC = {"overview", "details", "notes", "description", "example", "examples", "implementation", "usage", "misc", "other", "general"}
 MERMAID_TYPES = ("classDiagram", "stateDiagram", "stateDiagram-v2", "sequenceDiagram", "flowchart", "graph", "erDiagram")
-GEN_RX = re.compile(r"<!-- mermaid:generated fragment=([\w-]+) cli=(\S+) -->")
 
 
 def fm_of(text):
@@ -102,7 +100,7 @@ def main():
         for line in raw:
             if re.match(r"^[\w-]+:\s*[|>][-+]?\s*$", line):
                 errs.append(f"block scalar: {line.strip()}")
-        for k in ("title", "description", "keywords", "aliases", "tags", "projects", "evidence", "first_seen", "last_updated", "alternatives", "status", "fragment"):
+        for k in ("title", "description", "keywords", "aliases", "tags", "projects", "evidence", "first_seen", "last_updated", "alternatives", "status"):
             if k not in fm:
                 errs.append(f"frontmatter: missing {k}")
         if "format" in fm:
@@ -125,16 +123,6 @@ def main():
                 continue  # spec-mandated section names (blueprint-format)
             if name in GENERIC:
                 errs.append(f"generic heading: {h.strip()}")
-        frag = fm.get("fragment", "").strip("\"'")
-        if frag and not frag.startswith(("none", "pending")):
-            if not (ROOT / "fragments" / f"{frag}.model").exists():
-                errs.append(f"fragments/{frag}.model missing")
-            alltext = text + "".join(l.read_text() for l in layers)
-            g = GEN_RX.search(alltext)
-            if not g:
-                errs.append("no generated block with fragment + cli markers")
-            elif g.group(1) != frag:
-                errs.append(f"generated block names fragment {g.group(1)} != {frag}")
         for f in [path] + layers:
             t = f.read_text()
             check_mermaid(t, errs, f.name)

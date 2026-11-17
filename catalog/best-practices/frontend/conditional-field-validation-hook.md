@@ -11,7 +11,6 @@ projects: [reserve-app, rackinspect]
 evidence: ["reserve-app:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/containers/registerServicesItem_serviceItemItem_View_EditContainerActionsHook.ts"]
 alternatives: []
 related: [pandino-action-hook-override, hook-scaffold-default-pattern, application-customizer-hub, approval-workflow-conditional-visibility]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

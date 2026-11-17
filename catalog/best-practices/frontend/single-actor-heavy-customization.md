@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx"]
 alternatives: [dual-actor-frontend-architecture, zero-customization-generated-frontend]
 related: [dual-actor-frontend-architecture, application-customizer-hub, pandino-action-hook-override, zero-customization-generated-frontend, complete-frontend-replacement]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

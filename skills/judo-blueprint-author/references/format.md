@@ -1,9 +1,9 @@
 ---
 title: Catalog entry format
-description: The exact shape of model blueprints and best practices in catalog/, the frontmatter keys, sections, fragment rules and what is forbidden.
+description: The exact shape of model blueprints and best practices in catalog/, the frontmatter keys, sections, structure diagrams and what is forbidden.
 ---
 
-# Catalog entry format
+# Catalog file format
 
 The catalog holds **knowledge only: descriptions and Mermaid**. Never GraphQL,
 never CLI commands, never `judo.sh` commands, never recipes or step lists for
@@ -28,8 +28,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: [mlszksz-platform:model/mlszksz.model]
 alternatives: [audit-event-trail]
-fragment: audit-log-entity
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-09
 ---
@@ -39,12 +37,7 @@ last_updated: 2026-11-09
   2–3 → `emerging`, 4+ → `established`. The `status:` tag must match.
 - `score`, `usage_count`, `alternative_count` are **forbidden**.
 - `alternatives` holds entry ids (each must exist in the catalog).
-- `fragment`: the fragment id (= entry id) when the entry has a model shape;
-  otherwise `none: <reason>` (`none: backend-only`, `none: frontend-only`,
-  `none: infrastructure`). `pending` is only allowed together with
-  `format: legacy`.
-- `diagram` (optional): CLI render options, `kinds` from
-  `entity, enum, transfer, actor, operation`, `members` from `types|names|none`.
+- `fragment` and `diagram` are retired: there are no fragment models (`entry-lint` rejects them).
 - `tags`: `domain:<model|backend|frontend|project|...>` (`project` = repository-level layout), `layer:<model|backend|frontend>`
   (one per layer file present), `project:<p>` per project, `status:<s>`.
 - Dates are `YYYY-MM-DD`.
@@ -54,7 +47,7 @@ last_updated: 2026-11-09
 | File | Content |
 |---|---|
 | `BLUEPRINT.md` | frontmatter + abstract sections, in this order: `## Intent`, `## Structure`, `## Constraints`, `## Variations`, `## When to use`, `## When to avoid`, `## Related` |
-| `model.md` | model-layer description: elements, attributes, relation kinds, cardinalities, transfer objects, access, UI pages the shape implies; plus the generated structure diagram |
+| `model.md` | model-layer description: elements, attributes, relation kinds, cardinalities, transfer objects, access, UI pages the shape implies; plus the structure diagram (plain Mermaid) |
 | `backend.md` | backend layer guidance (custom operations, interceptors, services). Generic Java allowed |
 | `frontend.md` | frontend layer guidance (generated pages to keep/hide/customize, hooks). Generic TS/TSX allowed |
 
@@ -67,7 +60,7 @@ relation kinds (composition / aggregation / association), cardinalities,
 enumerations. It names **no tool**.
 
 `model.md` starts with `## Model shape` (prose) and ends with
-`## Structure diagram` holding the generated block (see below). Model-layer
+`## Structure diagram` holding a Mermaid block (see below). Model-layer
 guidance that belongs to the shape (derived members, access, transfer
 objects, generated UI pages: which View/Form/Table pages to keep, hide or
 customize) goes in between.
@@ -79,9 +72,44 @@ match the `domain:` tag. Sections in this order:
 `## Intent`, `## Practice`, `## Rationale`, `## Example`, `## When to avoid`,
 `## Related`.
 
-A best practice with a model shape gets a fragment and a generated block
-inside `## Example` (or a final `## Structure diagram`). Backend/frontend-only
-practices declare `fragment: none: backend-only` / `none: frontend-only`.
+A best practice with a model shape gets a Mermaid structure diagram
+inside `## Example` (or a final `## Structure diagram`).
+
+## Agent-doc: `catalog/agent-docs/<area>/<name>.md`
+
+Platform documentation, the source of truth for platform facts. Same kb contract as entries, without the entry-only keys.
+
+```yaml
+---
+title: Operation Call Interceptors
+description: One sentence naming the platform area and the questions the doc answers (used by kb and the AGENTS.md row).
+aliases: [interceptor order, preCall postCall]         # phrases developers type
+keywords: [OperationCallInterceptor, preCall, postCall] # identifiers in the doc: classes, annotations, keys, commands
+tags: [domain:backend, layer:backend, status:platform]
+---
+```
+
+- `domain:` is the area: `model`, `backend`, `frontend`, `deployment`, `testing` (integration and e2e). `layer:` is `model`, `backend`, `frontend`, `infrastructure` or `test`. `status:platform` marks a platform fact; no `project:` tags.
+- New headings name their subject (`## Interceptor ordering`, not `## Overview`): kb returns the heading path as the hit. Existing headings and text are kept as written; format work only adds frontmatter, companions and sub-headings.
+- No section body over 4000 characters without a sub-heading (kb chunk size).
+
+## Companion: `<name>.agent.md` for large files
+
+kb's contract (`kb dox lint`): any markdown file over **300 lines or 15000 bytes** has a companion next to it, `<name>.agent.md`, a pull-only condensed map that an agent reads before pulling one section with `kb_get`. It applies to agent-docs, entries and layer files alike.
+
+```markdown
+# interceptors.md — index
+
+Pull-only condensed map. Source: catalog/agent-docs/backend/interceptors.md.
+
+## Interceptor ordering
+- preCall runs in registration order; postCall in reverse. `@Component(property = "operation=…")`.
+```
+
+- First line `# <name>.md — index`, then the `Source: <repo path>` line. No frontmatter.
+- One `##` per `##` of the source, with the same heading text, so every section is reachable; terse bullets with the rules, identifiers and gotchas of that section. Nothing that is not in the source.
+- At most 250 lines. Rewrite the companion whenever the source's `##` headings change (`entry-lint` checks coverage).
+- The directory `AGENTS.md` lists the companion as "condensed map of `<name>.md`".
 
 ## Related and links
 
@@ -89,32 +117,24 @@ practices declare `fragment: none: backend-only` / `none: frontend-only`.
 `- [[derived-attribute-flattening]] — compute on read instead`. Every id
 must exist. Links into agent-docs use relative markdown links.
 
-## Generated structure diagram (fragments)
+## Structure diagram
+
+A plain Mermaid block under `## Structure diagram`:
 
 ```
-<!-- mermaid:generated fragment=<id> cli=<version> -->
+## Structure diagram
+
 ```mermaid
 classDiagram
 ...
 ```
-<!-- /mermaid:generated -->
 ```
 
-- Never write or edit this block by hand. It is produced by
-  `skills/judo-model-mermaid/scripts/render <id>` from `fragments/<id>.model`.
-- `skills/judo-model-mermaid/scripts/check <id>` must pass
-  (`validate --strict`, render equals block, no leaked classes).
-
-## Fragments: `fragments/<id>.model`
-
-A fragment is the Sandbox model (`tests/fixtures/Sandbox.model`) plus one
-package `Sandbox::bp::<pkg>` where `<pkg>` = id with `-` → `_`. It holds the
-entry's shape with **neutral names** (`Order`, `OrderLine`, `AuditLog`,
-`Status`), never client domain names.
-
-Build it only with the JUDO CLI in a scratch copy, then `save`:
-see [fragments.md](../../judo-model-mermaid/references/fragments.md).
-Never edit a `.model` file by hand, never commit the commands you used.
+- The catalog stores only the Mermaid text, never a model file, so diagrams survive ESM metamodel changes.
+- Draw it from the real project model the evidence points at with
+  `skills/judo-model-mermaid/scripts/render --model <path> --scope <fqn>`, or by hand when no model is at hand.
+- Use neutral names (`Order`, `OrderLine`, `AuditLog`, `Status`), never project or client domain names. Keep it consistent with `## Model shape`.
+- `spec-check` checks that every mermaid block starts with a known diagram type and is balanced.
 
 ## Forbidden content (entry-lint rejects)
 

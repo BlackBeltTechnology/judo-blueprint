@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, sanctuary-backend, park-here, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: composition-ownership
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -51,7 +50,6 @@ Seen in many projects. Typical composed children: addresses of a partner, attach
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=composition-ownership cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Order {
@@ -69,4 +67,3 @@ classDiagram
   Order *-- "*" OrderLine : lines
   OrderLine --> "1" Product : product
 ```
-<!-- /mermaid:generated -->

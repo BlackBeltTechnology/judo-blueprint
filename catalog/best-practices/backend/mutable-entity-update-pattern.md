@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adtrack, judo-partner, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/unit/ToggleActiveCustomImplementation.java", "alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PushNotificationServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -10,7 +10,6 @@ status: emerging
 projects: [park-here, workflow-poc]
 evidence: ["park-here:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -11,8 +11,6 @@ projects: [viterra_demo, workflow-poc]
 evidence: ["viterra_demo:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 related: [state-based-transfer-partitioning, mapped-operation-delegation, enum-state-machine, operation-output-with-behaviors]
-fragment: operation-return-type-navigation
-diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -59,7 +57,6 @@ A neutral Report entity has a `status` (Open, Submitted). `OpenReportView` and `
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=operation-return-type-navigation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class ClosedReportView {
@@ -90,4 +87,3 @@ classDiagram
   OpenReportView ..> Status : status
   Report ..> Status : status
 ```
-<!-- /mermaid:generated -->

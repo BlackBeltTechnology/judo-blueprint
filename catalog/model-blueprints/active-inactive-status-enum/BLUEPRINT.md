@@ -10,8 +10,6 @@ status: emerging
 projects: [viterra_demo, sanctuary-backend, kozut-eugyfel-client]
 evidence: ["viterra_demo:unrecorded", "sanctuary-backend:unrecorded", "kozut-eugyfel-client:unrecorded"]
 alternatives: [active-suspended-deactivated-status-enum, toggle-active-operation]
-fragment: active-inactive-status-enum
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

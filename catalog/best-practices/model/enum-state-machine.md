@@ -12,8 +12,6 @@ evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker
 alternatives: [derived-state-from-history, entity-based-state-machine]
 related: [conditional-visibility-getter, default-value-patterns, derived-state-from-history, entity-based-state-machine]
 first_seen: 2026-03-04
-fragment: enum-state-machine
-diagram: { kinds: [entity, enum, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -70,7 +68,6 @@ In backend code, `query<Attribute>()` on an enumeration attribute can fail with 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=enum-state-machine cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Request {
@@ -90,4 +87,3 @@ classDiagram
   }
   Request ..> Status : status
 ```
-<!-- /mermaid:generated -->

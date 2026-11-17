@@ -4,7 +4,6 @@ The Attempt entity belongs to one Participant and one Session, and it owns a lis
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=timed-attempt-lifecycle-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Attempt {
@@ -34,4 +33,3 @@ classDiagram
   Attempt "0..1" -- "1" Participant : participant / attempt
   Attempt --> "*" Item : items
 ```
-<!-- /mermaid:generated -->

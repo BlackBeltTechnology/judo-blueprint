@@ -11,7 +11,6 @@ projects: [mlszksz-platform, workflow-poc]
 evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AuditLogServiceImpl.java", "workflow-poc:unrecorded"]
 alternatives: []
 related: [audit-event-trail, quartz-scheduled-job, interceptor-aggregation-postcall, spel-guard-evaluation]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

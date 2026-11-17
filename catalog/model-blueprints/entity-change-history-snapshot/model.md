@@ -9,7 +9,6 @@ The model uses `Double` for the amounts, because the shared primitive set in the
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=entity-change-history-snapshot cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Parent {
@@ -27,4 +26,3 @@ classDiagram
   Parent --> "*" ParentHistory : history
   ParentHistory --> "1" Parent : parent
 ```
-<!-- /mermaid:generated -->

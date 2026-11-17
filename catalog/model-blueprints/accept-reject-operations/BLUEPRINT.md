@@ -10,8 +10,6 @@ status: established
 projects: [mlszksz-platform, judo-demo-miniworkflow, trivia, itracker, doors-model, ams-model, skillmatrix-model]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
 alternatives: [state-lifecycle-operation]
-fragment: accept-reject-operations
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

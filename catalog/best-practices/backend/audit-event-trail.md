@@ -10,7 +10,6 @@ status: established
 projects: [alba, mlszksz-platform, judo-demo-miniworkflow, park-here, judo-partner, workflow-poc, doors-model]
 evidence: ["alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AuditLogServiceImpl.java", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
 alternatives: [audit-log-entity]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

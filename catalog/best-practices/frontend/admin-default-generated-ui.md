@@ -11,7 +11,6 @@ projects: [trivia, itracker, reserve-app, doors-model]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
 alternatives: []
 related: [dual-actor-frontend-architecture, hook-scaffold-default-pattern]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

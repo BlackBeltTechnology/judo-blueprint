@@ -1,6 +1,6 @@
 ---
 name: judo-catalog-expand
-description: Grow and harden the judo-blueprint catalog with parallel background agents - mine a build session into a validated gap analysis, audit swept projects for compliance, then fix the catalog in ONE edit pass per file (evidence backfill, neutral wording, generic ids and fragment classes), and mine structure best practices. Use on "mine this build session", "gap analysis", "check projects against the catalog", "backfill evidence", "remove project specific wording", "make blueprints generic", "structure best practices from project X", "run a build test".
+description: Grow and harden the judo-blueprint catalog with parallel background agents - mine a build session into a validated gap analysis, audit swept projects for compliance, then fix the catalog in ONE edit pass per file (evidence backfill, neutral wording, generic ids and diagram class names), and mine structure best practices. Use on "mine this build session", "gap analysis", "check projects against the catalog", "backfill evidence", "remove project specific wording", "make blueprints generic", "structure best practices from project X", "run a build test".
 ---
 
 # judo-catalog-expand
@@ -29,7 +29,7 @@ Workflows that grow the catalog beyond single entries (`judo-blueprint-author`).
 | `gap-report render <work> --app APP` | Write `GAP-ANALYSIS.md` with checkboxes per distinct item |
 | `scope-split <work> <N> --pattern RX` | Balanced, non-overlapping scope files for N agents |
 | `rename-ids <logs...>` | Rewrite links, `related:`, `alternatives:` after id renames |
-| `vocab-scan [--fragments]` | Project names and client words left in bodies and fragment classes |
+| `vocab-scan` | Project names and client words left in bodies and diagrams |
 
 ## 1. Build session → gap analysis
 
@@ -45,7 +45,7 @@ Workflows that grow the catalog beyond single entries (`judo-blueprint-author`).
 2. Agree the pass: projects for evidence, wording rule, rename map (propose generic ids and classes; keep universally generic words like Order, Organization, Invoice).
 3. `scope-split target/compliance <N> --pattern '<project>:unrecorded|<project name>|<domain words>'`.
 4. One agent per scope file with [catalog-pass-prompt.md](references/catalog-pass-prompt.md), steps E, N and G enabled as agreed.
-5. `rename-ids target/compliance/pass-*.jsonl`, `vocab-scan --fragments`, `git diff` the frontmatter (agents have renamed projects inside tags), then finish.
+5. `rename-ids target/compliance/pass-*.jsonl`, `vocab-scan`, `git diff` the frontmatter (agents have renamed projects inside tags), then finish.
 
 ## 3. Structure best practices from a project
 

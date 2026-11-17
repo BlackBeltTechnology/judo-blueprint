@@ -11,7 +11,6 @@ projects: [itracker, mjsz]
 evidence: ["itracker:unrecorded", "mjsz:unrecorded"]
 alternatives: []
 related: [derived-attribute-flattening, derived-relation-navigation, integer-boolean-for-aggregation]
-fragment: null-safe-collection-aggregation
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -33,6 +32,8 @@ This is a convention on top of the platform's collection functions. The platform
 
 `!sum` accepts integer and decimal selectors only; other types fail with `Invalid expression for aggregation`. `!avg`, `!min` and `!max` take the same selector form, so the same filter-first shape applies to them. Keep each lambda to one iteration variable: lambdas do not nest and cannot see `self`.
 
+Only `!count()` is wrapped to return 0 on an empty collection (`COALESCE(..., 0)`); `!sum`, `!avg`, `!min` and `!max` are plain aggregates over a sub-select, so on an empty collection they most likely return no value (undefined) without an error (*verify* at runtime). Check `!count()` (or `!isDefined()`) before using the result in a label. Integer collections do not support `!avg` (only sum, min and max).
+
 ### Put the aggregate where it is read
 
 Declare the expression as a derived member of the entity (or of a transfer object) and let pages and operations read it. See [[derived-attribute-flattening]] for derived members and [[integer-boolean-for-aggregation]] for counting flags with `!sum`.
@@ -51,7 +52,6 @@ A neutral Order owns a composition collection of OrderLine items. OrderLine has 
 
 The original projects used the same three forms. One summed a required saving-potential field directly and used the filter form for an optional "actual saving" that is empty until entered. Another guarded its point and total sums with the count ternary, and counted completed rows with filter plus `!count()`.
 
-<!-- mermaid:generated fragment=null-safe-collection-aggregation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Order {
@@ -67,7 +67,6 @@ classDiagram
   }
   Order *-- "*" OrderLine : lines
 ```
-<!-- /mermaid:generated -->
 
 ## When to avoid
 

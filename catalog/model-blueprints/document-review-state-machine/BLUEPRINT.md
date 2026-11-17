@@ -10,8 +10,6 @@ status: single-project
 projects: [judo-demo-miniworkflow]
 evidence: [judo-demo-miniworkflow:unrecorded]
 alternatives: [entity-based-state-machine]
-fragment: document-review-state-machine
-diagram: { kinds: [entity, enum, transfer], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

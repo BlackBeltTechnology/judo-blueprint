@@ -10,7 +10,6 @@ status: emerging
 projects: [rackinspect, park-here, mlszksz-platform]
 evidence: ["rackinspect:AGENTS.md", "rackinspect:CLAUDE.md", "rackinspect:openspec/", "park-here:src/AGENTS.md", "park-here:src/openspec/", "mlszksz-platform:CLAUDE.md", "mlszksz-platform:openspec/"]
 alternatives: []
-fragment: "none: infrastructure"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

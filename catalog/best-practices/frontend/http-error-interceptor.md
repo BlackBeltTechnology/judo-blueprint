@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/register-error-handler-interceptor.ts"]
 alternatives: [centralized-error-handling-validation-map]
 related: [error-code-mapping-pattern, application-customizer-hub, centralized-error-handling-validation-map]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

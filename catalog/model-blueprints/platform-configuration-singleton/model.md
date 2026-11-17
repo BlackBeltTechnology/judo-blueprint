@@ -11,7 +11,6 @@ Generated UI pages follow from the entity. Keep the View and Update pages for ad
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=platform-configuration-singleton cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Configuration {
@@ -26,4 +25,3 @@ classDiagram
     +Text approvalEmailTemplate
   }
 ```
-<!-- /mermaid:generated -->

@@ -10,8 +10,6 @@ status: established
 projects: [rackinspect, alba, skillmatrix-model, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, sanctuary-backend, park-here, indamedia-adtrack, judo-partner, reserve-app]
 evidence: ["rackinspect:model/rackinspect.model", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: soft-delete-active-flag
-diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -72,7 +70,6 @@ A Company entity has `name` and a required `active` (default true) and a `toggle
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=soft-delete-active-flag cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Company {
@@ -88,4 +85,3 @@ classDiagram
   }
   Order --> "0..1" Company : company
 ```
-<!-- /mermaid:generated -->

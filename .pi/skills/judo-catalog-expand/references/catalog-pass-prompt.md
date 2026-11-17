@@ -1,8 +1,8 @@
 # Catalog pass: one edit pass per file
 
-Work in the judo-blueprint repository root. Read AGENTS.md, `skills/judo-blueprint-author/references/format.md` and, if your task renames fragment classes, `skills/judo-model-mermaid/references/fragments.md`.
+Work in the judo-blueprint repository root. Read AGENTS.md, `skills/judo-blueprint-author/references/format.md`.
 
-Your files: the list in `<SCOPE_FILE>` (one path per line). Edit ONLY these files (plus fragments of these entries). Touch each file ONCE and apply every enabled step below in that single pass.
+Your files: the list in `<SCOPE_FILE>` (one path per line). Edit ONLY these files. Touch each file ONCE and apply every enabled step below in that single pass.
 
 ## Steps (the task says which are enabled)
 
@@ -10,7 +10,7 @@ Your files: the list in `<SCOPE_FILE>` (one path per line). Edit ONLY these file
 
 **N. Neutral wording.** The body (everything outside frontmatter and generated Mermaid blocks) names no project and uses no client business words. "RackInspect keeps X" -> "One project keeps X" or just the practice. Domain names -> neutral names (Order, Product, Item, Account, Document, WorkOrder). Keep platform and integrated-product names (JUDO, Karaf, Keycloak, Vite, Playwright, Firebase). Never touch `projects:`, `evidence:`, `project:` tags. Keep every rule, caveat and *verify*.
 
-**G. Generic names** (map in the task). Id rename: folder or file, `id:`, title, description; old id and old domain words into `aliases:`. Fragment classes: rebuild with the JUDO CLI in `target/scratch/<id>/` (never edit a `.model` by hand), `validate --strict`, `save`, copy back, `server stop`, then `skills/judo-model-mermaid/scripts/render <id>` and `check <id>`. Do NOT edit `[[links]]` in other files; the parent runs `rename-ids`.
+**G. Generic names** (map in the task). Id rename: folder or file, `id:`, title, description; old id and old domain words into `aliases:`. Diagram classes: rename them in the entry's ```mermaid block to the generic names. Do NOT edit `[[links]]` in other files; the parent runs `rename-ids`.
 
 ## Rules
 

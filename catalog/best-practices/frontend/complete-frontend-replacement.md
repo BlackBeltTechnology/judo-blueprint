@@ -11,7 +11,6 @@ projects: [trivia, actiongroup-test-react]
 evidence: ["trivia:unrecorded", "actiongroup-test-react:unrecorded"]
 alternatives: [zero-customization-generated-frontend]
 related: [generated-service-layer-reuse, generator-ignore-app-theme, custom-component-directory, dialog-based-navigation, zero-customization-generated-frontend]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

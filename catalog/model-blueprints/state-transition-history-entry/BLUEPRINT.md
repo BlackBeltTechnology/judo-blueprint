@@ -10,10 +10,8 @@ status: single-project
 projects: [judo-demo-miniworkflow]
 evidence: ["judo-demo-miniworkflow:unrecorded"]
 alternatives: []
-fragment: state-transition-history-entry
 first_seen: 2026-03-05
 last_updated: 2026-11-10
-diagram: { kinds: [entity, enum], members: types }
 ---
 ## Intent
 

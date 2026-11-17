@@ -10,7 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: [mlszksz-platform:model/MLSZKSZPlatform.model, mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/hooks/containers/registerServicesFeedOrganizationSearchContainerHook.tsx]
 alternatives: []
-fragment: none: frontend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

@@ -11,7 +11,6 @@ projects: [rackinspect, doors-model]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/public/i18n/application_hu-HU.json", "doors-model:unrecorded"]
 alternatives: []
 related: [generator-ignore-i18n-layout, i18n-custom-translation-keys, i18n-generator-override-extra-fragment]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

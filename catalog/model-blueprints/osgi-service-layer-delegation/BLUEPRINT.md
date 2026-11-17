@@ -10,7 +10,6 @@ status: established
 projects: [mlszksz-platform, rackinspect, indamedia-adtrack, park-here]
 evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/PushNotificationService.java", "rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/RegistryServiceImpl.java", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
 alternatives: []
-fragment: none: backend-only
 related: [osgi-scheduled-background-jobs, identity-account-organization-cluster]
 first_seen: 2026-03-09
 last_updated: 2026-11-10

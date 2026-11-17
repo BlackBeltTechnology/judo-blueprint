@@ -10,8 +10,6 @@ status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, reserve-app]
 evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: [actor-based-transfer-projection]
-fragment: service-based-transfer-organization
-diagram: { kinds: [entity, transfer, actor], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -69,7 +67,6 @@ A model has an `entities` package with an Order entity (number, total, note) and
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=service-based-transfer-organization cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AppUser {
@@ -98,4 +95,3 @@ classDiagram
   OrderBilling ..> Order : maps
   OrderView ..> Order : maps
 ```
-<!-- /mermaid:generated -->

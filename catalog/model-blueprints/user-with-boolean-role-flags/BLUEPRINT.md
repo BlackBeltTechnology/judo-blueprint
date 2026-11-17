@@ -11,8 +11,6 @@ projects: [InterfaceRegister, skillmatrix-model]
 evidence: ["InterfaceRegister:unrecorded", "skillmatrix-model:unrecorded"]
 alternatives: [user-with-organization-and-role]
 related: [user-with-organization-and-role]
-fragment: user-with-boolean-role-flags
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

@@ -20,7 +20,7 @@
     <profiles>
         <!-- Downloads the pinned JUDO model CLI to target/judo-cli.jar (never tracked).
              Activates when target/judo-cli.jar is missing. Manual run: ./mvnw validate -P download-model-cli
-             To bump: change judo-model-cli-version, delete target/judo-cli.jar, re-run, then render all fragments. -->
+             To bump: change judo-model-cli-version, delete target/judo-cli.jar, re-run. -->
         <profile>
             <id>download-model-cli</id>
             <activation>

@@ -59,12 +59,18 @@ def rows_for(d):
                                     ("backend.md", "backend guidance"), ("frontend.md", "frontend guidance")):
                     if (c / layer).exists():
                         rows.append((f"{c.name}/{layer}", f"{c.name}: {what}"))
+                for comp in sorted(c.glob("*.agent.md")):
+                    src = comp.name[: -len(".agent.md")] + ".md"
+                    rows.append((f"{c.name}/{comp.name}", f"{c.name}: condensed map of `{src}`"))
             # other subdirectories carry their own AGENTS.md; list them so parent indexes are navigable
             n = sum(1 for _ in c.rglob("BLUEPRINT.md")) or sum(
                 1 for p in c.rglob("*.md") if p.name != "AGENTS.md")
             purpose = desc(readme) if readme.exists() else SUBDIR_PURPOSE.get(c.name, c.name)
             rows.append((f"{c.name}/", f"{purpose} ({n} files; index in `{c.name}/AGENTS.md`)"))
             continue
+        elif c.name.endswith(".agent.md"):
+            src = c.name[: -len(".agent.md")] + ".md"
+            rows.append((c.name, f"Condensed map of `{src}`: read first, then `kb_get` one section"))
         elif c.suffix == ".md":
             rows.append((c.name, desc(c)))
     return rows

@@ -10,8 +10,6 @@ status: emerging
 projects: [ubives, mlszksz-platform]
 evidence: ["ubives:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [invitation-with-recipients]
-fragment: invitation-with-key-based-acceptance
-diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---
@@ -46,6 +44,7 @@ The Invitation entity is non-CRUD (not createable, updateable or deleteable thro
 - **Accept for a new user.** The invitation type is USER. Acceptance creates a user with the password from the accept parameter.
 - **Accept for an existing account.** The invitation type is ACCOUNT. Acceptance adds the existing account to the organization and needs no new password.
 - **Re-invite supersedes a pending invitation.** Inviting an address that already has a pending invitation deletes the old one and creates the new one, so the old key stops working. An invitation the invitee already verified is not superseded; the new invite is refused. See the backend guidance.
+- **Invitee must be a Keycloak user.** The generated realm leaves self sign-up off (see `multi-tenant-keycloak-realm`), so an anonymous actor cannot accept the key without an account. Enable self sign-up on the realm, let the invitee register first, then accept the key as the signed-in actor.
 - **Cancel.** The inviter or an administrator cancels a pending invitation. Cancel deletes it.
 
 ## When to use

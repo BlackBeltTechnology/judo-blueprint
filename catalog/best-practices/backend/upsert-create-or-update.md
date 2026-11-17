@@ -11,7 +11,6 @@ projects: [park-here, indamedia-adtrack, judo-partner]
 evidence: ["park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [init-data-seeding, mutable-entity-update-pattern, builder-pattern-entity-creation, dao-fluent-query-filter, mask-field-projection]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

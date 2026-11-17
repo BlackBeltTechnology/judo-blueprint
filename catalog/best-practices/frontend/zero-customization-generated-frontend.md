@@ -11,7 +11,6 @@ projects: [itracker, reserve-app]
 evidence: ["itracker:unrecorded", "reserve-app:unrecorded"]
 alternatives: [single-actor-heavy-customization, complete-frontend-replacement]
 related: [admin-default-generated-ui, model-defined-color-palette, hook-scaffold-default-pattern, single-actor-heavy-customization, complete-frontend-replacement]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -10,7 +10,6 @@ status: established
 projects: [itracker, mlszksz-platform, viterra_demo, judo-demo-miniworkflow, ubives, park-here, InterfaceRegister, doors-model]
 evidence: ["itracker:unrecorded", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/_default_transferobjecttypes/entities/initializer/InitCustomImplementation.java", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded"]
 alternatives: [excel-data-seed-import]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -31,6 +30,7 @@ The model defines an initializer operation kind: it must be static and take no i
 - Make it repeatable: check before creating (for example an existence check, an emptiness check on the entity, or a counter of completed migration steps). Without a guard a second run creates duplicates.
 - Split big seeds into several small named operations, one per reference data group.
 - Do not use the principal or actor: there is no signed-in user when it runs.
+- For a running-app (browser automation) test the DAO-based initializer is not a test hook. Seed state in the database instead: the `dump` and `import` commands of the generated `judo.sh` script manage PostgreSQL dumps, so build a base dump once and derive test data from it. Values the application sets itself (for example creation timestamps) probably cannot be set through the generated REST API (*verify*); backdate them with SQL against the PostgreSQL container, or leave that rule untested.
 
 ```java
 // Example code

@@ -10,8 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: [snapshot-versioning-pattern]
-fragment: self-referencing-versioning
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -64,7 +62,6 @@ An Offer has `title`, a `status` (Draft, Done), `lastVersion` (default true) and
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=self-referencing-versioning cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Offer {
@@ -81,4 +78,3 @@ classDiagram
   Offer --> "0..1" Offer : previousVersion
   Offer ..> Status : status
 ```
-<!-- /mermaid:generated -->

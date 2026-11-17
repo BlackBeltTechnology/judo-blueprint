@@ -10,7 +10,6 @@ UI: the generated Table of History rows on the parent's View page is kept read-o
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=history-audit-trail-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class History {
@@ -24,4 +23,3 @@ classDiagram
   }
   Task *-- "*" History : history
 ```
-<!-- /mermaid:generated -->

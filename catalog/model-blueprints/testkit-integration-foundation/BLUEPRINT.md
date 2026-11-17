@@ -10,7 +10,6 @@ status: single-project
 projects: [compsych-letter-framework]
 evidence: ["compsych-letter-framework:unrecorded"]
 alternatives: []
-fragment: none: infrastructure
 first_seen: 2026-05-11
 last_updated: 2026-11-10
 ---

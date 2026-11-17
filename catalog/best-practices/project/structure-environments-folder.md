@@ -10,7 +10,6 @@ status: emerging
 projects: [rackinspect, park-here, mlszksz-platform]
 evidence: ["rackinspect:enviroments/", "rackinspect:compose-dev.properties", "park-here:src/environments/", "park-here:src/judo-karaf.env.example", "mlszksz-platform:enviroments/"]
 alternatives: []
-fragment: "none: infrastructure"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

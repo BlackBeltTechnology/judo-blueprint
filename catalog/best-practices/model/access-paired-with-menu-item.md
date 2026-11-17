@@ -11,8 +11,6 @@ projects: [judo-demo-miniworkflow, mlszksz-platform, rackinspect, park-here, res
 evidence: ["judo-demo-miniworkflow:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "rackinspect:model/rackinspect.model", "park-here:unrecorded", "reserveapp:unrecorded", "ams-frontend:unrecorded", "indamedia-adtrack:unrecorded", "compsychletter:unrecorded"]
 alternatives: []
 first_seen: 2026-05-13
-fragment: access-paired-with-menu-item
-diagram: { kinds: [entity, transfer, actor], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -62,7 +60,6 @@ Variants seen:
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=access-paired-with-menu-item cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Report {
@@ -78,4 +75,3 @@ classDiagram
   }
   ReportView ..> Report : maps
 ```
-<!-- /mermaid:generated -->

@@ -11,7 +11,6 @@ projects: [rackinspect, park-here]
 evidence: ["rackinspect:application/frontend-react/generator-overrides/ui-react/actor/public/i18n/application_default_extra.fragment.hbs"]
 alternatives: []
 related: [i18n-custom-translation-keys, generator-override-extra-dependencies, generator-ignore-i18n-layout]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -32,6 +31,7 @@ Custom UI code (hand-written components, custom operations, project fault messag
 The agent-docs describe fragment overrides for `pom.xml` and `feature.xml`; the i18n slot below is practice from one example and is not covered by the agent-docs, so check the generated output after adding it.
 
 - Place `application_default_extra.fragment.hbs` under the frontend override directory at `ui-react/actor/public/i18n/`.
+- The UI template includes this partial as `actor/public/i18n/application_default_extra.fragment.hbs` inside `application_default.json`, after a placeholder line (`"__extra": "Placeholder for additional translations",`), so the override file keeps that relative path and the content is key-value lines that continue the object.
 - The content is JSON key-value pairs without wrapping braces; the generator merges it into the `translation` object of `application_default.json`.
 - Use a `custom.*` prefix for project keys so they never collide with generated keys ([[i18n-custom-translation-keys]]).
 - Other locales (for example Hungarian) are maintained separately in a locale file protected by `.generator-ignore`.

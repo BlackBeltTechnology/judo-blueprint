@@ -11,8 +11,6 @@ projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmat
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "judo-demo-miniworkflow:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 related: [transient-relation-parameter, actor-based-transfer-projection, error-code-enum-pattern, factory-operation-with-prepopulation, transfer-object-multiplicity]
-fragment: unmapped-transfer-dto
-diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -70,7 +68,6 @@ An Order entity with a mapped OrderView. The operation `place` is declared on Or
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=unmapped-transfer-dto cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class BusinessError {
@@ -104,4 +101,3 @@ classDiagram
   BusinessError ..> ErrorCode : code
   OrderView ..> Order : maps
 ```
-<!-- /mermaid:generated -->
