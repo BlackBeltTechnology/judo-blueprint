@@ -16,7 +16,7 @@ The JUDO catalog is indexed by the kb (`kb_search`, `kb_get`). It has three part
 ## Use it
 
 1. **Search first.** Run `kb_search` with the domain words of the task ("approval workflow", "soft delete", "range interceptor"). Entry aliases are tuned for this. See [references/search.md](references/search.md).
-2. **Read the entry.** `kb_get <path>` gives the first section and a count of the rest. Pass `section` with the full heading path from `kb_search` JSON output to read one section.
+2. **Read the entry.** Blueprint and best-practice files are short (median 64 lines, 95% under 100): read the whole file once kb_search has found it (`catalog/<path>`, or the `read` tool). For long agent-docs, read the `.agent.md` companion, then `kb_get` one section. A path-only `kb_get` returns only the first section, and `section` needs the full `headingPath` from `kb_search` with `format: "json"`; a short name such as `Practice` returns "not found".
 3. **Check the platform rule** the entry links to in `agent-docs/`. When an entry and the agent-docs disagree, the agent-docs win.
 4. **Apply** with the steps in [references/apply.md](references/apply.md): adapt names, build the model shape with the JUDO model CLI, and keep labelled *project practice* separate from platform behaviour.
 
