@@ -16,7 +16,7 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/local-development
 - Needs Docker daemon (`docker info` first). Karaf runs in background (console output `application/.karaf/console.out`); command returns before app is ready: wait for HTTP 200 before tests. Connection refused usually = stack not up.
 - Java 21 required (`java.version` 21). No `run-offline-postgresql.sh`; use `./judo.sh start -o dbtype=postgresql`.
 - Access: app `http://localhost:8181/<model>/<Actor>/` (per-actor context path; `/apps/` lists bundles only); Keycloak admin `http://localhost:8080/auth` (`--http-relative-path /auth`; with `keycloak_port=<port>` base is `http://localhost:<port>/auth`); Karaf SSH `ssh -p 8101 karaf@localhost` (password `karaf`, Apache defaults).
-- Start options: `-o "runtime=karaf|compose,dbtype=hsqldb|postgresql,compose_env=...,karaf_port=...,postgres_port=...,keycloak_port=..."`; `-K` skips Keycloak; `-W` disables bundle watching.
+- Start options: `-o "runtime=karaf|compose,dbtype=hsqldb|postgresql,compose_env=...,karaf_port=...,postgres_port=...,keycloak_port=..."`; `-K` skips Keycloak; `-w` disables bundle watching (`-W` is not parsed).
 - First login: fresh app has no user. Create user in Keycloak (realm `<app>`) and ensure matching actor instance, or let backend create it on first login (Keycloak JIT provisioning).
 - Local email: Mailpit at `localhost:1025` (no auth/TLS) set in `judo-karaf.env`.
 

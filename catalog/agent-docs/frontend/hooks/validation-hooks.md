@@ -185,6 +185,8 @@ export const itemFormHook: ServiceItemViewEditContainerHook = (data, editMode, s
 
 Add custom validation rules for specific fields beyond date/datetime.
 
+The generated numeric input checks the `minValueBy` attribute only when both the entered value and the `minValueBy` attribute value are truthy, so an entered `0` is accepted even when the minimum is above it.
+
 ### Basic Implementation
 
 ```typescript

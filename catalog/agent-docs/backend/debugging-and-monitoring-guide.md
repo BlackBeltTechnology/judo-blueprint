@@ -89,7 +89,7 @@ JUDO automatically enriches every log message with a request-specific context, w
 | `user` | The username from the OAuth 2.0 access token. |
 
 ### Request Correlation with `X-Exchange-Id`
-Two built-in CXF interceptors correlate a request across client and server logs. `ExchangeIdDecorator` (incoming, `Phase.RECEIVE`) assigns a UUID to the CXF exchange (key `exchangeId`) and publishes it in the SLF4J MDC as `RequestExchangeId`. `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header; its fault handler delegates to the normal handler, so error responses carry the header as well. Quote that header value when you search server logs for a failing request. It is the same id the CXF logging feature uses.
+Two built-in CXF interceptors correlate a request across client and server logs. `ExchangeIdDecorator` (incoming, `Phase.RECEIVE`) assigns a UUID to the CXF exchange (key `exchangeId`) and publishes it in the SLF4J MDC as `RequestExchangeId`. `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header, and only when `ExchangeIdDecorator` has set an id on the exchange; its fault handler delegates to the normal handler, so error responses carry the header as well. Quote that header value when you search server logs for a failing request. It is the same id the CXF logging feature uses.
 
 ### Log Messages Emitted by the Dispatcher
 Only these dispatcher messages exist in the runtime: `Operation {} completed in {} ms` (`DefaultDispatcher`, per operation) and `Unable to rollback transaction` (`TransactionalOperationCall`). Do not search for other strings such as "Dispatching operation" or "Resolved actor"; they are not logged. To see operation names add your own interceptor that logs `AsmUtils.getOperationFQName(operation)` (see [Interceptors](interceptors.md)).
@@ -351,6 +351,10 @@ For live drill-down (single component, current state), keep using the `*.json` e
 ## Performance Monitoring
 
 JUDO uses **Apache Karaf Decanter** to collect and store application metrics, which can be visualized with **Grafana**.
+
+The SELECT and COUNT executors emit scoped metrics `select-prepare`, `select-processing`, `select-query`, `count-prepare` and `count-query`.
+
+The Jetty metrics bundle registers an `InstrumentedHandler` with no delegate handler, so it records no HTTP request metrics.
 
 ### Pattern: Measuring Code Performance
 You can measure the execution time of specific blocks of your custom code to identify performance bottlenecks.

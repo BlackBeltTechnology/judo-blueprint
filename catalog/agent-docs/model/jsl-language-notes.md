@@ -16,7 +16,7 @@ Identifiers are ASCII letters and digits starting with a letter. A reserved word
 
 ## Built-in libraries
 
-Every JSL model implicitly imports two framework models. `judo::types` declares `Boolean`, `Date`, `Time`, `Timestamp`, `Integer` (numeric, precision 9, scale 0), `Long` (precision 15, scale 0) (project type libraries often declare their own `Long` with precision 18; the SDK maps precision 10-19 to `java.lang.Long` either way, see [type.md](esm_metamodel/type.md)) and `String` (min-size 0, max-size 4000). `judo::functions` provides the string functions (`matches`, `like`, `ilike`, `replace`, `lpad`, `rpad`, `substring`), `isDefined`/`isUndefined`/`orElse`/`asString` on each type, the collection lambdas (`first`, `last`, `front`, `back`, `filter`, `anyTrue`, `allTrue`, `anyFalse`, `allFalse`, `min`, `max`, `avg`, `sum`), the entity functions (`typeOf`, `kindOf`, `container`, `asType`, `memberOf`, `all`, `any`, `contains`, `size`) and `getVariable(category, key)`, which is only declared on boolean, numeric, string, date, time and timestamp types. Collection iterator lambdas take one boolean or numeric expression and may select only an immediate field of the iterator variable.
+Every JSL model implicitly imports two framework models. `judo::types` declares `Boolean`, `Date`, `Time`, `Timestamp`, `Integer` (numeric, precision 9, scale 0), `Long` (precision 15, scale 0) (project type libraries often declare their own `Long` with precision 18; the SDK maps precision 10-19 to `java.lang.Long` either way, see [type.md](esm_metamodel/type.md)) and `String` (min-size 0, max-size 4000). `judo::functions` provides the string functions (`matches`, `like`, `ilike`, `replace`, `lpad`, `rpad`, `substring`), `isDefined`/`isUndefined`/`orElse`/`asString` on each type, the collection lambdas (`first`, `last`, `front`, `back`, `filter`, `anyTrue`, `allTrue`, `anyFalse`, `allFalse`, `min`, `max`, `avg`, `sum`), the entity functions (`typeOf`, `kindOf`, `container`, `asType`, `memberOf`, `all`, `any`, `contains`, `size`) and `getVariable(category, key)`, which is only declared on boolean, numeric, string, date, time and timestamp types. Collection iterator lambdas take one boolean or numeric expression and may select only an immediate field of the iterator variable. `Date.of` takes named numeric arguments, for example `Date.of(year = 2022, month = 1, day = 1)`.
 
 When JSL is translated to JQL some functions are renamed: `right` to `last`, `left` to `first`, `lower`/`upper` to `lowerCase`/`upperCase`, `size` to `length` (string) or `count` (collection); `first`/`last`/`front`/`back` lambdas become `!heads(...)`/`!tails(...)` with a trailing `DESC`, and `^` becomes repeated multiplication.
 
@@ -27,8 +27,9 @@ When JSL is translated to JQL some functions are renamed: `right` to `last`, `le
 ## Constraints that fail the build
 
 - A collection cannot be `required`; a bidirectional relation cannot be required on both ends.
+- An entity member with `required` set to `false` is still treated as required, because its `isRequired` check (`JslDslModelExtension`) only looks for the modifier. Transfer members do honour `false`.
 - An abstract entity cannot be used as a field type and can only be inherited.
-- An identifier cannot be calculated and cannot be a numeric type with a scale.
+- An identifier cannot be calculated and cannot be a numeric type with a scale. The validator does not reject a binary primitive as an identifier.
 - `eager` is invalid on primitive fields. Entity relations are lazy by default (writing `eager:false` only produces an informational hint).
 - A default expression cannot reference `self`; calculated and composition members cannot have a default.
 - A cycle of required members is an ERROR; eager cycles are only warnings.
@@ -37,9 +38,14 @@ When JSL is translated to JQL some functions are renamed: `right` to `last`, `le
 
 ### Syntax limits
 
+- The member selector modifier is spelled `oldselector: <Transfer>`. The keyword `selector` belongs to the UI table modifier `selector: <row>`, not to this modifier.
 - `Long` is not a keyword; it is a type declared in `judo::types`. For other widths declare a numeric type with a precision.
 - The size unit keyword is `KB` (upper-case K); `kB` does not parse.
 - Transfer events take no parameter list and no `on` modifier: `event create Name;`, `event update Name;`, `event initialize Name;` (likewise `fetch` and `delete`).
+- Transfer relation declarations take no `selector` modifier; they accept `default`, `eager`, `required`, `enabled`, `choices`, `create`, `update` and `delete`.
+- View inputs use `widget <WidgetType> <name>`; `field` is not a view member.
+- View links accept only the `visual`, `create-form`, `update-view` and `selector-table` modifiers; `required`, `enabled`, `default`, `choices`, `eager`, `delete` and `text` are rejected.
+- View tables accept only the `action-group`, `visual`, `create-form`, `update-view` and `selector-table` modifiers; `enabled`, `default`, `choices`, `eager`, `create`, `delete`, `update` and `rows` are not accepted.
 - Transfer fields and actor accesses have no `bind` modifier (`bind:true` is not valid); read-write binding is written with the `<=>` operator.
 - A `union` with a single member parses.
 - `Time.of(hour = .., minute = ..[, second = ..][, millisecond = ..])`: `second` and `millisecond` are optional numeric parameters.

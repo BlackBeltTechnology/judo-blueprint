@@ -46,3 +46,20 @@ class ReconcileTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RawCoverageTest(unittest.TestCase):
+    def test_raw_rows_outside_inventory_fail(self):
+        with tempfile.TemporaryDirectory() as d:
+            w = pathlib.Path(d)
+            write(w / "inventory.jsonl", [{"id": "A", "src": "s", "target": "t.md", "text": "a"}])
+            write(w / "ledger/x.jsonl", [{"id": "A", "status": "already-correct"}])
+            write(w / "raw.jsonl", [{"id": "R1", "kind": "doc", "covered_by": "A"},
+                                    {"id": "R2", "kind": "bug", "covered_by": None},
+                                    {"id": "R3", "kind": "bug", "covered_by": None}])
+            write(w / "triage/verdicts-1.jsonl", [{"id": "R3", "verdict": "not-platform"}])
+            r = subprocess.run([str(TOOL), "reconcile", str(w)], capture_output=True, text=True)
+            self.assertEqual(r.returncode, 1)
+            self.assertIn("UNACCOUNTED R2: RAW-UNTRIAGED", r.stdout)
+            self.assertNotIn("R3", r.stdout.split("raw")[0])
+            self.assertIn("Raw source coverage", (w / "SUMMARY.md").read_text())

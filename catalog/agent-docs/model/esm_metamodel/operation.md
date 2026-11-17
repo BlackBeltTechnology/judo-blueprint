@@ -189,6 +189,8 @@ When `output` is NOT null, CRUD permissions can be configured:
 
 ### Mapped Operation Rules
 
+The `generateOperations` flag has two defaults in the Java rules: `isMappedOperation` treats an absent flag as `false`, while `shouldGenerateOperations` treats it as `true`.
+
 **Visible when:** Owner is `TransferObjectType` AND `operationType = MAPPED`
 
 | Attribute | Description |

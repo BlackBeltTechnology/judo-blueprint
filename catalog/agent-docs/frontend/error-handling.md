@@ -25,6 +25,8 @@ The generated `src/utilities/error-handling.ts` (hook `useErrorHandler`) maps HT
 
 A custom error handler interceptor (`src/custom/hooks/register-error-handler-interceptor.ts.default`, interface key `ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY`, registered with `registerErrorHandlerInterceptorHook`) runs before the default handling and can take over a response.
 
+The generated `FeedbackLevel` type is `'ERROR' | 'WARNING '`. The `WARNING` literal has a trailing space, so a comparison with `'WARNING'` does not match the type.
+
 ## Operation Fault Dialog (HTTP 422)
 
 On 422 the handler takes only the first key of the response body (`Object.keys(data)[0]`) and calls `openFaultDialog(key, data[key])`. The `useFaultDialog()` hook returns `(faultObjectKey: string, payload: any) => void`; it opens an `OperationFaultDialog` in the stackable dialog provider with title `judo.error.error` and body `judo.error.business-fault`. Every payload entry is rendered as a key/value pair:

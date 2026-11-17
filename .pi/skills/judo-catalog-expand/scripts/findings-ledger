@@ -22,6 +22,10 @@ route: an item whose target is not a catalog file is matched by the identifiers 
 hits route it to the best file; the rest go to triage/unrouted.txt for triage agents. Routing is
 by CONTENT, never by the finding's source path: a path rule once dropped 1,332 of 1,405 findings.
 
+raw.jsonl (optional, one row per finding of every RAW source: {"id","kind","covered_by"}): reconcile also fails
+for any raw row that is neither covered by an inventory/legacy-triage id nor has a triage/verdicts-*.jsonl line.
+Build it for every pass; the inventory alone cannot show findings that never entered it.
+
 reconcile: every inventory item and every new triage item must end in exactly one of
   applied (with a checker verdict) | already-correct | rejected | not-platform | open (research could not settle)
 Anything else (no ledger line, unverified without research, applied but unchecked) fails.
@@ -160,7 +164,10 @@ def research(work):
 def wave2(work):
     own = json.load(open(work / "file-owners.json"))
     W, bad = collections.defaultdict(list), []
+    done = {k for k, x in latest(work).items() if x.get("status") != "handoff"}  # resolved earlier: never hand out twice
     def put(o, x):
+        if x["id"] in done:
+            return
         (W[o].append(x) if o else bad.append(x["id"]))
     for x in research(work).values():
         if x.get("status") == "proposed":
@@ -173,6 +180,8 @@ def wave2(work):
         if x.get("status") == "handoff":
             put(own.get(x.get("file")), dict(id=x["id"], kind="handoff", file=x.get("file"), text=x.get("proposed", x.get("change")), evidence=x.get("evidence")))
     (work / "wave2").mkdir(exist_ok=True)
+    for old in glob.glob(str(work / "wave2/*.json")):  # previous wave lists are kept for the record
+        os.replace(old, old + ".prev")
     for o, v in W.items():
         json.dump(v, open(work / f"wave2/{o}.json", "w"), indent=1)
     print({o: len(v) for o, v in W.items()}, "| no owner (assign by hand):", bad)
@@ -203,7 +212,7 @@ def reconcile(work):
                 else:
                     st = "UNVERIFIED-NOT-RESEARCHED"
             if st == "handoff":
-                st = "HANDOFF-NOT-APPLIED"
+                st = "applied" if checked.get(k) == "applied-now" else "HANDOFF-NOT-APPLIED"
             if st == "applied" and k not in checked:
                 st = "APPLIED-UNCHECKED"
             if checked.get(k) == "removed":
@@ -214,16 +223,48 @@ def reconcile(work):
         if st in ("open", "removed-by-checker"):
             note = (r or {}).get("evidence") or (x or {}).get("change", "")
             open_rows.append((k, it.get("target", ""), it.get("text", "")[:160], str(note)[:220]))
+    # RAW coverage: every row of every raw source (raw.jsonl) must reach the inventory or get a triage verdict.
+    # Without this, findings that never entered inventory.jsonl are invisible here (1,516 judo-ng rows once were).
+    raw_by = collections.Counter()
+    if (work / "raw.jsonl").exists():
+        verdict = {}
+        for f in glob.glob(str(work / "triage/verdicts-*.jsonl")):
+            for x in jl(f):
+                verdict[x.get("id")] = x.get("verdict")
+        legacy, documented = set(), set()
+        for f in glob.glob(str(work / "triage/kept-*.jsonl")):
+            documented |= {y["id"] for y in jl(f) if y.get("already_documented")}
+        for f in glob.glob(str(work / "triage/part-*")):
+            legacy |= {l.split("|")[0].strip() for l in open(f) if l.strip()}
+        for x in jl(work / "raw.jsonl"):
+            c, k = x.get("covered_by"), x["id"]
+            if c and c in inv:
+                raw_by[(x.get("kind"), "in inventory")] += 1
+            elif verdict.get(k):  # a recorded per-item verdict wins over a legacy drop
+                raw_by[(x.get("kind"), "triage: " + verdict[k])] += 1
+            elif c and c in documented:
+                raw_by[(x.get("kind"), "triage: already documented")] += 1
+            elif c and c in legacy:
+                raw_by[(x.get("kind"), "triage (legacy): dropped, no per-item reason")] += 1
+            else:
+                raw_by[(x.get("kind"), "RAW-UNTRIAGED")] += 1
+                problems.append((k, "RAW-UNTRIAGED", x.get("repo", "")))
     by = collections.Counter((inv[k].get("src", "?").split(":")[0], s) for k, s in status.items())
     lines = ["# Findings pass summary", "", "| source | status | count |", "|---|---|---|"]
     lines += [f"| {a} | {b} | {n} |" for (a, b), n in sorted(by.items())]
-    lines += ["", f"Total {len(inv)}: " + ", ".join(f"{s} {n}" for s, n in collections.Counter(status.values()).most_common())]
+    if raw_by:
+        lines += ["", "## Raw source coverage (raw.jsonl)", "", "| kind | outcome | count |", "|---|---|---|"]
+        lines += [f"| {a} | {b} | {n} |" for (a, b), n in sorted(raw_by.items())]
+    total = f"Total {len(inv)}: " + ", ".join(f"{s} {n}" for s, n in collections.Counter(status.values()).most_common())
+    lines += ["", total]
     (work / "SUMMARY.md").write_text("\n".join(lines) + "\n")
     rows = ["# Open findings: need a JUDO developer", "", "Answer per item: correct / wrong / how it really works.", "",
             "| id | doc | finding | what the source check found |", "|---|---|---|---|"]
     rows += [f"| {k} | `{t}` | {a.replace('|', '/').replace(chr(10), ' ')} | {n.replace('|', '/').replace(chr(10), ' ')} |" for k, t, a, n in sorted(open_rows)]
     (work / "OPEN-ITEMS.md").write_text("\n".join(rows) + "\n")
-    print(lines[-1])
+    print(total)
+    for (a, b), n in sorted(raw_by.items()):
+        print(f"  raw {a}: {b} {n}")
     for k, s, t in problems[:40]:
         print(f"  UNACCOUNTED {k}: {s} ({t})")
     print(f"{len(problems)} unaccounted; {len(open_rows)} open for developers -> {work}/OPEN-ITEMS.md")

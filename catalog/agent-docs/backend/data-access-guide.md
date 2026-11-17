@@ -525,6 +525,11 @@ Alternatively count all rows minus `isTrue` minus `isFalse`.
 
 - **`query<Attribute>()` on an enumeration attribute** can fail with a `ClassCastException` (`Integer` cannot be cast to the enum): the runtime delivers the ordinal. Workaround: read the value through the DTO or convert with `<Enum>.getByOrdinal(...)`. The same can happen when a navigation returns an enumeration value; check the result cast after adding an enum attribute to a relation.
 - **Derived attribute navigating through an inherited member** can produce a query that is missing a JOIN.  No generator-side workaround is known; check the generated SQL when a derived value comes back empty.
+- **String aggregates support only `min` and `max`.** Other string aggregate operators, including `concatenate`, throw `UnsupportedOperationException`.
+- **Static query navigation `QueryCustomizer` class name does not match the emitted class.** The `staticQueryNavigationQueryCustomizerImplFqName` helper names the class `<impl package>.<name>QueryCustomizerImpl`, but the generated class is `<TargetTransferObject>Query<Name>QueryCustomizerImpl`. Reference the emitted class, not the helper name.
+- **Setter names for embedded mapped relations contain a double dot** (`relation..name`) in the collection branch of the generated create builder (template bug).
+- **`count()` with query parameters references an undeclared variable.** The generated `count()` passes `effectiveParams.toMap()` when `self.hasParam` is set, but the class never declares `effectiveParams`, so the emitted code fails to compile in that case.
+- **PostgreSQL `max_uuid` helper returns its first argument.** The helper always returns the first argument, so `max` aggregates over UUID values return the wrong value.
 - Generated DAO code lives under `target/` and is not in git; when debugging a stack trace, open the generated `<Entity>DaoImpl` there.
 
 ### Pagination

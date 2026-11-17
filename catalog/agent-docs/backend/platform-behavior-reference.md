@@ -51,8 +51,9 @@ Do not use these names for model features. DAO payload processors and the dispat
 - Resource verbs are suffixes such as `~create`, `~list`, `~get`, `~update`, `~delete`, `~set`, `~unset`, `~add`, `~remove`, `~range`, `~template`, `~validate`, `~export`, `~meta`, `~principal` and `~upload-token`. `~update` is a partial update: fields absent from the body stay unchanged.
 - List queries combine `_orderBy`, a `_seek` keyset cursor (`lastItem` with the signed identifier and sort key, `limit`, `offset`, `reverse`) and per-attribute filter operators. A query mask that cannot be parsed fails with `INVALID_QUERY_MASK`.
 - Wire conversions: enumerations travel as ordinals, binaries as file-store tokens (see below), dates as ISO strings.
+- JSON response payloads are written with the platform default charset, not UTF-8: `PayloadMessageBodyWriter` wraps the entity stream in an `OutputStreamWriter` without a charset.
 - Behaviours: no bound dispatcher gives 503, malformed request parameters give 400, an operation without output gives 204, export operations stream a file with `Content-Disposition`.
-- `java.util.Date` query/path parameters are parsed only as `yyyy-MM-dd` (`ISO8601DateParamHandler`, key `ISO8601DateParamHandler.DATE_FORMAT`); anything else fails with `IllegalArgumentException("Invalid date parameter")`.
+- `java.util.Date` query/path parameters are parsed as `yyyy-MM-dd` by default (`ISO8601DateParamHandler`); anything else fails with `IllegalArgumentException("Invalid date parameter")`. The OSGi bundle reads the key `ISO8601DateParamHandler.DATE_FORMAT` to change the format; the Guice/CXF server does not read it.
 - Error shapes are described in the [Error Handling Guide](error-handling-guide.md).
 
 ### Binary Upload Tokens
@@ -69,7 +70,15 @@ Custom Java code reads and writes binary content through the OSGi service `hu.bl
 
 A binary attribute value in generated Java is `hu.blackbelt.judo.dispatcher.api.FileType` (Lombok `@Builder`, getters): `id`, `fileName`, `size` (`Long`), `mimeType`. It is persisted as a JSON string `{"id":..,"fileName":..,"size":..,"mimeType":..}`. To attach a file from Java, `put` the content and set a `FileType` built with the returned id, name, size and MIME type.
 
+File names longer than 128 characters are cut to their first 127 characters by `FilenameUtils.makeValidFilename`, which the filesystem, RDBMS and S3 backends call on the name they store.
+
+A `null` file name stores the file as `<fileId>.<mimeType>` (for example `uuid.image/png`). The stored `size` comes from `InputStream.available()`, which is not guaranteed to equal the content length.
+
 The backend is chosen with `JUDO_PLATFORM_FILESTORE`: `filesystem` (directory `filestoreDirectory`, default `$HOME/file-store`), `rdbms` (table `FILESTORE`) or `s3`. Any other value, including a typo, disables the file store and the upload/download endpoints. `JUDO_PLATFORM_FILESTORE_TOKEN_EXPIRY` sets the upload token lifetime in minutes (`0` = no expiry).
+
+### Actor Access List Operations
+
+Each actor access declaration gets a `LIST` behaviour and an unbound `listOf<Access>` operation when `generateBehaviours` is set. The generated list has no list-permission check of its own.
 
 ### Range and Choice Operations
 
@@ -105,6 +114,15 @@ The generated axios service (`accessServiceImpl.ts`) sends the token in the `X-T
 
 On the wire, the download request is `GET /download?id=<fileId>` with the `X-Token` header; the file id parameter is `id`, not `fileId`. Each uploaded file's JSON entry has the keys `id` and `token` (plus `field`, `name`, `url`, `ctype`, `size`), not `fileId` or `downloadToken`. In the file-store servlets, a `*` CORS origin is answered with a literal `*` and never with `Access-Control-Allow-Credentials`.
 
+### File-Store Servlet Checks
+
+- The file-store `maxSize` settings are in kB, but `UploadServlet.checkRequest` compares the raw `Content-Length` (bytes) with the limit, so a configured value N allows at most N bytes.
+- `UploadAction` overrides `doPost` and calls `parsePostRequest` directly with a `null` max file size, so it skips the upload-token check at the top of `UploadServlet.doPost`.
+- Upload tokens are parsed whenever a `TokenValidator` is bound, even when the `tokenRequired` flag is `false`.
+- Generated EC keys always use the P-521 curve, whatever `ES256` or `ES384` algorithm is configured.
+- `UploadAction` hands the received file items to its `executeAction` method and does not store them in `FileStoreService`; `UploadServlet.doPost` stores each item with `put`.
+- `DownloadServlet` has no size limit setting; only `UploadServlet` has `maxSize`.
+
 ### Excel Export Operations
 
 Modeled `EXPORT` operations call the `Export` SPI. The reference implementation is `JxlsExport` (JXLS/POI): row 0 holds headers, row 1 placeholders and data starts at row 2. Cell formats follow the type: timestamp `dd/mm/yyyy hh:mm:ss`, date `dd/mm/yyyy`, time `hh:mm:ss`, decimal `#,##0.00`, integer `0`. Only the overloads taking an ASM model and a fully qualified name work. When no `Export` is configured the default module binds `UnsupportedExportImpl`, and export calls fail with `Not implemented`.
@@ -127,11 +145,19 @@ Writing with one clock and comparing against the other yields a fixed offset (fo
 
 - Generated UI columns and fields format timestamps in the **browser** time zone (the React template calls `Intl.DateTimeFormat` without a `timeZone`). A string built in a model expression uses `defaultZoneId`, so the same instant shows with the zone offset between the two (for example `18:00` in a model-built string and `20:00` in a history column). The model cannot read the browser zone: show the timestamp itself in the UI and avoid a derived string that formats it.
 
+- The generated TypeScript REST client turns `yyyy-MM-dd` strings into dates with `new Date(string)`, which reads them as UTC midnight. With a negative UTC offset the displayed date is one day earlier.
+
 ## Variables and Sequences
 
 ### Variable Providers
 
 JQL `!getVariable('CATEGORY', 'key')` and Java `VariableResolver.resolve(Integer.class, "SYSTEM", "random")` read variables from the categories `SYSTEM`, `ENVIRONMENT`, `REQUEST`, `ACTOR`, `PRINCIPAL` and `SEQUENCE` (plus `USER`). `SYSTEM` provides `current_date`, `current_time` and `current_timestamp`. Register your own provider as an OSGi component with the property `judo.environment-variable-provider=true` and a `category` property: a provider with a key is a `java.util.function.Supplier`, one without a key a `Function`; providers that depend on request context must set `cacheable=false`.
+
+The built-in `EnvironmentVariableProvider` is a concrete class implementing `Function<String, Object>` (`apply(String)`), not an interface with `get()`.
+
+### Dispatcher Function Providers
+
+`DispatcherFunctionProvider` exposes `getSdkFunctions()` and `getScriptFunctions()`, each returning `Map<EOperation, Function<Payload, Payload>>`.
 
 ### Custom Sequences
 
@@ -170,6 +196,10 @@ An operation with `initializer = true` (an ESM `Operation` flag, not `OperationT
 - Spring Boot runtime: no caller of the initializer flag was found in the runtime sources (*verify* before relying on it there).
 
 The generated `<Entity>Initializer.initBuilder()` Java interface belongs to the separate transfer-object initializer (`OperationType.INITIALIZER`), not to this flag.
+
+## Transaction Rollback
+
+A call that joins an existing transaction is not rolled back. The rollback happens only when the call started a new transaction (`AlwaysRollbackTransactionalBehaviourCall` checks `isNewTransaction()`).
 
 ## Scheduled Work
 

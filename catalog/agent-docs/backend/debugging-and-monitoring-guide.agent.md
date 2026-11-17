@@ -13,7 +13,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/debugging-and-monito
 - SLF4J facade over Log4j 2. Use Lombok `@Slf4j` in custom components.
 - MDC attributes: `RequestExchangeId`, `operation` (operation FQN), `user` (OAuth 2.0 token user).
 - `ExchangeIdDecorator` (incoming, `Phase.RECEIVE`) sets the exchange id and MDC `RequestExchangeId`.
-- `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header, including on error responses.
+- `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header (only when the decorator set an id), including on error responses.
 - Dispatcher log messages that exist: `Operation {} completed in {} ms` (`DefaultDispatcher`) and `Unable to rollback transaction` (`TransactionalOperationCall`). Do not search for "Dispatching operation" or "Resolved actor": they are not logged.
 - To log operation names, add an interceptor that logs `AsmUtils.getOperationFQName(operation)`.
 - Runtime log levels: `application/.karaf/bin/client`, then `log:set DEBUG <package>`; reset with `log:set DEFAULT <package>`. Example package: `hu.blackbelt.judo.services.dao`.

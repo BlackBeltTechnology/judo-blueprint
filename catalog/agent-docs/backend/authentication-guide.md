@@ -40,7 +40,7 @@ The methods are called at two different points:
 
 - `authenticate(operationFQName, exchange, claim, realm, client, attributes)` runs at the start of **every** dispatcher operation call that has a principal, before the mapped principal is loaded. It is called on every registered interceptor; `isSuitableForOperation` is **not** consulted, so filter on `operationFQName`, `client` or `claim` inside the method.
 - `isSuitableForOperation(operation, claim, realm, client, attributes)` is only the filter for `success`.
-- `success(operation, signedIdentifier, exchange, claim, realm, client, attributes)` runs after the access checks of the operation and before the operation body, only on interceptors whose `isSuitableForOperation` returns `true`.
+- `success(operation, signedIdentifier, exchange, claim, realm, client, attributes)` runs after the exposure and actor checks of the operation and before the CRUD authorizers and the operation body, so it can fire for an operation that later fails with `PERMISSION_DENIED`; it runs only on interceptors whose `isSuitableForOperation` returns `true`.
 
 `isSuitableForOperation`, `authenticate` and `success` default to no-ops (`isSuitableForOperation` defaults to `true`).
 
@@ -252,9 +252,21 @@ ActorTypeFQN=client1,client2;OtherActor=client3
 
 Client ids are normalised (dash to dot) and an ambiguous client-to-actor mapping is rejected. A user who signs in through the client of an actor that has no matching row gets `AUTHENTICATED_ENTITY_NOT_FOUND`; the generated React client shows this as "User not found" and signs the user out, so an access-denied message needs a custom page. The Keycloak login interceptor also accepts a `clientToActorMap` that renames `azp` values to actor names. See [OSGi Runtime Services](../deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration) for the realm side.
 
+Client resolution has no acceptable-clients fallback: an unknown client throws `IllegalStateException` ("Unsupported client"). Keycloak deployments are cached per realm only. On a cache hit the client name is ignored, so actors that share a realm reuse the first cached client. `KeycloakLoginInterceptor` verifies the token without an explicit issuer-to-realm check.
+
+### Actor path matching
+
+Actor lookup from the request path is a plain string prefix match with no segment boundary. An actor path that is a prefix of another actor's name also matches the requests of that longer name (for example `<Actor>` matches `<Actor>Admin`).
+
 ### Discovery endpoints for custom frontends
 
 Each actor exposes `GET /api/<Model>/Actor/<Actor>/~meta` and `GET .../~principal` (the authenticated principal with `__identifier` and `__signedIdentifier`). The `security` entry of `~meta` carries `tokenEndpoint`, `clientId` and `openIdConfigurationUrl`, which a custom frontend needs to obtain an access token for that actor. The generated React layout waits for `principal.__signedIdentifier` before rendering, maps `AUTHENTICATED_ENTITY_NOT_FOUND` to a "User not found" message, and logs out with `signoutRedirect` using the current URL without its hash as `post_logout_redirect_uri`.
+
+## Operation Exposure, Public Access and Password Policy
+
+- An operation without an `exposedBy` annotation gets an empty expected-role list.
+- An access point without `@actor` counts as public. One public access point makes the whole operation public, so its expected-role list is empty.
+- `PasswordPolicy<ID>` extends `Function<Map<String, Object>, Optional<ID>>` and declares no `validatePassword()` method. A custom policy implements `apply()`.
 
 ## Testing and Best Practices
 

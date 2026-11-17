@@ -26,7 +26,7 @@ This document covers widget components that display and edit data within contain
 | `ui:DataField` | `label` | Label text | Input label (i18n) |
 | `ui:DataField` | `iconName` | Icon | Input adornment |
 | `ui:DataField` | `col` | Grid column (1-12) | Grid md prop (default: 12) |
-| `ui:DataField` | `row` | Row span | Textarea rows (default: 1) |
+| `ui:DataField` | `row` | Row span | Textarea rows (default: 1). Only `rows` is emitted; `minRows` is not. |
 | `ui:DataField` | `stretch` | Stretch behavior | `NONE`/`HORIZONTAL`/`VERTICAL`/`BOTH` |
 | `ui:DataField` | `fit` | Fit mode | `LOOSE`/`TIGHT` |
 | `ui:DataField` | `dataFeature` (ref) | Bound attribute | Data binding |
@@ -44,13 +44,13 @@ Type-specific attributes:
 
 | Attribute | Applies To | Values | Frontend Effect |
 |-----------|------------|--------|-----------------|
-| `enumWidget` | EnumerationType | `COMBO`/`RADIO`/`TOGGLE_BUTTONBAR` | Enum input type |
+| `enumWidget` | EnumerationType | `COMBO`/`RADIO`/`TOGGLE_BUTTONBAR` | Enum input type. `COMBO` renders an MUI Autocomplete, not a Select with MenuItem options. |
 | `textWidget` | StringType | `TEXT`/`INPUT` | `TEXT`=read-only, `INPUT`=editable. `TEXT` renders the value as plain text (`ui:Formatted`): no label, no input, no tooltip, optionally an icon. `INPUT` renders a labelled input (`ui:TextInput` or `ui:TextArea`). To keep the label on a read-only value, use `INPUT` on a read-only (derived) member. |
 | `textMultiLine` | StringType | Boolean | Enable textarea |
-| `textMask` | StringType | Pattern string | Input mask (only when `textWidget=INPUT` and `textMultiLine=false`) |
-| `textCountCharacters` | StringType | Boolean | Show character counter |
+| `textMask` | StringType | Pattern string | Input mask (only when `textWidget=INPUT` and `textMultiLine=false`). The generated input does not apply it: only `maxLength` is emitted. |
+| `textCountCharacters` | StringType | Boolean | Show character counter. Rendered only when `countCharacters` is set and the bound attribute has `maxLength`. |
 | `isTypeAheadField` | StringType | Boolean | Autocomplete from previous values |
-| `booleanWidget` | BooleanType | `CHECKBOX`/`COMBO` | Boolean input type |
+| `booleanWidget` | BooleanType | `CHECKBOX`/`COMBO`/`SWITCH` | Boolean input type. ESM models (esm2ui): unset or `CHECKBOX` gives a checkbox, `COMBO` the trinary-logic combo, `SWITCH` a `ui:Switch`. The React template has widget fragments only for checkbox and trinary-logic combo, so do not rely on `SWITCH` (*verify* how it renders). JSL models (jsl2ui): a boolean view field always becomes the trinary-logic combo; the checkbox rule is commented out. |
 | `valueLabelPlacement` | BooleanType | `DEFAULT`/`TOP`/`START`/`BOTTOM`/`END` | Checkbox label placement (only when `booleanWidget=CHECKBOX`) |
 | `formatValue` | NumericType | Boolean | Apply number formatting (default: true) |
 
@@ -67,13 +67,19 @@ Type-specific attributes:
 | `TimestampType` | `minValueBy`, `maxValueBy` | `minValueBy`/`maxValueBy` disabled when in TableOperation |
 | `TimeType` | `minValueBy`, `maxValueBy` | `minValueBy`/`maxValueBy` disabled when in TableOperation |
 | `BooleanType` | `booleanWidget`, `valueLabelPlacement` | `valueLabelPlacement` enabled only when `booleanWidget=CHECKBOX` |
-| `BinaryType` | - | File upload widget |
+| `BinaryType` | - | File upload widget. `maxFileSize` is not enforced client-side, and binary uploads are not base64-encoded in the generated input. |
 | `MeasuredType` | - | Inherits NumericType behavior |
 
 **Read-only fields of other types:** `textWidget=TEXT` is the only switch and applies to string fields. A date, number or enumeration field is rendered read-only when its bound member is read-only (a derived member); `enabledBy` only disables the input, so a date field keeps its picker icon. To show such a value as plain text, bind a derived string member (for example a formatted value) instead of the mapped member.
 
 **Inherited from `Widget`:** `onBlur`, `requiredBy`, `minValueBy`, `maxValueBy`
 **Inherited from `Component`:** `col`, `row`, `stretch`, `fit`, `hiddenBy`, `enabledBy`
+
+**Generated input notes:**
+- Numeric inputs use only the attribute `scale` (as `decimalScale`); `precision` has no effect.
+- No `PasswordInput` element type exists; password fields are not produced by a separate template.
+- Text areas set `rows` only; `minRows` is not emitted.
+- Time inputs always show hours, minutes and seconds; `baseUnit` is not read.
 
 **Example:**
 ```xml
@@ -370,6 +376,12 @@ Container for grouping related actions/buttons with automatic overflow handling.
 | `ui:ActionGroup` | `actions` | Action list | PerformableAction list |
 
 **Behaviour:** The first `featuredActions` actions are displayed as standalone buttons. Remaining actions are placed in a popup menu.
+
+**FAB button groups:**
+- A FAB group with one button and `featuredActions=0` renders nothing, because the speed dial needs more than one button.
+- The speed-dial toggle shows the group icon or no icon; it never uses a `SpeedDialIcon` element.
+- `hiddenBy` applies to featured FAB buttons, not to speed-dial items in the same group.
+- Dialog FAB groups render after `DialogContent`, outside the dialog body.
 
 **Example:**
 ```xml

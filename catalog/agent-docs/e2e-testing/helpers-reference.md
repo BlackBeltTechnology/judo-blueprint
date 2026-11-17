@@ -24,7 +24,7 @@ Handles API request synchronization to ensure tests wait for backend responses.
 const apiHelper = new ApiHelper();
 ```
 
-The ApiHelper automatically constructs the base API regex from `APP_URL` environment variable.
+The ApiHelper automatically constructs the base API regex from `APP_URL` environment variable. `APP_URL` is inserted into the regex without escaping, so regex metacharacters in the URL change what is matched.
 
 ### Methods
 

@@ -32,6 +32,10 @@ The generated feature descriptor is `feature.xml` (from `feature.xml.hbs`), not 
 
 Declarative Services components can be unit-tested without a container with `MockOsgi` from `osgi-utils` (`osgi-test`): `MockOsgi.activate`/`deactivate` call the `@Activate`/`@Deactivate` methods (parameters: none, `BundleContext`, `ComponentContext`, `Map`/`Dictionary`) and `MockOsgi.setReferences` injects services into `@Reference` fields or bind methods (Felix SCR and standard OSGi DS annotations).
 
+### JAX-RS Application Address
+
+The JAX-RS address of an application comes from the `applicationPath` entry of `Application.getProperties()`, not from an OSGi service property. If that entry is missing and the application class has no `@ApplicationPath`, the server logs a warning.
+
 ## Target Datasource Model
 
 In a multi-model deployment one model owns the shared datasource and every other model is configured against it. Every per-model activator reads a `targetDatasourceModelName` key; for the model whose name equals that value it suppresses its own per-model components (dialect/mapper/sequence, Keycloak connector and login interceptor, dispatcher configurations, health checks, realm extractor, access manager). The managed datasource carries `dao.datasource.name`, `managed.datasource.name` and `judo.model.name`, and components bind per model through filters like `(dao.datasource.name=<name>)`.

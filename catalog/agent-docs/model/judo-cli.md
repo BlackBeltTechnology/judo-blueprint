@@ -85,7 +85,7 @@ Invoke every command as `java -jar target/judo-cli.jar -m model/<app>.model <com
 | `validate [--strict]` | ESM EVL, esm2ui/UI EVL and a transform dry run, all on the in-memory model. `--strict` is deprecated: validation errors always exit non-zero. |
 | `transform [--load] [--skip steps] [--validate]` | Run the transformation pipeline on the in-memory model, see [transformation-pipeline.md](transformation-pipeline.md). |
 | `status [--json]` | State (`clean`/`dirty`), unsaved changes and their intent. |
-| `save` / `discard [--force] [--derived]` | Persist or drop the unsaved edits. `save` never runs git. |
+| `save` / `discard [--force] [--derived]` | Persist or drop the unsaved edits. `save` never runs git; it writes a temp file and atomically moves it over the model file. |
 | `mermaid model` / `mermaid from` | Draw the model as Mermaid class diagrams, see below. |
 | `server status` / `server stop [-f]` | Manage the per-model daemon. |
 
@@ -149,6 +149,8 @@ The CLI runs one daemon per model. Its session lives under `~/.judo/sessions/<ha
 `query <model> <Type>` builds GraphQL with `--select`, `--where`, `--limit`, `--offset`. Operators: `eq`, `contains`, `startsWith`, `endsWith`, `regex`, their case-insensitive forms (`icontains`, `istartsWith`, `iendsWith`, `iregex`), and `gt`, `gte`, `lt`, `lte`. Collection fields are pluralised and nested reference filters are AND-combined. `graphql` takes `--variables` and `-o`; `--schema` writes the SDL to `.judo-schema.graphql`.
 
 `--select` takes scalar fields only (`name`, `fqn`, `createable`, `_type`); `--select "target{name}"` and `target.name` are rejected with `not a field of <Type>`, and a reference field selected by itself fails with `SubselectionRequired`. To read a reference field, use `graphql`, for example `graphql '{esm{accesses{items{name target{name}}}}}'`. `-w "fqn.eq=<fqn>"` filters by FQN; for a looser match use `name.contains`.
+
+The GraphQL schema maps `Integer` and `Long` attributes to GraphQL `Int`; `Long` is narrowed to 32-bit, not `String`.
 
 `ui` has no `MenuItem`, `MenuItemAccess`, `Access`, `ActorType` or `TableOperation` type: `query ui MenuItemAccess` fails with `ui type 'MenuItemAccess' does not exist`. These are `esm` types; use `query esm MenuItemAccess`, `query esm Access`, `query esm TableOperation`. The error lists the valid type names. A field the CLI reports as `not a field` lists the valid fields of that type: for example `textWidget` belongs to `DataField`, not to `StringType`.
 

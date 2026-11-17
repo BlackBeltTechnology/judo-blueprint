@@ -12,6 +12,7 @@
 | `application-config.md` | JUDO_PLATFORM environment variables for database, Keycloak, filestore, mail and identifier signing, per-environment setup and encrypted values. |
 | `build-process.agent.md` | Condensed map of `build-process.md`: read first, then `kb_get` one section |
 | `build-process.md` | judo.sh command reference, Maven profiles, build workflows, project template generation, Docker image build and build troubleshooting. |
+| `generator-plugins.agent.md` | Condensed map of `generator-plugins.md`: read first, then `kb_get` one section |
 | `generator-plugins.md` | ESM and UI generator goals, checksums, Tatami workflow plugins, generation toggles, OpenAPI, Flutter and frontend environment variables. |
 | `local-development.agent.md` | Condensed map of `local-development.md`: read first, then `kb_get` one section |
 | `local-development.md` | Starting the application locally, hot deployment, Karaf console, logs and local troubleshooting. |

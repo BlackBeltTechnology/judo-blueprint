@@ -225,6 +225,7 @@ The platform's own checks report codes such as `MISSING_REQUIRED_ATTRIBUTE`, `MI
     2.  **Validator Class**: Create a component that implements `hu.blackbelt.judo.runtime.core.validator.Validator` (module `judo-runtime-core-validator`).
     3.  **`isApplicable(EStructuralFeature feature)` method**: In this method, you write logic to tell the platform which model elements your validator should run against (e.g., "all attributes of type `FutureTime`").
     4.  **`validateValue(Payload payload, EStructuralFeature feature, Object value, Map<String, Object> context)` method**: This method contains the actual validation logic. If the validation fails, it should return a collection of `ValidationResult` objects.
+-   **Context keys**: The `context` argument holds the global validation context plus the location and root-flag keys. It has no `rootPayload` key.
 -   **Result**: The JUDO platform will automatically find and execute your validator for all applicable attributes in every incoming request, providing a powerful, DRY (Don't Repeat Yourself) way to enforce common constraints.
 
 ---

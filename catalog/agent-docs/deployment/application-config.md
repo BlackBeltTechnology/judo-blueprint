@@ -55,7 +55,7 @@ These are the variables the shipped `judo.sh` and the Docker Compose stacks of t
 
 **Location:** `/judo-karaf.env`
 
-The generated file contains only a few defaults (identifier signer secret, Keycloak password policy, `JUDO_PLATFORM_LOG_SMTP_SERVER`, `JUDO_PLATFORM_FILESTORE=rdbms`). Add or change variables there, then restart: `./judo.sh stop && ./judo.sh start`.
+The generated file contains only a few defaults (identifier signer secret, Keycloak password policy, `JUDO_PLATFORM_LOG_SMTP_SERVER`, `JUDO_PLATFORM_FILESTORE=rdbms`). The generated signer secret is a fixed placeholder; replace it per environment. Add or change variables there, then restart: `./judo.sh stop && ./judo.sh start`.
 
 **Format:**
 ```bash
@@ -142,7 +142,7 @@ For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtim
 - **Description**: Password policy for users created by the platform. The shipped `judo-karaf.env` sets `SAME_EMAIL`; the Compose stack sets `SAME_USERNAME`.
 
 **JUDO_PLATFORM_KEYCLOAK_MANAGEMENT_ENABLED / JUDO_PLATFORM_USER_MANAGER_ENABLED / JUDO_PLATFORM_KEYCLOAK_USER / JUDO_PLATFORM_KEYCLOAK_PASSWORD**
-- **Description**: Enable the built-in Keycloak user management and the Keycloak admin credentials the backend uses for it (seen in production Compose files of real applications).
+- **Description**: Enable the built-in Keycloak user management and the Keycloak admin credentials the backend uses for it (seen in production Compose files of real applications). When unset, the admin user is `admin` and the admin password is `judo`.
 
 ### 3. REST API
 
@@ -150,7 +150,7 @@ For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtim
 - **Description**: Switch on the Swagger UI (default path `/swagger-ui`). Consider disabling it in production.
 
 **JUDO_PLATFORM_CORS_ALLOW_ORIGIN**
-- **Description**: Allowed CORS origin(s) (used by real deployments; do not leave it open in production).
+- **Description**: Allowed CORS origin(s) (used by real deployments; do not leave it open in production). In the Guice CXF JAX-RS runtime this variable has no effect: `CrossOriginResourceSharingFilterProvider` returns an unconfigured filter.
 
 ### 4. File Storage
 
@@ -163,6 +163,8 @@ For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtim
 **S3 settings**: `JUDO_PLATFORM_S3_BUCKET`, `JUDO_PLATFORM_S3_REGION`, `JUDO_PLATFORM_S3_ENDPOINT`, `JUDO_PLATFORM_S3_ACCESS_KEY`, `JUDO_PLATFORM_S3_SECRET_KEY`, plus `JUDO_PLATFORM_FILESTORE_TOKEN_EXPIRY`.
 
 An `http://` S3 endpoint is accepted: activation logs a WARN that the endpoint is cleartext (signed requests and file bytes travel unencrypted), but it is not an error and does not stop activation. Use `https://` outside local tests.
+
+The upload token audience is prefixed with the `audiencePrefix` property of the file-store token service config; the validator expects the same prefix.
 
 #### Using a Google Cloud Storage bucket
 

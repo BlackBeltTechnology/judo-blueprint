@@ -29,7 +29,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 - List: `_orderBy`, `_seek` keyset (`lastItem` with signed id + sort key, `limit`, `offset`, `reverse`), per-attribute filter operators. Unparseable mask → `INVALID_QUERY_MASK`.
 - Wire: enums as ordinals; binaries as file-store tokens; dates ISO strings.
 - Status: no bound dispatcher → 503; malformed params → 400; op without output → 204; export streams file with `Content-Disposition`.
-- `java.util.Date` params: only `yyyy-MM-dd` (`ISO8601DateParamHandler`, key `ISO8601DateParamHandler.DATE_FORMAT`); else `IllegalArgumentException("Invalid date parameter")`.
+- `java.util.Date` params: `yyyy-MM-dd` by default (`ISO8601DateParamHandler`); else `IllegalArgumentException("Invalid date parameter")`. OSGi bundle reads key `ISO8601DateParamHandler.DATE_FORMAT`; Guice/CXF server does not.
 - Error shapes: error-handling-guide.md.
 - Class names: `<Name>Response`, `<Name>Request`, `<Name>CreateRequest`, `<Name>RangeRequest` (no `For`).
 - Response DTOs of mapped TOs carry `__deleteable`, `__updateable`, `__entityType`, `__identifier`, `__signedIdentifier`, `__version`, `__referenceId`. Request DTOs: only `__identifier`, `__signedIdentifier`, `__referenceId`. Use `__updateable`/`__deleteable` for row actions.
@@ -132,6 +132,9 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 - Failure: logged (`Initializer script <fqn> failed`); next still runs; `InitScriptsCompleted` registered only if all succeeded.
 - Spring Boot: no caller of the flag found (verify).
 - Generated `<Entity>Initializer.initBuilder()` belongs to TO initializer (`OperationType.INITIALIZER`), not this flag.
+
+## Transaction Rollback
+- A call that joins an existing transaction is not rolled back; rollback happens only when the call started a new transaction (`isNewTransaction()`).
 
 ## Scheduled Work
 - No platform scheduler. `judo-services-job` only runs initializers at startup; no Quartz/scheduling component. Periodic work = app code (e.g. OSGi component with own executor).

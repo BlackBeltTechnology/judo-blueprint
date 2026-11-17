@@ -185,7 +185,7 @@ public class MyFirstIntegrationTest {
 | `modelSource` | `ModelSource` | `AUTO` | `AUTO` (filesystem, then classpath), `FILESYSTEM`, `CLASSPATH` |
 | `modules` | `Class<? extends Module>[]` | `{}` | Extra Guice modules (public no-arg constructor) |
 | `dataSourceMode` | `DataSourceMode` | `BY_METHOD` | `BY_METHOD`, `BY_CLASS`, `SINGLETON` (datasource lifecycle) |
-| `shareInjector` | `boolean` | `false` | Reuse the Guice injector across the methods of a class (with `BY_CLASS`/`SINGLETON`) |
+| `shareInjector` | `boolean` | `false` | Reuse the Guice injector across the methods of a class (with `BY_CLASS`/`SINGLETON`). Derived test artifacts are reused across methods only when this is `true`; the default `false` rebuilds them |
 | `interceptors` | `Class<? extends OperationCallInterceptor>[]` | `{}` | Interceptors registered for the test |
 
 ### Transaction Handling Modes

@@ -62,13 +62,13 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/build-process.md.
 - `schema-upgrade`: persistent PostgreSQL only; generates the diff against the running DB and applies it immediately. Do NOT use when a backfill changeset is needed (no insertion point).
 - `build` options: `-v <version>`, `-p`, `-a`, `-f`, `-sc`, `-d`/`--docker`, `-M`, `-B`, `-F`, `-KA`, `-S`, `-ma <arg>` (extra Maven arg), `-q`, `-i`.
 - `reckless`: build and run fast; skips validation and Docker. `start`: app with PostgreSQL and Keycloak. `stop`. `status`.
-- `start` options: `-W` (no bundle watch), `-K` (skip Keycloak), `-o "<name>=<value>,..."`:
+- `start` options: `-w` (no bundle watch; `-W` is not parsed), `-K` (skip Keycloak), `-o "<name>=<value>,..."`:
   - `runtime`: `karaf` | `compose`
   - `dbtype`: `hsqldb` | `postgresql`
   - `compose_env`: `compose-develop` | `compose-postgresql-https` | a dir under the model's `doc` dir
   - `model_dir` (default: app's parent)
   - `karaf_port`, `postgres_port`, `keycloak_port` (Karaf HTTP default 8181)
-  - `compose_access_ip`, `karaf_enable_admin_user` (`1`), `java_compiler` (`ejc` default | `javac`)
+  - `compose_access_ip`, `karaf_enable_admin_user` (`1`), `java_compiler` (`ejc` | `javac`; not read by `judo.sh`, so no effect)
 - Option defaults can go in `judo.properties`.
 - No `-D` pass-through in `judo.sh`. Use `-d` for Docker and `-ma` for Maven args. Docker profiles activate on `!skipDocker`, so ANY `-DskipDocker` (even `=false`) disables Docker. `judo.sh build` without `-d` passes `-DskipDocker -DskipSchemaDocker`; `reckless` skips Docker.
 

@@ -27,7 +27,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/internationalization
   1. `I18nService.getTemplate(message)`; `null` → raw message used.
   2. `{min}`, `{max}` params interpolated; `${validatedValue}` EL evaluated.
   3. Escaped literals `\{ \} \\ \$` become literal characters.
-- Locale: `LocaleProvider.getLocale()` if present, else configured `defaultLocale`, else `Locale.getDefault()`.
+- Locale: `LocaleProvider.getLocale()` if present, else configured `defaultLocale` (an empty value gives `Locale.ROOT`), else `Locale.getDefault()`.
 - Malformed format → original message used, warning logged.
 
 ## Localized Business Error Transfer Objects

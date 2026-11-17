@@ -219,6 +219,10 @@ public class MyInterceptor implements OperationCallInterceptor {
 - Runtime uses this to match interceptors to operations
 - Multiple models can coexist with different interceptors
 
+### Guice and Spring Registration
+
+The default `OperationCallInterceptorProvider` returns an empty list unless interceptors are configured explicitly: it does not read a Guice `Multibinder` set of `OperationCallInterceptor`. In Spring, a `@Bean` that returns an `OperationCallInterceptor` is not collected; the default Spring configuration returns an empty interceptor list.
+
 ## Example 1: Simple Logging Interceptor
 
 **Pattern**: Log all intercepted operations

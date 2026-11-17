@@ -89,6 +89,7 @@ A `ValidationResult` has `code`, `level`, `location` (type `Object`) and a `deta
 - Field errors carry the attribute or relation name as `location`.
 - The platform itself emits results without location (`AUTHENTICATION_REQUIRED`, `ACCESS_DENIED`, `INVALID_IDENTIFIER`) or with non-field locations such as `_mask` and `_identifier`.
 - You may throw a `ValidationException` with only a code (the official documentation example uses `SHIPPED_TIME_MUST_AFTER_ORDER_TIME` with no location).
+- With `ignoreInvalidValues` set, attribute validation is skipped for the attribute, including the required-attribute check.
 
 Do not assume every error can be rendered next to an input field, and do not assume a validation error maps to a model attribute.
 
@@ -144,6 +145,9 @@ Notes:
 - The CXF `FaultInterceptor` only handles exceptions that escape the mapper and sets just the HTTP status.
 - Exposed operations validate their input in a transaction that is rolled back; no interceptors run during that validation.
 - There is no `FeedbackItem` class; the equivalent structure is `ValidationResult`.
+- `ValidationException` has no `getViolations()` method. It is built from a collection of `ValidationResult` and exposes it as `getValidationResults()`.
+- A `WebApplicationException` is mapped by its cause: a Jackson cause gives 400 with code `INVALID_JSON`; a missing or `RuntimeException` cause gives 500; any other cause gives 400.
+- `PayloadMessageBodyWriter` swallows every response-serialisation error: nothing is logged and no error response is sent.
 
 ## Example Project Helpers (Not Platform API)
 

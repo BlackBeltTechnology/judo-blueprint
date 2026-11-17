@@ -307,7 +307,7 @@ The app realm's name is `ActorType.realm` emitted verbatim by `asm2keycloak` as 
 
 **`build` options:** `-v <version>` (model and application version), `-p` (parallel), `-a` (app module only), `-f` (frontend module only), `-sc` (build the schema CLI standalone JAR), `-d` / `--docker` (build Docker images), `-M` (skip model), `-B` (skip backend), `-F` (skip frontend), `-KA` (skip Karaf), `-S` (skip schema migration image), `-ma <arg>` (extra Maven argument), `-q` (quick: cache, no validation), `-i` (ignore checksum errors, regenerate and update checksums).
 
-**`start` options:** `-W` (do not watch bundle changes), `-K` (skip Keycloak), `-o "<name>=<value>,..."` with:
+**`start` options:** `-w` (do not watch bundle changes; long form `--skip-watch-bundles`; `-W` is not parsed), `-K` (skip Keycloak), `-o "<name>=<value>,..."` with:
 
 | Option | Values |
 |--------|--------|
@@ -318,7 +318,7 @@ The app realm's name is `ActorType.realm` emitted verbatim by `asm2keycloak` as 
 | `karaf_port`, `postgres_port`, `keycloak_port` | port overrides (Karaf HTTP default **8181**) |
 | `compose_access_ip` | alternate IP used to access the app |
 | `karaf_enable_admin_user` | `1` enables the Karaf admin user |
-| `java_compiler` | `ejc` (default) \| `javac` |
+| `java_compiler` | `ejc` \| `javac`; not read by `judo.sh` (the help text lists it), so it has no effect |
 
 Defaults for the options can be placed in `judo.properties` (or the properties file chosen with `env`).
 
@@ -333,6 +333,8 @@ Defaults for the options can be placed in `judo.properties` (or the properties f
 | `./judo.sh prune` | All untracked files in the whole repository |
 | `./judo.sh prune -f` | All untracked files inside `application/frontend-react/` |
 | `./judo.sh prune -y` | Same as above but skips the `[Y/n]` confirmation |
+
+Without `-y`, the `[Y/n]` prompt continues only for an exact `Y`; Enter, `y` and any other input abort (`Aborting prune.`, exit 13).
 
 **What gets wiped that you likely care about:**
 
@@ -380,6 +382,8 @@ The template (`judo-esm-fullstack-project-template`) has the modules `-root`, `-
 2. The root POM has a `generate-root` execution with `synchronizeGitignore` (`esm=${basedir}/model/<app>.model`, ignored files `pom.xml`, `**/pom.xml`, `judo.sh`, `.mvn/jvm.config`). When adopting generated output into a repository that already has its own `.gitignore`, copy only the generated files and keep the managed `# JUDO GENERATOR BLOCK` in `.gitignore`; overwriting the tracked file wholesale makes `generate-root` stop with a manual-changes error.
 3. Add a `<server>` with the id `<app>-distribution` to `~/.m2/settings.xml` if you deploy artifacts.
 4. Run `./judo.sh build`; Docker must be installed (the local database and Keycloak run in containers).
+
+The version updater goals read the update channel from `-Djudo-version-update-channel=<channel>` (default `develop`); `-DupdateChannel` does not bind. The repository server id comes from `-Djudo-version-rules-serverId=<id>` (default `serverId`); `-DserverId` does not bind.
 
 ## Toolchain Bootstrap and Versions
 

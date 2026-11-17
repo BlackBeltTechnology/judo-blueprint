@@ -93,7 +93,7 @@ Controls the visual style of buttons.
 
 | Value | Visual Effect |
 |-------|---------------|
-| `frame = true` | Render with border/card styling |
+| `frame = true` | Render with border/card styling. A Flex becomes a card only through its `card` flag, not through `frame`. The Card has no elevation or radius props, and no `isInCard` flag reaches children. |
 | `frame = false` | No border (flat appearance) |
 
 **Available on:** `TransferObjectView`, `TransferObjectForm`, `Group`
@@ -102,8 +102,8 @@ Controls the visual style of buttons.
 
 | Attribute | Values | Visual Effect |
 |-----------|--------|---------------|
-| `col` | 1-12 | Grid column span width |
-| `row` | 1+ | Row height span |
+| `col` | 1-12 | Grid column span width. Inside a Flex parent whose `col` is not 12, the child width is `(12 / parent col) × col` in 12-column units, not a percentage. A Spacer uses `col` only. |
+| `row` | 1+ | Row height span. A Spacer ignores it (fixed divider height). |
 | `dialogSize` | `XS`, `SM`, `MD`, `LG`, `XL` | Dialog/modal dimensions |
 
 ---

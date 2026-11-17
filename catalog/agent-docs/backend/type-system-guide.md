@@ -172,6 +172,8 @@ List<ChildTO> children = childMaps.stream()
 6.  **Decimal Values Can Be `Double`**: The SDK maps decimal numerics with precision 8-15 and scale up to 4 to `java.lang.Double` (getters return `Optional<Double>`), and precision 1-7 to `Float`; only larger precision or scale gives `BigDecimal`. For money, round explicitly in Java (for example `BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP)`) instead of relying on the double. See the [numeric mapping](../model/esm_metamodel/type.md).
 7.  **Integer and Long Precision**: The built-in `Integer` is a numeric type with precision 9 and scale 0; the built-in `Long` has precision 15. Scale 0 is valid; the validator rejects only a negative scale.
 8.  **JCL Scripts Use `BigInteger`**: An `Integer` variable declared in a JCL operation script is generated as a `java.math.BigInteger` holder, not `java.lang.Integer`. An `Integer` primitive query call in a script is generated with `BigInteger` as well (`Integer` is used only for enumeration queries).
+9.  **REST Enumeration Input Literals**: A REST enumeration attribute input literal is converted to the enum literal's integer value, not kept as a literal string.
+10. **`DATE_FORMAT` Is Not Read in the Guice/CXF Server**: The Guice/CXF server's `ISO8601DateParamHandler` never reads the `DATE_FORMAT` key, so the date parameter format cannot be configured through it there. The OSGi bundle does read it.
 
 ---
 

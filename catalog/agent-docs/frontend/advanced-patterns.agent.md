@@ -68,7 +68,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/advanced-patterns.m
   - `getRangeFor<Rel>` (has range): `(owner?, queryCustomizer?, headers?)` → range list; backs range dialog and autocomplete.
   - `set<Rel>` (settable): `(owner, selected: Target | Array<Target>)`; replaces relation.
   - `unset<Rel>` (optional single relation): `(owner)`; the "clear" for single relation.
-  - `add<Rel>` / `remove<Rel>` (collection): `(owner, selected: Array<Target>)`.
+  - `add<Rel>` / `remove<Rel>` (collection): `(owner, selected: Array<Target>)`; `remove<Rel>` posts the unserialized objects, not the references.
   - No `clear` for collections; `set<Rel>(owner, [])` only if settable (verify).
   - Failures throw `AxiosError`; `data` is `FeedbackItem` list (400, 401, 403).
 

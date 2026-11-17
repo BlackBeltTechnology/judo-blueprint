@@ -20,6 +20,8 @@ The generated frontend actor `pom.xml` selects a build strategy with the propert
 | `CI` | pnpm install, build, test |
 | `quick` | format and `build:reckless` |
 
+Generated `package.json` scripts: `dev`, `build:reckless`, `build`, `preview`, `test:dev`, `test`, `coverage` and `format`. There is no `build:ci` script. `build` runs `tsgo` (type check) before `vite build`. `build:reckless` runs plain `vite build` with no type check.
+
 System properties: `-DskipFrontendModel`, `-DskipPrepareNodeJS`, `-DskipGenerateServices`, `-Dfrontend-build-type=quick` (there is no `-Dquick` property; `quick` is a value of `frontend-build-type`), `-Dlocal` (any value: skips the `replace-base-href` profile, which is active when `local` is not set; the profile is generated only for multi-actor applications), `-Dignore-checksums`.
 
 ## Module Properties

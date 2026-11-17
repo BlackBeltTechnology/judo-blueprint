@@ -18,6 +18,8 @@ JCL (JUDO Control Language) is the imperative language of operation bodies. An o
 - **Declarations**: `var [immutable|mutable] Type [[]] name [= initializer]`. Variables can only be declared inside blocks, and shadowing a variable of an outer scope is forbidden (`Variable <name> already defined`). The loop variable of a `for` statement is final.
 - **Control flow**: `if (cond) stmt [else stmt]`, `for (x in <collection>) stmt`, `while (cond) stmt`, `return [value]`, and blocks `{ ... }`.
 - **Creating objects**: `new [mutable|immutable] Type(...)` takes either a single assignable value or named assignments, and must list every required attribute and relation. `new Type[] { a, b }` creates several at once.
+- **String comparisons**: `>` and `<=` on strings generate Java with a stray character, so the generated code does not compile.
+- **For-all expressions**: a for-all expression is generated as an exists check (`functionRunner.exists`), which is not the same as for-all.
 - **Removing**: `delete <navigation>` removes composition parts; `unset <navigation>` clears a reference.
 - **Reference sets** are changed with `+=` (add) and `-=` (remove).
 - **Subtype spawning**: `x as Type` casts a transfer object reference to a subtype. A wrong runtime type is a runtime error; an incompatible static type is a compile-time error. Spawning is only allowed on mutable, assignable operands (`Cannot spawn immutable objects`).

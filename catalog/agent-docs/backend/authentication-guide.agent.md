@@ -12,7 +12,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/authentication-guide
 - Methods: `getName()`, `isSuitableForOperation(EOperation, claim, realm, client, attributes)`, `authenticate(operationFQName, exchange, claim, realm, client, attributes)`, `success(EOperation, SignedIdentifier, exchange, claim, realm, client, attributes)`.
 - `authenticate` runs at the start of EVERY dispatcher call that has a principal, before the mapped principal is loaded. It is called on every registered interceptor; `isSuitableForOperation` is NOT consulted there, so filter on `operationFQName`, `client` or `claim` inside.
 - `isSuitableForOperation` is only the filter for `success`.
-- `success` runs after the operation's access checks, before the body, only where `isSuitableForOperation` returns `true`.
+- `success` runs after exposure/actor checks, BEFORE the CRUD authorizers and the body, only where `isSuitableForOperation` returns `true`; it can fire for an operation that later fails with `PERMISSION_DENIED`.
 - Defaults are no-ops; `isSuitableForOperation` defaults to `true`.
 
 ## The `#_principal` Operation
@@ -78,6 +78,10 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/authentication-guide
 - `GET /api/<Model>/Actor/<Actor>/~meta` — `security` entry has `tokenEndpoint`, `clientId`, `openIdConfigurationUrl`.
 - `GET .../~principal` — returns `__identifier` and `__signedIdentifier`.
 - Generated React waits for `principal.__signedIdentifier`; logout is `signoutRedirect` with current URL minus hash as `post_logout_redirect_uri`.
+
+## Operation Exposure, Public Access and Password Policy
+- No `exposedBy` annotation → empty expected-role list. An access point without `@actor` is public; one public access point makes the whole operation public.
+- `PasswordPolicy<ID>` extends `Function<Map<String,Object>,Optional<ID>>` and declares no `validatePassword()`; custom policies implement `apply()`.
 
 ## Testing and Best Practices
 - Unit testing is hard (mocks the whole auth flow). Use integration tests: local Karaf, real Keycloak, new user → check app log and DB row → re-login to confirm no duplicate.

@@ -37,6 +37,8 @@ Five goals: `generate` (`generate-resources`, needs the YAML descriptor type), `
 - Checksums live in a CSV file `.generated-files` (`path,md5`), per application `.generated-files-<appName>`.
 - `clean` deletes only tracked files whose MD5 on disk still matches the stored checksum, so hand-edited files survive a clean.
 - `synchronizeGitignore` maintains a block delimited by `# JUDO GENERATOR BLOCK START/END` and takes an `ignoredFiles` glob list.
+- **Known issue:** the `ModelGenerator` overloads `resetChecksums(GeneratorParameter)`, `cleanGeneratedFromChecksum(GeneratorParameter)` and `synchronizeGitignore(GeneratorParameter)` (without `InDirectory`) build their checksum removers (`Runnable`s) but never run them. `synchronizeGitignore` builds the checksum remover instead of the `.gitignore` synchronizer. The Maven goals call the `InDirectory` variants, which are not affected.
+- **Known issue:** a `START` marker without an `END` marker makes the `.gitignore` synchronizer drop every following line of the file.
 
 ### Supplying the model artifact
 
@@ -79,6 +81,7 @@ Bound to `compile` (or `generate-sources` in archetype projects). Key parameters
 - The `keycloak` parameter loads the Keycloak model, not the Measure model.
 - The per-dialect trace element is `<asm2rdbmsTrace>...</asm2rdbmsTrace>`.
 - RDBMS trace skipping is governed by `ignoreAsm2RdbmsTrace` (default `false`) and the per-dialect `asm2rdbmsTrace`; there is no Keycloak trace check for it.
+- A dialect's RDBMS model path is loaded only when that dialect's `asm2rdbmsTrace` is set.
 - The column length parameter is `rdbmsColumnMaxNameSize`.
 
 ### JSL generator plugin (`generator-maven-plugin`)
@@ -129,11 +132,11 @@ Fragments are files named `<target>.<slot>.fragment.hbs`: `feature.xml` slots `e
 
 ## Custom Keycloak Login Theme
 
-The generated `keycloak-theme` module (`src/main/resources/themes/keycloak-theme/`) holds FreeMarker login pages (`login.ftl`, `register.ftl`, `error.ftl`, `template.ftl` with the `registrationLayout` macro and an empty `footer.ftl` override point), `theme.properties` (`parent=base`, `import=common/keycloak`, `kc*` class keys) and `login.css`. `test-users-realm.json` (realm `TEST_USERS`) and `test-theme-with-compose.sh` start a dev Keycloak on port 8080 with the built theme unzipped into `./keycloak-themes`. The realm's `loginTheme` must equal the theme name exactly. the keycloak-theme module is one of the project generation toggles.
+The generated `keycloak-theme` module (`src/main/resources/themes/keycloak-theme/`) holds FreeMarker login pages (`login.ftl`, `register.ftl`, `error.ftl`, `template.ftl` with the `registrationLayout` macro and an empty `footer.ftl` override point), `theme.properties` (`parent=base`, `import=common/keycloak`, `kc*` class keys) and `login.css`. `test-users-realm.json` (realm `TEST_USERS`) and `test-theme-with-compose.sh` start a dev Keycloak on port 8080 with the built theme unzipped into `./keycloak-themes`. The realm's `loginTheme` must equal the theme name exactly. the keycloak-theme module is one of the project generation toggles. The theme zip contains the theme folders under `src/main/resources/themes` at its root.
 
 ## Flutter Frontends
 
-Flutter frontends are built with the goals `install-flutter` (installs the SDK from a pinned version or a Git channel, default `stable`) and `flutter` (runs flutter CLI commands, default `pub get`). Parameters: `flutter.arguments`, `flutter-version`, `flutter-channel`, `flutter-skip`, `flutter-install-skip`, `workingDirectory` / `installDirectory` / `tempDirectory` (defaults `${basedir}`, `${basedir}/.flutter`, `${basedir}/target/temp`) and `flutterInheritsProxyConfigFromMaven=true`.
+Flutter frontends are built with the goals `install-flutter` (installs the SDK from a pinned version or a Git channel, default `stable`) and `flutter` (runs flutter CLI commands, default `pub get`). Parameters: `flutter.arguments`, `flutter-version`, `flutter-channel`, `flutter-skip`, `flutter-install-skip`, `workingDirectory` / `installDirectory` / `tempDirectory` (defaults `${basedir}`, `${basedir}/.flutter`, `${basedir}/target/temp`) and `flutterInheritsProxyConfigFromMaven=true`. The `parallel` parameter of `flutter-maven-plugin` is set by the system property `flutter.parallel` (default `false`).
 
 ## Frontend Environment Variables
 

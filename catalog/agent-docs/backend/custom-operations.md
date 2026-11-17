@@ -269,6 +269,7 @@ public class [OperationName]CustomImplementation implements [OperationInterface]
 - **Operation to implementation mapping.** Each `<Op>CustomImplementation` implements the generated interface `...operation.<model>.<path>.<Op>`; the interface path names the model operation.
 - **Stateful flag.** A bound operation must keep parameters compatible with every inherited operation of the same name. An implementation of an inherited abstract operation must be `stateful`, and the flag must match every overloaded operation that has an implementation.
 - **`G E N E R A T E D` header.** A `*CustomImplementation.java` can still carry the stub `G E N E R A T E D` header although it is fully implemented. Compare the file with its `.java.default` sibling (the stub only throws `UnsupportedOperationException`) instead of trusting the header.
+- **Input parameter map key differs from the Java variable name.** The generated default passes an input to the parameter map under its raw name (`parameters.put("<InputName>", ...)`), while the Java variable and the method signature use the lowerFirst name (`<inputName>`). Read the input by the raw name when you look it up in the map.
 - **Operation inputs on the wire.** Exposed operations arrive with the reserved keys described in [Platform Behavior Reference](platform-behavior-reference.md#reserved-payload-keys).
 
 ## Example 1: Simple Toggle Operation

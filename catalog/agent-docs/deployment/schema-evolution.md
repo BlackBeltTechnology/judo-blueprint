@@ -257,6 +257,8 @@ git checkout v1.1.0
 
 ### Maven-Based Migrations
 
+When `dbUser` or `dbPassword` is missing for PostgreSQL, the `judo-rdbms-schema` CLI prints `user is mandatory for postgresql` or `password is mandatory for postgresql`, and the Maven goals log the same text as an error. Neither stops; both continue with the missing value as the credential.
+
 #### Apply Fresh Schema
 
 Create schema from scratch (development):

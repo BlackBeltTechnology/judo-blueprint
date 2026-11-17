@@ -71,7 +71,7 @@ For an i18n interface method, the runtime resolves the message template in this 
 3. `@Message(value=...)`, the inline template, when no key is set.
 4. An auto-generated template from the method name and its parameters.
 
-`@MessageByEnum` is only declared and has no processor; enum messages are resolved by `EnumI18nService` by constant name, not through this annotation.
+`@MessageByEnum` is only declared and has no processor; enum messages are resolved by `EnumI18nService` by constant name, not through this annotation. Enum constants with a class body are not matched to their enum's resolver, because the lookup uses the runtime class.
 
 ### Using I18n in Custom Operations
 
@@ -306,7 +306,7 @@ Bean validation in the runtime goes through a Hibernate Validator OSGi component
 2. Parameter tokens such as `{min}` and `{max}` are interpolated and EL expressions such as `${validatedValue}` are evaluated.
 3. Escaped literals `\{ \} \\ \$` are replaced by the literal characters.
 
-The locale comes from `LocaleProvider.getLocale()` when present, else the configured `defaultLocale`, else `Locale.getDefault()`. A malformed format falls back to the original message and logs a warning.
+The locale comes from `LocaleProvider.getLocale()` when present, else the configured `defaultLocale` (an empty value resolves to `Locale.ROOT`, not the JVM default), else `Locale.getDefault()`. A malformed format falls back to the original message and logs a warning.
 
 ## Localized Business Error Transfer Objects
 
@@ -324,6 +324,7 @@ When a modeled fault or error transfer object carries a `message` and a `locatio
 - Hardcode English strings directly in your Java code.
 - Include technical details (like stack traces) in user-facing messages.
 - Duplicate message definitions; reuse generic messages where possible.
+- Put `$` or a backslash in message arguments. Arguments are used as regex replacement text, so parameter substitution can throw `IllegalArgumentException` or `IndexOutOfBoundsException`.
 
 ---
 

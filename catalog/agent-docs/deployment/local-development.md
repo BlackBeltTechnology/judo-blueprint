@@ -48,7 +48,7 @@ This guide covers local development setup, hot deployment, and development workf
 - Keycloak Admin: http://localhost:8080/auth (`judo.sh` starts Keycloak with `--http-relative-path /auth`; with `keycloak_port=<port>` the base URL is `http://localhost:<port>/auth`; 8080 is the Keycloak port, not the application's)
 - Karaf SSH: `ssh -p 8101 karaf@localhost` (password: karaf) - these are Apache Karaf defaults, not set by the project template
 
-**Start options:** `./judo.sh start -o "runtime=karaf|compose,dbtype=hsqldb|postgresql,compose_env=...,karaf_port=...,postgres_port=...,keycloak_port=..."`, `-K` skips Keycloak, `-W` disables bundle watching. See [Build Process](./build-process.md#command-reference). Compose-based runs are described in [Production Deployment](./production.md#shipped-docker-compose-environments).
+**Start options:** `./judo.sh start -o "runtime=karaf|compose,dbtype=hsqldb|postgresql,compose_env=...,karaf_port=...,postgres_port=...,keycloak_port=..."`, `-K` skips Keycloak, `-w` disables bundle watching (`--skip-watch-bundles`). See [Build Process](./build-process.md#command-reference). Compose-based runs are described in [Production Deployment](./production.md#shipped-docker-compose-environments).
 
 **First login:** a fresh local app has no user. Open the Keycloak admin console (`/auth`, realm `<app>`), create a user there, and make sure a matching actor instance exists, or let the backend create it on first login (see [Keycloak JIT User Provisioning](../../best-practices/backend/keycloak-jit-user-provisioning.md)).
 

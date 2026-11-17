@@ -210,6 +210,8 @@ src/custom/
 **/custom-*.tsx
 ```
 
+Entries are glob patterns only. `!` negation is not supported; a leading `!` is matched literally. Ignore files in parent directories also apply to the files below them.
+
 **Common Patterns:**
 ```
 # Ignore all customizations

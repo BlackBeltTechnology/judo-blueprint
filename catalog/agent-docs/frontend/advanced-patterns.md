@@ -1722,6 +1722,8 @@ For a relation `<rel>` on class `<Class>` the generated service (`<Class>Service
 | `add<Rel>` | collection, addable | `(owner, selected: Array<Target>) => Promise<JudoRestResponse<void>>` |
 | `remove<Rel>` | collection, removable | `(owner, selected: Array<Target>) => Promise<JudoRestResponse<void>>` |
 
+The generated `remove<Rel>` posts the unserialized `selected` objects as the request body, although a serialized `input` array is computed in the same method.
+
 There is no `clear` method for a collection; call `set<Rel>(owner, [])` only if the relation is settable (verify on the generated service). Failures throw an `AxiosError` whose `data` is a `FeedbackItem` list (400, 401, 403).
 
 ---
