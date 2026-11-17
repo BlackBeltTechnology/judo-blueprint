@@ -90,7 +90,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/ui-authoring-guide.md.
 - `confirmationCondition`: without it always asks; with boolean DataMember on owner TO, asks only when true for that row/owner. Message from `confirmationMessage`, i18n key `<button key>.confirmation`.
 - Operation output page (mapped transfer): Back (always), Refresh (output mapped to entity), Update (output declares `update`; page type `OPERATION_OUTPUT_UPDATE`; action `<operation>::Update`), Delete (declares `delete`). Unmapped output: Back only.
 - CLI: `create -t ActionGroup --ns <viewFqn> -n <group>` (`--ns` required; TO refused). `update <viewFqn> --add feature --feature <operation>` then `relocate <viewFqn>::<operation> --to <viewFqn>::<group>`.
-- Field order follows container `components` order. Reorder with `move <fqn> --index n` (or `--before`/`--after`), not delete/re-add.
+- Field order follows container `components` order: generator sorts children by 1-based index in `components` (`esmToUi.etl`); name/label/attribute order do not change it. Reorder with `move <fqn> --index n` (or `--before`/`--after`), not delete/re-add.
 
 ## 11. End-to-end wiring — making an entity visible to a role
 - Per entity: (1) mapped TO exists; (2) form/table/view with canonical names; (3) one Access on actor with `target`=TO; collection `upper=-1`; singleton `upper=1` with `!any()`-terminated getterExpression; (4) getterExpression = permission/tenancy filter (advanced-modeling-patterns.md §2); (5) MenuItemAccess → Access inside MenuItemGroup on `<menuItems>`; (6) menu `hiddenBy` → DERIVED permission flag on principal TO.

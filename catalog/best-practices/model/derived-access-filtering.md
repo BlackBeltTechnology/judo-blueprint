@@ -37,7 +37,7 @@ Restrict what an actor can reach by giving its access a `DERIVED` type and a get
 
 ## Rationale
 
-The filter runs in the generated query, so a client never receives rows outside it, and no custom code is needed. Limits: the expression language has restrictions (no nested lambda scopes, multi-value claims cannot be consumed, `!any()` at most once); when a rule does not fit, compute it in a backend interceptor into a transient attribute ([interceptors](../../agent-docs/backend/interceptors.md)). Access filtering is a model rule; it does not protect custom operations.
+The filter runs in the generated query, so a client never receives rows outside it from list or query reads, and no custom code is needed. Direct reads by signed identifier are a separate case (see Practice). Limits: the expression language has restrictions (no nested lambda scopes, multi-value claims cannot be consumed, `!any()` at most once); when a rule does not fit, compute it in a backend interceptor into a transient attribute ([interceptors](../../agent-docs/backend/interceptors.md)). Access filtering is a model rule; it does not protect custom operations.
 
 ## Example
 

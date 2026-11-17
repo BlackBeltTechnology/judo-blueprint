@@ -58,7 +58,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/interceptors.md.
 
 ## Example 3: Update Interceptor with Batch Processing
 - Update FQN: `#_updateInstance[FullEntityFQN]`; check `instanceof UpdateInstanceCallPayload`.
-- `getInput()` = new values sent by client; `getInstance()` identifies the instance (old values).
+- `getInput()` = new values sent by client; `getInstance()` identifies the instance (`__identifier`) and carries no stored values; read old values with the DAO in `preCall`.
 - Batch-query and cascade updates to dependent entities.
 
 ## Example 4: Pre-Call Payload Manipulation

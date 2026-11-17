@@ -233,12 +233,12 @@ Access CRUD flags are rung 2 of the relation-CUD capability ladder. Full ladder 
 | `isEffectiveAnonymous() = true` | AnonymousGroup shown | Hidden | Hidden |
 | `isEffectiveAnonymous() = false` | RealmGroup shown | Visible | Visible |
 
-**`isEffectiveAnonymous()` returns true when:**
-- `anonymous = true` explicitly set, OR
-- `principal` is null, OR
-- `principal` is NOT mapped
+**`isEffectiveAnonymous()` returns true when `anonymous = true` and the principal is not mapped:**
+- `principal` is null: the `anonymous` flag decides.
+- `principal` is set but NOT mapped: the `anonymous` flag decides.
+- `principal` is mapped (`principal.mapping` is set): always false, whatever the flag. An actor with a mapped principal and `anonymous = true` is authenticated: it gets a realm, and its calls need a bearer token (401 without one).
 
-- **Exposing an operation without login**: put the operation's transfer object (or an access to it) on an `ActorType` that is effectively anonymous (`anonymous = true`, no principal, or an unmapped principal). Such an actor gets no `realm`, so `asm2keycloak` creates no realm or client for it, and the REST layer does not verify a bearer token for its paths: the call runs with no principal and no `ACTOR`. Everything reachable through that actor's accesses is public; keep them minimal and put guards in an interceptor or in the operation itself. *Verify:* access control applied to a call with no principal outside the Keycloak interceptor was not checked.
+- **Exposing an operation without login**: put the operation's transfer object (or an access to it) on an `ActorType` that is effectively anonymous (`anonymous = true` with no principal or an unmapped principal). Such an actor gets no `realm`, so `asm2keycloak` creates no realm or client for it, and the REST layer does not verify a bearer token for its paths: the call runs with no principal and no `ACTOR`. Everything reachable through that actor's accesses is public; keep them minimal and put guards in an interceptor or in the operation itself. *Verify:* access control applied to a call with no principal outside the Keycloak interceptor was not checked.
 - **`isActiveExpression`**: a JQL expression on the principal entity (for example `self.active`, a boolean attribute). It is copied to the filter of the mapped actor transfer object type. The runtime resolves the actor from the token in two steps: the token's client (`azp`) selects the actor type, then the actor entity is looked up by claim (USERNAME, then EMAIL, then an identifier attribute) with a search on that actor type. An entity for which the expression is false is not found, and the call fails with `AUTHENTICATED_ENTITY_NOT_FOUND`; the same error appears when no entity matches the claim. Only actors with a mapped principal are looked up (`ActorType` without principal has no filter). *Verify:* that the actor type filter is applied inside `dao.search` for the actor lookup is assumed from the mapped-transfer-object filter.
 
 ### Visual Style Indicators
@@ -252,7 +252,7 @@ Access CRUD flags are rung 2 of the relation-CUD capability ladder. Full ladder 
 
 | Check | True When |
 |-------|-----------|
-| Is Effective Anonymous | `anonymous = true` OR `principal` is null OR `principal` is NOT mapped |
+| Is Effective Anonymous | `anonymous = true` AND `principal` is NOT mapped (null or unmapped); a mapped principal is never anonymous |
 | Principal Is Mapped | `principal` is NOT null AND `principal.mapping` is NOT null |
 | Target Is Abstract | `Access.target.abstract = true` |
 

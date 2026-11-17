@@ -49,6 +49,7 @@ Pull-only condensed map. Source: catalog/agent-docs/integration-testing/getting-
 - `mvn clean test`; single class `-Dtest=UserDaoTest`; single method `-Dtest=UserDaoTest#testCreateUser`.
 - Debug logging: set `<root level="DEBUG">` in `src/test/resources/logback-test.xml` (ConsoleAppender STDOUT).
 - Skip tests in build: `mvn clean install -DskipTests`.
+- Known issue: generated `pom.xml` has `<version></version>` for `hu.blackbelt.osgi.i18n:i18n-api` (`osgiI18nApiVersion` never set by generator). Set the version explicitly before running tests.
 
 ## Next Steps
 - `type-safety.md` (Entity vs Service types, `adaptTo()`); `advanced-patterns.md` (VariableResolver mocking, Optional fields, entity reference validation); `best-practices.md`.

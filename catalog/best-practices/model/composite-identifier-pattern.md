@@ -28,7 +28,7 @@ Mark more than one stored attribute of an entity as `identifier`, typically a sy
 
 Entities often have a stable machine code and a label people recognise. Flagging both as identifiers documents both as natural keys in the model.
 
-The agent-docs only say that `identifier` marks a natural key; they do not state how the flag on several attributes is enforced at runtime. Treat uniqueness of the combination and of each part as something to verify in the generated schema or to enforce in project code, and say so in the model's documentation.
+The agent-docs state that the runtime checks each `identifier` attribute on its own, as a separate unique constraint, and never the combination ([structure.md](../../agent-docs/model/esm_metamodel/structure.md), *DataMember*). Enforce uniqueness of the combination with a computed stored attribute or in project code, and say so in the model's documentation.
 
 ## Example
 

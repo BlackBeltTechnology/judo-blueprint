@@ -331,7 +331,7 @@ flowchart LR
 
 **CLI recipe for an `ActionGroup`.** `create -t ActionGroup --ns <viewFqn> -n <group>` creates it in a view (`--ns` is required; a transfer object is refused with `Cannot create ActionGroup in TransferObjectType`). Place an operation with `update <viewFqn> --add feature --feature <operation>`, then `relocate <viewFqn>::<operation> --to <viewFqn>::<group>` to move it into the group.
 
-**Field order.** The order of generated form and view fields follows the order of the container's `components` in the ESM. Reorder with `move <fqn> --index n` (or `--before` / `--after`) instead of deleting and re-adding the widget.
+**Field order.** The order of generated form and view fields follows the order of the container's `components` in the ESM. The generator (`esmToUi.etl`) takes each child's 1-based index in its container's `components` list and sorts the generated children by it; name, label and attribute order do not change it. A field that appears above another one precedes it in `components`. Reorder with `move <fqn> --index n` (or `--before` / `--after`) instead of deleting and re-adding the widget.
 
 ---
 

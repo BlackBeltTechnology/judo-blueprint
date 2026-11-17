@@ -45,7 +45,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/esm_metamodel/accesspo
 - Access CRUD flags are rung 2 of the relation-CUD capability ladder (rungs 1–6 in `../../../best-practices/model/relation-driven-crud-with-custom-input.md#capability-ladder`).
 - Claim attributes: `attribute` required, chosen from `principal.getAllAttributes()`; OK disabled while null. `claimType`: EMAIL, USERNAME, UNDEFINED.
 - Anonymous vs authenticated: effectively anonymous → AnonymousGroup shown, claims and managed hidden. Not anonymous → RealmGroup, claims and managed visible.
-- `isEffectiveAnonymous()` true when: `anonymous = true`, OR principal null, OR principal not mapped.
+- `isEffectiveAnonymous()` true when `anonymous = true` AND principal is null or not mapped. A mapped principal is never effectively anonymous, even with `anonymous = true`.
 - Exposing an operation without login: put it on an effectively anonymous actor. No `realm` → `asm2keycloak` makes no realm or client, and REST does not verify a bearer token: calls run with no principal and no `ACTOR`. Everything reachable is public; keep minimal; guard in an interceptor or the operation. Verify: access control on calls without principal outside the Keycloak interceptor is not checked.
 - `isActiveExpression`: JQL on principal entity (e.g. `self.active`), copied into the mapped actor TO filter. Runtime: token `azp` selects actor type; actor found by claim (USERNAME, then EMAIL, then identifier attribute). Expression false → `AUTHENTICATED_ENTITY_NOT_FOUND`; no matching entity → same error. Only mapped-principal actors are looked up. Verify the filter applies inside `dao.search`.
 - Visual indicators: `kind = SYSTEM` → system style; `Access.target` not mapped → warning style.

@@ -577,6 +577,10 @@ The `application/integration-test` module is not listed in `application/pom.xml`
 cd application/integration-test
 ```
 
+### Known Issue: empty `i18n-api` version
+
+The generated `application/integration-test/pom.xml` declares `hu.blackbelt.osgi.i18n:i18n-api` with `<version></version>`. The generator never sets the `osgiI18nApiVersion` template variable, so the value is empty and Maven fails to resolve the dependency. Before running the tests, set the version explicitly to the `i18n-api` version your platform release uses, then run the commands below.
+
 ### Run All Integration Tests
 
 ```bash
