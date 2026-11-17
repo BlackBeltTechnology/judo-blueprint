@@ -1,6 +1,9 @@
 ---
 title: Running JUDO on Spring Boot
 description: Spring Boot archetype, build plugin, autoconfiguration, test database selection and adding database dialects.
+aliases: [spring boot setup, spring boot archetype, spring boot autoconfiguration, test database selection, add database dialect, build plugin configuration]
+keywords: [transformerWorkflow, autoconfiguration, SDK DAO, Spring Boot, dialect]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Running JUDO on Spring Boot

@@ -1,6 +1,9 @@
 ---
 title: Frontend Hook System Overview
 description: Pandino-based hook system of the generated React frontend: hook categories, .default scaffolds, registration patterns and .generator-ignore guidance.
+aliases: [frontend customization, hook registration, custom hooks, pandino services, generator ignore file, customize react frontend]
+keywords: [TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY, registerService, application-customizer.tsx, .generator-ignore, .default, usePrincipal, useViewData, generateActionsHook, TableRowHighlightingHook, ColumnCustomizerHook]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Hook System Overview
@@ -373,6 +376,8 @@ cp src/custom/hooks/pages/registerFooPageActionsHook.ts.default src/custom/hooks
 # ❌ Do not edit the .default file in place
 ```
 
+A copied scaffold is never removed by `generate`. When the model element behind it disappears, the `.default` file is dropped but your copy stays and still imports keys that no longer exist, so the frontend build fails (for example `TS2305: Module has no exported member`). Delete or update the copy when you remove the element.
+
 ### 3. Organize Custom Code
 
 ```
@@ -380,7 +385,7 @@ src/custom/
 ├── application-customizer.tsx
 ├── hooks/
 │   ├── tableRowHighlighting.tsx
-│   ├── usePrincipal.tsx
+│   ├── useCustomState.tsx
 │   └── validation.tsx
 ├── components/
 │   ├── ActivityChart.tsx

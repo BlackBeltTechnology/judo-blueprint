@@ -1,6 +1,9 @@
 ---
 title: Custom Operations
 description: Implementing custom operation logic: .default files, OSGi registration, rules and examples.
+aliases: [write custom operation java, implement operation logic, do not edit default file, operation component registration, custom op integration test, custom operation examples]
+keywords: [CustomImplementation, .java.default, "@Component", "@Reference", VariableResolver, EntityDao, ForCreate, JudoTest, ReferenceInjector, TransactionHandling, .generator-ignore, resetChecksum]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Custom Operations
@@ -260,7 +263,9 @@ public class [OperationName]CustomImplementation implements [OperationInterface]
 ## Rules for Custom Operations
 
 - **Declare faults in the model.** A custom-implemented operation that throws a modeled fault must declare it (`<faults>` in ESM, `throws` in JSL). Without the declaration the generated SDK interface has no `throws` clause and the build fails with `not compatible with throws clause`. See [Error Handling Guide](error-handling-guide.md#modeled-faults).
-- **Interceptors do not protect custom operations.** Built-in-operation interceptors and write guards never fire for custom, MAPPED or script operations. Put permission checks inside each `*CustomImplementation` ([Interceptors](interceptors.md#which-operations-are-intercepted)).
+- **Interceptors do not protect custom operations.** Built-in-operation interceptors and write guards never fire for custom (SDK-implemented) or script operations. CRUD on a mapped transfer object is intercepted. Put permission checks inside each `*CustomImplementation` ([Interceptors](interceptors.md#which-operations-are-intercepted)).
+- **Transaction scope and rollback.** The dispatcher runs a custom operation in one transaction, so all its DAO writes commit or roll back together. An exception thrown from the implementation rolls back every write of the call. A call that returns a fault is rolled back too, and a non-`stateful` operation is always rolled back, so an operation that writes data must be `stateful`. The DAO opens no transaction of its own and nothing marks the transaction rollback-only, so a DAO exception that the implementation catches does not by itself roll back the call: if the operation then returns normally, the dispatcher commits. What the database keeps depends on the database: PostgreSQL aborts the whole transaction after a failed statement (later statements fail and nothing of the call is committed), while HSQLDB rolls back only the failed statement. Rethrow, or return a fault, to roll back the call reliably.
+- **Optional input getters can return `null`.** The generated getter for an optional input attribute returns `null` (not `Optional.empty()`) when the client did not send the key, and an `Optional` only when the key is present. Null-check the getter before calling `.orElse(...)` on it.
 - **Operation to implementation mapping.** Each `<Op>CustomImplementation` implements the generated interface `...operation.<model>.<path>.<Op>`; the interface path names the model operation.
 - **Stateful flag.** A bound operation must keep parameters compatible with every inherited operation of the same name. An implementation of an inherited abstract operation must be `stateful`, and the flag must match every overloaded operation that has an implementation.
 - **`G E N E R A T E D` header.** A `*CustomImplementation.java` can still carry the stub `G E N E R A T E D` header although it is fully implemented. Compare the file with its `.java.default` sibling (the stub only throws `UnsupportedOperationException`) instead of trusting the header.
@@ -617,7 +622,7 @@ class CustomOperationTest {
 
 ### Key Testing Features
 
-1. **ReferenceInjector** - Automatically injects `@Reference` dependencies into custom implementations
+1. **ReferenceInjector** - Injects dependencies into custom implementations by field type: every non-static, non-final field whose type the Guice injector can resolve (the `@Reference` annotation has class retention and is not read)
 2. **@JudoTest Annotation** - Configures database, transactions, and model loading
 3. **Transaction Modes** - AUTO_ROLLBACK (default), AUTO_COMMIT, MANUAL, NONE
 4. **Table Truncation** - Clean database before each test

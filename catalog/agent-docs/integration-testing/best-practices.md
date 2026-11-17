@@ -1,6 +1,9 @@
 ---
 title: Integration Testing - Best Practices and Anti-Patterns
 description: "Part of: Integration Testing Documentation(./README.md)"
+aliases: [integration test best practices, backend test anti patterns, transaction mode for tests, test data fixtures, custom operation test pitfalls, optional field null in tests, test isolation]
+keywords: [JudoTest, TransactionHandling, AUTO_ROLLBACK, AUTO_COMMIT, truncateTables, adaptTo, getById, AddressMask, ReferenceInjector, JudoRuntimeFixture, BaseIntegrationTest, isPresent, logback-test.xml]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - Best Practices and Anti-Patterns
 
@@ -323,6 +326,18 @@ class FaultRegistryBasicTest extends BaseIntegrationTest {
         assertEquals("REG-001", registry.getRegistryNumber());
         assertEquals(facility.identifier(), registry.getFacility().identifier());
     }
+}
+```
+
+`AppDaoModules` is a class you write in the test module; the generated project and the testkit do not provide it. Bind each DAO the tests use with one `@Provides` method that creates the generated `*DaoImpl` through `ReferenceInjector`:
+
+```java
+public class AppDaoModules extends AbstractModule {
+    @Provides @Singleton
+    <Entity>Dao provide<Entity>Dao(Injector injector) {
+        return ReferenceInjector.createAndInject(<Entity>DaoImpl.class, injector);
+    }
+    // one @Provides method per DAO used in the tests
 }
 ```
 

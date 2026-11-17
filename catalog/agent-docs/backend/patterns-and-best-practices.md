@@ -1,6 +1,9 @@
 ---
 title: Backend Patterns and Best Practices
 description: OSGi patterns, request context, custom data types, validation and query patterns.
+aliases: [custom backend code patterns, get logged in user in Java, idempotent operation, custom data type in Java, custom validation in Java, null safe type conversion, uniqueness check with DAO, load only some fields]
+keywords: [Component, Reference, Activate, VariableResolver, DataTypeManager, registerCustomType, ValidationException, ValidationResult, Validator, AsmModel, StringFilter, maskedBy]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Backend Patterns and Best Practices
@@ -161,6 +164,10 @@ public void someOperation() {
         *   A static `parseString(String value)` method (or a similar constructor) for deserialization (creating an object from a `String`).
     3.  **Converter**: Create a Java class that implements the `Converter<String, YourType>` interface. This class formally tells the JUDO runtime how to perform the conversion.
     4.  **Registration**: Create an OSGi component that activates on startup, gets a reference to the `DataTypeManager` service, and calls `registerCustomType`. This links the `CustomType` from your model to your Java class and its converter.
+
+*   **Coercer**: the runtime converts values through one `ExtendableCoercer` per model (`hu.blackbelt.mapper.api`): `coerce(sourceValue, Class<T>)` or `coerce(sourceValue, String className)`. A `Converter` has `getSourceType()`, `getTargetType()` and `apply(Object)`. `DataTypeManager.registerCustomType(...)` adds the converters you pass to that coercer, so `coerce("...", YourType.class)` works afterwards. In OSGi, `ExtendableCoercerService` also picks up every `Converter` registered as an OSGi service.
+*   **Service and properties**: `DataTypeManager` is one OSGi service per model. It is registered with the property `judo.model.name=<model name>`, which is why the `@Reference` target is `(judo.model.name=<app>)` (the same property the `AsmModel` service carries). Register each custom type once: a second `registerCustomType` for the same `EDataType` throws `IllegalStateException("Custom type already registered")`, so call `unregisterCustomType(modelType)` in `@Deactivate`.
+*   **Formatter overload**: `registerCustomType(modelType, javaClassName, converters, formatter)` takes a `Formatter<T>` (`getType()`, `convertValueToString`, `parseString`) and adds both `T -> String` and `String -> T` converters from it, so no hand-written `Converter` is needed.
 
 *   **Example Registration Component (using modern OSGi annotations)**:
     ```java

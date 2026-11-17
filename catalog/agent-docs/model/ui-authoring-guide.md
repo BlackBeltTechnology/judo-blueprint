@@ -1,6 +1,9 @@
 ---
 title: UI Authoring Guide
 description: "How to compose form, table and view scaffolds on transfer objects and wire them onto an actor menu: bindings, hiddenBy/enabledBy/requiredBy booleans on the same transfer object, layout rules, pitfalls and audits."
+aliases: [ui authoring, build a form table or view in the model, actor menu wiring, widget selection for data field, layout grid columns, hide field by boolean, layout debt repair, menu item missing]
+keywords: [TransferObjectView, TransferObjectForm, TransferObjectTable, DataField, DataColumn, DataFilter, TabularReferenceField, OperationForm, MenuItemAccess, hiddenBy, enabledBy, requiredBy, dataFeature, relationFeature, xsi:type]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # UI Authoring Guide
@@ -256,13 +259,24 @@ The bound `relationFeature` shape determines which attributes are valid.
 
 | Relation shape | Enabled attributes | `representationComponent` options |
 |---|---|---|
-| `upper=-1` (to-many) | `rowsPerPage`, `isInlineEditable`, `smallTable`, `checkboxSelection`, `countRows` | `table`, `card`, `tag` |
-| `upper=1` (to-one) | `autocompleteRows`, `buttonStyle` | `table`, `button`, `tag` |
+| `upper=-1` (to-many) | `rowsPerPage`, `isInlineEditable`, `smallTable`, `checkboxSelection`, `countRows` | `table`, `button`, `tag`, `card` (`button` only for `ASSOCIATION`; `AGGREGATION` allows `table`, `tag`, `card`) |
+| `upper=1` (to-one) | `autocompleteRows`, `buttonStyle` | `table`, plus `button` for `ASSOCIATION` |
 | `relationKind=COMPOSITION` | CRUD buttons = {create, delete}; `smallTable` valid | — |
 | `relationKind=AGGREGATION` | CRUD buttons = {add, remove} (selector dialog); `smallTable` valid | — |
 | `relationKind=ASSOCIATION` | typically add/remove via selector | — |
 
 `crudOperationsDisplayed` and `transferOperationsDisplayed` integers control how many action buttons render before collapsing into an overflow menu.
+
+The CLI enforces the `representationComponent` value for the bound relation and lists the allowed values when a value is refused (`'<v>' is not an allowed value of 'representationComponent' ...; allowed: [...]`). Observed on a mapped relation:
+
+| `upper` | `relationKind` | Allowed values |
+|---|---|---|
+| 1 | `AGGREGATION` | `table` |
+| 1 | `ASSOCIATION` | `table`, `button` |
+| -1 | `ASSOCIATION` | `table`, `button`, `tag`, `card` |
+| -1 | `AGGREGATION` | `table`, `tag`, `card` |
+
+Change `relationKind` first, then set `representationComponent`; read the allowed list from the error message instead of guessing.
 
 ---
 
@@ -277,6 +291,8 @@ All three are references to a **boolean `DataMember` on the same owner TransferO
 | `requiredBy` | `DataField` | Field becomes required |
 
 **On `MenuItem*`, `hiddenBy` references a boolean on the Actor's `principal` TO** — typically a `DERIVED` permission flag. This is the canonical dynamic-menu pattern; see [Advanced Modeling Patterns §2](./advanced-modeling-patterns.md#2-security--ui-patterns) — *Dynamic Menu System for Multi-Level Permissions*.
+
+**Hiding a generated action.** Add a `TRANSIENT` or `DERIVED` boolean `DataMember` to the transfer object that owns the action, then set `hiddenBy` on the `OperationForm`, `ActionButton` or `ActionGroup`: `update <viewFqn>::<action> --set hiddenBy=<TO>.<booleanMember>`. The CLI accepts only boolean members of the owner transfer object (`'<x>' is not an allowed value`, followed by the valid list). The action is hidden while the boolean is `true`. `TableOperation` has no `hiddenBy`; set it on its nested `OperationForm`.
 
 ---
 
@@ -308,6 +324,14 @@ flowchart LR
 - `NONE` — no confirmation
 - `CONDITIONAL` — `confirmationCondition` (boolean `DataMember`) decides
 - `MANDATORY` — always confirm, set `confirmationMessage`
+
+**`confirmationCondition`.** An operation button with a confirmation asks before it runs. Without `confirmationCondition` it always asks. With it, set to a boolean `DataMember` on the owner transfer object, the dialog appears only when that attribute is true in the current data (the row for table buttons, the owner data otherwise). The message comes from `confirmationMessage` and the translation key `<button key>.confirmation`.
+
+**Operation output pages.** For an operation that returns a mapped transfer, the generated output page is a dialog with these actions: Back (always), Refresh (when the output transfer is mapped to an entity), Update (when that transfer declares `update`) and Delete (when it declares `delete`). The page type for the update action is `OPERATION_OUTPUT_UPDATE`; its action is named `<operation>::Update`. Unmapped outputs get only Back.
+
+**CLI recipe for an `ActionGroup`.** `create -t ActionGroup --ns <viewFqn> -n <group>` creates it in a view (`--ns` is required; a transfer object is refused with `Cannot create ActionGroup in TransferObjectType`). Place an operation with `update <viewFqn> --add feature --feature <operation>`, then `relocate <viewFqn>::<operation> --to <viewFqn>::<group>` to move it into the group.
+
+**Field order.** The order of generated form and view fields follows the order of the container's `components` in the ESM. Reorder with `move <fqn> --index n` (or `--before` / `--after`) instead of deleting and re-adding the widget.
 
 ---
 
@@ -631,6 +655,18 @@ For a `CONDITIONAL` operation-form confirmation, `confirmationCondition` must be
 ### What enables sorting and filtering in the generated UI
 
 Sort and filter controls appear only for references whose target is mapped and has at least one non-`TRANSIENT` attribute of a supported type (orderable: string, numeric, date, timestamp, time, boolean; filterable: those plus enumeration). See [model-validation-and-transformation.md](./model-validation-and-transformation.md).
+
+### Placing a feature into a relation table
+
+A column of a relation table belongs to the target transfer object of the relation. Address the table element, not the page: `update <viewFqn>::<relation> --add feature --feature <member>` (the member is a feature of the relation's target type). On the page element the same name fails with `'<member>' is not a feature of <PageTO> placeable here`. The error also fires when the member is already placed; the `valid` list that follows shows only the features that can still be placed. `fill <TO>` already places a column for every member.
+
+### Embedded tables in a view and `isEager`
+
+`isEager` is not an ESM attribute and cannot be set in the model. The transformation sets it on the generated `ui` table: it is `true` when the relation is an aggregation or a composition, or when the page that holds the table is a Form. An eager table keeps its rows in memory (the owner's data) and never calls the server for paging, sorting or filtering; any other table is lazy (server side, paged). To embed a table in a view, place a to-many `TabularReferenceField` with `representationComponent=table` on the view and use `AGGREGATION` or `COMPOSITION` for an eager table.
+
+### Rows of an embedded table are saved with the page
+
+A table over an aggregation or composition relation is eager: its rows live in the owner's data. Creating a row from it opens the create dialog as a draft (`isDraft`) and adds the row to the owner's data; nothing is sent to the server until the page's Update (save) action runs. A test that adds or edits such rows must click the page's Update button afterwards. Rows of a lazy table (association) are created on the server at once.
 
 ### Selecting a custom React component from the model
 

@@ -1,6 +1,9 @@
 ---
 title: Writing E2E tests
 description: How to write Playwright tests for generated JUDO UIs.
+aliases: [write e2e test, playwright test for judo ui, e2e test helpers, fill form in test, table assertions in test, filter in e2e test, test data prefix]
+keywords: [TableHelper, ApiHelper, fillPrimitiveField, navigateToAccess, openAddAndApplyFilters, fillSingleRelationElement, createCollectionRelationElement, triggerAndWaitWithRegex, assertRowContent, callOperationWithInput, TEST_DATA_PREFIX, faker]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # Writing E2E Tests
@@ -107,6 +110,15 @@ await fillPrimitiveField(page, "Name", "Value", false, false);
 await checkPrimitiveFieldHasValue(page, "Name", "Test Value");
 ```
 
+Generated text fields store the value after a short debounce (see `troubleshooting.md`). If a plain `fill()` does not register (no Update/Create button becomes enabled, or the save reports a missing required attribute), type with key presses and blur:
+
+```typescript
+const field = page.getByRole('textbox', { name: 'Description' });
+await field.fill('');
+await field.pressSequentially('Some text', { delay: 20 });
+await field.blur();   // or click another field
+```
+
 ### Checkboxes
 
 ```typescript
@@ -131,6 +143,10 @@ await fillEnumCombobox(page, page, "Status", "Active");
 // Verify selection
 await checkEnumCombobox(page, "Status", "Active");
 ```
+
+### Binary Fields
+
+The generated binary input is a read-only text field that shows the file name, next to an icon button with the title `Upload file` that wraps a hidden file input. Upload with the file chooser (or `setInputFiles` on the file input) and assert the text field value (the file name), not an image.
 
 ### Date Fields
 
@@ -374,6 +390,10 @@ await deleteSingleRelationElement(page, page, "Owner", true);
 await navigateToSingleRelation(page, page, "Owner");
 ```
 
+### Picker Popups Render Outside the Dialog
+
+The option popups of relation pickers and comboboxes are rendered outside the dialog element. Open the picker inside the dialog, but locate and click the option from `page`, not from the dialog locator.
+
 ### Create Related Entity
 
 ```typescript
@@ -526,6 +546,8 @@ await fillPrimitiveField(dialog, "Name", "Value");
 // Submit dialog
 await acceptChangesOnDialogElement(page, dialog);
 ```
+
+Dialogs opened from an edited form (draft mode) label their create/update button from the translation key `judo.dialogs.draft.submit`, default `Ok`; an application translation can change it (for example to `Submit`). Look the button up by the label of the app's translation. The dialog close icon has `data-testid` `<container XMIID>-dialog-close-wrapper` in the rendered page; it is not part of the generated `VisualElementIds.ts`.
 
 ## Waiting for API Responses
 

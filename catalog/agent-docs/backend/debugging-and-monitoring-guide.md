@@ -1,6 +1,9 @@
 ---
 title: Debugging and Monitoring Guide
 description: Hot deployment, logging, X-Exchange-Id correlation, remote debugging and health checks.
+aliases: [debug backend, hot deploy, application logs, remote debug karaf, health check endpoint, slow operation timing]
+keywords: [KARAF_DEBUG, JAVA_DEBUG_PORT, X-Exchange-Id, RequestExchangeId, ExchangeIdDecorator, MetricsCollector, log:set, JaxRsApplicationsReady, MODEL_CHANGED, @Slf4j]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Debugging, Monitoring, and Performance Guide

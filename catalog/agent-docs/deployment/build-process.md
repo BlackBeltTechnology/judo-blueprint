@@ -1,6 +1,9 @@
 ---
 title: Build Process
 description: judo.sh command reference, Maven profiles, build workflows, project template generation, Docker image build and build troubleshooting.
+aliases: [build the project, judo.sh build flags, maven build profiles, skip docker build, build failure, prune untracked files]
+keywords: [judo.sh, generator-parameter.properties, generator-overrides, DOCKER_IMAGE_TAGS, skipDocker, skipFrontendReact, rdbmsCreateSimpleName, reckless, prune, MAVEN_OPTS, jib-maven-plugin]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Build Process
@@ -141,6 +144,8 @@ By default the fragment resolves to an empty stub from the template jar. You ove
    ```
 3. Run `./judo.sh generate` (or `./judo.sh build`). The dependency now appears in the regenerated `application/app/pom.xml`, and its checksum in `.generated-files` stays stable because the content is produced by the template, not by a manual edit.
 
+Platform-provided libraries (for example PDF, template-engine or file-store service APIs) are available at runtime, but the app module still needs a compile-time dependency in its pom (via this fragment) before their imports resolve.
+
 Fragments are Handlebars templates, so you can use expression syntax and generator parameters (for example `\<app>`) inside them.
 
 #### Available Fragment Extension Points
@@ -170,6 +175,17 @@ Every generated module (application root, app, interceptors, karaf-features, sch
 | `karaf-features/.../feature.xml` | `karaf-features/src/main/feature/feature.xml.{extra-repositories,extra-bundles,model-bundles}.fragment.hbs` | Extra Karaf bundles / repositories in the generated feature descriptor |
 | `e2e/pom.xml`, `e2e/actor/pom.xml`, `e2e/model/pom.xml` | `e2e/**/pom.xml.{project-definition,properties-definition,extra-plugin-management,extra-plugins,extra-dependencies}.fragment.hbs` | Same pattern for the E2E test modules |
 | `frontend-react/pom.xml`, `frontend-react/actor/pom.xml`, `frontend-react/model/pom.xml` | `frontend-react/**/pom.xml.{project-definition,properties-definition}.fragment.hbs` | Override coordinates / properties for React frontend modules |
+
+##### Frontend (React) fragment extension points
+
+Frontend (React) fragments, all placed in the override directory under `actor/`:
+
+- `actor/package.json.dependencies.extra.fragment.hbs`, `actor/package.json.dev-dependencies.extra.fragment.hbs` and `actor/package.json.scripts.extra.fragment.hbs` add entries to the matching `package.json` section.
+- `actor/public/i18n/application_default_extra.fragment.hbs` adds translation keys to the default language file. The stub is `"__extra": "Placeholder for additional translations",`, so write JSON key-value lines with a trailing comma.
+- `actor/src/fragments/operations/operation-primary-output-handler.fragment.hbs` is included after each operation call, with `operation` and `action` in context. The stub is an empty comment. Use it to handle the operation result.
+- Theme fragments are covered in [Theming](../frontend/theming.md).
+
+In templates, `elementHasAnnotation(element, "<name>")` is true when the model element has an annotation with exactly that name, and `operation.output.target` is the output's target class type. To keep a literal Handlebars expression in the generated file, escape it with a backslash: `\{{name}}` renders as `{{name}}` (the generated i18n files use this for i18next placeholders).
 
 > **Prefer fragment overrides over `.generator-ignore`.** A fragment keeps the file under the generator's control so future template improvements still flow in; adding the file to `.generator-ignore` freezes the generated output and will drift from the template over time.
 
@@ -287,6 +303,8 @@ The app realm's name is `ActorType.realm` emitted verbatim by `asm2keycloak` as 
 | `stop` | Stop application, PostgreSQL and Keycloak |
 | `status` | Print the status of the containers |
 
+> **`schema-upgrade` is one step.** It generates the difference and applies it immediately, so a hand-written backfill changeset cannot be inserted between generation and execution. Do not use `schema-upgrade` when a backfill is needed.
+
 **`build` options:** `-v <version>` (model and application version), `-p` (parallel), `-a` (app module only), `-f` (frontend module only), `-sc` (build the schema CLI standalone JAR), `-d` / `--docker` (build Docker images), `-M` (skip model), `-B` (skip backend), `-F` (skip frontend), `-KA` (skip Karaf), `-S` (skip schema migration image), `-ma <arg>` (extra Maven argument), `-q` (quick: cache, no validation), `-i` (ignore checksum errors, regenerate and update checksums).
 
 **`start` options:** `-W` (do not watch bundle changes), `-K` (skip Keycloak), `-o "<name>=<value>,..."` with:
@@ -335,11 +353,13 @@ Defaults for the options can be placed in `judo.properties` (or the properties f
 - After major model refactors where generator output layout changed (e.g. actor renamed) and stale per-actor dirs need to disappear.
 - As the first step of a fully clean rebuild: `./judo.sh prune -f && ./judo.sh build -i`.
 
-If you only need to clear generator caches without touching untracked files, use `./judo.sh clean` instead — `clean` is non-destructive to untracked source files.
+`./judo.sh clean` does not delete untracked files, but it is not a generator-cache clear either: it stops the PostgreSQL container and clears its data (see the command table).
 
 ## Frontend Build Recovery
 
 When `./judo.sh build -i` fails in the frontend reactor (typically after model or OpenSpec-driven changes, for example `TS2307 Cannot find module ~/services/data-axios/...`), delete the generated folders of the `frontend-react` module - `src/pages/`, `src/dialog/`, `src/containers/` and `src/services/` - and run `./judo.sh build -i` again; the generator recreates them. Re-running the build alone is not enough in this case.
+
+After renaming a transfer object, container or page, the generated names derived from it change: customization component names and interface keys (`<ContainerComponentName>...Component`, upper-snake `..._INTERFACE_KEY`), page and dialog folders. Rename the matching custom files and constants by hand, delete the stale generated `src/pages/`, `src/dialog/`, `src/containers/` and `src/services/` folders, then run `./judo.sh build -i`.
 
 ## Stale Artifacts and Multi-Module Build Order
 
@@ -356,8 +376,8 @@ A runtime change can span several repositories (`judo-runtime-core`, `judo-platf
 
 The template (`judo-esm-fullstack-project-template`) has the modules `-root`, `-application`, `-common` and `-test`. The root module's resources contain `pom.xml.hbs`, `judo.sh.hbs`, `generator-parameter.properties.hbs`, `AGENTS.md.hbs`, `README.adoc.hbs` and the `pom.xml.*.fragment.hbs` files. To start a project:
 
-1. Place the model at `model/<app>.model` and generate the project with the `create-judo-project` goal of `judo-version-updater-maven-plugin` (parameters `-DmodelName`, `-DprojectGroupId`, `-DprojectArtifactId`, `-DprojectVersion`, `-Dversion`).
-2. The root POM has a `generate-root` execution with `synchronizeGitignore` (`esm=${basedir}/model/<app>.model`, ignored files `pom.xml`, `**/pom.xml`, `judo.sh`, `.mvn/jvm.config`).
+1. Place the model at `model/<app>.model` and generate the project with the `create-judo-project` goal of `judo-version-updater-maven-plugin` (parameters `-DmodelName`, `-DprojectGroupId`, `-DprojectArtifactId`, `-DprojectVersion`, `-Dversion`). The plugin's groupId is `hu.blackbelt.judo`; its version selects the template version, so take the plugin version and `-Dversion` from the target JUDO versions rather than from whatever is cached in `~/.m2`.
+2. The root POM has a `generate-root` execution with `synchronizeGitignore` (`esm=${basedir}/model/<app>.model`, ignored files `pom.xml`, `**/pom.xml`, `judo.sh`, `.mvn/jvm.config`). When adopting generated output into a repository that already has its own `.gitignore`, copy only the generated files and keep the managed `# JUDO GENERATOR BLOCK` in `.gitignore`; overwriting the tracked file wholesale makes `generate-root` stop with a manual-changes error.
 3. Add a `<server>` with the id `<app>-distribution` to `~/.m2/settings.xml` if you deploy artifacts.
 4. Run `./judo.sh build`; Docker must be installed (the local database and Keycloak run in containers).
 

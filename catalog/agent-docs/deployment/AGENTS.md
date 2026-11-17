@@ -6,13 +6,19 @@
 
 | File | Purpose |
 |---|---|
+| `README.agent.md` | Condensed map of `README.md`: read first, then `kb_get` one section |
 | `README.md` | Deployment and build documentation for JUDO applications. |
+| `application-config.agent.md` | Condensed map of `application-config.md`: read first, then `kb_get` one section |
 | `application-config.md` | JUDO_PLATFORM environment variables for database, Keycloak, filestore, mail and identifier signing, per-environment setup and encrypted values. |
+| `build-process.agent.md` | Condensed map of `build-process.md`: read first, then `kb_get` one section |
 | `build-process.md` | judo.sh command reference, Maven profiles, build workflows, project template generation, Docker image build and build troubleshooting. |
 | `generator-plugins.md` | ESM and UI generator goals, checksums, Tatami workflow plugins, generation toggles, OpenAPI, Flutter and frontend environment variables. |
+| `local-development.agent.md` | Condensed map of `local-development.md`: read first, then `kb_get` one section |
 | `local-development.md` | Starting the application locally, hot deployment, Karaf console, logs and local troubleshooting. |
 | `osgi-runtime-services.md` | Model bundles, datasource provisioning, model version checks, startup readiness, health checks and Karaf administration. |
+| `production.agent.md` | Condensed map of `production.md`: read first, then `kb_get` one section |
 | `production.md` | Production builds, Docker and Compose deployment, environment configuration, monitoring and deployment checklist. |
+| `schema-evolution.agent.md` | Condensed map of `schema-evolution.md`: read first, then `kb_get` one section |
 | `schema-evolution.md` | Incremental schema migration with judo-rdbms-schema: generate, review scripts, execute, Docker migration, rollback and production strategy. |
 | `spring-boot-runtime.md` | Spring Boot archetype, build plugin, autoconfiguration, test database selection and adding database dialects. |
 | `tooling-guide.md` | Diagram generator script for visualising the ESM model. |

@@ -1,6 +1,9 @@
 ---
 title: Production Deployment
 description: Production builds, Docker and Compose deployment, environment configuration, monitoring and deployment checklist.
+aliases: [deploy to production, production docker image, docker compose deployment, production environment variables, production health check, deployment checklist]
+keywords: [skipDocker, JUDO_PLATFORM_RDBMS_DIALECT, JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL, JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET, DOCKER_IMAGE_TAGS, compose-postgresql-https, /system/health, bundle:list, judo-runtime.cfg, VITE_API_DEFAULT_BASE_URL]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Production Deployment

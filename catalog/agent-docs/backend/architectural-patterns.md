@@ -1,6 +1,9 @@
 ---
 title: Backend Architectural Patterns
 description: "Multi-tenancy filtering, actor access getter rules (entity FQN base, no self in scope, reference-returning expression), custom service layer and state machine patterns for JUDO backends."
+aliases: [multi-tenancy filtering, tenant filter backend, access getter rules, custom service layer, state machine workflow]
+keywords: [getterExpression, accesses, tenantId, ACTOR]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Architectural Patterns

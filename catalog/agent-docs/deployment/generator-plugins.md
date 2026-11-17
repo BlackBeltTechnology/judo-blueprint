@@ -1,6 +1,9 @@
 ---
 title: Code Generation Maven Plugins
 description: ESM and UI generator goals, checksums, Tatami workflow plugins, generation toggles, OpenAPI, Flutter and frontend environment variables.
+aliases: [maven generator goals, regenerate frontend code, checksum ignore, generation toggles, tatami workflow plugin, openapi generation, flutter frontend]
+keywords: [judo-esm-generator-maven-plugin, judo-ui-generator-maven-plugin, judo-tatami-client-workflow-maven-plugin, default-workflow, checksum, OpenAPI, JasperReports]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Code Generation Maven Plugins and Workflow Goals
@@ -22,7 +25,7 @@ This guide describes the Maven plugins that drive code generation in the JUDO bu
 | `resetChecksum` | `clean` | Rewrite stored checksums |
 | `synchronizeGitignore` | `process-resources` | Maintain the managed `.gitignore` block |
 
-`generate` parameters: `esm` (required; a file path or `mvn:` URL), `destination` (required; commonly `${project.basedir}/target/fullstack-project`), `uris` (required; template locations), `type` (default `fullstack-project`), `actors`, `helpers`, `scanDependencies` (default `false`), `validateChecksum` (default `true`). Template parameters come from `templateParameters` (inline map), `parameterFiles` (properties files) and `variablePrecedence` (conflict order).
+`generate` parameters: `esm` (required; a file path or `mvn:` URL), `destination` (required; commonly `${project.basedir}/target/fullstack-project`), `uris` (required; template locations), `type` (default `fullstack-project`), `actors`, `helpers`, `scanDependencies` (default `true`), `validateChecksum` (default `true`). Template parameters come from `templateParameters` (inline map), `parameterFiles` (properties files) and `variablePrecedence` (conflict order).
 
 - Template URIs accept `mvn:groupId:artifactId:version` or `mvn:groupId:artifactId:version!path/in/jar` over `tgz`/`tar.gz`/`zip`/`jar`/`bz2`.
 - An empty `actors` list generates code for all actor types; a non-empty list restricts generation to the listed actor FQ names.
@@ -68,7 +71,23 @@ Model inputs use the `mvn:` URI syntax or plain file paths; a `file:` scheme is 
 
 ### JSL model workflow (`judo-tatami-jsl-workflow-maven-plugin`, goal `default-model-workflow`)
 
-Bound to `compile` (or `generate-sources` in archetype projects). Key parameters: `dialects` (default `postgresql,hsqldb`), `destination` (default `${project.basedir}/target/model`; archetype projects read `${basedir}/src/main/resources/model` and write `target/generated-sources/model`), `transformationMode` (`ETL`, alternative Zeta), `runInParallel`, `useCache`, `saveModels`, `ignore*` flags (`ignorePsm2AsmTrace`, `ignoreAsm2Keycloak`, `ignoreJsl2PsmTrace`). Artifacts are named `<modelName with ':' replaced by '_'>-<suffix>.model`, per dialect `-rdbms_<dialect>.model` and `-liquibase_<dialect>.changelog.xml`.
+Bound to `compile` (or `generate-sources` in archetype projects). Key parameters: `dialects` (default `postgresql,hsqldb`), `destination` (default `${project.basedir}/target/model`; archetype projects read `${basedir}/src/main/resources/model` and write `target/generated-sources/model`), `transformationMode` (default `ETL`; Zeta is opt-in), `runInParallel`, `useCache` (default `true`), `saveModels` (default `true`), `ignore*` flags (`ignorePsm2AsmTrace`, `ignoreAsm2Keycloak`, `ignoreAsm2KeycloakTrace` (default `true`), `ignoreJsl2PsmTrace`). The RDBMS maximum column name length parameter is `rdbmsColumnMaxNameSize` (`rdbmsColumnNameMaxSize` is not a valid key). The plugin has no `useDependencies` parameter; `.jsl` discovery uses the `sources` list and `scanSources`. Artifacts are named `<modelName with ':' replaced by '_'>-<suffix>.model`, per dialect `-rdbms_<dialect>.model` and `-liquibase_<dialect>.changelog.xml`.
+
+### Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)
+
+- The `operation` parameter is written `<operation>...</operation>` (the closing tag must match).
+- The `keycloak` parameter loads the Keycloak model, not the Measure model.
+- The per-dialect trace element is `<asm2rdbmsTrace>...</asm2rdbmsTrace>`.
+- RDBMS trace skipping is governed by `ignoreAsm2RdbmsTrace` (default `false`) and the per-dialect `asm2rdbmsTrace`; there is no Keycloak trace check for it.
+- The column length parameter is `rdbmsColumnMaxNameSize`.
+
+### JSL generator plugin (`generator-maven-plugin`)
+
+With `modelNames` empty, only root model declarations are candidates; the build fails with `Multiple root model` when more than one root exists. The mojo deletes nothing in its target directory: it writes `<modelName>-jsl.model` there and excludes that directory.
+
+### Template URI priority and naming helpers
+
+`ChainedURLTemplateLoader` is last-wins: later template URIs override the first (base) URI. `camelCaseToSnakeCase` returns upper-case `SNAKE_CASE` names.
 
 ### RDBMS naming prefixes
 
@@ -98,7 +117,7 @@ With `generateOpenApiAnnotations=true` the rest module runs `swagger-maven-plugi
 
 ## REST Assured Test Client
 
-`judo-psm-generator-restassured` emits `ApiClient.api(Config)` per model with `BASE_URL_<ACTOR>` constants, `authTo<Actor>(grantType, userName, password)` password-grant helpers (client id `<model>-<actor>`) and one wrapper per exposed transfer object whose operations pin `REQ_METHOD` (GET only for stateless operations without input, else POST) and `REQ_URI`, with `body(...)`, `xJudoCountRecordsHeader`, `xJudoMaskHeader`, `xJudoSignedIdentifierHeader` and `execute()`. The generated Postman collections (`models/*/postman`) run against a local Karaf (`http://localhost:8181`) and keep signed identifiers in environment variables used by `~set`/`~add` bodies. The OpenAPI toggle is `ignoreOpenAPI=false`.
+`judo-psm-generator-restassured` emits `ApiClient.api(Config)` per model with `BASE_URL_<ACTOR>` constants, `authTo<Actor>(grantType, userName, password)` password-grant helpers (client id `<model>-<actor>`) and one wrapper per exposed transfer object whose operations pin `REQ_METHOD` (GET only for stateless operations without input, else POST) and `REQ_URI`, with `body(...)`, `xJudoCountRecordsHeader`, `xJudoMaskHeader`, `xJudoSignedIdentifierHeader` and `execute()`. Postman collections are not part of generated projects; they exist only in the platform's integration-test project. The OpenAPI toggle is `ignoreOpenAPI=false`.
 
 ## OpenAPI Client for OSGi (`jaxrs-cxf-client-osgi-ds`)
 

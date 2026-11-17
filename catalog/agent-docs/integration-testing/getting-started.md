@@ -1,6 +1,9 @@
 ---
 title: Integration Testing - Getting Started Guide
 description: "Target Audience: Beginners, new developers starting with JUDO integration tests"
+aliases: [first integration test, junit setup, run integration tests, transaction handling in tests, test table truncation, beginner integration testing]
+keywords: [@JudoTest, JudoRuntimeFixture, ReferenceInjector, TransactionHandling, truncateTables, AUTO_ROLLBACK, AUTO_COMMIT, MANUAL, mvn clean test, logback-test.xml, maven-surefire-plugin]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - Getting Started Guide
 
@@ -568,22 +571,28 @@ public class MultiTransactionTest {
 
 ## Running Tests
 
+The `application/integration-test` module is not listed in `application/pom.xml`, so `mvn -pl application/integration-test` from the project root fails with `Could not find the selected project in the reactor`. Run Maven from the module directory:
+
+```bash
+cd application/integration-test
+```
+
 ### Run All Integration Tests
 
 ```bash
-mvn clean test -pl application/integration-test
+mvn clean test
 ```
 
 ### Run Specific Test Class
 
 ```bash
-mvn clean test -pl application/integration-test -Dtest=UserDaoTest
+mvn clean test -Dtest=UserDaoTest
 ```
 
 ### Run Specific Test Method
 
 ```bash
-mvn clean test -pl application/integration-test -Dtest=UserDaoTest#testCreateUser
+mvn clean test -Dtest=UserDaoTest#testCreateUser
 ```
 
 ### Run with Debug Logging
@@ -607,7 +616,7 @@ Edit `src/test/resources/logback-test.xml`:
 Then run:
 
 ```bash
-mvn clean test -pl application/integration-test
+mvn clean test
 ```
 
 ### Skip Tests During Build

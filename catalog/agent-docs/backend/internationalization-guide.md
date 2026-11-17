@@ -1,6 +1,9 @@
 ---
 title: Backend Internationalization Guide
 description: Backend i18n service, localized validation messages and translation files.
+aliases: [backend translations, localized error messages java, inject i18n service, validation message language, messages properties file, translate validation errors]
+keywords: [ApplicationI18n, I18nService, LocaleProvider, defaultLocale, MessageInterpolator, getTemplate, ValidationException, ValidationResult, messages_en.properties, messages_hu.properties]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Backend Internationalization (i18n) Guide
@@ -58,6 +61,17 @@ public interface ApplicationI18n {
     String field_exceeds_maximum_length(int maxLength);
 }
 ```
+
+### Message resolution order
+
+For an i18n interface method, the runtime resolves the message template in this order:
+
+1. The property named after the method. An existing property with that name wins, including over `@Message(value=...)`.
+2. `@Message(key=...)`: the key is looked up only if step 1 found nothing. If the key is set and its lookup returns nothing, the inline `@Message(value=...)` is discarded as well.
+3. `@Message(value=...)`, the inline template, when no key is set.
+4. An auto-generated template from the method name and its parameters.
+
+`@MessageByEnum` is only declared and has no processor; enum messages are resolved by `EnumI18nService` by constant name, not through this annotation.
 
 ### Using I18n in Custom Operations
 

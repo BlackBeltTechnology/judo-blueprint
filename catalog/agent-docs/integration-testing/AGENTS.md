@@ -7,12 +7,18 @@
 | File | Purpose |
 |---|---|
 | `README.md` | Integration testing guide for JUDO backend. |
+| `access-and-derived-testing.agent.md` | Condensed map of `access-and-derived-testing.md`: read first, then `kb_get` one section |
 | `access-and-derived-testing.md` | Integration-test patterns for Access.getterExpression and DERIVED attribute getters in JUDO models. |
+| `advanced-patterns.agent.md` | Condensed map of `advanced-patterns.md`: read first, then `kb_get` one section |
 | `advanced-patterns.md` | Part of: Integration Testing Documentation(./README.md) |
+| `best-practices.agent.md` | Condensed map of `best-practices.md`: read first, then `kb_get` one section |
 | `best-practices.md` | Part of: Integration Testing Documentation(./README.md) |
+| `getting-started.agent.md` | Condensed map of `getting-started.md`: read first, then `kb_get` one section |
 | `getting-started.md` | Target Audience: Beginners, new developers starting with JUDO integration tests |
 | `interceptor-testing.md` | Integration test for an interceptor: testing OperationCallInterceptor implementations with @JudoTest(interceptors = …), JudoRuntimeFixture.addInterceptor(…), spy interceptors and execution order. |
 | `osgi-ds-descriptor-tests.md` | Part of: Integration Testing Documentation(./README.md) |
 | `runtime-fixture-and-test-scope.md` | This page explains how the testkit builds the runtime for a test, and how to keep integration tests small and fast. |
+| `supplementary-patterns.agent.md` | Condensed map of `supplementary-patterns.md`: read first, then `kb_get` one section |
 | `supplementary-patterns.md` | Part of: Integration Testing Documentation(./README.md) |
+| `type-safety.agent.md` | Condensed map of `type-safety.md`: read first, then `kb_get` one section |
 | `type-safety.md` | Part of: Integration Testing Documentation(./README.md) |

@@ -7,6 +7,9 @@ user-invocable: false
 model: inherit
 context: fork
 agent: general-purpose
+aliases: [integration test setup, testkit usage, test custom operations, sdkman java version, mvnd build, test interceptors]
+keywords: [judo-runtime-core-guice-testkit, .sdkmanrc, SDKMAN, mvnd, mvn, judo.properties, app_name]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing Guide
 

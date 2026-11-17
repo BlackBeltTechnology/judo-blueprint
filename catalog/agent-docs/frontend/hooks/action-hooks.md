@@ -1,6 +1,9 @@
 ---
 title: Frontend Action Hooks
 description: Container and page action hooks, enumeration filtering, typeahead and the operation flow manager.
+aliases: [frontend action hooks, hook before save, filter dropdown options, custom page button, redirect after create, autocomplete hook, operation flow redirect]
+keywords: [OperationFlowManager, OPERATION_FLOW_MANAGER_INTERFACE_KEY, CONTAINER_ACTIONS_HOOK_INTERFACE_KEY, registerService, onBeforeSave, onAfterDelete, filterUserOptions, getRangeAction, getAction, handleResult, shouldUseCustomFlow]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Action Hooks
@@ -322,7 +325,41 @@ const entityPageActions: ServiceEntityViewEditActionsHook = (data, editMode, sto
 
 ### Registration
 
-Call `registerServiceEntityViewPageActionsHook(context)` from `DefaultApplicationCustomizer.customize`. There is no `page` service property; the key itself is page specific.
+Call `registerServiceEntityViewPageActionsHook(context)` from `DefaultApplicationCustomizer.customize`. There is no `page` service property; the key itself is page specific. The same operation shown on N pages (for example a view that exists as several generated pages) needs N hook registrations, one per page key.
+
+### `getMask`, `queryCustomizer` and template hooks
+
+- **`getMask?: () => string`** is an optional member of the page actions hook for pages that show a view or a table, not for forms. A generated page calls it when it builds the `_mask` of its own load request, and falls back to a mask serialized at generation time. Return only the fields the page needs.
+- **`_mask` syntax:** `{<attr>,<attr>,<relation>{<attr>,<attr>},...}`. The mask is wrapped in braces, plain attributes are comma separated and sorted, and a relation name is followed by its own braces. For example `{name,createdAt,owner{name}}`. Include every attribute that a visibility, enabled, required or range-bound field refers to, or the page cannot evaluate it.
+- **`queryCustomizer`:** the page's refresh action takes a `QueryCustomizer` argument (`refreshAction?: (queryCustomizer) => Promise<JudoRestResponse<...>>`). It carries `_mask`, filters, sort and `_seek`. Overriding `refreshAction` replaces the load call, so pass the received `queryCustomizer` through (with your changes) to the generated service. Tables build it internally and add `_mask` from `getMask` when present.
+- **`post<GetTemplateAction>(ownerData, data, storeDiff)`** exists only on dialog (create-form) hooks. It runs after the template (default values for a new instance) has loaded. Use `storeDiff(attributeName, value)` to write defaults into the form data. It is not generated on plain pages.
+
+### Refreshing Custom Components After an Operation
+
+The generated page does not hand new data to a custom visual element after an operation, so such a component keeps stale values (for example a summary that shows a total). Use the optional `post<Operation>` handler of the page actions hook (one per page, see above) to signal the component, and reload in the component:
+
+```typescript
+// in the page actions hook
+postApplyCoupon: async () => {
+  window.dispatchEvent(new CustomEvent('<app>:data-changed'));
+},
+
+// in the custom component
+useEffect(() => {
+  const reload = () => { /* fetch the data again */ };
+  window.addEventListener('<app>:data-changed', reload);
+  return () => window.removeEventListener('<app>:data-changed', reload);
+}, []);
+```
+
+### Refreshing the menu after an operation
+
+The navigation menu is filtered by the `principal` held in the principal context: an item whose `hiddenBy` names a boolean of the principal is hidden while it is `true`, and the menu re-filters whenever `principal` changes. After an operation that changes those flags (for example joining a group), call `await refreshPrincipal()` from `usePrincipal()` in the post-operation hook; the menu updates without a page reload.
+
+```typescript
+const { refreshPrincipal } = usePrincipal();
+await refreshPrincipal();
+```
 
 ### Advanced Examples
 

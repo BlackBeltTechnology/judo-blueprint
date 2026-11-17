@@ -1,6 +1,9 @@
 ---
 title: Application Configuration
 description: JUDO_PLATFORM environment variables for database, Keycloak, filestore, mail and identifier signing, per-environment setup and encrypted values.
+aliases: [environment variables config, judo-karaf.env settings, database connection settings, keycloak url config, signed identifier secret, mail smtp settings, configuration not applied]
+keywords: [JUDO_PLATFORM_RDBMS_DIALECT, JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL, JUDO_PLATFORM_FILESTORE, JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET, judo-karaf.env, judo.sh, JUDO_PLATFORM_MAIL_SMTP_HOST, JUDO_PLATFORM_SWAGGER_UI, bannerEnabled, enableJMX, ENC]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Configuration Guide
@@ -86,6 +89,11 @@ export JAVA_EXTRA_OPTS="-Djudo.platform.parameterName=value"
 - No prefix needed
 - Format: `camelCase`
 - Example: `rdbmsDialect`
+- System properties in config templates keep their dots: `${system.java_home}` resolves the JVM property `java.home`; dots are not replaced by underscores.
+
+### Custom application parameters
+
+Custom parameter names are case-sensitive. A template line such as `myprop=${ mypropDev ! "My DEV Prop"}` reads the parameter `mypropDev` (lowercase `p`), so the environment-variable and `-D` forms must use that exact name. In a conditional template the `dev` branch falls back to `"My DEV Prop"` and the `qa` branch to `"My QA Prop"` when the parameter is not set.
 
 ### Conversion Rule
 ```
@@ -113,6 +121,8 @@ JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL    → keycloakAuthPublicUrl
 - `JUDO_PLATFORM_HIKARI_CONNECTION_TIMEOUT` (milliseconds, e.g. `120000`)
 - `JUDO_PLATFORM_NARAYANA_DEFAULT_TIMEOUT` (milliseconds, e.g. `120000`)
 - `JUDO_PLATFORM_CASE_INSENSITIVE_LIKE` (`true` for case-insensitive `like` on PostgreSQL)
+
+**Pool and datasource factory parameters:** the connection pool is selected by `rdbmsDbPool` (env `JUDO_PLATFORM_RDBMS_DB_POOL`; options `none`, `hikari`, `dbcp2`, `transx`; default `hikari`). There is no `rdbmsDbPoolType` or `dbPoolType`. `managedDatasourceFactory` (options `none`, `transx`) defaults to `none`, meaning transactions are handled by the JDBC datasource; `transx` wraps the datasource in the Transx JTA transaction manager.
 
 For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtime](./spring-boot-runtime.md). For runtime datasource behaviour (pax-jdbc keys, version checks) see [OSGi Runtime Services](./osgi-runtime-services.md).
 
@@ -152,6 +162,8 @@ For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtim
 
 **S3 settings**: `JUDO_PLATFORM_S3_BUCKET`, `JUDO_PLATFORM_S3_REGION`, `JUDO_PLATFORM_S3_ENDPOINT`, `JUDO_PLATFORM_S3_ACCESS_KEY`, `JUDO_PLATFORM_S3_SECRET_KEY`, plus `JUDO_PLATFORM_FILESTORE_TOKEN_EXPIRY`.
 
+An `http://` S3 endpoint is accepted: activation logs a WARN that the endpoint is cleartext (signed requests and file bytes travel unencrypted), but it is not an error and does not stop activation. Use `https://` outside local tests.
+
 #### Using a Google Cloud Storage bucket
 
 Google Cloud Storage exposes an S3-compatible XML API, so the platform's S3 file store works against it with no GCS-specific code: set `JUDO_PLATFORM_FILESTORE=s3`, point `JUDO_PLATFORM_S3_ENDPOINT` at `https://storage.googleapis.com` and use **HMAC credentials** for the access/secret keys. Bucket lifecycle rules (for example delete after one day for temporary uploads) are configured in GCS, not in JUDO.
@@ -175,6 +187,8 @@ Google Cloud Storage exposes an S3-compatible XML API, so the platform's S3 file
 | `JUDO_PLATFORM_MAIL_SMTP_SSL_TRUST` | Trusted SSL hosts |
 | `JUDO_PLATFORM_LOG_SMTP_SERVER` | Log SMTP interactions (`true` in the shipped files) |
 
+**Mail defaults:** without configuration the SMTP port is `25`; with `logSmtpServer=true` (`JUDO_PLATFORM_LOG_SMTP_SERVER`) the default of `mailSmtpPort` becomes `10025` instead. The local log SMTP server itself listens on `logSmtpServerPort`, which defaults to `1025` (host `logSmtpServerHost`, default `localhost`).
+
 **Local testing with Mailpit:** run a mail catcher such as Mailpit locally; the app only knows an SMTP host and port, so for local runs point them at `localhost:1025` (no authentication, no TLS) in `judo-karaf.env`. Test/demo/production read the `JUDO_PLATFORM_MAIL_SMTP_*` variables from the deployment environment (for example `environments/<env>/app-compose/docker-compose.yml`). Nothing in the app depends on Mailpit; new-user and activation emails go through the same SMTP configuration, so Mailpit captures them too.
 
 ### 7. Other platform switches
@@ -197,7 +211,7 @@ Environment variables (`JUDO_PLATFORM_*`) are the recommended source. Edits of `
 
 ### Development (Local)
 
-**judo-karaf.env** / start options: `./judo.sh start` runs Karaf on port **8181**, Keycloak on 8080 and PostgreSQL (or HSQLDB with `-o dbtype=hsqldb`).
+**judo-karaf.env** / start options: `./judo.sh start` runs Karaf on port **8181**, Keycloak on 8080 (under `/auth`) and the database chosen by `dbtype` (`hsqldb` in the generated `judo.properties`; PostgreSQL with `-o dbtype=postgresql`).
 
 ```bash
 JUDO_PLATFORM_RDBMS_DIALECT=hsqldb
@@ -236,6 +250,8 @@ JUDO_PLATFORM_SWAGGER_UI=false
 ## Encrypted Values (Jasypt)
 
 Configuration files can embed secrets as `password=ENC(<encrypted>)`. The `org.jasypt.encryption.StringEncryptor` OSGi service (from the `karaf-jasypt-support` / `osgi-encryption` features) decrypts them when the configuration is read. Passwords can be encrypted with a Karaf command and replaced in the PAX-JDBC / DBCP2 configuration files.
+
+The password source is read in this order: `encryption_password`, then `encryption_passwordFile`, then the environment variable named by `encryption_passwordEnvName`. `encryption_passwordEnvName` has no default and there is no fallback: if none of the three is set, no password source is read, and the environment variable is used only when that property names it. (The `encrypt`/`decrypt` shell commands, without an explicit password, read the `ENCRYPTION_PASSWORD` environment variable.)
 
 ## Applying Configuration Changes
 

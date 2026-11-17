@@ -1,6 +1,9 @@
 ---
 title: Generator Reserved Names
 description: Member names that collide with generator-emitted methods and how to avoid them.
+aliases: [reserved member names, template name collision, duplicate function implementation, TS2393 error, rename template member]
+keywords: [getTemplate, template, createable, TransferObjectType, binding, isTemplateable, TS2393, letterTemplate, updateable, deleteable]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # Generator Reserved Names
@@ -25,6 +28,14 @@ grep -nE 'name="template"'   model/*.model   # candidate collisions
 ```
 
 Any TO that appears in both results needs a rename.
+
+### Java reserved words
+
+`safeName()` appends an underscore to a name that is a Java reserved word (including `class`, `Class`, `int`, `interface`, `default`): `class` becomes `class_` (a suffix, not a prefix).
+
+### Generated database name limits
+
+Generated table and column names are abbreviated to a maximum length. The defaults are 62 characters for tables and 58 for columns on HSQLDB and PostgreSQL, and 30 for both on Oracle; `tableNameMaxSize` and `columnNameMaxSize` override them.
 
 ## Related
 

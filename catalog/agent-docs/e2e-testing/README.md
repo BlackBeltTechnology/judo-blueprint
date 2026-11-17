@@ -5,6 +5,9 @@ description: E2E testing guide for JUDO React frontends using Playwright. Covers
 disable-model-invocation: false
 user-invocable: false
 agent: general-purpose
+aliases: [playwright tests, e2e test setup, run playwright tests, record test videos, e2e environment, enable e2e generation]
+keywords: [generateE2eModule, APP_URL, playwright.config.ts, storageState, TEST_DATA_PREFIX, ApiHelper, TableHelper, video, retain-on-failure, pnpm]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # E2E Testing Guide

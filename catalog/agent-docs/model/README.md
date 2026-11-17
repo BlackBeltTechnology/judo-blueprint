@@ -1,6 +1,9 @@
 ---
 title: Model Documentation
 description: Model documentation for JUDO applications: ESM metamodel, JUDO Model CLI, JQL, modeling patterns, validation and transformation.
+aliases: [model documentation index, how to change the model, model CLI, modeling guide, cardinality meaning, CRUD flags, which model doc to read]
+keywords: [judo-cli.jar, merge, esm.ecore, JQL, createable, updateable, deleteable, 0..1, 1..*, Designer]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # Model Documentation

@@ -1,6 +1,9 @@
 ---
 title: Deployment Documentation
 description: Deployment and build documentation for JUDO applications. Covers judo.sh commands, Docker setup, Karaf configuration, and production deployment.
+aliases: [build a JUDO app, judo.sh commands, deploy JUDO application, health check failing, karaf health endpoint, start and stop services, build troubleshooting]
+keywords: [judo.sh, mvnd, screen, tmux, judo.properties, app_name, system/health, overallResult, JaxRsApplicationsReady, judo-karaf.env, karaf, configuration-status]
+tags: [domain:deployment, domain:backend, layer:infrastructure, layer:backend, status:platform]
 ---
 
 # Deployment Documentation
@@ -157,10 +160,10 @@ Maven (build tool)
 
 When services are running locally:
 
-- **Application**: http://localhost:8181/apps/
+- **Application**: http://localhost:8181/<model>/<Actor>/ (`/apps/` only lists the bundles)
 - **API Spec**: http://localhost:8181/api-spec/<app>
 - **Health Check**: http://localhost:8181/system/health?tags=<app>
-- **Keycloak Admin**: http://localhost:8080 (Keycloak's port; the application is on 8181)
+- **Keycloak Admin**: http://localhost:8080/auth (`judo.sh` starts Keycloak with `--http-relative-path /auth`; Keycloak's port; the application is on 8181)
 - **Karaf SSH**: `ssh -p 8101 karaf@localhost` (password: karaf; Apache Karaf defaults, not set by the template)
 
 ## Health Check Endpoint

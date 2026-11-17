@@ -6,10 +6,17 @@
 
 | File | Purpose |
 |---|---|
+| `README.agent.md` | Condensed map of `README.md`: read first, then `kb_get` one section |
 | `README.md` | Pandino-based hook system of the generated React frontend: hook categories, .default scaffolds, registration patterns and .generator-ignore guidance. |
+| `action-hooks.agent.md` | Condensed map of `action-hooks.md`: read first, then `kb_get` one section |
 | `action-hooks.md` | Container and page action hooks, enumeration filtering, typeahead and the operation flow manager. |
+| `data-hooks.agent.md` | Condensed map of `data-hooks.md`: read first, then `kb_get` one section |
 | `data-hooks.md` | usePrincipal and useViewData of the generated React frontend and how hooks receive page data. |
+| `navigation-and-access.agent.md` | Condensed map of `navigation-and-access.md`: read first, then `kb_get` one section |
 | `navigation-and-access.md` | Redirect service, access filter, hotkeys, navigation interceptor and navigation helpers of the generated React frontend. |
+| `table-hooks.agent.md` | Condensed map of `table-hooks.md`: read first, then `kb_get` one section |
 | `table-hooks.md` | Table row highlighting, column customizer and sidekick components of the generated React frontend. |
+| `ui-hooks.agent.md` | Condensed map of `ui-hooks.md`: read first, then `kb_get` one section |
 | `ui-hooks.md` | AppBar extra component, hero and logo props, footer text and menu customization hooks. |
+| `validation-hooks.agent.md` | Condensed map of `validation-hooks.md`: read first, then `kb_get` one section |
 | `validation-hooks.md` | Date, field, async and cross-field validation customization in container hooks of the generated React frontend. |

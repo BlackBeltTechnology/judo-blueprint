@@ -1,6 +1,9 @@
 ---
 title: JSL Language Rules
 description: JSL identifiers, built-in libraries, actor grammar limits and the validator rules that fail a model build.
+aliases: [JSL syntax rules, why model build fails, reserved word as name, actor declaration syntax, JSL editor plugin, built-in functions list]
+keywords: [judo::types, judo::functions, actor, realm, claim, identity, guard, getVariable, _MetadataSecurityFor, jsl-language.vsix, eager, required]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # JSL Language Rules
@@ -31,6 +34,16 @@ When JSL is translated to JQL some functions are renamed: `right` to `last`, `le
 - A cycle of required members is an ERROR; eager cycles are only warnings.
 - Enumerations need at least one literal; ordinals must be 0 to 9999 and unique, names unique (case-insensitive).
 - Binary primitives need `mime-type:` and `max-file-size:` (see the binary rules in [esm_metamodel/type.md](./esm_metamodel/type.md)).
+
+### Syntax limits
+
+- `Long` is not a keyword; it is a type declared in `judo::types`. For other widths declare a numeric type with a precision.
+- The size unit keyword is `KB` (upper-case K); `kB` does not parse.
+- Transfer events take no parameter list and no `on` modifier: `event create Name;`, `event update Name;`, `event initialize Name;` (likewise `fetch` and `delete`).
+- Transfer fields and actor accesses have no `bind` modifier (`bind:true` is not valid); read-write binding is written with the `<=>` operator.
+- A `union` with a single member parses.
+- `Time.of(hour = .., minute = ..[, second = ..][, millisecond = ..])`: `second` and `millisecond` are optional numeric parameters.
+- JQL equality operators are `==` and `!=` only; `=` and `<>` are not tokens. Operator precedence from loosest to tightest: `implies`, `or`, `xor`, `and`.
 
 ## Queries with parameters
 

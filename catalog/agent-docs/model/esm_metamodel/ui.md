@@ -1,6 +1,9 @@
 ---
 title: ui Package Reference
 description: Reference of the ESM ui package: pages, forms, tables, fields, widgets, actions and their attributes.
+aliases: [ui elements list, ui package attributes, table column attributes, menu item attributes, ui enum values, supertypes of ui elements]
+keywords: [TransferObjectView, TransferObjectTable, TransferObjectForm, DataField, TabularReferenceField, OperationForm, ActionButton, DataColumn, DataFilter, TableOperation, MenuItemAccess, dialogSize, checkboxSelection, representationComponent]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # `ui` Package Reference
@@ -418,6 +421,8 @@ A column within a table, displaying a single attribute for each row.
 | `columnReference` | Reference | Reference to another column definition |
 
 **Binding:** Bound to `structure:DataMember`.
+
+A derived attribute is sortable and filterable in a generated table like a stored one. The UI model marks an attribute filterable when its container is mapped, its member type is not `TRANSIENT` (a mapped attribute bound to a transient one is excluded too) and its type is string, numeric, boolean, date, timestamp, time or enumeration. The React generator makes a column sortable and filterable unless it is binary or `TRANSIENT`. A `TRANSIENT` column shows `This column is not sortable.`
 
 **XMI gotcha — `columns` is typed as the abstract `Column`.** Unlike `form` / `table` / `view` (concrete containments), each `<columns>` child must carry `xsi:type="ui:DataColumn"` (or `ui:RelationColumn`) and the root `<namespace:Model>` must declare `xmlns:ui="http://blackbelt.hu/judo/meta/esm/ui"`. Otherwise the loader fails with *"Class 'Column' is not found or is abstract"*. The same rule applies to every containment typed by an abstract supertype (`AbstractColumnReference`, `Filter`, `MenuItem`).
 
@@ -975,6 +980,8 @@ Root abstract class for all UI elements.
 | `iconName` | String | Icon name |
 | `customImplementation` | Boolean | Use custom implementation |
 | `subTheme` | String | Sub-theme for styling |
+
+`customImplementation = true` is the marker that turns any visual element (button, table column, widget, placeholder) into a custom implementation. It is copied to the UI model, and the generator exposes the element as an extension point instead of generating its content: a column is wrapped by `<column>ColumnCustomizer` when one is registered; other elements render through a proxy that looks up a registered component (see the frontend advanced patterns).
 
 ### Container
 

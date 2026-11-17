@@ -1,6 +1,9 @@
 ---
 title: ESM Metamodel Documentation Index
 description: Index of the ESM metamodel reference, one page per esm.ecore package.
+aliases: [ESM metamodel, editor specific model, esm.ecore reference, metamodel packages, metamodel index, UI package reference]
+keywords: [esm.ecore, EntityType, DataMember, TwoWayRelationMember, TransferObjectView, DataField, OperationForm, ActorType, Access, Parameter]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # ESM Metamodel Documentation Index

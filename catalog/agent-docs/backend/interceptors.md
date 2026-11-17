@@ -1,6 +1,9 @@
 ---
 title: Operation Call Interceptors Guide
 description: "OperationCallInterceptor contract: which operations interceptors run around (built-in CRUD only, never custom, mapped or script operations), preCall and postCall ordering, throwing business errors from interceptors, and examples."
+aliases: [interceptor order, preCall postCall, operation hooks, business error from interceptor, intercept create update, interceptor not running on custom operation]
+keywords: [OperationCallInterceptor, preCall, postCall, getOperations, ignoreDecoratedCall, terminateOnException, InterceptorCallBusinessException, AsmUtils, resolveOperation, getOperationFQName, judo.model.name, AuthenticationInterceptor]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Operation Call Interceptors Guide
@@ -184,7 +187,7 @@ Interceptors may throw only `InterceptorCallBusinessException` (see [Throwing a 
 
 Interceptors fire **only for the built-in behaviour operations**: create, update, delete, list/query, refresh, set/unset/add/remove reference, reference range, input range, getTemplate, getMetadata, getPrincipal, upload token, export and the validate calls. These are the operations that the runtime implements itself (the `*Call` classes in `judo-runtime-core-dispatcher`'s `behaviours` package).
 
-**Custom (SDK-implemented), MAPPED and script operations never hit interceptors**, even if `getOperations` lists them or returns an empty collection. The Javadoc claim that an empty list intercepts "all operation calls" means all built-in calls only.
+**Custom (SDK-implemented) and script operations never hit interceptors**, even if `getOperations` lists them or returns an empty collection. The Javadoc claim that an empty list intercepts "all operation calls" means all built-in calls only.
 
 Consequences:
 
@@ -192,6 +195,7 @@ Consequences:
 - Hiding a UI button does not protect an operation either.
 - Range interceptors fire only on the `_getRangeReference*` (reference range) operations, not on plain list or query operations such as `~list`. A range interceptor is the security boundary for relations with a range type that exposes every instance (`rangeType=ANY`) because read-only attributes do not stop enumeration. Model `min`/`max` bounds are UI-only and are not enforced on the server.
 - Input validation of exposed operations runs without interceptors.
+- Interceptors are called from the dispatcher's behaviour calls (`CallInterceptorUtil` in the `*Call` classes), not from the DAO. A DAO call from Java service code (for example creating a child entity) does not trigger interceptors.
 
 ### Ordering and Combining Several Interceptors
 
@@ -411,6 +415,7 @@ public class AccessRoleUpdateInterceptor implements OperationCallInterceptor {
 - **Payload type check**: `instanceof UpdateInstanceCallPayload`
 - **Batch processing**: Query and process all related entities
 - **Cascading updates**: Propagate changes to dependent entities
+- **Old versus new values**: `UpdateInstanceCallPayload.getInput()` holds the values sent by the client (the new values); `getInstance()` identifies the instance (`__identifier`) and does not carry its stored values. To compare, read the stored entity with the DAO in `preCall` (before the write) using the identifier from `getInstance()`, then compare it with `getInput()`.
 
 ## Example 4: Pre-Call Payload Manipulation
 
@@ -612,6 +617,36 @@ public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCall
 - **Reference operations**: `_addReference`, `_removeReference`, `_setReference`
 - **Business rule enforcement**: Validate after changes; an `InterceptorCallBusinessException` rolls back the whole operation
 - **Derived query methods**: Use model-generated validation queries
+
+### Narrowing a Range with a Pre-Call Interceptor
+
+The pre-call payload of a reference range operation (`_getRangeReference*`) is `GetReferenceRangeCall.GetReferenceRangeCallPayload`: `owner` (`EReference`), `ownerPayload` (`Payload`), `queryCustomizer` (`DAO.QueryCustomizer`) and `recordCount` (settable). A list operation gets `ListCall.ListCallPayload` with `owner`, `instance`, `queryCustomizer` and `recordCount`. A `QueryCustomizer` is immutable (a Lombok `@Builder` without `toBuilder`): `filter` is a JQL string with `this` as the target (conditions of the request are joined with ` and `), `orderByList`, `seek`, `mask`, `parameters`, `instanceIds`, `withoutFeatures`. To add a constraint, build a new customizer that copies the other fields, and return a new payload from `preCall`:
+
+```java
+@Override
+public Object preCall(EOperation operation, Object payload) {
+    if (!(payload instanceof GetReferenceRangeCall.GetReferenceRangeCallPayload)) {
+        return payload;
+    }
+    var p = (GetReferenceRangeCall.GetReferenceRangeCallPayload) payload;
+    var old = p.getQueryCustomizer();
+    var oldFilter = old != null ? old.getFilter() : null;
+    var extra = "this.<flag>";                       // JQL on the range target type
+    var qc = DAO.QueryCustomizer.builder()
+            .filter(oldFilter == null || oldFilter.isBlank() ? extra : "(" + oldFilter + ") and " + extra)
+            .orderByList(old != null ? old.getOrderByList() : List.of())
+            .seek(old != null ? old.getSeek() : null)
+            .mask(old != null ? old.getMask() : null)
+            .parameters(old != null ? old.getParameters() : null)
+            .instanceIds(old != null ? old.getInstanceIds() : null)
+            .withoutFeatures(old != null && old.isWithoutFeatures())
+            .build();
+    return GetReferenceRangeCall.GetReferenceRangeCallPayload.builder()
+            .owner(p.getOwner()).ownerPayload(p.getOwnerPayload()).queryCustomizer(qc).build();
+}
+```
+
+`getOperations` must name the range operation(s); the returned object must be of the same payload type.
 
 ## Example 6: Handling Both Create and Update
 

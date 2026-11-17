@@ -1,6 +1,9 @@
 ---
 title: structure Package Reference
 description: Reference of the ESM structure package: entity types, transfer objects, members, relations, mappings and behaviour rules.
+aliases: [entity type definition, transfer object type, relation member rules, data member attributes, generalization inheritance, member context rules]
+keywords: [EntityType, TransferObjectType, DataMember, TwoWayRelationMember, OneWayRelationMember, Generalization, Mapping, InvariantConstraint, QueryFeature, RelationKind, MemberType]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # `structure` Package Reference
@@ -24,6 +27,15 @@ The abstract base for all complex types in the model, such as entities and trans
 | `createable` | Boolean | `[1]` | Specifies if instances of this class can be created. |
 | `updateable` | Boolean | `[1]` | Specifies if instances can be updated. |
 | `deleteable` | Boolean | `[1]` | Specifies if instances can be deleted. |
+
+The class-level `createable`, `updateable` and `deleteable` flags are not read by the ESM→PSM, ESM→UI or generator code; they are only copied by the schema merge. Setting one to `false` on a whole entity or transfer object therefore does not remove pages or endpoints. The create, update, delete and refresh behaviours (and with them the generated REST operations and UI actions) come from the flags of the elements that reach the type:
+
+- **create**: a relation or actor access with `createable = true` whose target is a mapped, non-abstract transfer object (for a stored relation the owner must be mapped too);
+- **update**: the type is mapped and at least one relation, access, static navigation or output parameter targeting it has `updateable = true`;
+- **delete**: the type is mapped and at least one such element has `deleteable = true` and is optional or to-many;
+- **refresh**: the type is mapped.
+
+Control CRUD per relation or access, not per type.
 
 ### `EntityType`
 Represents a core, persistent business object with its own lifecycle and identity (e.g., `Customer`, `Product`). This is the primary element for defining the domain model.
@@ -60,7 +72,7 @@ A data-holding attribute within a `Class` (like `EntityType` or `TransferObjectT
 | `name` | String | `[1]` | The name of the attribute (e.g., "firstName"). |
 | `dataType` | `Primitive` | `[1]` | A reference to a logical data type from the `type` package. |
 | `required` | Boolean | `[1]` | If `true`, this attribute must have a value. |
-| `identifier` | Boolean | `[1]` | If `true`, this attribute is part of the natural key for the entity. |
+| `identifier` | Boolean | `[1]` | If `true`, this attribute is part of the natural key for the entity. The runtime enforces that the attribute's value is unique among the stored instances (and `null` is not checked). Each `identifier` attribute is checked on its own: two identifier attributes are two separate unique constraints, not one composite key. A violation fails the create or update with `IDENTIFIER_ATTRIBUTE_UNIQUENESS_VIOLATION`. The check is made by the runtime (payload validator and a SQL check per declaring table on the inheritance chain), not by a database constraint, and covers duplicates inside one batch. Model a composite key as an extra stored attribute with a value you compute, or as a hand-written validation. |
 | `memberType` | `MemberType` Enum | `[1]` | Defines how the value is obtained: `STORED` (persistent), `DERIVED` (calculated), `MAPPED` (from a mapped entity), `TRANSIENT`. |
 | `defaultExpression` | `DataExpression` | `[0..1]` | An expression to calculate the default value for this attribute. |
 
@@ -172,6 +184,7 @@ The `memberType` attribute is constrained by the owner class type and mapping st
 - `memberType = TRANSIENT` → owner is `TransferObjectType`
 - `memberType = DERIVED` → valid in any `Class`
 - `TwoWayRelationMember` → owner is `EntityType`
+- **Transient relation on an unmapped transfer object**: the target of an unmapped transfer object's relation must be `AGGREGATION`. `relationKind=ASSOCIATION` fails validation with `Relation: <rel> (in: <TO>) must be aggregation if transient.` and `Unmapped transfer object type: <TO> can only have aggregation kind relations.` The CLI creates a relation with `relationKind=AGGREGATION` by default; `aggregation=true` is rejected as read-only, and `relationKind` is the field to set. When the target is also unmapped, the UI generator treats the relation as an inline transient relation (create is supported inline); a mapped target is chosen from existing instances. *Verify:* what `mutable input.<rel>` means for a transient relation in JCL, and the exact widget (nested form vs picker).
 
 ### DataMember Attribute Rules
 
@@ -205,6 +218,22 @@ The `memberType` attribute is constrained by the owner class type and mapping st
 | `ASSOCIATION` | Simple line | `relationKind = ASSOCIATION` → simple link, no ownership |
 
 **Note:** See [UI Visual Style Guide](./ui-visual-styleguide.md) for complete visual style rules.
+
+Deleting an instance that is the target of an association:
+
+- the referencing relation is cleared (the foreign key or join row is removed); the referencing instance stays;
+- if the referencing relation has `reverseCascadeDelete = true`, the referencing instance is deleted as well;
+- if the referencing relation is required (lower bound above 0) and not `reverseCascadeDelete`, the delete fails with `There are mandatory references that cannot be removed`;
+- deleting an instance deletes its compositions; a reference with `reverseCascadeDelete` on the opposite end deletes the referenced instance too.
+
+For a two-way association the same rules apply from either end.
+
+### Range expressions on relations
+
+- `rangeExpression` is only editable when `rangeType = DERIVED`; with `rangeType = DERIVED` a non-blank `rangeExpression` is required (EVL `DerivedRangeHasRangeExpression`). It applies to a stored entity relation and to a transient or editable mapped transfer object relation.
+- `self` is allowed: `self.<relation>` and `self!container(<Type>).<path>` are valid range expressions (they build and the range is evaluated per instance), as is a type-level expression such as `<Model>::<Entity>!filter(e | ...)`.
+- The server enforces the range. A value that is not in the range of the reference is rejected with `NOT_ACCEPTED_BY_RANGE`; an empty range only logs a warning.
+- With `rangeType = ANY` the whole target type is the range and `rangeExpression` is read-only (the CLI rejects setting it).
 
 ### TransferObjectType Rules
 

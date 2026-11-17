@@ -1,6 +1,9 @@
 ---
 title: UI Model to Frontend Mapping
 description: Mapping between UI model elements and generated React components, element ids, file paths, access control and ESM to UI traceability.
+aliases: [generated react screen, ui model json, data-testid element id, page container type, relation table on a screen, customize a generated page, generated file path, memberType effect on UI, action definition types]
+keywords: [data-testid, navigationController, openInDialog, dialogSize, hiddenBy, enabledBy, requiredBy, memberType, relationKind, featuredActions, confirmationType, createable, updateable, deleteable]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # UI Model to Frontend Mapping
@@ -92,7 +95,13 @@ This allows for:
 - Debugging and inspecting elements
 - Custom styling based on `data-testid`
 
+Generated layout sections (`Flex` containers, accordions, cards and their grid wrappers) carry two attributes: `data-testid="<xmiId>"` and `data-name="<element name>"`. Select a section for CSS or tests with `[data-name="<Name>"]`; the name is the model element name, so it survives model id changes but must be unique per page to be unambiguous. The page header uses `data-name="PageHeaderContainer"`.
+
+A container layout cannot be swapped by a runtime hook. Replace it either with a custom implementation element on the container's visual element, or by overriding the generator template `containers/widget-fragments/flex.hbs` through the generator override directory (same-name template override).
+
 ## Page Container Types
+
+The UI model has no per-device (mobile, tablet, desktop) containers, and the generator does not read device-specific layouts. A section's width is its `col` value out of 12 (scaled by the parent's `col`), applied from the `md` breakpoint up; below `md` every section is full width (`xs: 12, sm: 12`). For device-specific rendering use a custom implementation element with MUI `useMediaQuery`.
 
 ### 1. EmptyDashboardPageContainer
 
@@ -659,6 +668,17 @@ const { service: customContainerHook } =
   );
 const containerActions = customContainerHook?.(data, editMode, storeDiff) || {};
 ```
+
+### Generated page files
+
+Each page folder (`src/pages/<Page>/`) and dialog folder holds these files:
+
+- `index.tsx`: the page component. It loads data, builds the page actions (merged with the custom hook if one is registered) and renders the container inside the view-model provider.
+- `context.tsx`: declares `<Container>ViewModel` (the container's page props plus `setIsLoading`, `setEditMode`, `refresh`, and `selectionDiff` on selector pages), the `<Container>ViewModelContext` and the `use<Container>ViewModel()` hook. Child components and custom elements call that hook to reach page state and actions. It throws outside the provider.
+- `customization.ts`: declares the actions hook contract: `<PAGE>_ACTIONS_HOOK_INTERFACE_KEY` and the type `<Container>ActionsHook = (data, editMode, storeDiff?, selectionDiff?, refresh?, submit?) => <Container>PageActionsExtended`.
+- `types.ts`: declares `<Container>PageActionsExtended` (the container's action types plus the optional `post<Action>` handlers) and the `<Page>XMIID` constant.
+
+`src/config/layout.ts` is app-wide: layout constants (`DRAWER_WIDTH`, `MINI_DRAWER_WIDTH`, `DIVIDER_HEIGHT`, `SUBMENU_MIN_WIDTH`), the `ThemeMode`, `MenuOrientation` and `ThemeDirection` enums, the customization prop types, `defaultLayoutConfig` (the menu orientation comes from the model, other defaults are fixed: light mode, header on, boxed container) and the `menuBehaviour` options. Do not edit it; it is regenerated.
 
 ## Service Generation
 

@@ -1,6 +1,9 @@
 ---
 title: Advanced Frontend Patterns
 description: Production patterns for the generated React frontend: error interceptor, cascade loading, post-refresh, inline dialogs, row highlighting, custom implementations and configuration.
+aliases: [frontend custom component, cascade loading, table row highlighting, inline dialog creation, postRefresh hook, frontend error interceptor, frontend configuration]
+keywords: [postRefresh, IMaskInput, cascade, Dimension, configuration, custom component]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Advanced Frontend Patterns
@@ -628,6 +631,8 @@ const EntityEditPage = () => {
 ### Overview
 
 Integration pattern for IMask library to provide structured data input with masking, validation, and formatting.
+
+The model attribute `textMask` is not read by the React generator: no generated widget applies it. The generated app only lists `react-imask` as a dependency. To get an input mask, register a custom implementation element for the field and use `IMaskInput` as shown here.
 
 ### Use Cases
 
@@ -1518,6 +1523,8 @@ Replacement of model-designated UI elements with custom implementations while ma
 
 There is no generic `CUSTOM_COMPONENT_HOOK_INTERFACE_KEY` or `CustomComponentHook`. A custom implementation is a visual element of the model that the generator exposes as an extension point: register an `FC` under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` (from `~/custom`) with the service property `component` set to the per-element key generated in the container's `customization.ts`. The scaffold `src/custom/hooks/custom-implementations/register<Container>CustomImplementations.tsx.default` is generated for containers that have such elements and contains one `register<Interface>CustomImplementation(context)` function per element with the correct proxy props type (`GenericProxyProps`, `TableProxyProps`, `LinkProxyProps` from `~/custom`). The element is created in the ESM UI model as a custom implementation widget, not by replacing arbitrary generated components.
 
+Date, time and timestamp attributes are `Date` objects in the generated TypeScript types and services (the serializer converts the REST strings with `new Date(...)`), not strings. Compare dates in custom code as `Date` values (for example by calendar day), not as ISO strings.
+
 ```typescript
 // from the scaffold
 export function registerMyElementCustomImplementation(context: BundleContext) {
@@ -1703,6 +1710,20 @@ interface CustomComponentProps {
 }
 ```
 
+##### Generated relation service methods
+
+For a relation `<rel>` on class `<Class>` the generated service (`<Class>ServiceImpl`, from `~/services/data-api/rest`) has these methods, each present only when the relation allows it. `owner` must carry `__signedIdentifier`; `selected` items are serialized as references.
+
+| Method | Present when | Signature |
+|---|---|---|
+| `getRangeFor<Rel>` | relation has a range | `(owner?, queryCustomizer?, headers?) => Promise<JudoRestResponse<Array<Target>>>`. Backs the range dialog and autocomplete. |
+| `set<Rel>` | settable | `(owner, selected: Target \| Array<Target>) => Promise<JudoRestResponse<void>>`. Replaces the relation; collections take an array. |
+| `unset<Rel>` | unsettable (optional single relation) | `(owner) => Promise<JudoRestResponse<void>>`. This is the "clear" for a single relation. |
+| `add<Rel>` | collection, addable | `(owner, selected: Array<Target>) => Promise<JudoRestResponse<void>>` |
+| `remove<Rel>` | collection, removable | `(owner, selected: Array<Target>) => Promise<JudoRestResponse<void>>` |
+
+There is no `clear` method for a collection; call `set<Rel>(owner, [])` only if the relation is settable (verify on the generated service). Failures throw an `AxiosError` whose `data` is a `FeedbackItem` list (400, 401, 403).
+
 ---
 
 ## Configuration Patterns
@@ -1839,7 +1860,7 @@ const getEnvironmentConfig = () => {
     default: // development
       return {
         api: {
-          baseUrl: 'http://localhost:8080/api',
+          baseUrl: 'http://localhost:8181/api',
           timeout: 60000,
           retryAttempts: 1,
         },

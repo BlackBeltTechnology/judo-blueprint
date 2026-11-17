@@ -1,6 +1,9 @@
 ---
 title: OSGi Runtime Services
 description: Model bundles, datasource provisioning, model version checks, startup readiness, health checks and Karaf administration.
+aliases: [deploy model as OSGi bundle, karaf startup problems, model version check failed, health check endpoint, keycloak realm sync config, CORS settings per model]
+keywords: [Judo-Models, targetDatasourceModelName, ignoreVersionCheck, JUDO_MODEL_VERSIONS, retryMaxAttempts, pax-jdbc, cors_allowOrigin, realm_loginByEmail, /system/health, JUDO_STARTUP_FEATURE]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # OSGi Runtime Services and Deployment Behaviour
@@ -18,6 +21,16 @@ The model bundle tracker loads each model from the bundle resources with a stric
 
 A `dialects` (comma-separated) configuration decides which dialect resources are loaded. A missing version uses the bundle version, a blank version becomes `1.0.0.<timestamp>_SNAPSHOT`, and `.SNAPSHOT` suffixes get a timestamp substitution.
 
+
+### Libraries already in the runtime
+
+The generated `<app>-judo-platform-prototype` Karaf feature already contains Tika (`tika-core`, `tika-parsers` 1.28.5) and PDFBox 2.0.13, and the OSGi e-mail feature brings Handlebars 4.2.0. Reuse them for document or template rendering instead of adding new bundles; add a bundle only for a library that is not listed here. Verify that the e-mail feature is installed in the target runtime before relying on Handlebars.
+
+The generated feature descriptor is `feature.xml` (from `feature.xml.hbs`), not `features.xml`.
+
+### Unit-testing components
+
+Declarative Services components can be unit-tested without a container with `MockOsgi` from `osgi-utils` (`osgi-test`): `MockOsgi.activate`/`deactivate` call the `@Activate`/`@Deactivate` methods (parameters: none, `BundleContext`, `ComponentContext`, `Map`/`Dictionary`) and `MockOsgi.setReferences` injects services into `@Reference` fields or bind methods (Felix SCR and standard OSGi DS annotations).
 
 ## Target Datasource Model
 

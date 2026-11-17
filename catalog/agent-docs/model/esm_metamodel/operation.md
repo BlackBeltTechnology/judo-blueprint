@@ -1,6 +1,9 @@
 ---
 title: operation Package Reference
 description: Reference of the ESM operation package: operations, parameters, faults, statefulness, behaviours and rules.
+aliases: [operation metamodel, custom operation implementation, stateful operation, operation faults, operation type enum, initializer operation, GET_RANGE template]
+keywords: [Operation, operationType, customImplementation, stateful, faults, OperationType, INITIALIZER, MAPPED, GET_RANGE, GET_TEMPLATE, IllegalStateException]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # `operation` Package Reference
@@ -110,6 +113,8 @@ The `operationType` attribute is constrained by the owner class type and mapping
 | `INITIALIZER` | ✓ | Factory operations |
 | `MAPPED` | ✗ | No entity to map from |
 
+An unmapped transfer object accepts only `STATIC` operations (EVL `UnmappedTransferObjectTypeHasStaticOperations`). The ESM→PSM transformation creates each as an unbound operation placed in that transfer object's own PSM equivalent (rule `CreateInPlaceUnboundOperation`); a `STATIC` operation on an entity is instead placed in the entity's default transfer object. Any unmapped transfer object can therefore carry static operations, not only a `StaticOperations` container. *Verify:* how an actor reaches the operation (access or menu item) was not settled in source.
+
 **Summary Constraints:**
 - `operationType = ABSTRACT` → owner is `EntityType` AND `advanced mode = true`
 - `operationType = MAPPED` → owner is `TransferObjectType` AND `mapping` is NOT null
@@ -170,6 +175,8 @@ The `INITIALIZER` type is internally stored as a combination of `STATIC` type wi
 |-----------|--------------|-------------|
 | `outputType` | Always | Reference to output TransferObjectType |
 | `cardinality` | `output` is NOT null | `0..1`, `1..1`, or `0..*` |
+
+A `GET_PRINCIPAL` operation's output must have cardinality `0..1` (lower 0, upper 1); the model validation fails otherwise (`GET_PRINCIPAL output cardinality must be 0..1`).
 
 ### Output CRUD Settings
 

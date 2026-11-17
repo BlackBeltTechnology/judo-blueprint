@@ -6,6 +6,6 @@
 
 | File | Purpose |
 |---|---|
-| `agent-docs/` | This directory contains all technical documentation for the JUDO framework, organized by domain. (83 files; index in `agent-docs/AGENTS.md`) |
+| `agent-docs/` | This directory contains all technical documentation for the JUDO framework, organized by domain. (134 files; index in `agent-docs/AGENTS.md`) |
 | `best-practices/` | Practices by domain: model, backend, frontend, project (250 files; index in `best-practices/AGENTS.md`) |
 | `model-blueprints/` | Reusable model shapes with generated diagram and layer guidance (110 files; index in `model-blueprints/AGENTS.md`) |

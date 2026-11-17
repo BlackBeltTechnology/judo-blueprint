@@ -1,6 +1,9 @@
 ---
 title: Integration Testing - Entity vs Service Layer Type Safety
 description: "Part of: Integration Testing Documentation(./README.md)"
+aliases: [type mismatch compile error, entity vs service type, adaptTo conversion, integration test types, dao result to service input, optional in integration test]
+keywords: [adaptTo, getById, identifier, orElseThrow, EntityDao, Input.builder, JudoRuntimeFixture, Optional, UserRole, _default_transferobjecttypes]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - Entity vs Service Layer Type Safety
 

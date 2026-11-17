@@ -1,6 +1,9 @@
 ---
 title: namespace Package
 description: Reference of the ESM namespace package: model, packages and naming.
+aliases: [model root element, model packages, element naming, annotations in model, mime types in model]
+keywords: [Model, Package, NamedElement, Annotation, MimeType, Element, appliedAnnotations, metaVersion, mimeTypes, BinaryType]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # `namespace` Package

@@ -1,6 +1,9 @@
 ---
 title: Model Validation and Transformation Options
 description: EVL validation entry points, ETL versus ZETA transformation engines, Maven workflow options, measures, static data and known model issues.
+aliases: [model validation, EVL rules, ETL versus ZETA, transformation engine choice, maven workflow options, measure units, static navigation, known model issues]
+keywords: [EsmModel, EsmValidationException, validateModels, TransformationMode, judo.transformation.mode, judo-tatami-jsl-workflow-maven-plugin, Esm2UiWork, AllRequiredFeaturesHaveBindingIfCreatable, MassStoredInKilograms, rateDividend]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # Model Validation and Transformation Options
@@ -24,7 +27,7 @@ Setting the system property `judo.zeta.metrics` to `true` makes ZETA print `Tran
 
 ## Maven workflow plugin
 
-`judo-tatami-jsl-workflow-maven-plugin` (`hu.blackbelt.judo.tatami`) runs the model workflow, goal `default-model-workflow`, in `generate-sources`. It runs the steps in parallel by default and has `ignore*` toggles per step, a transformation mode (ETL, ZETA or BOTH), `generateDefaultTransferObject`, `generateBehaviours`, and the naming prefix/postfix/midfix triples for generated entity, default, parameter, range and action-input names. ESM to UI accepts `applicationType` (default `default`) and `applicationColumns` (default 12) which set the grid of the generated UI.
+`judo-tatami-jsl-workflow-maven-plugin` (`hu.blackbelt.judo.tatami`) runs the model workflow, goal `default-model-workflow`, in `generate-sources`. It runs the steps in parallel by default and has `ignore*` toggles per step, a transformation mode (`transformationMode`: ETL, ZETA or DUAL; the plugin default is ETL), `generateDefaultTransferObject`, `generateBehaviours`, and the naming prefix/postfix/midfix triples for generated entity, default, parameter, range and action-input names. ESM to UI accepts `applicationType` (default `default`) and `applicationColumns` (default 12) which set the grid of the generated UI.
 
 ## Generated model files
 
@@ -44,6 +47,8 @@ The `merge-schema` goal of `judo-esm-schema-merge-maven-plugin` (phase `generate
 `judo-version-updater-maven-plugin` provides `update-judo-versions` (resolves the latest `judo-versions` against the version ruleset and writes `judo-version.properties`), `create-judo-project` (scaffolds an ESM fullstack project from a model name and group id) and `create-jsl-judo-karaf-project`.
 
 ## Measures
+
+> Measures are not in use; do not introduce them in new models (see the `measure` package in [other.md](./esm_metamodel/other.md)).
 
 Measures are base measures (such as `Mass` with `kilogram`) or derived measures built from other measures with exponents (`Area = Length.metre^2`); a derived measure may not reference itself. Units convert to the base unit with `rateDividend` and `rateDivisor` (`kilometrePerHour` has divisor 3.6 relative to `metrePerSecond`). A measure defines one base unit (`rateDividend == rateDivisor`). A measured type ties a numeric type to a stored unit, for example `MassStoredInKilograms` (precision 15, scale 4, store unit `kilogram`). At runtime the DAO converts between the transfer and entity unit using both rates, rounds to scale 20 with `HALF_UP`, and returns an integer when the entity attribute is an integer.
 

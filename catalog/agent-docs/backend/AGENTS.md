@@ -8,14 +8,23 @@
 |---|---|
 | `README.md` | Backend development guide for JUDO applications. |
 | `architectural-patterns.md` | Multi-tenancy filtering, actor access getter rules (entity FQN base, no self in scope, reference-returning expression), custom service layer and state machine patterns for JUDO backends. |
+| `authentication-guide.agent.md` | Condensed map of `authentication-guide.md`: read first, then `kb_get` one section |
 | `authentication-guide.md` | AuthenticationInterceptor, the principal operation, token attribute extraction and just-in-time user provisioning. |
+| `custom-operations.agent.md` | Condensed map of `custom-operations.md`: read first, then `kb_get` one section |
 | `custom-operations.md` | Implementing custom operation logic: .default files, OSGi registration, rules and examples. |
+| `data-access-guide.agent.md` | Condensed map of `data-access-guide.md`: read first, then `kb_get` one section |
 | `data-access-guide.md` | DAO queries, filters, masks, generated DAO behaviour and known issues. |
+| `debugging-and-monitoring-guide.agent.md` | Condensed map of `debugging-and-monitoring-guide.md`: read first, then `kb_get` one section |
 | `debugging-and-monitoring-guide.md` | Hot deployment, logging, X-Exchange-Id correlation, remote debugging and health checks. |
+| `error-handling-guide.agent.md` | Condensed map of `error-handling-guide.md`: read first, then `kb_get` one section |
 | `error-handling-guide.md` | Backend errors: ValidationException with field location (400), modeled business faults declared on the operation (422), platform exceptions (403, 404), what interceptors may throw, and HTTP mapping. |
+| `interceptors.agent.md` | Condensed map of `interceptors.md`: read first, then `kb_get` one section |
 | `interceptors.md` | OperationCallInterceptor contract: which operations interceptors run around (built-in CRUD only, never custom, mapped or script operations), preCall and postCall ordering, throwing business errors fro |
+| `internationalization-guide.agent.md` | Condensed map of `internationalization-guide.md`: read first, then `kb_get` one section |
 | `internationalization-guide.md` | Backend i18n service, localized validation messages and translation files. |
+| `patterns-and-best-practices.agent.md` | Condensed map of `patterns-and-best-practices.md`: read first, then `kb_get` one section |
 | `patterns-and-best-practices.md` | OSGi patterns, request context, custom data types, validation and query patterns. |
+| `platform-behavior-reference.agent.md` | Condensed map of `platform-behavior-reference.md`: read first, then `kb_get` one section |
 | `platform-behavior-reference.md` | Signed identifiers, optimistic locking, reserved payload keys, REST wire contract, time zones, variables and sequences. |
 | `testing-guide.md` | Unit testing custom operations with mocks and running integration tests. |
 | `type-system-guide.md` | Service layer versus entity layer types and converting between them. |

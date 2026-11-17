@@ -1,6 +1,9 @@
 ---
 title: type Package Reference
 description: Reference of the ESM type package: primitive types, enumerations, cardinality and attribute rules.
+aliases: [primitive data types in model, numeric precision and scale, enumeration values, binary file type, cardinality lower upper, required type attributes]
+keywords: [StringType, NumericType, BinaryType, EnumerationType, EnumerationMember, Cardinality, maxLength, precision, scale, mimeTypes, maxFileSize, ordinal]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # `type` Package Reference
@@ -176,6 +179,8 @@ When a `DataField` is bound to a `DataMember`, the available widget properties d
 | `BinaryType` | `maxFileSize` | 52428800 (50MB) |
 | `EnumerationMember` | `ordinal` | Auto-incremented |
 | `EnumerationMember` | `name` | `LITERAL_` + ordinal |
+
+String type limits are model data, not platform constants; the platform enforces a string type's `maxLength` with `MAX_LENGTH_VALIDATION_FAILED`. *Verify:* the seeded string and numeric types of a new model (names, `maxLength`, `regExp`) against the project template before documenting them.
 
 ### Cardinality Conventions
 

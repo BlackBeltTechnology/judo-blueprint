@@ -1,6 +1,9 @@
 ---
 title: UI Model Pitfalls
 description: Model values and workflows that break the frontend generator, renames and retargeting fallout, and the model-driven, UI-first end-to-end test approach.
+aliases: [ui generation errors, frontend generator breaks, model ui pitfalls, renames break ui, ui validation exception, end to end ui test]
+keywords: [UiValidationException, MAPPED]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # UI Model Pitfalls and Model-Driven Frontend Work

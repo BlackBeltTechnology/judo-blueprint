@@ -1,6 +1,9 @@
 ---
 title: UI Element Behaviour Rules
 description: Behaviour rules of ESM UI elements: when attributes are enabled, visible or constrained.
+aliases: [when is attribute enabled, widget visibility rules, table attribute rules, ui default values, confirmation rules operation, ui attribute help text]
+keywords: [textWidget, textMask, enumWidget, booleanWidget, minValueBy, maxValueBy, confirmationType, confirmationCondition, representationComponent, smallTable, autocompleteRows, isBulk, relationKind, rowsPerPage]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # UI Element Behaviour Rules

@@ -1,6 +1,9 @@
 ---
 title: Documentation Generalization Guide
 description: Placeholder conventions and generic code examples used across the JUDO agent documentation, so it applies to any application.
+aliases: [placeholder names, generic example names, entity placeholder, generic code samples, map placeholders to my domain, documentation generalization]
+keywords: [ToggleStatus, ValidateEntity, EntityDao, OperationCallInterceptor, ViewPageDataHook, TableRowHighlightingHook, ServiceEntityCard, IllegalStateException, variableResolver, ADMIN]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # Documentation Generalization Guide

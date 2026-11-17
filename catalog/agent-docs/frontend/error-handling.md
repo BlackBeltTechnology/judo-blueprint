@@ -1,6 +1,9 @@
 ---
 title: Frontend Error Handling
 description: How the generated React frontend handles 400, 401, 403, 404, 422 and 500 responses, the operation fault dialog and fault translation keys.
+aliases: [frontend error handling, HTTP error toast, operation fault dialog, business fault message, validation error field, customize 422 handling]
+keywords: [useErrorHandler, error-handling.ts, useFaultDialog, openFaultDialog, OperationFaultDialog, registerErrorHandlerInterceptorHook, ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY, X-Fault, errorList, judo.error.validation-failed]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Frontend Error Handling
@@ -33,7 +36,9 @@ Add the `faults.*` keys to your translation files (see [i18n](./i18n.md)); witho
 
 ## Validation Errors Without Location
 
-For 400 responses, field mapping happens only when the first error has a `location`. Errors without `location` are grouped under an empty key and no field shows them; only the generic validation toast appears. Only three validation codes are translated by default in en-US (`REQUIRED_GROUP_MUST_HAVE_AT_LEAST_ONE_ROW`, `REQUIRED_FIELD_MISSING`, `VALUE_NOT_ALLOWED`); every other code falls back to the raw code string. Add `judo.error.validation-failed.<CODE>` keys for your own codes.
+For 400 responses, field mapping happens only when the first error has a `location`. Errors without `location` are grouped under an empty key and no field shows them; only the generic validation toast appears. The generated `system_en-US.json` translates the platform validation codes (21 keys, for example `MISSING_REQUIRED_ATTRIBUTE`, `MAX_LENGTH_VALIDATION_FAILED`, `PATTERN_VALIDATION_FAILED`, `IDENTIFIER_ATTRIBUTE_UNIQUENESS_VIOLATION`, `NOT_ACCEPTED_BY_RANGE`); any other code falls back to the raw code string. Add `judo.error.validation-failed.<CODE>` keys for your own codes.
+
+Validation errors (HTTP 400) are translated with the key `judo.error.validation-failed.<CODE>`, falling back to the raw code (`defaultValue: error.code` in `utilities/error-handling.ts`). Example: `IDENTIFIER_ATTRIBUTE_UNIQUENESS_VIOLATION` ("Identifier attribute is not unique") is returned when a value is already used by another instance of an entity whose attribute is marked as identifier; its details carry `feature` (attribute name) and `value`. Override the text by adding that key to the app's i18n files.
 
 ## Customizing the 422 Handling
 

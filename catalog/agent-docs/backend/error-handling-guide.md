@@ -1,6 +1,9 @@
 ---
 title: Backend Error Handling Guide
 description: "Backend errors: ValidationException with field location (400), modeled business faults declared on the operation (422), platform exceptions (403, 404), what interceptors may throw, and HTTP mapping."
+aliases: [backend error handling, validation error 400, business fault 422, exception to http status, interceptor exception, error response structure]
+keywords: [ValidationException, InterceptorCallBusinessException, AccessDeniedException, NotFoundException, InternalServerException, X-Fault, ClientException]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Backend Error Handling Guide

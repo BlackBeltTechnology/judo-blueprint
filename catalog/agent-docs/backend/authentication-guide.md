@@ -1,6 +1,9 @@
 ---
 title: Backend Authentication Guide
 description: AuthenticationInterceptor, the principal operation, token attribute extraction and just-in-time user provisioning.
+aliases: [create user on first login, jwt claims to user, keycloak user sync, auto create user after login, login user not found, authentication interceptor example]
+keywords: [AuthenticationInterceptor, authenticate, isSuitableForOperation, "#_principal", DefaultActorResolver, getActorByClaims, AUTHENTICATED_ENTITY_NOT_FOUND, JUDO_PLATFORM_ACCEPTABLE_CLIENTS, azp, acceptableClients, getVariable, managed]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Authentication Guide
@@ -29,8 +32,17 @@ public interface AuthenticationInterceptor {
     String getName();
     boolean isSuitableForOperation(EOperation operation, String claim, String realm, String client, Map<String, Object> attributes);
     void authenticate(String operationFQName, Map<String, Object> exchange, String claim, String realm, String client, Map<String, Object> attributes);
+    void success(EOperation operation, SignedIdentifier signedIdentifier, Map<String, Object> exchange, String claim, String realm, String client, Map<String, Object> attributes);
 }
 ```
+
+The methods are called at two different points:
+
+- `authenticate(operationFQName, exchange, claim, realm, client, attributes)` runs at the start of **every** dispatcher operation call that has a principal, before the mapped principal is loaded. It is called on every registered interceptor; `isSuitableForOperation` is **not** consulted, so filter on `operationFQName`, `client` or `claim` inside the method.
+- `isSuitableForOperation(operation, claim, realm, client, attributes)` is only the filter for `success`.
+- `success(operation, signedIdentifier, exchange, claim, realm, client, attributes)` runs after the access checks of the operation and before the operation body, only on interceptors whose `isSuitableForOperation` returns `true`.
+
+`isSuitableForOperation`, `authenticate` and `success` default to no-ops (`isSuitableForOperation` defaults to `true`).
 
 ## The `#_principal` Operation
 
@@ -57,8 +69,8 @@ When a user authenticates, their JWT token contains claims that are passed to th
 >
 > The same claims are reachable from JQL expressions (access filters, derived features, custom-op preconditions) via `!getVariable(category, 'claim_name')`. The correct category depends on the actor shape:
 >
-> - Actors with **`claimPrincipal: true`** → use **`USER.*`** (raw JWT).
-> - Unmapped principal TO, not `claimPrincipal` → use **`PRINCIPAL.*`**.
+> - Token-only actors (no `principal`; there is no `claimPrincipal` flag) → use **`USER.*`** (raw JWT).
+> - Unmapped principal TO (transient principal) → use **`PRINCIPAL.*`**.
 > - Mapped principal TO (persisted actor entity) → use **`ACTOR.*`** for persisted attributes, **`USER.*`** for raw claims.
 >
 > See [ACTOR vs PRINCIPAL vs USER](../model/advanced-modeling-patterns.md#actor-vs-principal-vs-user-context-variables) for the full decision matrix and the silent-failure pitfall.
@@ -76,7 +88,7 @@ When a user authenticates, their JWT token contains claims that are passed to th
 > -  Copying a non-standard JWT claim to a plain entity attribute (the `<claims>` element only covers `EMAIL` and `USERNAME`).
 > -  Initialising roles or permission flags from a `groups` / `realm_access.roles` claim.
 > -  Writing an audit row, emitting a domain event, or calling an external system on first login.
-> -  Coping with legacy actors that are **not** mapped + managed (e.g. an unmapped principal TO, or `claimPrincipal: true`), where the runtime does no persistence of its own.
+> -  Coping with legacy actors that are **not** mapped + managed (e.g. an unmapped principal TO, or a token-only actor with no `principal`), where the runtime does no persistence of its own.
 >
 > When both are in play, the interceptor runs **before** the framework's actor lookup on the same `#_principal` call (per the [AuthenticationInterceptor contract](./interceptors.md) — *"after the extraction of principal but before the load of the mapped principal load"*), so it can safely insert/update the row that the lookup is about to read.
 
@@ -223,15 +235,22 @@ For the canonical admin-surface shape and the custom-op delegation pattern that 
 
 It then runs `dao.search` on the actor type, so **the actor row is read from the database on every request that carries a principal**. Zero matches give `AccessDeniedException` `AUTHENTICATED_ENTITY_NOT_FOUND`; several matches give `SecurityException` ("Multiple actors found in database by token"). When the principal resolution is slow, profile this read (index the claim column) rather than the application's `#_principal` interceptor. `authenticateByPrincipal` runs only when the exchange has no actor yet and `checkMappedActors` is `true` (default `false`). Claims whose matching attribute is `transient` are copied onto the returned actor payload.
 
+Details of the lookup:
+
+- The lookup attribute is an actor attribute whose `claim` is `USERNAME` or `EMAIL`, or one whose name equals a token claim key **and** that maps to an entity identifier attribute. A mapped actor with no such attribute fails with `IllegalStateException` ("ID attribute in Entity type matching any access token claim not found").
+- `authenticateByPrincipal` builds the claims map from the string-valued token attributes only; non-string claims are ignored for the lookup.
+- The lookup value is coerced to the attribute type (string, numeric, date, time, timestamp, boolean, enumeration by literal); other types log a warning and run the search without a filter.
+- Transient actor attributes whose name equals a claim key receive the claim value on the actor payload.
+
 ### Several Keycloak clients in one realm
 
-JUDO derives the actor from the token's `azp` claim: dashes become dots and the result must equal an actor FQN. A frontend client with another name cannot be resolved. Set the whitelist `JUDO_PLATFORM_ACCEPTABLE_CLIENTS` (OSGi/Guice key `acceptableClients`, default empty):
+JUDO derives the actor from the token's `azp` claim: dashes become dots and the result must equal an actor FQN. A frontend client with another name cannot be resolved. The `client` argument of `AuthenticationInterceptor.isSuitableForOperation` and `authenticate` is this resolved value (the `azp` claim with dashes turned into dots, then renamed through `clientToActorMap` if configured), not the raw Keycloak client id. When one realm serves several actors (for example an admin who also logs in through another actor's client), decide on the actor FQN this value holds and return early for actors the interceptor does not handle; do not assume the user belongs to one actor. Set the whitelist `JUDO_PLATFORM_ACCEPTABLE_CLIENTS` (OSGi/Guice key `acceptableClients`, default empty):
 
 ```
 ActorTypeFQN=client1,client2;OtherActor=client3
 ```
 
-Client ids are normalised (dash to dot) and an ambiguous client-to-actor mapping is rejected. The Keycloak login interceptor also accepts a `clientToActorMap` that renames `azp` values to actor names. See [OSGi Runtime Services](../deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration) for the realm side.
+Client ids are normalised (dash to dot) and an ambiguous client-to-actor mapping is rejected. A user who signs in through the client of an actor that has no matching row gets `AUTHENTICATED_ENTITY_NOT_FOUND`; the generated React client shows this as "User not found" and signs the user out, so an access-denied message needs a custom page. The Keycloak login interceptor also accepts a `clientToActorMap` that renames `azp` values to actor names. See [OSGi Runtime Services](../deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration) for the realm side.
 
 ### Discovery endpoints for custom frontends
 

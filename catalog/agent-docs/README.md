@@ -1,6 +1,9 @@
 ---
 title: Technical Documentation
 description: "This directory contains all technical documentation for the JUDO framework, organized by domain."
+aliases: [agent docs index, platform docs map, where are the docs, which doc to read, JUDO documentation folders]
+keywords: [README.md, backend, frontend, model, deployment, judo-cli.md, transformation-pipeline.md, integration-testing, e2e-testing, Playwright]
+tags: [domain:backend, domain:frontend, domain:model, domain:deployment, domain:testing, layer:backend, layer:frontend, layer:model, layer:infrastructure, layer:test, status:platform]
 ---
 # Technical Documentation
 

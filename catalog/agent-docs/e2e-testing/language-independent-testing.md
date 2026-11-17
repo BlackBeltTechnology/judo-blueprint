@@ -1,6 +1,9 @@
 ---
 title: Language-independent E2E testing
 description: Write Playwright tests that do not depend on translated UI labels.
+aliases: [translation independent tests, i18n safe e2e tests, locale independent selectors, avoid translated labels in playwright, keycloak login in e2e, testid selectors, crud flags in tests]
+keywords: [data-testid, VisualElementIds, GroupTab-tab, TransferObjectViewVisualElement, kc-form-login, storageState, __updateable, __deleteable, isCreateAllowed, isUpdateAllowed, isDeleteAllowed, ApiHelper, gotoWithWait]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # Language-Independent E2E Testing

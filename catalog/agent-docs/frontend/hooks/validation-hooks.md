@@ -1,6 +1,9 @@
 ---
 title: Frontend Validation Hooks
 description: Date, field, async and cross-field validation customization in container hooks of the generated React frontend.
+aliases: [form validation frontend, date picker limits, custom field validator, async field validation, cross field validation, real time validation, password confirmation check]
+keywords: [getDateFieldValidationProps, shouldDisableDate, validateForm, validateField, onFieldChange, validateTitle, debounceAsync, applicationCustomizer, getAction, registerService, ContainerHook]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Validation Hooks
@@ -201,6 +204,12 @@ export const applicationCustomizer: ApplicationCustomizer = {
   },
 };
 ```
+
+### Hook member names
+
+- The handler for a required rule is `is<Field>Required`, with `<Field>` the attribute name with its first letter in upper case (`isNameRequired`). The generated types contain no `isFieldRequired`; `isFieldRequired` is a placeholder name only. The same pattern applies to `is<Field>Hidden`, `is<Field>Disabled` and `is<Field>Readonly`. The signature is `(data, editMode, isLoading...) => boolean`: take it from the generated `types.ts`.
+- Range and refresh members of an actions hook are named `<relation><Kind>Action`, where `<relation>` is the relation name (omitted on a container's own table) and `<Kind>` is the action kind: `refreshAction`, `<relation>AutocompleteRangeAction`, `<relation>SelectorRangeAction`. A range override receives `(queryCustomizer)` and returns the target rows.
+- Cards container configuration: see Extension Points, Cards Configuration Hook.
 
 ### Advanced Examples
 

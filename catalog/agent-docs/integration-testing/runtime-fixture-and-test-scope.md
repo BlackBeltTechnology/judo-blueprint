@@ -1,6 +1,9 @@
 ---
 title: Runtime Fixture Internals and Test Scoping
 description: "This page explains how the testkit builds the runtime for a test, and how to keep integration tests small and fast."
+aliases: [test runtime internals, guice injector in tests, fixture lifecycle, test caching, shared injector, keep tests fast, datasource per class]
+keywords: [JudoRuntimeFixture, Guice.createInjector, Modules.combine, shareInjector, dataSourceMode, BY_CLASS, SINGLETON, BY_METHOD, JUDO_TEST_DIALECT, JUDO_TEST_CONTAINER]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Runtime Fixture Internals and Test Scoping
 

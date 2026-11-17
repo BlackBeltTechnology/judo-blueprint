@@ -6,6 +6,9 @@
 
 | File | Purpose |
 |---|---|
+| `README.agent.md` | Condensed map of `README.md`: read first, then `kb_get` one section |
 | `README.md` | ESM to UI Mapping: Overview: ESM to UI model mapping reference for the generated React frontend. |
+| `tables-navigation.agent.md` | Condensed map of `tables-navigation.md`: read first, then `kb_get` one section |
 | `tables-navigation.md` | ESM to UI Mapping: Tables & Navigation: ESM to UI model mapping reference for the generated React frontend. |
+| `widgets.agent.md` | Condensed map of `widgets.md`: read first, then `kb_get` one section |
 | `widgets.md` | ESM to UI Mapping: Widget Components: ESM to UI model mapping reference for the generated React frontend. |

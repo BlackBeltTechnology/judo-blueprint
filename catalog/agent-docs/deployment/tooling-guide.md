@@ -1,6 +1,9 @@
 ---
 title: Tooling Guide
 description: Diagram generator script for visualising the ESM model.
+aliases: [generate model diagrams, ESM class diagram script, mermaid diagrams from model, plantuml model diagram, diagram generator]
+keywords: [diagram_generator.py, --format, mermaid, PlantUML, representations.aird, generated-diagrams.md, .model]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Tooling Guide

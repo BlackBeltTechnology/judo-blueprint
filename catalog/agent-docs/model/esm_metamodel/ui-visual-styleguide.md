@@ -1,6 +1,9 @@
 ---
 title: UI Visual Style Guide
 description: Visual style indicators and styling rules for ESM model elements and UI components.
+aliases: [icon indicators model, button variants, typography styles, table visual settings, filter visual settings, visibility indicators, ui style attributes]
+keywords: [iconName, buttonStyle, frame, checkboxSelection, countRows, crudOperationsDisplayed, enabledBy, hiddenBy, requiredBy, memberType, TabularReferenceField, TransferObjectTable, ActionButton]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # UI Visual Style Guide

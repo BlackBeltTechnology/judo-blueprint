@@ -1,6 +1,9 @@
 ---
 title: E2E testing patterns
 description: Reusable Playwright test patterns for JUDO React frontends.
+aliases: [playwright test patterns, e2e test examples, react frontend tests, write e2e tests, crud e2e test, filter tests playwright, dialog flow tests]
+keywords: [TEST_DATA_PREFIX, prepareTest, triggerAndWaitWithRegex, openAddAndApplyFilters, navigateToAccess, createOnAccesList, submitOnAccesListCreate, fillPrimitiveField, updateAccessViewPage, fillSingleRelationElement, createCollectionRelationElement, bulkRemoveOnTable, assertRows, TableHelper]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # E2E Testing Patterns

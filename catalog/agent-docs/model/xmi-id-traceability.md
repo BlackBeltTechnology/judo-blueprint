@@ -1,6 +1,9 @@
 ---
 title: XMI ID Traceability Guide
 description: How xmi:id values are composed and linked so a model element can be traced through the PSM, ASM, RDBMS and UI models.
+aliases: [xmi id traceability, trace element back to source, golden thread, traceability id format, href source link, generated element origin]
+keywords: [xmi:id, href, source, MappedTransferObjectType, MappedTransferObject, EntityClass, ClassType, discriminator, AccessViewPageDefinition, TabularReferenceTableFilterAction]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # XMI ID Traceability Guide

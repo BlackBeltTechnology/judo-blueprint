@@ -1,6 +1,9 @@
 ---
 title: Integration Testing - Advanced Patterns and Workarounds
 description: "Part of: Integration Testing Documentation(./README.md)"
+aliases: [integration test filters, mock authentication in tests, optional field null handling, filterBy expression, test invalid references, deleted entity reference test]
+keywords: [StringFilter, NumberFilter, BooleanFilter, LocalDateFilter, filterBy, VariableResolverMockHelper, injectMockVariableResolver, ReferenceInjector, JudoRuntimeFixture, selectList, orElse]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - Advanced Patterns and Workarounds
 

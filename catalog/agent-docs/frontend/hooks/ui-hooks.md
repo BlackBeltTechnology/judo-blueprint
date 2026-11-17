@@ -1,6 +1,9 @@
 ---
 title: Frontend UI Hooks
 description: AppBar extra component, hero and logo props, footer text and menu customization hooks.
+aliases: [customize appbar, change logo, footer text, add menu items, hero section customization, custom navigation menu, frontend hooks]
+keywords: [CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY, AppBarExtraComponentsHook, CustomHeroPropsHook, CustomLogoPropsHook, FooterTextHook, MenuItemsCustomizerHook, NavItemType, MENU_ACTIONS_HOOK_INTERFACE_KEY, registerMenuActionsHook, spaceRequired]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # UI Hooks
@@ -8,6 +11,14 @@ description: AppBar extra component, hero and logo props, footer text and menu c
 ## Overview
 
 UI hooks allow you to customize the visual appearance and layout of the application. These hooks enable you to add custom components to the AppBar, customize the hero section, modify the logo, and change footer text.
+
+### Field and View Display
+
+There is no hook for the display of a single field or a whole view. The route is a model-level custom implementation: set `customImplementation` to `true` on the `DataField` (not on the `DataColumn`) and register a component for the generated element key, as described in [advanced-patterns.md → Component Replacement Hook](../advanced-patterns.md). The scaffold `src/custom/hooks/custom-implementations/register<Container>CustomImplementations.tsx.default` holds the register function and the key for each such element.
+
+- The field stays in the mask, so the page still loads its value; the custom component receives it through its proxy props.
+- To load a value but not show it, mark the `DataField` `customImplementation=true` and render nothing from the component.
+- A `ui:Placeholder` marked `customImplementation` generates no scaffold and renders nothing; use a `DataField`.
 
 ## AppBar Extra Components
 
@@ -63,6 +74,14 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
   }
 }
 ```
+
+### Placement
+
+The extra component renders in two places, both from the same hook: in the drawer, below the logo and above the menu (children stack as a column, so a single button stretches over the full drawer width), and in the header grid, right-aligned before the settings and profile controls. Wrap several controls in one flex `Box` so they stay in a row at their natural width. The hook has no other slot, for example no separate top-right area for a language switch.
+
+### Stored layout configuration
+
+The generated frontend keeps its layout configuration (for example drawer orientation and other `ConfigContext` state) in the browser `localStorage` under the key `<model>-config`. A stored config overrides a changed model or generated default, so users who already opened the app keep the old layout until that key is cleared (for example `localStorage.removeItem("<model>-config")`).
 
 ### Advanced Examples
 
@@ -295,6 +314,8 @@ Modify the generated navigation menu structure.
 
 ### Adding Menu Items
 
+Menu item `id` values of generated entries are the model element ids with `@` removed (long strings), so ids such as `dashboard` or `entities` in the examples below are placeholders: match on `title` (the model `label`, when set) or on a suffix of the real id, and log `menuItems` once to see them. Valid `type` values are `'group'`, `'collapse'` and `'item'`. A top-level entry with children is a `group`; a nested entry with children is a `collapse`; a leaf is an `item`. The drawer renders top-level entries only as `group` or `item`, so a top-level custom entry typed `collapse` renders wrongly.
+
 ```typescript
 // src/custom/hooks/menuCustomizer.tsx
 import type { MenuItemsCustomizerHook } from '~/layout/Drawer/DrawerContent/Navigation';
@@ -305,7 +326,7 @@ export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
   // NavItemType: { id, type: 'group' | 'collapse' | 'item', title?, url?, onClick?, icon?, disabled?, hiddenBy?, children? }
   const reportsItem: NavItemType = {
     id: 'reports',
-    type: 'collapse',
+    type: 'group',
     title: 'Reports',
     icon: 'chart-bar',
     children: [
@@ -342,12 +363,13 @@ export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
 ```typescript
 export const customMenuHook: MenuItemsCustomizerHook = () => (menuItems) => {
   // Define custom order
-  const order = ['dashboard', 'entities', 'items', 'reports', 'settings'];
+  // Generated ids are long model ids, so order by title (the model label)
+  const order = ['Dashboard', 'Entities', 'Items', 'Reports', 'Settings'];
 
   // Copy before sorting: sort() mutates the array owned by the framework
   return [...menuItems].sort((a, b) => {
-    const aIndex = order.indexOf(a.id);
-    const bIndex = order.indexOf(b.id);
+    const aIndex = order.indexOf(a.title ?? '');
+    const bIndex = order.indexOf(b.title ?? '');
 
     if (aIndex === -1) return 1;
     if (bIndex === -1) return -1;

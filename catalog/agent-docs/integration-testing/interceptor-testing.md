@@ -1,6 +1,9 @@
 ---
 title: Interceptor Testing with the JUDO Testkit
 description: "Integration test for an interceptor: testing OperationCallInterceptor implementations with @JudoTest(interceptors = …), JudoRuntimeFixture.addInterceptor(…), spy interceptors and execution order."
+aliases: [test an interceptor, interceptor integration test, testing interceptors, interceptor execution order in tests, spy interceptor, interceptor dependency injection in tests]
+keywords: [OperationCallInterceptor, JudoTest, JudoRuntimeFixture, addInterceptor, TestOperationCallInterceptorProvider, ReferenceInjector, injectReferences, preCall, postCall, shareInjector, clearInterceptors]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Interceptor Testing with the JUDO Testkit
 

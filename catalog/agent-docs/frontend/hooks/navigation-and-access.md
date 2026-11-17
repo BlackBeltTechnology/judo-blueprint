@@ -1,6 +1,9 @@
 ---
 title: Frontend Navigation and Access Hooks
 description: Redirect service, access filter, hotkeys, navigation interceptor and navigation helpers of the generated React frontend.
+aliases: [redirect deep link, access denied screen, keyboard shortcuts, navigation interceptor, sticky query parameters, route helpers, hide menu item, unsaved changes warning]
+keywords: [REDIRECT_HOOK_INTERFACE_KEY, RedirectServiceHook, ACCESS_FILTER_COMPONENT_INTERFACE_KEY, AccessFilterComponentProps, NAVIGATION_INTERCEPTOR_INTERFACE_KEY, NavigationInterceptorHook, decorateNavigation, useJudoNavigation, useNavigationConfirmation, registerGlobalHotkeys, hiddenBy, enabledBy]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Navigation and Access Control Hooks
@@ -442,6 +445,8 @@ Use generated navigation helpers for type-safe routing.
 ### Basic Usage
 
 `useJudoNavigation()` is exported from `~/components`. It returns `{ navigate, clearNavigate, externalNavigate, navigateBackTo, back, isBackDisabled, setTitle }`. `navigate(to)` takes a react-router `To` (a path string or `{ pathname, search }`) and applies the registered navigation interceptor; the generated route helpers from `~/routes` (for example `routeToServiceEntityView(...)`) build the paths.
+
+`useJudoNavigation()` keeps a breadcrumb stack, not the browser history. `navigate(to)` pushes the current page onto the stack, `back()` pops it, `navigateBackTo(item)` truncates the stack to an item, `clearNavigate(to)` empties the stack and goes to `to`, and `externalNavigate(url)` sets `window.location`. `isBackDisabled` is true when the stack is empty, and `setTitle(title)` sets the label of the current page (a missing title logs a warning). With an empty stack, `back()` goes to the dashboard.
 
 ```typescript
 import { useJudoNavigation } from '~/components';

@@ -1,6 +1,9 @@
 ---
 title: Integration Testing - Supplementary Patterns
 description: "Part of: Integration Testing Documentation(./README.md)"
+aliases: [integration test fixtures, validation helper for custom operations, idempotent operation test, date range validation test, paired fields validation, test logging slf4j, current user in custom operation, uniqueness check test]
+keywords: [JudoRuntimeFixture, ReferenceInjector, ValidationUtils, VariableResolver, StringFilter, assertThrows, LocalDateTime, Pattern, TransactionHandling, logback-test.xml, IllegalArgumentException, ConfigDao]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - Supplementary Patterns
 

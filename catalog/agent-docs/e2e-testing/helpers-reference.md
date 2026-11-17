@@ -1,6 +1,9 @@
 ---
 title: E2E helpers reference
 description: API reference for the generated Playwright helpers (TableHelper, ApiHelper, VisualElementIds).
+aliases: [playwright helper functions, table helper methods, api wait helper, e2e utility functions, visual element ids, filter helpers]
+keywords: [ApiHelper, TableHelper, gotoWithWait, triggerAndWaitWithRegex, getRow, getCell, TEST_DATA_PREFIX, formatNumber, openAddAndApplyFilters, VisualElementIds]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # Helper Utilities Reference

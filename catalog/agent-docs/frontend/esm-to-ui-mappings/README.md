@@ -1,6 +1,9 @@
 ---
 title: ESM to UI Mapping: Overview
 description: ESM to UI Mapping: Overview: ESM to UI model mapping reference for the generated React frontend.
+aliases: [esm to ui mapping, model to ui mapping, crud flags visibility, ui form definition, ui table definition, transfer object view, data type mapping]
+keywords: [DataMember, TwoWayRelationMember, OneWayRelationMember, ui:form, ui:view, ui:table, TransferObjectView, TransferObjectTable, TransferObjectForm]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # ESM to UI Mapping: Overview
@@ -258,6 +261,8 @@ This allows the backend to dynamically control permissions per-record based on b
 | `type:TimeType` | - | `TimeType` | TimePicker |
 | `type:BinaryType` | `mimeTypes` | `BinaryType` | BinaryInput (file) |
 | `type:EnumerationType` | `members` | `EnumerationType` | Autocomplete/Radio |
+
+The generated `BinaryInput` is an upload control: in a view or form it shows the file name, not a preview. For an image preview use a custom visual element on the field (see [binary-blob-url-hook.md](../../../best-practices/frontend/binary-blob-url-hook.md)).
 
 ### Enumeration Members
 

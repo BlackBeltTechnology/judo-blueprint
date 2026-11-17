@@ -1,6 +1,9 @@
 ---
 title: Advanced JUDO Modeling Patterns
 description: "Advanced JUDO modeling patterns: view model panel transfer objects with derived relations (dashboards), actors and principals, role flags, polymorphism and polymorphic creation for abstract entities, relation kinds, JQL concepts and validator-enforced structures."
+aliases: [view model dashboard, role flag principal, polymorphic entity, dynamic menu permissions, actor principal jql, derived relations, relation kinds]
+keywords: [ACTOR, PRINCIPAL, USER, getterExpression, JudoPrincipal, DERIVED, MAPPED, TransferObject]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # Advanced JUDO Modeling Patterns

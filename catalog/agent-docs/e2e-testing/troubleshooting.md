@@ -1,6 +1,9 @@
 ---
 title: E2E test troubleshooting
 description: Common Playwright E2E failures and fixes.
+aliases: [e2e test failing, playwright test timeout, element not found in playwright, e2e failures in CI, filter not applied in test, relation selector empty, backend suite green but no tests ran]
+keywords: [getByRole, getByLabel, TableHelper, openAddAndApplyFilters, fillSingleRelationElement, triggerAndWaitWithRegex, playwright.config.ts, retries, APP_URL, storageState, operationNth, valueNth]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # E2E Test Troubleshooting
@@ -103,6 +106,8 @@ page.getByLabel('Name');
 // Correct - scoped to dialog
 page.getByRole('dialog').getByLabel('Name');
 ```
+
+4. Watch for several elements with the same accessible name. Generated pages can contain, for example, a column menu button and the input of the same field, so `getByLabel('<Field>')` may match more than one element. Prefer the generated element ids: every generated visual element carries `data-testid` equal to its id (exported by the generated `VisualElementIds.ts`), and dropdown menu items use their id as `data-testid`. Otherwise narrow the lookup, for example `getByRole('textbox', { name })` or a scope inside `getByRole('dialog')`.
 
 ### Data Grid Issues
 
@@ -235,6 +240,27 @@ await page.waitForTimeout(200);  // Wait for dropdown animation
 await page.getByLabel('Status').click({ force: true });
 ```
 
+#### Text input value is lost or Create reports a missing required attribute
+
+**Cause**: Generated text fields (`DebouncedTextField`) hand the value to the form state after a debounce (200 ms by default). Clicking Create/Update right after `fill()` can submit before the value is stored.
+
+**Solution**: Type with real key presses, blur the field, and wait for the Create/Update button to be enabled before clicking:
+```typescript
+const field = page.getByRole('textbox', { name: 'Name' });
+await field.pressSequentially('Value', { delay: 20 });
+await field.blur();
+await expect(page.getByRole('button', { name: /Create|Update/ })).toBeEnabled();
+```
+
+#### File upload button not found by role
+
+The generated binary input is a text field showing the file name, plus an icon button with only a `title` (`Upload file`) that wraps a hidden file input. `getByRole('button', { name })` does not find it. Use the title and the file chooser event:
+```typescript
+const chooser = page.waitForEvent('filechooser');
+await page.getByTitle('Upload file').click();
+(await chooser).setFiles('path/to/file.png');
+```
+
 ### Relation Issues
 
 #### Autocomplete doesn't show options
@@ -307,6 +333,10 @@ await apiHelper.triggerAndWaitWithRegex(
 );
 ```
 
+### Action not visible in an action group
+
+An action group shows only its first `featuredActions` actions as buttons; the remaining actions are inside a dropdown button with `data-testid` `<XMIID>-button-group`. Open the dropdown first, then click the menu item (menu items carry their own id as `data-testid`). The featured count is a model property of the action group.
+
 ### Environment Issues
 
 #### Tests work locally but fail in CI
@@ -338,6 +368,10 @@ projects: [
   }
 ]
 ```
+
+#### `ACCESS_TOKEN_EXPIRED` in a long test
+
+An expired Keycloak access token makes the backend answer HTTP 401 with code `ACCESS_TOKEN_EXPIRED`. The token lifetime is a Keycloak realm setting (access token lifespan), so a single long test (many steps, screenshots at several widths) can outlive it. Keep each test shorter than the lifespan or split it into tests that each log in.
 
 #### APP_URL not working
 
@@ -425,6 +459,26 @@ test('Debug test', async ({ page }) => {
 npx playwright show-report
 ```
 
+### Test Data Accumulates Between Runs
+
+The E2E database and Keycloak users persist between runs. Failed or repeated runs leave rows that break counts, strict-mode locators and paging.
+
+- Use unique, stamped names (for example `` `Item ${Date.now()}` ``) and filter by your own stamp.
+- Clean up leftovers in the seed or an `afterAll`.
+- Never assert absolute row counts.
+
+### Shared Data and Parallel Workers
+
+Tests that share seeded data (one cart, one stock level, one user) interfere when run by parallel workers. Run such suites serially (`workers: 1`) or give each test its own user and its own records.
+
+### Hidden Columns and Rows in the Data Grid
+
+The generated table is an MUI DataGrid: it renders only the visible columns and the current page of rows. Use a wide viewport (or scroll the grid horizontally) before reading a late column, and filter before looking for a row that may be on another page.
+
+### Helpers Imported Across Generated Playwright Projects
+
+Each generated Playwright project (one per actor) has its own `node_modules`. Importing helpers from another actor's project loads a second copy of `@playwright/test`, and Playwright reports `Requiring @playwright/test second time` and `No tests found`. Copy the helpers, or share them from one package that is not part of either project.
+
 ## Performance Tips
 
 ### Speed Up Tests
@@ -463,6 +517,10 @@ test.beforeAll(async ({ browser }) => {
   await page.close();
 });
 ```
+
+### Run a Smoke Subset Per Change
+
+Suggestion: tag a small set of tests with `@smoke`, run the new spec plus `--grep @smoke` after each change, and run the full suites once at the end.
 
 ## Getting Help
 

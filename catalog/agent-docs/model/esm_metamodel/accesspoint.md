@@ -1,6 +1,9 @@
 ---
 title: accesspoint Package Reference
 description: Reference of the ESM accesspoint package: actors, claims, principals, accesses and security behaviour rules.
+aliases: [actor roles, security model, managed principal, claims mapping, access grants, who can do what]
+keywords: [ActorType, Access, Claim, ActorKind, ClaimType, AccessType, principal, managed, getterExpression, MenuItemAccess]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # `accesspoint` Package Reference
@@ -48,6 +51,13 @@ A declaration that maps a specific attribute on the `principal` TO to a standard
 | :--- | :--- | :--- | :--- |
 | `attribute` | `DataMember` | `[1]` | A reference to the `DataMember` on the `principal` TO that holds the claim value. For `managed = true` actors, this `DataMember` MUST be `MAPPED` (have a `binding` to an `EntityType` attribute) so the value persists. |
 | `claimType` | `ClaimType` Enum | `[1]` | Which standard claim of the IdP token this attribute carries: `EMAIL` or `USERNAME`. The framework pulls the matching OIDC claim from the JWT (`email` for `EMAIL`, `preferred_username` for `USERNAME`) and writes it through the binding. An `ActorType` may declare one claim or both — whichever the principal entity needs to be keyed and synchronised by. |
+
+A `Claim` has no `name`. It is identified by the FQN `<actor fqn>::<attribute name>::<claimType>` (for example `<Model>::<Actor>::email::EMAIL`); a query that selects `name` on `claims` fails with `Field 'name' in type 'ESM_Claim' is undefined`. `claimType` is `EMAIL`, `USERNAME` or `UNDEFINED`. Create one with the actor as parent and the principal's attribute as target (the actor needs a principal first; the attribute must belong to the principal TO):
+
+```bash
+judo create -t Claim --ns <Model>::<Actor> --set claimType=EMAIL --set attribute=<Model>::<PrincipalTO>.<attribute>
+judo query esm Claim -s fqn,claimType
+```
 
 **Authoring chain.** The four elements below must form an unbroken chain before `managed` provisioning and `ACTOR.*` lookups work. Any missing link silently degrades the actor to a transient principal:
 
@@ -227,6 +237,9 @@ Access CRUD flags are rung 2 of the relation-CUD capability ladder. Full ladder 
 - `anonymous = true` explicitly set, OR
 - `principal` is null, OR
 - `principal` is NOT mapped
+
+- **Exposing an operation without login**: put the operation's transfer object (or an access to it) on an `ActorType` that is effectively anonymous (`anonymous = true`, no principal, or an unmapped principal). Such an actor gets no `realm`, so `asm2keycloak` creates no realm or client for it, and the REST layer does not verify a bearer token for its paths: the call runs with no principal and no `ACTOR`. Everything reachable through that actor's accesses is public; keep them minimal and put guards in an interceptor or in the operation itself. *Verify:* access control applied to a call with no principal outside the Keycloak interceptor was not checked.
+- **`isActiveExpression`**: a JQL expression on the principal entity (for example `self.active`, a boolean attribute). It is copied to the filter of the mapped actor transfer object type. The runtime resolves the actor from the token in two steps: the token's client (`azp`) selects the actor type, then the actor entity is looked up by claim (USERNAME, then EMAIL, then an identifier attribute) with a search on that actor type. An entity for which the expression is false is not found, and the call fails with `AUTHENTICATED_ENTITY_NOT_FOUND`; the same error appears when no entity matches the claim. Only actors with a mapped principal are looked up (`ActorType` without principal has no filter). *Verify:* that the actor type filter is applied inside `dao.search` for the actor lookup is assumed from the mapped-transfer-object filter.
 
 ### Visual Style Indicators
 

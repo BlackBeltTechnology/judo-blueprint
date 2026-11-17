@@ -1,6 +1,9 @@
 ---
 title: Frontend Build and Deployment
 description: Maven build modes, module properties, base href and context path, login metadata, MUI license plan and checksum handling of the generated React frontend.
+aliases: [frontend maven build, build mode for react, base href wrong path, MUI license key setup, frontend checksum ignore, login metadata frontend]
+keywords: [frontend-build-type, quick, skipFrontendModel, ignore-checksums, muiLicensePlan, VITE_MUI_LICENSE_KEY, VITE_API_DEFAULT_BASE_URL, replace-base-href, generator-checksum-ignore, GET_METADATA]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Frontend Build and Deployment
@@ -17,11 +20,11 @@ The generated frontend actor `pom.xml` selects a build strategy with the propert
 | `CI` | pnpm install, build, test |
 | `quick` | format and `build:reckless` |
 
-System properties: `-DskipFrontendModel`, `-DskipPrepareNodeJS`, `-DskipGenerateServices`, `-Dquick`, `-Dlocal`, `-Dignore-checksums`.
+System properties: `-DskipFrontendModel`, `-DskipPrepareNodeJS`, `-DskipGenerateServices`, `-Dfrontend-build-type=quick` (there is no `-Dquick` property; `quick` is a value of `frontend-build-type`), `-Dlocal` (any value: skips the `replace-base-href` profile, which is active when `local` is not set; the profile is generated only for multi-actor applications), `-Dignore-checksums`.
 
 ## Module Properties
 
-Defined in the generated pom: `model-artifactId`, `model-name`, `model-version`, `actor` (fully qualified), `actor-name`, `node-install-dir` (default `${project.parent.basedir}/.nodejs`), `override-dir` (default `${project.parent.basedir}/generator-overrides`), `muiLicensePlan` (default `community`) and `appVersion` (default `1.0.0`).
+Defined in the generated pom: `model-artifactId`, `model-name`, `model-version`, `actor-name`, `node-install-dir` (default `${maven.multiModuleProjectDirectory}/.nodejs`, set in the parent frontend-react pom and inherited by the actor pom), `override-dir` (default `${project.parent.basedir}/generator-overrides`), `muiLicensePlan` (default `community`) and `appVersion` (default `1.0.0`).
 
 ## Context Path and Base Href
 

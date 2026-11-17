@@ -1,6 +1,9 @@
 ---
 title: Local Development
 description: Starting the application locally, hot deployment, Karaf console, logs and local troubleshooting.
+aliases: [run locally, start the app locally, hot deploy, karaf console, local logs, local troubleshooting]
+keywords: [judo.sh, karaf_port, karaf.log, bundle:restart, bundle:update, service:list, mvn install, reckless, hsqldb, judo-karaf.env]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Local Development
@@ -32,16 +35,22 @@ This guide covers local development setup, hot deployment, and development workf
 ```
 
 **What starts:**
-- PostgreSQL (Docker container, port 5432)
+- PostgreSQL (Docker container, port 5432) when `dbtype=postgresql`; the generated `judo.properties` sets `dbtype=hsqldb`, which runs the embedded HSQLDB instead
 - Keycloak (Docker container, port 8080)
 - Karaf (standalone, HTTP port **8181** by default; override with `./judo.sh start -o karaf_port=<port>`)
 
+`./judo.sh start` needs a running Docker daemon for the PostgreSQL and Keycloak containers (or the Compose stack); run `docker info` first and start Docker if it fails. The command launches Karaf in the background (console output in `application/.karaf/console.out`) and returns before the application is ready, so wait until the application URL answers with HTTP 200 before running tests; connection-refused errors in tests usually mean the stack is not up yet.
+
+**Prerequisites:** generated projects and the workflow plugin build with Java 21 (`java.version` 21), not Java 1.8 or 11. There is no `run-offline-postgresql.sh` script in generated projects; use `./judo.sh start -o dbtype=postgresql` to get a PostgreSQL database.
+
 **Access points:**
-- Application: http://localhost:8181/apps/
-- Keycloak Admin: http://localhost:8080 (8080 is the Keycloak port, not the application's)
+- Application: http://localhost:8181/<model>/<Actor>/ (each actor frontend is served under its own context path; `/apps/` only lists the bundles)
+- Keycloak Admin: http://localhost:8080/auth (`judo.sh` starts Keycloak with `--http-relative-path /auth`; with `keycloak_port=<port>` the base URL is `http://localhost:<port>/auth`; 8080 is the Keycloak port, not the application's)
 - Karaf SSH: `ssh -p 8101 karaf@localhost` (password: karaf) - these are Apache Karaf defaults, not set by the project template
 
 **Start options:** `./judo.sh start -o "runtime=karaf|compose,dbtype=hsqldb|postgresql,compose_env=...,karaf_port=...,postgres_port=...,keycloak_port=..."`, `-K` skips Keycloak, `-W` disables bundle watching. See [Build Process](./build-process.md#command-reference). Compose-based runs are described in [Production Deployment](./production.md#shipped-docker-compose-environments).
+
+**First login:** a fresh local app has no user. Open the Keycloak admin console (`/auth`, realm `<app>`), create a user there, and make sure a matching actor instance exists, or let the backend create it on first login (see [Keycloak JIT User Provisioning](../../best-practices/backend/keycloak-jit-user-provisioning.md)).
 
 **Local email:** run a mail catcher such as Mailpit and point the app at `localhost:1025` (no auth/TLS) in `judo-karaf.env`; see [Application Configuration](./application-config.md#6-email-smtp).
 
@@ -200,7 +209,7 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 
 ## Local Database Choice and Tests
 
-`./judo.sh start -o dbtype=hsqldb` runs against HSQLDB, the default uses PostgreSQL in Docker. After a rebuild always use `./judo.sh build -i` when tests and the running application disagree (stale `~/.m2` artifacts, see [Build Process](./build-process.md#stale-artifacts-and-multi-module-build-order)). Do not run the long `initdatatests` in the normal cycle.
+`./judo.sh start -o dbtype=hsqldb` runs against HSQLDB, the default from the generated `judo.properties` is `dbtype=hsqldb`; `-o dbtype=postgresql` (or `dbtype=postgresql` in `judo.properties`) runs PostgreSQL in Docker. After a rebuild always use `./judo.sh build -i` when tests and the running application disagree (stale `~/.m2` artifacts, see [Build Process](./build-process.md#stale-artifacts-and-multi-module-build-order)). Do not run the long `initdatatests` in the normal cycle.
 
 ## Troubleshooting
 
@@ -230,6 +239,10 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 - Check dependencies: `bundle:diag [bundle-id]`
 - View bundle details: `bundle:info [bundle-id]`
 - Check logs: `log:tail`
+
+#### `Unable to access jarfile` for `target/judo-cli.jar`
+
+`target/judo-cli.jar` is copied into the root `target/` only by a `generate-root` run (the download execution overwrites it each time); a plain `mvn install` does not produce it. If the jar is missing (after a clean, a prune or a fresh checkout), run `./judo.sh generate-root` to restore it before calling the CLI.
 
 ### Hot Deployment Issues
 
@@ -276,7 +289,7 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 **Frontend** (`.env` or export):
 ```bash
 VITE_API_DEFAULT_BASE_URL=http://localhost:8181
-VITE_KEYCLOAK_URL=http://localhost:8080
+VITE_KEYCLOAK_URL=http://localhost:8080/auth
 VITE_KEYCLOAK_REALM=<app>
 ```
 

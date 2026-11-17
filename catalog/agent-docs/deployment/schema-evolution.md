@@ -1,6 +1,9 @@
 ---
 title: Database Schema Evolution
 description: Incremental schema migration with judo-rdbms-schema: generate, review scripts, execute, Docker migration, rollback and production strategy.
+aliases: [database migration, schema migration, liquibase migration, migrate database, rollback migration, docker schema migration]
+keywords: [judo-rdbms-schema, Liquibase, judo.properties, app_name, migration, Docker, rollback]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Database Schema Evolution Guide
@@ -76,7 +79,9 @@ Schema evolution manages these database changes safely and incrementally.
 
 ### When No Manual Step Is Needed
 
-Adding a **stored** member (for example a new attribute) to an entity needs **no** manual migration or `schema-upgrade` run for a fresh or development database: the generated Liquibase changelog (`application/model/target/generated-resources/model/<app>-liquibase_postgresql.changelog.xml`) already contains the new column. A manual schema-upgrade step is only relevant for a persistent database that already holds data, and for genuinely non-additive or backward-incompatible changes (renames, type changes, removals). For a local persistent PostgreSQL database `./judo.sh schema-upgrade` generates the difference against the running database and applies it.
+Adding a **stored** member (for example a new attribute) to an entity needs **no** manual migration or `schema-upgrade` run for a fresh database (empty or newly created, so Liquibase creates everything): the generated Liquibase changelog (`application/model/target/generated-resources/model/<app>-liquibase_postgresql.changelog.xml`) already contains the new column. **An existing database is not migrated automatically:** if the model changed since the data was created, startup fails with `There are RDBMS model changes which have not been applied to database`, so a persistent development database (for example a kept PostgreSQL volume) needs the migration too. Run it, or discard the database and volume. Never skip the version check (`ignoreVersionCheck`) to get past this. A manual schema-upgrade step is relevant for a persistent database that already holds data, and for genuinely non-additive or backward-incompatible changes (renames, type changes, removals). For a local persistent PostgreSQL database `./judo.sh schema-upgrade` generates the difference against the running database and applies it. `judo.sh` takes the schema module path from `schema_dir` (default: the model directory, `model_dir`), so when the schema module is not directly under that directory set `schema_dir=<dir>` in `judo.properties` or the environment, for example `schema_dir=application ./judo.sh schema-upgrade`.
+
+The line `DATABASE HAVE TO BE UPDATED!` that `generate` logs at error level lists pending database operations from the model compatibility check. It is a notice, not a build failure: the build still ends with `BUILD SUCCESS`, and a migration is needed before the new model runs against that database.
 
 **⚠️ IMPORTANT: When Schema Migration is Required**
 

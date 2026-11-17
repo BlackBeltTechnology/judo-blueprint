@@ -1,6 +1,9 @@
 ---
 title: Data Access Guide
 description: DAO queries, filters, masks, generated DAO behaviour and known issues.
+aliases: [query entities in java, filter by string dao, use masks for projection, DAO getById, unset relation nullpointer, null vs optional fields, native sql from service]
+keywords: [StringFilter, NumberFilter, DateFilter, BooleanFilter, EnumerationFilter, filterBy, QueryCustomizer, Payload, getById, unset, selectList, EntityMask]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Data Access Guide
@@ -301,7 +304,7 @@ List<Settlement> settlements = countyDao.querySettlements(county)
     .selectList();
 ```
 
-**Important**: Single-valued (Many-to-One) relationship queries return the entity directly. Multi-valued (One-to-Many) relationship queries return a query customizer that supports filtering, masking, and `selectList()`.
+**Important**: A `1..1` (required) single-valued relationship query returns the entity directly; a `0..1` (optional) one returns `Optional<T>` (`Optional<Entity> county = settlementDao.queryCounty(settlement);`). Check the generated DAO signature for the relation. Multi-valued (One-to-Many) relationship queries return a query customizer that supports filtering, masking, and `selectList()`.
 
 **Note**: Relation query customizers do NOT support ordering methods like `orderByCode()`. If ordering is needed, sort the results in Java after fetching:
 ```java
@@ -387,6 +390,8 @@ Every entity has a generated `[Entity]Mask` class with a fluent builder API:
 - **Builder methods**: `.withFieldName()` for each attribute.
 - **Nested masks**: `.withRelationship([RelatedEntity]Mask.relatedEntityMask())` to control the data loaded for related entities.
 
+**No mask versus empty mask**: a call without a mask returns every attribute, derived members included; an empty mask returns the identifier only.
+
 ### Common Mask Patterns
 
 #### Pattern 1: Existence Check (Empty Mask)
@@ -427,14 +432,16 @@ Address address = addressDao.getById(
 ```
 
 #### Pattern 4: Partial Updates
-When updating an entity, use a mask to ensure you only modify the fields that have changed.
+`update(entity)` and `update(entity, mask)` write only the attributes and relations that are **present in the entity's payload**. A field that was not loaded and not set is absent, so it is left unchanged in the database; the platform does not null it. The `mask` only selects what the returned entity contains (it is used for the read-back after the write), it does not limit what is written. `update` requires the identifier; defaults are applied only to payloads without one, so an update does not reset fields to model defaults.
+
+To send only the changed fields, set just those fields on an entity that was not loaded in full:
 
 ```java
-// Load the entity, modify specific fields...
+// Entity carrying its identifier and only the fields to change...
 entity.setStatus(newStatus);
 entity.setLastModified(LocalDateTime.now());
 
-// Update only those fields in the database
+// The mask shapes the returned entity (read-back), not what is written
 entityDao.update(
     entity,
     EntityMask.entityMask()
@@ -497,6 +504,7 @@ JUDO distinguishes a missing key, a `null` value and an empty value. Generated g
 
 - `required = true`: plain getter (`Boolean getMinimumOfferPriceEnabled()`). A `null` means the caller omitted the field; read it directly instead of adding Java-side null workarounds.
 - `required = false`: `Optional<T>` getter (`Optional<FileType> getReviewReportMarkdownTemplate()`).
+- A `required = true` attribute can still be `null` when it was masked out of the query: required is not non-null unless the mask loads it.
 - DTO getters check `containsKey`, so "key missing" and "key present with null" differ.
 
 ### Clearing a Relation: `unset`, Not `set(null)`
@@ -522,6 +530,16 @@ Alternatively count all rows minus `isTrue` minus `isFalse`.
 ### Pagination
 
 A list call without an explicit seek returns **all** matching rows; pagination is opt-in. A full pull is fine for small per-user data sets.
+
+Generated query customizers (`dao.query()...`, per-relation `query<Rel>(...)`) page like this:
+
+- `selectList()`, `selectList(Integer limit)`, `selectList(Integer limit, Integer offset)` (**limit first**).
+- Keyset paging: `selectList(Integer limit, <Entity> lastItem)` and `selectList(Integer limit, <Entity> lastItem, Boolean reverse)`.
+- `selectOne()` and `selectOne(Integer offset)`, both returning an `Optional`.
+
+The DAO also has `getAll()`, `countAll()`, `existsById(id)`, `getById(id[, mask])` (an `Optional`) and `findAllById(Iterable<id>[, mask])` (a `List`; use it for a bulk fetch instead of looping `getById`). `TimeFilter` (`hu.blackbelt.judo.sdk.query`) filters a time-of-day attribute with `lessThan`, `lessOrEqualThan`, `greaterThan`, `greaterOrEqualThan`, `equalTo`, `notEqualTo` on a `LocalTime`; it is not an interval-overlap filter, so express overlap as two filters on a start and an end attribute.
+
+Per multi-valued relation the DAO generates `count<Rel>(owner)`, `create<Rel>(owner, relatedObject|relatedObjects[, mask])` (returns the created target; only when create is allowed), `add<Rel>(owner, related|relatedList)` and `remove<Rel>(owner, related|relatedList)` (only when add / remove is allowed), and `getRangeOf<Rel>` / `countRangeOf<Rel>` for relations with a range. Single-valued relations generate `query<Rel>(id | identifier | owner[, mask])`. Which of these exist depends on the relation's kind and access flags.
 
 ### Low-Level DAO and `QueryCustomizer`
 

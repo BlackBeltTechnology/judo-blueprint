@@ -1,6 +1,9 @@
 ---
 title: Model to screen layout for E2E
 description: How model elements map to rendered screen components and VisualElementIds.
+aliases: [e2e element ids, playwright selectors for generated pages, testid for form fields, visual element id naming, table row actions in tests, operation buttons in tests, selector for single relation]
+keywords: [VisualElementIds.ts, TransferObjectFormPageContainer, TransferObjectTablePageContainer, TransferObjectViewPageContainer, TabularReferenceFieldRelationDefinedTable, OperationFormVisualElement, OperationFormTableRowCallOperationButton, OperationMenuButton, ActionButtonVisualElement, data-testid, TableHelper, ApiHelper]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # Model-to-Screen Layout Mapping
@@ -391,6 +394,13 @@ placeholder: {
   label: ""
 }
 ```
+
+### Shape of the Generated Tree
+
+- Flex layout containers are kept as branch nodes in the generated visual element tree; they are not filtered out.
+- A table emits its columns inside a `columns` wrapper (for example `dataTable.columns.nameColumn`); its filters, `toolbarActions` and `rowActions` are wrapped the same way. Where the examples on this page show columns or actions directly under the table, read them with this wrapper.
+- Tab elements are flagged with a boolean `tabElement` (set by `setTabElement(true)`) and a `tab` property; they are not tagged with a `tab` category.
+- The only dialog suffix emitted is `-dialog-title`, on filter leaves. Suffixed ids such as `-action-confirm`, `-action-cancel` or `-dialog-close-wrapper` are not generated as visual element ids.
 
 ### Tab Bar Component
 

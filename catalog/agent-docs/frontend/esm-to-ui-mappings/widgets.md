@@ -1,6 +1,9 @@
 ---
 title: ESM to UI Mapping: Widget Components
 description: ESM to UI Mapping: Widget Components: ESM to UI model mapping reference for the generated React frontend.
+aliases: [widget attributes, data field widget type, table reference field options, operation form dialog, confirmation dialog settings, action group overflow, stepper wizard, text field widget]
+keywords: [ui:DataField, ui:TabularReferenceField, ui:OperationForm, representationComponent, enumWidget, textWidget, booleanWidget, confirmationType, featuredActions, relationFeature, rowsPerPage, autocompleteRows]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # ESM to UI Mapping: Widget Components
@@ -42,7 +45,7 @@ Type-specific attributes:
 | Attribute | Applies To | Values | Frontend Effect |
 |-----------|------------|--------|-----------------|
 | `enumWidget` | EnumerationType | `COMBO`/`RADIO`/`TOGGLE_BUTTONBAR` | Enum input type |
-| `textWidget` | StringType | `TEXT`/`INPUT` | `TEXT`=read-only, `INPUT`=editable |
+| `textWidget` | StringType | `TEXT`/`INPUT` | `TEXT`=read-only, `INPUT`=editable. `TEXT` renders the value as plain text (`ui:Formatted`): no label, no input, no tooltip, optionally an icon. `INPUT` renders a labelled input (`ui:TextInput` or `ui:TextArea`). To keep the label on a read-only value, use `INPUT` on a read-only (derived) member. |
 | `textMultiLine` | StringType | Boolean | Enable textarea |
 | `textMask` | StringType | Pattern string | Input mask (only when `textWidget=INPUT` and `textMultiLine=false`) |
 | `textCountCharacters` | StringType | Boolean | Show character counter |
@@ -50,6 +53,8 @@ Type-specific attributes:
 | `booleanWidget` | BooleanType | `CHECKBOX`/`COMBO` | Boolean input type |
 | `valueLabelPlacement` | BooleanType | `DEFAULT`/`TOP`/`START`/`BOTTOM`/`END` | Checkbox label placement (only when `booleanWidget=CHECKBOX`) |
 | `formatValue` | NumericType | Boolean | Apply number formatting (default: true) |
+
+##### Widget attributes per data type
 
 **Type-Specific Behaviour (from ui-behaviour.md):**
 
@@ -64,6 +69,8 @@ Type-specific attributes:
 | `BooleanType` | `booleanWidget`, `valueLabelPlacement` | `valueLabelPlacement` enabled only when `booleanWidget=CHECKBOX` |
 | `BinaryType` | - | File upload widget |
 | `MeasuredType` | - | Inherits NumericType behavior |
+
+**Read-only fields of other types:** `textWidget=TEXT` is the only switch and applies to string fields. A date, number or enumeration field is rendered read-only when its bound member is read-only (a derived member); `enabledBy` only disables the input, so a date field keeps its picker icon. To show such a value as plain text, bind a derived string member (for example a formatted value) instead of the mapped member.
 
 **Inherited from `Widget`:** `onBlur`, `requiredBy`, `minValueBy`, `maxValueBy`
 **Inherited from `Component`:** `col`, `row`, `stretch`, `fit`, `hiddenBy`, `enabledBy`
@@ -85,6 +92,11 @@ Type-specific attributes:
   formatValue="true"/>
 ```
 
+- **Boolean combo:** the trinary-logic combo has three entries, `Yes` (true), `No` (false) and `Unknown` (null or undefined). The generated widget therefore shows "unknown" for an empty value.
+- **Hide a row action per row:** set `hiddenBy` on the row button to a boolean attribute of the row's transfer object. The generated table hides the button when `!!row.<attribute>` is true. There is no other per-row hook.
+- **Count only:** a table with `showTotalCount` sends the header `X-Judo-CountRecords: true` on its list call and reads the total from the `X-Judo-Count` response header. A count-only call is a list call with that header and `_mask: '{}'`; read the header from the response, ignore the body.
+- **Route parameters:** a page route is the page name split at `::`, each part capitalized and joined with `/`, plus `/:signedIdentifier` when the page is a view on a relation (or a refreshable output view), unless it opens in a dialog or is a single-access page. The identifier in the URL is the signed identifier (`__signedIdentifier`) of the row.
+
 ### TabularReferenceField (ui:TabularReferenceField)
 
 **Supertypes:** `Tabular` + `ReferenceField` → (`VisualElement`, `Widget` + `PerformableAction`)
@@ -100,7 +112,7 @@ A complex widget for managing relationships (to-one or to-many).
 | `ui:TabularReferenceField` | `relationFeature` (ref) | Bound relation | Data binding to RelationMember |
 | `ui:TabularReferenceField` | `representationComponent` | Display type | `table`/`tag`/`card`/`button` |
 | `ui:TabularReferenceField` | `buttonStyle` | Button style | `text`/`contained`/`outlined` (when `representationComponent=button`) |
-| `ui:TabularReferenceField` | `smallTable` | Compact mode | Dense table without pagination |
+| `ui:TabularReferenceField` | `smallTable` | Compact mode | Dense table without pagination. Carried to the ui model as `isSmallTable`; the React generator does not read it. Pagination depends on the table being eager: a table over an aggregation or composition relation (or inside a Form) is eager (all rows in memory, no paging), any other table is lazy and paged |
 | `ui:TabularReferenceField` | `checkboxSelection` | Selection mode | `AUTO`/`ENABLED`/`DISABLED` |
 | `ui:TabularReferenceField` | `countRows` | Show row count | Display total row count |
 | `ui:TabularReferenceField` | `isInlineEditable` | Inline editing | Enable inline row editing |
@@ -129,6 +141,8 @@ A complex widget for managing relationships (to-one or to-many).
 | `relationFeature.upper == 1` (single) | `autocompleteRows` |
 | `relationKind in (AGGREGATION, COMPOSITION)` | `smallTable` |
 | `representationComponent == 'button'` | `buttonStyle` |
+
+`representationComponent` has no dropdown value (only `table`, `tag`, `card`, `button`). For a to-one relation, the relation selector's autocomplete search is limited by `autocompleteRows`; `isTypeAheadField` applies only to string attributes, not to relations.
 
 **Inherited from `Tabular`:** `columns`, `filters`, `rowOperations`, `tableOperations`, `countRows`, `checkboxSelection`, `isInlineEditable`, `additionalMaskFeatures`
 **Inherited from `ReferenceField`:** `relationFeature`
@@ -309,7 +323,7 @@ Reserved space for custom implementations or future content.
 | `ui:Placeholder` | `name` | Placeholder name | Component name |
 | `ui:Placeholder` | `col` | Grid column | Layout width |
 | `ui:Placeholder` | `row` | Row span | Layout height |
-| `ui:Placeholder` | `customImplementation` | Custom flag | Marked for custom implementation |
+| `ui:Placeholder` | `customImplementation` | Custom flag | Marked for custom implementation; the generator has no widget for a placeholder, so it renders nothing. To plug in a custom component, set `customImplementation` on a `DataField` instead (see [hooks/ui-hooks.md → Field and View Display](../hooks/ui-hooks.md)) |
 
 **Example:**
 ```xml

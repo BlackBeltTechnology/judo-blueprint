@@ -1,6 +1,9 @@
 ---
 title: ESM to UI Mapping: Tables & Navigation
 description: ESM to UI Mapping: Tables & Navigation: ESM to UI model mapping reference for the generated React frontend.
+aliases: [table columns mapping, table filters, row operations, menu items mapping, navigation menu model, relation column table, esm annotations frontend]
+keywords: [ui:DataColumn, ui:DataFilter, ui:TableOperation, ui:RelationColumn, ui:MenuItemAccess, ui:MenuItemOperation, ui:MenuItemGroup, filterOperationType, confirmationType, generateActionsHook, generateVisualPropertiesHook, TabularReferenceField]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # ESM to UI Mapping: Tables & Navigation
@@ -35,7 +38,7 @@ A column within a table displaying a single attribute for each row.
 | `ui:DataColumn` | `hidden` | Hidden state | Column not displayed |
 | `ui:DataColumn` | `align` | Text alignment | `LEFT`/`CENTER`/`RIGHT` |
 | `ui:DataColumn` | `isPinnable` | Allow pinning | Pin column to left/right |
-| `ui:DataColumn` | `formatValue` | Apply formatting | Format numeric values |
+| `ui:DataColumn` | `formatValue` | Apply formatting | Format numeric values: with `true` the generated column uses `new Intl.NumberFormat(<locale>).format(value)` (locale grouping and decimal separators, default fraction digits); with `false` the raw value is shown. The attribute `scale` and currencies are not applied, so `89.9` stays `89.9`. For fixed decimals or a currency use a derived string attribute or a `customImplementation` column |
 | `ui:DataColumn` | `customImplementation` | Custom column | Extension point for custom rendering |
 
 **Default Sort Values:**
@@ -125,6 +128,12 @@ An action that can be performed on table rows (row-level operations) or as bulk 
 | `ui:TableOperation` | `confirmationMessage` | Confirmation text | Message in confirmation dialog |
 | `ui:TableOperation` | `confirmationCondition` | Confirmation condition | Boolean DataFeature |
 
+**Label of a row action.** The row action button shows the label of the button element nested in the operation's form element, not the label of the `TableOperation` itself. With the CLI the element is named `<ns>::<Entity>_Table::<op>TableOperation::<op>`:
+
+```bash
+java -jar target/judo-cli.jar -m <model> update '<ns>::<Entity>_Table::<op>TableOperation::<op>' -s "label=<Text>"
+```
+
 **Context:** TableOperations are placed in either `rowOperations` or `tableOperations` container:
 - `rowOperations` - Appears in row action menu, operates on single row
 - `tableOperations` - Appears in table toolbar, can be bulk operations
@@ -186,6 +195,15 @@ A column within a table displaying a relation (link to related entity).
 2. **Prefer a plain `DataColumn`** bound to a mapped `DataMember` (either a bound string attribute or a `DERIVED` attribute whose `getterExpression` flattens the related value, e.g. `self.owner.fullName`) when you only need to *display* a label from the related entity in the list.
 
 Reserve `RelationColumn` for embedded relation tables inside detail screens where relation-navigation semantics are explicitly expected. See also [UI Authoring Guide — Pitfalls](../../model/ui-authoring-guide.md#14-pitfalls-and-validation-rules).
+
+### Row Click and Default Labels
+
+- **Row click.** When a table's row actions include an open-page action, the generated table passes it as `onRowClick`, so clicking a row opens that page (the view page for a mapped table); such an action is not rendered as a row button. Other row operations (`rowOperations`) appear as buttons in the action column.
+- **Default labels.** An element without a `label` gets a default derived from the transfer object name, for example `<Entity>Info Table` for the table page and `<Entity>Info View / Edit` for the view page. Page titles, menu entries and the phone bottom bar show the label, so set `label` on the table, view and menu item (or provide i18n keys) to show user-facing text:
+
+```bash
+java -jar target/judo-cli.jar -m <model> update '<ns>::<Entity>Info_Table' -s "label=<Text>"
+```
 
 ---
 

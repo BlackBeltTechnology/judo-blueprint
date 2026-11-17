@@ -1,6 +1,9 @@
 ---
 title: Frontend Development Guide
 description: Frontend development guide for JUDO React applications. Covers generated structure, checksum protection, .generator-ignore, template overrides, hooks, theming and i18n.
+aliases: [react frontend guide, customize generated frontend, frontend checksum error, where to put react customizations, frontend hooks overview]
+keywords: [.generator-ignore, .generated-files, src/custom, application-customizer.tsx, ui-react.yaml, generator-overrides, judo-ui-react-template, customize, extra-routes.tsx, palette.ts]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Frontend Development Guide
@@ -25,9 +28,13 @@ The React frontend in <app> is generated from the ESM and UI models using JUDO g
 - **Hook System**: Customizations are achieved through a hook system based on Pandino. Instead of editing generated code, you register custom hooks to override or extend functionality.
 - **Checksum Protection**: To prevent accidental edits to generated files, a checksum system is in place. Modifying a generated file will cause the build to fail unless it's explicitly ignored in `.generator-ignore`.
 - **`.default` Files**: The generator creates `.default` scaffold files for hook registrations (under `src/custom/hooks/...`, for example `src/custom/hooks/pages/register<Page>ActionsHook.ts.default`). You copy a scaffold and drop the `.default` suffix to activate it. A hook scaffold is generated only when the matching hook flag is set in the model (for example `generateActionsHook`). `src/custom/application-customizer.tsx` itself is a plain generated file, not a `.default` scaffold.
-- **Custom folder**: Custom hook code lives in `src/custom/`. Hook scaffolds are generated as `.default` files under `src/custom/` (the frontend `.gitignore` ignores `*.ts.default` / `*.tsx.default`). A copy without `.default`, and any file you add yourself, is outside generator scope and needs no `.generator-ignore` entry. `src/custom/` itself is **not** gitignored: commit your custom code. The generator does write four files there without `.default` (`application-customizer.tsx`, `index.tsx`, `custom-element-types.ts`, `interfaces.ts`); if you hand-edit one of those, list it in `.generator-ignore`.
+- **Custom folder**: Custom hook code lives in `src/custom/`. `src/custom/` and its generated files are written by the React code generation in the actor module's Maven build (`./judo.sh build`), not by `./judo.sh generate`; a freshly generated module has no `src/custom/` until the first build. Hook scaffolds are generated as `.default` files under `src/custom/` (the frontend `.gitignore` ignores `*.ts.default` / `*.tsx.default`). A copy without `.default`, and any file you add yourself, is outside generator scope and needs no `.generator-ignore` entry. `src/custom/` itself is **not** gitignored: commit your custom code. The generator does write four files there without `.default` (`application-customizer.tsx`, `index.tsx`, `custom-element-types.ts`, `interfaces.ts`); if you hand-edit one of those, list it in `.generator-ignore`.
 
 ## Architecture
+
+### Routing
+
+The frontend uses a hash router (`createHashRouter`). Routes are in the URL fragment: pages open at `/<app-path>/#/<route>`; a direct path without the `#` is not a route. Browser tests must navigate to the hash URL.
 
 ### Generated vs Custom Code
 
@@ -177,7 +184,7 @@ Frontend JAR
 
 Three cases:
 
-1. **Generator emits file at path X, you hand-edit X in place.** → Add `X` to `.generator-ignore`. The only legitimate case. Examples: `src/generated/pages/MyPage.tsx`, `src/theme/palette.ts`, or a generator-emitted stub like `src/custom/application-customizer.tsx`.
+1. **Generator emits file at path X, you hand-edit X in place.** → Add `X` to `.generator-ignore`. The only legitimate case. Examples: `src/pages/MyPage.tsx`, `src/theme/palette.ts`, or a generator-emitted stub like `src/custom/application-customizer.tsx`.
 2. **`.default` rename pattern.** Generator emits `X.default` (e.g. `src/custom/application-customizer.tsx.default`). Rename to `X` once and fill in the body. Generator re-emits `X.default` next round as a reference; never touches `X`. → `X` is OUTSIDE generator scope. **No entry needed.** Do NOT add `X.default` either — you want it to keep regenerating as a reference.
 3. **Brand-new hand-written file the generator never emits at that path** (new components, new helper hooks under `src/custom/...`). → OUTSIDE generator scope. **No entry needed.**
 
@@ -371,6 +378,8 @@ The template context exposes `#self`, `#application`, `#applications`, `#model`,
 Override layering: a same-name template with a new `templateName`/`pathExpression` replaces the original; a `<name>.override.hbs` file decorates it (and can include the original as a partial); `exclude: true` removes it. Fragment overrides (for example the theme fragments, see [Theming](./theming.md)) work by creating a same-named file in the override directory.
 
 Handlebars helpers are provided by the generator helper classes (for example `toSafeCamelCase`, `firstToUpperCase`). Use `-DtemplateDebug` to see the context available in a template.
+
+Naming helpers only uppercase the first character of the joined name: `classDataName('MyPackage::MyClass', '')` generates `MyPackageMyClass`, not `MypackageMyclass`.
 
 ## Related Documentation
 
