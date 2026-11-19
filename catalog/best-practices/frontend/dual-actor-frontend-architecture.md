@@ -33,7 +33,7 @@ Different roles need different experiences: back-office users want fast generate
 - Admin or reference-data actors: keep fully generated ([[admin-default-generated-ui]]) and improve the experience in the model.
 - Customer-facing actors: customize deliberately: hooks first ([[single-actor-heavy-customization]]), full replacement only when the generated layout cannot serve ([[complete-frontend-replacement]]). A replaced frontend gets no generator updates.
 - Restrict what each actor sees with its own accesses and, where fields must differ, separate transfer objects per role rather than frontend hiding.
-- Two actors are the tested shape; they can differ in authentication (for example an anonymous public actor next to authenticated staff actors). A third actor can break the generated frontend build when an operation has an input and an output of the same type (duplicate type imports; known issue, see [build process](../../agent-docs/deployment/build-process.md)). Workaround: keep the frontend to two actors and route the extra operation through an existing actor.
+- Two actors are the tested shape; they can differ in authentication (for example an anonymous public actor next to authenticated staff actors). A third actor can break the generated frontend build with duplicate type imports, because actors are processed in model file order and a later actor can rebind an earlier actor's operation actions (known issue, see [build process](../../agent-docs/deployment/build-process.md)). Adding the new actor first in the model file avoided it in a tested model; check the generated sources after adding an actor.
 - Keep `.generator-ignore` minimal for the generated actors and larger only for the customized one.
 
 ## Rationale
