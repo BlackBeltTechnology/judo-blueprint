@@ -64,6 +64,8 @@ The registration function is `register<Component>CardsContainerConfig(context)`.
 
 A custom `CardElement` should render a `<Grid size={ { sm: 12, md: 6, lg: 4, xl: 4 } }>` as its root so cards line up on all devices.
 
+The cards container renders no create button of its own. `ActionbarElement` is the place for one: it renders above the cards when set, and without it the container shows no action bar.
+
 ## Multi-Application Switcher
 
 When the model has alternative applications, the profile popup shows an application switcher (`useApplicationSelector()`). `changeApplication(key)` clears the security storage and navigates the whole page to `origin + '/' + key`. `generateAlternativeApplications` builds the key-to-name map from translation keys `applications.<simpleName>`.

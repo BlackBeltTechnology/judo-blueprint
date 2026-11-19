@@ -271,6 +271,7 @@ public class [OperationName]CustomImplementation implements [OperationInterface]
 - **`G E N E R A T E D` header.** A `*CustomImplementation.java` can still carry the stub `G E N E R A T E D` header although it is fully implemented. Compare the file with its `.java.default` sibling (the stub only throws `UnsupportedOperationException`) instead of trusting the header.
 - **Input parameter map key differs from the Java variable name.** The generated default passes an input to the parameter map under its raw name (`parameters.put("<InputName>", ...)`), while the Java variable and the method signature use the lowerFirst name (`<inputName>`). Read the input by the raw name when you look it up in the map.
 - **Operation inputs on the wire.** Exposed operations arrive with the reserved keys described in [Platform Behavior Reference](platform-behavior-reference.md#reserved-payload-keys).
+- **Output with a transient relation to a mapped type.** An operation output may be an unmapped TO whose transient relation points at a mapped TO, for example a search result that holds mapped items. Fill the relation with the results of the mapped type's DAO; the response then carries `__signedIdentifier` for each mapped item.
 
 ## Example 1: Simple Toggle Operation
 

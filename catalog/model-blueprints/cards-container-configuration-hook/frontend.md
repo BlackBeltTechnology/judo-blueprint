@@ -16,7 +16,7 @@ The card element receives the row, the column definitions, a row-click handler a
 
 ```tsx
 const ActiveCard: React.FC<CardProps<Row, Actions>> = ({ row, actions }) => (
-  <Grid item xs={12} md={6} lg={4}>
+  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
     <Card>
       <CardContent>{row.title}</CardContent>
       <CardActions>

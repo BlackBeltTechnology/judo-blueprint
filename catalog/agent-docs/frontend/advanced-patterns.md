@@ -1536,6 +1536,8 @@ export function registerMyElementCustomImplementation(context: BundleContext) {
 
 Call the register function from `application-customizer.tsx`. The examples that follow show the content of such a component; their `actions.*` props are illustrative and the real props are those of the proxy props type in the scaffold.
 
+The proxy of a custom relation element receives `ownerData`, `isOwnerLoading`, `actions` and `editMode`, but no refresh counter. The generated pages and containers pass a `refreshCounter` (`pages/index.tsx.hbs`, `containers/page.tsx.hbs`), but the relation proxy does not; how a custom list should detect a page refresh is *verify* (re-rendering on a new `ownerData` object is the observed behaviour).
+
 #### Custom Dashboard Example
 
 ```typescript

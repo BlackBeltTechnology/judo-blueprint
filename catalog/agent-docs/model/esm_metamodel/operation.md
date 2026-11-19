@@ -113,7 +113,7 @@ The `operationType` attribute is constrained by the owner class type and mapping
 | `INITIALIZER` | ✓ | Factory operations |
 | `MAPPED` | ✗ | No entity to map from |
 
-An unmapped transfer object accepts only `STATIC` operations (EVL `UnmappedTransferObjectTypeHasStaticOperations`). The ESM→PSM transformation creates each as an unbound operation placed in that transfer object's own PSM equivalent (rule `CreateInPlaceUnboundOperation`); a `STATIC` operation on an entity is instead placed in the entity's default transfer object. Any unmapped transfer object can therefore carry static operations, not only a `StaticOperations` container. *Verify:* how an actor reaches the operation (access or menu item) was not settled in source.
+An unmapped transfer object accepts only `STATIC` operations (EVL `UnmappedTransferObjectTypeHasStaticOperations`). The ESM→PSM transformation creates each as an unbound operation placed in that transfer object's own PSM equivalent (rule `CreateInPlaceUnboundOperation`); a `STATIC` operation on an entity is instead placed in the entity's default transfer object. Any unmapped transfer object can therefore carry static operations, not only a `StaticOperations` container. An actor reaches the operation through a derived access on the actor whose target is a mapped transfer object; the validator reports `Access target have to be mapped` otherwise. The REST route is `POST /api/<app>/<Actor>/<TransferObject>/<operation>` with the input as the JSON body; a business fault returns 422 with the `X-Fault` header.
 
 **Summary Constraints:**
 - `operationType = ABSTRACT` → owner is `EntityType` AND `advanced mode = true`

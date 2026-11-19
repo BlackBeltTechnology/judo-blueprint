@@ -219,6 +219,8 @@ public class MyInterceptor implements OperationCallInterceptor {
 - Runtime uses this to match interceptors to operations
 - Multiple models can coexist with different interceptors
 
+An interceptor may also live in the application's `app` module when it must share a bundle with custom operations. Add `judo-runtime-core-dispatcher` (which provides `OperationCallInterceptor`) as a `provided` dependency to the app `pom.xml`; the built-in interceptors stay in the generated `interceptors` module.
+
 ### Guice and Spring Registration
 
 The default `OperationCallInterceptorProvider` returns an empty list unless interceptors are configured explicitly: it does not read a Guice `Multibinder` set of `OperationCallInterceptor`. In Spring, a `@Bean` that returns an `OperationCallInterceptor` is not collected; the default Spring configuration returns an empty interceptor list.

@@ -433,6 +433,9 @@ Naming helpers only uppercase the first character of the joined name: `classData
 → Add file to `.generator-ignore`
 
 ### "Build fails with checksum mismatch error"
+
+The generated frontend is formatted after it is written: `generate-sources` runs `pnpm install` and `pnpm run format` (Biome) before the build. The formatted files no longer match their checksums, so a build can report generated files as changed. Option 3 below (`-i`) is the fix for such formatting-only changes.
+
 ```bash
 # Option 1: Add the file to .generator-ignore (keep your changes)
 echo "src/pages/MyPage.tsx" >> .generator-ignore

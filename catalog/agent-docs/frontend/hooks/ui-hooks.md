@@ -79,6 +79,8 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 The extra component renders in two places, both from the same hook: in the drawer, below the logo and above the menu (children stack as a column, so a single button stretches over the full drawer width), and in the header grid, right-aligned before the settings and profile controls. Wrap several controls in one flex `Box` so they stay in a row at their natural width. The hook has no other slot, for example no separate top-right area for a language switch.
 
+In the horizontal top bar the navigation takes `8 - spaceRequired` of the 12 grid columns and the right side takes `2 + spaceRequired`; `spaceRequired` defaults to 1. Set a larger `spaceRequired` when the extra component needs more width in the top bar.
+
 ### Stored layout configuration
 
 The generated frontend keeps its layout configuration (for example drawer orientation and other `ConfigContext` state) in the browser `localStorage` under the key `<model>-config`. A stored config overrides a changed model or generated default, so users who already opened the app keep the old layout until that key is cleared (for example `localStorage.removeItem("<model>-config")`).

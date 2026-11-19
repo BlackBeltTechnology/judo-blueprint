@@ -450,6 +450,8 @@ entityDao.update(
 );
 ```
 
+To send a partial update that keeps the optimistic-lock check, put the identifier, the entity type, the version and the changed attributes into the payload with the generated builder: `<Entity>Builder.from(Map.of("__identifier", <identifier>, "__entityType", "<Entity>", "__version", <version>, "<attribute>", <value>)).build()`. A `__version` in the payload makes the check apply; the mask only shapes the returned entity.
+
 ### Performance Comparison
 
 The performance difference is significant, especially with large datasets.
@@ -556,7 +558,7 @@ For calls the fluent SDK cannot express, the generic `DAO` accepts a `QueryCusto
 
 ### Native SQL from a Custom Service
 
-There is no DAO method for native SQL. A query that JQL and `QueryCustomizer` cannot express (for example a join-table lookup) needs a JDBC `DataSource` injected into your own component with `@Reference`, and the test kit must bind it as well; no platform precedent exists, so keep such code isolated in one service.
+There is no DAO method for native SQL. A query that JQL and `QueryCustomizer` cannot express (for example a join-table lookup) needs a JDBC `DataSource` injected into your own component with `@Reference`, and the test kit must bind it as well; no platform precedent exists, so keep such code isolated in one service. Generated table names use the `T_` prefix and columns the `C_` prefix by default (read the exact names from the generated changelog). An enumeration column is an `Integer` that holds the integer value of the enumeration literal, not its name, so compare native SQL against that integer.
 
 ---
 

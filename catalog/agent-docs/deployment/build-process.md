@@ -228,8 +228,8 @@ Main orchestration script that simplifies common operations.
 | `-F` | `--skip-frontend` | Skip frontend React generation/build. |
 | `-KA` | `--skip-karaf` | Skip Karaf assembly. |
 | `-S` | `--skip-schema` | Skip schema-migration image. |
-| `-a` | `--build-app-module` | Build the `app/` (custom ops) module only — fast iteration on Java code. |
-| `-f` | `--build-frontend-module` | Build the frontend React module only. |
+| `-a` | `--build-app-module` | Build the `app/` (custom ops) module only — fast iteration on Java code. The running application does not load it: `start` unpacks the `karaf-offline` package again, so after Java changes run `./judo.sh build -M -F` (backend and Karaf package, skipping model and frontend) before `./judo.sh start`. |
+| `-f` | `--build-frontend-module` | Build the frontend React module only. The Karaf package is not rebuilt, so a running application keeps serving the old frontend: after a frontend change that a running application must show, run `./judo.sh build` (no flags, rebuilds Karaf) and restart with `./judo.sh start`. |
 | `-sc` | `--build-schema-cli` | Build the standalone schema CLI JAR. |
 | `-d` | `--docker` | Build Docker images. |
 | `-p` | `--build-parallel` | Maven parallel build (noisier logs). |

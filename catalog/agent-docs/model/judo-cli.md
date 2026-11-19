@@ -127,7 +127,7 @@ The CLI runs one daemon per model. Its session lives under `~/.judo/sessions/<ha
 - **A type change must reach the mapped members.** Changing the `dataType` of an entity member leaves the mapped member of each transfer object on the old type; `validate` warns `Data type of data member ... must match the data type of its binding`. Update the mapped members too.
 - **Gate `save` on `validate`.** `validate` exits non-zero when it reports a validation error (`--strict` is deprecated and not needed for the exit code); chain `validate && save` (not `;`), otherwise an invalid model is written to disk.
 - **Duplicate FQNs.** `update` acts on the first element with a given FQN and there is no suffix to select the other; give the elements distinct names first.
-- **`MimeType`** has no `name` in its `CreateInput` either (the name derives from type and subType); `create -t MimeType -n ...` fails.
+- **`MimeType`** has no `name` in its `CreateInput` either (the name derives from type and subType); `create -t MimeType -n ...` fails with `contains a field name ... not defined for input object type 'MimeTypeCreateInput'`. Working form: `create -t MimeType --ns <ns> -s type=application -s subType=json` (creates `application/json`). `BinaryType.mimeTypes` rejects a comma-separated list on `create` (`-s mimeTypes=a,b` fails with `'a' is not an allowed value`).
 - **Operation parameters** are declared with `containment` + `target`, not type/direction.
 - **A failed script leaves its earlier edits in memory** (and in the overlay), so running it again duplicates elements: `discard --force` before retrying. `discard` reverts **all** unsaved edits, not only the last one.
 #### Validation, history and action placement

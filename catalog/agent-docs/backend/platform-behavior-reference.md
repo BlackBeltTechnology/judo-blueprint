@@ -208,6 +208,7 @@ The platform has no scheduler: `judo-services-job` only runs the initializer ope
 - A scheduler thread has no request context: no principal and no `ACTOR`.
 - To get the platform's transaction and operation handling, call a modeled operation through the `Dispatcher` (`callOperation`) instead of using the DAO directly; script and custom operations run in their own transaction (see Initializer Operations).
 - Do not rely on `ACTOR`-based access or variables in such a call: the exchange carries no actor unless you put one in.
+- Operation name format for `Dispatcher.callOperation`: `<package>.<Class>#<operation>`. The `#` separates the fully qualified classifier name from the operation name.
 
 ## Email Service
 
@@ -218,6 +219,7 @@ Inject `hu.blackbelt.email.api.EmailService` (OSGi) and call `sendMessage(EmailM
 - **Templates**: `plaintTemplate` and `htmlTemplate` are Handlebars strings compiled inline and applied to `model` (a `Map`, bean or object with fields). The `subject` is **not** a template. At least one of the two templates must be non-blank, otherwise the call throws `No HTML or Plain message defined`. With both, a multipart message is sent.
 - Every address is validated; an invalid one throws `IllegalArgumentException("Email is not valid: ...")`.
 - The call is synchronous and uses the SMTP settings of the platform (`JUDO_PLATFORM_MAIL_SMTP_*`, mapped to `mail.smtp.*` JavaMail properties on the `JavaMailSenderActivator` configuration). With `JUDO_PLATFORM_LOG_SMTP_SERVER=true` a local log SMTP server receives the messages and only logs them.
+- Maven artifact: `hu.blackbelt:osgi-email-api`. Declare it with `<scope>provided</scope>` in the app module: the bundle is already in the Karaf runtime.
 
 ## See Also
 

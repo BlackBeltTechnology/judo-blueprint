@@ -35,6 +35,7 @@ The agent-docs describe fragment overrides for `pom.xml` and `feature.xml`; the 
 - The content is JSON key-value pairs without wrapping braces; the generator merges it into the `translation` object of `application_default.json`.
 - Use a `custom.*` prefix for project keys so they never collide with generated keys ([[i18n-custom-translation-keys]]).
 - Other locales (for example Hungarian) are maintained separately in a locale file protected by `.generator-ignore`.
+- A key that the generator writes later in the same object (for example `enumerations.<Enum>.<MEMBER>`) overrides a duplicate key from the fragment, so an override of a generated key has no effect. The generator writes the member name as the enumeration label, so a readable label needs a key the generator does not write.
 
 ```
 "extra.localization.operation.createOrderOperation": "Create Order",

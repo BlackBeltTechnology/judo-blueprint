@@ -96,6 +96,12 @@ With `modelNames` empty, only root model declarations are candidates; the build 
 
 Generated tables, columns, foreign keys, inverse foreign keys and junction tables use configurable prefixes `T_`, `C_`, `FK_`, `FK_INV_`, `J_`; each can be overridden, and `-` suppresses the prefix. They are set in the workflow plugin configuration. Entity tables are therefore named like `T_ENTITIES_<NAME>` (for example `T_ENTITIES_ADDRESS`) and columns `C_<NAME>`.
 
+### Indexes
+
+A non-derived attribute with `identifier=true` on an entity gets one non-unique index (`IDX_<hash>`) on its column. The generator creates no index for foreign-key columns, and the model has no syntax to declare other indexes; add them with a hand-written schema changeset (see [schema evolution](schema-evolution.md)).
+
+Without an index on a foreign-key column, a derived member or query that joins or filters on that column scans the table that holds the column, which gets slow with many rows. Add the index by hand in a schema changeset.
+
 ## Derived Models via the Model CLI
 
 `transform` of the model CLI runs the ESM -> PSM -> ASM -> RDBMS pipeline (plus esm2ui) and writes derived models to `cli-generated/` (or `-o <dir>`); with `--load` it reloads them into the running daemon. Derived models are recognised by the suffixes `-psm.model`, `-asm.model`, `-rdbms_<db>.model`, `-ui.model`, searched in the first directory holding a match (custom path, then `generated-resources/model`, then `cli-generated`). `discard --derived --from <dir>` resets them.
