@@ -16,7 +16,7 @@ Supported extension points of the generated React frontend that are not hooks of
 
 ## Guest Page
 
-With `supportGuestAccess` enabled on the application, an unauthenticated user is not redirected to `signinRedirect`. The auth gate renders a guest page instead. If no `GuestPage` service is registered, the gate shows the application name and a `Login / Register` button that calls `signinRedirect()`. Register your own component as a service under `GUEST_PAGE_INTERFACE_KEY` (the value `'GuestPage'`, imported from `~/auth/Auth`):
+With `supportGuestAccess = true` on a non-anonymous actor (`update <Actor> -s supportGuestAccess=true`; `update <Actor> --schema` lists it), an unauthenticated user of that actor's frontend is not redirected to `signinRedirect`; the flag does not apply to an anonymous actor. The auth gate renders a guest page instead. If no `GuestPage` service is registered, the gate shows the application name and a `Login / Register` button that calls `signinRedirect()`. Register your own component as a service under `GUEST_PAGE_INTERFACE_KEY` (the value `'GuestPage'`, imported from `~/auth/Auth`):
 
 ```typescript
 context.registerService<FC<any>>(GUEST_PAGE_INTERFACE_KEY, GuestPage);

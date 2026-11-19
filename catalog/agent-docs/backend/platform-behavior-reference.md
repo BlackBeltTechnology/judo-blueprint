@@ -81,6 +81,8 @@ The backend is chosen with `JUDO_PLATFORM_FILESTORE`: `filesystem` (directory `f
 
 Each actor access declaration gets a `LIST` behaviour and an unbound `listOf<Access>` operation when `generateBehaviours` is set. The generated list has no list-permission check of its own.
 
+A list access is served at `/api/<Model>/<Actor>/<Actor>/<access>/~list`: the actor name appears twice. For an effectively anonymous actor (no realm) the call needs no bearer token, and none is verified.
+
 ### Range and Choice Operations
 
 Choice and range lookups are generated as `getRangeFor<Name>` operations whose input is a synthesized `_GetRangeInput...` transfer object (an `owner` relation and, for mapped references, a `queryCustomizer`). Values outside the allowed range fail with `NOT_ACCEPTED_BY_RANGE`.

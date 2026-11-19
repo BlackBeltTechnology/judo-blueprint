@@ -240,6 +240,8 @@ Main orchestration script that simplifies common operations.
 
 **Model-only changes need a full `./judo.sh build` (no flags) — not `-M`.** The `asm2keycloak` transformation (which emits the Keycloak realm from your `ActorType`s) only runs when model build is enabled. With `-M` the previous build's Keycloak realm artifact sticks and a new actor / claim / realm-name change never reaches Keycloak; the local stack starts but the React app shows blank and `/system/health` reports `JaxRsApplicationsReady` missing because the Keycloak adapter cannot find a realm matching `schema_name`.
 
+`./judo.sh build -M -B` is not a frontend-only build: it stops a running Karaf and deletes its directory before Maven runs, then builds only the frontend module, so the application stays down until a full build. Use `./judo.sh build -f` for a frontend-only build. A full build that fails in a later module leaves Karaf stopped the same way; run `./judo.sh build` again, then `./judo.sh start`.
+
 ### Local-dev Keycloak realm dependency
 
 Projects generated from the JUDO platform ship a helper script `bin/keycloak-disable-ssl-required.sh` (invoked in the background by `./judo.sh start_local_env` right after `start_keycloak`). It:

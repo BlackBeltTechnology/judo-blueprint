@@ -36,6 +36,8 @@ The React frontend in <app> is generated from the ESM and UI models using JUDO g
 
 The frontend uses a hash router (`createHashRouter`). Routes are in the URL fragment: pages open at `/<app-path>/#/<route>`; a direct path without the `#` is not a route. Browser tests must navigate to the hash URL.
 
+The base URL `/` is not an actor frontend route. Karaf serves the static `index.html` of the generated `web-root` module (title `Hello, world!`, a table of platform links) whatever actors exist, so a public actor does not change `/`. To replace that page, add `web-root/src/main/resources/index.html` to `.generator-ignore` and edit it. Each actor frontend is at `/<app-path>/<Actor>/` with hash routes after `#`.
+
 ### Generated vs Custom Code
 
 **Generated (Do Not Edit Directly):**
@@ -428,6 +430,9 @@ Naming helpers only uppercase the first character of the joined name: `classData
 8. **Document custom hooks** - Help future developers
 
 ## Troubleshooting
+
+### Blank page or "Hello!" after start
+The first load after `./judo.sh start` can take about 10 s. Until the services are ready the page shows `Hello!` (the fallback of the dashboard `ComponentProxy`) or a blank page. Wait for the application to report ready (`JudoApplicationReady`, see [OSGi runtime services](../deployment/osgi-runtime-services.md), Startup Banner and Readiness) before judging the frontend.
 
 ### "File overwritten after build"
 → Add file to `.generator-ignore`
