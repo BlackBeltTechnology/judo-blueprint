@@ -1,0 +1,9 @@
+{"id": "WR16-2", "verdict": "ok", "note": "generate-sources runs pnpm install and 'run format' (itest pom execution 'format code'); option 3 is ./judo.sh build -i (judo.sh -i ignore-checksum)."}
+{"id": "WR16-3", "verdict": "ok", "note": "access.evl:12 'Access target have to be mapped'; RuntimeExceptionMapper sets 422 and X-Fault. REST route taken from applier's live call on webshop-test; not re-run here."}
+{"id": "WR16-11", "verdict": "ok", "note": "application_default.json.hbs includes fragment before getApplicationTranslations; UiI18NHelper writes enumerations.<X>.<member> = member name."}
+{"id": "WR16U-4", "verdict": "ok", "note": "CardsContainer.tsx.hbs:233-234 renders ActionbarElement only when set; no create button in file."}
+{"id": "WR16U-5", "verdict": "ok", "note": "Snapshot PlanetView.tsx.snapshot uses Grid size={{ xs, sm, md }}; matches extension-points Grid size."}
+{"id": "WR16U-6", "verdict": "ok", "note": "HeaderContent index.tsx.hbs:21,32,44,49: spaceRequired default 1, nav 8-x, right 2+x."}
+{"id": "WR17-2", "verdict": "ok", "note": "Re-ran judo-cli dry-run: MimeType -n rejected; -s type=application -s subType=json creates application/json; BinaryType comma list rejected."}
+{"id": "WR17-5", "verdict": "ok", "note": "EmailService.EmailMessage builder has model and htmlTemplate (Lombok); EmailServiceImpl:24 getMessage(htmlTemplate, model)."}
+{"id":"WR16U-3","verdict":"applied-now","note":"Verified: TableProxyProps (interfaces.ts.hbs:23-30) has no refresh counter; LazyTable has refreshCounter (line 101, deps line 563). Inserted after the register-function paragraph. The identity-of-ownerData wording is the proposal's inference, not shown directly in source."}

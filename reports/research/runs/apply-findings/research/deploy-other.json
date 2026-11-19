@@ -1,0 +1,162 @@
+[
+ {
+  "id": "G068",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/deployment/build-process.md",
+  "owner": "deployment-a",
+  "first_pass": "could not confirm custom file renaming behaviour quickly",
+  "text": "#### G068 `c04-04` R8 F09, F17: Renaming the customer product transfer object forced hand edits of custom frontend files (renamed custom-implementation file, new constants, container and type paths) and deletion of stale generated c\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/build-process.md`. Builder found Frontend Build Recovery in build-process.md. Missing: renaming a TO renames custom-implementation files and constants. Add one line: \"After renaming a TO, rename custom files/constants and delete stale generated pages/dialogs/containers/services before regenerating.\"\n- **Why:** Custom frontend file names and constants are derived from the transfer object name; stale generated containers stay behind after a model change. The builder found the recovery steps in build-process.md. **Workaround:** git mv of the custom file, search-and-replace of names and paths, removal of generated pages, dialogs, containers and services folders, then regenerate.\n- **Validation:** confirmed; kind platform-limit; catalog partly-covered. Evidence: `session:L2436`, `session:L2437`, `session:L2480`, `session:L2666`"
+ },
+ {
+  "id": "NG0071",
+  "src": "judo-ng-read:-runtime-judo-tatami-base",
+  "target": "catalog/agent-docs/deployment/generator-plugins.md",
+  "owner": "deployment-a",
+  "first_pass": "finding itself unchecked",
+  "text": "## [wrong-fact] openspec/specs/asm2rdbms/spec.md:55\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:openspec/specs/asm2rdbms/spec.md:55\n- claim: Default naming prefixes are T_, C_, FK_, FK_INV_, J_.\n- fact: Not checked in this batch; I did not verify prefix defaults in Asm2Rdbms.java.\n"
+ },
+ {
+  "id": "G052",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/deployment/local-development.md",
+  "owner": "deployment-b",
+  "first_pass": "Docker-daemon ordering/wait-loop behaviour not confirmed in judo.sh quickly; not written",
+  "text": "#### G052 `c02-38` R3 S07, S11: Round 3 test run failed 10 tests with ERR_CONNECTION_REFUSED because Docker was not running. judo.sh start printed 'Cannot connect to the Docker daemon' and the builder's wait loop ended before the ap\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/local-development.md`. grep found no mention of the Docker daemon being required or checked. Add: run docker info before judo.sh start; start returns before failure shows, so wait for the app URL before tests.\n- **Why:** Docker Desktop was stopped; the builder did not check the Docker daemon before starting the stack. **Workaround:** Started Docker, stopped and restarted the stack, waited for HTTP 200, then reran the tests.\n- **Validation:** confirmed; kind builder-mistake; catalog missing. Evidence: `session:L1510`, `session:L1512`, `session:L1513`, `session:L1514`"
+ },
+ {
+  "id": "G053",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/deployment/local-development.md",
+  "owner": "deployment-b",
+  "first_pass": "Cause of judo-cli.jar disappearing not confirmed (judo.sh has git clean at 379/388 only); not written",
+  "text": "#### G053 `c03-63` R7 F01: judo-cli.jar was missing from target/ after generate and build steps, so CLI calls failed with Unable to access jarfile; the builder had to run generate-root to restore it.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/local-development.md`. Not covered anywhere (checked judo-cli.md Version and jar pitfalls and deployment docs). Add: generate (maven clean) deletes target/judo-cli.jar; run ./judo.sh generate-root to restore it before CLI calls.\n- **Why:** Cause not stated in the session; the target folder was gone after a build step. **Workaround:** Ran ./judo.sh generate-root before each CLI session that followed a generate.\n- **Validation:** confirmed; kind cli-tool; catalog missing. Evidence: `session:L2251`, `session:L2252`, `session:L2253`, `session:L2254`. Merged: c06-06"
+ },
+ {
+  "id": "G133",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+  "owner": "deployment-b",
+  "first_pass": "Runtime-provided PDFBox/Handlebars versions not re-checked in assembly; not written",
+  "text": "#### G133 `c05-45` R10 F39: The Karaf runtime already contains PDFBox 2.0.13 and Handlebars 4.2.0 (karaf-offline assembly and karaf features), so no new bundle is needed for an invoice renderer.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/osgi-runtime-services.md`. Catalog says extra bundles (PDFBox, Handlebars) are added to the Karaf feature (best-practices osgi-karaf-bundle-architecture.md line 41), which is the opposite of the builder's finding that PDFBox 2.0.13 and Handlebars 4.2.0 already ship in the runtime. Not re-checked in the runtime assembly; mark verify. Add: 'Libraries already in the runtime (verify versions): PDFBox 2.0.13, Handlebars 4.2.0' and reconcile line 41.\n- **Why:** Found by searching the built runtime; the catalog has no list of runtime-provided libraries.\n- **Validation:** partly; kind none; catalog partly-covered. Evidence: `session:L3004`, `session:L3005`, `session:L3008`"
+ },
+ {
+  "id": "KC19",
+  "src": "knowledge-check",
+  "target": "catalog/agent-docs/deployment/application-config.md",
+  "owner": "deployment-b",
+  "first_pass": "Could not confirm S3 env variable naming in judo-ng quickly; left as is",
+  "text": "| K33: S3 variable naming | `deployment/application-config.md:156` lists `JUDO_PLATFORM_S3_BUCKET`. Validation: a partly-right naming caveat. In the U9 summary the orchestrator wrote `JUDO_PLATFORM_FILESTORE_S3_BUCKET` | *verify* |"
+ },
+ {
+  "id": "DE-023",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+  "owner": "deployment-b",
+  "first_pass": "MockOsgi DS-test claim stays unverified; Judo-Models header already documented",
+  "text": "{\"action\": \"unverified\", \"file\": \"catalog/agent-docs/deployment/osgi-runtime-services.md\", \"heading\": \"Deploying a Model as an OSGi Bundle\", \"note\": \"Judo-Models header documented; MockOsgi DS-test claim not applied (not verified)\"}"
+ },
+ {
+  "id": "G036",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+  "owner": "testing",
+  "first_pass": "selector names for generated pages not confirmed in source",
+  "text": "#### G036 `c02-28` R2 S09: E2E selectors did not match the generated UI: getByLabel('Price') matched both the column menu button and the input, getByLabel('Name') matched more than one element, and 'Save' was used for the view \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Session shows the guessed selectors failing. troubleshooting.md \"Element not found\" only shows getByLabel/dialog scoping and the \"Update after\" flag exists in writing-tests.md. Add: the generated pages have several elements with the same label (column menu button plus input), so use getByRole(\"textbox\",{name}) or the helper field names; the view save button is \"Update\".\n- **Why:** Builder guessed names; the catalog examples use icon-prefixed names and label-only lookups that are ambiguous on the list and form pages. **Workaround:** Changed the selectors to Update and to getByRole('textbox', { name }) with the helper names.\n- **Validation:** confirmed; kind test-design; catalog partly-covered. Evidence: `session:L1329`, `session:L1353`, `session:L1371`, `session:L1372`. Merged: c03-15, c03-65, c03-67, c03-70, c04-21, c04-22, c05-13, c06-20"
+ },
+ {
+  "id": "G042",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+  "owner": "testing",
+  "first_pass": "root cause not established",
+  "text": "#### G042 `c06-11` R11 F44: In the generated export dialog, keys typed into the date range fields in one burst were lost, and typing into the second date field reset the first in form state (the request sent only toDate or only \n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/e2e-testing/troubleshooting.md`. Reproduced in GAPS R11-7(d) but root cause (frontend form state vs Playwright timing) not established. Add a short tip: type dates in segments and wait for the template request.\n- **Why:** Builder's diagnosis: generated date widget loses input when typed fast and the second field resets the first. **Workaround:** Test types the date in segments with a pause, waits for the template request, and waits 1.5 s before typing; the until filter was dropped from the test.\n- **Validation:** partly; kind platform-bug; catalog missing. Evidence: `session:L3661`, `session:L3662`, `session:L3664`, `session:L3688`"
+ },
+ {
+  "id": "G045",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+  "owner": "testing",
+  "first_pass": "not confirmed",
+  "text": "#### G045 `c08-21` R13 F59, F60: Generated action group shows the first three actions; Request a quote sits under the Actions menu in the cart, so the test must open the menu.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/e2e-testing/troubleshooting.md`. Generated action groups show three actions, the rest go under an Actions menu; tests must open the menu first.\n- **Why:** Platform behaviour of the generated action group (featured actions), not a bug. **Workaround:** Test opens Actions and clicks the menu item. Not hidden or patched.\n- **Validation:** confirmed; kind platform-limit; catalog missing. Evidence: `session:L4939`, `session:L4944`"
+ },
+ {
+  "id": "G046",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+  "owner": "testing",
+  "first_pass": "token lifetime vs test not confirmed",
+  "text": "#### G046 `c10-16` R15 : A long single test (several minutes with 3-width screenshots) hit ACCESS_TOKEN_EXPIRED; the overhaul spec was split into two tests with a login each.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Only error-handling-guide lists ACCESS_TOKEN_EXPIRED; no e2e guidance. Add: keep tests shorter than the token lifetime or log in per test.\n- **Why:** Access token lifetime is shorter than the test; kb search for token renewal in e2e found only error codes, no renewal guidance. **Workaround:** Split the spec into two short tests.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L5919`, `session:L5920`, `session:L5921`, `session:L5923`. add\u2192modify (target file exists; add a section)"
+ },
+ {
+  "id": "G065",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/e2e-testing/writing-tests.md",
+  "owner": "testing",
+  "first_pass": "button names/composition persistence not confirmed",
+  "text": "#### G065 `g-R7-11` R7 F10, F16: Embedded relation dialogs: submit button is \"Ok\" (later \"Submit\"), title and labels come from the transfer object form, composition children are saved with the page Update button, delete is hidden whi\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Session L2248 mentions the F10 submit button \"Ok\"; writing-tests.md \"Dialog Handling\" (line 502) shows Yes/No and acceptChangesOnDialogElement only, nothing on composition children saved via Update. Add a short \"relation dialogs\" subsection: Ok/Submit button, composition children persist on page Update.\n- **Why:** e2e docs only show confirm Yes/No and a generic acceptChangesOnDialogElement. **Workaround:** Test code adapted to the real names.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L2248`, `gaps:R7-11`"
+ },
+ {
+  "id": "G129",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+  "owner": "testing",
+  "first_pass": "date segment and PDF claims not confirmed in source",
+  "text": "#### G129 `c05-57` R10 F36, F39: Test helper problems: the PDF text check failed because parentheses are escaped in the content stream; the generated date field is a group of spin-button segments, not a text box; a debug spec was use\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/helpers-reference.md`. Session L3175 shows the PDF content stream escapes parentheses; GAPS confirms date fields render as spin-button segments. Add: date inputs are segmented (click the month segment and type digits); PDF text is in the content stream so escape parentheses in regexes. The debug-spec part is general practice.\n- **Why:** Test-level assumptions about PDF text and the generated date widget, not documented in writing-tests.md. **Workaround:** Regex escapes the parentheses; typeDate clicks the Month segment and types digits; debug spec removed after use.\n- **Validation:** confirmed; kind test-design; catalog missing. Evidence: `session:L3174`, `session:L3175`, `session:L3177`, `session:L3183`. add\u2192modify (target file exists; add a section)"
+ },
+ {
+  "id": "G105",
+  "src": "gap-analysis",
+  "target": "catalog/best-practices/backend/init-data-seeding.md",
+  "owner": "entries",
+  "first_pass": "backdating rows via psql/test-only operation is a project route; no platform source",
+  "text": "#### G105 `c05-08` R9 F32: No documented way to backdate or seed an old order in a running-app Playwright test, so the 30-day cut-off itself is untested.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/init-data-seeding.md`. No page covers seeding or backdating rows for a running-app Playwright test (init-data-seeding and runtime-fixture pages cover Java tests only). Add the route used (SQL via psql or a test-only operation).\n- **Why:** Order timestamps are set only by checkout; the initializer has no documented trigger; the kb fixture examples are for Java integration tests, not the running app. **Workaround:** Test checks that today's order is in the 30-day list and in All orders; the cut-off is left untested and logged.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2748`, `session:L2749`, `session:L2773`, `session:L2776`. add\u2192modify (target file exists; add a section)"
+ },
+ {
+  "id": "G112",
+  "src": "gap-analysis",
+  "target": "catalog/best-practices/backend/multi-tenant-keycloak-realm.md",
+  "owner": "entries",
+  "first_pass": "generated app realm's registrationAllowed default not found in source (only test-users-realm sets true)",
+  "text": "#### G112 `c03-56` R7 F13: The model has no setting for Keycloak self sign-up (registrationAllowed); the generated realm JSON leaves it unset, so the builder had to set it through the Keycloak admin API.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/multi-tenant-keycloak-realm.md`. The practice shows createRealm(name, registrationAllowed) in code but not that the generated realm JSON leaves self sign-up off with no model setting. Add: for the generated realm enable registration through the Keycloak admin API or a realm-json override.\n- **Why:** The platform's generated realm does not expose a self sign-up switch in the documented model settings; catalog does not cover it. **Workaround:** Logged as GAPS R7-3; the seed script switches self sign-up on through the Keycloak admin API.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L2135`, `session:L2137`, `session:L2138`, `session:L2139`. Merged: g-R7-4"
+ },
+ {
+  "id": "G115",
+  "src": "gap-analysis",
+  "target": "catalog/best-practices/backend/markdown-handlebars-pdf-report.md",
+  "owner": "entries",
+  "first_pass": "new recipe page based on session-only library versions; not confirmed, not written",
+  "text": "#### G115 `c05-42` R10 F39: No runnable recipe in the kb for a Markdown Handlebars template rendered to PDF; the only document pipeline in the kb is the DOCX XDocReport one.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `catalog/best-practices/backend/markdown-handlebars-pdf-report.md`. No recipe for Markdown plus Handlebars rendered to PDF; judo-doc-problems already records a project that migrated to it (entry about replacing the XDocReport leg). Write the pipeline page.\n- **Why:** Catalog covers Handlebars email rendering, file store transfer and inline preview, but no Markdown to PDF step. **Workaround:** invoice.md.hbs rendered with Handlebars 4.2.0 (already in runtime), turned into PDF by a small Markdown renderer on PDFBox 2.0.13 (already in runtime), stored via FileStoreService, returned as FileType.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2992`, `session:L2994`, `session:L2996`, `session:L2998`"
+ },
+ {
+  "id": "G122",
+  "src": "gap-analysis",
+  "target": "catalog/best-practices/model/derived-access-filtering.md",
+  "owner": "entries",
+  "first_pass": "claim that direct refresh/update by signed identifier skips the access filter exists only as a 'verify' note in testkit blueprint; no agent-docs backing",
+  "text": "#### G122 `c09-19` R14 F62: A seller who opened the direct page address of another seller's product got the product, its status and an Unpublish button. The access filter hid it from lists only.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/derived-access-filtering.md`. derived-access-filtering.md says visibility is enforced by the model but does not say a direct GET/update by identifier bypasses list filters. Add a security warning and a write-guard interceptor pointer (verify with the dispatcher).\n- **Why:** Derived access filters restrict the generated list queries; a direct identifier GET or update is not filtered. Signed identifiers are not bound to a user. **Workaround:** SellerOwnershipInterceptor on refresh and update, plus ownership checks inside the custom operations; the page shows a refusal toast and an empty form.\n- **Validation:** confirmed; kind catalog-wrong; catalog missing. Evidence: `session:L5479`, `session:L5480`, `session:L5488`, `session:L5490`"
+ },
+ {
+  "id": "G131",
+  "src": "gap-analysis",
+  "target": "catalog/model-blueprints/invitation-with-key-based-acceptance/BLUEPRINT.md",
+  "owner": "entries",
+  "first_pass": "sign-up-then-key variant rests on project decision; Keycloak self sign-up not confirmed",
+  "text": "#### G131 `c08-12` R13 F55: Invitation key blueprint assumes an anonymous actor, so the invitee cannot accept the key without a Keycloak account. The builder adds sign-up first, then key entry, and shows the key in the admin tab\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/model-blueprints/invitation-with-key-based-acceptance/BLUEPRINT.md`. The blueprint already uses an anonymous actor (BLUEPRINT.md:20), so the builder chose sign-up first by project design. Add a variant: when the invitee must become a Keycloak user, sign up first, then enter the key.\n- **Why:** Chunk does not show why anonymous acceptance was not used. GAPS R13-3 records the decision as platform limit with no mail server. **Workaround:** Key shown in the open-invitations table and logged; invitee signs up, then enters key on Join a company; acceptance checks key, expiry and e-mail and deletes the invitation in one transaction.\n- **Validation:** partly; kind platform-limit; catalog partly-covered. Evidence: `session:L4481`, `session:L4537`, `session:L4541`, `session:L4879`"
+ },
+ {
+  "id": "G132",
+  "src": "gap-analysis",
+  "target": "catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md",
+  "owner": "entries",
+  "first_pass": "'generated runtime has no scheduler' not in agent-docs; fallback is project workaround",
+  "text": "#### G132 `c09-42` R14 F70: Loyalty points expire only by a call from an admin dashboard action or at checkout; there is no scheduled expiry job.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md`. The blueprint needs a scheduler module; GAPS R14-9 says the generated runtime has none. Add the fallback: call the expiry service from an admin action and at checkout.\n- **Why:** osgi-scheduled-background-jobs needs a scheduler module the generated runtime does not have, and a job has no request transaction. **Workaround:** LoyaltyService.expireAll(now) called from the admin action and at each checkout.\n- **Validation:** confirmed; kind platform-limit; catalog partly-covered. Evidence: `session:L5134`, `session:L5138`, `session:L5531`"
+ },
+ {
+  "id": "G135",
+  "src": "gap-analysis",
+  "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+  "owner": "entries",
+  "first_pass": "!avg on empty collection behaviour not run/confirmed",
+  "text": "#### G135 `g-R11-6` R11 F43: The kb says it does not document what !avg does on an empty collection; it ran without error and returned an empty value.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/null-safe-collection-aggregation.md`. The file (line 26) says empty-collection behaviour is not documented and tells to use a ternary guard. Add the observed fact (verify): !avg over an empty collection returns undefined with no error; compare !count() first for labels.\n- **Why:** Platform behaviour undocumented in catalog. **Workaround:** No guard on !avg; ratingLabel guards on count.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L3362`, `gaps:R11-6`\n\n## B. Platform tickets (judo-ng)"
+ }
+]

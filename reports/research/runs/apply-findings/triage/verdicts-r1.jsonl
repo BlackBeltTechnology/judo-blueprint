@@ -1,0 +1,379 @@
+{"id": "R0000", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0002", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0003", "verdict": "duplicate", "reason": "Same fact as R0002"}
+{"id": "R0004", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0005", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0006", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0007", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0010", "verdict": "not-platform", "reason": "Editor tooling, not app-facing"}
+{"id": "R0012", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0013", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0014", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0015", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0016", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0017", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0018", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0019", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0020", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0021", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0022", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0023", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0024", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0025", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0026", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0027", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0028", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0029", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0030", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0031", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0032", "verdict": "not-platform", "reason": "Documentation site internals"}
+{"id": "R0033", "verdict": "not-platform", "reason": "Documentation site internals"}
+{"id": "R0034", "verdict": "not-platform", "reason": "Documentation site internals"}
+{"id": "R0035", "verdict": "not-platform", "reason": "Documentation site internals"}
+{"id": "R0036", "verdict": "not-platform", "reason": "Spring build plugin internals, not app-facing"}
+{"id": "R0037", "verdict": "not-platform", "reason": "Spring build plugin internals, not app-facing"}
+{"id": "R0038", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0039", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0040", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0041", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0042", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0043", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0044", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0045", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0046", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0047", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0048", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0049", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0050", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0051", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0052", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0053", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0054", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0055", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0056", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0057", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0058", "verdict": "not-platform", "reason": "Template-repo README defect, not platform behaviour"}
+{"id": "R0059", "verdict": "not-platform", "reason": "Contributor AGENTS.md, not platform behaviour"}
+{"id": "R0060", "verdict": "not-platform", "reason": "Repo planning notes, not platform behaviour"}
+{"id": "R0061", "verdict": "not-platform", "reason": "Repo planning notes, not platform behaviour"}
+{"id": "R0062", "verdict": "not-platform", "reason": "Repo planning notes, not platform behaviour"}
+{"id": "R0063", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0064", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0072", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0073", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0093", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0094", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0095", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0096", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0098", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0099", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0100", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0101", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0102", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0103", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0104", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0105", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0113", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0114", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0127", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0128", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0129", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0130", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0131", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0134", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0135", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0136", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0137", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0138", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0139", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0140", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0141", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0142", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0143", "verdict": "not-platform", "reason": "Expression extension API docs, not app-facing"}
+{"id": "R0145", "verdict": "not-platform", "reason": "Expression plugin install naming, not platform behaviour"}
+{"id": "R0146", "verdict": "not-platform", "reason": "Runtime translator extension API, not app-facing"}
+{"id": "R0147", "verdict": "not-platform", "reason": "Runtime translator extension docs, not app-facing"}
+{"id": "R0148", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0149", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0150", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0151", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0152", "verdict": "not-platform", "reason": "Theme defect, no documented contract"}
+{"id": "R0153", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0157", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0158", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0159", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0160", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0161", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0162", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0163", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0170", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0172", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0180", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0181", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0182", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0183", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0184", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0194", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0195", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0196", "verdict": "not-platform", "reason": "Generated TS client defect, not a documented contract"}
+{"id": "R0197", "verdict": "not-platform", "reason": "Generated TS client defect, not a documented contract"}
+{"id": "R0198", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0199", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0200", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0201", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0202", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0213", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0214", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0215", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0216", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0217", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0218", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0219", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0226", "verdict": "not-platform", "reason": "OSGi repackaging and build internals"}
+{"id": "R0227", "verdict": "not-platform", "reason": "OSGi repackaging and build internals"}
+{"id": "R0228", "verdict": "not-platform", "reason": "OSGi repackaging and build internals"}
+{"id": "R0229", "verdict": "not-platform", "reason": "OSGi repackaging and build internals"}
+{"id": "R0231", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0232", "verdict": "not-platform", "reason": "Rendering escape defect, no platform fact"}
+{"id": "R0236", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0237", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0238", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0239", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0240", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0241", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0242", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0248", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0249", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0254", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0255", "verdict": "not-platform", "reason": "Transformation gap, not app-facing internals"}
+{"id": "R0256", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0257", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0258", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0260", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0261", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0262", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0263", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0264", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0266", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0271", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0272", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0275", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0276", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0277", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0278", "verdict": "duplicate", "reason": "Same fact as R0277"}
+{"id": "R0279", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0280", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0281", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0282", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0283", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0284", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0285", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0286", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0287", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0288", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0289", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0290", "verdict": "not-platform", "reason": "Async dispatch defect in dispatcher internals"}
+{"id": "R0291", "verdict": "not-platform", "reason": "Dead variable in dispatcher, no observable contract"}
+{"id": "R0292", "verdict": "not-platform", "reason": "Index row about internals, not app-facing"}
+{"id": "R0293", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0294", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0295", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0297", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0298", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0299", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0303", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0304", "verdict": "not-platform", "reason": "Expression skill snippet, not app-facing"}
+{"id": "R0305", "verdict": "not-platform", "reason": "Expression skill snippet, not app-facing"}
+{"id": "R0306", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0307", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0308", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0309", "verdict": "not-platform", "reason": "Java builder API of Guice module, not app-facing"}
+{"id": "R0310", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0311", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0312", "verdict": "duplicate", "reason": "Same fact as R0308"}
+{"id": "R0313", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0314", "verdict": "duplicate", "reason": "Same fact as R0306"}
+{"id": "R0315", "verdict": "duplicate", "reason": "Same fact as R0307"}
+{"id": "R0316", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0317", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0318", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0319", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0323", "verdict": "not-platform", "reason": "Archetype packaging internals, not app-facing"}
+{"id": "R0329", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0330", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0331", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0347", "verdict": "not-platform", "reason": "Editor tooling, not app-facing"}
+{"id": "R0348", "verdict": "not-platform", "reason": "OpenSpec contributor docs, not platform behaviour"}
+{"id": "R0349", "verdict": "not-platform", "reason": "OpenSpec contributor docs, not platform behaviour"}
+{"id": "R0350", "verdict": "not-platform", "reason": "OpenSpec contributor docs, not platform behaviour"}
+{"id": "R0351", "verdict": "not-platform", "reason": "OpenSpec contributor docs, not platform behaviour"}
+{"id": "R0352", "verdict": "not-platform", "reason": "OpenSpec contributor docs, not platform behaviour"}
+{"id": "R0353", "verdict": "not-platform", "reason": "OpenSpec contributor docs, not platform behaviour"}
+{"id": "R0354", "verdict": "not-platform", "reason": "OpenSpec contributor docs, not platform behaviour"}
+{"id": "R0355", "verdict": "not-platform", "reason": "OpenSpec contributor docs, not platform behaviour"}
+{"id": "R0356", "verdict": "not-platform", "reason": "Frontend widget defect, no documented contract"}
+{"id": "R0357", "verdict": "not-platform", "reason": "Frontend widget defect, no documented contract"}
+{"id": "R0362", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0369", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0387", "verdict": "not-platform", "reason": "Editor tooling, not app-facing"}
+{"id": "R0388", "verdict": "not-platform", "reason": "Editor tooling, not app-facing"}
+{"id": "R0389", "verdict": "not-platform", "reason": "Editor tooling, not app-facing"}
+{"id": "R0390", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0391", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0392", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0393", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0394", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0395", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0404", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0405", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0406", "verdict": "not-platform", "reason": "Java builder API of Guice module, not app-facing"}
+{"id": "R0407", "verdict": "not-platform", "reason": "Java builder API of Guice module, not app-facing"}
+{"id": "R0408", "verdict": "not-platform", "reason": "Jetty container Java API, not app-facing"}
+{"id": "R0409", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0410", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0411", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0412", "verdict": "not-platform", "reason": "Internal qualifier count, not app-facing"}
+{"id": "R0413", "verdict": "duplicate", "reason": "Same fact as R0405"}
+{"id": "R0414", "verdict": "duplicate", "reason": "Same fact as R0410"}
+{"id": "R0415", "verdict": "duplicate", "reason": "Same fact as R0409"}
+{"id": "R0416", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0417", "verdict": "duplicate", "reason": "Same fact as R0411"}
+{"id": "R0418", "verdict": "not-platform", "reason": "Index row about internals, not app-facing"}
+{"id": "R0422", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0423", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0424", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0425", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0433", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0434", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0435", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0457", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0458", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0459", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0460", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0461", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0462", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0464", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0465", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0466", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0467", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0468", "verdict": "not-platform", "reason": "Testkit and test-fixture internals"}
+{"id": "R0474", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0477", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0478", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0479", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0480", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0481", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0482", "verdict": "duplicate", "reason": "Same fact as R0481"}
+{"id": "R0484", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0486", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0487", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0491", "verdict": "not-platform", "reason": "OSGi repackaging and build internals"}
+{"id": "R0492", "verdict": "not-platform", "reason": "OSGi repackaging and build internals"}
+{"id": "R0493", "verdict": "not-platform", "reason": "OSGi repackaging and build internals"}
+{"id": "R0494", "verdict": "not-platform", "reason": "Doc cross-reference defect, no platform fact"}
+{"id": "R0495", "verdict": "not-platform", "reason": "Doc cross-reference defect, no platform fact"}
+{"id": "R0496", "verdict": "not-platform", "reason": "Doc cross-reference defect, no platform fact"}
+{"id": "R0497", "verdict": "not-platform", "reason": "Doc example count defect, no platform fact"}
+{"id": "R0498", "verdict": "not-platform", "reason": "Doc cross-reference defect, no platform fact"}
+{"id": "R0499", "verdict": "not-platform", "reason": "Template agent-doc reference defect, no platform fact"}
+{"id": "R0500", "verdict": "not-platform", "reason": "Sample code defect, no platform fact"}
+{"id": "R0505", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0506", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0507", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0508", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0509", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0513", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0514", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0516", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0517", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0518", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0519", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0520", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0521", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0522", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0523", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0524", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0525", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0526", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0527", "verdict": "not-platform", "reason": "Index row about internals, not app-facing"}
+{"id": "R0528", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0538", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0539", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0540", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0541", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0542", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0543", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0552", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0553", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0554", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0555", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0556", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0563", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0564", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0565", "verdict": "not-platform", "reason": "Generated TS client defect, not a documented contract"}
+{"id": "R0566", "verdict": "not-platform", "reason": "Generated TS client defect, not a documented contract"}
+{"id": "R0567", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0568", "verdict": "duplicate", "reason": "Same fact as R0170"}
+{"id": "R0571", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0572", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0573", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0574", "verdict": "not-platform", "reason": "Upload servlet defect, no documented contract"}
+{"id": "R0575", "verdict": "not-platform", "reason": "Upload servlet defect, no documented contract"}
+{"id": "R0576", "verdict": "not-platform", "reason": "Serialization defect, no documented contract"}
+{"id": "R0577", "verdict": "not-platform", "reason": "Download servlet defect, not a documented contract"}
+{"id": "R0578", "verdict": "not-platform", "reason": "Upload JSON defect, no documented contract"}
+{"id": "R0579", "verdict": "keep", "reason": "Platform config or contract app developers need"}
+{"id": "R0598", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0599", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0600", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0601", "verdict": "not-platform", "reason": "Frontend utility defect, no documented contract"}
+{"id": "R0602", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0603", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0604", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0605", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0606", "verdict": "not-platform", "reason": "Frontend utility defect, no documented contract"}
+{"id": "R0607", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0608", "verdict": "not-platform", "reason": "Frontend utility defect, no documented contract"}
+{"id": "R0609", "verdict": "not-platform", "reason": "Frontend utility defect, no documented contract"}
+{"id": "R0610", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0611", "verdict": "not-platform", "reason": "Frontend utility defect, no documented contract"}
+{"id": "R0612", "verdict": "not-platform", "reason": "Frontend utility defect, no documented contract"}
+{"id": "R0620", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0621", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0622", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0623", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0627", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0630", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0631", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0632", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0633", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0634", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0635", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0636", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0637", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0638", "verdict": "not-platform", "reason": "Eclipse/EMF/meta-model tooling internals"}
+{"id": "R0639", "verdict": "not-platform", "reason": "Generated pom defect, not a documented contract"}
+{"id": "R0640", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0641", "verdict": "not-platform", "reason": "Generated frontend licence helper defect, not documented"}
+{"id": "R0642", "verdict": "not-platform", "reason": "Template-repo internals or contributor docs"}
+{"id": "R0643", "verdict": "not-platform", "reason": "Contributor test harness docs, not app-facing"}
+{"id": "R0644", "verdict": "not-platform", "reason": "Contributor test harness docs, not app-facing"}
+{"id": "R0645", "verdict": "not-platform", "reason": "Contributor test harness docs, not app-facing"}
+{"id": "R0646", "verdict": "not-platform", "reason": "Contributor test harness docs, not app-facing"}
+{"id": "R0647", "verdict": "not-platform", "reason": "Contributor test harness docs, not app-facing"}
+{"id": "R0648", "verdict": "not-platform", "reason": "Contributor test harness docs, not app-facing"}
+{"id": "R0653", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0654", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0655", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0656", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0657", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0658", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0659", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0672", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0679", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0680", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R0685", "verdict": "not-platform", "reason": "Documentation site internals"}
+{"id": "R0686", "verdict": "not-platform", "reason": "Documentation site internals"}
+{"id": "R0691", "verdict": "not-platform", "reason": "Generator/transformation internals, not app-facing"}
+{"id": "R0692", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}
+{"id": "R0693", "verdict": "not-platform", "reason": "Runtime module internals, not app-facing"}

@@ -1,0 +1,379 @@
+{"id": "R1416", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1417", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1418", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1419", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1420", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1421", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1422", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1423", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1424", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1425", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1426", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1427", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1428", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1429", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1430", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1431", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1432", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1433", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1434", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1435", "verdict": "not-platform", "reason": "judo-ng repo docs, CI or contributor tooling"}
+{"id": "R1443", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1444", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1445", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1446", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1447", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1457", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1458", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1459", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1460", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1463", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1464", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1465", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1466", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1467", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1468", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1469", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1470", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1471", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1472", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1473", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1474", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1483", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1484", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1485", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1486", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1487", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1488", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1497", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1498", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1502", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1503", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1504", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1505", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1506", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1518", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1519", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1520", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1521", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1524", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1525", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1526", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1527", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1528", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1557", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1558", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1559", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1560", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1562", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1563", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1564", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1565", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1566", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1567", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1568", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1569", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1570", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1571", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1572", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1573", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1574", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1580", "verdict": "not-platform", "reason": "build tooling internals, not app-facing"}
+{"id": "R1581", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1582", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1583", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1584", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1585", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1586", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1587", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1588", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1595", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1596", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1603", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1604", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1605", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1606", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1607", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1608", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1609", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1610", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1611", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1617", "verdict": "not-platform", "reason": "module agent-doc for framework internals"}
+{"id": "R1618", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R1619", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1620", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1621", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1624", "verdict": "not-platform", "reason": "build tooling internals, not app-facing"}
+{"id": "R1625", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1626", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1627", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1628", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1629", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1630", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1631", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1632", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1633", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1634", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1635", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1636", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1637", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1638", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1639", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1640", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1641", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1642", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1643", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1644", "verdict": "duplicate", "reason": "same fact as R1632"}
+{"id": "R1645", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1646", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1647", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1648", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1649", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1650", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1655", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1656", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1657", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1658", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1659", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1660", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1661", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1662", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1664", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1665", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1666", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1667", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1668", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1669", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1670", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1671", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1672", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1673", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1674", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1675", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1676", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1677", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1678", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1679", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1680", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1681", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1682", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1683", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1684", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1685", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1686", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1687", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1688", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1689", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1690", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1691", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1692", "verdict": "duplicate", "reason": "same fact as R1690"}
+{"id": "R1693", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1694", "verdict": "duplicate", "reason": "same fact as R1693"}
+{"id": "R1695", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1696", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1697", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1698", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1699", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1700", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1701", "verdict": "duplicate", "reason": "same fact as R1696"}
+{"id": "R1702", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1703", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1704", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1705", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1706", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1707", "verdict": "duplicate", "reason": "same fact as R1693"}
+{"id": "R1715", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1716", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1717", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1718", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1719", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1720", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1721", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1722", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1723", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1726", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1727", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1728", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1729", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1730", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1731", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1732", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1733", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1734", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1735", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1736", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1737", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1738", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1739", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1740", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1741", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1742", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1747", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1748", "verdict": "duplicate", "reason": "same fact as R1747"}
+{"id": "R1749", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1750", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1751", "verdict": "not-platform", "reason": "module agent-doc for framework internals"}
+{"id": "R1754", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1755", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1756", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1764", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1765", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1766", "verdict": "not-platform", "reason": "build tooling internals, not app-facing"}
+{"id": "R1767", "verdict": "not-platform", "reason": "build tooling internals, not app-facing"}
+{"id": "R1768", "verdict": "not-platform", "reason": "build tooling internals, not app-facing"}
+{"id": "R1769", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1770", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1771", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1772", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1778", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1779", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1780", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1783", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1784", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1785", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1786", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1787", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1799", "verdict": "not-platform", "reason": "module agent-doc for framework internals"}
+{"id": "R1800", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1805", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1806", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1821", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1822", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1823", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1824", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1825", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1826", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1827", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1828", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1832", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1834", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1835", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1836", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1837", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1838", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1839", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1840", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1841", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1842", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1843", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1844", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1852", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1853", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1854", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1855", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1856", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1857", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1882", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1883", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1884", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1885", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1886", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R1887", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1888", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1889", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1896", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1897", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1898", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1899", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1900", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1901", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1902", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1903", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1904", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1905", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1906", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1907", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1910", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1911", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1912", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1913", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1928", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1929", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1930", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1931", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1932", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1933", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1934", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1935", "verdict": "not-platform", "reason": "Eclipse or EMF plumbing, not app-facing"}
+{"id": "R1936", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1937", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1938", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1939", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1940", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1941", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1942", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1943", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1944", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1945", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1946", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1947", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1948", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1952", "verdict": "not-platform", "reason": "build tooling internals, not app-facing"}
+{"id": "R1955", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1958", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1968", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R1969", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R1970", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1971", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R1972", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R1988", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1989", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1990", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1991", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1992", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R1993", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2002", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R2003", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R2004", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R2005", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R2006", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2019", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2020", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2021", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2025", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2026", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2027", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2029", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2030", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2031", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2032", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2033", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2034", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R2035", "verdict": "duplicate", "reason": "same fact as R1726"}
+{"id": "R2036", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2037", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2038", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R2039", "verdict": "not-platform", "reason": "template or UI generator defect, not documented behaviour"}
+{"id": "R2040", "verdict": "not-platform", "reason": "OSGi packaging metadata, not app-facing"}
+{"id": "R2041", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2042", "verdict": "duplicate", "reason": "same fact as R2041"}
+{"id": "R2043", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2044", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2045", "verdict": "duplicate", "reason": "same fact as R2044"}
+{"id": "R2046", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2047", "verdict": "duplicate", "reason": "same fact as R2044"}
+{"id": "R2048", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2049", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2053", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2054", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2055", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2056", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2057", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2058", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2059", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2060", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2061", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2072", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R2073", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R2074", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R2075", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R2076", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R2077", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R2078", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R2079", "verdict": "not-platform", "reason": "docs site content, not platform behaviour"}
+{"id": "R2086", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2087", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2088", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2089", "verdict": "keep", "reason": "app-facing platform behaviour"}
+{"id": "R2090", "verdict": "not-platform", "reason": "framework internals, not app-facing"}
+{"id": "R2091", "verdict": "not-platform", "reason": "framework internals, not app-facing"}

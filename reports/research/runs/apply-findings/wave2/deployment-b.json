@@ -1,0 +1,44 @@
+[
+ {
+  "id": "R0580",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "The upload token audience is set by the audiencePrefix config property.",
+  "evidence": "runtime/osgi-filestore:filestore-security/src/main/java/hu/blackbelt/osgi/filestore/security/TokenServiceConfig.java:37"
+ },
+ {
+  "id": "R2321",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/schema-evolution.md",
+  "text": "The rdbms schema CLI only prints a message when postgres dbUser or dbPassword is missing and keeps running with empty credentials.",
+  "evidence": "runtime/judo-rdbms-schema:judo-rdbms-schema-cli/src/main/java/hu/blackbelt/judo/rdbms/schema/cli/DatabaseParameters.java:79"
+ },
+ {
+  "id": "R2723",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+  "text": "The JAX-RS address comes from the applicationPath entry of Application.getProperties(), not from the OSGi service property.",
+  "evidence": "runtime/cxf-jaxrs-application-manager:src/main/java/hu/blackbelt/jaxrs/CxfServerManager.java:184"
+ },
+ {
+  "id": "R0981",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "Keycloak admin user defaults to admin; keycloakPassword defaults to judo (JUDO_PLATFORM_KEYCLOAK_USER / _PASSWORD).",
+  "evidence": "documentation:docs/modules/ROOT/pages/administrator-guide/platform_parameters/04_security.adoc:98-110"
+ },
+ {
+  "id": "R1065",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/tooling-guide.md",
+  "text": "judo.sh prune prints [Y/n] but only an exact 'Y' continues; Enter and 'y' abort.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/judo.sh.hbs:377"
+ },
+ {
+  "id": "R1065",
+  "kind": "handoff",
+  "file": "catalog/agent-docs/deployment/tooling-guide.md",
+  "text": "Add to the prune safety section: \"The `[Y/n]` prompt continues only for an exact `Y`; Enter, `y` and any other input abort.\"",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/judo.sh.hbs:377"
+ }
+]

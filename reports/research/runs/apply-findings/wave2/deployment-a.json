@@ -1,0 +1,37 @@
+[
+ {
+  "id": "R0485",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/generator-plugins.md",
+  "text": "The keycloak theme zip holds the theme folders from src/main/resources/themes at its root.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/keycloak-theme/README.adoc.hbs:16"
+ },
+ {
+  "id": "R0856",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/generator-plugins.md",
+  "text": "A dialect RDBMS model path is loaded only when asm2rdbmsTrace is set for that dialect.",
+  "evidence": "runtime/judo-tatami:openspec/specs/workflow-maven-plugin/spec.md:45"
+ },
+ {
+  "id": "R2354",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/generator-plugins.md",
+  "text": "The flutter-maven-plugin parallel parameter is set by the system property flutter.parallel, default false.",
+  "evidence": "tools/flutter-maven-plugin:src/main/java/hu/blackbelt/flutter/maven/plugin/mojos/flutter/FlutterMojo.java:72"
+ },
+ {
+  "id": "R1949",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "Update channel is set with -Djudo-version-update-channel=<channel> (default develop); -DupdateChannel does not bind.",
+  "evidence": "tools/judo-version-updater-maven-plugin:src/main/java/hu/blackbelt/judo/maven/plugin/mojos/AbstractVersionUpdateMojo.java:54"
+ },
+ {
+  "id": "R1950",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "Repository server id is set with -Djudo-version-rules-serverId (default serverId); -DserverId does not bind.",
+  "evidence": "tools/judo-version-updater-maven-plugin:src/main/java/hu/blackbelt/judo/maven/plugin/mojos/AbstractVersionUpdateMojo.java:110"
+ }
+]

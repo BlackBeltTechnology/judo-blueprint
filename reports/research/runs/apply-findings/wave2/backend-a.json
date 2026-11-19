@@ -1,0 +1,30 @@
+[
+ {
+  "id": "R0569",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "The upload action hands uploaded items to the action; it does not store them in the FileStore service.",
+  "evidence": "runtime/osgi-filestore:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/AGENTS.md:11"
+ },
+ {
+  "id": "R0787",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "File names longer than 128 characters are cut to 127 characters.",
+  "evidence": "runtime/osgi-filestore:openspec/specs/filestore-api/spec.md:10"
+ },
+ {
+  "id": "R2141",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "Every actor access declaration gets a LIST behaviour and listOf operation when generateBehaviours is set, with no list-permission check.",
+  "evidence": "runtime/judo-tatami-jsl:judo-tatami-jsl-jsl2psm/src/main/java/hu/blackbelt/judo/tatami/jsl/jsl2psm/zeta/rules/action/AccessListBehaviourRules.java:44"
+ },
+ {
+  "id": "R1591",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "DownloadServlet has no configurable size limit; only UploadServlet has maxSize.",
+  "evidence": "runtime/osgi-filestore:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/DownloadServlet.java:66-90"
+ }
+]

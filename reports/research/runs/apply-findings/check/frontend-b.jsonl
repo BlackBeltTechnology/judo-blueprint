@@ -1,0 +1,53 @@
+{"id": "G054", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G055", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G056", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G057", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G058", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G059", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G071", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G072", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G073", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G074", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G075", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G080", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G081", "verdict": "fixed", "note": "paragraph had split the conditional-behaviour table; moved below the table"}
+{"id": "G082", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G083", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G094", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G095", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G096", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G108", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G110", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G130", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "AU6", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "KC18", "verdict": "ok", "note": "wave2 note on smallTable/eager; row inserted intact; not re-verified in generator beyond grep (no isSmallTable in React src)"}
+{"id": "B34", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "B35", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "B41", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "B44", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "U1217", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "U1218", "verdict": "ok", "note": "spot-checked against generator/diff; no deletions"}
+{"id": "G090", "verdict": "ok", "note": "localStorage key '{{application.modelName}}-config' confirmed in ConfigContext.tsx.hbs; placed in ui-hooks.md"}
+{"id": "KC10", "verdict": "ok", "note": "not applied; kept as unverified/not-platform"}
+{"id": "NG0018", "verdict": "ok", "note": "not applied; kept as unverified/not-platform"}
+{"id": "NG0054", "verdict": "ok", "note": "not applied; kept as unverified/not-platform"}
+{"id": "NG0105", "verdict": "ok", "note": "not applied; kept as unverified/not-platform"}
+{"id": "NG0143", "verdict": "ok", "note": "not applied; kept as unverified/not-platform"}
+{"id":"R1664","verdict":"ok","note":"FAB speed-dial icon: fab-button-group.fragment.hbs:8-14 verified; no SpeedDialIcon tag used"}
+{"id":"R1665","verdict":"ok","note":"textinput.hbs emits maxLength only, no mask (verified)"}
+{"id":"R1666","verdict":"ok","note":"textarea.hbs:40 rows only, no minRows (verified)"}
+{"id":"R1667","verdict":"ok","note":"CharacterCounter condition countCharacters && maxLength, textarea.hbs:22,70 verified"}
+{"id":"R1668","verdict":"ok","note":"no PasswordInput tag in template (verified)"}
+{"id":"R1669","verdict":"ok","note":"numericinput.hbs:33-34 scale->decimalScale only; precision absent from actor src and Java (verified)"}
+{"id":"R1670","verdict":"ok","note":"no MUI Switch in widget fragments (verified)"}
+{"id":"R1671","verdict":"ok","note":"timeinput.hbs:84 views hours/minutes/seconds; baseUnit not read (verified)"}
+{"id":"R1672","verdict":"ok","note":"enumerationcombo.hbs:22 Autocomplete verified"}
+{"id":"R1673","verdict":"ok","note":"binarytypeinput.hbs has no maxFileSize/base64 (verified)"}
+{"id":"R1674","verdict":"ok","note":"unverified, not written; stays unwritten"}
+{"id":"R2202","verdict":"ok","note":"displaySpeedDialForFabButtonGroup needs size>1; UiWidgetHelper.java:356-357 verified"}
+{"id":"R2203","verdict":"ok","note":"hiddenBy only in featured Fab loop (fab-button-group.fragment.hbs:43,67) verified"}
+{"id":"R2204","verdict":"ok","note":"dialog.tsx.hbs FAB groups after DialogContent verified"}
+{"id":"R2456","verdict":"ok","note":"already-correct, no edit"}
+{"id":"R2536","verdict":"ok","note":"already-correct, no edit"}
+{"id":"R1324","verdict":"fixed","note":"minValueBy truthy condition is on both entered value and attribute value (numericinput.hbs:60); reworded"}
+{"id": "R1008", "verdict": "ok", "note": "viewWidgetDeclaration.etl:45-56 TrinaryLogicCombo for boolean; BooleanTypeCheckbox (60-72) commented out; no other ui::Checkbox in jsl2ui epsilon"}

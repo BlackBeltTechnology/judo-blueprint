@@ -1,0 +1,386 @@
+{
+ "batch": "model-b",
+ "files": [
+  "catalog/agent-docs/model/README.md",
+  "catalog/agent-docs/model/advanced-modeling-patterns.md",
+  "catalog/agent-docs/model/esm_metamodel/README.md",
+  "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+  "catalog/agent-docs/model/esm_metamodel/generator-reserved-names.md",
+  "catalog/agent-docs/model/esm_metamodel/namespace.md",
+  "catalog/agent-docs/model/esm_metamodel/operation.md",
+  "catalog/agent-docs/model/esm_metamodel/other.md",
+  "catalog/agent-docs/model/esm_metamodel/structure.md",
+  "catalog/agent-docs/model/esm_metamodel/type.md",
+  "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md",
+  "catalog/agent-docs/model/esm_metamodel/ui-visual-styleguide.md",
+  "catalog/agent-docs/model/esm_metamodel/ui.md",
+  "catalog/agent-docs/model/generalization-guide.md",
+  "catalog/agent-docs/model/jcl-operation-scripts.md",
+  "catalog/agent-docs/model/jsl-language-notes.md",
+  "catalog/agent-docs/model/model-validation-and-transformation.md",
+  "catalog/agent-docs/model/transformation-pipeline.md",
+  "catalog/agent-docs/model/xmi-id-traceability.md"
+ ],
+ "items": [
+  {
+   "id": "G268",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+   "text": "#### G268 `gaps:L8` R0 S01: a login-capable actor needs a MAPPED principal; the catalog has no recipe for a working first user\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify \u2192 `catalog/agent-docs/model/esm_metamodel/accesspoint.md` (or `deployment/local-development.md`): a minimal first-user recipe (mapped principal + Keycloak user + entity row). Merged into `c01-09`, which only covers `managed=true`."
+  },
+  {
+   "id": "G088",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+   "text": "#### G088 `c03-49` R7 F14: Creating an actor with a principal auto-creates a Claim per attribute (for example Customer email USERNAME and EMAIL); the builder removed the USERNAME claim so only EMAIL remains.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/esm_metamodel/accesspoint.md`. accesspoint.md describes Claim but not that creating an actor with a principal auto-creates one claim per attribute (EMAIL and USERNAME). Add: keep only the claims the IdP token carries.\n- **Why:** The principal and claim cascade in the CLI creates claims by default; the catalog does not say which claim to keep. **Workaround:** Deleted the USERNAME claim on Customer.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L2104`, `session:L2107`, `session:L2108`"
+  },
+  {
+   "id": "G089",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+   "text": "#### G089 `c03-43` R7 F13: graphql and CLI queries used Claim name or a claim fqn that does not exist (Customer username USERNAME, Claim name field); the query or update failed.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/esm_metamodel/accesspoint.md`. accesspoint.md lists claims and the JQL key being the DataMember name, but not the CLI route to set or query a Claim. Add one CLI example (verify).\n- **Why:** Builder assumed the Claim type has a name field; the schema does not expose it under that name. **Workaround:** Queried Claim fqn only.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L2021`, `session:L2022`, `session:L2105`"
+  },
+  {
+   "id": "G090",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+   "text": "#### G090 `c10-12` R15 : Customers with a saved browser config keep the old vertical drawer because the layout is stored in localStorage under 'webshop-config', which overrides the new model default.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/esm_metamodel/accesspoint.md`. No page says generated client layout config in localStorage overrides a changed model default. Add: users with stored config keep the old layout until it is cleared.\n- **Why:** Stored client config wins over the generated default layout; the builder found it by testing and cleared localStorage in the browser. **Workaround:** Cleared the localStorage key in the test browser; real users are not migrated.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L5773`, `session:L5776`, `session:L5778`, `session:L6092`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "B19",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B19 | `self!container(X)` as a derived back-reference relation | `!container(type)` is defined, but its use as a relation getter is shown only in a best practice. | bp14, pm02 |"
+  },
+  {
+   "id": "B20",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B20 | Range expressions on entity relations | Only input-parameter range attributes are documented. A `rangeExpression` needs `rangeType=DERIVED`. It is unknown whether `self` is allowed in a range expression and whether the server enforces a derived range. | pm05, pm06, pm07 |"
+  },
+  {
+   "id": "B21",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B21 | CRUD flags on a whole entity or transfer object | What a false `createable`/`updateable`/`deleteable` on a whole entity does to generated pages and REST endpoints. Only relation-level flags are documented. | bp09, pm03 (also MO-148) |"
+  },
+  {
+   "id": "B22",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B22 | Enum default literal | `Type#VALUE` syntax in `defaultExpression` | pm03 |"
+  },
+  {
+   "id": "B23",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B23 | Fault parameters | A fault parameter must be unmapped. The `Parameter` section does not cover faults. | pm03 |"
+  },
+  {
+   "id": "B24",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B24 | `immutable` | Whether it can be set on entities. It appears only in the signed-identifier section. | pm06 |"
+  },
+  {
+   "id": "B25",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B25 | `mutable` on transient references | What it does to a transient reference read from an operation input. | pm07 |"
+  },
+  {
+   "id": "B26",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B26 | Static operations on an unmapped TO via an actor | Only the `StaticOperations` container TO is described. | bp03 |"
+  },
+  {
+   "id": "B27",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B27 | Group roles | No example of unioning group roles into `effectiveRoles`. | bp14 |"
+  },
+  {
+   "id": "B28",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B28 | Derived attribute in tables | Whether a derived attribute can be sorted or filtered in generated tables. | pm02 |"
+  },
+  {
+   "id": "B29",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B29 | `!sum` on null or empty collections | Result is not stated. | pm05 |"
+  },
+  {
+   "id": "B30",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B30 | Deleting the target of an association | Only composition cascade is documented. What happens to an association (and a \"primary\" reference) when its target is deleted is not. | bp06, pm05 |"
+  },
+  {
+   "id": "B31",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B31 | `type.md` standard limits | The `Text`, `Phone`, `URL` and `Email` limits are not listed. | bp13 |"
+  },
+  {
+   "id": "B32",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/model/",
+   "text": "| B32 | UI model custom-implementation marker | How the UI model marks an element as a custom implementation. Only the `customImplementation` flag on a Placeholder is mentioned. | bp09 |"
+  },
+  {
+   "id": "KC13",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "text": "| R1 / R2: JCL deprecated, Flutter deprecated | JCL is in 22 files and Flutter in 8, with 0 \"deprecated\" tags (`model/jcl-operation-scripts.md`, `deployment/generator-plugins.md`) | **No** |"
+  },
+  {
+   "id": "KC14",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/model/",
+   "text": "| R4: measures not in use | No \"not in use\" note (`model/` has 9 files on measures) | **No** |"
+  },
+  {
+   "id": "KC24",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "| U50: ESM\u2192UI is hard-coded to ETL (`Esm2Ui.java:104`); no plugin parameter or system property switches it | `model/model-validation-and-transformation.md:22` says only that it \"defaults to ETL\" | **No** (proposed, never answered) |"
+  },
+  {
+   "id": "MO-087",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/model/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"Wrapper-script suggestion concerns blueprint tooling, not model docs\"}"
+  },
+  {
+   "id": "MO-088",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/model/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"Reported-unvalidated; only .generator-ignore confirmed; belongs to frontend/general docs\"}"
+  },
+  {
+   "id": "NG0014",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-jsl",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] AGENTS.md:45\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-jsl:AGENTS.md:45\n- claim: judo-runtime-core-jsl-guice: JSLTransformationModelLoader runs the JSL-to-PSM workflow and hands the result to the judo-runtime-core-guice a\n- fact: JSLTransformationModelLoader only returns the TransformationContext (line 68). Nothing in this module calls a judo-runtime-core-guice API; t\n"
+  },
+  {
+   "id": "NG0027",
+   "src": "judo-ng-read:-runtime-judo-tatami-jsl",
+   "target": "catalog/agent-docs/model/esm_metamodel/namespace.md",
+   "text": "## [wrong-fact] judo-tatami-jsl-jsl2psm/src/main/java/hu/blackbelt/judo/tatami/jsl/jsl2psm/zeta/Jsl2PsmHelper.java\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-jsl:judo-tatami-jsl-jsl2psm/src/main/java/hu/blackbelt/judo/tatami/jsl/jsl2psm/zeta/Jsl2PsmHelper.java\n- claim: disagrees: AP row states addElement(Namespace, NamedElement) but the actual signature is addElement(Package pkg, NamespaceElement element); \n"
+  },
+  {
+   "id": "NG0028",
+   "src": "judo-ng-read:-runtime-judo-tatami-jsl",
+   "target": "catalog/agent-docs/model/esm_metamodel/namespace.md",
+   "text": "## [wrong-fact] judo-tatami-jsl-jsl2psm/src/main/java/hu/blackbelt/judo/tatami/jsl/jsl2psm/zeta/AGENTS.md:7\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-jsl:judo-tatami-jsl-jsl2psm/src/main/java/hu/blackbelt/judo/tatami/jsl/jsl2psm/zeta/AGENTS.md:7\n- claim: Jsl2PsmHelper exports addElement(Namespace, NamedElement)\n- fact: Jsl2PsmHelper.addElement takes (Package pkg, NamespaceElement element), not (Namespace, NamedElement)\n"
+  },
+  {
+   "id": "NG0035",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-03-11-add-zeta-transformation/specs/zeta-transformation/spec.md:40\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:openspec/changes/archive/2026-03-11-add-zeta-transformation/specs/zeta-transformation/spec.md:40\n- claim: Transformation mode MUST default to ZETA when not explicitly specified and MUST support BOTH mode.\n- fact: TransformationMode enum contains only ETL and ZETA; Esm2Ui.Esm2UiParameter.transformationMode and Esm2UiWork.Esm2UiWorkParameter.transformat\n"
+  },
+  {
+   "id": "NG0036",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-03-11-add-zeta-transformation/specs/zeta-transformation/spec.md:109\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:openspec/changes/archive/2026-03-11-add-zeta-transformation/specs/zeta-transformation/spec.md:109\n- claim: TransformationMode is already available in judo-tatami-core and will be reused; no duplicate enum is created in client modules.\n- fact: A TransformationMode enum is defined directly in the client module judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/Transfor\n"
+  },
+  {
+   "id": "NG0037",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-03-11-add-zeta-transformation/proposal.md:166\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:openspec/changes/archive/2026-03-11-add-zeta-transformation/proposal.md:166\n- claim: While TransformationMode.DEFAULT is currently ETL in tatami-core, the client workflow configuration will default to ZETA.\n- fact: The client workflow default is ETL, not ZETA.\n"
+  },
+  {
+   "id": "NG0038",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-03-11-add-zeta-transformation/tasks.md:363\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:openspec/changes/archive/2026-03-11-add-zeta-transformation/tasks.md:363\n- claim: Model comparison is integrated into TransformationMode.BOTH mode in Esm2Ui.executeBothAndCompare().\n- fact: No BOTH mode or executeBothAndCompare() method exists in the codebase; TransformationMode only has ETL and ZETA.\n"
+  },
+  {
+   "id": "NG0039",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] docs/transformation/README.md:85\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:docs/transformation/README.md:85\n- claim: Heading 'Using ETL Mode (Default)' at line 85; the Esm2Ui example at lines 88-94 uses TransformationMode.ETL.\n- fact: TransformationMode.java:28 says ZETA is the default (recommended); Esm2Ui.java:104 (Esm2UiParameter builder default) sets transformationMode\n"
+  },
+  {
+   "id": "NG0060",
+   "src": "judo-ng-read:-models-judo-meta-expression-psm",
+   "target": "catalog/agent-docs/model/esm_metamodel/namespace.md",
+   "text": "## [wrong-fact] README.md:41\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-expression-psm:README.md:41\n- claim: PsmModelAdapter has get(EntityType) returning Collection<Attribute>.\n- fact: No such method; get(TypeName) returns Optional<? extends NamespaceElement>.\n"
+  },
+  {
+   "id": "NG0063",
+   "src": "judo-ng-read:-runtime-judo-script-codegen",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "## [wrong-fact] openspec/specs/generator-test/spec.md:113\n- src: judo-ng-read | status: validated | evidence: runtime/judo-script-codegen:openspec/specs/generator-test/spec.md:113\n- claim: Enumeration expressions use the correct enum literal references.\n- fact: Enum literals compile to getEnumOrdinal(...) returning an Integer ordinal, and enumeration variables are Holder<java.lang.Integer>; no enum \n"
+  },
+  {
+   "id": "NG0066",
+   "src": "judo-ng-read:-runtime-judo-tatami-base",
+   "target": "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md",
+   "text": "## [wrong-fact] judo-tatami-psm2asm/src/main/epsilon/transformations/asm/modules/derived.etl.AGENTS.md:5\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:judo-tatami-psm2asm/src/main/epsilon/transformations/asm/modules/derived.etl.AGENTS.md:5\n- claim: Every accessor rule guards not s.isKindOf(JUDOPSM!StaticData).\n- fact: Not true for every rule: AddMeasuredPrimitiveAccessorConstraints has no StaticData guard (only dataType is MeasuredType); CreateReferenceAcc\n"
+  },
+  {
+   "id": "NG0069",
+   "src": "judo-ng-read:-runtime-judo-tatami-base",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "## [wrong-fact] judo-tatami-psm2asm/src/main/epsilon/transformations/asm/utils/type.eol\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:judo-tatami-psm2asm/src/main/epsilon/transformations/asm/utils/type.eol\n- claim: disagrees: the row says PasswordType and XMLType land in the CreateCustomType fallback; the CreateCustomType guard (type.etl:189) excludes b\n"
+  },
+  {
+   "id": "NG0070",
+   "src": "judo-ng-read:-runtime-judo-tatami-base",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] judo-tatami-psm2measure/src/main/java/hu/blackbelt/judo/tatami/psm2measure/AGENTS.md:9\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:judo-tatami-psm2measure/src/main/java/hu/blackbelt/judo/tatami/psm2measure/AGENTS.md:9\n- claim: Psm2MeasureWork registers the generated trace when requested\n- fact: Psm2MeasureWork always puts the trace into the transformation context; createTrace is only forwarded to the ETL path and does not control re\n"
+  },
+  {
+   "id": "NG0072",
+   "src": "judo-ng-read:-runtime-judo-tatami-base",
+   "target": "catalog/agent-docs/model/xmi-id-traceability.md",
+   "text": "## [wrong-fact] docs/asm2expressionproblem.md:145\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:docs/asm2expressionproblem.md:145\n- claim: The ETL PSM2ASM transformation names its entity rule EntityClass, while Zeta names it CreateEntityClass.\n- fact: The ETL rule is itself named CreateEntityClass; only its setId suffix is EntityClass. The rule names are identical, so the difference is in \n"
+  },
+  {
+   "id": "NG0082",
+   "src": "judo-ng-read:-template-judo-psm-generator-jaxrs",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "## [wrong-fact] README.md:155\n- src: judo-ng-read | status: validated | evidence: template/judo-psm-generator-jaxrs:README.md:155\n- claim: Helper diagram signature: JavaApiHelper +primitiveDataTypeDefinition(attr) String.\n- fact: primitiveDataTypeDefinition takes a Primitive data type, not a TransferAttribute: primitiveDataTypeDefinition(Primitive dataType). Callers p\n"
+  },
+  {
+   "id": "NG0095",
+   "src": "judo-ng-read:-template-judo-psm-generator-report",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "## [wrong-fact] openspec/specs/report-common/spec.md:109\n- src: judo-ng-read | status: validated | evidence: template/judo-psm-generator-report:openspec/specs/report-common/spec.md:109\n- claim: primitiveDataTypeDefinition(StringType) returns \"String\"\n- fact: primitiveDataTypeDefinition(StringType) returns the fully-qualified \"java.lang.String\" (as do PasswordType)\n"
+  },
+  {
+   "id": "NG0098",
+   "src": "judo-ng-read:-models-judo-cli-api",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] README.md:172\n- src: judo-ng-read | status: validated | evidence: models/judo-cli-api:README.md:172\n- claim: validate(logger, model, ValidationType.ZETA) runs Java validation rules through EsmValidator; the BOTH path combines errors.\n- fact: There is no three-argument validate and no ZETA/BOTH constant in this module.\n"
+  },
+  {
+   "id": "NG0103",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] docs/transformation/asm2script.md:67\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:docs/transformation/asm2script.md:67\n- claim: Transformation modes listed as EPSILON (ETL engine), ZETA, DUAL.\n- fact: The TransformationMode switch in Asm2ScriptWork uses the constants ETL, ZETA and DUAL; there is no EPSILON case. EPSILON is a ValidationMode\n"
+  },
+  {
+   "id": "NG0104",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] docs/transformation/README.md:26\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:docs/transformation/README.md:26\n- claim: TransformationMode EPSILON - uses Epsilon ETL engine only.\n- fact: The TransformationMode constant used by the work classes is ETL (Asm2ScriptWork.java:94, Script2OperationWork.java:89); EPSILON is not a cas\n"
+  },
+  {
+   "id": "NG0106",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "## [wrong-fact] docs/ETL_ZETA_DIFFERENCES.md:489\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:docs/ETL_ZETA_DIFFERENCES.md:489\n- claim: The ETL TimeType baseUnit switch includes day and week (incorrect), and the doc's section 2 is about this.\n- fact: The ETL CreateTimeType rule (type.etl:94-108) has no day or week case. The day and week cases are in the ETL CreateTimestampType rule (type.\n"
+  },
+  {
+   "id": "NG0108",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/service/AGENTS.md:6\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/service/AGENTS.md:6\n- claim: transferAttribute.etl: Guard generateTransferObjectTypes\n- fact: The two ForDefaultTransferObjectType rules are guarded by generateDefaultTransferObjectTypes, not generateTransferObjectTypes\n"
+  },
+  {
+   "id": "NG0109",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/service/operation.etl.AGENTS.md:3\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/service/operation.etl.AGENTS.md:3\n- claim: Guard split: bound rules fire on generateOperations; transfer/unbound/behaviour rules fire on generateBehaviours and s.<is...>Supported()\n- fact: Several unbound/bound-level rules are guarded by generateOperations only: CreateBoundTransferOperation (operation.etl:97), CreateInstanceOpe\n"
+  },
+  {
+   "id": "NG0110",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/service/transferObjectType.etl\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/service/transferObjectType.etl\n- claim: disagrees: transferObjectType.etl.AGENTS.md line 6 says the query-customizer family guards on generateBehaviours + container mapped, includi\n"
+  },
+  {
+   "id": "NG0112",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] judo-tatami-expression-esm-validation/src/test/java/hu/blackbelt/judo/tatami/expression/esm/validation/AGENTS.md:7\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-expression-esm-validation/src/test/java/hu/blackbelt/judo/tatami/expression/esm/validation/AGENTS.md:7\n- claim: ExpressionValidationOnEsmWorkTest is a parameterized test over EPSILON and ZETA that asserts WorkStatus.COMPLETED (so it runs)\n- fact: The test class is annotated @Disabled, so none of its cases run.\n"
+  },
+  {
+   "id": "NG0115",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/add-zeta-dual-transformation/design.md:55\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:openspec/changes/add-zeta-dual-transformation/design.md:55\n- claim: TransformationMode.java is an enum with values EPSILON, ZETA, DUAL.\n- fact: The TransformationMode values used in code are ETL, ZETA and DUAL. Esm2PsmWork switches on case ETL, DUAL and ZETA; Script2OperationWorkTest\n"
+  },
+  {
+   "id": "NG0116",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/add-zeta-dual-transformation/specs/common-module/spec.md:37\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:openspec/changes/add-zeta-dual-transformation/specs/common-module/spec.md:37\n- claim: Scenario 'Enum values': TransformationMode values EPSILON, ZETA and DUAL are available.\n- fact: TransformationMode has ETL, ZETA and DUAL in code, not EPSILON.\n"
+  },
+  {
+   "id": "NG0117",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/add-zeta-dual-transformation/design.md:104\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:openspec/changes/add-zeta-dual-transformation/design.md:104\n- claim: Esm2PsmWork has a field 'transformationMode = TransformationMode.ZETA' read in the constructor via context.getParameter('transformationMode'\n- fact: There is no getParameter call. The mode is a field of Esm2PsmWorkParameter (builder default ZETA at line 61), and the work reads that object\n"
+  },
+  {
+   "id": "NG0118",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/add-zeta-dual-transformation/specs/dual-transformation-mode/spec.md:9-31\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:openspec/changes/add-zeta-dual-transformation/specs/dual-transformation-mode/spec.md:9-31\n- claim: REQ-DTM-001: transformationMode accepts 'epsilon' and 'zeta', and 'dual' runs both engines and compares results; the default is Zeta.\n- fact: Esm2PsmWork.workParameter.transformationMode is typed TransformationMode (ETL|ZETA|DUAL), not a string 'epsilon'. The DUAL case takes the sa\n"
+  },
+  {
+   "id": "NG0119",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/add-zeta-dual-transformation/specs/dual-transformation-mode/spec.md:68-70\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:openspec/changes/add-zeta-dual-transformation/specs/dual-transformation-mode/spec.md:68-70\n- claim: REQ-DTM-004: the TransformationMode enum provides EPSILON, ZETA, DUAL.\n- fact: TransformationMode has the values ETL, ZETA, DUAL (per tasks.md 1.2 and the Esm2PsmWork switch, which uses case ETL). No TransformationMode \n"
+  },
+  {
+   "id": "NG0120",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/add-zeta-dual-transformation/tasks.md:33-34\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:openspec/changes/add-zeta-dual-transformation/tasks.md:33-34\n- claim: Implement TransformationMode enum with values ETL (was EPSILON), ZETA, DUAL; note: moved from judo-tatami-common to judo-tatami-core.\n- fact: The enum is not defined in the worktree source. Esm2PsmWork imports hu.blackbelt.judo.tatami.core.TransformationMode, which lives in an exte\n"
+  },
+  {
+   "id": "NG0125",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/esm_metamodel/other.md",
+   "text": "## [wrong-fact] judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/measure/AGENTS.md:5\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/measure/AGENTS.md:5\n- claim: CreateDurationUnit (ESM!DurationType to JUDOPSM!DurationType).\n- fact: CreateDurationUnit transforms ESM!DurationUnit to JUDOPSM!DurationUnit; ESM!DurationType is only the enum of unitType.\n"
+  },
+  {
+   "id": "NG0126",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/model/esm_metamodel/other.md",
+   "text": "## [wrong-fact] judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/measure/measure.etl\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/measure/measure.etl\n- claim: disagrees: the row says CreateDurationUnit maps ESM!DurationType to JUDOPSM!DurationType, but the rule transforms ESM!DurationUnit to JUDOPS\n"
+  },
+  {
+   "id": "NG0130",
+   "src": "judo-ng-read:-template-judo-psm-generator-restassured",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "## [wrong-fact] openspec/specs/generator-api/spec.md:69\n- src: judo-ng-read | status: validated | evidence: template/judo-psm-generator-restassured:openspec/specs/generator-api/spec.md:69\n- claim: A NumericType with scale > 0 maps to java.math.BigDecimal.\n- fact: Decimal types with precision <= 7 and scale <= 4 map to java.lang.Float, precision 8-15 with scale <= 4 map to java.lang.Double; only other \n"
+  },
+  {
+   "id": "NG0134",
+   "src": "judo-ng-read:-models-judo-meta-expression-asm",
+   "target": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "text": "## [wrong-fact] adapter-asm/src/main/java/hu/blackbelt/judo/meta/expression/adapters/asm/AsmModelAdapter.AGENTS.md:21\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-expression-asm:adapter-asm/src/main/java/hu/blackbelt/judo/meta/expression/adapters/asm/AsmModelAdapter.AGENTS.md:21\n- claim: A TypeName whose namespace is written with '.' never resolves; an unknown namespace returns empty.\n- fact: get(TypeName) replaces '::' with '.' and compares against the dotted package FQ name, so a namespace written with '.' matches. Only the unkn\n"
+  },
+  {
+   "id": "NG0135",
+   "src": "judo-ng-read:-models-judo-meta-expression-asm",
+   "target": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "text": "## [wrong-fact] adapter-asm/src/main/java/hu/blackbelt/judo/meta/expression/adapters/asm/AsmModelAdapter.java\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-expression-asm:adapter-asm/src/main/java/hu/blackbelt/judo/meta/expression/adapters/asm/AsmModelAdapter.java\n- claim: disagrees: sidecar AsmModelAdapter.AGENTS.md:21 says a TypeName whose namespace is written with '.' never resolves; code at AsmModelAdapter.\n"
+  },
+  {
+   "id": "NG0140",
+   "src": "judo-ng-read:-models-judo-meta-esm",
+   "target": "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md",
+   "text": "## [wrong-fact] designer/src/main/java/hu/blackbelt/judo/meta/esm/designer/Activator.java\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-esm:designer/src/main/java/hu/blackbelt/judo/meta/esm/designer/Activator.java\n- claim: disagrees: the row is accurate about start() (registers esm.odesign, attaches JudoResourceAdapterSessionListener to open sessions) but omits\n"
+  },
+  {
+   "id": "NG0147",
+   "src": "judo-ng-read:-runtime-judo-tatami-core",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "## [wrong-fact] openspec/changes/change-default-transformation-mode/proposal.md:22\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-core:openspec/changes/change-default-transformation-mode/proposal.md:22\n- claim: Current state: `public static final TransformationMode DEFAULT = ETL;` \u2014 the default constant points to the legacy ETL engine.\n- fact: In this branch the change is already applied: `TransformationMode.DEFAULT = ZETA;` (line 93), so the described 'before' state no longer hold\n"
+  }
+ ]
+}

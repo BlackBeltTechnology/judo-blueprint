@@ -1,0 +1,243 @@
+{
+ "batch": "deployment-a",
+ "files": [
+  "catalog/agent-docs/deployment/build-process.md",
+  "catalog/agent-docs/deployment/generator-plugins.md"
+ ],
+ "items": [
+  {
+   "id": "G066",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "#### G066 `c01-04` R0 S01: The catalog gives the create-judo-project goal and its parameters but not the plugin groupId or version. The builder took version 1.0.0.20260311 from ~/.m2, which then pulled template 1.0.0.20261109 f\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/build-process.md`. build-process.md line 359 names the goal and parameters but not the plugin groupId or that -Dversion must be the intended judo version; add: use the groupId/version of the plugin from the target judo-versions, since the plugin version selects the template version. Version detail from the session not re-checked.\n- **Why:** Build-process section lists parameters only. Plugin coordinates and a version pin are not documented, so the builder guessed from the local Maven cache. **Workaround:** Used the locally cached plugin version found under ~/.m2/repository/hu/blackbelt/judo.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L24`, `session:L38`, `session:L39`, `session:L44`. Merged: g-L1"
+  },
+  {
+   "id": "G067",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "#### G067 `c01-02` R0 S01: generate-root stopped with 'manual changes in generated files' on .gitignore after the generated project was copied into the existing repo.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/build-process.md`. Checked build-process.md and generator-plugins.md: synchronizeGitignore is described but not how to adopt generator output into a repo with its own .gitignore. Add: copy only generated files, keep the managed JUDO GENERATOR BLOCK in .gitignore, never overwrite the tracked file wholesale.\n- **Why:** The builder copied the generator output over the repo's tracked .gitignore, so the generator saw a hand edit. The catalog does not say how to adopt generated files into a repo that already has its own .gitignore. **Workaround:** Restored the generated .gitignore, added .pi/dashboard/kb/ to .git/info/exclude, reran generate-root (exit 0).\n- **Validation:** confirmed; kind builder-mistake; catalog missing. Evidence: `session:L60`, `session:L72`, `session:L73`, `gaps:R0-4`. Merged: g-L4. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G068",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "#### G068 `c04-04` R8 F09, F17: Renaming the customer product transfer object forced hand edits of custom frontend files (renamed custom-implementation file, new constants, container and type paths) and deletion of stale generated c\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/build-process.md`. Builder found Frontend Build Recovery in build-process.md. Missing: renaming a TO renames custom-implementation files and constants. Add one line: \"After renaming a TO, rename custom files/constants and delete stale generated pages/dialogs/containers/services before regenerating.\"\n- **Why:** Custom frontend file names and constants are derived from the transfer object name; stale generated containers stay behind after a model change. The builder found the recovery steps in build-process.md. **Workaround:** git mv of the custom file, search-and-replace of names and paths, removal of generated pages, dialogs, containers and services folders, then regenerate.\n- **Validation:** confirmed; kind platform-limit; catalog partly-covered. Evidence: `session:L2436`, `session:L2437`, `session:L2480`, `session:L2666`"
+  },
+  {
+   "id": "G069",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "#### G069 `c05-44` R10 F39: Platform-provided libraries (PDFBox, Handlebars, FileStoreService) do not compile in the app module until the app pom declares them; the first build failed with unresolved imports.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/build-process.md`. build-process worked example (line 125) adds a runtime dependency but does not say platform-provided libraries (PDFBox, Handlebars, FileStoreService) still need compile-time dependencies in the app pom. Add that line.\n- **Why:** Catalog does not say that runtime-provided libraries still need a compile-time dependency in the app module. **Workaround:** Added pom.xml.extra-dependencies.fragment.hbs (documented fragment slot), then build -i succeeded.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3004`, `session:L3005`, `session:L3093`, `session:L3096`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G070",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "#### G070 `c07-02` R12 F52: schema-upgrade runs apply (generate and execute in one step), so there is no moment to insert the hand-written backfill changeset that the catalog recommends. The catalog's schema-upgrade row does not\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/build-process.md`. build-process line 283 says schema-upgrade generates and applies in one step but does not warn that the hand-written backfill cannot be inserted. Add: for backfill use generate then judo-rdbms-schema:execute separately (route in GAPS R12-1).\n- **Why:** The command table describes schema-upgrade as generate-and-apply; the backfill route needs generate, edit, then execute as separate steps. **Workaround:** Used judo-rdbms-schema:generate with the old model file, wrote 06_updateDataAfterIncremental by hand, then :execute.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3759`, `session:L3753`, `session:L4017`, `session:L4025`"
+  },
+  {
+   "id": "AU2",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "| 2 | `deployment/build-process.md:341` | \"use `./judo.sh clean` instead \u2014 `clean` is non-destructive to untracked source files\" | still wrong; unchanged since import `07612bf` | same as #1 | row 1062 (sibling) |"
+  },
+  {
+   "id": "AU10",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "| 10 | `deployment/generator-plugins.md:28` | `generate` parameter `scanDependencies` (default `false`) | still wrong | `models__judo-meta-esm/generator-maven-plugin/.../EsmProjectGenerateMojo.java:72` `defaultValue = \"true\"` (also `EsmCreateMojo.java:79`) | row 2085 (`judo-meta-jsl generator-maven-plugin/README.md:116`, same wrong default) |"
+  },
+  {
+   "id": "KC06",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "| **K49.C2 FALSE:** Postman collections exist only in judo-platform-itest, not in generated projects | `deployment/generator-plugins.md:104`: \"The generated Postman collections (`models/*/postman`) \u2026\" | **No** |"
+  },
+  {
+   "id": "NG0000",
+   "src": "judo-ng-read:-models-judo-meta-jsl",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] generator-maven-plugin/README.md:106\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-jsl:generator-maven-plugin/README.md:106\n- claim: sources has no default ('\u2014').\n- fact: The sources parameter defaults to ${project.basedir}/src/main/model.\n"
+  },
+  {
+   "id": "NG0002",
+   "src": "judo-ng-read:-models-judo-meta-jsl",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] generator-maven-plugin/README.md:113\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-jsl:generator-maven-plugin/README.md:113\n- claim: destination defaults to ${project.basedir}/target/classes/model.\n- fact: The generate goal's destination defaults to ${project.basedir}/target/fullstack-project.\n"
+  },
+  {
+   "id": "NG0003",
+   "src": "judo-ng-read:-models-judo-meta-jsl",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] generator-maven-plugin/README.md:116\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-jsl:generator-maven-plugin/README.md:116\n- claim: scanDependencies defaults to false.\n- fact: The generate goal's scanDependencies defaults to true.\n"
+  },
+  {
+   "id": "NG0006",
+   "src": "judo-ng-read:-judo-eclipse",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] Packaging: Excel connector, P2 site, jvm.config\n- src: session:jb-013.json | status: reported-unvalidated | evidence: session, reader C265\n- claim: openspec connector independence; P2 site spec bundles Guava/Logback/SLF4J; CONTRIBUTING says .mvn/jvm.config holds all --add-opens\n- fact: Excel connector includes spreadsheets feature (not independent); site/pom.xml has none of those libs; jvm.config only has java.lang. GraphML runtime feature pom artifactId ends .graphml.dt.feature, Simulink name says 'DT features' (copy-paste).\n\n"
+  },
+  {
+   "id": "NG0007",
+   "src": "judo-ng-read:-judo-maven-plugin",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] judo-maven-plugin docs (scanDependencies, saveModels, artifactId, release notes)\n- src: session:jb-018.json | status: validated | evidence: batch C519 validated\n- claim: Install snippet artifactId; generateSdkPayloadValidator param; defaults\n- fact: scanDependencies and saveModels default true; install snippet artifactId is wrong (copy-pasted); generateSdkPayloadValidator is not a parameter; RELEASE-NOTES.md contains epsilon-maven-plugin content; ArtifactResolver version warning is inverted; scanDependencies field init contradicts annotation.\n\n"
+  },
+  {
+   "id": "NG0019",
+   "src": "judo-ng-read:-template-judo-ui-typescript-rest-template",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] AGENTS.md:117\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-typescript-rest-template:AGENTS.md:117\n- claim: Test logging is driven by the repo-root logback-test.xml, shared across modules.\n- fact: pom.xml points logback-test-config at ${maven.multiModuleProjectDirectory}/logback-test.xml, but no logback*.xml file exists in the checkout\n"
+  },
+  {
+   "id": "NG0023",
+   "src": "judo-ng-read:-spring-judo-spring-maven-plugin",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] README.md:65\n- src: judo-ng-read | status: validated | evidence: spring/judo-spring-maven-plugin:README.md:65\n- claim: scanDependencies default is false\n- fact: The Mojo parameter is @Parameter(property=\"scanDependencies\", defaultValue=\"true\") \u2014 the documented default is true (and the adoc reference \n"
+  },
+  {
+   "id": "NG0026",
+   "src": "judo-ng-read:-spring-judo-spring-maven-plugin",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] docs/pages/judo-spring-maven-plugin.adoc:110\n- src: judo-ng-read | status: validated | evidence: spring/judo-spring-maven-plugin:docs/pages/judo-spring-maven-plugin.adoc:110\n- claim: Sample configuration includes a <generateSdkPayloadValidator> parameter\n- fact: No @Parameter named generateSdkPayloadValidator exists; the equivalent internal template variable is generatePayloadValidator (set in genera\n"
+  },
+  {
+   "id": "NG0029",
+   "src": "judo-ng-read:-runtime-judo-tatami-jsl",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] docs/pages/judo-tatami-jsl-workflow-maven-plugin.md:122\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-jsl:docs/pages/judo-tatami-jsl-workflow-maven-plugin.md:122\n- claim: destination parameter default is ${project.basedir}/target/generated-sources/model\n- fact: The Mojo's destination default is ${project.basedir}/target/model\n"
+  },
+  {
+   "id": "NG0031",
+   "src": "judo-ng-read:-runtime-judo-tatami-jsl",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] docs/pages/judo-tatami-jsl-workflow-maven-plugin.md:166\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-jsl:docs/pages/judo-tatami-jsl-workflow-maven-plugin.md:166\n- claim: useCache parameter default is false\n- fact: The Mojo's useCache default is true\n"
+  },
+  {
+   "id": "NG0033",
+   "src": "judo-ng-read:-eclipse-judo-esm-ui-preview",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] AGENTS.md:99\n- src: judo-ng-read | status: validated | evidence: eclipse/judo-esm-ui-preview:AGENTS.md:99\n- claim: Surefire 3.5.1 \u2014 test execution with JDK 21 --add-opens flags.\n- fact: pom.xml pins maven-surefire-plugin 3.5.1 (line 345, with the --add-opens argLine at 354), but a second pluginManagement entry for the same p\n"
+  },
+  {
+   "id": "NG0041",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] judo-tatami-client-workflow-maven-plugin-docs/pages/index.adoc:11\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:judo-tatami-client-workflow-maven-plugin-docs/pages/index.adoc:11\n- claim: The plugin generates UI and Flutter Client code from the ESM model (also line 12: Flutter frontend is generated).\n- fact: The plugin only produces ESM/UI models: -esm.model, -ui.model and -ui.json. No Flutter generation exists in this repository.\n"
+  },
+  {
+   "id": "NG0042",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] judo-tatami-client-workflow-maven-plugin-test/pom.xml\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:judo-tatami-client-workflow-maven-plugin-test/pom.xml\n- claim: disagrees: row says the module covers 'parallel vs. sequential execution', but all three default-workflow executions set runInParallel=true \n"
+  },
+  {
+   "id": "NG0045",
+   "src": "judo-ng-read:-template-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-05-12-root-only-cli-download/design.md:55\n- src: judo-ng-read | status: validated | evidence: template/judo-esm-fullstack-project-template:openspec/changes/archive/2026-05-12-root-only-cli-download/design.md:55\n- claim: Non-goal: 'Removing the now-unused shouldGenerateAgentCli helper from EsmProjectHelper' (the helper is described as unused).\n- fact: shouldGenerateAgentCli is defined in StoredVariableHelper, not EsmProjectHelper, and it is still used by the root pom (pom.xml.hbs:511) and \n"
+  },
+  {
+   "id": "NG0047",
+   "src": "judo-ng-read:-template-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] doc/use_tatami_pipeline.md:329\n- src: judo-ng-read | status: validated | evidence: template/judo-esm-fullstack-project-template:doc/use_tatami_pipeline.md:329\n- claim: internal/ uses URIs sdk-core-common + sdk-core-osgi only\n- fact: internal/pom.xml.hbs declares four URIs: sdk-core-common, sdk-core-impl, sdk-core-osgi and sdk-core-internal-wrapper\n"
+  },
+  {
+   "id": "NG0048",
+   "src": "judo-ng-read:-template-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] judo-esm-fullstack-project-template-application/src/main/resources/README.adoc.hbs:153\n- src: judo-ng-read | status: validated | evidence: template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/README.adoc.hbs:153\n- claim: The model project attaches 4 OSGi bundles, listing script2operation.jar and asm2jaxrsapi.jar\n- fact: model/pom.xml.hbs has one attach-artifact execution that attaches only the script2operation jar; no template references asm2jaxrsapi\n"
+  },
+  {
+   "id": "NG0055",
+   "src": "judo-ng-read:-tools-judo-maven-plugin",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] README.md:92\n- src: judo-ng-read | status: validated | evidence: tools/judo-maven-plugin:README.md:92\n- claim: Command-line execution of the flutter goal is shown as `mvn judo:flutter -Dflutter-arguments=\"doctor\"`.\n- fact: The flutter goal's arguments parameter is bound to the Maven property `flutter.arguments`, so the CLI property is -Dflutter.arguments, not -\n"
+  },
+  {
+   "id": "NG0056",
+   "src": "judo-ng-read:-tools-judo-maven-plugin",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] README.md:99\n- src: judo-ng-read | status: validated | evidence: tools/judo-maven-plugin:README.md:99\n- claim: Parameter table lists the arguments CLI property as `-Dflutter-arguments`.\n- fact: The actual Maven property binding is `flutter.arguments`.\n"
+  },
+  {
+   "id": "NG0057",
+   "src": "judo-ng-read:-tools-judo-maven-plugin",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] openspec/specs/flutter-execution/spec.md:36\n- src: judo-ng-read | status: validated | evidence: tools/judo-maven-plugin:openspec/specs/flutter-execution/spec.md:36\n- claim: \"Command-line override\" scenario uses `-Dflutter-arguments=\"doctor\"`.\n- fact: The actual Maven property binding is `flutter.arguments`.\n"
+  },
+  {
+   "id": "NG0061",
+   "src": "judo-ng-read:-runtime-judo-script-codegen",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] pom.xml\n- src: judo-ng-read | status: validated | evidence: runtime/judo-script-codegen:pom.xml\n- claim: disagrees: root AGENTS.md (lines 47-48) says the parent POM's shared pluginManagement holds flatten. flatten-maven-plugin is actually declar\n"
+  },
+  {
+   "id": "NG0065",
+   "src": "judo-ng-read:-runtime-judo-tatami-base",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] judo-tatami-psm2asm/src/test/java/hu/blackbelt/judo/tatami/psm2asm/AGENTS.md:8\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:judo-tatami-psm2asm/src/test/java/hu/blackbelt/judo/tatami/psm2asm/AGENTS.md:8\n- claim: the shared transform helper writes target/test-classes/<class>-<testName>-asm.model\n- fact: the file name also contains the transformation mode: <class>-<testName>-<transformationMode>-asm.model\n"
+  },
+  {
+   "id": "NG0071",
+   "src": "judo-ng-read:-runtime-judo-tatami-base",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] openspec/specs/asm2rdbms/spec.md:55\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:openspec/specs/asm2rdbms/spec.md:55\n- claim: Default naming prefixes are T_, C_, FK_, FK_INV_, J_.\n- fact: Not checked in this batch; I did not verify prefix defaults in Asm2Rdbms.java.\n"
+  },
+  {
+   "id": "NG0077",
+   "src": "judo-ng-read:-template-judo-jsl-fullstack-karaf-project-template",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] openspec/specs/root-templates/spec.md:30\n- src: judo-ng-read | status: validated | evidence: template/judo-jsl-fullstack-karaf-project-template:openspec/specs/root-templates/spec.md:30\n- claim: The pom.xml.extra-modules.fragment.hbs template SHALL conditionally include <module> entries based on StoredVariableHelper generation flags.\n- fact: In both the root and application modules the extra-modules fragment is an empty comment-only placeholder. Conditional module inclusion is im\n"
+  },
+  {
+   "id": "NG0079",
+   "src": "judo-ng-read:-eclipse-epsilon-runtime-eclipse",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] CONTRIBUTING.md:26\n- src: judo-ng-read | status: validated | evidence: eclipse/epsilon-runtime-eclipse:CONTRIBUTING.md:26\n- claim: The JVM flags are already configured in .mvn/jvm.config, including --add-opens for java.lang, java.util and java.time (CONTRIBUTING.md:29).\n- fact: .mvn/jvm.config only contains --add-opens java.base/java.lang=ALL-UNNAMED. The java.util and java.time opens are only in the surefire argLin\n"
+  },
+  {
+   "id": "NG0085",
+   "src": "judo-ng-read:-runtime-judo-model-cli",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-10-26-add-transform-load-flag/design.md:24\n- src: judo-ng-read | status: validated | evidence: runtime/judo-model-cli:openspec/changes/archive/2026-10-26-add-transform-load-flag/design.md:24\n- claim: Decision 1 removes the `--from <path>` option from `discard --derived`.\n- fact: DiscardCommand still defines and uses the `--from` option (with --derived/--all); it was not removed.\n"
+  },
+  {
+   "id": "NG0086",
+   "src": "judo-ng-read:-runtime-judo-model-cli",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-10-26-add-transform-load-flag/proposal.md:42\n- src: judo-ng-read | status: validated | evidence: runtime/judo-model-cli:openspec/changes/archive/2026-10-26-add-transform-load-flag/proposal.md:42\n- claim: Affected code: `DiscardCommand.java - Remove --from, fix load path`.\n- fact: DiscardCommand.java still ships and handles `--from` (line 40-42, 80-82, 122-125).\n"
+  },
+  {
+   "id": "NG0097",
+   "src": "judo-ng-read:-judo-platform-northwind-esm-report",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "## [wrong-fact] northwind-esm-report exports via JXLS\n- src: session:jb-010.json | status: reported-unvalidated | evidence: judo-platform-northwind-esm-report/pom.xml, reader C114\n- claim: AGENTS.md row says module exports reports through judo-services-export-jxls-osgi\n- fact: Module has no JXLS dependency; it uses JasperReports plus XDocReport.\n\n"
+  },
+  {
+   "id": "NG0102",
+   "src": "judo-ng-read:-runtime-judo-generator-commons",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] AGENTS.md:1312\n- src: judo-ng-read | status: validated | evidence: runtime/judo-generator-commons:AGENTS.md:1312\n- claim: See openspec/AGENTS.md for the complete OpenSpec workflow.\n- fact: openspec/AGENTS.md does not exist. The openspec/ directory has changes/, config.yaml, project.md and specs/.\n"
+  },
+  {
+   "id": "NG0122",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] judo-tatami-workflow-maven-plugin-docs/pages/index.adoc:113\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-workflow-maven-plugin-docs/pages/index.adoc:113\n- claim: destination defaults to ${project.basedir}/target/classes/model.\n- fact: destination has no default value; it is used as destination.mkdirs() without a null check.\n"
+  },
+  {
+   "id": "NG0132",
+   "src": "judo-ng-read:-runtime-osgi-filestore",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] docs/gcs/assessment.md:66\n- src: judo-ng-read | status: validated | evidence: runtime/osgi-filestore:docs/gcs/assessment.md:66\n- claim: The OpenSpec change harden-servlet-defaults makes the token-expiry and CORS defaults safe in code.\n- fact: Token expiry is safe (expirationTime default 1440), but the CORS defaults are still cors_allowOrigin default \"*\" with cors_allowCredentials \n"
+  },
+  {
+   "id": "NG0141",
+   "src": "judo-ng-read:-models-judo-meta-esm",
+   "target": "catalog/agent-docs/deployment/build-process.md",
+   "text": "## [wrong-fact] designer-eclipse-runtime/src/main/resources/judo-version.properties\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-esm:designer-eclipse-runtime/src/main/resources/judo-version.properties\n- claim: disagrees: row says this coordinate is what 'the designer's version-update launch resolves'. In code only createNewProject (new project) use\n"
+  }
+ ]
+}

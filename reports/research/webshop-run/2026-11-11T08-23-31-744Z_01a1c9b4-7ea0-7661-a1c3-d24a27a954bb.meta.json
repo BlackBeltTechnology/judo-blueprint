@@ -1,0 +1,19 @@
+{
+  "source": "tui",
+  "hidden": true,
+  "cwd": "/Users/bmiller/Projects/webshop-test",
+  "status": "ended",
+  "startedAt": 1794385411744,
+  "endedAt": 1794385497773.5793,
+  "tokensIn": 0,
+  "tokensOut": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "cost": 0,
+  "firstMessage": "Use the kb_search tool (doc_type doc) to find how to model an order status lifecycle with only valid transitions offered as buttons in JUDO. Report the top 3 paths, then list which skills whose name s",
+  "cachedAt": 1794988575307,
+  "live": false,
+  "closedReason": "unknown",
+  "archived": true,
+  "archivedAt": 1794385497773.5793
+}

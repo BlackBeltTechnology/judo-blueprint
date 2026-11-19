@@ -1,0 +1,10 @@
+catalog/agent-docs/backend/data-access-guide.agent.md
+catalog/agent-docs/backend/platform-behavior-reference.agent.md
+catalog/agent-docs/deployment/schema-evolution.agent.md
+catalog/agent-docs/frontend/README.agent.md
+catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.agent.md
+catalog/agent-docs/frontend/hooks/data-hooks.agent.md
+catalog/agent-docs/frontend/hooks/validation-hooks.agent.md
+catalog/agent-docs/integration-testing/access-and-derived-testing.agent.md
+catalog/agent-docs/model/esm_metamodel/structure.agent.md
+catalog/agent-docs/model/ui-authoring-guide.agent.md

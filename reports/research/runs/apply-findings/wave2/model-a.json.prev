@@ -1,0 +1,9 @@
+[
+ {
+  "id": "R2563",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/judo-cli.md",
+  "text": "The judo.sh dumps list is not sorted: the sort pipeline result is discarded because the pipeline starts with an assignment.",
+  "evidence": "judo-tatami-tests:generator-template/src/main/resources/models/model/judo.sh.hbs:332"
+ }
+]

@@ -1,0 +1,244 @@
+{
+ "batch": "backend-b",
+ "files": [
+  "catalog/agent-docs/backend/README.md",
+  "catalog/agent-docs/backend/architectural-patterns.md",
+  "catalog/agent-docs/backend/authentication-guide.md",
+  "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+  "catalog/agent-docs/backend/error-handling-guide.md",
+  "catalog/agent-docs/backend/internationalization-guide.md",
+  "catalog/agent-docs/backend/patterns-and-best-practices.md",
+  "catalog/agent-docs/backend/testing-guide.md",
+  "catalog/agent-docs/backend/type-system-guide.md"
+ ],
+ "items": [
+  {
+   "id": "G099",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/backend/authentication-guide.md",
+   "text": "#### G099 `c03-75` R7 F13, F16: Interceptor provisioned a CustomerAccount row for admin@example.com because the admin user also logs in through the customer client; the decision was made on the client argument and the token azp had \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/authentication-guide.md`. Signature with `client` is shown (lines 30-31) and the azp claim is explained at line 228, but not what the client argument holds. Add: for dual-actor realms decide on the token azp, not the client argument.\n- **Why:** The client argument passed to AuthenticationInterceptor is not the client id the builder expected; the catalog does not say what it contains. **Workaround:** Read the azp claim, logged the origin, and returned early for non-customer clients; a stray admin row was then removed.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L2314`, `session:L2323`, `session:L2326`, `session:L2327`"
+  },
+  {
+   "id": "G100",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/backend/authentication-guide.md",
+   "text": "#### G100 `c03-76` R7 F14: A customer who opens the back office URL gets a User not found page instead of an access message.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/authentication-guide.md`. No description of the wrong-actor outcome; it is plausible platform behaviour (User not found), the access message would be a custom page. Add a short note of the observed behaviour.\n- **Why:** The expected error for a wrong actor is not described in the catalog as far as the builder reported. **Workaround:** Reported as a known behaviour in the round report; no test change.\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L2347`"
+  },
+  {
+   "id": "G124",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/backend/type-system-guide.md",
+   "text": "#### G124 `c09-45` R14 F65: Builder states the generated SDK exposes Price and decimal values as java.lang.Double (for example SubOrder.getTotal returns Optional<Double>), so money must be rounded explicitly in Java.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/type-system-guide.md`. Generated SDK shows Optional<Double> for decimal and Price values (SalesOrderLineDao in session L4000). type-system-guide does not state it; judo-doc-problems already has a numeric-mapping entry. Add: round money explicitly.\n- **Why:** Observed in generated sources; the builder did not find this stated in the type-system guide. **Workaround:** Money helper (see decision on F65).\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L5294`, `session:L5157`"
+  },
+  {
+   "id": "B53",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B53 | **Unmapped operation output, mapped TO minimum** | What the generator emits for an unmapped operation output; that a mapped transfer object needs at least one mapped attribute. | mg2 |"
+  },
+  {
+   "id": "B54",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B54 | **Derived-path membership vs writes** | Whether custom operations and direct DAO writes bypass a derived-path membership filter. | mg2 |"
+  },
+  {
+   "id": "B55",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B55 | **Frontend typeahead and row-action icons** | `TextWithTypeAhead`, freeSolo, `getForm_<field>Options` getter names and signature `(searchText, data, editMode, validation)`; operation-form icon precedence and the `chevron_right` default for row actions; `ComponentProxy` placeholder pages; flow-manager input keys. | mg4 |"
+  },
+  {
+   "id": "B56",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B56 | **SSE endpoints** | JAX-RS SSE with `cxf-rt-rs-sse` and the CXF version. | mg3 |"
+  },
+  {
+   "id": "B14",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B14 | **Authentication interceptor scope** | `AuthenticationInterceptor` runs on authentication events, not operations. This is stated nowhere. | bp14 |"
+  },
+  {
+   "id": "B15",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B15 | **`VariableResolver` target filter** | Whether a `judo.model.name` target filter is needed. | pb06 |"
+  },
+  {
+   "id": "B16",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B16 | **Mapped claim attributes** | A claim attribute on a mapped principal must map to an identifier or derived attribute, and the `required` flags must match. Only partly stated. | pm01, pm05 |"
+  },
+  {
+   "id": "B17",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B17 | **Enum ordinals** | How the runtime rejects an out-of-range ordinal, whether JQL can compare ordinals, and `getByOrdinal` (only one known-issue mention). | bp05, bp08, bp11 |"
+  },
+  {
+   "id": "B18",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B18 | **Generated `BusinessErrorException`** | That it is generated per project from a modeled fault. Several entries had to explain this from scratch. | bp10, pb07 |"
+  },
+  {
+   "id": "AU4",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/backend/README.md",
+   "text": "| 4 | `backend/README.md:104-105,123-124` vs `integration-testing/README.md:31-32` | `.sdkmanrc` = 21.0.7-zulu / 3.9.10 vs 21.0.4-zulu / 3.9.9 | inconsistent: the template ships both (root `.sdkmanrc` 21.0.7, `application/` 21.0.4); the docs should name which file | `.../root/src/main/resources/sdkmanrc:1-2`; `.../application/src/main/resources/sdkmanrc:1-2` | row 231 (`agent-docs/integration-testing/README.md.hbs:28`), IN-005 |"
+  },
+  {
+   "id": "AU5",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/backend/authentication-guide.md",
+   "text": "| 5 | `backend/authentication-guide.md:63,64,82`; `backend/authentication-guide.agent.md:19-20` | Actors with `claimPrincipal: true` \u2192 `USER.*` | still wrong; only `model/esm_metamodel/accesspoint.md` was fixed | `judo-meta-esm@b78cc703:model/model/esm.ecore:421` (ActorType has no `claimPrincipal`; the string occurs in judo-ng only in agent-docs templates) | agent-docs-review MO-004 / ledger MO-159 |"
+  },
+  {
+   "id": "AU8",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "text": "| 8 | `backend/patterns-and-best-practices.md:173,176` | `@Reference(target = \"(judo.model.name=YourApplicationName)\")` on `DataTypeManager` / `AsmModel` | unverified; still in the doc without a *verify* mark | `judo-runtime-core@b9bd93e8:judo-runtime-core-guice/.../DataTypeManagerProvider.java:29` (service properties not checked) | agent-docs-review BE-011 / ledger BA-178 \"unverified\" |"
+  },
+  {
+   "id": "KC12",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/backend/architectural-patterns.md",
+   "text": "| R20: `getVariable` needs a type prefix (`String!getVariable`) | 77 uses in the catalog, 28 typed: identical to the count in U8. Untyped in `backend/architectural-patterns.md:63` and `integration-testing/access-and-derived-testing.md:163,198` | **No** |"
+  },
+  {
+   "id": "BA-018",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"Guice DAO module generation not verified and generator-internal\"}"
+  },
+  {
+   "id": "BA-045",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"rackinspect conventions; only the generic mapping rule was applied (BA-046)\"}"
+  },
+  {
+   "id": "BA-050",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"operator codes not verified; only INVALID_QUERY_MASK code listed in error guide\"}"
+  },
+  {
+   "id": "BA-051",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"EXPORT/Jxls SPI: UnsupportedExportImpl binding seen in JudoDefaultModule but JxlsExport not verified\"}"
+  },
+  {
+   "id": "BA-077",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"CxfContext wiring not added\"}"
+  },
+  {
+   "id": "BA-103",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"IdentifierProvider not added\"}"
+  },
+  {
+   "id": "BA-107",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"cited runtime.core.PayloadTraverser not found (dao-rdbms version is package-private)\"}"
+  },
+  {
+   "id": "BA-110",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/",
+   "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"mapper Coercer not added\"}"
+  },
+  {
+   "id": "BA-178",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "text": "{\"action\": \"unverified\", \"file\": \"catalog/agent-docs/backend/patterns-and-best-practices.md\", \"heading\": \"Custom data type registration\", \"note\": \"service properties of DataTypeManager not verified; left unchanged\"}"
+  },
+  {
+   "id": "NG0004",
+   "src": "judo-ng-read:-models-judo-meta-jsl",
+   "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "text": "## [wrong-fact] docs/pages/06_expression.adoc:336\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-jsl:docs/pages/06_expression.adoc:336\n- claim: Integer.getVariable(category = \"ENVIRONMENT\", key = \"UID\") returns the UID of the running OS user.\n- fact: No Integer type exists in the JSL primitive keyword set (JslDsl.xtext:909 lists boolean, binary, string, numeric, date, time, timestamp, enu\n"
+  },
+  {
+   "id": "NG0009",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-jsl",
+   "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "text": "## [wrong-fact] openspec/specs/jsl-transformation/spec.md:59\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-jsl:openspec/specs/jsl-transformation/spec.md:59\n- claim: The loader SHALL throw an IllegalStateException when the workflow reports a failure.\n- fact: On FAILED status it throws RuntimeException(workReport.toString(), workReport.getError()). No IllegalStateException is thrown.\n"
+  },
+  {
+   "id": "NG0010",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-jsl",
+   "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "text": "## [wrong-fact] openspec/specs/jsl-transformation/spec.md:64\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-jsl:openspec/specs/jsl-transformation/spec.md:64\n- claim: THEN an IllegalStateException is thrown with details from the WorkReport.\n- fact: A RuntimeException is thrown with workReport.toString() as its message. It is not an IllegalStateException.\n"
+  },
+  {
+   "id": "NG0044",
+   "src": "judo-ng-read:-models-judo-meta-asm",
+   "target": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "text": "## [wrong-fact] docs/validation/index.md:32\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-asm:docs/validation/index.md:32\n- claim: Java validation has automatic parallelization.\n- fact: AsmValidator.validateAsm(Logger, AsmModel) passes parallel=false, and the example at docs/validation/index.md:171 also passes false; paralle\n"
+  },
+  {
+   "id": "NG0059",
+   "src": "judo-ng-read:-runtime-judo-sdk-common",
+   "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "text": "## [wrong-fact] README.md:16\n- src: judo-ng-read | status: validated | evidence: runtime/judo-sdk-common:README.md:16\n- claim: MapHolder and SdkUtil 'Convert SDK entities to/from Map<String, Object> payloads'.\n- fact: Only the to-map direction exists: MapHolder.toMap() and SdkUtil.asMap(...). No fromMap or other map-to-entity conversion exists in src/main/\n"
+  },
+  {
+   "id": "NG0064",
+   "src": "judo-ng-read:-models-judo-meta-liquibase",
+   "target": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "text": "## [wrong-fact] osgi/src/main/java/hu/blackbelt/judo/meta/liquibase/osgi/LiquibaseModelBundleTracker.java\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-liquibase:osgi/src/main/java/hu/blackbelt/judo/meta/liquibase/osgi/LiquibaseModelBundleTracker.java\n- claim: disagrees: row says LiquibaseModelBundleTracker is 'the only Lombok-using code in the repo'. False: Lombok (lombok.extern.slf4j) is also use\n\n"
+  },
+  {
+   "id": "NG0076",
+   "src": "judo-ng-read:-runtime-judo-tatami-jsl-tests",
+   "target": "catalog/agent-docs/backend/authentication-guide.md",
+   "text": "## [wrong-fact] generator-maven-plugin/README.md:158\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-jsl-tests:generator-maven-plugin/README.md:158\n- claim: The template variable `#actorType` is available (in SpEL pathExpressions and template context) as the current actor when actorTypeBased is t\n- fact: The engine seeds only a single context variable named `actor` (constant ACTOR = \"actor\") into both the SpEL and Handlebars contexts; no `act\n"
+  },
+  {
+   "id": "NG0080",
+   "src": "judo-ng-read:-template-judo-psm-generator-sdk-core",
+   "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "text": "## [wrong-fact] openspec/specs/empty-custom-operation-osgi/spec.md:29\n- src: judo-ng-read | status: validated | evidence: template/judo-psm-generator-sdk-core:openspec/specs/empty-custom-operation-osgi/spec.md:29\n- claim: A real implementation with higher service ranking takes precedence over the empty stub.\n- fact: The stub sets no service.ranking, so precedence is whatever OSGi default ranking gives; with equal ranking the lowest service.id wins.\n"
+  },
+  {
+   "id": "NG0100",
+   "src": "judo-ng-read:-eclipse-emf-genmodel-generator",
+   "target": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "text": "## [wrong-fact] openspec/specs/helper/spec.md:52\n- src: judo-ng-read | status: validated | evidence: eclipse/emf-genmodel-generator:openspec/specs/helper/spec.md:52\n- claim: The generated class SHALL include factory methods for creating instances of model elements (scenario: factory method for Customer creates a \n- fact: Only create<ModelName>ResourceSet(), get<ModelName>Factory() and register<ModelName>Metamodel() are generated; no per-EClass method that cre\n"
+  },
+  {
+   "id": "NG0107",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "text": "## [wrong-fact] judo-tatami-esm2psm/src/main/java/hu/blackbelt/judo/tatami/esm2psm/Esm2PsmTransformationTrace.java\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-esm2psm/src/main/java/hu/blackbelt/judo/tatami/esm2psm/Esm2PsmTransformationTrace.java\n- claim: disagrees: the row says 'Source type other than EsmModel throws', but getSourceModel(Class) (lines 85-87) always returns null and never thro\n"
+  },
+  {
+   "id": "NG0142",
+   "src": "judo-ng-read:-models-judo-meta-esm",
+   "target": "catalog/agent-docs/backend/authentication-guide.md",
+   "text": "## [wrong-fact] model/src/main/epsilon/validations/accesspoint/actorType.evl\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-esm:model/src/main/epsilon/validations/accesspoint/actorType.evl\n- claim: disagrees: row says the file validates 'valid credential definitions', but no credential rule exists in any validations file (grep 'credenti\n"
+  },
+  {
+   "id": "NG0152",
+   "src": "judo-ng-read:-documentation",
+   "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "text": "## [wrong-fact] docs/modules/ROOT/pages/contributing/02-how_to_write_tests.adoc:62\n- src: judo-ng-read | status: validated | evidence: documentation:docs/modules/ROOT/pages/contributing/02-how_to_write_tests.adoc:62\n- claim: Example uses !getVariables(\"ENVIRONMENT\", \"key\") (plural).\n- fact: The JQL variable function is !getVariable(category, key) as documented in 02_jql_variables.adoc line 14 and used in the TC013 example.\n"
+  },
+  {
+   "id": "NG0157",
+   "src": "judo-ng-read:-runtime-osgi-i18n",
+   "target": "catalog/agent-docs/backend/internationalization-guide.md",
+   "text": "## [wrong-fact] README.md:92\n- src: judo-ng-read | status: validated | evidence: runtime/osgi-i18n:README.md:92\n- claim: Step 4 of the locale chain is Locale.getDefault() (JVM default).\n- fact: With defaultLocale unset (default \"\", I18nServiceImpl.java:36) the defaultLocale field is Locale.ROOT, which is not null, so the JVM default\n"
+  }
+ ]
+}

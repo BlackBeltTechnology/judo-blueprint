@@ -1,0 +1,2430 @@
+{
+ "batch": "bp8",
+ "files": [
+  "catalog/model-blueprints/operation-call-logging-interceptor/BLUEPRINT.md",
+  "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+  "catalog/best-practices/frontend/table-row-actions-utility.md",
+  "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+  "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+  "catalog/model-blueprints/work-order-report-completion-pipeline/model.md",
+  "catalog/model-blueprints/work-order-report-completion-pipeline/frontend.md",
+  "catalog/model-blueprints/work-order-report-completion-pipeline/BLUEPRINT.md",
+  "catalog/best-practices/model/actor-context-variable-lookup.md",
+  "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+  "catalog/model-blueprints/recaptcha-waf-interceptor/BLUEPRINT.md",
+  "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+  "catalog/best-practices/frontend/hungarian-full-localization.md",
+  "catalog/best-practices/backend/injectable-business-clock.md",
+  "catalog/best-practices/frontend/pandino-action-hook-override.md",
+  "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+  "catalog/model-blueprints/address-field-auto-composition/frontend.md",
+  "catalog/model-blueprints/address-field-auto-composition/BLUEPRINT.md",
+  "catalog/best-practices/model/null-safe-collection-aggregation.md",
+  "catalog/best-practices/frontend/custom-component-directory.md",
+  "catalog/best-practices/model/transient-relation-parameter.md",
+  "catalog/model-blueprints/user-with-role-and-rolegroup-entities/model.md",
+  "catalog/model-blueprints/user-with-role-and-rolegroup-entities/BLUEPRINT.md",
+  "catalog/best-practices/frontend/aggregation-input-widget.md",
+  "catalog/best-practices/backend/relation-based-entity-creation.md",
+  "catalog/model-blueprints/task-list-with-checkout-release/BLUEPRINT.md",
+  "catalog/model-blueprints/task-list-with-checkout-release/frontend.md",
+  "catalog/model-blueprints/task-list-with-checkout-release/model.md",
+  "catalog/best-practices/backend/self-learning-reference-dictionary.md",
+  "catalog/model-blueprints/partner-with-contact-details/backend.md",
+  "catalog/model-blueprints/partner-with-contact-details/frontend.md",
+  "catalog/best-practices/backend/email-service-integration.md",
+  "catalog/model-blueprints/registry-header-with-lines/BLUEPRINT.md",
+  "catalog/model-blueprints/registry-header-with-lines/model.md",
+  "catalog/best-practices/backend/typed-exception-error-handling.md",
+  "catalog/best-practices/backend/quartz-scheduled-job.md",
+  "catalog/model-blueprints/bank-account-entity/model.md",
+  "catalog/model-blueprints/bank-account-entity/BLUEPRINT.md",
+  "catalog/best-practices/model/sequence-based-identifier.md",
+  "catalog/best-practices/model/derived-access-filtering.md",
+  "catalog/best-practices/backend/duplicate-detection-normalization.md",
+  "catalog/best-practices/backend/interceptor-range-override.md",
+  "catalog/best-practices/frontend/string-field-typeahead-self-learning.md",
+  "catalog/model-blueprints/draft-done-status-enum/model.md",
+  "catalog/best-practices/backend/cloud-drive-uploader-adapter.md",
+  "catalog/best-practices/frontend/linkified-text-component.md",
+  "catalog/best-practices/backend/role-based-invitation-guard.md",
+  "catalog/best-practices/model/guard-clause-delete.md",
+  "catalog/best-practices/model/container-back-reference.md",
+  "catalog/model-blueprints/post-generalization-hierarchy/frontend.md",
+  "catalog/best-practices/frontend/auto-scrolling-ranking-board.md",
+  "catalog/best-practices/backend/api-key-generation.md",
+  "catalog/best-practices/model/flat-entity-model.md",
+  "catalog/model-blueprints/environment-enum/model.md",
+  "catalog/best-practices/backend/dirty-check-before-update.md"
+ ],
+ "items": [
+  {
+   "id": "R0277@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/BLUEPRINT.md",
+   "section": "## Structure",
+   "confirmed": true,
+   "text": "claim: Interceptor execution flow: 'FOR EACH interceptor (REVERSE order): interceptor.postCall(...)'. | fact: postCall is dispatched in the same forward registration order as preCall; postCallInterceptors iterates getInterceptorsForOperation(...) wit | at runtime/judo-runtime-core:judo-runtime-core-guice-testkit/agent-docs/interceptor-testing.md:42"
+  },
+  {
+   "id": "R1949@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/BLUEPRINT.md",
+   "section": "## Structure",
+   "confirmed": true,
+   "text": "claim: The update channel is set with -DupdateChannel=<channel>. | fact: The actual system property is judo-version-update-channel; -DupdateChannel does not bind to the updateChannel parameter. | at tools/judo-version-updater-maven-plugin:README.md:58"
+  },
+  {
+   "id": "R2324@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "claim: A ListCall extending AlwaysRollbackTransactionalBehaviourCall is rolled back regardless of success or failure. | fact: AlwaysRollbackTransactionalBehaviourCall rolls back in its finally block only if transactionStatus.isNewTransaction(). When the call joins a | at runtime/judo-runtime-core:openspec/specs/dispatcher/spec.md:70"
+  },
+  {
+   "id": "R2348@6",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "claim: success is called 'after successful authorization, before operation execution' (scenario 'Success callback invoked after authorization', lin | fact: success runs before the BehaviourAuthorizer CRUD checks, so an interceptor's success call can precede a PERMISSION_DENIED exception. | at runtime/judo-runtime-core:openspec/specs/accessmanager-api/spec.md:50"
+  },
+  {
+   "id": "R2650@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/BLUEPRINT.md",
+   "section": "## Structure",
+   "confirmed": true,
+   "text": "claim: The RDBMS naming parameter for maximum column name length is rdbmsColumnNameMaxSize | fact: The Mojo's parameter/property is named rdbmsColumnMaxNameSize (rdbmsColumnNameMaxSize is not a valid configuration key) | at runtime/judo-tatami-jsl:docs/pages/judo-tatami-jsl-workflow-maven-plugin.md:182"
+  },
+  {
+   "id": "R2831@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/BLUEPRINT.md",
+   "section": "## Structure",
+   "confirmed": true,
+   "text": "claim: Interceptors are registered with Guice via Multibinder.newSetBinder(binder(), OperationCallInterceptor.class) and interceptors.addBinding(). | fact: The default Guice provider does not read a Multibinder set; it returns a new empty ArrayList, and interceptors are only present if a configu | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/create-interceptor/SKILL.md:136"
+  },
+  {
+   "id": "R2832@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/BLUEPRINT.md",
+   "section": "## Structure",
+   "confirmed": true,
+   "text": "claim: Spring registration: a @Bean method returning OperationCallInterceptor is enough for the interceptor to run. | fact: JudoBaseServiceConfiguration creates an empty ArrayList and returns an OperationCallInterceptorProvider over it; no code collects OperationC | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/create-interceptor/SKILL.md:158"
+  },
+  {
+   "id": "R0277@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": true,
+   "text": "claim: Interceptor execution flow: 'FOR EACH interceptor (REVERSE order): interceptor.postCall(...)'. | fact: postCall is dispatched in the same forward registration order as preCall; postCallInterceptors iterates getInterceptorsForOperation(...) wit | at runtime/judo-runtime-core:judo-runtime-core-guice-testkit/agent-docs/interceptor-testing.md:42"
+  },
+  {
+   "id": "R0430@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: A Required-Bundle entry for JUnit has been added to the OSGi manifest as a workaround. | fact: adapter-asm/META-INF/MANIFEST.MF Require-Bundle lists only org.eclipse.emf.ecore and org.eclipse.emf.common; no JUnit bundle is listed (buil | at models/judo-meta-expression-asm:CONTRIBUTING.md:99"
+  },
+  {
+   "id": "R0679@3",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Javadoc of int getOrdinal() says '@return String' (copy-paste from getName). | fact:  | at runtime/judo-sdk-common:judo-sdk-common@8596a8e:src/main/java/hu/blackbelt/judo/sdk/Enumeration.java:35"
+  },
+  {
+   "id": "R0719@2",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The error message says \"Could not register PSM Model\" for an AsmModel failure (copy-paste from a PSM tracker). | fact:  | at runtime/judo-tatami-base:judo-tatami-base@14847b0:judo-tatami-asm2rdbms/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/osgi/Asm2RdbmsTransformationAsmModelTracker.java:80"
+  },
+  {
+   "id": "R1093@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": false,
+   "text": "claim: META-INF/MANIFEST.MF declares the required bundles Eclipse Platform, EMF, P2, Sirius and JDT. | fact: MANIFEST.MF Require-Bundle lists core.runtime, EMF, P2, help, UI, e4 and ui.ide bundles; it has no org.eclipse.sirius.* bundle and no org.ec | at eclipse/judo-epp-designer:openspec/specs/designer-plugin/spec.md:10"
+  },
+  {
+   "id": "R1126@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": false,
+   "text": "claim: java -jar hu.blackbelt.judo.meta.jsl.server.embedded-<VERSION>.jar starts the LSP server. | fact: The fat JAR is the shaded artifact with classifier 'ls' (file name ...-<VERSION>-ls.jar), and its Main-Class is org.eclipse.xtext.ide.server | at models/judo-meta-jsl:openspec/specs/server-embedded/spec.md:48"
+  },
+  {
+   "id": "R1342@1",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The 'Backend - Interceptor' example's getOperations uses asmUtils::resolveOperation and postCall uses getIdOf(...), but neither asmUtils nor | fact:  | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template@6273a87:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/model/generalization-guide.md.hbs:137"
+  },
+  {
+   "id": "R1491@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": false,
+   "text": "claim: A Required-Bundle has been added to the OSGi Manifest as a workaround so JUnit is on the Eclipse classpath. | fact: model/META-INF/MANIFEST.MF Require-Bundle lists org.eclipse.core.runtime, emf.ecore, emf.ecore.xmi, ui, epsilon, ui.ide, hu.blackbelt.epsilo | at models/judo-meta-asm:CONTRIBUTING.md:198"
+  },
+  {
+   "id": "R1493@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Java validation has automatic parallelization. | fact: AsmValidator.validateAsm(Logger, AsmModel) passes parallel=false, and the example at docs/validation/index.md:171 also passes false; paralle | at models/judo-meta-asm:docs/validation/index.md:32"
+  },
+  {
+   "id": "R1541@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Examples",
+   "confirmed": true,
+   "text": "claim: Row link: 'link <View> <name> [<= expr]' inside a row, with eager, label, icon, hidden, width, text and detail modifiers; example 'link Prod | fact: Row members are only columns and row actions (UIRowMemberDeclaration lines 382-385). RowLinkDeclaration and DetailModifier are commented out | at models/judo-meta-jsl:docs/pages/10_view.adoc:571"
+  },
+  {
+   "id": "R1568@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Examples",
+   "confirmed": true,
+   "text": "claim: Entity tables are named t_entity_<name> (examples: t_entity_user in UPDATE and ALTER statements at lines 165, 476-485) | fact: generate-domain-docs.py assumes database tables are named T_ENTITIES_<NAME> and filters on that prefix; the two conventions contradict each  | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/deployment/schema-evolution.md.hbs:165"
+  },
+  {
+   "id": "R1883@2",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Feature eclipse-emf-2.27 (version 2.27.0) installs org.eclipse.emf.ecore 2.29.0. | fact:  | at packages/karaf-features:karaf-features@f7f0588:karaf-features-eclipse-emf/src/main/feature/feature.xml:63"
+  },
+  {
+   "id": "R1926@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Dependencies: EMF Ecore 2.38.0. | fact: pom.xml pins org.eclipse.emf.ecore to 2.23.0. | at models/judo-cli-api:README.md:243"
+  },
+  {
+   "id": "R2052@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": false,
+   "text": "claim: The service has the property .__createdBy=ManagedDAODataSourceToPlatformTransactionManagerTracker (simple class name). | fact: CREATED_BY is set to this.getClass().getName(), which is the fully qualified name hu.blackbelt.judo.services.transaction.spring.ManagedDAODa | at runtime/judo-services:openspec/specs/transaction-spring/spec.md:20"
+  },
+  {
+   "id": "R2553@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The judo-esm-generator-maven-plugin groupId is hu.blackbelt.judo.generator | fact: The plugin groupId is hu.blackbelt.judo.meta (README.md:181 and template test pom) | at template/judo-esm-fullstack-project-template:CONTRIBUTING.md:300"
+  },
+  {
+   "id": "R2570@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Examples",
+   "confirmed": true,
+   "text": "claim: Initialize event syntax is event initialize <name>[()] on:(before|after); | fact: TransferInitializeDeclaration has no on modifier; its rule is KW_EVENT kind=KW_INITIALIZE Named SC. The on modifier rule is commented out. | at models/judo-meta-jsl:docs/pages/07_transfer.adoc:660-661"
+  },
+  {
+   "id": "R2632@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": false,
+   "text": "claim: AsmValidator.java sits in runtime/ alongside AsmEpsilonValidator and AsmUtils. | fact: AsmValidator.java is in model/src/main/java/hu/blackbelt/judo/meta/asm/validation/. The runtime/ package has no AsmValidator. | at models/judo-meta-asm:openspec/changes/archive/2025-12-07-add-java-validation-framework/design.md:77"
+  },
+  {
+   "id": "R2636@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": false,
+   "text": "claim: New validation classes are placed under model/src/main/java/hu/blackbelt/judo/meta/asm/runtime/. | fact: The validation classes are in model/src/main/java/hu/blackbelt/judo/meta/asm/validation/ (AsmValidator.java, AsmModelProvider.java). The run | at models/judo-meta-asm:openspec/changes/archive/2025-12-07-add-java-validation-framework/proposal.md:30"
+  },
+  {
+   "id": "R2638@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: All model-test tests reside in hu.blackbelt.judo.meta.asm.runtime. | fact: AbstractAsmValidationTest.java and ValidatorType.java are in package hu.blackbelt.judo.meta.asm, not the runtime sub-package. | at models/judo-meta-asm:openspec/specs/model-test/spec.md:9"
+  },
+  {
+   "id": "R2650@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": true,
+   "text": "claim: The RDBMS naming parameter for maximum column name length is rdbmsColumnNameMaxSize | fact: The Mojo's parameter/property is named rdbmsColumnMaxNameSize (rdbmsColumnNameMaxSize is not a valid configuration key) | at runtime/judo-tatami-jsl:docs/pages/judo-tatami-jsl-workflow-maven-plugin.md:182"
+  },
+  {
+   "id": "R2674@1",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": false,
+   "text": "claim: additional.bundles lists only org.eclipse.emf.ecore and org.eclipse.emf.common, but AsmJclExtractor imports hu.blackbelt.judo.meta.asm.runti | fact:  | at models/judo-meta-script:judo-meta-script@4d3751e:builder-jcl-asm/build.properties:15"
+  },
+  {
+   "id": "R2785@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Eclipse Modeling Framework (EMF) 2.38.0+ is the metamodel foundation | fact: The osgi module declares org.eclipse.emf.ecore 2.12.0 (and emf.common 2.12.0) as compile dependencies | at models/judo-meta-script:openspec/project.md:12"
+  },
+  {
+   "id": "R2832@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": true,
+   "text": "claim: Spring registration: a @Bean method returning OperationCallInterceptor is enough for the interceptor to run. | fact: JudoBaseServiceConfiguration creates an empty ArrayList and returns an OperationCallInterceptorProvider over it; no code collects OperationC | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/create-interceptor/SKILL.md:158"
+  },
+  {
+   "id": "AU8@1",
+   "src": "findings-audit",
+   "target": "catalog/model-blueprints/operation-call-logging-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "| 8 | `backend/patterns-and-best-practices.md:173,176` | `@Reference(target = \"(judo.model.name=YourApplicationName)\")` on `DataTypeManager` / `AsmModel` | unverified; still in the doc without a *verify* mark | `judo-runtime-core@b9bd93e8:judo-runtime-core-guice/.../DataTypeManagerProvider.java:29` (service properties not checked) | agent-docs-review BE-011 / ledger BA-178 \"unverified\" |"
+  },
+  {
+   "id": "R0054@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Custom column customizers are registered under the TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY key. | fact: The column customizer key is TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY (the doc's own example imports that name at line 950); TABLE_ROW_HIG | at template/judo-ui-react-template:docs/pages/01_ui_react.adoc:938"
+  },
+  {
+   "id": "R1535@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Example: 'text WelcomeMessage <= \"Welcome, \" + user.name + \"!\"' as a view text component with label, icon, hidden, width. | fact: There is no 'text' view member. UIViewMemberDeclaration (lines 286-293) lists widget, link, table, action, actions and panels only. | at models/judo-meta-jsl:docs/pages/10_view.adoc:286"
+  },
+  {
+   "id": "R1541@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Row link: 'link <View> <name> [<= expr]' inside a row, with eager, label, icon, hidden, width, text and detail modifiers; example 'link Prod | fact: Row members are only columns and row actions (UIRowMemberDeclaration lines 382-385). RowLinkDeclaration and DetailModifier are commented out | at models/judo-meta-jsl:docs/pages/10_view.adoc:571"
+  },
+  {
+   "id": "R1549@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: View action modifiers include throws, static, enabled, update, delete, redirect (and label, icon, hidden, width). | fact: UIActionDeclaration has no throws clause and only VisualModifier* (JslDsl.xtext:320-324). static, enabled, update, delete and redirect are n | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:392"
+  },
+  {
+   "id": "R1550@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Row field syntax 'field <primitive> <name> [<= expr]' with label, icon, hidden, width. | fact: Row columns are 'column <primitive> <name> <= map.field' (UIRowColumnDeclaration, JslDsl.xtext:388). | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:506"
+  },
+  {
+   "id": "R1554@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Actor link syntax with eager, create, delete, update, label, icon, hidden. | fact: ActorLinkDeclaration is commented out (JslDsl.xtext:659); actor link does not parse. | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:643"
+  },
+  {
+   "id": "R1555@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Actor table syntax with eager, create, delete, update, label, icon, hidden, rows. | fact: ActorTableDeclaration is commented out (JslDsl.xtext:668); actor table does not parse. | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:672"
+  },
+  {
+   "id": "R1664@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: A FAB group with multiple buttons and featuredActions=0 but no label renders the SpeedDial toggle as a circular Fab with a SpeedDialIcon. | fact: The fragment renders the SpeedDial toggle with the group icon (MdiIcon) when present, or with no icon. It never renders a SpeedDialIcon elem | at template/judo-ui-react-template:openspec/specs/fab-rendering/spec.md:63"
+  },
+  {
+   "id": "R1678@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Rationale",
+   "confirmed": true,
+   "text": "claim: Spacer produces an empty div sized by the col and row grid proportions. | fact: Spacer renders a Grid with fixed height DIVIDER_HEIGHT. Width comes from col only; row is not used. It is not a plain div. | at template/judo-ui-react-template:openspec/specs/layout-system/spec.md:102"
+  },
+  {
+   "id": "R2289@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Table column appears directly under the table object, e.g. dataTable.nameColumn. | fact: Table columns are emitted inside a 'columns' wrapper (dataTable.columns.nameColumn); filters, toolbarActions and rowActions are wrapped the  | at template/judo-ui-e2e-template:docs/pages/01_playwright.md:113"
+  },
+  {
+   "id": "G006@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G006 `c02-25` R2 S04: judo fill --pages table added unrequested DataColumns (description and priceLabel) and changed dataFeature on them. The builder had to delete the description column by hand.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog says fill \"creates and populates view/form/table from its members\" but not that it adds a DataColumn for every transfer object member. Add: run fill --dry-run first; fill adds a column per member, delete unwanted DataColumns afterwards.\n- **Why:** fill creates a column for every transfer object member, so the dry-run output had to be read before the real run. **Workaround:** Ran fill --dry-run first, then fill, then judo delete on the unwanted columns; the price column was removed on purpose.\n- **Validation:** confirmed; kind "
+  },
+  {
+   "id": "G012@3",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G012 `c04-07` R8 : The CLI query for DataColumn and DataFilter returned nothing until 'fill' had been run on the transfer object, so the builder first thought the table columns did not exist.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog says DataColumn/DataFilter have no name and fill creates them, but not that they do not exist before fill. Add: query DataColumn/DataFilter returns nothing until fill has run on the transfer object.\n- **Why:** Column and filter elements are created by fill, not by create; the query output gives no hint of that. **Workaround:** Ran fill on the transfer object, then queried again.\n- **Validation:** confirmed; kind cli-tool; catalog partly-covered. Evidence: `session:L2390`, `session:L2392`"
+  },
+  {
+   "id": "G016@5",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G016 `c06-08` R11 F44: Table operation names are not the short names the builder used (exportOrders vs exportOrdersTableOperation::exportOrders), and ui query has no TableOperation type, so updates failed with 'element not \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not in catalog. Add: table operations use FQN <table>::<opName>TableOperation::<opName> style names; query esm for them, since ui has no TableOperation type (verify).\n- **Why:** Operation element naming of table actions is not obvious from the CLI output. **Workaround:** Listed the table operations with query esm TableOperation and used the full names.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L3406`, `session:L3414`, `session:L3448`"
+  },
+  {
+   "id": "G021@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G021 `c09-12` R14 F62, F63, F67: update --add feature failed for actions containers that do not exist yet ('Container not found', 'element not found'); fill reported 'unchanged'; a row action on a relation table was refused ('refund \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not documented. Add order: create the actions container first, then update --add feature; row actions on relation tables must be added to the relation table, not placed anywhere (verify).\n- **Why:** CLI order of creating the actions group and row actions is not documented; error text does not say what to run first. **Workaround:** Used the generated refund table operation that already exists on the lines table; the test then opens the action group menu to click it.\n- **Validation:** partly; kind c"
+  },
+  {
+   "id": "G034@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": false,
+   "text": "#### G034 `c09-44` R14 F60, F63, F67: Relation tables inside a view show raw member names (TotalLabel, SellerName) unless every column of that table gets its own label and order; row actions sit behind the generated action group drop-down\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Builder reports relation tables in a view need labels and order per column; no catalog text on this. Single observation, add with verify.\n- **Why:** Labels set on the target transfer object do not reach a relation table in a view; not documented as far as checked. **Workaround:** Each relation column labelled and moved to an index via a script (cols function).\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L5417`, `session:L5418`, `session:L5531`"
+  },
+  {
+   "id": "G036@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G036 `c02-28` R2 S09: E2E selectors did not match the generated UI: getByLabel('Price') matched both the column menu button and the input, getByLabel('Name') matched more than one element, and 'Save' was used for the view \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Session shows the guessed selectors failing. troubleshooting.md \"Element not found\" only shows getByLabel/dialog scoping and the \"Update after\" flag exists in writing-tests.md. Add: the generated pages have several elements with the same label (column menu button plus input), so use getByRole(\"textbox\",{name}) or the helper field names; the view save button is \"Update\".\n- **Why:** Builder guessed names; the catalog examples use icon-prefixed names and label-only lookups that are ambiguous on the"
+  },
+  {
+   "id": "G039@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G039 `g-R7-12` R7 F09: Admin product table has 8 columns; at 1440 px the last ones are off screen and the grid renders only visible columns, so tests reading them need a wider window.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Grep over e2e-testing finds nothing on column or row virtualization. Same root as R12-14. Add: DataGrid renders only visible columns and the first page of rows; set wide viewport or scroll the grid horizontally, and filter before looking for a row.\n- **Why:** MUI DataGrid column virtualization. **Workaround:** Tests use 1920 px window (later column widths in R8-3).\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `gaps:R7-12`. Merged: g-R12-14. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G056@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G056 `g-R10-13` R10 F40: The generated header puts AppBar extra components at the top left of the drawer under the logo; no documented slot for the top right, where a language switch is expected.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/ui-hooks.md`. Session L916 shows the AppBarExtraComponents hook doc; ui-hooks.md has no placement statement. Add: extras render in the drawer under the logo (column layout), wrap in a flex Box, and there is no top-right slot.\n- **Why:** ui-hooks.md describes the extra component but not its position. **Workaround:** Left in place.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L916`, `gaps:R10-13`"
+  },
+  {
+   "id": "G058@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G058 `c07-22` R12 F40: In the drawer, the generated layout stacks the AppBar extra components as a column, so the bell button stretched over the full drawer width and showed as a grey ellipse.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `agent-docs/frontend/hooks/ui-hooks.md`. ui-hooks.md has an AppBarExtras example but no note on layout. Add: in the drawer the extras stack as a column, wrap the content in one flex Box. Low value, evidence only the session.\n- **Why:** Generated layout of AppBar extra components has no documented row layout; the builder fixed it by wrapping them in one Box. **Workaround:** One flex Box wrapper inside AppBarExtras.\n- **Validation:** partly; kind platform-limit; catalog partly-covered. Evidence: `session:L3790`, `session:L3796`"
+  },
+  {
+   "id": "G071@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G071 `c01-18` R0 S04: No model-level way to show a price with two decimals in the generated table. The table shows 89.9 and 129.5.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. formatValue is listed as 'format numeric values' only. GAPS item 32: generated column uses Intl.NumberFormat and ignores attribute scale. Add: scale/fraction digits are not honoured; use a derived string attribute or a custom column. Also a possible platform issue.\n- **Why:** The generated table valueFormatter uses Intl.NumberFormat with defaults. formatValue exists in the model but the table column does not set fraction digits. **Workaround:** Patched the generated table component (see c01-21).\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence:"
+  },
+  {
+   "id": "G072@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G072 `c01-40` R0 S05: The generated table does not open the view page on a row click in a way the builder could find. The only row-click doc was the e2e test helper, and the embedded table row view button applies to refere\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. Only README.md line 212 mentions 'row click or view button'; no section says how a TransferObjectTable opens its view page (row click default versus a rowOperation). Add that behaviour once, checked against generated code.\n- **Why:** The catalog has no section on how a TransferObjectTable opens its view page (rowOperations versus row click). **Workaround:** Used a DOM eval to click the grid cell, which opened the view page.\n- **Validation:** partly; kind catalog-gap; catalog pa"
+  },
+  {
+   "id": "G073@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G073 `c02-31` R2 S11: Titles and menus still show internal names: 'ProductInfo Table', 'ProductInfo View / Edit', and the phone bottom bar shows 'ProductInfo' and 'Other'. Orchestrator requires user-facing labels 'Products\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. Docs say labels are i18n keys, but not that default titles come from the transfer object name (e.g. 'ProductInfo Table'). Add: set label on the table/view/menu item or add i18n keys; relates to c02-35/c03-23.\n- **Why:** Model labels still carry the entity name; the builder had not set labels or i18n for the pages, menu and bottom bar. **Workaround:** Round 3 task: fix labels via model label and/or i18n, as the kb documents.\n- **Validation:** partly; kind catalog-gap; catalog pa"
+  },
+  {
+   "id": "G074@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G074 `c04-06` R8 : The numeric price column cannot be shown formatted or sorted another documented way, so the admin table shows 79.9 and the builder only renamed the header to 'Price (EUR)' to fit it.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. DataColumn formatValue is listed (line 38) but not what it does; GAPS R12-3 shows generated numeric columns only get a localized number, no currency. Say formatValue is locale number formatting only; for a currency use a unit in the label or a custom visual element with the shared Price component.\n- **Why:** The DataColumn schema has formatValue and sort settings, but the builder found no documented way to format a numeric column value (R1-1 and R6-4 remain open). **Workaround:** Kept the numeric c"
+  },
+  {
+   "id": "G075@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G075 `c07-14` R12 F45: The label of a row action must be set on the operation form element (TableOperation::<op>::<op>), not on the TableOperation. Setting label on the TableOperation or on a guessed element name failed wit\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. Element naming for row action labels is not shown; label belongs on the operation form element TableOperation::<op>::<op>. Add one example with the CLI update command.\n- **Why:** Element naming and the label location for row actions are not shown in the catalog. **Workaround:** Set label on ...::changePricesTableOperation::changePrices and ...::requestReturnTableOperation::requestReturn.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3955`,"
+  },
+  {
+   "id": "G081@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G081 `c03-18` R6 F02: Relation widget on the product form rendered as a link button; the builder wanted a dropdown picker for the category and found that a dropdown is a separate widget (isTypeAheadField/autocompleteRows),\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md`. autocompleteRows is documented (line 110, 129) but nothing says a dropdown picker is not a representationComponent value. Add to the to-one relation row of ui-authoring-guide.md: for a picker use button plus autocompleteRows; isTypeAheadField is only for strings.\n- **Why:** The mapping of to-one relation to widget is split across attributes and the catalog pages disagree on which values apply. **Workaround:** Kept the table representation and used the existing relation selector in the fo"
+  },
+  {
+   "id": "G083@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G083 `c10-11` R15 : Setting textWidget=TEXT on read-only string fields removed their labels in the generated order view (values with an icon, no label). The change was reverted to INPUT; the 'read-only shows as text' req\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md`. widgets.md line 45 says TEXT=read-only but not that the label is dropped in the generated view. Add that effect; possible generator bug worth a ticket.\n- **Why:** The kb says TEXT means read-only but says nothing about labels; the generated theme styles read-only inputs but the builder found no documented labelled-text route. **Workaround:** Reverted all 158 fields to INPUT via .scratch/r15-model.py; relied on the generated theme read-only styling.\n- **Validation:** confirmed; kind catalog"
+  },
+  {
+   "id": "G108@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G108 `c01-19` R0 S04: The table column customizer example in table-hooks.md uses a (original) => ... signature and registration that do not match the shipped type, which is () => ColumnCustomizer.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/table-hooks.md`. Example uses (original) => ({...}); shipped type in utilities/table.ts is ColumnCustomizerHook<T> = () => ColumnCustomizer<T>, ColumnCustomizer = (original) => GridColDef. Fix the example. Also GAPS R12-3: generated tables import the key but never consume it (platform bug, see c02-14).\n- **Why:** Docs out of date against utilities/table.ts in the generated app. **Workaround:** Not used. Builder edited generated code instead.\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L402`, `session"
+  },
+  {
+   "id": "B52@5",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B52 | **Access with list cardinality needs a table column** | `validate --strict` fails until the access target's table has a column (`create -t DataColumn --ns <TO>::<TO>_Table --set dataFeature=...`). Not documented. | mg2, also D5 |"
+  },
+  {
+   "id": "KC18@4",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/frontend/table-row-actions-utility.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| R19: small table loads every row, and inline edit only works with `isEager` | `frontend/esm-to-ui-mappings/widgets.md:106` says \"without pagination\"; no fragility caveat | Partly (pre-existing text) |"
+  },
+  {
+   "id": "R0194@4",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: serviceDateToUiDate parses a 'yyyy-MM-dd' string with new Date(dateStr), which JavaScript treats as UTC midnight; in negative UTC offset zon | fact:  | at template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-api/src/main/resources/rest/serialization.ts.hbs:16"
+  },
+  {
+   "id": "R0463@1",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says the rule checks that claims reference existing principal attributes. ClaimValidations.java:33 only checks getAttribu | fact:  | at models/judo-meta-esm:model/src/main/java/hu/blackbelt/judo/meta/esm/validation/rules/accesspoint/ClaimValidations.java"
+  },
+  {
+   "id": "R0486@3",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The logger is created with LoggerFactory.getLogger(AuthenticationInterceptor.class), i.e. the JUDO interface, not this class (copy-paste fro | fact:  | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template@6273a87:judo-esm-fullstack-project-template-application/src/main/resources/interceptors/src/main/java/LogAuthenticationInterceptor.java.default.hbs:17"
+  },
+  {
+   "id": "R0742@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: For @Message(value=...) the inline template is used and the property file lookup is skipped. | fact: InterfaceMessageTemplaterInvocationHandler always looks up the method name in the resolver first; if a property with that name exists, it wi | at runtime/osgi-i18n:openspec/specs/i18n-api/spec.md:104"
+  },
+  {
+   "id": "R0924@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Resolution fallback: if asmUtils.resolve(principal.getClient()) is empty, search the acceptableClients map values and use the matched key as | fact: authenticateByPrincipal resolves only via asmUtils.resolve(principal.getClient()) and throws IllegalStateException 'Unsupported client'; the | at runtime/judo-runtime-core:openspec/changes/add-acceptable-clients-whitelist/design.md:37"
+  },
+  {
+   "id": "R0981@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: The Keycloak admin user is admin and the password is admin, and both must be set. | fact: The documented default for keycloakPassword is judo (the same guide's sample uses KEYCLOAK_ADMIN_PASSWORD=judo). | at documentation:docs/modules/ROOT/pages/administrator-guide/01_setup_keycloak.adoc:71"
+  },
+  {
+   "id": "R0991@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: PasswordPolicy is a plain interface: 'public interface PasswordPolicy { void validatePassword(String password); }' (described as 'Interface  | fact: PasswordPolicy<ID> extends Function<Map<String,Object>,Optional<ID>> and declares no methods. Implementations implement apply(Map) returning | at runtime/judo-runtime-core:judo-runtime-core-security/agent-docs/README.md:40"
+  },
+  {
+   "id": "R0999@4",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Actor matching uses pathInfo.startsWith('/' + FQN-as-path) with no segment boundary check. For example, an actor Model.User matches the path | fact:  | at runtime/judo-runtime-core:judo-runtime-core@b34d8ea1:judo-runtime-core-security/src/main/java/hu/blackbelt/judo/runtime/core/security/PathInfoRealmExtractor.java:52"
+  },
+  {
+   "id": "R1540@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Row example 'row ProductRow(Product product) { field String name <= product.name; field String price <= ...; }'. | fact: Row members are 'column <primitive> <name> <= map.field' (UIRowColumnDeclaration), not 'field'. | at models/judo-meta-jsl:docs/pages/10_view.adoc:528"
+  },
+  {
+   "id": "R1599@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: SaveCommand opens a FileOutputStream on the real model file (truncating it), serializes via resource.save, then logs 'Failed to save model'  | fact: SaveCommand now serializes to a byte array first (serialize phase), writes to a temp file and atomically moves it over the model (write phas | at runtime/judo-model-cli:openspec/changes/archive/2026-10-14-add-model-authoring-wizards/research/cli-report-root-causes.md:74"
+  },
+  {
+   "id": "R1898@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Guice integration reads env vars KEYCLOAK_SERVER_URL, KEYCLOAK_PUBLIC_URL, KEYCLOAK_ADMIN_USER, KEYCLOAK_ADMIN_PASSWORD, ... (table lines 18 | fact: No getenv/KEYCLOAK_* lookup exists in judo-runtime-core-guice-keycloak/src/main. Configuration comes from JudoKeycloakModuleConfiguration bu | at runtime/judo-runtime-core:judo-runtime-core-security-keycloak/agent-docs/README.md:187"
+  },
+  {
+   "id": "R1901@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Keycloak CXF README 'Token Validation' section says the interceptor validates issuer matches the realm (lines 115-119). | fact: KeycloakLoginInterceptor builds the AdapterConfig and calls AdapterTokenVerifier.verifyToken(...) with no explicit issuer check in handleMes | at runtime/judo-runtime-core:judo-runtime-core-security-keycloak-cxf/agent-docs/README.md:216"
+  },
+  {
+   "id": "R1950@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: The server ID for repository authentication is passed via -DserverId. | fact: The actual property is judo-version-rules-serverId (default \"serverId\"); -DserverId does not bind to the serverId parameter. | at tools/judo-version-updater-maven-plugin:README.md:61"
+  },
+  {
+   "id": "R2306@3",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The logger is obtained with LoggerFactory.getLogger(AuthenticationInterceptor.class). | fact:  | at template/judo-jsl-fullstack-karaf-project-template:judo-jsl-fullstack-karaf-project-template@d1ddf8d:judo-jsl-fullstack-karaf-project-template-application/src/main/resources/interceptors/src/main/java/LogAuthenticationInterceptor.java.default.hbs:17"
+  },
+  {
+   "id": "R2348@7",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: success is called 'after successful authorization, before operation execution' (scenario 'Success callback invoked after authorization', lin | fact: success runs before the BehaviourAuthorizer CRUD checks, so an interceptor's success call can precede a PERMISSION_DENIED exception. | at runtime/judo-runtime-core:openspec/specs/accessmanager-api/spec.md:50"
+  },
+  {
+   "id": "R2425@3",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says these rules verify 'dynamic expression types and scopes' and 'require boolean return types'. In fact enabledBy/hidde | fact:  | at models/judo-meta-esm:model/src/main/java/hu/blackbelt/judo/meta/esm/validation/rules/ui/ComponentValidations.java"
+  },
+  {
+   "id": "R2480@1",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says query/filter types map boxed types to String. In mapEAttributeToGraphQLType and the filter builder, Integer and Long | fact:  | at runtime/judo-model-cli:src/main/java/hu/blackbelt/judo/cli/graphql/CrossModelSchema.java"
+  },
+  {
+   "id": "R2577@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Example uses field String email <= salesPerson.email bind:true; to create a read-write link. | fact: bind:true is not valid. Read-write binding is <=> (SSH). | at models/judo-meta-jsl:docs/pages/09_actor.adoc:70"
+  },
+  {
+   "id": "R2838@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Custom variable provider: public class MyVariableProvider implements EnvironmentVariableProvider with public Optional<Object> get(String nam | fact: EnvironmentVariableProvider is a concrete class implementing Function<String, Object> with apply(String key); it is not an interface and has | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/dispatcher-architecture/SKILL.md:173"
+  },
+  {
+   "id": "G099@5",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G099 `c03-75` R7 F13, F16: Interceptor provisioned a CustomerAccount row for admin@example.com because the admin user also logs in through the customer client; the decision was made on the client argument and the token azp had \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/authentication-guide.md`. Signature with `client` is shown (lines 30-31) and the azp claim is explained at line 228, but not what the client argument holds. Add: for dual-actor realms decide on the token azp, not the client argument.\n- **Why:** The client argument passed to AuthenticationInterceptor is not the client id the builder expected; the catalog does not say what it contains. **Workaround:** Read the azp claim, logged the origin, and returned early for non-customer clients; a stray admin row was then remove"
+  },
+  {
+   "id": "B16@7",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B16 | **Mapped claim attributes** | A claim attribute on a mapped principal must map to an identifier or derived attribute, and the `required` flags must match. Only partly stated. | pm01, pm05 |"
+  },
+  {
+   "id": "R16-C3@5",
+   "src": "webshop-r16",
+   "target": "catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "States `anonymous = true` makes an actor effectively anonymous with no bearer check. Both webshop actors store `anonymous=true`, have a realm and mapped principal, and still answer 401 without a token. Either the rule needs the principal/realm condition, or the runtime differs. | evidence: CLI `graphql actortypes{anonymous principal}`; `curl` 401 on both actors."
+  },
+  {
+   "id": "R0052@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+   "section": "## Report `toDone`",
+   "confirmed": true,
+   "text": "claim: Debug info is enabled by <debugPrint>true</debugPring> (sic, mismatched closing tag) in the templateVariables section of the project pom.xml | fact: The variable is read as 'debugPrint' from the template context; the itest POMs pass it in <templateParameters>, and no templateVariables ele | at template/judo-ui-react-template:docs/pages/01_ui_react.adoc:413"
+  },
+  {
+   "id": "R0288@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Code sketch: 'public void removeInterceptor(OperationCallInterceptor interceptor)'. | fact: The method is 'public boolean removeInterceptor(OperationCallInterceptor interceptor)' and returns the removal result. | at runtime/judo-runtime-core:judo-runtime-core-guice-testkit/docs/interceptor_implementation_plan.md:171"
+  },
+  {
+   "id": "R1000@2",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+   "section": "## Item status operations",
+   "confirmed": true,
+   "text": "claim: An entry such as 'Actor=,' passes the empty-side check at line 47 (the raw side ',' is non-empty), yields no client names, and is silently d | fact:  | at runtime/judo-runtime-core:judo-runtime-core@b34d8ea1:judo-runtime-core-security/src/main/java/hu/blackbelt/judo/runtime/core/security/AcceptableClientsParser.java:65"
+  },
+  {
+   "id": "R2425@5",
+   "src": "judo-ng-dox",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+   "section": "## Report `toDone`",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says these rules verify 'dynamic expression types and scopes' and 'require boolean return types'. In fact enabledBy/hidde | fact:  | at models/judo-meta-esm:model/src/main/java/hu/blackbelt/judo/meta/esm/validation/rules/ui/ComponentValidations.java"
+  },
+  {
+   "id": "R2448@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+   "section": "## Document numbers",
+   "confirmed": true,
+   "text": "claim: Long.getVariable(category = \"SEQUENCE\", key = \"Order\") gets the next Order number. | fact: No Long type exists in the JSL primitive keyword set (JslDsl.xtext:909). The SEQUENCE example must use numeric.getVariable(...) (JudoFunctio | at models/judo-meta-jsl:docs/pages/06_expression.adoc:358"
+  },
+  {
+   "id": "B18@2",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "| B18 | **Generated `BusinessErrorException`** | That it is generated per project from a modeled fault. Several entries had to explain this from scratch. | bp10, pb07 |"
+  },
+  {
+   "id": "B24@4",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+   "section": "## Report `toDone`",
+   "confirmed": true,
+   "text": "| B24 | `immutable` | Whether it can be set on entities. It appears only in the signed-identifier section. | pm06 |"
+  },
+  {
+   "id": "KC11@2",
+   "src": "knowledge-check",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/backend.md",
+   "section": "## Overview",
+   "confirmed": true,
+   "text": "| U7 / K23: \"mapped\" is the wrong word, since CRUD on a mapped TO is intercepted | `backend/interceptors.md:3,190` still says \"never custom, **mapped** or script operations\" | **No** (*verify* whether \"MAPPED\" means the operation kind) |"
+  },
+  {
+   "id": "R0577@1",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/model.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The 'disposition' URL parameter (line 161) is used unvalidated, and fileName is concatenated into the Content-Disposition header without esc | fact:  | at runtime/osgi-filestore:osgi-filestore@937a4ae:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/DownloadServlet.java:188"
+  },
+  {
+   "id": "R1162@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/model.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: ExpressionValidationOnEsmWorkTest is a parameterized test over EPSILON and ZETA that asserts WorkStatus.COMPLETED (so it runs) | fact: The test class is annotated @Disabled, so none of its cases run. | at runtime/judo-tatami:judo-tatami-expression-esm-validation/src/test/java/hu/blackbelt/judo/tatami/expression/esm/validation/AGENTS.md:7"
+  },
+  {
+   "id": "R1857@3",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/model.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: On WorkStatus.FAILED, the code saves models (line 59) and throws RuntimeException at line 60. That exception is caught by the catch at line  | fact:  | at runtime/judo-runtime-core-jsl:judo-runtime-core-jsl@db6dcf3f:judo-runtime-core-jsl-guice/src/main/java/hu/blackbelt/judo/runtime/core/bootstrap/jsl/JSLTransformationModelLoader.java:63"
+  },
+  {
+   "id": "R1545@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/frontend.md",
+   "section": "## Hide or disable actions by their guard",
+   "confirmed": true,
+   "text": "claim: View text section: 'text <name> <= <expr>' with label, icon, hidden, width modifiers. | fact: No text view member in UIViewMemberDeclaration (JslDsl.xtext:286-293); the view-text rule is commented out (JslDsl.xtext:481). | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:255"
+  },
+  {
+   "id": "R1674@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/frontend.md",
+   "section": "## Hide or disable actions by their guard",
+   "confirmed": true,
+   "text": "claim: The first editable, non-hidden input in a form receives auto-focus. | fact: findFirstInput skips only read-only attributes. It does not check hiddenBy, so a hidden input can be chosen. | at template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:224"
+  },
+  {
+   "id": "G045@4",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/frontend.md",
+   "section": "## Hide or disable actions by their guard",
+   "confirmed": true,
+   "text": "#### G045 `c08-21` R13 F59, F60: Generated action group shows the first three actions; Request a quote sits under the Actions menu in the cart, so the test must open the menu.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/e2e-testing/troubleshooting.md`. Generated action groups show three actions, the rest go under an Actions menu; tests must open the menu first.\n- **Why:** Platform behaviour of the generated action group (featured actions), not a bug. **Workaround:** Test opens Actions and clicks the menu item. Not hidden or patched.\n- **Validation:** confirmed; kind platform-limit; catalog missing. Evidence: `session:L4939`, `session:L4944`"
+  },
+  {
+   "id": "G008@4",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/BLUEPRINT.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "#### G008 `c02-39` R3 S11: judo move --dry-run printed the reordered element as 'changed ... description (in components)' rather than the element being moved, so the dry-run output was misread while reordering the form fields. \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not in catalog. Add: move --dry-run reports the sibling that shifted, not the moved element; check the order with a query and use discard --force to clear a wrong reorder.\n- **Why:** The dry-run summary names the sibling that shifts, not the moved element, and the status output lists unsaved reorders by sibling. **Workaround:** Used move --json and graphql to confirm the child order, then discard --force and re-applied the move.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L15"
+  },
+  {
+   "id": "G013@3",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "#### G013 `c04-12` R8 F21: postCallAccessNavigation cannot be cleared once set, and move --index had no effect on the position of the action group; move --after did reorder the menu entries.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not in catalog; evidence is session-only. Add as verify: postCallAccessNavigation cannot be unset once set; move --index is ignored for action groups, use --before/--after.\n- **Why:** CLI behaviour: unset is refused for this attribute and move with an index is ignored for these elements. **Workaround:** Left postCallAccessNavigation set (the clear attempt was refused, session:L2481); used move --after for menu order, since move --index had no effect.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L2481`, `session:L"
+  },
+  {
+   "id": "G059@5",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/work-order-report-completion-pipeline/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "#### G059 `c10-32` R15 : Custom menu groups were first typed 'collapse' and then changed to 'group' after the drawer rendered wrong.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/ui-hooks.md`. Chunk gives no reason; ui-hooks.md should list valid menu item types (group vs collapse) and which suits horizontal vs drawer menus (verify).\n- **Why:** Not stated in the chunk; the group type fits top-level menu groups in the horizontal bar. **Workaround:** sed change of the type to 'group'.\n- **Validation:** unverifiable; kind builder-mistake; catalog partly-covered. Evidence: `session:L5807`, `session:L5808`, `session:L5809`, `session:L5814`"
+  },
+  {
+   "id": "R0463@3",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says the rule checks that claims reference existing principal attributes. ClaimValidations.java:33 only checks getAttribu | fact:  | at models/judo-meta-esm:model/src/main/java/hu/blackbelt/judo/meta/esm/validation/rules/accesspoint/ClaimValidations.java"
+  },
+  {
+   "id": "R0698@2",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: anyMatch treats an access point with no @actor annotation (actor == null) as public. Such an operation then returns an empty role list, whic | fact:  | at runtime/judo-runtime-core:judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/JudoAuthorizingInterceptor.java:67"
+  },
+  {
+   "id": "R0924@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Resolution fallback: if asmUtils.resolve(principal.getClient()) is empty, search the acceptableClients map values and use the matched key as | fact: authenticateByPrincipal resolves only via asmUtils.resolve(principal.getClient()) and throws IllegalStateException 'Unsupported client'; the | at runtime/judo-runtime-core:openspec/changes/add-acceptable-clients-whitelist/design.md:37"
+  },
+  {
+   "id": "R1000@4",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: An entry such as 'Actor=,' passes the empty-side check at line 47 (the raw side ',' is non-empty), yields no client names, and is silently d | fact:  | at runtime/judo-runtime-core:judo-runtime-core@b34d8ea1:judo-runtime-core-security/src/main/java/hu/blackbelt/judo/runtime/core/security/AcceptableClientsParser.java:65"
+  },
+  {
+   "id": "R1214@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": false,
+   "text": "claim: JudoAuthorizingInterceptor step 5: checks if actor is public (no realm) or matches authenticated principal. | fact: getExpectedRoles only computes the expected roles (empty for public actors, access-point FQ names otherwise); it never compares against the  | at runtime/judo-runtime-core:judo-runtime-core-jaxrs-cxf/agent-docs/README.md:71"
+  },
+  {
+   "id": "R1216@4",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: If an operation has no exposedBy annotation, accessPoints is empty, anyMatch returns false, and the method returns an empty role list (line  | fact:  | at runtime/judo-runtime-core:judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/JudoAuthorizingInterceptor.java:59"
+  },
+  {
+   "id": "R1540@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Row example 'row ProductRow(Product product) { field String name <= product.name; field String price <= ...; }'. | fact: Row members are 'column <primitive> <name> <= map.field' (UIRowColumnDeclaration), not 'field'. | at models/judo-meta-jsl:docs/pages/10_view.adoc:528"
+  },
+  {
+   "id": "R1556@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Actor group syntax with label, icon, hidden and a member block. | fact: ActorGroupDeclaration is commented out (JslDsl.xtext:652); actor group does not parse. | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:702"
+  },
+  {
+   "id": "R1589@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: Download request is GET /download?fileId=xxx (+ X-Token). | fact: The file id request parameter is \"id\" (PARAM_FILE_ID = \"id\"), not \"fileId\". | at runtime/osgi-filestore:README.md:118"
+  },
+  {
+   "id": "R2272@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: generate(Script, OperationBinding) iterates over the script's blocks and emits a Java method body. | fact: generate() takes only script.blocks.get(0); all other blocks are ignored. | at runtime/judo-script-codegen:openspec/specs/generator/spec.md:11"
+  },
+  {
+   "id": "R2448@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Long.getVariable(category = \"SEQUENCE\", key = \"Order\") gets the next Order number. | fact: No Long type exists in the JSL primitive keyword set (JslDsl.xtext:909). The SEQUENCE example must use numeric.getVariable(...) (JudoFunctio | at models/judo-meta-jsl:docs/pages/06_expression.adoc:358"
+  },
+  {
+   "id": "R2688@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: Logical precedence: 'a or b and c xor d implies e' gives implies at root, then or, then and, then xor. | fact: The grammar nests ImpliesExpression > OrExpression > XorExpression > AndExpression, so from loosest to tightest the order is implies, or, xo | at models/judo-meta-jql:openspec/specs/model-test/spec.md:42"
+  },
+  {
+   "id": "G088@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": false,
+   "text": "#### G088 `c03-49` R7 F14: Creating an actor with a principal auto-creates a Claim per attribute (for example Customer email USERNAME and EMAIL); the builder removed the USERNAME claim so only EMAIL remains.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/esm_metamodel/accesspoint.md`. accesspoint.md describes Claim but not that creating an actor with a principal auto-creates one claim per attribute (EMAIL and USERNAME). Add: keep only the claims the IdP token carries.\n- **Why:** The principal and claim cascade in the CLI creates claims by default; the catalog does not say which claim to keep. **Workaround:** Deleted the USERNAME claim on Customer.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L2104`, `session:L2107`, `session:L2108`"
+  },
+  {
+   "id": "G100@3",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G100 `c03-76` R7 F14: A customer who opens the back office URL gets a User not found page instead of an access message.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/authentication-guide.md`. No description of the wrong-actor outcome; it is plausible platform behaviour (User not found), the access message would be a custom page. Add a short note of the observed behaviour.\n- **Why:** The expected error for a wrong actor is not described in the catalog as far as the builder reported. **Workaround:** Reported as a known behaviour in the round report; no test change.\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L2347`"
+  },
+  {
+   "id": "B16@5",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B16 | **Mapped claim attributes** | A claim attribute on a mapped principal must map to an identifier or derived attribute, and the `required` flags must match. Only partly stated. | pm01, pm05 |"
+  },
+  {
+   "id": "KC12@1",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/model/actor-context-variable-lookup.md",
+   "section": null,
+   "confirmed": false,
+   "text": "| R20: `getVariable` needs a type prefix (`String!getVariable`) | 77 uses in the catalog, 28 typed: identical to the count in U8. Untyped in `backend/architectural-patterns.md:63` and `integration-testing/access-and-derived-testing.md:163,198` | **No** |"
+  },
+  {
+   "id": "R0109@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The generated class SHALL include factory methods for creating instances of model elements (scenario: factory method for Customer creates a  | fact: Only create<ModelName>ResourceSet(), get<ModelName>Factory() and register<ModelName>Metamodel() are generated; no per-EClass method that cre | at eclipse/emf-genmodel-generator:openspec/specs/helper/spec.md:52"
+  },
+  {
+   "id": "R0288@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Code sketch: 'public void removeInterceptor(OperationCallInterceptor interceptor)'. | fact: The method is 'public boolean removeInterceptor(OperationCallInterceptor interceptor)' and returns the removal result. | at runtime/judo-runtime-core:judo-runtime-core-guice-testkit/docs/interceptor_implementation_plan.md:171"
+  },
+  {
+   "id": "R0744@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": true,
+   "text": "claim: Priority 3: @Message(key=...) is used if property lookup returned empty; priority 4: @Message(value=...) is used if key is also empty. | fact: When the key lookup returns nothing, line 58 overwrites the template with null, discarding the inline @Message(value) and falling through to | at runtime/osgi-i18n:openspec/specs/i18n-resourcebundle/spec.md:89"
+  },
+  {
+   "id": "R1260@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": true,
+   "text": "claim: Configure the model with YAML keys judo.model.name and judo.model.path (judo: model: name: MyModel, path: classpath:model/). | fact: JudoModelLoaderConfiguration reads @Value(\"${judo.modelName:}\") (flat key judo.modelName). No code reads judo.model.name or judo.model.path. | at runtime/judo-runtime-core:judo-runtime-core-spring/agent-docs/README.md:91"
+  },
+  {
+   "id": "R1500@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The Karaf feature repository is added from Maven coordinate `mvn:hu.blackbelt/osgi-encryption-karaf-features/1.2.0/xml/features` (artifact n | fact: The feature module's actual artifactId is `osgi-encryption-karaf-feature` (singular, no trailing 's'), so the plural coordinate does not res | at runtime/osgi-encryption:README.md:30"
+  },
+  {
+   "id": "R1501@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The feature repository is added via `mvn:hu.blackbelt/osgi-encryption-karaf-features/{version}/xml/features` (artifact name plural). | fact: The feature module's artifactId is `osgi-encryption-karaf-feature` (singular), so the plural coordinate in the spec is wrong. | at runtime/osgi-encryption:openspec/specs/karaf-features/spec.md:31"
+  },
+  {
+   "id": "R1708@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: logback-spring.xml sets root logging to info and filters hu.blackbelt to debug. | fact: The hu.blackbelt logger is set to level trace (additivity=false). Root is info. | at runtime/judo-runtime-core-jsl:judo-runtime-core-jsl-spring-itest/src/main/resources/AGENTS.md:8"
+  },
+  {
+   "id": "R2104@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Feature repository coordinate mvn:hu.blackbelt/osgi-encryption-karaf-features/1.2.0/xml/features (plural 'features'). | fact: The Karaf feature module's artifactId is osgi-encryption-karaf-feature (singular), matching the module directory osgi-encryption-karaf-featu | at runtime/osgi-encryption:README.md:30"
+  },
+  {
+   "id": "R2824@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Install snippet uses artifactId judo-springboot-maven-plugin | fact: The actual artifact is hu.blackbelt.judo:judo-spring-maven-plugin (README.adoc and the module POM use judo-spring-maven-plugin). | at spring/judo-spring-maven-plugin:docs/pages/judo-spring-maven-plugin.adoc:34"
+  },
+  {
+   "id": "R2833@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/backend.md",
+   "section": null,
+   "confirmed": true,
+   "text": "claim: Operation not found raises OperationNotFoundException (or HTTP 404). | fact: No OperationNotFoundException class exists in the repository; the dispatcher wraps unexpected failures in InternalServerException('Operation | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/debug-operations/SKILL.md:90"
+  },
+  {
+   "id": "R0288@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/BLUEPRINT.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Code sketch: 'public void removeInterceptor(OperationCallInterceptor interceptor)'. | fact: The method is 'public boolean removeInterceptor(OperationCallInterceptor interceptor)' and returns the removal result. | at runtime/judo-runtime-core:judo-runtime-core-guice-testkit/docs/interceptor_implementation_plan.md:171"
+  },
+  {
+   "id": "R1000@3",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/BLUEPRINT.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "claim: An entry such as 'Actor=,' passes the empty-side check at line 47 (the raw side ',' is non-empty), yields no client names, and is silently d | fact:  | at runtime/judo-runtime-core:judo-runtime-core@b34d8ea1:judo-runtime-core-security/src/main/java/hu/blackbelt/judo/runtime/core/security/AcceptableClientsParser.java:65"
+  },
+  {
+   "id": "R2833@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/BLUEPRINT.md",
+   "section": null,
+   "confirmed": true,
+   "text": "claim: Operation not found raises OperationNotFoundException (or HTTP 404). | fact: No OperationNotFoundException class exists in the repository; the dispatcher wraps unexpected failures in InternalServerException('Operation | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/debug-operations/SKILL.md:90"
+  },
+  {
+   "id": "B12@1",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/recaptcha-waf-interceptor/BLUEPRINT.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B12 | **Unauthenticated operations** | How to expose an operation without login. The model-level `anonymous` actor flag is documented only in e2e-testing. | bp08, pb05, pb07 |"
+  },
+  {
+   "id": "R1013@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": false,
+   "text": "claim: Installing the feature hu.blackbelt.judo.meta.expression.adapter.psm.feature brings the adapter bundle to ACTIVE. | fact: No reference to hu.blackbelt.judo.meta.expression.adapter.psm.feature exists in osgi-itest. The container is provisioned with the Karaf feat | at models/judo-meta-expression-psm:openspec/specs/osgi-itest/spec.md:21"
+  },
+  {
+   "id": "R1455@2",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": false,
+   "text": "claim: disagrees: AGENTS.md row (line 66) states 'Development dependency, not deployed'. False: judo-platform-sdk-karaf-features/src/main/feature/f | fact:  | at runtime/judo-platform:judo-platform-northwind-esm-rest/pom.xml"
+  },
+  {
+   "id": "R1456@2",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": false,
+   "text": "claim: disagrees: AGENTS.md row (line 67) states 'Development dependency, not deployed'. False: judo-platform-sdk-karaf-features/src/main/feature/f | fact:  | at runtime/judo-platform:judo-platform-northwind-esm-sdk/pom.xml"
+  },
+  {
+   "id": "R1800@5",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says the per-database bundles are (hsqldb, postgresql, oracle). This checkout has no Oracle dialect bundle; only judo-run | fact:  | at runtime/judo-runtime-core:judo-runtime-core-dao-rdbms/src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/Dialect.java"
+  },
+  {
+   "id": "R2041@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Application is reachable at http://localhost:8080 (and Karaf runs on port 8080 for the app, line 32). | fact: judo.sh defaults the Karaf HTTP port to 8181 (karaf_port unset -> 8181); 8080 is the Keycloak default. | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/deployment/local-development.md.hbs:35"
+  },
+  {
+   "id": "R2832@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: Spring registration: a @Bean method returning OperationCallInterceptor is enough for the interceptor to run. | fact: JudoBaseServiceConfiguration creates an empty ArrayList and returns an OperationCallInterceptorProvider over it; no code collects OperationC | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/create-interceptor/SKILL.md:158"
+  },
+  {
+   "id": "G048@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G048 `c01-13` R0 S01: local-development.md gives the app URL as http://localhost:8181/apps/. The app is at /webshop/Shop/, and /apps/ only lists bundles.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/local-development.md`. Line 40 (and deployment/README.md line 160) give /apps/. GAPS R0-7 shows the app is at /<model>/<Actor>/ (here /webshop/Shop/); /apps/ is only a bundle list. Fix both files.\n- **Why:** Doc is out of date for the generated app path. **Workaround:** Used http://localhost:8181/webshop/Shop/ (from the Karaf start log).\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L28`, `session:L176`, `session:L179`, `gaps:R0-7`. Merged: g-L7"
+  },
+  {
+   "id": "G133@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G133 `c05-45` R10 F39: The Karaf runtime already contains PDFBox 2.0.13 and Handlebars 4.2.0 (karaf-offline assembly and karaf features), so no new bundle is needed for an invoice renderer.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/osgi-runtime-services.md`. Catalog says extra bundles (PDFBox, Handlebars) are added to the Karaf feature (best-practices osgi-karaf-bundle-architecture.md line 41), which is the opposite of the builder's finding that PDFBox 2.0.13 and Handlebars 4.2.0 already ship in the runtime. Not re-checked in the runtime assembly; mark verify. Add: 'Libraries already in the runtime (verify versions): PDFBox 2.0.13, Handlebars 4.2.0' and reconcile line 41.\n- **Why:** Found by searching the built runtime; the catalog has no list of runtime-provided libraries.\n- "
+  },
+  {
+   "id": "AU2@4",
+   "src": "findings-audit",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| 2 | `deployment/build-process.md:341` | \"use `./judo.sh clean` instead \u2014 `clean` is non-destructive to untracked source files\" | still wrong; unchanged since import `07612bf` | same as #1 | row 1062 (sibling) |"
+  },
+  {
+   "id": "AU3@1",
+   "src": "findings-audit",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| 3 | `frontend/development-workflow.md:90,96,347,353,360`; `frontend/advanced-patterns.md:1845` | Backend API / `VITE_API_DEFAULT_BASE_URL` at `http://localhost:8080` | still wrong; the deployment area was fixed, frontend was not | `judo.sh.hbs:1014` `KARAF_PORT=${karaf_port:-8181}`; 8080 is Keycloak | rows 2041/2042 (`agent-docs/deployment/local-development.md.hbs:35,99`), DE-087/088 |"
+  },
+  {
+   "id": "KC06@5",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| **K49.C2 FALSE:** Postman collections exist only in judo-platform-itest, not in generated projects | `deployment/generator-plugins.md:104`: \"The generated Postman collections (`models/*/postman`) \u2026\" | **No** |"
+  },
+  {
+   "id": "KC14@3",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| R4: measures not in use | No \"not in use\" note (`model/` has 9 files on measures) | **No** |"
+  },
+  {
+   "id": "DE-023@1",
+   "src": "sweep-unverified",
+   "target": "catalog/best-practices/backend/osgi-karaf-bundle-architecture.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "{\"action\": \"unverified\", \"file\": \"catalog/agent-docs/deployment/osgi-runtime-services.md\", \"heading\": \"Deploying a Model as an OSGi Bundle\", \"note\": \"Judo-Models header documented; MockOsgi DS-test claim not applied (not verified)\"}"
+  },
+  {
+   "id": "R1260@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Configure the model with YAML keys judo.model.name and judo.model.path (judo: model: name: MyModel, path: classpath:model/). | fact: JudoModelLoaderConfiguration reads @Value(\"${judo.modelName:}\") (flat key judo.modelName). No code reads judo.model.name or judo.model.path. | at runtime/judo-runtime-core:judo-runtime-core-spring/agent-docs/README.md:91"
+  },
+  {
+   "id": "R1670@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: Switch elements produce a MUI Switch wrapped in FormControlLabel from switch.hbs. | fact: There is no Switch element handled and no switch.hbs template. The only related keys are the judo.form.switch.* system translations. | at template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:104"
+  },
+  {
+   "id": "R1679@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": null,
+   "confirmed": true,
+   "text": "claim: The generator produces public/i18n/{lang}/application_default.json and public/i18n/{lang}/application_configured.json, with application_conf | fact: The yaml writes public/i18n/application_default.json and public/i18n/application_<defaultLanguage>.json at the root. Both use application_de | at template/judo-ui-react-template:openspec/specs/internationalization/spec.md:18"
+  },
+  {
+   "id": "R1682@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Enumeration keys follow enumerations.{EnumTypeName}.{MemberName}. | fact: The type segment is restParamName(EnumerationType), not the raw name. The helper also adds an enumerations.<type>._null key with the value ' | at template/judo-ui-react-template:openspec/specs/internationalization/spec.md:63"
+  },
+  {
+   "id": "R1683@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Menu keys follow menuTree.{ItemName}. | fact: The key uses NavigationItem.getLabel(), not an item name. | at template/judo-ui-react-template:openspec/specs/internationalization/spec.md:79"
+  },
+  {
+   "id": "R2533@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: public/i18n/application_hu-HU.json and application_de-DE.json are 'Safe to edit for localization'. | fact: The same document says application_*.json are generated from the model and regenerated (lines 13-15, 24, 572-573), so application_hu-HU.json | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/i18n.md.hbs:578"
+  },
+  {
+   "id": "R2534@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Nested translation keys are accessed as t('entities.fields.title'), t('entities.status.active') and t('validation.required'). | fact: The same document says JUDO uses flat dot-notation keys and not nested objects (line 32); keys such as 'entities.fields.title' or 'validatio | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/i18n.md.hbs:256"
+  },
+  {
+   "id": "G076@3",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G076 `c02-35` R3 S11: Phone bottom bar 'Other' label comes from the i18n key menuTree.other with default 'Other' in the generated BottomMenu. The kb has no section on it, so the builder read the generated source to find it\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/i18n.md`. i18n.md lists menuTree.[MenuLabel] keys (line 66) but not the generated menuTree.other default used by the phone bottom bar. Add that key to the table.\n- **Why:** Bottom-bar overflow label is a hard-coded i18n default that the catalog does not document. **Workaround:** Round 3: add an i18n override for menuTree.other via a generator override fragment (see c02-43).\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L1433`, `session:L1434`, `session:L1447`, `session:L1449`"
+  },
+  {
+   "id": "G077@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G077 `c05-46` R10 F40: application_hu-HU.json is not generated: the generator emits only application_en-US.json for this one-language model, while the i18n doc says every application_<locale>.json, including hu-HU, is gener\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/i18n.md`. i18n.md lines 18-23 and 108 say application_hu-HU.json is generated; the generator emits only locales that exist in the model (one-language model gives en-US only). Add: other locale files are written by hand or by a project script and need each new key added.\n- **Why:** Catalog statement is wrong for a model with one language. **Workaround:** scripts/make-hu-translations.py builds the Hungarian file from the generated English file (about 190 labels translated; the rest English).\n- **Validation:** confirmed;"
+  },
+  {
+   "id": "G078@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G078 `c05-47` R10 F40: The generated locale map in l10n-context.tsx allows only en-US, and no date-fns locale exists for Hungarian, so the language switch needs a cast and date pickers stay English.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/i18n.md`. Adding New Languages does not mention the generated locale map in l10n-context.tsx (en-US only) or the date-fns locale (only line 487 shows hu). Add both steps.\n- **Why:** i18n Adding New Languages steps copy JSON files and update the selector but do not mention the locales map. **Workaround:** Language switch uses the documented L10N setLocale with a cast; date formatting left English.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3037`, `session:L3038`, `session:L3040`. add\u2192modify (target file"
+  },
+  {
+   "id": "G079@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G079 `c05-49` R10 F40: Model-built label strings (for example the order total label and line labels) stay in English with EUR format in Hungarian, because model expressions cannot pick the UI language.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/i18n.md`. Model expressions have no UI language; derived strings stay in one language. Catalog should state \"format display strings in the frontend, not in derived model strings\". This is a design limit, not a ticket.\n- **Why:** Derived string members are fixed text; the Price component is the only locale-aware formatter. **Workaround:** Left as is; logged. Customer cart and shop use the Price component.\n- **Validation:** confirmed; kind platform-limit; catalog missing. Evidence: `session:L3199`, `session:L3224`"
+  },
+  {
+   "id": "R16-C5@1",
+   "src": "webshop-r16",
+   "target": "catalog/best-practices/frontend/hungarian-full-localization.md",
+   "section": null,
+   "confirmed": true,
+   "text": "Says every `application_<locale>.json`, hu-HU included, is generated and overwritten unless ignored. The webshop's `application_hu-HU.json` (a new file written by a script, not in `.generator-ignore`) has survived 15 rounds of generation (GAPS R10). The same page recommends an ignored locale file. | evidence: `git ls-files \u2026 application_hu-HU.json`; `.generator-ignore` of the customer module."
+  },
+  {
+   "id": "R0194@1",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: serviceDateToUiDate parses a 'yyyy-MM-dd' string with new Date(dateStr), which JavaScript treats as UTC midnight; in negative UTC offset zon | fact:  | at template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-api/src/main/resources/rest/serialization.ts.hbs:16"
+  },
+  {
+   "id": "R0274@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: A template reference ${system.java_home} returns the JVM system property java.home, with dots replaced by underscores. | fact: The template submap \"system\" holds System.getProperties() keys verbatim (e.g. \"java.home\", dots retained); the dot-to-underscore rewrite is  | at runtime/osgi-configuration-mapper:openspec/specs/configuration-mapper/spec.md:77"
+  },
+  {
+   "id": "R0979@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Default precedence, last has highest priority: osgi, system, environment (so environment variables win). | fact: The sample startup log at line 105 prints variableScopePrecedence (osgi) = osgi,environment,system. Read with the same 'last wins' rule, sys | at documentation:docs/modules/ROOT/pages/administrator-guide/03_platform_parameters.adoc:17"
+  },
+  {
+   "id": "R1505@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: LocalDateTime serialized by mapper.writeValueAsString(timestamp) yields \"2024-01-15T10:30:00\" (no offset); README also lists Timestamps as I | fact: LocalDateTimeSerializer always writes ISO_OFFSET_DATE_TIME after atOffset(ZoneOffset.UTC), so the output carries a Z suffix, e.g. \"2024-01-1 | at runtime/judo-runtime-core:judo-runtime-core-jackson/agent-docs/README.md:67"
+  },
+  {
+   "id": "R2277@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: An IntegerVariable declaration declares a java.lang.Integer variable. | fact: generateDeclaration(IntegerVariable) declares Holder<java.math.BigInteger>. | at runtime/judo-script-codegen:openspec/specs/generator/spec.md:88"
+  },
+  {
+   "id": "R2449@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": "## Rationale",
+   "confirmed": true,
+   "text": "claim: Example: Date.of(year = 2011, month = 1, = day = 28) is 2011-01-28. | fact: The example has a stray '= ' before day (not valid syntax). The declared signature is of(required numeric year, required numeric month, requ | at models/judo-meta-jsl:docs/pages/06_expression.adoc:732"
+  },
+  {
+   "id": "R2757@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Temporal literals produce LocalDate, LocalTime or LocalDateTime constructors. | fact: Generator emits X.parse(\"...\") static factory calls for TimestampConstant, TimeConstant and DateConstant, not constructors. | at runtime/judo-script-codegen:openspec/specs/generator-test/spec.md:49"
+  },
+  {
+   "id": "G117@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G117 `c06-15` R11 : The 'Ordered' text and history times differed by two hours: the model-built string orderedAtLabel used the platform zone (UTC), while the generated history column rendered in the browser zone (CET).\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/platform-behavior-reference.md`. Time and Time Zones section (line 94) already says model expressions follow defaultZoneId, not the JVM. Add the contrast: generated UI columns render in the browser zone, so model-built strings differ by the zone offset.\n- **Why:** Model expressions follow the platform defaultZoneId, the UI follows the browser; the catalog says so but gives no model-side way to show the browser zone. Container is UTC, host CET; default zone already UTC so storage needed no change. **Workaround:** Removed the"
+  },
+  {
+   "id": "AU13@1",
+   "src": "findings-audit",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| 13 | `frontend/build-and-deployment.md:23` | System property `-Dquick` (also `-Dlocal`: *verify*) | still wrong | `.../frontend-react/actor/pom.xml.hbs:362-363` (quick profile activates only on `frontend-build-type=quick`; no `quick`/`local` property activation in the template) | row 1892 (`frontend-react/README.adoc.hbs:124`) |"
+  },
+  {
+   "id": "R16-C9@1",
+   "src": "webshop-r16",
+   "target": "catalog/best-practices/backend/injectable-business-clock.md",
+   "section": null,
+   "confirmed": true,
+   "text": "The same page notes that model `Timestamp!now()` uses `defaultZoneId`. Following the recipe gives a fixed offset against model expressions; the webshop had to use the platform zone (`BusinessClock.platformZone()`, GAPS R12-4). | evidence: `BusinessClock.java:25-37`; platform-behavior-reference.md#Time and Time Zones."
+  },
+  {
+   "id": "R2456@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Container hook calls context.refresh() (also at line 403) | fact: data-hooks.md.hbs:271 documents the refresh API as context.actions.refresh(). The two agent docs disagree on the refresh API; the generated  | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/hooks/action-hooks.md.hbs:381"
+  },
+  {
+   "id": "G056@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G056 `g-R10-13` R10 F40: The generated header puts AppBar extra components at the top left of the drawer under the logo; no documented slot for the top right, where a language switch is expected.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/ui-hooks.md`. Session L916 shows the AppBarExtraComponents hook doc; ui-hooks.md has no placement statement. Add: extras render in the drawer under the logo (column layout), wrap in a flex Box, and there is no top-right slot.\n- **Why:** ui-hooks.md describes the extra component but not its position. **Workaround:** Left in place.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L916`, `gaps:R10-13`"
+  },
+  {
+   "id": "G065@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G065 `g-R7-11` R7 F10, F16: Embedded relation dialogs: submit button is \"Ok\" (later \"Submit\"), title and labels come from the transfer object form, composition children are saved with the page Update button, delete is hidden whi\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Session L2248 mentions the F10 submit button \"Ok\"; writing-tests.md \"Dialog Handling\" (line 502) shows Yes/No and acceptChangesOnDialogElement only, nothing on composition children saved via Update. Add a short \"relation dialogs\" subsection: Ok/Submit button, composition children persist on page Update.\n- **Why:** e2e docs only show confirm Yes/No and a generic acceptChangesOnDialogElement. **Workaround:** Test code adapted to the real names.\n- **Validation:** confirmed; kind catalog-gap; ca"
+  },
+  {
+   "id": "G080@5",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G080 `c02-48` R5 S10: A custom view layout cannot be made from a placeholder: a ui:Placeholder marked customImplementation generates no scaffold and renders nothing. The builder then removed the price and description field\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md`. widgets.md line 312 only says 'marked for custom implementation'. GAPS R5-2: a Placeholder with customImplementation generates no scaffold and renders nothing; customImplementation on a DataField works. Add that.\n- **Why:** Catalog gives no documented hook for replacing a whole view; the placeholder route does not render, and the field-based data load is not documented. **Workaround:** Kept all three view fields as custom implementations; only the name component renders the full layout, "
+  },
+  {
+   "id": "G094@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G094 `c05-50` R10 F36: After Apply coupon or Remove coupon the generated cart page does not give the custom cart summary component new data, so the total stayed stale.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/action-hooks.md`. Custom visual components are not refreshed after operations; window event workaround is the builder pattern. Add the recipe; not enough to call it a bug.\n- **Why:** Post-operation flow does not refresh custom visual components. **Workaround:** Post-operation hooks dispatch a window event; the cart component listens and reloads; cart component also reloads on new signed identifier.\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `session:L3130`, `session:L3193`, `session:L3195`, `session:L3197`"
+  },
+  {
+   "id": "G095@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G095 `g-R10-11` R10 F39: The post-operation hook is registered per page key; the order view exists as three pages (two admin, one shop), so three registrations are needed; without a hook the output dialog shows only a downloa\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/action-hooks.md`. action-hooks.md documents the post<Operation>For<Page>Action naming, which implies per page. Add one line: the same operation shown on N pages needs N hook registrations.\n- **Why:** Hooks are keyed by generated page/operation name. **Workaround:** Registered the hook for each page.\n- **Validation:** partly; kind none; catalog partly-covered. Evidence: `gaps:R10-11`"
+  },
+  {
+   "id": "G096@5",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G096 `c08-20` R13 F55: After the buyer joins with the key, the My company menu does not appear until the shell starts again.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/frontend/hooks/action-hooks.md`. Menu is built at shell start; after an operation changes the actor access, reload with window.location.assign. Session only, low evidence.\n- **Why:** Builder comment says menu entries are decided from the principal read at shell start, so a page change does not refresh them. **Workaround:** Post-join hook calls window.location.assign on the start URL to reload the shell.\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `session:L4868`, `session:L4879`, `session:L4889`"
+  },
+  {
+   "id": "G108@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G108 `c01-19` R0 S04: The table column customizer example in table-hooks.md uses a (original) => ... signature and registration that do not match the shipped type, which is () => ColumnCustomizer.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/table-hooks.md`. Example uses (original) => ({...}); shipped type in utilities/table.ts is ColumnCustomizerHook<T> = () => ColumnCustomizer<T>, ColumnCustomizer = (original) => GridColDef. Fix the example. Also GAPS R12-3: generated tables import the key but never consume it (platform bug, see c02-14).\n- **Why:** Docs out of date against utilities/table.ts in the generated app. **Workaround:** Not used. Builder edited generated code instead.\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L402`, `session"
+  },
+  {
+   "id": "G110@5",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G110 `c02-49` R5 S10: After the view fields were removed, regeneration dropped the view's .default scaffold, but the builder's copied register file stayed in src/custom. The frontend build then failed (TS2305 missing expor\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/README.md`. Not covered. Add: a hand-copied scaffold is never removed when its element disappears; delete the copied register file when the model element is removed, or the frontend build fails (TS2305).\n- **Why:** A hand-copied scaffold is not removed by generate; the catalog does not say what happens to a copied scaffold when its element disappears. **Workaround:** Rewrote the register file by hand for the remaining custom elements and rebuilt.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evi"
+  },
+  {
+   "id": "B34@2",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/frontend/pandino-action-hook-override.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B34 | Page hooks | `getMask()` page-hook handler and `_mask` syntax, the page data-mask hook (`...RelationViewPageActionsHook`), `queryCustomizer` on pages, and `postGetTemplateAction` / `storeDiff` after a template. | bp04, pf03, pf04 |"
+  },
+  {
+   "id": "R0784@1",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says all four factories map integer, decimal, string and temporal aggregators. That is false for sum, which supports only | fact:  | at models/judo-meta-expression:builder-jql/src/main/java/hu/blackbelt/judo/meta/expression/builder/jql/function/collection/JqlAggregatedExpressionTransformer.java"
+  },
+  {
+   "id": "R1340@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: The authoritative function registry says to use !join(lambda, separator) (and calls the aggregation a replacement for !collectAsString / !mk | fact: The same document at line 288 states !join is recognised by the grammar but not implemented at runtime, and recommends a TRANSIENT TO attrib | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/model/model-development.md.hbs:339"
+  },
+  {
+   "id": "R1559@2",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: checkWidthModifier accepts any integer 1..12, while docs/pages/10_view.adoc:110 and appx_syntax.adoc:273 say only 1,2,3,4,6,12 are valid. | fact:  | at models/judo-meta-jsl:judo-meta-jsl@b7a5245b:model/src/main/java/hu/blackbelt/judo/meta/jsl/validation/JslDslValidator.xtend:1927"
+  },
+  {
+   "id": "R2288@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Workers: 2 on CI (unlimited locally). | fact: workers is undefined when CI is unset, which means Playwright's default worker count (CPU-derived), not unlimited. | at template/judo-ui-e2e-template:docs/pages/01_playwright.md:91"
+  },
+  {
+   "id": "R2480@4",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says query/filter types map boxed types to String. In mapEAttributeToGraphQLType and the filter builder, Integer and Long | fact:  | at runtime/judo-model-cli:src/main/java/hu/blackbelt/judo/cli/graphql/CrossModelSchema.java"
+  },
+  {
+   "id": "R2688@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Logical precedence: 'a or b and c xor d implies e' gives implies at root, then or, then and, then xor. | fact: The grammar nests ImpliesExpression > OrExpression > XorExpression > AndExpression, so from loosest to tightest the order is implies, or, xo | at models/judo-meta-jql:openspec/specs/model-test/spec.md:42"
+  },
+  {
+   "id": "G086@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G086 `c06-01` R11 F41: A derived flag written as a JQL negation on a boolean (filter with !n.read) failed to parse; the builder then used n.read == false.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/model-development.md`. Catalog line 506 shows the !isUndefined escape hatch but I found no JQL negation example for boolean filters. Add: use `n.read == false`, `!n.read` does not parse; the not keyword form (verify).\n- **Why:** Builder used a negation form without checking the kb first; the catalog documents the 'not' keyword in model-development.md. **Workaround:** Rewrote the expression as n.read == false.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L3382`, `session:L3383`"
+  },
+  {
+   "id": "G135@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G135 `g-R11-6` R11 F43: The kb says it does not document what !avg does on an empty collection; it ran without error and returned an empty value.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/null-safe-collection-aggregation.md`. The file (line 26) says empty-collection behaviour is not documented and tells to use a ternary guard. Add the observed fact (verify): !avg over an empty collection returns undefined with no error; compare !count() first for labels.\n- **Why:** Platform behaviour undocumented in catalog. **Workaround:** No guard on !avg; ratingLabel guards on count.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L3362`, `gaps:R11-6`\n\n## B. Platform tickets (judo-ng)"
+  },
+  {
+   "id": "B29@2",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/model/integer-boolean-for-aggregation.md",
+   "section": "## Related",
+   "confirmed": true,
+   "text": "| B29 | `!sum` on null or empty collections | Result is not stated. | pm05 |"
+  },
+  {
+   "id": "R0056@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/address-field-auto-composition/frontend.md",
+   "section": "## Frontend guidance",
+   "confirmed": true,
+   "text": "claim: Every container has a designated unique CONTAINER_ACTIONS_HOOK_INTERFACE_KEY string. | fact: The key is generated per container as <CONTAINER_NAME>_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY; there is no shared CONTAINER_ACTIONS_HOOK_INTER | at template/judo-ui-react-template:docs/pages/01_ui_react.adoc:1169"
+  },
+  {
+   "id": "R2116@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/address-field-auto-composition/frontend.md",
+   "section": "## Frontend guidance",
+   "confirmed": true,
+   "text": "claim: 'Require non-empty strings (default)': ACCEPT_NON_EMPTY is the default. | fact: No default is set (the builder parameter is null when omitted). The empty-string check runs only when the option equals ACCEPT_NON_EMPTY, so | at runtime/judo-runtime-core:judo-runtime-core-validator/src/main/resources/claude/plugins/judo-validator/skills/validation-rules/SKILL.md:206"
+  },
+  {
+   "id": "G060@1",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/address-field-auto-composition/frontend.md",
+   "section": "## Frontend guidance",
+   "confirmed": true,
+   "text": "#### G060 `c02-45` R3 S02, S03: Seeding the description through the UI with Playwright fill() did not store the value; the save response timed out. Switching to pressSequentially with a delay and a blur made the test pass.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Session and GAPS R3-6e confirm fill() did not mark the form changed so no Update button appeared; the textarea had also lost its TextArea widget in that round, so this may be tied to the builder's own model edit. If kept: for text areas type with pressSequentially then click another field to blur so the change registers.\n- **Why:** fill() sets the value in one step, which the React text area did not register as edits before save; the builder found it by trial. **Workaround:** a-seed-descriptions.spec.t"
+  },
+  {
+   "id": "G061@5",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/address-field-auto-composition/frontend.md",
+   "section": "## Frontend guidance",
+   "confirmed": true,
+   "text": "#### G061 `c03-14` R6 F01, F03: Playwright fill() on the generated text field did not store the value; the create dialog stayed open and Create was never accepted. Stored data then failed with MISSING_REQUIRED_ATTRIBUTE on categorie\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Catalog uses .fill() in examples and never warns. Only the session shows the failure, and the cause (blur versus key events) is the miner's guess. Test first before adding a note.\n- **Why:** Generated inputs store the value on blur or on real key events, not on programmatic fill(). **Workaround:** Used pressSequentially with a blur after each field.\n- **Validation:** unverifiable; kind catalog-gap; catalog missing. Evidence: `session:L1871`, `session:L1875`, `session:L1878`, `session:L1882`. "
+  },
+  {
+   "id": "B35@5",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/address-field-auto-composition/frontend.md",
+   "section": "## Frontend guidance",
+   "confirmed": true,
+   "text": "| B35 | Hook naming | The `isFieldRequired` handler vs the documented `is<Field>Required`, the range-override hook member name, and the cards-configuration hook return shape and key (one sentence today). | pf01, pf02, bp03 |"
+  },
+  {
+   "id": "R1340@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/address-field-auto-composition/BLUEPRINT.md",
+   "section": "## Variations",
+   "confirmed": true,
+   "text": "claim: The authoritative function registry says to use !join(lambda, separator) (and calls the aggregation a replacement for !collectAsString / !mk | fact: The same document at line 288 states !join is recognised by the grammar but not implemented at runtime, and recommends a TRANSIENT TO attrib | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/model/model-development.md.hbs:339"
+  },
+  {
+   "id": "R2116@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/address-field-auto-composition/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "claim: 'Require non-empty strings (default)': ACCEPT_NON_EMPTY is the default. | fact: No default is set (the builder parameter is null when omitted). The empty-string check runs only when the option equals ACCEPT_NON_EMPTY, so | at runtime/judo-runtime-core:judo-runtime-core-validator/src/main/resources/claude/plugins/judo-validator/skills/validation-rules/SKILL.md:206"
+  },
+  {
+   "id": "R2620@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/address-field-auto-composition/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "claim: JudoDefaultModule's builder has a default field for every option, and configureOptions() binds every option value under its JudoConfiguratio | fact: rdbmsDaoMarkSelectedRangeItems exists in JudoDefaultModuleConfiguration but has no builder field, no qualifier and no bind() call, so it is  | at runtime/judo-runtime-core:judo-runtime-core-guice/src/main/java/hu/blackbelt/judo/runtime/core/guice/JudoDefaultModule.java.AGENTS.md:5"
+  },
+  {
+   "id": "R0784@2",
+   "src": "judo-ng-dox",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: disagrees: the row says all four factories map integer, decimal, string and temporal aggregators. That is false for sum, which supports only | fact:  | at models/judo-meta-expression:builder-jql/src/main/java/hu/blackbelt/judo/meta/expression/builder/jql/function/collection/JqlAggregatedExpressionTransformer.java"
+  },
+  {
+   "id": "R1632@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: StringAggregatedExpressionToFeatureConverter handles 'min/max/concatenate over a string collection'. | fact: The switch handles only MIN (MIN_STRING) and MAX (MAX_STRING); any other operator throws UnsupportedOperationException. Concatenate is a sep | at runtime/judo-runtime-core:judo-runtime-core-query/src/main/java/hu/blackbelt/judo/runtime/core/query/feature/aggregated/AGENTS.md:15"
+  },
+  {
+   "id": "R2288@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Workers: 2 on CI (unlimited locally). | fact: workers is undefined when CI is unset, which means Playwright's default worker count (CPU-derived), not unlimited. | at template/judo-ui-e2e-template:docs/pages/01_playwright.md:91"
+  },
+  {
+   "id": "R2450@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Time.of: if <second> is greater than 59 or <millisecond> is greater than 999, the result is undefined. The examples at lines 800-801 contrad | fact: The signature types second and millisecond as plain numeric optional parameters (JudoFunctionsProvider.xtend:139); the provider declares no  | at models/judo-meta-jsl:docs/pages/06_expression.adoc:797"
+  },
+  {
+   "id": "G086@5",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G086 `c06-01` R11 F41: A derived flag written as a JQL negation on a boolean (filter with !n.read) failed to parse; the builder then used n.read == false.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/model-development.md`. Catalog line 506 shows the !isUndefined escape hatch but I found no JQL negation example for boolean filters. Add: use `n.read == false`, `!n.read` does not parse; the not keyword form (verify).\n- **Why:** Builder used a negation form without checking the kb first; the catalog documents the 'not' keyword in model-development.md. **Workaround:** Rewrote the expression as n.read == false.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L3382`, `session:L3383`"
+  },
+  {
+   "id": "G087@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G087 `c07-09` R12 F48: The top-N expression form is unclear: !sort(...)!heads(5) fails in asm2query with 'Missing variable name', and !heads(p \\| ..., 5) validates but returns only one row at runtime. The catalog lists !hea\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/model-development.md`. model-development line 332 lists !heads(n) with no top-N example; judo-doc-problems already notes heads is under-documented. Add a validated top-N form and its runtime result once checked (verify).\n- **Why:** The catalog documents heads and sort separately; the lambda form and its runtime behaviour are not shown. **Workaround:** Used filter then sort with DESC and let the table page show 5 rows.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3941`, `session:L394"
+  },
+  {
+   "id": "G135@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G135 `g-R11-6` R11 F43: The kb says it does not document what !avg does on an empty collection; it ran without error and returned an empty value.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/null-safe-collection-aggregation.md`. The file (line 26) says empty-collection behaviour is not documented and tells to use a ternary guard. Add the observed fact (verify): !avg over an empty collection returns undefined with no error; compare !count() first for labels.\n- **Why:** Platform behaviour undocumented in catalog. **Workaround:** No guard on !avg; ratingLabel guards on count.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L3362`, `gaps:R11-6`\n\n## B. Platform tickets (judo-ng)"
+  },
+  {
+   "id": "B29@1",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B29 | `!sum` on null or empty collections | Result is not stated. | pm05 |"
+  },
+  {
+   "id": "R0449@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/custom-component-directory.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Error message: 'Generated file have been modified, please revert or delete it or add to generator-ignore'; symptom heading README.md:1456 'G | fact: Actual message: 'There are manual changes in the generated files.' followed by 'Please discard the changes, delete file or put them to .gene | at runtime/judo-generator-commons:README.md:929"
+  },
+  {
+   "id": "R0485@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/custom-component-directory.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: \"This zip will contain everything under `src/resources`.\" | fact: The assembly descriptor takes files from src/main/resources/themes (relative to the keycloak-theme module) and places them at the zip root,  | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/keycloak-theme/README.adoc.hbs:16"
+  },
+  {
+   "id": "G068@3",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/custom-component-directory.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G068 `c04-04` R8 F09, F17: Renaming the customer product transfer object forced hand edits of custom frontend files (renamed custom-implementation file, new constants, container and type paths) and deletion of stale generated c\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/deployment/build-process.md`. Builder found Frontend Build Recovery in build-process.md. Missing: renaming a TO renames custom-implementation files and constants. Add one line: \"After renaming a TO, rename custom files/constants and delete stale generated pages/dialogs/containers/services before regenerating.\"\n- **Why:** Custom frontend file names and constants are derived from the transfer object name; stale generated containers stay behind after a model change. The builder found the recovery steps in build-process.md. **"
+  },
+  {
+   "id": "G098@5",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/custom-component-directory.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G098 `c03-51` R7 F09, F14: After generate alone the new webshop__customer and webshop__admin modules had no src/custom folder; it appeared only after the build. The catalog does not say when src/custom is created.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/README.md`. README lines 27-28 say scaffolds are generated under src/custom but not when. Session says it appears after the build, not generate; add this if confirmed (verify).\n- **Why:** Generation creates the module shell; the custom folder and hook scaffolds come from the build step, which the catalog does not state. **Workaround:** Read the generated tree; no custom code moved yet; decision deferred to the frontend step.\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L2113`, `session:L2117`,"
+  },
+  {
+   "id": "G110@2",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/custom-component-directory.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G110 `c02-49` R5 S10: After the view fields were removed, regeneration dropped the view's .default scaffold, but the builder's copied register file stayed in src/custom. The frontend build then failed (TS2305 missing expor\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/README.md`. Not covered. Add: a hand-copied scaffold is never removed when its element disappears; delete the copied register file when the model element is removed, or the frontend build fails (TS2305).\n- **Why:** A hand-copied scaffold is not removed by generate; the catalog does not say what happens to a copied scaffold when its element disappears. **Workaround:** Rewrote the register file by hand for the remaining custom elements and rebuilt.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evi"
+  },
+  {
+   "id": "G111@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/custom-component-directory.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G111 `c02-52` R5 S08: The generated dashboard page already renders a ComponentProxy for the custom visual element key DashboardPage, with a Hello! fallback. A service registered under that key replaces the home page. The k\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/extension-points.md`. Seam not documented: generated DashboardPage renders a ComponentProxy for the key DashboardPage with a Hello! fallback (GAPS R5-1). Add a row: register a CUSTOM_VISUAL_ELEMENT service with component='DashboardPage' to replace the home page.\n- **Why:** Catalog only covers a dashboard without layout (component-proxy-placeholder-page.md, project practice) and Extra Routes; the generated seam for the dashboard is not documented. **Workaround:** Registered CatalogHome via src/custom/hooks/registerCatal"
+  },
+  {
+   "id": "AU7@4",
+   "src": "findings-audit",
+   "target": "catalog/best-practices/frontend/custom-component-directory.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| 7 | `frontend/README.md:183` | Example generated path `src/generated/pages/MyPage.tsx` | still wrong (minor) | `judo-ui-react-template@ad0848bc:judo-ui-react/src/main/resources/ui-react.yaml:827` (no `src/generated` root) | agent-docs-review FE-001 / FR-068 |"
+  },
+  {
+   "id": "R1340@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/transient-relation-parameter.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: The authoritative function registry says to use !join(lambda, separator) (and calls the aggregation a replacement for !collectAsString / !mk | fact: The same document at line 288 states !join is recognised by the grammar but not implemented at runtime, and recommends a TRANSIENT TO attrib | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/model/model-development.md.hbs:339"
+  },
+  {
+   "id": "R1775@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/transient-relation-parameter.md",
+   "section": "## Related",
+   "confirmed": true,
+   "text": "claim: The Maven plugin DefaultWorkflowMojo transformationMode parameter SHALL default to \"ZETA\" | fact: DefaultWorkflowMojo.transformationMode defaults to \"ETL\" (@Parameter defaultValue=\"ETL\" and field initializer \"ETL\") | at runtime/judo-tatami-jsl:openspec/changes/archive/2026-03-09-add-zeta-transformations/specs/transformation-mode-config/spec.md:41"
+  },
+  {
+   "id": "R2006@1",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/model/transient-relation-parameter.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "claim: The input-parameter null check and the parameters.put use the raw {{ operation.input.name.firstToLower }}, while the interface signature use | fact:  | at template/judo-psm-generator-jaxrs:judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-impl/src/main/resources/rest/impl/rest.service.impl.java.hbs:67"
+  },
+  {
+   "id": "R2850@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/transient-relation-parameter.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: \"What Gets Injected\" lists fields and setters carrying @Reference (OSGi) or @Inject as the injection targets. | fact: The injector does not read annotations: it injects all eligible fields and set* setters. The class comment says OSGi @Reference has CLASS re | at runtime/judo-runtime-core:judo-runtime-core-guice-testkit/agent-docs/api-reference.md:154-159"
+  },
+  {
+   "id": "G028@4",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/transient-relation-parameter.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G028 `c03-37` R7 F08: Builder noted that the CLI lists table, button, tag and card as valid representationComponent values for a to-many relation, while the catalog shape table lists table, card and tag only.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Shape table (line 257) lists table, card, tag for to-many; builder reports the CLI also accepts button. Verify with `create --schema` and align the table.\n- **Why:** Possible mismatch between the catalog shape table and the CLI schema for to-many relations.\n- **Validation:** partly; kind catalog-wrong; catalog partly-covered. Evidence: `session:L1972`, `session:L1966`, `session:L2297`"
+  },
+  {
+   "id": "B51@4",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/model/transient-relation-parameter.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B51 | **Transient relations on unmapped TOs** | What `mutable input.<rel>` means for a transient relation; whether an unmapped transient target renders a nested form instead of a picker; that such a relation must be `AGGREGATION` (`ASSOCIATION` fails strict validation; the CLI sets aggregation by default and rejects `aggregation=true` as read-only). | mg1, mg2 |"
+  },
+  {
+   "id": "B25@5",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/model/transient-relation-parameter.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B25 | `mutable` on transient references | What it does to a transient reference read from an operation input. | pm07 |"
+  },
+  {
+   "id": "R0344@2",
+   "src": "judo-ng-dox",
+   "target": "catalog/model-blueprints/user-with-role-and-rolegroup-entities/model.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: disagrees: the row says Person has a 'birthdate', but Person has only lastName, firstName and title; birthDate is an attribute of Employee | fact:  | at models/judo-meta-psm:northwind-model/src/main/java/hu/blackbelt/model/northwind/entities/Person.java"
+  },
+  {
+   "id": "R0683@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/user-with-role-and-rolegroup-entities/model.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Example JSON for new entities::Student(firstName = 'John', lastName = 'Smith', legacyId = 1) shows lastName 'John' and firstName 'Doe'. | fact: The script at line 89 sets firstName 'John' and lastName 'Smith'; the JSON swaps the names and changes lastName. | at documentation:docs/modules/ROOT/pages/user-guide/application_modeling/05_transfer_object_lifecycle.adoc:99"
+  },
+  {
+   "id": "R2569@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/user-with-role-and-rolegroup-entities/model.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Example field 'field String firstName <= salesperson.firstName bind enabled;' and text saying bind:true makes the connection read-write. | fact: The bind keyword is not accepted after the expression. Read-write mapping is written with <=> (SSH terminal), and <= is read-only. | at models/judo-meta-jsl:docs/pages/07_transfer.adoc:294-299"
+  },
+  {
+   "id": "B27@1",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/user-with-role-and-rolegroup-entities/model.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B27 | Group roles | No example of unioning group roles into `effectiveRoles`. | bp14 |"
+  },
+  {
+   "id": "B27@2",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/user-with-role-and-rolegroup-entities/BLUEPRINT.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B27 | Group roles | No example of unioning group roles into `effectiveRoles`. | bp14 |"
+  },
+  {
+   "id": "KC23@4",
+   "src": "knowledge-check",
+   "target": "catalog/model-blueprints/user-with-role-and-rolegroup-entities/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "| K68: XDocReport deprecated in favour of Handlebars (decision from `~/Downloads/message (1).txt`) | Not in agent-docs. `model-blueprints/xdocreport-document-generation-pipeline` and `best-practices/backend/document-generation-pipeline.md` are not marked deprecated (U24: \"Should I mark these deprecated?\", never done) | **No** |"
+  },
+  {
+   "id": "R1529@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/aggregation-input-widget.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: View field is declared as 'field <primitive> <name> [<= expr]' with modifiers required, enabled, default, bind, label, icon, hidden, width,  | fact: A view body does not accept 'field'. View inputs are 'widget <WidgetType> <name> (<= | <=>) map.field' (UIViewWidgetDeclaration); 'field' is | at models/judo-meta-jsl:docs/pages/10_view.adoc:133"
+  },
+  {
+   "id": "R1530@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/aggregation-input-widget.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: Example view CartView uses 'field Integer price <= ...' and 'action ThankYouView order() label:\"Order\";' (no '<='). | fact: Field must be 'widget'. UIActionDeclaration requires 'LTE transferAction = TransferActionReference' (<=), so the action line does not parse  | at models/judo-meta-jsl:docs/pages/10_view.adoc:59"
+  },
+  {
+   "id": "R1546@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/aggregation-input-widget.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: View field syntax 'field <primitive> <name> [<= expr]' with required, enabled, default, bind, label, icon, hidden, width, lines. | fact: View inputs are 'widget <WidgetType> <name>' (JslDsl.xtext:296); 'field' is not a view member. | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:276"
+  },
+  {
+   "id": "R1547@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/aggregation-input-widget.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: View link modifiers include required, enabled, default, choices, selector, eager, create, delete, update, text. | fact: UIViewLinkDeclaration accepts only VisualModifier, CreateFormModifier, UpdateViewModifier and SelectorTableModifier (JslDsl.xtext:305). requ | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:309"
+  },
+  {
+   "id": "R1549@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/aggregation-input-widget.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: View action modifiers include throws, static, enabled, update, delete, redirect (and label, icon, hidden, width). | fact: UIActionDeclaration has no throws clause and only VisualModifier* (JslDsl.xtext:320-324). static, enabled, update, delete and redirect are n | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:392"
+  },
+  {
+   "id": "R2573@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/aggregation-input-widget.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: Mapped transfer relation accepts a selector:<transfer> modifier (ProductChoiceTransfer example). | fact: TransferRelationDeclaration modifier list (default, eager, required, enabled, choices, create, update, delete) has no SelectorModifier. Sele | at models/judo-meta-jsl:docs/pages/07_transfer.adoc:315 and 378-391"
+  },
+  {
+   "id": "R2834@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/relation-based-entity-creation.md",
+   "section": "## Rationale",
+   "confirmed": true,
+   "text": "claim: ValidationException exposes e.getViolations() returning objects with getPropertyPath() and getMessage(). | fact: No getViolations method exists in the repository; ValidationException is constructed with a Collection of ValidationResult (builder), so the | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/debug-operations/SKILL.md:124"
+  },
+  {
+   "id": "G103@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/relation-based-entity-creation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G103 `c05-05` R9 F31: The per-relation createHistory method did not exist until the relation had createable=true, which the builder only found after a failed build.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/relation-based-entity-creation.md`. The page says the create method exists only if the relation allows creation but never names the createable=true attribute. Add: set createable=true on the relation or createX is not generated.\n- **Why:** relation-based-entity-creation.md states the createable rule in one sentence that the builder missed on first read. **Workaround:** Set createable=true on SalesOrder.history in the model, then the generated create method appeared.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L2788`, `session:L287"
+  },
+  {
+   "id": "G104@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/relation-based-entity-creation.md",
+   "section": "## Practice",
+   "confirmed": false,
+   "text": "#### G104 `c09-18` R14 F69, F70: DAO create on a non-composition two-way relation (customerAccountDao.createPointEntries, createGiftCards) failed with MISSING_REQUIRED_RELATION; only the child DAO create with the back reference works\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/relation-based-entity-creation.md`. Page recommends parent-DAO create for containment only; builder shows non-composition two-way relations fail with MISSING_REQUIRED_RELATION through the parent DAO. Add: for plain two-way relations create through the child DAO with the back reference.\n- **Why:** The kb covers creation through composition parents only; the builder found no note for plain two-way relations. **Workaround:** pointsEntryDao.create(builder.withCustomer(customer)) and giftCardDao.create(builder.with"
+  },
+  {
+   "id": "G114@3",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/relation-based-entity-creation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G114 `c05-04` R9 F29: A 0..1 relation query returns Optional<Product>, while a 1..1 relation query returns the entity; the first build failed with a type mismatch because the builder assumed Optional.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/data-access-guide.md`. data-access-guide (lines 289-304) says single-valued relation queries return the entity directly; the generated SDK returns Optional<T> for 0..1 (SalesOrderLineDao shows Optional types). Split the rule: 0..1 returns Optional, 1..1 returns the entity.\n- **Why:** The kb says single-valued relation queries return the entity but does not separate optional (0..1) from mandatory (1..1) relations. **Workaround:** Used the entity directly for the 1..1 cart line product relation (RemoveProductCustomImplementation.java).\n- **Val"
+  },
+  {
+   "id": "B6@3",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/relation-based-entity-creation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B6 | **DAO API surface** | Paged `selectList(offset, limit)` / slices, `TimeFilter`, `findAllById` vs `getById`, signatures of the per-relation `create<Rel>` / `add<Rel>` methods, and actor-level DAO packages. | pb01, pb02, pb05, pb06, bp07, bp12 |"
+  },
+  {
+   "id": "B7@2",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/relation-based-entity-creation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B7 | **DAO and interceptors** | Whether a DAO call from Java service code (for example creating a child) triggers built-in-operation interceptors. | pb05, pb07 |"
+  },
+  {
+   "id": "R1438@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/task-list-with-checkout-release/BLUEPRINT.md",
+   "section": "## Structure",
+   "confirmed": false,
+   "text": "claim: The guard methods SHALL check whether the relation is mapped (isMaps(rel)) rather than whether the transfer is mapped (transferDecl.getMap() | fact: The implemented guards check transferDecl.getMap() != null (transfer mapping), not isMaps(rel); the tasks.md for the same change records the | at runtime/judo-tatami-jsl:openspec/changes/archive/2026-03-21-fix-jsl2psm-zeta-diffs/specs/default-relation-guard-fix/spec.md:4"
+  },
+  {
+   "id": "R2215@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/task-list-with-checkout-release/BLUEPRINT.md",
+   "section": "## Variations",
+   "confirmed": true,
+   "text": "claim: poolSize (Integer, default 10) is the 'HikariCP connection pool size'; the usage example sets .poolSize(20) / .poolSize(25) to control the p | fact: poolSize is stored in JudoPostgresqlModuleConfiguration but is never bound and never passed to HikariDataSource (no setMaximumPoolSize), so  | at runtime/judo-runtime-core:judo-runtime-core-guice-postgresql/agent-docs/README.md:49"
+  },
+  {
+   "id": "R1894@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/task-list-with-checkout-release/frontend.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: There is an actor property `actor` (Actor fully qualified name, default equal to the submodule name) | fact: No POM template defines an `actor` property. Only actor-name (and model-name) are defined in the actor properties fragment. | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/frontend-react/README.adoc.hbs:58"
+  },
+  {
+   "id": "B9@3",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/task-list-with-checkout-release/frontend.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B9 | **Identifier uniqueness** | Whether the `identifier` flag is enforced as unique, for one or several attributes. Docs only say \"natural key\". Uniqueness appears only as a hand-written validation pattern. | bp01, pm02, pm06, pb07 |"
+  },
+  {
+   "id": "R2575@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/task-list-with-checkout-release/model.md",
+   "section": "## Model shape",
+   "confirmed": true,
+   "text": "claim: In the current release, error definitions are not used in JSL. | fact: The grammar has ErrorDeclaration (error Name {...}) and transfer actions reference errors in their throws clause, so error declarations are  | at models/judo-meta-jsl:docs/pages/08_error.adoc:17-19"
+  },
+  {
+   "id": "G031@5",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/self-learning-reference-dictionary.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G031 `c05-21` R9 F25, F27: create -t ActionGroup without a parent was refused (Cannot create ActionGroup in Model); the group must be created with --ns of the view, then operations are relocated into it.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. No CLI recipe for creating an ActionGroup (create -t ActionGroup needs --ns of the view; operations are then moved in). Add it next to the ActionGroup row at line 191.\n- **Why:** The ui-authoring-guide says an OperationForm inside a view works, but gives no CLI recipe for the ActionGroup. **Workaround:** create -t ActionGroup -n actions --ns <view>, then relocate each operation into it.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2839`, `session:L2840`, `session:L2841`. Merged:"
+  },
+  {
+   "id": "G119@3",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/self-learning-reference-dictionary.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G119 `c07-29` R12 F50: The builder could not find how to read old and new values in the update interceptor and decompiled the dispatcher jar with javap to learn UpdateInstanceCallPayload, without a kb search.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/interceptors.md`. interceptors.md already shows UpdateInstanceCallPayload (getInstance, getInput) but no example of reading old versus new values. Builder skipped kb search first. Add a short old/new comparison example (verify what the payload exposes).\n- **Why:** Interceptor payload access is not clear from the interceptor page as the builder read it (unverified); the kb was not searched first. **Workaround:** Used getInput() and getInstance() from the decompiled class.\n- **Validation:** partly; kind catalog-gap; catalog partly-cove"
+  },
+  {
+   "id": "B6@2",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/self-learning-reference-dictionary.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B6 | **DAO API surface** | Paged `selectList(offset, limit)` / slices, `TimeFilter`, `findAllById` vs `getById`, signatures of the per-relation `create<Rel>` / `add<Rel>` methods, and actor-level DAO packages. | pb01, pb02, pb05, pb06, bp07, bp12 |"
+  },
+  {
+   "id": "B7@1",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/self-learning-reference-dictionary.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B7 | **DAO and interceptors** | Whether a DAO call from Java service code (for example creating a child) triggers built-in-operation interceptors. | pb05, pb07 |"
+  },
+  {
+   "id": "KC07@1",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/backend/self-learning-reference-dictionary.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| **K54.C2 FALSE / R7:** `createAll` is a plain loop | Not in agent-docs. `best-practices/backend/self-learning-reference-dictionary.md:74` still says \"`createAll(...)` \u2026 in batches\" | **No** (wrong claim is in a best practice) |"
+  },
+  {
+   "id": "R0277@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/partner-with-contact-details/backend.md",
+   "section": null,
+   "confirmed": true,
+   "text": "claim: Interceptor execution flow: 'FOR EACH interceptor (REVERSE order): interceptor.postCall(...)'. | fact: postCall is dispatched in the same forward registration order as preCall; postCallInterceptors iterates getInterceptorsForOperation(...) wit | at runtime/judo-runtime-core:judo-runtime-core-guice-testkit/agent-docs/interceptor-testing.md:42"
+  },
+  {
+   "id": "R2348@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/partner-with-contact-details/backend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": true,
+   "text": "claim: success is called 'after successful authorization, before operation execution' (scenario 'Success callback invoked after authorization', lin | fact: success runs before the BehaviourAuthorizer CRUD checks, so an interceptor's success call can precede a PERMISSION_DENIED exception. | at runtime/judo-runtime-core:openspec/specs/accessmanager-api/spec.md:50"
+  },
+  {
+   "id": "R1064@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/partner-with-contact-details/frontend.md",
+   "section": "## Examples",
+   "confirmed": true,
+   "text": "claim: postRefresh example maps server validation messages with result.field. | fact: The validation result shape defined in the same document is ValidationResult { location, code, message }; there is no field property. | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/advanced-patterns.md.hbs:1130"
+  },
+  {
+   "id": "G021@3",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/partner-with-contact-details/frontend.md",
+   "section": "## Implementation Pattern",
+   "confirmed": true,
+   "text": "#### G021 `c09-12` R14 F62, F63, F67: update --add feature failed for actions containers that do not exist yet ('Container not found', 'element not found'); fill reported 'unchanged'; a row action on a relation table was refused ('refund \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not documented. Add order: create the actions container first, then update --add feature; row actions on relation tables must be added to the relation table, not placed anywhere (verify).\n- **Why:** CLI order of creating the actions group and row actions is not documented; error text does not say what to run first. **Workaround:** Used the generated refund table operation that already exists on the lines table; the test then opens the action group menu to click it.\n- **Validation:** partly; kind c"
+  },
+  {
+   "id": "R0501@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/email-service-integration.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: InstrumentedHandler 'Wraps Jetty's HTTP handler' and captures request rates for Karaf's embedded Jetty server (also AGENTS.md:11 'instrument | fact: JettyConfigurator creates an InstrumentedHandler with no delegate set and registers it as a Handler service; no code attaches it to Jetty's  | at runtime/jetty-metrics:AGENTS.md:12"
+  },
+  {
+   "id": "B5@3",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/email-service-integration.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B5 | **Email service** | `EmailService` / `EmailMessage` / `BinaryAttachment` API, Handlebars templates, and how the app's mail path uses the SMTP variables. | bp10, pb02, pb03 |"
+  },
+  {
+   "id": "KC05@1",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/backend/email-service-integration.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| **K40.C1 FALSE:** the mail default is localhost:**10025** (log SMTP, `logSmtpServer=true`), otherwise 25; 1025 appears nowhere in the platform | `deployment/application-config.md:181` and `local-development.md:49` give only the Mailpit `localhost:1025` advice, with no default. 10025 is mentioned nowhere | **No** (the default is undocumented) |"
+  },
+  {
+   "id": "KC23@3",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/backend/email-service-integration.md",
+   "section": "## Related",
+   "confirmed": true,
+   "text": "| K68: XDocReport deprecated in favour of Handlebars (decision from `~/Downloads/message (1).txt`) | Not in agent-docs. `model-blueprints/xdocreport-document-generation-pipeline` and `best-practices/backend/document-generation-pipeline.md` are not marked deprecated (U24: \"Should I mark these deprecated?\", never done) | **No** |"
+  },
+  {
+   "id": "R1340@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/registry-header-with-lines/BLUEPRINT.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "claim: The authoritative function registry says to use !join(lambda, separator) (and calls the aggregation a replacement for !collectAsString / !mk | fact: The same document at line 288 states !join is recognised by the grammar but not implemented at runtime, and recommends a TRANSIENT TO attrib | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/model/model-development.md.hbs:339"
+  },
+  {
+   "id": "R1533@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/registry-header-with-lines/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "claim: Example: 'link ProductListView productList text:\"Back to shopping\";' (no '<=', uses text modifier). | fact: UIViewLinkDeclaration requires '<=' transferRelation (line 304) and only accepts VisualModifier, CreateForm, UpdateView and SelectorTable mo | at models/judo-meta-jsl:docs/pages/10_view.adoc:204"
+  },
+  {
+   "id": "R2765@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/registry-header-with-lines/BLUEPRINT.md",
+   "section": "## When to use",
+   "confirmed": true,
+   "text": "claim: getTsObjectExport() traverses the PageContainer tree, filtering out Flex layout nodes. | fact: No Flex predicate exists. collectChildNodes is applied to the PageContainer root with no filter, so Flex containers are emitted as branch no | at template/judo-ui-e2e-template:openspec/specs/playwright-template-generator/spec.md:53"
+  },
+  {
+   "id": "R2688@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/registry-header-with-lines/model.md",
+   "section": "## Model shape",
+   "confirmed": true,
+   "text": "claim: Logical precedence: 'a or b and c xor d implies e' gives implies at root, then or, then and, then xor. | fact: The grammar nests ImpliesExpression > OrExpression > XorExpression > AndExpression, so from loosest to tightest the order is implies, or, xo | at models/judo-meta-jql:openspec/specs/model-test/spec.md:42"
+  },
+  {
+   "id": "R1695@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/typed-exception-error-handling.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Client error response format is { \"code\": \"VALIDATION_ERROR\", \"message\": \"...\", \"details\": { ... } } (also the mermaid node at line 395-397) | fact: ClientExceptionMapper uses exception.getDetails() directly as the entity; no code/message/details wrapper is added. | at runtime/judo-runtime-core:judo-runtime-core-jaxrs/src/main/resources/claude/plugins/judo-jaxrs/skills/rest-endpoints/SKILL.md:175"
+  },
+  {
+   "id": "R1709@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/typed-exception-error-handling.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: The loader SHALL throw an IllegalStateException when the workflow reports a failure. | fact: On FAILED status it throws RuntimeException(workReport.toString(), workReport.getError()). No IllegalStateException is thrown. | at runtime/judo-runtime-core-jsl:openspec/specs/jsl-transformation/spec.md:59"
+  },
+  {
+   "id": "R1710@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/typed-exception-error-handling.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: THEN an IllegalStateException is thrown with details from the WorkReport. | fact: A RuntimeException is thrown with workReport.toString() as its message. It is not an IllegalStateException. | at runtime/judo-runtime-core-jsl:openspec/specs/jsl-transformation/spec.md:64"
+  },
+  {
+   "id": "R2833@6",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/typed-exception-error-handling.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: Operation not found raises OperationNotFoundException (or HTTP 404). | fact: No OperationNotFoundException class exists in the repository; the dispatcher wraps unexpected failures in InternalServerException('Operation | at runtime/judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/debug-operations/SKILL.md:90"
+  },
+  {
+   "id": "R0046@1",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/backend/quartz-scheduled-job.md",
+   "section": null,
+   "confirmed": false,
+   "text": "claim: Both init overloads catch Throwable or Exception and only call log.error (lines 252-254 and 455-457). A failed transformation or injector bu | fact:  | at runtime/judo-runtime-core-esm-itest:judo-runtime-core-esm-itest@dfba968:src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/fixture/JudoRuntimeFixture.java:252"
+  },
+  {
+   "id": "R2765@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/quartz-scheduled-job.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: getTsObjectExport() traverses the PageContainer tree, filtering out Flex layout nodes. | fact: No Flex predicate exists. collectChildNodes is applied to the PageContainer root with no filter, so Flex containers are emitted as branch no | at template/judo-ui-e2e-template:openspec/specs/playwright-template-generator/spec.md:53"
+  },
+  {
+   "id": "B4@4",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/quartz-scheduled-job.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "| B4 | **Scheduled jobs** | Quartz / OSGi scheduler. What transaction, principal and `ACTOR` variable context a scheduler thread gets. | bp06, bp10, pb05, pb06 |"
+  },
+  {
+   "id": "R0187@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/bank-account-entity/model.md",
+   "section": "## Model shape",
+   "confirmed": true,
+   "text": "claim: OwnerServiceForRelation create signature is create(owner?: OwnerStored, target, queryCustomizer?) | fact: For non-access relations the owner parameter is required (owner: ...), not optional; the spec's own access table at line 259 says required. | at template/judo-ui-typescript-rest-template:openspec/specs/relation-management/spec.md:124"
+  },
+  {
+   "id": "R2618@5",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/bank-account-entity/model.md",
+   "section": "## Model shape",
+   "confirmed": true,
+   "text": "claim: DefaultIdentifierSignerProvider: an unbound @IdentifierSignerSecret means unsigned or session-scoped identifiers. | fact: No secret means the signer generates a random 1024-bit HMAC key and still signs identifiers. There is no unsigned mode. The key is per proce | at runtime/judo-runtime-core:judo-runtime-core-guice/src/main/java/hu/blackbelt/judo/runtime/core/guice/dispatcher/AGENTS.md:9"
+  },
+  {
+   "id": "R1802@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/bank-account-entity/BLUEPRINT.md",
+   "section": "## Constraints",
+   "confirmed": true,
+   "text": "claim: 'Scale must be greater than 0 and less than precision.' | fact: The validator only rejects a negative scale (error 'Scale must be greater than/equal to 0'). Scale 0 is allowed and is used by the doc's own | at models/judo-meta-jsl:docs/pages/04_types.adoc:319"
+  },
+  {
+   "id": "R0405@3",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/sequence-based-identifier.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: port (Integer, default 31001) is the server port 'when running server'; databaseName (default 'judo') names the database; the custom example | fact: JudoHsqldbModule.configure() never calls configureOptions(), so the port, databaseName and databasePath are not bound to the HsqlDbConfigura | at runtime/judo-runtime-core:judo-runtime-core-guice-hsqldb/agent-docs/README.md:44"
+  },
+  {
+   "id": "R2448@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/sequence-based-identifier.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Long.getVariable(category = \"SEQUENCE\", key = \"Order\") gets the next Order number. | fact: No Long type exists in the JSL primitive keyword set (JslDsl.xtext:909). The SEQUENCE example must use numeric.getVariable(...) (JudoFunctio | at models/judo-meta-jsl:docs/pages/06_expression.adoc:358"
+  },
+  {
+   "id": "R2618@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/model/sequence-based-identifier.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: DefaultIdentifierSignerProvider: an unbound @IdentifierSignerSecret means unsigned or session-scoped identifiers. | fact: No secret means the signer generates a random 1024-bit HMAC key and still signs identifiers. There is no unsigned mode. The key is per proce | at runtime/judo-runtime-core:judo-runtime-core-guice/src/main/java/hu/blackbelt/judo/runtime/core/guice/dispatcher/AGENTS.md:9"
+  },
+  {
+   "id": "R0698@4",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/model/derived-access-filtering.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: anyMatch treats an access point with no @actor annotation (actor == null) as public. Such an operation then returns an empty role list, whic | fact:  | at runtime/judo-runtime-core:judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/JudoAuthorizingInterceptor.java:67"
+  },
+  {
+   "id": "G122@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/derived-access-filtering.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G122 `c09-19` R14 F62: A seller who opened the direct page address of another seller's product got the product, its status and an Unpublish button. The access filter hid it from lists only.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/derived-access-filtering.md`. derived-access-filtering.md says visibility is enforced by the model but does not say a direct GET/update by identifier bypasses list filters. Add a security warning and a write-guard interceptor pointer (verify with the dispatcher).\n- **Why:** Derived access filters restrict the generated list queries; a direct identifier GET or update is not filtered. Signed identifiers are not bound to a user. **Workaround:** SellerOwnershipInterceptor on refresh and update, plus ownership checks inside the custom operations; the page"
+  },
+  {
+   "id": "R16-C2@1",
+   "src": "webshop-r16",
+   "target": "catalog/best-practices/model/derived-access-filtering.md",
+   "section": "## Rationale",
+   "confirmed": true,
+   "text": "The Practice says a signed identifier carries no actor and opening another record by address may not be refused; the Rationale says \"a client never receives rows outside it\". Both are in one file. | evidence: Lines 36 and 40 of the file. The webshop needed an interceptor (GAPS R14-7)."
+  },
+  {
+   "id": "R1141@1",
+   "src": "judo-ng-bug",
+   "target": "catalog/best-practices/backend/duplicate-detection-normalization.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: The backup-table precondition name is backupTableNamePrefix + '_' + useTable.sqlName, with no abbreviation and no upper-casing. The backup i | fact:  | at runtime/judo-tatami-base:judo-tatami-base@14847b0:judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/liquibase/modules/dbCheckup.etl:32"
+  },
+  {
+   "id": "R1803@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/duplicate-detection-normalization.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "claim: The max-file-size unit table lists 'kB' (lower-case k) as 1000 bytes. The example at 04_types.adoc:696 is 'max-file-size:500kB'. | fact: The grammar terminal is KW_KB = 'KB' (upper-case K), and getMaxFileSizeValue matches case \"KB\". The lower-case 'kB' spelling in the doc does | at models/judo-meta-jsl:docs/pages/04_types.adoc:661"
+  },
+  {
+   "id": "R2766@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/duplicate-detection-normalization.md",
+   "section": "## Related",
+   "confirmed": true,
+   "text": "claim: The Flex node itself is excluded from the output. | fact: Flex nodes are included as branch nodes (no instanceof Flex filter in VisualElementHelper.java); the Flex-removal change from the archived p | at template/judo-ui-e2e-template:openspec/specs/playwright-template-generator/spec.md:59"
+  },
+  {
+   "id": "R1672@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/interceptor-range-override.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "claim: EnumerationCombo maps to a MUI Select with MenuItem options. | fact: enumerationcombo.hbs renders an MUI Autocomplete, not a Select with MenuItem. | at template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:160"
+  },
+  {
+   "id": "G122@3",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/interceptor-range-override.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "#### G122 `c09-19` R14 F62: A seller who opened the direct page address of another seller's product got the product, its status and an Unpublish button. The access filter hid it from lists only.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/derived-access-filtering.md`. derived-access-filtering.md says visibility is enforced by the model but does not say a direct GET/update by identifier bypasses list filters. Add a security warning and a write-guard interceptor pointer (verify with the dispatcher).\n- **Why:** Derived access filters restrict the generated list queries; a direct identifier GET or update is not filtered. Signed identifiers are not bound to a user. **Workaround:** SellerOwnershipInterceptor on refresh and update, plus ownership checks inside the custom operations; the page"
+  },
+  {
+   "id": "B11@3",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/interceptor-range-override.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B11 | **List-call interceptor payload** | `ListCall.ListCallPayload` and `getQueryCustomizer().getFilter()`. The range payload is partly covered in `interceptors.md`, but there is no worked `_getRangeReference` example that keeps the filter and orderBy and adds constraints. | pb04, bp15 |"
+  },
+  {
+   "id": "R2457@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/string-field-typeahead-self-learning.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: debounce(async fn, 300) wrapped as debouncedSearch; caller does 'const result = await debouncedSearch(searchText); return result.data;' | fact: lodash debounce returns the result of the last invocation and undefined for calls that are still pending, so the awaited value is usually un | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/hooks/action-hooks.md.hbs:263"
+  },
+  {
+   "id": "B55@1",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/frontend/string-field-typeahead-self-learning.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B55 | **Frontend typeahead and row-action icons** | `TextWithTypeAhead`, freeSolo, `getForm_<field>Options` getter names and signature `(searchText, data, editMode, validation)`; operation-form icon precedence and the `chevron_right` default for row actions; `ComponentProxy` placeholder pages; flow-manager input keys. | mg4 |"
+  },
+  {
+   "id": "KC07@3",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/frontend/string-field-typeahead-self-learning.md",
+   "section": "## Intent",
+   "confirmed": true,
+   "text": "| **K54.C2 FALSE / R7:** `createAll` is a plain loop | Not in agent-docs. `best-practices/backend/self-learning-reference-dictionary.md:74` still says \"`createAll(...)` \u2026 in batches\" | **No** (wrong claim is in a best practice) |"
+  },
+  {
+   "id": "R0321@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/model-blueprints/draft-done-status-enum/model.md",
+   "section": "## Model shape",
+   "confirmed": true,
+   "text": "claim: Lists `version` as a generation parameter with default `1.0.0-SNAPSHOT` and Required=No | fact: The archetype descriptor declares no `version` requiredProperty, so the default is not enforced by the archetype; the value appears only in  | at spring/judo-jsl-springboot-archetype:README.md:53"
+  },
+  {
+   "id": "B22@5",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/draft-done-status-enum/model.md",
+   "section": "## Model shape",
+   "confirmed": true,
+   "text": "| B22 | Enum default literal | `Type#VALUE` syntax in `defaultExpression` | pm03 |"
+  },
+  {
+   "id": "R0769@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/cloud-drive-uploader-adapter.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: S-3: nothing validates the endpoint scheme, so an http:// endpoint sends signed requests and file bytes in cleartext with no error to notice | fact: activate() checks the scheme and logs a WARN ('S3 filestore endpoint ... is cleartext'). It is not an error and does not stop activation, bu | at runtime/osgi-filestore:filestore-s3/SECURITY.md:67"
+  },
+  {
+   "id": "R1956@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/cloud-drive-uploader-adapter.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: When no password source is explicitly configured, the encryptor SHALL fall back to the ENCRYPTION_PASSWORD environment variable. | fact: If encryption_password, encryption_passwordFile and encryption_passwordEnvName are all unset, no password or environment variable is configu | at runtime/karaf-jasypt-support:openspec/specs/string-encryptor-service/spec.md:61"
+  },
+  {
+   "id": "R1551@2",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/linkified-text-component.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: Row link syntax with eager, label, icon, hidden, width, text, detail modifiers. | fact: Row links are not row members (UIRowMemberDeclaration lines 382-385); RowLinkDeclaration and DetailModifier are commented out (JslDsl.xtext: | at models/judo-meta-jsl:docs/pages/appx_syntax.adoc:527"
+  },
+  {
+   "id": "R16-C8@2",
+   "src": "webshop-r16",
+   "target": "catalog/best-practices/frontend/linkified-text-component.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "Field order of generated forms/views follows ESM position in a way that puts e.g. Price above Name (GAPS R3-1, R7-10, reported by the project owner as a platform bug). No catalog page; `kb_search` found nothing. | evidence: kb_search \"field order container children position esmToUi\"."
+  },
+  {
+   "id": "R1924@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/role-based-invitation-guard.md",
+   "section": "## When to avoid",
+   "confirmed": true,
+   "text": "claim: validate(logger, model, ValidationType.ZETA) runs Java validation rules through EsmValidator; the BOTH path combines errors. | fact: There is no three-argument validate and no ZETA/BOTH constant in this module. | at models/judo-cli-api:README.md:172"
+  },
+  {
+   "id": "B13@5",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/backend/role-based-invitation-guard.md",
+   "section": "## Related",
+   "confirmed": true,
+   "text": "| B13 | **`isActiveExpression`** | How the runtime evaluates it, and how it interacts with actor resolution by `azp`. There is no sample with a boolean role flag as the guard. | bp14, pm04 |"
+  },
+  {
+   "id": "G017@3",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/guard-clause-delete.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "#### G017 `c06-09` R11 F44: validate --strict reported errors after a delete with --no-check, but the same command still ran save, so an invalid model was written to disk.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog rule 6 says never save blindly and --no-check needs validate at the end, but not that chaining with && continues after validate reports errors. Add: gate save on the validate exit code (1 or 2).\n- **Why:** save does not stop when validation fails in the same command chain; the builder chained them. **Workaround:** Re-ran delete --cascade and validation until clean.\n- **Validation:** partly; kind cli-tool; catalog partly-covered. Evidence: `session:L3445`, `session:L3446`"
+  },
+  {
+   "id": "B10@3",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/model/guard-clause-delete.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| B10 | **Faults from JCL / script operations** | Whether a script operation can raise a modeled fault or call an OSGi service. | pm04, pb06 |"
+  },
+  {
+   "id": "B19@1",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/best-practices/model/container-back-reference.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B19 | `self!container(X)` as a derived back-reference relation | `!container(type)` is defined, but its use as a relation getter is shown only in a best practice. | bp14, pm02 |"
+  },
+  {
+   "id": "R16-C8@4",
+   "src": "webshop-r16",
+   "target": "catalog/best-practices/model/container-back-reference.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "Field order of generated forms/views follows ESM position in a way that puts e.g. Price above Name (GAPS R3-1, R7-10, reported by the project owner as a platform bug). No catalog page; `kb_search` found nothing. | evidence: kb_search \"field order container children position esmToUi\"."
+  },
+  {
+   "id": "R1066@2",
+   "src": "judo-ng-bug",
+   "target": "catalog/model-blueprints/post-generalization-hierarchy/frontend.md",
+   "section": "## Examples",
+   "confirmed": true,
+   "text": "claim: useInlineCreateDialog defines DialogComponent as a component inside the hook body. Each render creates a new component type, so React remoun | fact:  | at template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template@6273a87:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/advanced-patterns.md.hbs:1294"
+  },
+  {
+   "id": "R1671@4",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/frontend/auto-scrolling-ranking-board.md",
+   "section": "## Example",
+   "confirmed": true,
+   "text": "claim: baseUnit affects time precision (for example baseUnit = SECOND shows seconds). | fact: No baseUnit is read anywhere in the generator. timeinput.hbs hard-codes views to hours, minutes and seconds. | at template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:138"
+  },
+  {
+   "id": "R2618@1",
+   "src": "judo-ng-doc",
+   "target": "catalog/best-practices/backend/api-key-generation.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "claim: DefaultIdentifierSignerProvider: an unbound @IdentifierSignerSecret means unsigned or session-scoped identifiers. | fact: No secret means the signer generates a random 1024-bit HMAC key and still signs identifiers. There is no unsigned mode. The key is per proce | at runtime/judo-runtime-core:judo-runtime-core-guice/src/main/java/hu/blackbelt/judo/runtime/core/guice/dispatcher/AGENTS.md:9"
+  },
+  {
+   "id": "G100@1",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/flat-entity-model.md",
+   "section": "## Rationale",
+   "confirmed": true,
+   "text": "#### G100 `c03-76` R7 F14: A customer who opens the back office URL gets a User not found page instead of an access message.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/authentication-guide.md`. No description of the wrong-actor outcome; it is plausible platform behaviour (User not found), the access message would be a custom page. Add a short note of the observed behaviour.\n- **Why:** The expected error for a wrong actor is not described in the catalog as far as the builder reported. **Workaround:** Reported as a known behaviour in the round report; no test change.\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L2347`"
+  },
+  {
+   "id": "B17@1",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/model-blueprints/environment-enum/model.md",
+   "section": null,
+   "confirmed": true,
+   "text": "| B17 | **Enum ordinals** | How the runtime rejects an out-of-range ordinal, whether JQL can compare ordinals, and `getByOrdinal` (only one known-issue mention). | bp05, bp08, bp11 |"
+  },
+  {
+   "id": "KC08@4",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/backend/dirty-check-before-update.md",
+   "section": "## Practice",
+   "confirmed": true,
+   "text": "| **K55.C1 FALSE / R5:** no mask returns everything, derived members included; an empty mask returns the identifier only | `backend/data-access-guide.md` covers the empty mask only; the no-mask rule is absent | **No** (not added) |"
+  }
+ ]
+}

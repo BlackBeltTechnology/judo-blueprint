@@ -1,0 +1,97 @@
+{
+ "batch": "s2",
+ "files": [
+  "catalog/model-blueprints/reference-data-lookup-entity/BLUEPRINT.md",
+  "catalog/model-blueprints/interceptor-derived-statistics-calculation/model.md",
+  "catalog/best-practices/model/api-package-thin-ref-projection.md",
+  "catalog/agent-docs/model/judo-cli.md",
+  "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+  "catalog/agent-docs/backend/data-access-guide.md",
+  "catalog/model-blueprints/custom-post-detail-views/frontend.md",
+  "catalog/model-blueprints/invitation-with-key-based-acceptance/frontend.md",
+  "catalog/agent-docs/frontend/model-screen-layout.md"
+ ],
+ "items": [
+  {
+   "id": "bp-check::B21@3",
+   "kind": "research",
+   "file": "catalog/model-blueprints/reference-data-lookup-entity/BLUEPRINT.md",
+   "heading": "Structure",
+   "text": "The lookup entity has all three CRUD flags (createable, updateable, deleteable) off. The generator does not read entity-level flags, so these flags do not block writes by themselves; the access points and relation flags that the project exposes do. Writes go through transfer objects and access points that the project exposes to the administrator, or through seeding.",
+   "replaces": "The lookup entity has all three CRUD flags (createable, updateable, deleteable) off. Writes go through transfer objects and access points that the project exposes to the administrator, or through seeding.",
+   "evidence": "repo:target/judo-ng-read/wt/models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmUtils.java:2165 (isCreateSupported: Access or relation flags, mapped TO) and :2210 (isUpdateSupported) | repo:target/judo-ng-read/wt/models__judo-meta-esm/model/model/esm.genmodel:198 (isCreateAllowed = own flag) | repo:target/judo-ng-read/wt/tools__judo-esm-schema-merge-maven-plugin/src/main/resources/script/merge.eol:65 (entity flags only copied) | cli:query esm EntityType showed flags; transform of Sandbox test model: no create/update/delete ops for Item (flags true) or Lookup (flags false)"
+  },
+  {
+   "id": "bp-check::B21@5",
+   "kind": "research",
+   "file": "catalog/model-blueprints/interceptor-derived-statistics-calculation/model.md",
+   "heading": "Model shape",
+   "text": "It is not createable, updateable or deleteable; the generator reads no transfer-object-level flag, and an unmapped transfer object gets no create, update or delete operation in any case.",
+   "replaces": "It is not createable, updateable or deleteable.",
+   "evidence": "repo:target/judo-ng-read/wt/models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmUtils.java:2210-2213 (isUpdateSupported requires getMapping() != null) | repo:.../EsmUtils.java:2244 (isDeleteSupported same guard) | repo:target/judo-ng-read/wt/models__judo-meta-esm/model/model/esm.ecore:234 (Class flags) with no consumer in esm2psm, psm2asm, esm2ui or templates (grep -i createable/updateable/deleteable) | cli:transform of test model: unmapped TO yields no CRUD operation"
+  },
+  {
+   "id": "bp-check::B51@5",
+   "kind": "research",
+   "file": "catalog/best-practices/model/api-package-thin-ref-projection.md",
+   "heading": "Practice",
+   "text": "An unmapped transfer object may only have `AGGREGATION` relations, enforced by the validator ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), *Relation kinds per layer and the bidirectional rules*). `AGGREGATION` is the default for a transient relation on an unmapped transfer object; the CLI also accepts it explicitly (`create -t OneWayRelationMember --ns <Package>::<TO> -n <rel> -s memberType=TRANSIENT -s relationKind=AGGREGATION`), and `-s relationKind=ASSOCIATION` fails with `must be aggregation if transient`. A transient relation to an unmapped target with a defined form renders as a nested inline form (inline create), not as a picker; a picker is used for a transient relation to a mapped reference transfer object.",
+   "replaces": "An unmapped transfer object may only have `AGGREGATION` relations, enforced by the validator ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), *Relation kinds per layer and the bidirectional rules*). The CLI cannot set `AGGREGATION`; it is the default on an unmapped transfer object's transient relation, or the modeling tool sets it.",
+   "evidence": "cli:java -jar target/judo-cli.jar -m /tmp/ov1/Sandbox.model create -t OneWayRelationMember ... -s relationKind=AGGREGATION -> created; relationKind=ASSOCIATION -> 'Relation: picksAssoc (in: Probe) must be aggregation if transient.'; omitted relationKind -> stored AGGREGATION | repo:target/judo-ng-read/wt/runtime__judo-tatami-client/judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/extensions/esm/EsmRelationFeatureExtensions.java:122,276-278 (isInlineTransientRelation -> inline create) | repo:.../transformations/structure/RelationFeatureFormTransformations.java:103 (nested form guard) | repo:target/judo-ng-read/wt/models__judo-meta-script/builder-jcl/src/main/java/hu/blackbelt/judo/meta/script/builder/jcl/jqloverride/JclUnaryOperationTransformer.java:46-58 (mutable/immutable wrap operand, immutable flag = operator)"
+  },
+  {
+   "id": "apply-findings-webshop::WR18-8",
+   "kind": "research",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "Mandatory rules",
+   "text": "3. **Always paginate query results.** Use `limit`, `offset`, and `totalCount` together. `query` and `graphql` apply `limit` only when it is given, so without it every match is returned and nothing is truncated by the CLI. Helper scripts that pass a fixed `--limit` (for example `--limit 800`) do truncate silently, so check `totalCount` against the number of items returned.",
+   "replaces": "3. **Always paginate query results.** Use `limit`, `offset`, and `totalCount` together. Without explicit pagination, large result sets are silently truncated and the assistant operates on a partial view of the model.",
+   "evidence": "repo:target/judo-ng-read/wt/runtime__judo-model-cli/src/main/java/hu/blackbelt/judo/cli/commands/QueryCommand.java:350-354 (limit appended only if set) | repo:target/judo-ng-read/wt/runtime__judo-model-cli/src/main/java/hu/blackbelt/judo/cli/graphql/CrossModelSchema.java:870-871 (resultStream.limit only when limit>0) | no literal 800 cap in judo-ng sources (grep models__judo-cli-api, runtime__judo-model-cli, runtime__judo-dao-api, models__judo-meta-*) | app:~/Projects/webshop-test/.scratch/fq.sh:2 (fq helper passes --limit 800) | app:~/Projects/webshop-test/GAPS.md:332 (R18-8) | cli:create -t MenuItemAccess -> 'MenuItemAccess is created automatically, not with create -t' (matches judo-cli.md:124)"
+  },
+  {
+   "id": "apply-findings-webshop::WR16U-16",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "heading": "Adding Menu Items",
+   "text": "The drawer renders top-level entries only as `group` or `item`, so a top-level custom entry typed `collapse` renders wrongly. Group and item titles are translated with `t('menuTree.<title>', { defaultValue: title })`. The generator emits `menuTree.<label>` keys only for model navigation labels, so a group title created in a hook has no key and shows its English title in other locales. Known issue; workaround: add `\"menuTree.<Group title>\": \"<translation>\"` to each locale's application translation file for every title that a hook creates.",
+   "replaces": "The drawer renders top-level entries only as `group` or `item`, so a top-level custom entry typed `collapse` renders wrongly.",
+   "evidence": "template__judo-ui-react-template/judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiI18NHelper.java:75-79 ; template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/layout/Drawer/DrawerContent/Navigation/NavGroup.tsx.hbs:109,145 ; app:application/frontend-react/webshop__customer/src/custom/hooks/registerShellHooks.ts:16,27,30,33 ; app:application/frontend-react/webshop__customer/public/i18n/application_hu-HU.json (no menuTree key for 'My account', 'Company', 'Sell')"
+  },
+  {
+   "id": "apply-findings-webshop::WR16U-13",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "### Known Issues of the Generated DAO",
+   "text": "- **A single-valued reference loaded through a sub-select runs one statement per parent row.** When the sub-select is not joined directly to the root query, or has a limit, the runtime loads the reference with one SQL statement per parent row, so the time grows with the number of parent rows. Derived members in the reference's mask (their getter expressions) are evaluated inside each of those statements. Workaround: map the referenced entity with a smaller transfer object that leaves out the derived members the page does not show, or compute the value on the referenced entity once. No pg_stat trace was captured; the per-row loop is the code path that matches the growth reported.",
+   "replaces": "",
+   "evidence": "runtime__judo-runtime-core/judo-runtime-core-dao-rdbms/src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/executors/SelectStatementExecutor.java:1091-1098 (single embedded references run runSubQuery per parent) | runtime__judo-runtime-core/judo-runtime-core-dao-rdbms/src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/executors/SelectStatementExecutor.java:1238-1245 (one executeSubQuery per id unless ids.size()==1 or the sub-select is joined to the root without a limit) | app:application/internal/target/generated-sources/com/example/webshop/webshop/impl/webshop/productinfo/ProductInfoDaoImpl.java:852 (derived priceLabel fetched through a mask on the referenced row) | app:model/webshop.model:366 (derived lowStock reads webshop::ShopConfig!any(), a per-row subquery)"
+  },
+  {
+   "id": "apply-findings-webshop::WR16U-7",
+   "kind": "research",
+   "file": "catalog/model-blueprints/custom-post-detail-views/frontend.md",
+   "heading": "Implementation Pattern",
+   "text": "To render a custom layout, the view must be a visual element that the UI model declares as a custom implementation widget. Mark one container (a group or flex element) that holds the whole view: the registered component replaces that container and everything inside it, because the generated children are only the fallback that the component proxy renders when no component is registered, so the view is not built field by field. The page container itself is not a visual element and has no flag, so a view cannot be replaced by a page-level hook; mark the top-level container of the view instead.",
+   "replaces": "To render a custom layout, the view must be a visual element that the UI model declares as a custom implementation widget.",
+   "evidence": "template__judo-ui-react-template/judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiWidgetHelper.java:261-277 (collect over Container children; PageContainer is not a VisualElement); template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/container.tsx.hbs:94-97 (page renders container.children; no page-level custom flag); template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/widget-fragments/flex.hbs:6-9 and 187-189 (ComponentProxy wraps the whole element, children inside); runtime__judo-tatami-client/judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/transformations/ui/GroupTransformations.java:112-113 (group flag propagated); template__judo-ui-react-template/docs/pages/01_ui_react.adoc:782-783 (ComponentProxy loads the child if no implementation is found); template__judo-ui-react-template/judo-ui-react-itest/ActionGroupTest/action_group_test__god/src/test/resources/snapshots/frontend-react/src/containers/View/Galaxy/View/ViewGalaxyView.tsx.snapshot:505-507 and 635 (a whole Group card wrapped in one ComponentProxy)"
+  },
+  {
+   "id": "bp-check::B47@1",
+   "kind": "research",
+   "file": "catalog/model-blueprints/invitation-with-key-based-acceptance/frontend.md",
+   "heading": "Let the anonymous page read the key from the link",
+   "text": "The acceptance page belongs to an anonymous actor, so it is reached without signing in. The generated app of an actor without a principal has no sign-in: it creates no OIDC provider, no `Auth` wrapper and no token interceptor, and the metamodel marks `supportGuestAccess` as applicable only to actors that are not anonymous. An actor with a principal, even an unmapped one, gets the sign-in wrapper instead. The page reads the key from the query parameter of the link, and sends the key with each API call so the backend can find the invitation. Register one request interceptor for this in the project's `custom` folder, which runs before the app renders, not one per call. The key-in-URL scheme is common practice.",
+   "replaces": "The acceptance page belongs to an anonymous actor, so it is reached without signing in. The platform's guest-page hook (`supportGuestAccess`) only governs what an unauthenticated visitor sees at the root; this entry's page is an anonymous actor's own app. It reads the key from the query parameter of the link, and sends the key with each API call so the backend can find the invitation. Register one request interceptor for this (the generated frontend uses an axios request interceptor for header enrichment, see the platform's advanced patterns), not one per call. The key-in-URL scheme is common practice.",
+   "evidence": "template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/main.tsx.hbs:40-43 (token interceptor and OIDC only inside {{# if application.authentication }}); main.tsx.hbs:58 (applicationCustomizer.customize runs before root.render); template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/auth/Auth.tsx.hbs:7,24-31 (guest page and auto sign-in exist only in the authenticated wrapper); runtime__judo-tatami-client/judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/transformations/accesspoint/ActorTypeTransformations.java:351-356 (Authentication only when principal != null); models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmFieldRules.java:425-427 (supportGuestAccess applicable only when not anonymous); template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/custom/application-customizer.tsx.hbs (project hook point); app:application/frontend-react/webshop__customer/src/main.tsx:44 (interceptor exists only because the actor has a principal)"
+  },
+  {
+   "id": "ADJ-entity-crud-flags",
+   "kind": "adjacent",
+   "file": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "heading": "~line 866",
+   "text": "Correct the sentence saying entity-level CRUD flags \"affect all transfer objects mapped to that entity\" to what the code does (see the B21 findings in this batch set and their evidence).",
+   "replaces": "",
+   "evidence": "repo:target/judo-ng-read/wt/models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmUtils.java:2165 (isCreateSupported: Access or relation flags, mapped TO) and :2210 (isUpdateSupported) | repo:target/judo-ng-read/wt/models__judo-meta-esm/model/model/esm.genmodel:198 (isCreateAllowed = own flag) | repo:target/judo-ng-read/wt/tools__judo-esm-schema-merge-maven-plugin/src/main/resources/script/merge.eol:65 (entity flags only copied) | cli:query esm EntityType showed flags; transform of Sandbox test model: no create/update/delete ops for Item (flags true) or Lookup (flags "
+  }
+ ]
+}

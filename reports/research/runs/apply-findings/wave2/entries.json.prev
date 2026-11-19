@@ -1,0 +1,52 @@
+[
+ {
+  "id": "G105",
+  "status": "proposed",
+  "file": "catalog/best-practices/backend/init-data-seeding.md",
+  "heading": "Practice notes: seed through DAOs, guard against repeats",
+  "text": "For a running-app (Playwright) test the DAO-based initializer is not a test hook. Seed state in the database instead: `./judo.sh dump` and `./judo.sh import` manage PostgreSQL dumps, so build a base dump once, and derive test data from it. Values that the application sets itself (for example creation timestamps) cannot be set through the generated REST API; backdate them with SQL against the PostgreSQL container, or leave that rule untested.",
+  "evidence": "judo-esm-fullstack-project-template judo.sh commands dump/import (judo-tatami-jsl-tests digest, judo.sh.hbs:7). That timestamps cannot be set through the API is not confirmed in source (verify).",
+  "replace": "",
+  "kind": "research"
+ },
+ {
+  "id": "G112",
+  "status": "proposed",
+  "file": "catalog/best-practices/backend/multi-tenant-keycloak-realm.md",
+  "heading": "Platform: realms come from the model",
+  "text": "The realm JSON exported from the model contains only `id`, `realm`, `enabled`, `loginWithEmailAllowed` and the clients. It does not set `registrationAllowed`, so Keycloak's default (self sign-up off) applies and the login page hides the registration link. There is no model setting for it; enable self sign-up through the Keycloak admin API (`registrationAllowed=true` on the realm) or in the realm configuration after import.",
+  "evidence": "judo-meta-keycloak/model/src/main/java/hu/blackbelt/judo/meta/keycloak/runtime/exporter/Keycloak... (exported keys exactly id, realm, enabled, loginWithEmailAllowed, clients); judo-keycloak login.ftl (registration link only when realm.registrationAllowed); only the project template's test-users-realm.json sets registrationAllowed=true.",
+  "replace": "",
+  "kind": "research"
+ },
+ {
+  "id": "G122",
+  "status": "proposed",
+  "file": "catalog/best-practices/model/derived-access-filtering.md",
+  "heading": "Practice",
+  "text": "Treat the filter as a read-side restriction and verify direct access by identifier: a signed identifier is a JWS with subject = identifier and claims entity type, version and issuer (the reference or operation that produced it); it carries no user or actor claim, and verification only checks that the type matches. Do not assume that opening another actor's record by its page address is refused. *Verify* with the dispatcher, and enforce ownership in the model or in a write/read guard (interceptor or checks inside custom operations).",
+  "evidence": "judo-runtime-core/judo-runtime-core-dispatcher/.../DefaultIdentifierSigner.java (claims, hasCorrectSigner -> ACCESS_DENIED_INVALID_TYPE). Whether a direct GET/update by identifier applies the derived access filter was not found in source.",
+  "replace": "",
+  "kind": "research"
+ },
+ {
+  "id": "G131",
+  "status": "proposed",
+  "file": "catalog/model-blueprints/invitation-with-key-based-acceptance/BLUEPRINT.md",
+  "heading": "Variations",
+  "text": "- **Invitee must be a Keycloak user**: the generated realm leaves self sign-up off (see `multi-tenant-keycloak-realm`), so an anonymous actor cannot accept the key without an account. Enable self sign-up on the realm, let the invitee register first, then accept the key as the signed-in actor.",
+  "evidence": "judo-meta-keycloak exporter (no registrationAllowed in generated realm); same evidence as G112. Choosing sign-up-first over anonymous acceptance remains a design decision.",
+  "replace": "",
+  "kind": "research"
+ },
+ {
+  "id": "G135",
+  "status": "proposed",
+  "file": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+  "heading": "Know the limits of the aggregates",
+  "text": "Only `!count()` is wrapped to return 0 on an empty collection (`COALESCE(..., 0)`); `!sum`, `!avg`, `!min` and `!max` are plain aggregates over a sub-select, so on an empty collection they return no value (undefined) without an error. Check `!count()` (or `!isDefined()`) before using the result in a label. Integer collections do not support `!avg` (only sum, min and max).",
+  "evidence": "judo-runtime-core-dao-rdbms SubSelectFeatureMapper (COUNT -> COALESCE({0}.{1}, 0)); DecimalAggregatedExpressionToFeatureConverter.java:67; IntegerAggregatedExpressionToFeatureConverter (no AVG). Empty-collection NULL result for non-count aggregates inferred from the absence of COALESCE; verify at runtime.",
+  "replace": "",
+  "kind": "research"
+ }
+]

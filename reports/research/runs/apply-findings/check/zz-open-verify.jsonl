@@ -1,0 +1,19 @@
+{"id": "AU8", "verdict": "ok", "note": "AsmModel.toDictionary() puts name; tracker default source key is name; DataTypeManager uses judo.model.name; sample now uses name=YourApplicationName for AsmModel"}
+{"id": "B15", "verdict": "fixed", "note": "judo.model.name registration confirmed; removed unsupported 'when the runtime hosts more than one model' condition"}
+{"id": "B31", "verdict": "ok", "note": "Sandbox.model seeds String 255, Text 250, Phone 20, URL 1024, Email 255 with regExp; placeholder replaced"}
+{"id": "B47", "verdict": "ok", "note": "Auth.tsx.hbs: supportGuestAccess branch renders ComponentProxy for GuestPage with fallback Paper showing application.modelName and Login / Register button calling signinRedirect()."}
+{"id": "B54", "verdict": "ok", "note": "UpdateInstanceCall builds queryCustomizer from dispatcher and passes it to dao.update (L68-125); no post-write membership re-check in the call."}
+{"id": "B56", "verdict": "ok", "note": "feature.xml cxf-jaxrs only, no SSE in sources; cxf-version 3.6.8 in pom.xml:34"}
+{"id": "G030", "verdict": "fixed", "note": "action.evl: view container == action definition container or its page container; reworded to match; ActionGroup not required"}
+{"id": "G033", "verdict": "ok", "note": "esmToUi.etl throws 'Missing position parameter(s)'; judo-cli move --index=<0-based> exists"}
+{"id": "KC10", "verdict": "ok", "note": "DownloadServlet has no maxSize (UploadServlet has); dispatcher maps download to /<app>/download; frontend getFilePath('download') with X-Token"}
+{"id": "KC12", "verdict": "ok", "note": "GetVariableFunctionTransformer: result by type (string, enum, custom, date...), receiver TypeNameExpression, 'Type is not valid for environment variable' at line 144; the proposal's String-only claim was wrong and is not in the file"}
+{"id": "NG0071", "verdict": "ok", "note": "Asm2Rdbms defaults T_ C_ FK_ FK_INV_ J_; prefixes concatenated as written; no '-' special case"}
+{"id": "R0052", "verdict": "ok", "note": "Mojo templateParameters field; variablePrecedence default matches; ReactStoredVariableHelper.isDebugPrint reads debugPrint; pom sets templateParameters/debugPrint false."}
+{"id": "R1674", "verdict": "ok", "note": "UiWidgetHelper.findFirstInput checks only isReadOnly; container.tsx.hbs uses autoFocusRefDelay; general.ts.hbs value 200."}
+{"id": "R1898", "verdict": "ok", "note": "Guice keycloak src/main has no getenv; JudoKeycloakModule binds from configuration (L144-147); OSGi mapper envPrefix is JUDO_PLATFORM_ (platform-config-templates)."}
+{"id": "R1899", "verdict": "ok", "note": "Config default keycloakServerUrl http://localhost:8080/auth (L17); provider @Inject default http://localhost:8080 (L23) applies only without binding."}
+{"id": "R1900", "verdict": "ok", "note": "Config keycloakAdminPassword default judo (L26); provider default admin (L38) only without binding."}
+{"id": "R2215", "verdict": "ok", "note": "JudoPostgresqlModuleConfiguration poolSize=10 is passed to builder but PostgresqlDataSourceProvider wraps pg in HikariDataSource with no setMaximumPoolSize; Hikari default applies."}
+{"id": "R2299", "verdict": "ok", "note": "VisualElementHelper: childless node is a leaf with id/label (plus binary/filter keys); container/table/tab uses _id/_label/tab only when it has children"}
+{"id": "R2849", "verdict": "ok", "note": "JudoRuntimeFixture.tearDown only rolls back an open transaction; no injector or datasource close"}

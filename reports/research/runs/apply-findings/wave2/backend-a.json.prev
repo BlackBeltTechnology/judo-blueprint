@@ -1,0 +1,156 @@
+[
+ {
+  "id": "R1632",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/data-access-guide.md",
+  "text": "String aggregate expressions support only MIN and MAX; other operators, including concatenate, throw UnsupportedOperationException.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-query/src/main/java/hu/blackbelt/judo/runtime/core/query/feature/aggregated/AGENTS.md:15"
+ },
+ {
+  "id": "R1702",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "JSON responses are written with the platform default charset, not UTF-8.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core:judo-runtime-core-jaxrs/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/providers/PayloadMessageBodyWriter.java:37"
+ },
+ {
+  "id": "R1971",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/data-access-guide.md",
+  "text": "The static query navigation QueryCustomizer name is <impl package>.<name>QueryCustomizerImpl, which does not match the emitted class.",
+  "evidence": "template/judo-psm-generator-sdk-core:judo-psm-generator-sdk-core:judo-psm-generator-sdk-core-impl/src/main/java/hu/blackbelt/judo/psm/generator/sdk/core/impl/JavaImplHelper.java:70"
+ },
+ {
+  "id": "R2006",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/custom-operations.md",
+  "text": "The operation input parameter map key uses the raw input name, while the method signature uses the lowerFirst name.",
+  "evidence": "template/judo-psm-generator-jaxrs:judo-psm-generator-jaxrs:judo-psm-generator-jaxrs-impl/src/main/resources/rest/impl/rest.service.impl.java.hbs:67"
+ },
+ {
+  "id": "R0194",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "Generated TypeScript REST client parses yyyy-MM-dd strings with new Date(), which is UTC midnight; in negative UTC offsets the date shows one day earlier.",
+  "evidence": "template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-api/src/main/resources/rest/serialization.ts.hbs:16"
+ },
+ {
+  "id": "R0571",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "Filestore maxSize settings are in kB, but the upload request check compares the raw Content-Length in bytes against the limit.",
+  "evidence": "runtime/osgi-filestore:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/UploadServlet.java:189"
+ },
+ {
+  "id": "R0572",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "The UploadAction POST path calls parsePostRequest with no token validator, so upload tokens are not checked on that path.",
+  "evidence": "runtime/osgi-filestore:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/UploadAction.java:184"
+ },
+ {
+  "id": "R0573",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "Generated EC keys always use the P-521 curve, whatever ES256 or ES384 algorithm is configured.",
+  "evidence": "runtime/osgi-filestore:filestore-security/src/main/java/hu/blackbelt/osgi/filestore/security/DefaultKeyProvider.java:46"
+ },
+ {
+  "id": "R0579",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "Upload tokens are parsed whenever a TokenValidator is bound, even when the tokenRequired flag is false.",
+  "evidence": "runtime/osgi-filestore:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/UploadServlet.java:272"
+ },
+ {
+  "id": "R2116",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "Empty-string rejection for required string attributes runs only when the validator option is ACCEPT_NON_EMPTY; no option is applied by default.",
+  "evidence": "judo-runtime-core:judo-runtime-core-validator/src/main/java/hu/blackbelt/judo/runtime/core/validator/DefaultPayloadValidator.java:367"
+ },
+ {
+  "id": "R2324",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "A ListCall that joins an existing transaction is not rolled back; the rollback happens only when the call started a new transaction.",
+  "evidence": "judo-runtime-core:judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/behaviours/AlwaysRollbackTransactionalBehaviourCall.java:69"
+ },
+ {
+  "id": "R2469",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/data-access-guide.md",
+  "text": "Setter names for embedded mapped relations are built with a double dot (relation..name) in the collection branch.",
+  "evidence": "judo-psm-generator-sdk-core:judo-psm-generator-sdk-core-api/src/main/resources/dao/api/dto.for.create.builder.java.hbs:60"
+ },
+ {
+  "id": "R2618",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "With no IdentifierSignerSecret bound, identifiers are still signed with a random per-process HMAC key; there is no unsigned mode.",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice/src/main/java/hu/blackbelt/judo/runtime/core/guice/dispatcher/AGENTS.md:9"
+ },
+ {
+  "id": "R2741",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/data-access-guide.md",
+  "text": "Generated count() with query parameters references an undeclared effectiveParams variable, so the generated code does not compile.",
+  "evidence": "judo-psm-generator-sdk-core:judo-psm-generator-sdk-core-impl/src/main/resources/dao/impl/querycustomizer.implementation.java.hbs:117"
+ },
+ {
+  "id": "R2831",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/interceptors.md",
+  "text": "The default interceptor provider does not read a Guice Multibinder set; it returns an empty list unless interceptors are configured explicitly.",
+  "evidence": "judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/create-interceptor/SKILL.md:136"
+ },
+ {
+  "id": "R2832",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/interceptors.md",
+  "text": "A Spring @Bean returning OperationCallInterceptor is not collected; the Spring configuration returns an empty interceptor list.",
+  "evidence": "judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/create-interceptor/SKILL.md:158"
+ },
+ {
+  "id": "R2838",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "EnvironmentVariableProvider is a concrete class implementing Function<String, Object> with apply(String), not an interface with get().",
+  "evidence": "judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/dispatcher-architecture/SKILL.md:173"
+ },
+ {
+  "id": "R2839",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "DispatcherFunctionProvider exposes getSdkFunctions() and getScriptFunctions(), each returning Map<EOperation, Function<Payload, Payload>>.",
+  "evidence": "judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/dispatcher-architecture/SKILL.md:189"
+ },
+ {
+  "id": "R0797",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "A file stored without a name gets the default name fileId + '.' + mimeType, such as 'uuid.image/png'.",
+  "evidence": "runtime/osgi-filestore:filestore-rdbms/src/main/java/hu/blackbelt/osgi/filestore/rdbms/helper/FileEntity.java:55"
+ },
+ {
+  "id": "R0798",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "A stored file's SIZE comes from InputStream.available(), which is not guaranteed to equal the content length.",
+  "evidence": "runtime/osgi-filestore:filestore-rdbms/src/main/java/hu/blackbelt/osgi/filestore/rdbms/helper/FileEntity.java:57"
+ },
+ {
+  "id": "R0974",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/data-access-guide.md",
+  "text": "The PostgreSQL max_uuid helper always returns its first argument, so UUID max aggregates return the wrong value.",
+  "evidence": "runtime/judo-services:judo-services-persistence-postgresql/src/main/resources/liquibase/create-min-max.sql:74"
+ },
+ {
+  "id": "R1218",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "text": "JSON response payloads are written in the platform default charset, not UTF-8.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-jaxrs-cxf-server/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/providers/PayloadMessageBodyWriter.java:37"
+ }
+]

@@ -1,0 +1,4 @@
+{"id": "KC11@2", "verdict": "ok", "note": "interceptors.md: custom and script operations never intercepted; work-order Overview now says so. Built-in CRUD sentence not added here, so no overclaim."}
+{"id": "G133@1", "verdict": "fixed", "note": "osgi-runtime-services.md Libraries already in the runtime: Tika and PDFBox in the generated feature; Handlebars comes with the OSGi e-mail feature, not the generated feature. Wording changed to say so. CXF and JODConverter kept as added (agent-docs silent on them)."}
+{"id": "G114@3", "verdict": "ok", "note": "Relationship navigation: 1..1 returns entity, 0..1 returns Optional<T>; generator confirms (RelationHelper.isRelationOptionalType, generateOptionalTypes default true)."}
+{"id": "G099@5", "verdict": "applied-now", "note": "Added bullet: client argument = azp resolved to actor FQN; decide on it and return early for other actors (not the raw client id)"}

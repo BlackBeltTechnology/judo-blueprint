@@ -1,0 +1,2 @@
+{"id": "G042", "verdict": "ok", "note": "container.tsx.hbs:79-85 autofocus timeout; config/general.ts.hbs:41 autoFocusRefDelay = 200; storeDiff cause kept as a known issue"}
+{"id": "G034", "verdict": "ok", "note": "EsmUtils.java:4253 setLabel(getEffectiveLabel()) at creation; effective label is the member name, capitalized as the ledger states"}

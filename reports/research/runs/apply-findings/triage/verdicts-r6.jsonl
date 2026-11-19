@@ -1,0 +1,361 @@
+{"id": "R0885", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0886", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0887", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0888", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0889", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0890", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0891", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0892", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0893", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0894", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0895", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0896", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0898", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0899", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0900", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0901", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0902", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0903", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0914", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0915", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0916", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R0917", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R0918", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R0919", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0928", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R0933", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R0934", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0936", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0937", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0942", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0943", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0944", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0945", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0946", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0947", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0948", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0949", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0950", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R0954", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R0955", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R0956", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R0957", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R0962", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0963", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0964", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0965", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0966", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0981", "verdict": "keep", "reason": "Keycloak admin defaults are app-facing deployment config"}
+{"id": "R0987", "verdict": "not-platform", "reason": "Docs site link or attribute; not platform behaviour"}
+{"id": "R0988", "verdict": "not-platform", "reason": "Docs site link or attribute; not platform behaviour"}
+{"id": "R1005", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1008", "verdict": "keep", "reason": "Boolean widget mapping is generated frontend behaviour"}
+{"id": "R1010", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1011", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1012", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1013", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1014", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1015", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1018", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1028", "verdict": "not-platform", "reason": "Template agent-CLI generation; not app behaviour"}
+{"id": "R1029", "verdict": "not-platform", "reason": "Template agent fleet count; not app behaviour"}
+{"id": "R1030", "verdict": "not-platform", "reason": "Template agent fleet tiers; not app behaviour"}
+{"id": "R1031", "verdict": "not-platform", "reason": "Template agent settings; not app behaviour"}
+{"id": "R1032", "verdict": "not-platform", "reason": "Template agent settings; not app behaviour"}
+{"id": "R1034", "verdict": "not-platform", "reason": "Template hook count; not app behaviour"}
+{"id": "R1035", "verdict": "not-platform", "reason": "Template agent doc size; not app behaviour"}
+{"id": "R1036", "verdict": "not-platform", "reason": "Template agent doc size; not app behaviour"}
+{"id": "R1037", "verdict": "not-platform", "reason": "Template agent doc size; not app behaviour"}
+{"id": "R1039", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1040", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1041", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1043", "verdict": "not-platform", "reason": "Contributor MWE2 regeneration command"}
+{"id": "R1044", "verdict": "not-platform", "reason": "Contributor MWE2 regeneration command"}
+{"id": "R1045", "verdict": "not-platform", "reason": "Contributor MWE2 regeneration command"}
+{"id": "R1046", "verdict": "not-platform", "reason": "Contributor MWE2 regeneration command"}
+{"id": "R1047", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1048", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1051", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1055", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1056", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1059", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1061", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1068", "verdict": "not-platform", "reason": "Expression metamodel validator internals"}
+{"id": "R1069", "verdict": "not-platform", "reason": "Expression metamodel validator internals"}
+{"id": "R1070", "verdict": "not-platform", "reason": "Expression metamodel adapter internals"}
+{"id": "R1071", "verdict": "not-platform", "reason": "Expression runtime helper internals"}
+{"id": "R1073", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1084", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1085", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1086", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1087", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1092", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1093", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1094", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1095", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1096", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1114", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1115", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1116", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1117", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1122", "verdict": "not-platform", "reason": "Language server flag; editor tooling, not modelling"}
+{"id": "R1123", "verdict": "not-platform", "reason": "Language server flag; editor tooling, not modelling"}
+{"id": "R1124", "verdict": "not-platform", "reason": "Language server flag; editor tooling, not modelling"}
+{"id": "R1125", "verdict": "not-platform", "reason": "Language server flag; editor tooling, not modelling"}
+{"id": "R1126", "verdict": "not-platform", "reason": "Language server packaging; editor tooling"}
+{"id": "R1127", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1128", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1137", "verdict": "not-platform", "reason": "EVL rate-check internals; addition units already documented"}
+{"id": "R1138", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1139", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1146", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1147", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1148", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1149", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1157", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1158", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1159", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1160", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1161", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1163", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1164", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1170", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1171", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1172", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1173", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1183", "verdict": "not-platform", "reason": "Maven mojo URL parsing internals; error-path detail"}
+{"id": "R1186", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1191", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1192", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1193", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1194", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1195", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1196", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1197", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1201", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1221", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1233", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1234", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1237", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1244", "verdict": "not-platform", "reason": "Transaction API interface location; config already documented"}
+{"id": "R1248", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1252", "verdict": "not-platform", "reason": "Template agent pipeline build step; not app behaviour"}
+{"id": "R1267", "verdict": "not-platform", "reason": "Build tool or dev utility internals"}
+{"id": "R1268", "verdict": "not-platform", "reason": "Build tool or dev utility internals"}
+{"id": "R1271", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1272", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1273", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1274", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1275", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1276", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1277", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1280", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1281", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1282", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1283", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1284", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1285", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1287", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1289", "verdict": "not-platform", "reason": "Build tool or dev utility internals"}
+{"id": "R1290", "verdict": "not-platform", "reason": "Build tool or dev utility internals"}
+{"id": "R1291", "verdict": "not-platform", "reason": "Build tool or dev utility internals"}
+{"id": "R1292", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1293", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1294", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1295", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1296", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1301", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1302", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1303", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1306", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1307", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1308", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1309", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1310", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1325", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1326", "verdict": "not-platform", "reason": "Contributor build doc"}
+{"id": "R1327", "verdict": "not-platform", "reason": "Contributor build doc"}
+{"id": "R1328", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1329", "verdict": "not-platform", "reason": "Contributor MWE2 regeneration command"}
+{"id": "R1330", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1331", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1335", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1343", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1349", "verdict": "not-platform", "reason": "Filename utility internals"}
+{"id": "R1387", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1388", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1389", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1390", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1391", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1392", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1393", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1394", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1395", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1396", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1397", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1398", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1404", "verdict": "not-platform", "reason": "Project template internals; not app-facing"}
+{"id": "R1405", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1406", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1407", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1408", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1409", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1410", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1436", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1437", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1438", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1440", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1442", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1448", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1449", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1455", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1456", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1461", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1462", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1475", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1476", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1477", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1478", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1479", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1480", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1481", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1482", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1489", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1490", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1491", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1492", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1494", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1495", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1496", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1499", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1507", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1510", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1512", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1513", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1514", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1515", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1516", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1517", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1522", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1523", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1546", "verdict": "keep", "reason": "JSL view input syntax is written by app modellers"}
+{"id": "R1547", "verdict": "keep", "reason": "JSL view link modifiers are written by app modellers"}
+{"id": "R1548", "verdict": "keep", "reason": "JSL view table modifiers are written by app modellers"}
+{"id": "R1561", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1575", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1576", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1577", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1578", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1579", "verdict": "not-platform", "reason": "Build tool or dev utility internals"}
+{"id": "R1591", "verdict": "keep", "reason": "Filestore servlet config properties are app-facing"}
+{"id": "R1592", "verdict": "duplicate", "reason": "Same fact as R1591"}
+{"id": "R1593", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1597", "verdict": "keep", "reason": "CLI transform behaviour app developers use"}
+{"id": "R1599", "verdict": "keep", "reason": "CLI save behaviour app developers use"}
+{"id": "R1600", "verdict": "keep", "reason": "CLI transform pipeline steps app developers use"}
+{"id": "R1612", "verdict": "keep", "reason": ".generator-ignore semantics affect generated code customisation"}
+{"id": "R1613", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1614", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1615", "verdict": "keep", "reason": "Generator checksum reset behaviour affects generated code"}
+{"id": "R1616", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1622", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1623", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R1651", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1652", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1653", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1654", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1663", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1711", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1712", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1713", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1725", "verdict": "not-platform", "reason": "Template descriptor internals"}
+{"id": "R1743", "verdict": "not-platform", "reason": "Judo-ng internal; not app-facing"}
+{"id": "R1752", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1753", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1757", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1758", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1759", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1760", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1761", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1762", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1763", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1773", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1774", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1776", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1777", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1781", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1788", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1789", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1790", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1791", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1792", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1793", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1794", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1795", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1796", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1797", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1798", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1804", "verdict": "keep", "reason": "Identifier type rules are modelling behaviour"}
+{"id": "R1807", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1808", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1812", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1814", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1815", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1816", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1817", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1818", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1819", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1820", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1829", "verdict": "not-platform", "reason": "Template helper spec internals"}
+{"id": "R1830", "verdict": "not-platform", "reason": "Template test spec; not app-facing"}
+{"id": "R1831", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1833", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1845", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1846", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1847", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1850", "verdict": "not-platform", "reason": "Runtime library or test-module internals"}
+{"id": "R1859", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1860", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1861", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1862", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1863", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1864", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1865", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1866", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1867", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1868", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1869", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1870", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1871", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1872", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1873", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1874", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1875", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1876", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1877", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1878", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1879", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1880", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1881", "verdict": "not-platform", "reason": "Feature repository packaging; contributor doc"}
+{"id": "R1890", "verdict": "not-platform", "reason": "Eclipse plugin or P2 packaging; not app-facing"}
+{"id": "R1908", "verdict": "not-platform", "reason": "Library internals; not app-facing"}
+{"id": "R1909", "verdict": "not-platform", "reason": "Library internals; not app-facing"}
+{"id": "R1914", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1915", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1916", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1917", "verdict": "not-platform", "reason": "judo-cli-api Java API; CLI exposes no validation type"}
+{"id": "R1918", "verdict": "not-platform", "reason": "judo-cli-api Java API; CLI exposes no validation type"}
+{"id": "R1919", "verdict": "not-platform", "reason": "judo-cli-api Java API; CLI exposes no validation type"}
+{"id": "R1920", "verdict": "not-platform", "reason": "judo-cli-api Java API; CLI exposes no validation type"}
+{"id": "R1921", "verdict": "not-platform", "reason": "judo-cli-api Java API; CLI exposes no validation type"}
+{"id": "R1922", "verdict": "not-platform", "reason": "judo-cli-api Java API; CLI exposes no validation type"}
+{"id": "R1923", "verdict": "not-platform", "reason": "judo-cli-api Java API; CLI exposes no validation type"}
+{"id": "R1925", "verdict": "not-platform", "reason": "judo-cli-api Java API; CLI exposes no validation type"}
+{"id": "R1926", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1927", "verdict": "not-platform", "reason": "Metamodel module internals or contributor doc"}
+{"id": "R1949", "verdict": "keep", "reason": "Version updater channel property used in builds"}
+{"id": "R1950", "verdict": "keep", "reason": "Version updater server id property used in builds"}
+{"id": "R1953", "verdict": "not-platform", "reason": "Change-proposal or spec doc; judo-ng internal"}
+{"id": "R1954", "verdict": "keep", "reason": "Filestore token expiry config is app-facing"}
+{"id": "R1959", "verdict": "not-platform", "reason": "Docs site link or attribute; not platform behaviour"}
+{"id": "R1960", "verdict": "not-platform", "reason": "Docs site link or attribute; not platform behaviour"}

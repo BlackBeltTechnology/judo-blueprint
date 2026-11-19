@@ -1,0 +1,179 @@
+{
+  "source": "dashboard",
+  "hidden": false,
+  "cwd": "/Users/bmiller/Projects/webshop-test",
+  "status": "idle",
+  "startedAt": 1794405982855,
+  "model": "anthropic/claude-sonnet-5-5",
+  "thinkingLevel": "medium",
+  "tokensIn": 10090,
+  "tokensOut": 3081490,
+  "cacheRead": 1568425649,
+  "cacheWrite": 12547689,
+  "cost": 219.0468674000002,
+  "statsExtractorVersion": 2,
+  "contextTokens": 303306,
+  "contextWindow": 1000000,
+  "unread": false,
+  "notifyLog": [
+    {
+      "notifyId": "90162c82-907b-4e98-8cfe-ffae2b40c194",
+      "message": "Observational memory: compaction threshold reached (~424,814 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794411553297
+    },
+    {
+      "notifyId": "24b12bba-fb6b-431f-9419-1a969e0516a1",
+      "message": "blackhole: 1032 source entries processed; tail kept 0/6 user turns (~7.0k tok).",
+      "level": "info",
+      "ts": 1794411553950
+    },
+    {
+      "notifyId": "7a1fa36b-1d8d-43e5-9531-f70bdb946979",
+      "message": "Observational memory: compaction threshold reached (~465,574 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794423853222
+    },
+    {
+      "notifyId": "4e21a28d-b5ef-4367-ab0c-fda38aaafe0c",
+      "message": "blackhole: 870 source entries processed; tail kept 0/12 user turns (~6.4k tok).",
+      "level": "info",
+      "ts": 1794423853919
+    },
+    {
+      "notifyId": "5a6113fd-4cda-4e0a-9000-8c2b4755f8a2",
+      "message": "Observational memory: compaction threshold reached (~623,736 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794435941076
+    },
+    {
+      "notifyId": "6487ddaa-37a5-48f1-b969-7eb77dd17e81",
+      "message": "blackhole: 696 source entries processed; tail kept 0/14 user turns (~4.1k tok).",
+      "level": "info",
+      "ts": 1794435941798
+    },
+    {
+      "notifyId": "48df8e94-b444-44f8-b306-aa169f4adb64",
+      "message": "Observational memory: compaction threshold reached (~538,351 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794445627183
+    },
+    {
+      "notifyId": "4cad461f-b625-4e68-bc62-46a13a772c05",
+      "message": "blackhole: 545 source entries processed; tail kept 0/16 user turns (~5.2k tok).",
+      "level": "info",
+      "ts": 1794445627904
+    },
+    {
+      "notifyId": "7b565de6-8ce5-4510-bcc1-f79502edef07",
+      "message": "Observational memory: compaction threshold reached (~429,237 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794453072616
+    },
+    {
+      "notifyId": "b55ad12a-f9ba-4346-9042-dd5114b8b7e4",
+      "message": "blackhole: 491 source entries processed; tail kept 0/17 user turns (~4.7k tok).",
+      "level": "info",
+      "ts": 1794453073386
+    },
+    {
+      "notifyId": "ccf7918b-9dda-4b6f-809d-035c1afc0907",
+      "message": "Observational memory: compaction threshold reached (~540,343 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794468601966
+    },
+    {
+      "notifyId": "70f5fd2f-1f12-4d21-a8e3-dd1ad8128536",
+      "message": "blackhole: 700 source entries processed; tail kept 0/18 user turns (~6.3k tok).",
+      "level": "info",
+      "ts": 1794468602790
+    },
+    {
+      "notifyId": "e970f655-cce4-468f-bffc-97f9260afcbf",
+      "message": "Observational memory: compaction threshold reached (~422,774 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794477228544
+    },
+    {
+      "notifyId": "6c3d2cb9-883e-41f4-bc90-87ef4258e171",
+      "message": "blackhole: 492 source entries processed; tail kept 0/19 user turns (~4.0k tok).",
+      "level": "info",
+      "ts": 1794477229492
+    },
+    {
+      "notifyId": "ff55f359-bb46-45d3-ac0b-7f5cfc13b159",
+      "message": "Observational memory: compaction threshold reached (~464,381 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794486782791
+    },
+    {
+      "notifyId": "85d31b5f-e838-407d-86a6-4462e9214080",
+      "message": "blackhole: 550 source entries processed; tail kept 0/26 user turns (~1.2k tok).",
+      "level": "info",
+      "ts": 1794486784129
+    },
+    {
+      "notifyId": "8d793cdd-2fd9-4d3d-9893-63fe7f2ef897",
+      "message": "Observational memory: compaction threshold reached (~496,132 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794912121419
+    },
+    {
+      "notifyId": "2fc12053-5ad8-411e-96f4-29d039f06891",
+      "message": "blackhole: 837 source entries processed; tail kept 0/33 user turns (~9.3k tok).",
+      "level": "info",
+      "ts": 1794912122635
+    },
+    {
+      "notifyId": "16e96c41-17eb-4f43-bb8e-4742243c070e",
+      "message": "Observational memory: compaction threshold reached (~604,588 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1794928285782
+    },
+    {
+      "notifyId": "89a23fc4-5f79-4d69-b655-d250ac2710eb",
+      "message": "blackhole: 765 source entries processed; tail kept 0/35 user turns (~6.4k tok).",
+      "level": "info",
+      "ts": 1794928287060
+    },
+    {
+      "notifyId": "a7529c27-604f-461d-afcf-dd9a0d7e6960",
+      "message": "Observational memory: compaction threshold reached (~733,320 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1795059909543
+    },
+    {
+      "notifyId": "fa4267b3-1159-49b8-9ff2-601f613c5624",
+      "message": "blackhole: 1229 source entries processed; tail kept 1/45 user turns (~1.5k tok).",
+      "level": "info",
+      "ts": 1795059910974
+    },
+    {
+      "notifyId": "2edfe35f-f972-4e73-bab7-3fdcb9f59c93",
+      "message": "Observational memory: compaction threshold reached (~506,116 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1795073304544
+    },
+    {
+      "notifyId": "8f914009-7ddc-4c47-9f55-9ea5d7d88ad0",
+      "message": "blackhole: 651 source entries processed; tail kept 0/49 user turns (~6.6k tok).",
+      "level": "info",
+      "ts": 1795073306080
+    },
+    {
+      "notifyId": "4e6f1ca1-1740-4839-92c6-1b70a0165a53",
+      "message": "Observational memory: compaction threshold reached (~625,722 tokens); triggering compaction",
+      "level": "info",
+      "ts": 1795084881314
+    },
+    {
+      "notifyId": "71a6b1dd-7ed4-461b-9bab-2bf791798ac4",
+      "message": "blackhole: 864 source entries processed; tail kept 0/51 user turns (~5.2k tok).",
+      "level": "info",
+      "ts": 1795084883185
+    }
+  ],
+  "cachedAt": 1795101899288,
+  "live": true,
+  "liveEpoch": 1795076499702
+}

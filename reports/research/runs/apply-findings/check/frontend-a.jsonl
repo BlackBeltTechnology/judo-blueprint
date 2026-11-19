@@ -1,0 +1,64 @@
+{"id": "G269", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G076", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G077", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G078", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G079", "verdict": "ok", "note": "no source evidence; plausible operator finding, kept (low risk)"}
+{"id": "G097", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G098", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G111", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G118", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G123", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "G127", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "B33", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B34", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B35", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B36", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B37", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B38", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B39", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B40", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B41", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B42", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B43", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B44", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B45", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B46", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B47", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "B48", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "AU1", "verdict": "ok", "note": "clean behaviour matches judo.sh.hbs:1069-1085 (Karaf dir removed only for karaf runtime)"}
+{"id": "AU3", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "AU7", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "AU11", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "AU12", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "AU13", "verdict": "ok", "note": "evidence checked; text platform-neutral, no deletions"}
+{"id": "KC16", "verdict": "ok", "note": "operator evidence only; kept"}
+{"id": "FR-043", "verdict": "ok", "note": "doc-gap topic, no concrete fact; left unverified"}
+{"id": "NG0024", "verdict": "ok", "note": "target file deployment/generator-plugins.md is outside this batch; left to its batch"}
+{"id": "NG0123", "verdict": "ok", "note": "target file deployment/generator-plugins.md is outside this batch; left to its batch"}
+{"id":"B55","verdict":"ok","note":"wave2: typeahead supported"}
+{"id":"B33","verdict":"ok","note":"wave2: event bus matches template"}
+{"id":"B35","verdict":"fixed","note":"wave2: service key corrected to *_INTERFACE_KEY; must->should for Grid root"}
+{"id":"B36","verdict":"ok","note":"wave2: "}
+{"id":"B38","verdict":"ok","note":"wave2: data-name in flex.hbs"}
+{"id":"B39","verdict":"ok","note":"wave2: key in system i18n"}
+{"id":"B40","verdict":"ok","note":"wave2: "}
+{"id":"B45","verdict":"ok","note":"wave2: textMask unreferenced in templates"}
+{"id":"B46","verdict":"ok","note":"wave2: "}
+{"id":"U1127","verdict":"ok","note":"wave2: "}
+{"id":"U1128","verdict":"ok","note":"wave2: "}
+{"id":"U1223","verdict":"ok","note":"wave2: "}
+{"id":"R1680","verdict":"fixed","note":"Key root rule was stated as entity-field only with a no-ClassType claim not in source; reworded to page container root plus data element segment for table columns/filters/button-group buttons (UiI18NHelper.java:116-135)"}
+{"id":"R1682","verdict":"ok","note":"enumerations.<restParamName>.<member> and _null key verified (column.fragment.hbs:57, UiI18NHelper.java:219)"}
+{"id":"R1683","verdict":"ok","note":"already-correct, no edit"}
+{"id":"R1684","verdict":"ok","note":"i18next init in l10n-context.tsx.hbs:99 verified"}
+{"id":"R1685","verdict":"ok","note":"build = tsgo && vite build verified in package.json.scripts.fragment.hbs:3"}
+{"id":"R0052","verdict":"ok","note":"unverified, not written; stays unwritten"}
+{"id":"R0053","verdict":"ok","note":"not-platform, no edit"}
+{"id":"R2481","verdict":"ok","note":"remove<Rel> posts selected not input (relationServiceImpl.ts.hbs:309) verified"}
+{"id":"R2517","verdict":"ok","note":"WARNING trailing space verified in FeedbackLevel.ts.hbs:1"}
+{"id":"R1066","verdict":"ok","note":"not-platform, no edit"}
+{"id":"R1223","verdict":"ok","note":"already-correct, no edit"}
+{"id":"R1225","verdict":"ok","note":"script list matches fragment lines 1-8; no build:ci verified"}
+{"id":"R1226","verdict":"ok","note":"build:reckless = vite build (no type check) verified"}
+{"id": "R1612", "verdict": "ok", "note": "GeneratorIgnore.java:46-88 globs read line by line, no negation handling; parent ignore files walked up; leading ! is a literal glob char"}
+{"id": "R1670", "verdict": "fixed", "note": "scoped by path: esm2ui has SWITCH -> ui:Switch (dataField.etl:66-71, esm.ecore:1063); React template has only checkbox.hbs and trinarylogiccombo.hbs; jsl2ui always trinary combo (viewWidgetDeclaration.etl:45-72). Orchestrator fix."}

@@ -1,0 +1,137 @@
+{
+ "batch": "entries",
+ "files": [
+  "catalog/best-practices/backend/init-data-seeding.md",
+  "catalog/best-practices/backend/markdown-handlebars-pdf-report.md",
+  "catalog/best-practices/backend/multi-tenant-keycloak-realm.md",
+  "catalog/best-practices/backend/relation-based-entity-creation.md",
+  "catalog/best-practices/backend/self-learning-reference-dictionary.md",
+  "catalog/best-practices/frontend/dual-actor-frontend-architecture.md",
+  "catalog/best-practices/frontend/i18n-generator-override-extra-fragment.md",
+  "catalog/best-practices/frontend/multi-step-operation-flow.md",
+  "catalog/best-practices/model/actor-based-transfer-projection.md",
+  "catalog/best-practices/model/bidirectional-relation.md",
+  "catalog/best-practices/model/derived-access-filtering.md",
+  "catalog/best-practices/model/null-safe-collection-aggregation.md",
+  "catalog/best-practices/model/standard-type-library.md",
+  "catalog/model-blueprints/invitation-with-key-based-acceptance/BLUEPRINT.md",
+  "catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md",
+  "catalog/model-blueprints/xdocreport-document-generation-pipeline/BLUEPRINT.md"
+ ],
+ "items": [
+  {
+   "id": "G103",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/relation-based-entity-creation.md",
+   "text": "#### G103 `c05-05` R9 F31: The per-relation createHistory method did not exist until the relation had createable=true, which the builder only found after a failed build.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/relation-based-entity-creation.md`. The page says the create method exists only if the relation allows creation but never names the createable=true attribute. Add: set createable=true on the relation or createX is not generated.\n- **Why:** relation-based-entity-creation.md states the createable rule in one sentence that the builder missed on first read. **Workaround:** Set createable=true on SalesOrder.history in the model, then the generated create method appeared.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L2788`, `session:L2872`, `session:L2874`, `session:L2875`"
+  },
+  {
+   "id": "G104",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/relation-based-entity-creation.md",
+   "text": "#### G104 `c09-18` R14 F69, F70: DAO create on a non-composition two-way relation (customerAccountDao.createPointEntries, createGiftCards) failed with MISSING_REQUIRED_RELATION; only the child DAO create with the back reference works\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/relation-based-entity-creation.md`. Page recommends parent-DAO create for containment only; builder shows non-composition two-way relations fail with MISSING_REQUIRED_RELATION through the parent DAO. Add: for plain two-way relations create through the child DAO with the back reference.\n- **Why:** The kb covers creation through composition parents only; the builder found no note for plain two-way relations. **Workaround:** pointsEntryDao.create(builder.withCustomer(customer)) and giftCardDao.create(builder.withBuyer(buyer)).\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L5371`, `session:L5531`"
+  },
+  {
+   "id": "G105",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/init-data-seeding.md",
+   "text": "#### G105 `c05-08` R9 F32: No documented way to backdate or seed an old order in a running-app Playwright test, so the 30-day cut-off itself is untested.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/init-data-seeding.md`. No page covers seeding or backdating rows for a running-app Playwright test (init-data-seeding and runtime-fixture pages cover Java tests only). Add the route used (SQL via psql or a test-only operation).\n- **Why:** Order timestamps are set only by checkout; the initializer has no documented trigger; the kb fixture examples are for Java integration tests, not the running app. **Workaround:** Test checks that today's order is in the 30-day list and in All orders; the cut-off is left untested and logged.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2748`, `session:L2749`, `session:L2773`, `session:L2776`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G106",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/init-data-seeding.md",
+   "text": "#### G106 `c05-60` R10 F33: The shop settings singleton has no startup seed: the model blueprint says the row is seeded by an initializer, but no startup trigger is documented, so the admin enters it once through the UI and a se\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/init-data-seeding.md`. The initializer blueprint says the project calls init from a startup or deployment routine but gives no concrete trigger and no singleton duplicate guard. Add: the platform does not auto-run init (verify); call it from a deployment script and guard with a count check.\n- **Why:** Catalog gives no trigger for init operations and no rule for singleton duplicates in the running app. **Workaround:** Seed test creates the settings row through the admin UI if none exists.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L3015`, `session:L3016`, `session:L3018`, `session:L3019`"
+  },
+  {
+   "id": "G107",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/standard-type-library.md",
+   "text": "#### G107 `c01-17` R0 S02: The predefined Text type is limited to 250 characters, which is too short for a product description. The catalog does not say so and does not name a long-text type.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/standard-type-library.md`. Catalog says Text limits vary (250 to 4000) and tells to pick one, but a model built from scratch has the 250 default. Add one line: for descriptions define a longer Text type (e.g. 2000) in the model; do not use the 250 one.\n- **Why:** Type doc lists StringType widget properties but not the Text length limit. **Workaround:** Added StringType LongText with maxLength 4000 in webshop::types.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L102`, `session:L104`, `session:L119`, `gaps:R0-9`. Merged: g-L9"
+  },
+  {
+   "id": "G109",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/i18n-generator-override-extra-fragment.md",
+   "text": "#### G109 `c02-36` R3 S11: Path and format of an i18n extra fragment for application_default.json were not in the kb. The builder first wrote the fragment under ui-react/actor/public/i18n with an unbraced JSON line, then found \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/frontend/i18n-generator-override-extra-fragment.md`. Page line 34 gives `ui-react/actor/public/i18n/` under the override directory and the no-braces rule, but calls it unverified; the builder confirmed from the template jar that the file is actor/public/i18n/application_default_extra.fragment.hbs relative to generator-overrides. Make the root explicit (generator-overrides/ui-react/...) and mark as verified.\n- **Why:** Best-practice page i18n-generator-override-extra-fragment.md says the path is project practice and not covered by agent-docs; the kb search did not return the template path. **Workaround:** Moved the fragment to application/frontend-react/generator-overrides/ui-react/actor/public/i18n/application_default_extra.fragment.hbs (override dir from the frontend pom), removed the wrong folders and rebuilt; menuTree.other became 'More' in application_en-US.json.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L1477`, `session:L1483`, `session:L1484`, `session:L1485`. Merged: g-R3-2"
+  },
+  {
+   "id": "G112",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/multi-tenant-keycloak-realm.md",
+   "text": "#### G112 `c03-56` R7 F13: The model has no setting for Keycloak self sign-up (registrationAllowed); the generated realm JSON leaves it unset, so the builder had to set it through the Keycloak admin API.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/backend/multi-tenant-keycloak-realm.md`. The practice shows createRealm(name, registrationAllowed) in code but not that the generated realm JSON leaves self sign-up off with no model setting. Add: for the generated realm enable registration through the Keycloak admin API or a realm-json override.\n- **Why:** The platform's generated realm does not expose a self sign-up switch in the documented model settings; catalog does not cover it. **Workaround:** Logged as GAPS R7-3; the seed script switches self sign-up on through the Keycloak admin API.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L2135`, `session:L2137`, `session:L2138`, `session:L2139`. Merged: g-R7-4"
+  },
+  {
+   "id": "G113",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/dual-actor-frontend-architecture.md",
+   "text": "#### G113 `c03-57` R7 F14: Generated actor modules (webshop__admin, webshop__customer) each get their own e2e module; the Level 0 Playwright tests had to be split across them by hand (git mv).\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/frontend/dual-actor-frontend-architecture.md`. Page covers per-actor frontend modules but not per-actor e2e modules. Add: each actor also gets its own e2e module; split tests per actor. Also stale webshop__shop dirs remain after the actor split (GAPS R7-6).\n- **Why:** Each actor has its own generated e2e and frontend module; the catalog does not say how existing tests move between them. **Workaround:** Moved helpers and specs to the matching module, changed the base URL to Admin or Customer, and added actor-specific login helpers.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2153`, `session:L2154`, `session:L2156`, `session:L2157`"
+  },
+  {
+   "id": "G115",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/backend/markdown-handlebars-pdf-report.md",
+   "text": "#### G115 `c05-42` R10 F39: No runnable recipe in the kb for a Markdown Handlebars template rendered to PDF; the only document pipeline in the kb is the DOCX XDocReport one.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `catalog/best-practices/backend/markdown-handlebars-pdf-report.md`. No recipe for Markdown plus Handlebars rendered to PDF; judo-doc-problems already records a project that migrated to it (entry about replacing the XDocReport leg). Write the pipeline page.\n- **Why:** Catalog covers Handlebars email rendering, file store transfer and inline preview, but no Markdown to PDF step. **Workaround:** invoice.md.hbs rendered with Handlebars 4.2.0 (already in runtime), turned into PDF by a small Markdown renderer on PDFBox 2.0.13 (already in runtime), stored via FileStoreService, returned as FileType.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2992`, `session:L2994`, `session:L2996`, `session:L2998`"
+  },
+  {
+   "id": "G116",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/xdocreport-document-generation-pipeline/BLUEPRINT.md",
+   "text": "#### G116 `c05-43` R10 F39: The XDocReport DOCX pipeline blueprint is still presented as a current pattern with no deprecation note, although the project lead says the pipeline is deprecated.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/model-blueprints/xdocreport-document-generation-pipeline/BLUEPRINT.md`. Blueprint has no deprecation note. judo-doc-problems describes XDocReport as the legacy leg replaced by Markdown plus Handlebars, which supports the claim (the lead statement itself is unverifiable). Add a legacy note linking the replacement.\n- **Why:** Blueprint status fields say single-project and do not mark deprecation. **Workaround:** Not used; a Markdown route was built instead.\n- **Validation:** partly; kind catalog-wrong; catalog wrong. Evidence: `session:L2991`, `session:L2998`, `session:L2999`"
+  },
+  {
+   "id": "G122",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/derived-access-filtering.md",
+   "text": "#### G122 `c09-19` R14 F62: A seller who opened the direct page address of another seller's product got the product, its status and an Unpublish button. The access filter hid it from lists only.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/derived-access-filtering.md`. derived-access-filtering.md says visibility is enforced by the model but does not say a direct GET/update by identifier bypasses list filters. Add a security warning and a write-guard interceptor pointer (verify with the dispatcher).\n- **Why:** Derived access filters restrict the generated list queries; a direct identifier GET or update is not filtered. Signed identifiers are not bound to a user. **Workaround:** SellerOwnershipInterceptor on refresh and update, plus ownership checks inside the custom operations; the page shows a refusal toast and an empty form.\n- **Validation:** confirmed; kind catalog-wrong; catalog missing. Evidence: `session:L5479`, `session:L5480`, `session:L5488`, `session:L5490`"
+  },
+  {
+   "id": "G125",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/frontend/multi-step-operation-flow.md",
+   "text": "#### G125 `c10-15` R15 : The kb gives the Stepper widget (a form layout) as the step-flow answer; no catalog entry covers a multi-step operation flow like checkout.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `catalog/best-practices/frontend/multi-step-operation-flow.md`. Stepper is documented as a form layout only; no pattern for a multi-step operation flow like checkout. Add a pattern page (custom visual element inside the cart page).\n- **Why:** kb_search for 'multi-step wizard stepper checkout flow' matched form widgets only. **Workaround:** Built a custom component instead of a model Stepper.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L5870`, `session:L5871`"
+  },
+  {
+   "id": "G128",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/actor-based-transfer-projection.md",
+   "text": "#### G128 `c04-03` R8 F17, F21, F22, F24: The customer API returned stock, active and variants on the product list and details (data leak), because the customer used the admin-facing product transfer object.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/actor-based-transfer-projection.md`. Page exists; add a warning: never expose an admin mapped transfer object (stock, active) through a customer access; define a separate projection per actor. A rule in the builder prompt would also catch it.\n- **Why:** Own design mistake from earlier rounds: the customer product access pointed at the mapped ProductInfo, which carries admin-only fields. **Workaround:** New mapped transfer object ShopProductInfo without stock, active and variants; Customer.products points at it; ProductInfo stays admin only; test watches server answers for a browsing customer.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L2348`, `session:L2384`, `session:L2386`, `session:L2574`. Merged: g-R7-8. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G131",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/invitation-with-key-based-acceptance/BLUEPRINT.md",
+   "text": "#### G131 `c08-12` R13 F55: Invitation key blueprint assumes an anonymous actor, so the invitee cannot accept the key without a Keycloak account. The builder adds sign-up first, then key entry, and shows the key in the admin tab\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/model-blueprints/invitation-with-key-based-acceptance/BLUEPRINT.md`. The blueprint already uses an anonymous actor (BLUEPRINT.md:20), so the builder chose sign-up first by project design. Add a variant: when the invitee must become a Keycloak user, sign up first, then enter the key.\n- **Why:** Chunk does not show why anonymous acceptance was not used. GAPS R13-3 records the decision as platform limit with no mail server. **Workaround:** Key shown in the open-invitations table and logged; invitee signs up, then enters key on Join a company; acceptance checks key, expiry and e-mail and deletes the invitation in one transaction.\n- **Validation:** partly; kind platform-limit; catalog partly-covered. Evidence: `session:L4481`, `session:L4537`, `session:L4541`, `session:L4879`"
+  },
+  {
+   "id": "G132",
+   "src": "gap-analysis",
+   "target": "catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md",
+   "text": "#### G132 `c09-42` R14 F70: Loyalty points expire only by a call from an admin dashboard action or at checkout; there is no scheduled expiry job.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md`. The blueprint needs a scheduler module; GAPS R14-9 says the generated runtime has none. Add the fallback: call the expiry service from an admin action and at checkout.\n- **Why:** osgi-scheduled-background-jobs needs a scheduler module the generated runtime does not have, and a job has no request transaction. **Workaround:** LoyaltyService.expireAll(now) called from the admin action and at each checkout.\n- **Validation:** confirmed; kind platform-limit; catalog partly-covered. Evidence: `session:L5134`, `session:L5138`, `session:L5531`"
+  },
+  {
+   "id": "G134",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/bidirectional-relation.md",
+   "text": "#### G134 `g-R11-4` R11 F41: create TwoWayRelationMember makes the partner named after the type (customerAccount) with cardinality 0..1; a JQL over it fails with \"ObjectFilterExpression cannot be cast to CollectionExpression\" unt\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/bidirectional-relation.md`. Session L3303 starts the wishlist design; catalog has TwoWayRelationMember only as metamodel mapping (ui-authoring-guide.md line 136), no CLI default note. Add: after create TwoWayRelationMember, rename the partner and set its cardinality to 0..* for many-to-many. Not independently re-run.\n- **Why:** CLI create defaults for the opposite end. **Workaround:** Renamed partner to wishedBy and set 0..*.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L3303`, `gaps:R11-4`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G135",
+   "src": "gap-analysis",
+   "target": "catalog/best-practices/model/null-safe-collection-aggregation.md",
+   "text": "#### G135 `g-R11-6` R11 F43: The kb says it does not document what !avg does on an empty collection; it ran without error and returned an empty value.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/best-practices/model/null-safe-collection-aggregation.md`. The file (line 26) says empty-collection behaviour is not documented and tells to use a ternary guard. Add the observed fact (verify): !avg over an empty collection returns undefined with no error; compare !count() first for labels.\n- **Why:** Platform behaviour undocumented in catalog. **Workaround:** No guard on !avg; ratingLabel guards on count.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L3362`, `gaps:R11-6`\n\n## B. Platform tickets (judo-ng)"
+  },
+  {
+   "id": "KC07",
+   "src": "knowledge-check",
+   "target": "catalog/best-practices/backend/self-learning-reference-dictionary.md",
+   "text": "| **K54.C2 FALSE / R7:** `createAll` is a plain loop | Not in agent-docs. `best-practices/backend/self-learning-reference-dictionary.md:74` still says \"`createAll(...)` \u2026 in batches\" | **No** (wrong claim is in a best practice) |"
+  },
+  {
+   "id": "KC23",
+   "src": "knowledge-check",
+   "target": "catalog/model-blueprints/xdocreport-document-generation-pipeline/BLUEPRINT.md",
+   "text": "| K68: XDocReport deprecated in favour of Handlebars (decision from `~/Downloads/message (1).txt`) | Not in agent-docs. `model-blueprints/xdocreport-document-generation-pipeline` and `best-practices/backend/document-generation-pipeline.md` are not marked deprecated (U24: \"Should I mark these deprecated?\", never done) | **No** |"
+  }
+ ]
+}

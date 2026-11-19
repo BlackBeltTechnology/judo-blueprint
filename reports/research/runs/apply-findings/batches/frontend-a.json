@@ -1,0 +1,395 @@
+{
+ "batch": "frontend-a",
+ "files": [
+  "catalog/agent-docs/frontend/README.md",
+  "catalog/agent-docs/frontend/advanced-patterns.md",
+  "catalog/agent-docs/frontend/build-and-deployment.md",
+  "catalog/agent-docs/frontend/development-workflow.md",
+  "catalog/agent-docs/frontend/error-handling.md",
+  "catalog/agent-docs/frontend/extension-points.md",
+  "catalog/agent-docs/frontend/i18n.md",
+  "catalog/agent-docs/frontend/model-screen-layout.md",
+  "catalog/agent-docs/frontend/theming.md",
+  "catalog/agent-docs/frontend/ui-model-pitfalls.md"
+ ],
+ "items": [
+  {
+   "id": "G269",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/theming.md",
+   "text": "#### G269 `gaps:R3-5` R3 S07: the logo file needs explicit `width`/`height`, or the generated `<img>` renders it wrongly\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify \u2192 `catalog/agent-docs/frontend/theming.md`: add the SVG size requirement next to `applicationLogo`. Merged into `c02-37`, which lacks this detail."
+  },
+  {
+   "id": "G076",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/i18n.md",
+   "text": "#### G076 `c02-35` R3 S11: Phone bottom bar 'Other' label comes from the i18n key menuTree.other with default 'Other' in the generated BottomMenu. The kb has no section on it, so the builder read the generated source to find it\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/i18n.md`. i18n.md lists menuTree.[MenuLabel] keys (line 66) but not the generated menuTree.other default used by the phone bottom bar. Add that key to the table.\n- **Why:** Bottom-bar overflow label is a hard-coded i18n default that the catalog does not document. **Workaround:** Round 3: add an i18n override for menuTree.other via a generator override fragment (see c02-43).\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L1433`, `session:L1434`, `session:L1447`, `session:L1449`. Merged: g-R3-3"
+  },
+  {
+   "id": "G077",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/i18n.md",
+   "text": "#### G077 `c05-46` R10 F40: application_hu-HU.json is not generated: the generator emits only application_en-US.json for this one-language model, while the i18n doc says every application_<locale>.json, including hu-HU, is gener\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/i18n.md`. i18n.md lines 18-23 and 108 say application_hu-HU.json is generated; the generator emits only locales that exist in the model (one-language model gives en-US only). Add: other locale files are written by hand or by a project script and need each new key added.\n- **Why:** Catalog statement is wrong for a model with one language. **Workaround:** scripts/make-hu-translations.py builds the Hungarian file from the generated English file (about 190 labels translated; the rest English).\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L3136`, `session:L3137`, `session:L3138`, `session:L3139`. Merged: c07-46, g-R12-15"
+  },
+  {
+   "id": "G078",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/i18n.md",
+   "text": "#### G078 `c05-47` R10 F40: The generated locale map in l10n-context.tsx allows only en-US, and no date-fns locale exists for Hungarian, so the language switch needs a cast and date pickers stay English.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/i18n.md`. Adding New Languages does not mention the generated locale map in l10n-context.tsx (en-US only) or the date-fns locale (only line 487 shows hu). Add both steps.\n- **Why:** i18n Adding New Languages steps copy JSON files and update the selector but do not mention the locales map. **Workaround:** Language switch uses the documented L10N setLocale with a cast; date formatting left English.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3037`, `session:L3038`, `session:L3040`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G079",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/i18n.md",
+   "text": "#### G079 `c05-49` R10 F40: Model-built label strings (for example the order total label and line labels) stay in English with EUR format in Hungarian, because model expressions cannot pick the UI language.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/i18n.md`. Model expressions have no UI language; derived strings stay in one language. Catalog should state \"format display strings in the frontend, not in derived model strings\". This is a design limit, not a ticket.\n- **Why:** Derived string members are fixed text; the Price component is the only locale-aware formatter. **Workaround:** Left as is; logged. Customer cart and shop use the Price component.\n- **Validation:** confirmed; kind platform-limit; catalog missing. Evidence: `session:L3199`, `session:L3224`"
+  },
+  {
+   "id": "G097",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "#### G097 `c01-36` R0 S05: The frontend uses a hash router. Pages open at /webshop/Shop/#/Shop/Products/..., so direct paths without the hash return 404. The catalog does not mention this.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/README.md`. No mention of hash routing in the catalog (grep found no hash router text). Add: routes are hash based, URLs look like /<model>/<Actor>/#/<route>, direct paths without # return 404; Playwright goto must use the hash URL.\n- **Why:** Frontend docs do not describe the router type or the URL shape. **Workaround:** Used hash URLs (for example #/Shop/Products/AccessTablePage).\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L651`, `session:L652`, `session:L684`, `session:L686`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G098",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "#### G098 `c03-51` R7 F09, F14: After generate alone the new webshop__customer and webshop__admin modules had no src/custom folder; it appeared only after the build. The catalog does not say when src/custom is created.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/README.md`. README lines 27-28 say scaffolds are generated under src/custom but not when. Session says it appears after the build, not generate; add this if confirmed (verify).\n- **Why:** Generation creates the module shell; the custom folder and hook scaffolds come from the build step, which the catalog does not state. **Workaround:** Read the generated tree; no custom code moved yet; decision deferred to the frontend step.\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L2113`, `session:L2117`, `session:L2118`, `session:L2121`"
+  },
+  {
+   "id": "G111",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/extension-points.md",
+   "text": "#### G111 `c02-52` R5 S08: The generated dashboard page already renders a ComponentProxy for the custom visual element key DashboardPage, with a Hello! fallback. A service registered under that key replaces the home page. The k\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/extension-points.md`. Seam not documented: generated DashboardPage renders a ComponentProxy for the key DashboardPage with a Hello! fallback (GAPS R5-1). Add a row: register a CUSTOM_VISUAL_ELEMENT service with component='DashboardPage' to replace the home page.\n- **Why:** Catalog only covers a dashboard without layout (component-proxy-placeholder-page.md, project practice) and Extra Routes; the generated seam for the dashboard is not documented. **Workaround:** Registered CatalogHome via src/custom/hooks/registerCatalogHome.tsx from application-customizer.tsx (already generator-ignored); no generated file touched.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L1692`, `session:L1694`, `session:L1697`, `session:L1700`"
+  },
+  {
+   "id": "G118",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/theming.md",
+   "text": "#### G118 `c07-24` R12 F51: Builder claims there is no documented way to read brand values from a runtime settings row; palette and logo are fixed at start-up.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/theming.md`. theming.md line 101 says brand colours belong on ActorType attributes, which implies fixed at generation, but never states runtime branding is not supported. Add one line stating that.\n- **Why:** Builder's reading of theming.md, which says brand colours belong to model attributes; the catalog does not state whether runtime branding is possible. **Workaround:** Decision recorded (see F51 decision).\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L3900`, `gaps:R12-8`"
+  },
+  {
+   "id": "G123",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "#### G123 `c09-28` R14 F68: Rates were returned, but the customer currency switch treated the rate as absent: validOn arrives as a Date object in the generated service, so the string comparison of the day failed.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/advanced-patterns.md`. Catalog never says generated services deserialize date fields to Date objects (so string compare fails). Based on the builder's reading of generated code only; add with verify.\n- **Why:** Builder's reading of the generated serializer: dates are turned into Date objects; not documented in the catalog as far as checked. **Workaround:** Compare calendar days built from the Date object in CurrencySwitch.tsx.\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L5466`, `session:L5472`, `session:L5475`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G127",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/development-workflow.md",
+   "text": "#### G127 `c02-01` R1 S04, S09: Builder assumed ./judo.sh generate would regenerate the frontend table component after reverting the S04 patch. It did not; the frontend build (judo.sh build -f -i) was needed.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/development-workflow.md`. Workflow page covers prune and dev server but not that generate does not regenerate frontend sources; add: frontend files are regenerated by judo.sh build -f -i.\n- **Why:** Builder assumed the generate step covers frontend files; it only writes the scaffolds and model-derived sources. **Workaround:** Ran ./judo.sh build -f -i, after which the table component was regenerated.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L929`, `session:L930`, `session:L931`. Merged: g-R1-5"
+  },
+  {
+   "id": "B33",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B33 | Event bus | The publish/subscribe API and its event key format. | pf02 |"
+  },
+  {
+   "id": "B34",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B34 | Page hooks | `getMask()` page-hook handler and `_mask` syntax, the page data-mask hook (`...RelationViewPageActionsHook`), `queryCustomizer` on pages, and `postGetTemplateAction` / `storeDiff` after a template. | bp04, pf03, pf04 |"
+  },
+  {
+   "id": "B35",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B35 | Hook naming | The `isFieldRequired` handler vs the documented `is<Field>Required`, the range-override hook member name, and the cards-configuration hook return shape and key (one sentence today). | pf01, pf02, bp03 |"
+  },
+  {
+   "id": "B36",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B36 | Generated page files | Contents of `context.tsx` (ViewModel), `customization.ts`, `types.ts`, and `src/config/layout.ts`. | pf03, pf06 |"
+  },
+  {
+   "id": "B37",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B37 | Generator override fragments | Frontend `package.json.dependencies.extra.fragment.hbs` and `application_default_extra.fragment.hbs` (i18n). `build-process.md` lists only pom and Karaf fragments. Also the Handlebars helper `elementHasAnnotation`, the `operation.output.target` context, how a literal `{{\u2026}}` survives rendering, and the `operation-primary-output-handler` / `@redirect` mechanism. | pf03, pf04, pf05, bp15 |"
+  },
+  {
+   "id": "B38",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B38 | Layout replacement | Whether a container layout can be replaced by any route other than a custom implementation element. `data-name` selectors on generated sections. | bp04 |"
+  },
+  {
+   "id": "B39",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B39 | Error codes | `INVALID_CODE`, `IDENTIFIER_ATTRIBUTE_UNIQUENESS_VIOLATION`, `getErrorCodeLiteralByOrdinal`. | pf02 |"
+  },
+  {
+   "id": "B40",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B40 | Aggregation actions | Frontend service-method signatures for add, remove, clear and set, and the range-dialog call. | pf04 |"
+  },
+  {
+   "id": "B41",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B41 | Widgets and rows | Whether the boolean combo can show \"unknown\", hiding a row action per row, a count-only list-call recipe (`__countRecords` / `X-Judo-Count` are named but no recipe exists), the old `/{model}/{actor}` context path, and signed-identifier route parameters. | pf01, pf02, pf06, bp11 |"
+  },
+  {
+   "id": "B42",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B42 | Operation outputs | The output `behaviours` list (REFRESH/UPDATE/DELETE), `OPERATION_OUTPUT_UPDATE` page type, and the order of generated input and output pages. | pm05, pf01 |"
+  },
+  {
+   "id": "B43",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B43 | `confirmationCondition` | It has no ui-authoring-guide section, only a one-line invariant. | pm07 |"
+  },
+  {
+   "id": "B44",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B44 | `useJudoNavigation` | Whether it keeps a breadcrumb or history. | pf01 |"
+  },
+  {
+   "id": "B45",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B45 | `textMask` vs react-imask | No link between the model `textMask` and a custom-element alternative. | bp09 |"
+  },
+  {
+   "id": "B46",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B46 | Responsive per-device page containers | Mobile, tablet and desktop containers and column counts. | pm05 |"
+  },
+  {
+   "id": "B47",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B47 | Anonymous actor frontend | No how-to for an anonymous actor's own app, only `supportGuestAccess` and the guest page. | bp08 |"
+  },
+  {
+   "id": "B48",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B48 | Flutter | Asset copy rules in `flutter.yaml`. The Flutter section is thin overall. | pf02, pf06 |"
+  },
+  {
+   "id": "B49",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| B49 | `.default` scaffold files | The docs say never rename them, but several projects do. | pb03 |"
+  },
+  {
+   "id": "AU1",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/frontend/development-workflow.md",
+   "text": "| 1 | `frontend/development-workflow.md:58` | \"If you only need to clear generator caches, use `./judo.sh clean` instead \u2014 `clean` does not delete untracked source files.\" This contradicts line 41 of the same file. | still wrong; the cciu merge `d79f523` re-added a duplicate prune section | `template__judo-esm-fullstack-project-template/.../root/src/main/resources/judo.sh.hbs:104,840,1052-1053` (clean removes Karaf dir and DB volumes) | judo-ng-read row 1062 (`agent-docs/frontend/development-workflow.md.hbs:39`), ledger FR-076 \"applied\" |"
+  },
+  {
+   "id": "AU3",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/frontend/development-workflow.md",
+   "text": "| 3 | `frontend/development-workflow.md:90,96,347,353,360`; `frontend/advanced-patterns.md:1845` | Backend API / `VITE_API_DEFAULT_BASE_URL` at `http://localhost:8080` | still wrong; the deployment area was fixed, frontend was not | `judo.sh.hbs:1014` `KARAF_PORT=${karaf_port:-8181}`; 8080 is Keycloak | rows 2041/2042 (`agent-docs/deployment/local-development.md.hbs:35,99`), DE-087/088 |"
+  },
+  {
+   "id": "AU7",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "| 7 | `frontend/README.md:183` | Example generated path `src/generated/pages/MyPage.tsx` | still wrong (minor) | `judo-ui-react-template@ad0848bc:judo-ui-react/src/main/resources/ui-react.yaml:827` (no `src/generated` root) | agent-docs-review FE-001 / FR-068 |"
+  },
+  {
+   "id": "AU11",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "text": "| 11 | `frontend/build-and-deployment.md:27` | `node-install-dir` default `${project.parent.basedir}/.nodejs` | still wrong | `.../application/src/main/resources/frontend-react/pom.xml.hbs:20` `${maven.multiModuleProjectDirectory}/.nodejs` | row 1891 (`frontend-react/README.adoc.hbs:76`) |"
+  },
+  {
+   "id": "AU12",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "text": "| 12 | `frontend/build-and-deployment.md:27` | Pom property `actor` (fully qualified) | still wrong | `.../frontend-react/actor/pom.xml.properties-definition.fragment.hbs:3` (only `actor-name`; no `<actor>` property in any template) | row 1894 (`frontend-react/README.adoc.hbs:58`) |"
+  },
+  {
+   "id": "AU13",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "text": "| 13 | `frontend/build-and-deployment.md:23` | System property `-Dquick` (also `-Dlocal`: *verify*) | still wrong | `.../frontend-react/actor/pom.xml.hbs:362-363` (quick profile activates only on `frontend-build-type=quick`; no `quick`/`local` property activation in the template) | row 1892 (`frontend-react/README.adoc.hbs:124`) |"
+  },
+  {
+   "id": "KC16",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/frontend/",
+   "text": "| R9: timestamps show in the browser's zone (bug); store in UTC | Absent | **No** |"
+  },
+  {
+   "id": "FR-043",
+   "src": "sweep-unverified",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "{\"action\": \"unverified\", \"file\": \"catalog/agent-docs/frontend/error-handling.md\", \"heading\": \"Known Issue: Long-Running Operations\", \"note\": \"no request timeout found in generated service templates; only a hedged proxy/gateway note added\"}"
+  },
+  {
+   "id": "NG0001",
+   "src": "judo-ng-read:-models-judo-meta-jsl",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "## [wrong-fact] generator-maven-plugin/README.md:112\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-jsl:generator-maven-plugin/README.md:112\n- claim: type is required (Yes) and has no default ('\u2014').\n- fact: The generate goal's type parameter has defaultValue fullstack-project.\n"
+  },
+  {
+   "id": "NG0008",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-jsl",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] judo-runtime-core-jsl-spring-itest/src/main/resources/AGENTS.md:8\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-jsl:judo-runtime-core-jsl-spring-itest/src/main/resources/AGENTS.md:8\n- claim: logback-spring.xml sets root logging to info and filters hu.blackbelt to debug.\n- fact: The hu.blackbelt logger is set to level trace (additivity=false). Root is info.\n"
+  },
+  {
+   "id": "NG0016",
+   "src": "judo-ng-read:-template-judo-ui-typescript-rest-template",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "## [wrong-fact] openspec/specs/relation-management/spec.md:264\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-typescript-rest-template:openspec/specs/relation-management/spec.md:264\n- claim: ValidateUpdate owner is optional (owner: <Owner>Stored optional) for non-access relations\n- fact: validateUpdate is generated with a required owner parameter for non-access relations.\n"
+  },
+  {
+   "id": "NG0017",
+   "src": "judo-ng-read:-template-judo-ui-typescript-rest-template",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "## [wrong-fact] openspec/specs/model-type-generation/spec.md:64\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-typescript-rest-template:openspec/specs/model-type-generation/spec.md:64\n- claim: Attribute type mapping: DateType -> string (also TimeType and TimestampType -> string at lines 65-66).\n- fact: typescriptType maps DateType, TimeType and TimestampType to 'Date'.\n"
+  },
+  {
+   "id": "NG0020",
+   "src": "judo-ng-read:-template-judo-ui-typescript-rest-template",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] README.md:283\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-typescript-rest-template:README.md:283\n- claim: | **API** | 28 entries |\n- fact: judo-ui-typescript-rest-api/src/main/resources/ui-typescript-rest.yaml has 35 templateName entries.\n"
+  },
+  {
+   "id": "NG0021",
+   "src": "judo-ng-read:-template-judo-ui-typescript-rest-template",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "## [wrong-fact] README.md:321\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-typescript-rest-template:README.md:321\n- claim: DateType maps to string (also TimeType 322 and TimestampType 323 map to string).\n- fact: UiGeneralHelper.typescriptType maps DateType, TimeType and TimestampType to Date.\n"
+  },
+  {
+   "id": "NG0022",
+   "src": "judo-ng-read:-template-judo-ui-typescript-rest-template",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "## [wrong-fact] README.md:325\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-typescript-rest-template:README.md:325\n- claim: | BinaryType | Binary handling |\n- fact: typescriptType has no BinaryType branch; it falls through to 'any'.\n"
+  },
+  {
+   "id": "NG0024",
+   "src": "judo-ng-read:-spring-judo-spring-maven-plugin",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "## [wrong-fact] docs/pages/judo-spring-maven-plugin.adoc:225\n- src: judo-ng-read | status: validated | evidence: spring/judo-spring-maven-plugin:docs/pages/judo-spring-maven-plugin.adoc:225\n- claim: saveModels default is false\n- fact: saveModels is declared with defaultValue=\"true\".\n"
+  },
+  {
+   "id": "NG0025",
+   "src": "judo-ng-read:-spring-judo-spring-maven-plugin",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] docs/pages/judo-spring-maven-plugin.adoc:34\n- src: judo-ng-read | status: validated | evidence: spring/judo-spring-maven-plugin:docs/pages/judo-spring-maven-plugin.adoc:34\n- claim: Install snippet uses artifactId judo-springboot-maven-plugin\n- fact: The actual artifact is hu.blackbelt.judo:judo-spring-maven-plugin (README.adoc and the module POM use judo-spring-maven-plugin).\n"
+  },
+  {
+   "id": "NG0032",
+   "src": "judo-ng-read:-runtime-judo-tatami-jsl",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "## [wrong-fact] judo-tatami-jsl-jsl2ui/src/main/epsilon/transformations/ui/modules/view/viewWidgetDeclaration.etl\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-jsl:judo-tatami-jsl-jsl2ui/src/main/epsilon/transformations/ui/modules/view/viewWidgetDeclaration.etl\n- claim: disagrees: the AGENTS.md row lists `Checkbox` among the generated input components, but the BooleanTypeCheckbox rule is commented out, so no\n\n"
+  },
+  {
+   "id": "NG0034",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "## [wrong-fact] openspec/specs/zeta-class-type-filtering/spec.md:7\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:openspec/specs/zeta-class-type-filtering/spec.md:7\n- claim: The Zeta ClassType rule SHALL only add a ClassType to Application.dataElements for TransferObjectType instances that are reachable (isGenera\n- fact: ClassTransformations.classType (@TransformRule at line 86, method at line 93) has no @Guard and no isGenerated() check. It adds the ClassTyp\n"
+  },
+  {
+   "id": "NG0043",
+   "src": "judo-ng-read:-models-judo-meta-asm",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "## [wrong-fact] .pi/skills/manage-flows/SKILL.md:205\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-asm:.pi/skills/manage-flows/SKILL.md:205\n- claim: The minimal flow example has the step `- id: research` with `agent: code-reviewer` and no `type:` field, and the same holds for the agent ex\n- fact: Line 25 of the same file says every step must declare an explicit `type:`, and the parser rejects steps that omit it. The examples therefore\n"
+  },
+  {
+   "id": "NG0046",
+   "src": "judo-ng-read:-template-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] openspec/specs/pipeline-overview/spec.md:72\n- src: judo-ng-read | status: validated | evidence: template/judo-esm-fullstack-project-template:openspec/specs/pipeline-overview/spec.md:72\n- claim: 'All 91 .hbs files are registered in fullstack-project.yaml' with the JUDOSPEC conditionExpression; file count table total 91.\n- fact: fullstack-project.yaml has 168 entries using #shouldGenerateAgentCli(), and there are 105 .hbs files under .claude/.\n"
+  },
+  {
+   "id": "NG0051",
+   "src": "judo-ng-read:-template-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "text": "## [wrong-fact] judo-esm-fullstack-project-template-application/src/main/resources/frontend-react/README.adoc.hbs:76\n- src: judo-ng-read | status: validated | evidence: template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/frontend-react/README.adoc.hbs:76\n- claim: node-install-dir default is ${project.parent.basedir}/.nodejs\n- fact: The parent frontend-react POM sets node-install-dir to ${maven.multiModuleProjectDirectory}/.nodejs. The actor POM inherits it and does not \n"
+  },
+  {
+   "id": "NG0052",
+   "src": "judo-ng-read:-template-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] judo-esm-fullstack-project-template-application/src/main/resources/frontend-react/README.adoc.hbs:58\n- src: judo-ng-read | status: validated | evidence: template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/frontend-react/README.adoc.hbs:58\n- claim: There is an actor property `actor` (Actor fully qualified name, default equal to the submodule name)\n- fact: No POM template defines an `actor` property. Only actor-name (and model-name) are defined in the actor properties fragment.\n"
+  },
+  {
+   "id": "NG0058",
+   "src": "judo-ng-read:-tools-judo-maven-plugin",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "## [wrong-fact] openspec/specs/artifact-caching/spec.md:53\n- src: judo-ng-read | status: validated | evidence: tools/judo-maven-plugin:openspec/specs/artifact-caching/spec.md:53\n- claim: CacheDescriptor SHALL uniquely identify a cached artifact by name, version, and platform classifier.\n- fact: CacheDescriptor has fields name, version, and `extension` (no classifier field); its constructor takes (name, version, extension).\n\n"
+  },
+  {
+   "id": "NG0067",
+   "src": "judo-ng-read:-runtime-judo-tatami-base",
+   "target": "catalog/agent-docs/frontend/i18n.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-03-19-add-jvm-profiler-integration/specs/profiler-core/spec.md:143\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:openspec/changes/archive/2026-03-19-add-jvm-profiler-integration/specs/profiler-core/spec.md:143\n- claim: `@Profile(thresholdMs=100, format=\"collapsed\", event=\"cpu\")` configures format and event; method-level @Profile overrides class-level format\n- fact: The `@Profile` annotation declares only `thresholdMs()`; there are no `format` or `event` parameters and no method-level format/event overri\n"
+  },
+  {
+   "id": "NG0068",
+   "src": "judo-ng-read:-runtime-judo-tatami-base",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-03-19-add-jvm-profiler-integration/design.md:46\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-base:openspec/changes/archive/2026-03-19-add-jvm-profiler-integration/design.md:46\n- claim: ProfileConfig exposes fields `outputPath`, `outputFormat` (collapsed|flamegraph|jfr), `samplingInterval` (nanoseconds) and `event` (cpu|wall\n- fact: ProfileConfig only exposes `outputDir`, `sampleIntervalMs`, `metricIntervalMs`, `thresholdMs`, `enabled`, `llmEnabled`, `llmProvider`; there\n"
+  },
+  {
+   "id": "NG0074",
+   "src": "judo-ng-read:-template-judo-ui-e2e-template",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-03-05-expand-e2e-visual-element-ids/specs/expanded-element-extraction/spec.md:88\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-e2e-template:openspec/changes/archive/2026-03-05-expand-e2e-visual-element-ids/specs/expanded-element-extraction/spec.md:88\n- claim: The generated VisualElementIds.ts passes 'pnpm install' (which includes type checking).\n- fact: pnpm install does not type-check. The only build step is frontend-maven-plugin running 'pnpm install'; no tsc or typecheck invocation exists\n"
+  },
+  {
+   "id": "NG0075",
+   "src": "judo-ng-read:-template-judo-ui-e2e-template",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "## [wrong-fact] openspec/specs/playwright-template-itest/spec.md:43\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-e2e-template:openspec/specs/playwright-template-itest/spec.md:43\n- claim: The generated Playwright project passes TypeScript compilation (Requirement: Generated Project Validity).\n- fact: The itest only runs 'pnpm install' (arguments install); no TypeScript compile step is executed, so compilation is not verified by the build.\n"
+  },
+  {
+   "id": "NG0087",
+   "src": "judo-ng-read:-runtime-judo-model-cli",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-10-26-add-transform-load-flag/design.md:84\n- src: judo-ng-read | status: validated | evidence: runtime/judo-model-cli:openspec/changes/archive/2026-10-26-add-transform-load-flag/design.md:84\n- claim: Official mode: only use `generated-resources/model/`.\n- fact: setupModelLoaders always adds both `generated-resources/model` and `cli-generated` directories (plus the custom path when set), so `discard \n"
+  },
+  {
+   "id": "NG0091",
+   "src": "judo-ng-read:-runtime-osgi-encryption",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] README.md:30\n- src: judo-ng-read | status: validated | evidence: runtime/osgi-encryption:README.md:30\n- claim: The Karaf feature repository is added from Maven coordinate `mvn:hu.blackbelt/osgi-encryption-karaf-features/1.2.0/xml/features` (artifact n\n- fact: The feature module's actual artifactId is `osgi-encryption-karaf-feature` (singular, no trailing 's'), so the plural coordinate does not res\n"
+  },
+  {
+   "id": "NG0092",
+   "src": "judo-ng-read:-runtime-osgi-encryption",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] openspec/specs/karaf-features/spec.md:31\n- src: judo-ng-read | status: validated | evidence: runtime/osgi-encryption:openspec/specs/karaf-features/spec.md:31\n- claim: The feature repository is added via `mvn:hu.blackbelt/osgi-encryption-karaf-features/{version}/xml/features` (artifact name plural).\n- fact: The feature module's artifactId is `osgi-encryption-karaf-feature` (singular), so the plural coordinate in the spec is wrong.\n"
+  },
+  {
+   "id": "NG0093",
+   "src": "judo-ng-read:-runtime-osgi-encryption",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "## [wrong-fact] README.md:30\n- src: judo-ng-read | status: validated | evidence: runtime/osgi-encryption:README.md:30\n- claim: Feature repository coordinate mvn:hu.blackbelt/osgi-encryption-karaf-features/1.2.0/xml/features (plural 'features').\n- fact: The Karaf feature module's artifactId is osgi-encryption-karaf-feature (singular), matching the module directory osgi-encryption-karaf-featu\n"
+  },
+  {
+   "id": "NG0123",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "## [wrong-fact] judo-tatami-workflow-maven-plugin-docs/pages/index.adoc:222\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-workflow-maven-plugin-docs/pages/index.adoc:222\n- claim: saveModels default: false.\n- fact: saveModels is annotated defaultValue true and its field is initialised to true.\n"
+  },
+  {
+   "id": "NG0144",
+   "src": "judo-ng-read:-models-judo-meta-psm",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "## [wrong-fact] northwind-model/src/main/java/hu/blackbelt/model/northwind/measures/MonthBasedTime.java\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-psm:northwind-model/src/main/java/hu/blackbelt/model/northwind/measures/MonthBasedTime.java\n- claim: disagrees: row lists 'month, quarter, and year' units, but MonthBasedTime.java defines only `month` and `year`; there is no quarter unit.\n"
+  },
+  {
+   "id": "NG0145",
+   "src": "judo-ng-read:-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "## [wrong-fact] Template parity check rule 'no {{' wrongly fails\n- src: session:jb-002.json | status: validated | evidence: template openspec/changes/extract-agent-tooling-from-template/tasks.md:88-93; session 13:04 agent\n- claim: openspec extract-agent-tooling-from-template task 9.2: no blueprint doc may contain '{{'\n- fact: 12 blueprint docs contain '{{'; 8 are valid React code (sx={{\u2026}}, value={{\u2026}}, InputProps={{), 5 are real leftovers (deployment/README, e2e-testing/README, e2e-testing/language-independent-testing, frontend/esm-to-ui-mappings/tables-navigation: '{{ lowerCase model.name \\}}'; frontend/README: '{{actor}}'). The check must match Handlebars helpers only or skip code blocks.\n\n"
+  }
+ ]
+}

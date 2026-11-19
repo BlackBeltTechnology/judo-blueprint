@@ -1,0 +1,79 @@
+[
+ {
+  "id": "R1560",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/jsl-language-notes.md",
+  "text": "The selector modifier accepts the literal keyword 'oldselector' alongside the selector keyword.",
+  "evidence": "models/judo-meta-jsl:judo-meta-jsl:model/src/main/java/hu/blackbelt/judo/meta/jsl/JslDsl.xtext:1118"
+ },
+ {
+  "id": "R1628",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+  "text": "isMappedOperation treats an absent generateOperations flag as false, while shouldGenerateOperations treats it as true.",
+  "evidence": "runtime/judo-tatami:judo-tatami:judo-tatami-esm2psm/src/main/java/hu/blackbelt/judo/tatami/esm2psm/zeta/rules/OperationRules.java:446"
+ },
+ {
+  "id": "R1675",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/esm_metamodel/ui-visual-styleguide.md",
+  "text": "Child width is (12 / parent col) times child col in 12-column Grid units, not a percentage.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/layout-system/spec.md:19"
+ },
+ {
+  "id": "R1676",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/esm_metamodel/ui-visual-styleguide.md",
+  "text": "A Flex renders a Card without elevation or radius props, and no isInCard flag propagates to children.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/layout-system/spec.md:57"
+ },
+ {
+  "id": "R1677",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/esm_metamodel/ui-visual-styleguide.md",
+  "text": "A Flex gets the card branch from its card flag, not from having a frame.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/layout-system/spec.md:65"
+ },
+ {
+  "id": "R1678",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/esm_metamodel/ui-visual-styleguide.md",
+  "text": "A Spacer renders a Grid with a fixed divider height and a width from col only; row is unused.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/layout-system/spec.md:102"
+ },
+ {
+  "id": "R1747",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/model-validation-and-transformation.md",
+  "text": "The Esm2Ui transformation defaults to ETL in code, while the Javadoc says ZETA is the default.",
+  "evidence": "runtime/judo-tatami-client:judo-tatami-client:judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/TransformationMode.java:36"
+ },
+ {
+  "id": "R1822",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/jsl-language-notes.md",
+  "text": "A member with required set to false is still treated as required, because isRequired checks only that the modifier is present.",
+  "evidence": "models/judo-meta-jsl:judo-meta-jsl:model/src/main/java/hu/blackbelt/judo/meta/jsl/util/JslDslModelExtension.xtend:611"
+ },
+ {
+  "id": "R2279",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+  "text": "String '>' comparison in a script generates Java with a stray character, so the generated code does not compile.",
+  "evidence": "judo-script-codegen:generator/src/main/java/hu/blackbelt/judo/script/codegen/generator/Script2JavaGenerator.xtend:1025"
+ },
+ {
+  "id": "R2280",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+  "text": "String '<=' comparison in a script generates Java with a stray character, so the generated code does not compile.",
+  "evidence": "judo-script-codegen:generator/src/main/java/hu/blackbelt/judo/script/codegen/generator/Script2JavaGenerator.xtend:1027"
+ },
+ {
+  "id": "R2281",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/jcl-operation-scripts.md",
+  "text": "A for-all expression in a script is generated as an exists check.",
+  "evidence": "judo-script-codegen:generator/src/main/java/hu/blackbelt/judo/script/codegen/generator/Script2JavaGenerator.xtend:942"
+ }
+]

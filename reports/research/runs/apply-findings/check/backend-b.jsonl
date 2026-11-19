@@ -1,0 +1,75 @@
+{"id": "G099", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "G100", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "G124", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "AU4", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "AU5", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "B14", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "B16", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "BA-110", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "BA-178", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U1090", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U1091", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U1092", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U1093", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U1094", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U0376", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U0377", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U0691", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U0692", "verdict": "ok", "note": "evidence supports text; platform-only; no deletions"}
+{"id": "U0029", "verdict": "ok", "note": "already documented"}
+{"id": "U0391", "verdict": "ok", "note": "already documented"}
+{"id": "B53", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "B54", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "B55", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "B56", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "B15", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "B17", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "B18", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "U0133", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "AU8", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "KC12", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "BA-018", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "BA-045", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "BA-050", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "BA-051", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "BA-077", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "BA-103", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "BA-107", "verdict": "ok", "note": "left unverified/not written; not confirmable in one lookup"}
+{"id": "NG0004", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0009", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0010", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0044", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0059", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0064", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0076", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0080", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0100", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0107", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0142", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0152", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "NG0157", "verdict": "ok", "note": "not-platform; error is in judo-ng source doc"}
+{"id": "R1468", "verdict": "fixed", "note": "enum literal conversion confirmed (RequestConverter.java:300-301,351-359: EEnumLiteral.getValue()); retitled the item from \"Are Ordinals\" to \"REST Enumeration Input Literals\" because ordinal is not what the code returns"}
+{"id": "R1506", "verdict": "ok", "note": "PathInfoRealmExtractor.java:52 plain startsWith; single ### paragraph in authentication-guide.md"}
+{"id": "R1693", "verdict": "ok", "note": "RuntimeExceptionMapper.java:71-79 mapping matches text"}
+{"id": "R1696", "verdict": "fixed", "note": "PayloadMessageBodyWriter.java:36-40 swallows Throwable (confirmed); removed unsupported \"so the entity stays empty\""}
+{"id": "R1697", "verdict": "ok", "note": "ExchangeIdResponseWriter.java:46-50 writes only when exchange id set"}
+{"id": "R1704", "verdict": "fixed", "note": "source conflict: judo-runtime-core-jaxrs ISO8601DateParamHandler never reads DATE_FORMAT (Guice/CXF server uses it via ISO8601DateParamHandlerProvider), but runtime__cxf-jaxrs-application-manager reads ISO8601DateParamHandler.DATE_FORMAT in @Modified. Scoped the type-system tip and the platform-behavior-reference line (and its .agent.md companion) to the two runtimes"}
+{"id": "R1706", "verdict": "ok", "note": "JudoAuthorizingInterceptor.java:59-69 anyMatch(actor null or realm empty) -> public -> empty list"}
+{"id": "R1901", "verdict": "ok", "note": "KeycloakLoginInterceptor verifies via AdapterTokenVerifier.verifyToken with no explicit issuer check in class"}
+{"id": "R0002", "verdict": "ok", "note": "same single actor-path paragraph as R1506/R0999; PathInfoRealmExtractor.java:52"}
+{"id": "R0007", "verdict": "ok", "note": "KeycloakLoginInterceptor.java:116-129 cache keyed by realm, resource only used on miss"}
+{"id": "R2117", "verdict": "ok", "note": "no rootPayload key in validator; LOCATION_KEY and IS_ROOT_KEY present"}
+{"id": "R2123", "verdict": "ok", "note": "DefaultPayloadValidator.java:203-205 skips validateAttribute (which holds required check, line 336-379)"}
+{"id": "R2348", "verdict": "ok", "note": "DefaultAccessManager.java:137-155 success before authorizers at 155"}
+{"id": "R2834", "verdict": "ok", "note": "ValidationException has getValidationResults() via @Getter; no getViolations()"}
+{"id": "R0698", "verdict": "ok", "note": "JudoAuthorizingInterceptor.java:59-69; wording consistent with R1706 bullet"}
+{"id": "R0751", "verdict": "fixed", "note": "SimpleParameterTemplater uses replaceAll with the argument as replacement; \"throws IllegalArgumentException\" overstated; reworded to \"can throw IllegalArgumentException or IndexOutOfBoundsException\" and moved the orphaned bullet after the --- rule into the I18n DON'T list"}
+{"id": "R0752", "verdict": "ok", "note": "EnumI18nServiceImpl.java:83 resolvers.get(entry.getClass()) uses runtime class"}
+{"id": "R0924", "verdict": "ok", "note": "DefaultActorResolver.java:111 throws IllegalStateException(\"Unsupported client\")"}
+{"id": "R0991", "verdict": "fixed", "note": "PasswordPolicy.java:27 extends Function; no validatePassword() in runtime; reworded \"declares no validatePassword()\" for clarity in authentication-guide.md and .agent.md"}
+{"id": "R0999", "verdict": "ok", "note": "same single actor-path paragraph as R1506; no duplicate written"}
+{"id": "R1009", "verdict": "ok", "note": "SelectStatementExecutor.java:163-168 constants used via metricsCollector.start"}
+{"id": "R1216", "verdict": "ok", "note": "JudoAuthorizingInterceptor.java:59 no exposedBy -> empty accessPoints -> empty list"}
+{"id": "R1219", "verdict": "ok", "note": "duplicate of R1696; the doc holds one bullet"}
+{"id": "R0501", "verdict": "ok", "note": "JettyConfigurator.java:43 creates InstrumentedHandler(registry,'JettyMetrics') with no delegate; section consistent"}
+{"id": "R0740", "verdict": "ok", "note": "I18NUtil.getLocaleFromBCP47('') -> Locale.forLanguageTag('') = ROOT (non-null, so no JVM fallback); MessageInterpolator same path; spec osgi-i18n line 35 is what the item says contradicts"}

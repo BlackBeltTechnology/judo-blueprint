@@ -1,0 +1,15 @@
+{
+ "catalog/agent-docs/model/esm_metamodel/structure.md": "r16",
+ "catalog/agent-docs/model/esm_metamodel/accesspoint.md": "r16",
+ "catalog/best-practices/frontend/hungarian-full-localization.md": "r16",
+ "catalog/best-practices/model/composite-identifier-pattern.md": "r16",
+ "catalog/best-practices/model/singleton-entity.md": "r16",
+ "catalog/agent-docs/model/esm_metamodel/accesspoint.agent.md": "r16",
+ "catalog/agent-docs/backend/interceptors.agent.md": "r16",
+ "catalog/best-practices/backend/injectable-business-clock.md": "r16",
+ "catalog/best-practices/model/derived-access-filtering.md": "r16",
+ "catalog/agent-docs/model/esm_metamodel/structure.agent.md": "r16",
+ "catalog/agent-docs/integration-testing/getting-started.md": "r16",
+ "catalog/agent-docs/integration-testing/getting-started.agent.md": "r16",
+ "catalog/agent-docs/backend/interceptors.md": "r16"
+}

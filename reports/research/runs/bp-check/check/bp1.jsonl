@@ -1,0 +1,1 @@
+{"id": "R2203@4", "verdict": "ok", "note": "Fab/SpeedDial fragment: SpeedDialAction (lines 22-38) has no hiddenBy; featured Fab (43,67) does. Claim matches. Evidence path in ledger is a template path; fine."}

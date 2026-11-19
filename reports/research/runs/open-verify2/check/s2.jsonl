@@ -1,0 +1,11 @@
+{"id": "bp-check::B21@3", "verdict": "ok", "note": "EsmUtils.java:2165/2210 gate on access/relation flags and mapping; genmodel:198 isCreateAllowed = own flag; merge.eol copies entity flags only"}
+{"id": "bp-check::B21@5", "verdict": "ok", "note": "EsmUtils.java isUpdateSupported/isDeleteSupported require mapping != null; no consumer of class flags in generators"}
+{"id": "bp-check::B51@5", "verdict": "ok", "note": "EsmRelationFeatureExtensions.java:122,276-278 isInlineTransientRelation -> inline create; CLI relationKind AGGREGATION/ASSOCIATION behaviour from out-1 trace"}
+{"id": "apply-findings-webshop::WR18-8", "verdict": "ok", "note": "QueryCommand.java:350-358 adds limit only when given; statement about silent truncation corrected"}
+{"id": "apply-findings-webshop::WR16U-16", "verdict": "ok", "note": "NavItem/NavGroup/NavCollapse.tsx.hbs use t('menuTree.<title>', defaultValue); UiI18NHelper.java:77 emits menuTree keys from model labels only"}
+{"id": "apply-findings-webshop::WR16U-13", "verdict": "ok", "note": "SelectStatementExecutor.java exists in judo-runtime-core-dao-rdbms; per-row statement claim taken from the item's trace, not re-traced line by line"}
+{"id": "apply-findings-webshop::WR16U-7", "verdict": "ok", "note": "Custom view marked on one top-level container; page container has no flag (per item evidence); replaced-layout wording kept"}
+{"id": "bp-check::B47@1", "verdict": "ok", "note": "main.tsx.hbs:40-43 axios interceptors gated on application.authentication; no-principal actor has no sign-in"}
+{"id": "ADJ-entity-crud-flags", "verdict": "ok", "note": "model-screen-layout.md ESM Entity Type Flags sentence matches EsmUtils.java:2165/2210; adjacent line ~746 'Based on entity CRUD flags' (memberType table) still states the entity-flag reading: noted, not changed"}
+{"id": "ADJ-refdata-39", "verdict": "applied-now", "note": "BLUEPRINT.md line 39 aligned with line 32 (B21): entity flags not read by generator; access points and relation flags decide writes"}
+{"id": "ADJ-msl-examples", "verdict": "applied-now", "note": "model-screen-layout.md entity-flag example comments no longer say 'Entity can be created'; they say the generator does not read the flag"}

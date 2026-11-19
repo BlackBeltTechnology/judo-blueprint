@@ -1,0 +1,7 @@
+{"id": "B21@3", "verdict": "ok", "note": "EsmUtils.java:2165/2210 gate on access/relation flags and mapping; genmodel:198 isCreateAllowed = own flag; merge.eol copies entity flags only"}
+{"id": "B21@5", "verdict": "ok", "note": "EsmUtils.java isUpdateSupported/isDeleteSupported require mapping != null; no consumer of class flags in generators"}
+{"id": "B21@6", "verdict": "ok", "note": "EsmUtils.java:2165 isCreateSupported reads Access/relation flags; entity-level flags not read; Access createable false removes Create"}
+{"id": "B51@5", "verdict": "ok", "note": "EsmRelationFeatureExtensions.java:122,276-278 isInlineTransientRelation -> inline create; CLI relationKind AGGREGATION/ASSOCIATION behaviour from out-1 trace"}
+{"id": "B36@3", "verdict": "ok", "note": "Link to model-screen-layout.md#generated-page-files resolves (heading at line 672); duplicated content removed, nothing lost"}
+{"id": "G080@2", "verdict": "ok", "note": "placeholder.etl:1-12 transforms guarded Placeholder to Spacer, copies visual properties and flag; one-region scope stated"}
+{"id": "B47@1", "verdict": "ok", "note": "main.tsx.hbs:40-43 axios interceptors gated on application.authentication; no-principal actor has no sign-in"}

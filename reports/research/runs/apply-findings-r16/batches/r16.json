@@ -1,0 +1,74 @@
+{
+ "batch": "r16",
+ "files": [
+  "catalog/agent-docs/backend/interceptors.agent.md",
+  "catalog/agent-docs/backend/interceptors.md",
+  "catalog/agent-docs/integration-testing/getting-started.agent.md",
+  "catalog/agent-docs/integration-testing/getting-started.md",
+  "catalog/agent-docs/model/esm_metamodel/accesspoint.agent.md",
+  "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+  "catalog/agent-docs/model/esm_metamodel/structure.agent.md",
+  "catalog/agent-docs/model/esm_metamodel/structure.md",
+  "catalog/best-practices/backend/injectable-business-clock.md",
+  "catalog/best-practices/frontend/hungarian-full-localization.md",
+  "catalog/best-practices/model/composite-identifier-pattern.md",
+  "catalog/best-practices/model/derived-access-filtering.md",
+  "catalog/best-practices/model/singleton-entity.md"
+ ],
+ "items": [
+  {
+   "id": "R16-C2",
+   "src": "webshop-r16",
+   "target": "best-practices/model/derived-access-filtering.md#Practice vs #Rationale",
+   "text": "The Practice says a signed identifier carries no actor and opening another record by address may not be refused; the Rationale says \"a client never receives rows outside it\". Both are in one file. | evidence: Lines 36 and 40 of the file. The webshop needed an interceptor (GAPS R14-7)."
+  },
+  {
+   "id": "R16-C3",
+   "src": "webshop-r16",
+   "target": "agent-docs/model/esm_metamodel/accesspoint.agent.md#Behaviour Rules (`isEffectiveAnonymous`)",
+   "text": "States `anonymous = true` makes an actor effectively anonymous with no bearer check. Both webshop actors store `anonymous=true`, have a realm and mapped principal, and still answer 401 without a token. Either the rule needs the principal/realm condition, or the runtime differs. | evidence: CLI `graphql actortypes{anonymous principal}`; `curl` 401 on both actors."
+  },
+  {
+   "id": "R16-C4",
+   "src": "webshop-r16",
+   "target": "best-practices/model/composite-identifier-pattern.md#Rationale vs agent-docs/model/esm_metamodel/structure.md (`identifier`)",
+   "text": "The first says enforcement of the flag is not documented; the second says the runtime enforces uniqueness per attribute. | evidence: The two files."
+  },
+  {
+   "id": "R16-C5",
+   "src": "webshop-r16",
+   "target": "best-practices/frontend/hungarian-full-localization.md#Platform base",
+   "text": "Says every `application_<locale>.json`, hu-HU included, is generated and overwritten unless ignored. The webshop's `application_hu-HU.json` (a new file written by a script, not in `.generator-ignore`) has survived 15 rounds of generation (GAPS R10). The same page recommends an ignored locale file. | evidence: `git ls-files \u2026 application_hu-HU.json`; `.generator-ignore` of the customer module."
+  },
+  {
+   "id": "R16-C6",
+   "src": "webshop-r16",
+   "target": "agent-docs/integration-testing/getting-started.md#Running Tests",
+   "text": "Does not mention that the generated `application/integration-test/pom.xml` has `<version></version>` for `hu.blackbelt.osgi.i18n:i18n-api`, so the documented command fails (GAPS R12-5). Still present at e35dddd. | evidence: `application/integration-test/pom.xml:226`."
+  },
+  {
+   "id": "R16-C7",
+   "src": "webshop-r16",
+   "target": "best-practices/model/singleton-entity.md#Attribute-less singleton",
+   "text": "\"Whether and when the platform calls [the initializer] is not documented\"; init-data-seeding does not name a trigger. GAPS R10-4 remains unanswered. | evidence: The file; no hit in the catalog for a startup hook."
+  },
+  {
+   "id": "R16-C8",
+   "src": "webshop-r16",
+   "target": "(missing)",
+   "text": "Field order of generated forms/views follows ESM position in a way that puts e.g. Price above Name (GAPS R3-1, R7-10, reported by the project owner as a platform bug). No catalog page; `kb_search` found nothing. | evidence: kb_search \"field order container children position esmToUi\"."
+  },
+  {
+   "id": "R16-C9",
+   "src": "webshop-r16",
+   "target": "best-practices/backend/injectable-business-clock.md#Practice notes (\"Production: no override, so `Clock.systemDefaultZone()`\")",
+   "text": "The same page notes that model `Timestamp!now()` uses `defaultZoneId`. Following the recipe gives a fixed offset against model expressions; the webshop had to use the platform zone (`BusinessClock.platformZone()`, GAPS R12-4). | evidence: `BusinessClock.java:25-37`; platform-behavior-reference.md#Time and Time Zones."
+  },
+  {
+   "id": "R16-C10",
+   "src": "webshop-r16",
+   "target": "agent-docs/backend/interceptors.agent.md (Example 3: \"`getInstance()` identifies the instance (old values)\")",
+   "text": "Ambiguous: the instance payload identifies the row; old values need a DAO read (what the webshop does). | evidence: `ProductAuditInterceptor.preCall`."
+  }
+ ]
+}

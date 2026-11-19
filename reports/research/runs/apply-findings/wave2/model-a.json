@@ -1,0 +1,16 @@
+[
+ {
+  "id": "R2480",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/judo-cli.md",
+  "text": "The CLI GraphQL schema maps Integer and Long attributes to GraphQL Int (Long narrowed to 32-bit), not String.",
+  "evidence": "runtime/judo-model-cli:src/main/java/hu/blackbelt/judo/cli/graphql/CrossModelSchema.java:2046"
+ },
+ {
+  "id": "R1599",
+  "kind": "triage",
+  "file": "catalog/agent-docs/model/judo-cli.md",
+  "text": "CLI save serializes the model first, writes a temp file, then atomically moves it over the model file.",
+  "evidence": "runtime/judo-model-cli:SaveCommand (serialize, write, move phases)"
+ }
+]

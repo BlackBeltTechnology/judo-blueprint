@@ -1,0 +1,8 @@
+{"id": "WR16-1", "verdict": "fixed", "note": "Restored the dropped auth-difference sentence (two actors can differ in authentication) inside the two-actor bullet; kept the third-actor build break (UiPageHelper.java:154 HashSet)"}
+{"id": "WR18-8", "verdict": "ok", "note": "QueryCommand.java:350-358 adds limit only when given; statement about silent truncation corrected"}
+{"id": "WR16U-16", "verdict": "ok", "note": "NavItem/NavGroup/NavCollapse.tsx.hbs use t('menuTree.<title>', defaultValue); UiI18NHelper.java:77 emits menuTree keys from model labels only"}
+{"id": "WR16U-13", "verdict": "ok", "note": "SelectStatementExecutor.java exists in judo-runtime-core-dao-rdbms; per-row statement claim taken from the item's trace, not re-traced line by line"}
+{"id": "WR19-1", "verdict": "ok", "note": "accessView.etl:31-32 creates OperationFormCallAction for every operation form of the target view; known-issue wording kept as a known issue"}
+{"id": "WR16U-7", "verdict": "ok", "note": "Custom view marked on one top-level container; page container has no flag (per item evidence); replaced-layout wording kept"}
+{"id": "WR19-3", "verdict": "ok", "note": "NoClassDefFoundError case: judo-meta-rdbms osgi pom imports epsilon runtime packages as resolution:=optional; known-issue wording kept"}
+{"id": "WR18-7", "verdict": "ok", "note": "StringBuilderLogger (ui-validation) formats via String.format; UiJavaValidator.java:125 logs '{}: {}'; ReflectiveUiValidatorFactory.java:84 fallback message. Not re-run: the 'judo-cli validate' output format is not re-checked"}

@@ -1,0 +1,9 @@
+[
+ {
+  "id": "R1612",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/README.md",
+  "text": ".generator-ignore entries are glob patterns only; '!' negation is not supported, and ignore files in parent directories also apply.",
+  "evidence": "runtime/judo-generator-commons:src/main/java/hu/blackbelt/judo/generator/commons/GeneratorIgnore.java:55-85"
+ }
+]

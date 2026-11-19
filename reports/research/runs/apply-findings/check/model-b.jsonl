@@ -1,0 +1,76 @@
+{"id": "NG0035", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "NG0038", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "NG0098", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "NG0115", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "NG0116", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "G089", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B20", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B21", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B25", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B26", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B28", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B30", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B32", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "KC13", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "KC14", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B9", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B10", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B12", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B13", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "B51", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U1158", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U1159", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U1177", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0747", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0748", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0382", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0384", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0362", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0386", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0387", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0388", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0378", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0385", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0390", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0316", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0317", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0326", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0393", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0437", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0458", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0686", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "U0690", "verdict": "ok", "note": "diff matches ledger, evidence consistent, no project words, no heading/AGENTS changes"}
+{"id": "G088", "verdict": "ok", "note": "spot-check unverified: not confirmable in one lookup, left"}
+{"id": "NG0063", "verdict": "ok", "note": "spot-check unverified: not confirmable in one lookup, left"}
+{"id": "B19", "verdict": "ok", "note": "spot-check unverified: not confirmable in one lookup, left"}
+{"id": "B22", "verdict": "ok", "note": "spot-check unverified: not confirmable in one lookup, left"}
+{"id": "B23", "verdict": "ok", "note": "spot-check unverified: not confirmable in one lookup, left"}
+{"id": "G090", "verdict": "ok", "note": "handoff targets frontend, not in batch"}
+{"id": "R1560", "verdict": "fixed", "note": "oldselector is the only literal in SelectorModifier; 'selector' belongs to SelectorTableModifier (JslDsl.xtext:1117-1118,1257-1258); reworded the bullet"}
+{"id": "R1628", "verdict": "ok", "note": "isMappedOperation null->false, shouldGenerateOperations null->true (esm2psm OperationRules.java:446-447,3186-3187) verified"}
+{"id": "R1675", "verdict": "ok", "note": "calculateSize (12/parent col)*col in UiWidgetHelper.java:50-58 verified"}
+{"id": "R1676", "verdict": "ok", "note": "Card branch has no elevation/radius props (flex.hbs:86-87); no isInCard in template (verified)"}
+{"id": "R1677", "verdict": "ok", "note": "flex becomes card via this.card (flex.hbs:86); frame not referenced in template (verified)"}
+{"id": "R1678", "verdict": "ok", "note": "spacer.hbs uses col via calculateSize, fixed DIVIDER_HEIGHT ignores row (verified)"}
+{"id": "R1747", "verdict": "ok", "note": "already-correct, no edit"}
+{"id": "R1822", "verdict": "ok", "note": "isRequired returns modifier!==null regardless of true flag (JslDslModelExtension.xtend:609-611) verified"}
+{"id": "R2279", "verdict": "ok", "note": "ForAll generated as functionRunner.exists (Script2JavaGenerator.xtend:942) verified"}
+{"id": "R2280", "verdict": "ok", "note": "StringComparison GREATER_THAN/LESS_OR_EQUAL carry stray char (xtend:1025,1027) verified; applies to string branch only"}
+{"id": "R2281", "verdict": "ok", "note": "ForAll generated as functionRunner.exists (Script2JavaGenerator.xtend:942) verified; for-all != exists"}
+{"id": "B31", "verdict": "ok", "note": "unverified; type.md has no diff in this batch, so nothing to keep; left unwritten"}
+{"id": "U0371", "verdict": "ok", "note": "actor modifiers realm/claim/identity/guard verified (JslDsl.xtext:623-628); already-correct"}
+{"id": "U0372", "verdict": "ok", "note": "already-correct, actor group/link/table commented out verified (JslDsl.xtext:635-638)"}
+{"id": "U0373", "verdict": "ok", "note": "already-correct, verified as U0371"}
+{"id": "U0374", "verdict": "ok", "note": "already-correct, verified as U0371"}
+{"id": "U0392", "verdict": "ok", "note": "already-correct, verified as U0371"}
+{"id": "U0395", "verdict": "ok", "note": "already-correct, verified as U0371"}
+{"id": "U0394", "verdict": "ok", "note": "getterExpression optional row already correct (accesspoint.md:40)"}
+{"id": "U0034", "verdict": "ok", "note": "already-correct, no edit"}
+{"id": "R2424", "verdict": "ok", "note": "ActionGroupValidations.java:35,54 featuredActions checks are @Critique (warnings)"}
+{"id": "R2425", "verdict": "ok", "note": "ComponentValidations.java:46-130 enabledBy/hiddenBy/requiredBy are @Constraint; root-type attribute and BooleanType check"}
+{"id": "R2449", "verdict": "ok", "note": "TypeInfoTests.xtend:1052 Date.of(year=,month=,day=); docs 06_expression.adoc:730 same signature"}
+{"id": "R2573", "verdict": "ok", "note": "JslDsl.xtext:181-188 TransferRelationDeclaration modifiers: default, eager, required, enabled, choice, create, update, delete; no selector"}
+{"id": "R1546", "verdict": "ok", "note": "JslDsl.xtext:296 UIViewWidgetDeclaration = KW_WIDGET type Named; field not in UIViewMemberDeclaration alternatives"}
+{"id": "R1547", "verdict": "ok", "note": "JslDsl.xtext:305 UIViewLinkDeclaration modifiers: visual, create-form, update-view, selector-table"}
+{"id": "R1548", "verdict": "ok", "note": "JslDsl.xtext:312 UIViewTableDeclaration modifiers: action-group, visual, create-form, update-view, selector-table"}
+{"id": "R1804", "verdict": "ok", "note": "JslDslValidator.xtend:1680-1693 checks only calculated identifiers and numeric identifiers with scale; no binary check"}

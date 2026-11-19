@@ -1,0 +1,9 @@
+12:49 R16U build idle without commit: nudge 1
+12:51 R16U build idle without commit: nudge 2
+12:53 R16U build idle without commit: nudge 3
+12:55 STOP: R16U build not committed after 3 nudges
+05:16 done R16U build -> 547cf2c Round 16U: GAPS R16U-19 (F23 flaky on shared stock)
+05:16 start R17
+08:33 done R17 build -> a679fac Round 17: screenshots of the final level9b run
+08:33 start R18
+/Users/bmiller/Projects/judo-blueprint/target/webshop-rounds.sh: line 4: 32087 Terminated: 15          bash $T/webshop-finish.sh

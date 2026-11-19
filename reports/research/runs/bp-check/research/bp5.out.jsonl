@@ -1,0 +1,5 @@
+{"id": "R2039@1", "status": "already-correct", "evidence": "judo-esm-fullstack-project-template root pom.xml.hbs:296 and :422 include extra-modules and extra-dependency-management fragments; file line 37 already says extra-modules on the root pom. Finding claim (root lacks them) is wrong."}
+{"id": "KC23@2", "status": "not-platform", "evidence": "K68 XDocReport deprecation is a project decision from a project note; not in judo-ng code or agent-docs."}
+{"id": "G116@1", "status": "not-platform", "evidence": "XDocReport deprecation is a project decision (project lead statement); no code or agent-docs fact to write."}
+{"id": "KC23@1", "status": "not-platform", "evidence": "Same K68 project decision as KC23@2; not a platform fact."}
+{"id": "BA-178@4", "status": "open", "evidence": "Need the service-registration properties of DataTypeManager services (judo-platform services and 01_custom_data_types.adoc do not state them; one grep pass did not find the registration). Missing: the DataTypeManager registration code path."}

@@ -1,0 +1,361 @@
+{"id": "R0001", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0008", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0009", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0011", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0065", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0066", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0067", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0068", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0069", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0070", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0071", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0074", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0075", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0076", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0079", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0080", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0081", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0082", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0083", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0085", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0087", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0088", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0089", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0090", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0091", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0092", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0097", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0106", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0108", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0110", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0111", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0112", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0115", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0116", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0117", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0118", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0119", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0120", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0121", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0122", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0123", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0124", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0125", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0126", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0132", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0144", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0154", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0155", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0156", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0165", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0166", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0167", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0168", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0169", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0171", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0173", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0174", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0175", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0176", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0177", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0178", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0179", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0185", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0186", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0190", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0191", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0192", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0193", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0203", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0204", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0205", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0206", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0207", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0208", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0209", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0212", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0221", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0222", "verdict": "keep", "reason": "CLI relocate documented; cross-parent move supported"}
+{"id": "R0224", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0225", "verdict": "keep", "reason": "CLI move-up/down absence already documented"}
+{"id": "R0230", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0233", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0243", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0244", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0245", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0246", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0247", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0250", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0252", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0253", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0259", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0265", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0267", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0268", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0270", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0273", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0296", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0300", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0301", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0324", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0325", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0326", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0327", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0328", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0332", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0333", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0334", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0335", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0336", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0337", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0338", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0339", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0340", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0341", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0342", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0343", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0344", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0345", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0346", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0358", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0359", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0360", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0361", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0363", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0365", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0366", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0367", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0368", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0370", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0371", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0372", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0373", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0374", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0375", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0376", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0377", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0379", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0380", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0381", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0382", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0383", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0384", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0385", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0386", "verdict": "not-platform", "reason": "Editor tooling; not app-facing"}
+{"id": "R0396", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0397", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0398", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0399", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0400", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0402", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0403", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0419", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0420", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0421", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0426", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0427", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0428", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0429", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0430", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0432", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0437", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0438", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0439", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0440", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0441", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0442", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0443", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0444", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0445", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0446", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0447", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0448", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0450", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0451", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0452", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0453", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0454", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0455", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0456", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0463", "verdict": "keep", "reason": "Doc states non-null rule; matches code"}
+{"id": "R0469", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0470", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0473", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0475", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0476", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0483", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0485", "verdict": "keep", "reason": "Theme zip layout not stated"}
+{"id": "R0488", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0489", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0490", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0501", "verdict": "keep", "reason": "Jetty HTTP request metrics not stated"}
+{"id": "R0502", "verdict": "duplicate", "reason": "Same fact as R0501"}
+{"id": "R0503", "verdict": "duplicate", "reason": "Same fact as R0501"}
+{"id": "R0504", "verdict": "duplicate", "reason": "Same fact as R0501"}
+{"id": "R0510", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0511", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0512", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0515", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0529", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0530", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0531", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0532", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0533", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0534", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0535", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0536", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0537", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0545", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0546", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0547", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0548", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0549", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0550", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0551", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0557", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0561", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0569", "verdict": "keep", "reason": "Upload action storage path not stated"}
+{"id": "R0570", "verdict": "keep", "reason": "Wire contract describes JSON upload entries"}
+{"id": "R0580", "verdict": "keep", "reason": "audiencePrefix config key not documented"}
+{"id": "R0581", "verdict": "duplicate", "reason": "Same fact as R0569"}
+{"id": "R0582", "verdict": "duplicate", "reason": "Same fact as R0570"}
+{"id": "R0583", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0584", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0585", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0587", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0589", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0590", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0591", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0592", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0593", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0594", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0596", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0597", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0613", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0615", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0617", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0618", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0619", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0624", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0625", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0628", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0629", "verdict": "not-platform", "reason": "Eclipse/EMF tooling internals"}
+{"id": "R0649", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0650", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0651", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0652", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0660", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0661", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0662", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0663", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0664", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0665", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0666", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0667", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0668", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0669", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0670", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0671", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0673", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0675", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0676", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0677", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0678", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0681", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0682", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0684", "verdict": "not-platform", "reason": "Docs-site or contributor content"}
+{"id": "R0687", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0689", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0690", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0702", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0706", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0707", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0708", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0709", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0710", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0711", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0712", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0718", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0724", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0726", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0727", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0728", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0729", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0730", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0731", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0732", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0733", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0734", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0735", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0736", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0740", "verdict": "keep", "reason": "Empty defaultLocale edge case not stated"}
+{"id": "R0747", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0748", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0749", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0760", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0761", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0762", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0763", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0765", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0766", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0767", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0771", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0772", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0773", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0774", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0781", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0783", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0784", "verdict": "keep", "reason": "Sum type restriction already documented"}
+{"id": "R0785", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0786", "verdict": "keep", "reason": "1-based positions already documented"}
+{"id": "R0787", "verdict": "keep", "reason": "File name length limit not stated"}
+{"id": "R0788", "verdict": "duplicate", "reason": "Same fact as R0787"}
+{"id": "R0789", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0790", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0792", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0793", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0794", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0803", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0804", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0805", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0806", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0810", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0813", "verdict": "not-platform", "reason": "Generator template internals; not app-facing"}
+{"id": "R0814", "verdict": "not-platform", "reason": "Docs-site or contributor content"}
+{"id": "R0818", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0819", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0820", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0821", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0824", "verdict": "not-platform", "reason": "Metamodel or IDE tooling internals"}
+{"id": "R0829", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0830", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0835", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0836", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0837", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0838", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0839", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0840", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0841", "verdict": "not-platform", "reason": "Packaging and release internals"}
+{"id": "R0855", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0856", "verdict": "keep", "reason": "Dialect RDBMS path condition not stated"}
+{"id": "R0857", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0861", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0862", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0863", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0864", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0865", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0866", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0867", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0868", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0869", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0870", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0871", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0872", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0873", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0874", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0879", "verdict": "not-platform", "reason": "Runtime module internals; not app-facing"}
+{"id": "R0880", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0881", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0882", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0883", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}
+{"id": "R0884", "verdict": "not-platform", "reason": "Transformation engine internals; not app-facing"}

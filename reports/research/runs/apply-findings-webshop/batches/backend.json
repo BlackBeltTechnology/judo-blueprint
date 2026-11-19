@@ -1,0 +1,75 @@
+{
+ "batch": "backend",
+ "files": [
+  "catalog/agent-docs/backend/authentication-guide.md",
+  "catalog/agent-docs/backend/custom-operations.md",
+  "catalog/agent-docs/backend/data-access-guide.md",
+  "catalog/agent-docs/backend/interceptors.md",
+  "catalog/agent-docs/backend/platform-behavior-reference.md"
+ ],
+ "items": [
+  {
+   "id": "WR16-6",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "## Scheduled Work",
+   "text": "- Operation name format for `Dispatcher.callOperation`: `<package>.<Class>#<operation>` (the `#` separates the generated class from the operation), for example `<package>.<Class>#<operation>` for a STATIC operation on an unmapped transfer object. The generated `<app>-asm.model` in `application/model/target/generated-resources/model/` lists the names.",
+   "replaces": "",
+   "evidence": "judo-ng target/judo-ng-read/wt/runtime__judo-services/judo-services-simple-function-dispatcher/src/test/java/hu/blackbelt/judo/services/simple/function/dispatcher/NameingConventioBasedDispatcherImplTest.java:95 (callOperation(\"package1.Class1#operation1\", ...)); app: webshop-test application/model/target/generated-resources/model/webshop-asm.model. Note: the catalog bullet shows callOperation(name, exchange); the app passes a HashMap of inputs, not checked in judo-ng."
+  },
+  {
+   "id": "WR16-14",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "#### Pattern 4: Partial Updates",
+   "text": "To send a partial update that keeps the version check, put the identifier and the version into the payload with the generated builder: `<Entity>Builder.from(Map.of(\"__identifier\", <identifier>, \"__entityType\", \"<Entity>\", \"__version\", <version>, \"<attribute>\", <value>)).build()`. A `__version` in the payload makes the optimistic-lock check apply to the update; the mask only shapes the returned entity.",
+   "replaces": "",
+   "evidence": "judo-ng target/judo-ng-read/wt/template__judo-psm-generator-sdk-core/judo-psm-generator-sdk-core-api/src/main/resources/dao/api/dto.builder.java.hbs (static from(...) builder); app: webshop-test generated Product.from (line not recorded); integration tests with two transactions reading the same version."
+  },
+  {
+   "id": "WR18-4",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/data-access-guide.md",
+   "heading": "### Native SQL from a Custom Service",
+   "text": "Generated table names use the `T_` prefix and columns the `C_` prefix (read the exact names from the generated changelog). An enumeration column holds the integer value of the enumeration literal, not its name, so compare native SQL against that integer.",
+   "replaces": "",
+   "evidence": "target/judo-ng-read/wt/runtime__judo-tatami-base/judo-tatami-asm2rdbms/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/zeta/Asm2RdbmsZetaTransformation.java:125 (tablePrefix T_); runtime__judo-runtime-core/judo-runtime-core-dao-rdbms/src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/query/mappers/VariableMapper.java:79 (enum parameter resolved via getEEnumLiteral((Integer))). Not settled: the 1-based 'ordinal+1' storage and HSQLDB avg() truncation (plain SQL semantics, not a platform fact)"
+  },
+  {
+   "id": "WR18-5",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/custom-operations.md",
+   "heading": "## Rules for Custom Operations",
+   "text": "An operation output may be an unmapped TO whose transient relation points at a mapped TO, for example a search result that holds mapped items. Fill the relation with the results of the mapped type's DAO; the response then carries `__signedIdentifier` for each mapped item.",
+   "replaces": "",
+   "evidence": "app: ~/Projects/webshop-test/application/app/src/main/java/com/example/webshop/webshop/custom/webshop/shopproductinfo/SearchCustomImplementation.java:40-43 (cards.load(found.ids()) into SearchResult.withItems)"
+  },
+  {
+   "id": "WR18-10",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/interceptors.md",
+   "heading": "## Interceptor Component Registration",
+   "text": "An interceptor may also live in the application's `app` module when it must share a bundle with custom operations. Add `judo-runtime-core-dispatcher` as a `provided` dependency to the app `pom.xml`; the built-in interceptors stay in the generated `interceptors` module.",
+   "replaces": "",
+   "evidence": "app: ~/Projects/webshop-test/application/app/pom.xml:223-225 (judo-runtime-core-dispatcher, scope provided); catalog/agent-docs/deployment/build-process.md:153 (generated interceptors module)"
+  },
+  {
+   "id": "WR19-8",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/authentication-guide.md",
+   "heading": "### Resolution order (`DefaultActorResolver`)",
+   "text": "On the first request of a brand-new Keycloak user the principal can fail with `AUTHENTICATED_ENTITY_NOT_FOUND` even when the `#_principal` interceptor inserts the actor row; the second request succeeds. An API client must repeat the first call once.",
+   "replaces": "",
+   "evidence": "catalog/agent-docs/backend/authentication-guide.md:236 (actor row read on every request with a principal; authenticateByPrincipal runs only when no actor exists yet). Observed in the compose stack (WR19-8, app: ~/Projects/webshop-test deploy stack). Exact resolution order in DefaultActorResolver not yet read in judo-ng"
+  },
+  {
+   "id": "WR17-8",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "## Email Service",
+   "text": "- Maven artifact: `hu.blackbelt:osgi-email-api` (the version of the platform's `.karaf/system/hu/blackbelt/osgi-email-api/`). Declare it with `<scope>provided</scope>` in the app module: the bundle is already in the Karaf runtime.",
+   "replaces": "",
+   "evidence": "judo-ng-read/wt/runtime__osgi-email/osgi-email-api/pom.xml:6,11 (groupId hu.blackbelt, artifactId osgi-email-api); webshop-test application/generator-overrides/app/pom.xml.extra-dependencies.fragment.hbs:20-26 (provided scope, comment 'already in the Karaf runtime')"
+  }
+ ]
+}

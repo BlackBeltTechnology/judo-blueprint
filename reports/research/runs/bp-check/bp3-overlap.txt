@@ -1,0 +1,296 @@
+R0115@2 n=8 best=2@L46 - **Tier 2 is one module for the whole application**, kept out of the root `<modules>` list and run with `mvn test -f application/test/pom.xml` after 
+R0120@2 n=6 best=1@L3 title: Where Backend Tests Live in the Application Modules
+R0231@2 n=6 best=1@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+R0235@1 n=7 best=2@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+R0485@1 n=3 best=1@L34 ├── report/src/test/{java,resources/data/fixtures}   tier 1: library tests with fixtures
+R0511@2 n=3 best=1@L6 keywords: [test, unit test, integration test, testkit, e2e, src/test, test module, surefire, tag, structure, module]
+R0547@2 n=10 best=2@L46 - **Tier 2 is one module for the whole application**, kept out of the root `<modules>` list and run with `mvn test -f application/test/pom.xml` after 
+R0667@1 n=7 best=2@L11 evidence: ["rackinspect:application/test/pom.xml", "rackinspect:application/test/README.md", "rackinspect:application/integration-test/pom.xml", "rack
+R0677@2 n=4 best=1@L3 title: Where Backend Tests Live in the Application Modules
+R0805@2 n=9 best=2@L26 - The generated `e2e` module is built by the `build-e2e` profile and skipped with `-DskipE2E` ([build profiles](../../agent-docs/deployment/build-proc
+R1225@1 n=4 best=3@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+R1396@2 n=4 best=0@L0 
+R1569@4 n=8 best=1@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+R1685@6 n=3 best=1@L18 Backend tests come in tiers with very different costs: a mock-based unit test runs in milliseconds, a runtime-backed test boots the model runtime and 
+R1845@1 n=6 best=2@L11 evidence: ["rackinspect:application/test/pom.xml", "rackinspect:application/test/README.md", "rackinspect:application/integration-test/pom.xml", "rack
+R1847@2 n=4 best=1@L3 title: Where Backend Tests Live in the Application Modules
+R1850@1 n=10 best=3@L50 - **No test resource reaches into a sibling module.** A symlink or relative path from `report/src/test` into `app/src/main/resources` breaks as soon a
+R1892@5 n=3 best=1@L18 Backend tests come in tiers with very different costs: a mock-based unit test runs in milliseconds, a runtime-backed test boots the model runtime and 
+R2049@1 n=8 best=5@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+R2344@1 n=8 best=3@L34 ├── report/src/test/{java,resources/data/fixtures}   tier 1: library tests with fixtures
+R2393@2 n=8 best=2@L46 - **Tier 2 is one module for the whole application**, kept out of the root `<modules>` list and run with `mvn test -f application/test/pom.xml` after 
+R2755@1 n=7 best=2@L46 - **Tier 2 is one module for the whole application**, kept out of the root `<modules>` list and run with `mvn test -f application/test/pom.xml` after 
+G001@4 n=39 best=5@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+G005@5 n=50 best=4@L56 - Cost: tier 2 runs against installed artifacts, so a stale jar in the local repository can hide a change; install before testing ([multi-module build
+G011@3 n=51 best=3@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+G036@5 n=47 best=3@L26 - The generated `e2e` module is built by the `build-e2e` profile and skipped with `-DskipE2E` ([build profiles](../../agent-docs/deployment/build-proc
+G040@3 n=58 best=6@L47 - **Packages in tier 2 follow business areas** (`order`, `account`, `user`, `access`), not production modules; shared wiring goes into a `testsupport`
+G043@1 n=48 best=4@L60 One application has unit tests in `app` (pricing logic), `common` (utility services) and `report` (renderer with fixture data). Its `test` module hold
+G044@2 n=39 best=4@L60 One application has unit tests in `app` (pricing logic), `common` (utility services) and `report` (renderer with fixture data). Its `test` module hold
+G045@1 n=41 best=3@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+G046@3 n=52 best=2@L24 - Unit tests for interceptors and custom operations that mock DAOs run in the module they belong to with `mvn test` ([running integration tests](../..
+G052@2 n=52 best=3@L18 Backend tests come in tiers with very different costs: a mock-based unit test runs in milliseconds, a runtime-backed test boots the model runtime and 
+G053@2 n=54 best=4@L26 - The generated `e2e` module is built by the `build-e2e` profile and skipped with `-DskipE2E` ([build profiles](../../agent-docs/deployment/build-proc
+G060@4 n=50 best=2@L4 description: Practice for placing backend tests by tier: mock-based unit tests inside the module they test, runtime-backed tests in one separate test 
+G061@2 n=53 best=3@L26 - The generated `e2e` module is built by the `build-e2e` profile and skipped with `-DskipE2E` ([build profiles](../../agent-docs/deployment/build-proc
+G062@1 n=50 best=3@L26 - The generated `e2e` module is built by the `build-e2e` profile and skipped with `-DskipE2E` ([build profiles](../../agent-docs/deployment/build-proc
+G063@1 n=54 best=4@L60 One application has unit tests in `app` (pricing logic), `common` (utility services) and `report` (renderer with fixture data). Its `test` module hold
+G064@1 n=47 best=3@L26 - The generated `e2e` module is built by the `build-e2e` profile and skipped with `-DskipE2E` ([build profiles](../../agent-docs/deployment/build-proc
+G105@3 n=49 best=5@L24 - Unit tests for interceptors and custom operations that mock DAOs run in the module they belong to with `mvn test` ([running integration tests](../..
+G113@4 n=47 best=5@L60 One application has unit tests in `app` (pricing logic), `common` (utility services) and `report` (renderer with fixture data). Its `test` module hold
+G120@1 n=42 best=5@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+G126@1 n=51 best=5@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+AU2@2 n=15 best=3@L26 - The generated `e2e` module is built by the `build-e2e` profile and skipped with `-DskipE2E` ([build profiles](../../agent-docs/deployment/build-proc
+AU4@1 n=12 best=5@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+AU7@5 n=17 best=2@L25 - Integration tests with the runtime testkit live in a separate test module, not in the generated build profiles, and run after the application artifa
+R16-C6@3 n=16 best=4@L11 evidence: ["rackinspect:application/test/pom.xml", "rackinspect:application/test/README.md", "rackinspect:application/integration-test/pom.xml", "rack
+R0061@1 n=5 best=2@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+R0231@3 n=6 best=0@L0 
+R0235@5 n=7 best=1@L44 - Record why the override exists and re-check it at each platform upgrade.
+R0320@5 n=6 best=1@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+R1246@5 n=4 best=1@L4 description: Override specific Handlebars template fragments used by the JUDO code generator to inject custom logic into all generated frontend compon
+R1365@1 n=5 best=1@L27 - Helpers come from the generator's helper classes (for example `toSafeCamelCase`, `firstToUpperCase`); run with `-DtemplateDebug` to see the context 
+R1505@5 n=9 best=1@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+R1668@2 n=6 best=1@L42 - Make the injected code conditional on an annotation, so only marked elements change.
+R1673@2 n=7 best=1@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+R1676@5 n=10 best=0@L0 
+R2205@1 n=10 best=2@L26 - Override layering: a same-name template with a new `templateName` or `pathExpression` replaces the original; a `<name>.override.hbs` decorates it an
+R2269@2 n=5 best=3@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+R2497@2 n=6 best=3@L2 id: handlebars-generator-template-override
+R2513@1 n=1 best=0@L0 
+R2847@4 n=3 best=1@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+G091@5 n=48 best=4@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+G109@4 n=41 best=5@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+B37@1 n=21 best=5@L4 description: Override specific Handlebars template fragments used by the JUDO code generator to inject custom logic into all generated frontend compon
+AU1@3 n=34 best=4@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+AU4@3 n=12 best=3@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+AU6@1 n=17 best=2@L4 description: Override specific Handlebars template fragments used by the JUDO code generator to inject custom logic into all generated frontend compon
+AU7@2 n=17 best=3@L25 - Templates are Handlebars (`.hbs`) files declared in a YAML descriptor. A same-named file in the override directory (`generator-overrides/`) is used 
+R0054@2 n=5 best=3@L34 - Two forms can coexist in one frontend: standalone provider files for a simple table, and a page-specific hook that returns columns, filter options a
+R1529@1 n=10 best=4@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+R1530@5 n=9 best=1@L7 tags: ["domain:frontend", "layer:frontend", "project:actiongroup-test-react", "status:single-project"]
+R1541@1 n=8 best=3@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+R1545@1 n=5 best=3@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+R1546@1 n=10 best=4@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+R1549@2 n=12 best=3@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+R1550@1 n=6 best=2@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+R1551@1 n=7 best=3@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+R2289@1 n=6 best=3@L4 description: In a hand-written table page, column definitions and filter options are extracted into provider functions or page hooks that take the loc
+G006@1 n=46 best=7@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+G007@5 n=51 best=5@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+G012@1 n=50 best=9@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+G018@2 n=54 best=7@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+G058@5 n=50 best=5@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+G071@2 n=56 best=9@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+G073@3 n=46 best=9@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+G074@1 n=53 best=10@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+G108@2 n=49 best=8@L26 - Per-column adjustments that the model cannot express go through column customizer hooks, which receive the original column definition and return a c
+B52@1 n=14 best=3@L25 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filter
+R0044@2 n=5 best=0@L0 
+R0279@2 n=6 best=4@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+R0285@2 n=6 best=3@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+R0286@3 n=8 best=2@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+R0289@3 n=9 best=3@L18 Container-free tests of services: the OSGi `@Reference` fields of a service are not filled outside the OSGi runtime, so the test fills them itself. Re
+R0465@2 n=9 best=2@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+R0466@2 n=10 best=2@L34 private ActorService createActorService(JudoRuntimeFixture fixture, String email) throws Exception {
+R0738@2 n=7 best=1@L26 Types the injector cannot provide, such as the `VariableResolver`, are replaced after injection with a reflective field set ([mocking VariableResolver
+R1856@2 n=10 best=2@L34 private ActorService createActorService(JudoRuntimeFixture fixture, String email) throws Exception {
+R2850@2 n=9 best=3@L4 description: "In integration tests, wire handwritten services by hand: create the instance, set its @Reference fields by reflection with DAOs from the
+G064@2 n=47 best=4@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+G121@1 n=39 best=12@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+G129@1 n=55 best=5@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+B1@3 n=19 best=4@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+AU9@2 n=24 best=8@L24 The platform docs describe the integration testing setup: a `@JudoTest` class receives a `JudoRuntimeFixture`, whose Guice injector provides the gener
+KC04@3 n=26 best=3@L58 - Cost: reflection by field name fails when a field is renamed (and fails at run time), manual wiring of deep chains is tedious, and mocks must follow
+R1803@3 n=7 best=3@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+R2450@4 n=9 best=1@L4 description: "All collection relations (multi-valued) in JUDO models use `0` as their lower bound, resulting in cardinality `0..*`."
+G002@5 n=47 best=6@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G006@5 n=46 best=5@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G008@2 n=57 best=6@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G016@2 n=46 best=5@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G018@3 n=54 best=4@L24 - An actor access of type `ALL` is fixed to `0..*` by the platform, so unfiltered lists follow the same rule for free (see [accesspoint](../../agent-d
+G019@3 n=39 best=4@L24 - An actor access of type `ALL` is fixed to `0..*` by the platform, so unfiltered lists follow the same rule for free (see [accesspoint](../../agent-d
+G028@2 n=45 best=6@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G071@4 n=56 best=6@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G072@5 n=43 best=7@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G075@3 n=43 best=5@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G089@4 n=46 best=6@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+G130@2 n=47 best=8@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+KC18@5 n=15 best=3@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+R16-C8@3 n=22 best=4@L29 The cardinality table in [type.md](../../agent-docs/model/esm_metamodel/type.md) lists `0..1`, `1..1`, `0..*` and `1..*`, and the generated UI treats 
+R0056@2 n=5 best=1@L30 - The element must be marked as a custom implementation in the UI model. Its registration key is generated per element in the container's `customizati
+R1665@5 n=8 best=2@L18 Structured identifiers (VAT IDs, tax numbers, phone numbers, postal codes) must match a fixed format while the user types. The platform already has a 
+R1678@3 n=5 best=1@L18 Structured identifiers (VAT IDs, tax numbers, phone numbers, postal codes) must match a fixed format while the user types. The platform already has a 
+R2650@1 n=7 best=2@L39 - **Mixed masked and plain fields.** One group can contain masked fields and a plain text field with a maximum length, when only some identifiers have
+G022@2 n=47 best=7@L26 The pattern has no model shape of its own beyond a UI element flagged as a custom implementation. The platform generates an extension point for such e
+B32@4 n=10 best=5@L26 The pattern has no model shape of its own beyond a UI element flagged as a custom implementation. The platform generates an extension point for such e
+B45@2 n=6 best=3@L4 description: A frontend-only pattern that renders a group of text fields as a custom implementation element with react-imask masks, for structured ide
+R1665@3 n=8 best=1@L3 Replacing a generated form group with a custom visual element component that renders MUI TextFields with `react-imask` input masks for structured data
+R1668@4 n=6 best=1@L3 Replacing a generated form group with a custom visual element component that renders MUI TextFields with `react-imask` input masks for structured data
+R1672@4 n=4 best=0@L0 
+G022@1 n=47 best=4@L7 - **Model first**: a string DataField with `textWidget=INPUT`, `textMultiLine=false` and a `textMask` pattern needs no custom code. Use the steps belo
+B32@7 n=10 best=5@L8 - **Registration**: the element must be exposed by the model as a custom implementation. Register an FC with `registerService(CUSTOM_VISUAL_ELEMENT_IN
+B45@1 n=6 best=2@L7 - **Model first**: a string DataField with `textWidget=INPUT`, `textMultiLine=false` and a `textMask` pattern needs no custom code. Use the steps belo
+R0354@3 n=4 best=2@L25 - The generated React frontend already has the concept: a View/Edit container carries an edit mode, and container action hooks receive `(data, editMod
+R0355@3 n=5 best=2@L25 - The generated React frontend already has the concept: a View/Edit container carries an edit mode, and container action hooks receive `(data, editMod
+R0909@1 n=9 best=2@L50 className={editMode ? undefined : 'Mui-readOnly'}
+R1665@6 n=8 best=2@L13 related: [centralized-error-handling-validation-map, action-group-input-output-routing, trinary-logic-widget]
+G029@4 n=51 best=6@L25 - The generated React frontend already has the concept: a View/Edit container carries an edit mode, and container action hooks receive `(data, editMod
+G036@2 n=47 best=5@L25 - The generated React frontend already has the concept: a View/Edit container carries an edit mode, and container action hooks receive `(data, editMod
+G041@5 n=52 best=5@L26 - Whether a field is hidden, disabled, read-only or required can be controlled by the model (visual properties) or, with the visual properties hook ge
+G060@3 n=50 best=7@L25 - The generated React frontend already has the concept: a View/Edit container carries an edit mode, and container action hooks receive `(data, editMod
+G073@5 n=46 best=6@L26 - Whether a field is hidden, disabled, read-only or required can be controlled by the model (visual properties) or, with the visual properties hook ge
+G083@4 n=52 best=5@L26 - Whether a field is hidden, disabled, read-only or required can be controlled by the model (visual properties) or, with the visual properties hook ge
+G094@3 n=52 best=7@L25 - The generated React frontend already has the concept: a View/Edit container carries an edit mode, and container action hooks receive `(data, editMod
+G130@4 n=47 best=8@L26 - Whether a field is hidden, disabled, read-only or required can be controlled by the model (visual properties) or, with the visual properties hook ge
+R1598@4 n=8 best=2@L45 A transfer object used as a create target must bind every required feature of its entity, or validation fails (`AllRequiredFeaturesHaveBindingIfCreata
+R2573@3 n=8 best=3@L6 keywords: [relation, mapped transfer object, createable, updateable, deleteable, capability ladder, custom operation, unmapped input, OperationFlowMan
+G003@2 n=53 best=7@L33 The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference]
+G004@4 n=38 best=6@L33 The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference]
+G006@3 n=46 best=6@L45 A transfer object used as a create target must bind every required feature of its entity, or validation fails (`AllRequiredFeaturesHaveBindingIfCreata
+G007@6 n=51 best=6@L33 The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference]
+G012@2 n=50 best=8@L35 **One transfer object per relation target.** Table, detail, create and edit all come from one `Y`, so nothing drifts. Thin the columns by hiding techn
+G025@4 n=44 best=6@L33 The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference]
+G039@5 n=50 best=8@L33 The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference]
+G087@5 n=51 best=5@L33 The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference]
+B52@2 n=14 best=6@L33 The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference]
+B41@2 n=20 best=2@L33 The access reference states the same: an access with list cardinality renders a table page and the target needs table columns ([accesspoint reference]
+R1246@4 n=4 best=2@L25 - Generated files that need project-specific content expose named fragment extension points, marked in the file by paired comments. You fill one by pl
+R1896@4 n=8 best=1@L8 category: build
+R1897@1 n=7 best=2@L25 - Generated files that need project-specific content expose named fragment extension points, marked in the file by paired comments. You fill one by pl
+R2000@1 n=8 best=2@L4 description: "Add extra npm dependencies to the generated frontend `package.json` through a Handlebars fragment override instead of editing or ignorin
+R2043@1 n=4 best=1@L27 - Direct edits of a generated file fail the checksum unless the file is in `.generator-ignore` ([checksum protection](../../agent-docs/frontend/README
+G069@1 n=48 best=12@L25 - Generated files that need project-specific content expose named fragment extension points, marked in the file by paired comments. You fill one by pl
+G109@2 n=41 best=7@L25 - Generated files that need project-specific content expose named fragment extension points, marked in the file by paired comments. You fill one by pl
+B37@2 n=21 best=6@L25 - Generated files that need project-specific content expose named fragment extension points, marked in the file by paired comments. You fill one by pl
+AU4@4 n=12 best=3@L25 - Generated files that need project-specific content expose named fragment extension points, marked in the file by paired comments. You fill one by pl
+AU12@3 n=13 best=2@L26 - The frontend override mechanism is the same: a template with the same name in `generator-overrides/` is used instead of the default, and the templat
+R0274@4 n=9 best=3@L54 - Replaced: the start and confirm generation inputs had four transient String attributes (object, template, design, generation handle). The operations
+G009@4 n=53 best=4@L31 - **Input picker for an existing typed entity:** the value identifies a row the user picks. Declare a transient relation on the unmapped input transfe
+G015@2 n=53 best=5@L33 - For an input in an API package, the target can be a thin reference transfer object; see [[api-package-thin-ref-projection]]. A transient relation on
+G022@5 n=47 best=3@L31 - **Input picker for an existing typed entity:** the value identifies a row the user picks. Declare a transient relation on the unmapped input transfe
+G038@3 n=50 best=5@L31 - **Input picker for an existing typed entity:** the value identifies a row the user picks. Declare a transient relation on the unmapped input transfe
+G046@4 n=52 best=3@L25 - **Opaque session token:** a system-issued handle whose only job is to retrieve its bearer (upload token, generation handle, OAuth state value).
+G123@4 n=55 best=4@L31 - **Input picker for an existing typed entity:** the value identifies a row the user picks. Declare a transient relation on the unmapped input transfe
+B51@3 n=21 best=5@L31 - **Input picker for an existing typed entity:** the value identifies a row the user picks. Declare a transient relation on the unmapped input transfe
+R16-C4@2 n=10 best=1@L11 evidence: ["compsych-letter-demo:unrecorded"]
+R1679@3 n=6 best=1@L2 id: generator-ignore-i18n-layout
+R1684@1 n=8 best=1@L3 title: Generator-Ignore for i18n Files and Layout Config
+R2043@3 n=4 best=1@L26 - Generated files not in `.generator-ignore` are regenerated and a hand-edited one fails the checksum check; `.generator-ignore` is the documented pro
+R2533@2 n=4 best=2@L6 keywords: [generator-ignore, i18n, application_hu-HU.json, system_hu-HU.json, layout.ts, localization, regeneration]
+G058@4 n=50 best=8@L43 - `src/config/layout.ts` (drawer width, theme mode, menu orientation) is code from this example, not documented platform behavior; verify it exists in
+G076@5 n=47 best=5@L25 - Translation files are generated flat in `public/i18n/` as `application_<locale>.json` (from the model: entities, enumerations, menu, services) and `
+G077@3 n=47 best=9@L25 - Translation files are generated flat in `public/i18n/` as `application_<locale>.json` (from the model: entities, enumerations, menu, services) and `
+G078@1 n=49 best=7@L27 - Platform docs describe adding a language by copying the default files and translating them, and finding missing keys by diffing against the default 
+R16-C5@3 n=23 best=5@L6 keywords: [generator-ignore, i18n, application_hu-HU.json, system_hu-HU.json, layout.ts, localization, regeneration]
+R0274@5 n=9 best=3@L26 - A `getOperations` that returns the default empty collection registers the interceptor for **all built-in operations**: create, update, delete, list,
+R0486@1 n=7 best=3@L38 private static final Logger log = LoggerFactory.getLogger(InterceptorOperationLogger.class);
+R0588@3 n=10 best=1@L67 - To audit who did what: log lines are not an audit trail; see [[audit-event-trail]].
+R1552@1 n=9 best=3@L62 Developer needs the FQN of the update operation of an entity to register a targeted interceptor. The logger is enabled, the screen action is performed
+R1924@2 n=10 best=2@L28 - `AsmUtils.getOperationFQName(operation)` gives the name; the same string format is used to register targeted interceptors ([FQN reference](../../age
+R1950@4 n=5 best=1@L4 description: "A global operation-call interceptor with no getOperations override that logs the fully qualified name of every built-in operation in pre
+R2306@1 n=4 best=2@L38 private static final Logger log = LoggerFactory.getLogger(InterceptorOperationLogger.class);
+R2831@3 n=7 best=1@L11 evidence: ["trivia:unrecorded", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/LogOperationCallInterceptor.
+R1598@3 n=8 best=2@L5 aliases: [conditional required fields, validate after write, postCall validation, mandatory when entitled]
+R1924@4 n=10 best=2@L5 aliases: [conditional required fields, validate after write, postCall validation, mandatory when entitled]
+R2141@4 n=7 best=1@L19 Some fields are required only when another flag is set, for example identity data that becomes mandatory once a user is entitled to a refund. On updat
+R2176@2 n=8 best=1@L4 description: "A post-call interceptor on the create and update operations re-loads the persisted entity and checks fields that are required only under
+R2324@5 n=7 best=0@L0 
+R2577@2 n=8 best=2@L4 description: "A post-call interceptor on the create and update operations re-loads the persisted entity and checks fields that are required only under
+R2831@2 n=7 best=1@L11 evidence: ["park-here:application/interceptors/src/main/java/hu/blackbelt/park/here/interceptors/usersettings/UserRefundValidationInterceptor.java"]
+R2832@2 n=7 best=2@L47 return OperationCallInterceptor.super.postCall(operation, parameterPayload, returnPayload);
+R1141@2 n=7 best=0@L0 
+R1536@3 n=9 best=2@L4 description: "Use the `react-imask` library (IMaskInput) within custom visual element overrides to enforce specific input formats on text fields."
+G038@5 n=50 best=3@L25 - The model already carries an input mask: `textMask` on a string widget is applied only when `textWidget=INPUT` and `textMultiLine=false` ([widget at
+G082@1 n=52 best=6@L25 - The model already carries an input mask: `textMask` on a string widget is applied only when `textWidget=INPUT` and `textMultiLine=false` ([widget at
+G083@5 n=52 best=7@L25 - The model already carries an input mask: `textMask` on a string widget is applied only when `textWidget=INPUT` and `textMultiLine=false` ([widget at
+G125@1 n=49 best=5@L28 - A model-designated custom element is rendered by a component you register ([[custom-visual-element-override]]).
+B45@3 n=6 best=2@L6 keywords: [input mask, react-imask, IMaskInput, textMask, custom visual element, formatted field]
+R0153@2 n=8 best=1@L26 - `.generator-ignore` sits in the actor frontend module root and works like `.gitignore`: exact paths, wildcards, directories, patterns, `#` comments.
+R0449@1 n=11 best=3@L25 - The generator records a checksum for every generated file in `.generated-files__<actor_fqn>`. A file not listed in `.generator-ignore` is regenerate
+R1684@3 n=8 best=1@L52 - A frontend that keeps App.tsx and the theme generated: its customization goes through hooks and custom components; its ignore list covers the applic
+R2524@5 n=9 best=3@L25 - The generator records a checksum for every generated file in `.generated-files__<actor_fqn>`. A file not listed in `.generator-ignore` is regenerate
+G033@2 n=48 best=4@L27 - Platform guidance: hooks first, editing generated files only when no hook exists. For the theme, prefer a same-named override of one theme fragment 
+B36@4 n=9 best=3@L52 - A frontend that keeps App.tsx and the theme generated: its customization goes through hooks and custom components; its ignore list covers the applic
+R0588@2 n=10 best=1@L19 Applications where a full sign-in is overkill (public games, event kiosks, demos) still need to remember who the visitor is and what they were doing. 
+R1065@3 n=10 best=3@L62 A game frontend stores several keys (user e-mail, display name id, access code, active group as JSON, round id, round duration, prompt list and answer
+R2618@2 n=7 best=1@L62 A game frontend stores several keys (user e-mail, display name id, access code, active group as JSON, round id, round duration, prompt list and answer
+G090@3 n=48 best=4@L19 Applications where a full sign-in is overkill (public games, event kiosks, demos) still need to remember who the visitor is and what they were doing. 
+G096@2 n=52 best=4@L26 - Table state (sort, filter, page size) is already persisted by the generated tables in `sessionStorage` under keys built from the table `uniqueId` ([
+G100@2 n=51 best=5@L28 - An actor marked anonymous has no principal, so what it may reach comes only from the model's access rules ([authentication guide](../../agent-docs/b
+R1559@4 n=7 best=1@L43 - Declaring the transfer objects separately matches what the platform supports, so the model validates and the generated services and pages exist for 
+R2446@1 n=10 best=4@L25 The metamodel gives every class a list of generalizations, but the agent-docs state that inheritance between transfer object types is not supported ([
+G002@4 n=47 best=4@L43 - Declaring the transfer objects separately matches what the platform supports, so the model validates and the generated services and pages exist for 
+G006@2 n=46 best=4@L25 The metamodel gives every class a list of generalizations, but the agent-docs state that inheritance between transfer object types is not supported ([
+G010@3 n=48 best=5@L25 The metamodel gives every class a list of generalizations, but the agent-docs state that inheritance between transfer object types is not supported ([
+G089@3 n=46 best=6@L25 The metamodel gives every class a list of generalizations, but the agent-docs state that inheritance between transfer object types is not supported ([
+R0151@2 n=8 best=1@L32 Use only when palette plus fragments are insufficient. A replaced theme uses one `createTheme` call, listed in `.generator-ignore`:
+R0485@2 n=3 best=0@L0 
+R1672@5 n=4 best=0@L0 
+G269@4 n=23 best=5@L25 - Theming is two-layered. The actor type in the UI model carries seven palette colors (primary, secondary, background, paper background, primary and s
+G118@4 n=50 best=6@L26 - The generated `src/theme/index.tsx` is assembled from fixed fragments (`index.ts.mui-<component>.fragment.hbs`, theme options, extra components, pal
+R0411@2 n=10 best=1@L2 id: external-api-adapter-provider-pattern
+R1454@3 n=8 best=1@L5 Keep the three layers in separate modules, so the API module has no dependency on any platform SDK:
+R1486@1 n=8 best=0@L0 
+R2215@5 n=8 best=2@L49 - The API interface has seven methods, covering account information, connection status, the item list, totals and usage, item history, cost to date, a
+R2834@4 n=7 best=1@L7 - An API module: the interface and its data objects, packaged as a standalone bundle with no model dependency.
+R1601@3 n=10 best=2@L25 - `hiddenBy`, `enabledBy` and `requiredBy` each reference a **boolean data member on the same transfer object** that owns the page; no cross-object re
+G025@2 n=44 best=4@L25 - `hiddenBy`, `enabledBy` and `requiredBy` each reference a **boolean data member on the same transfer object** that owns the page; no cross-object re
+G030@3 n=44 best=6@L26 - An operation button can ask for confirmation: `confirmationType` is `NONE`, `CONDITIONAL` (decided by a boolean member through `confirmationConditio
+G035@1 n=44 best=10@L25 - `hiddenBy`, `enabledBy` and `requiredBy` each reference a **boolean data member on the same transfer object** that owns the page; no cross-object re
+B43@1 n=5 best=2@L26 - An operation button can ask for confirmation: `confirmationType` is `NONE`, `CONDITIONAL` (decided by a boolean member through `confirmationConditio
+R0002@4 n=10 best=0@L0 
+R2141@5 n=7 best=2@L27 - The Access carries the permissions for that entry point; the transfer object's flags say what the type allows ([accesspoint reference](../../agent-d
+G004@2 n=38 best=6@L28 - Each Access that should show up in the menu needs its own MenuItemAccess; one per partition ([pairing rule](../../agent-docs/model/esm_metamodel/acc
+G019@4 n=39 best=4@L27 - The Access carries the permissions for that entry point; the transfer object's flags say what the type allows ([accesspoint reference](../../agent-d
+R0277@6 n=5 best=3@L29 - Several interceptors on one operation run in registration order for `preCall` and for `postCall` (not reversed); all run in the operation's transact
+R1782@3 n=4 best=0@L0 
+R2402@2 n=9 best=2@L31 - Payload access: the create payload is `CreateInstanceCall.CreateInstanceCallPayload` (`getInput()`), the update payload `UpdateInstanceCall.UpdateIn
+G119@1 n=49 best=8@L31 - Payload access: the create payload is `CreateInstanceCall.CreateInstanceCallPayload` (`getInput()`), the update payload `UpdateInstanceCall.UpdateIn
+R0577@2 n=8 best=1@L25 - An operation without an output answers 204; an operation that returns a binary hands back a `FileType` the client downloads with the token ([client 
+G102@1 n=47 best=6@L27 - Custom operations are OSGi components and bring their own services with `@Reference` ([custom operations](../../agent-docs/backend/custom-operations
+G115@2 n=50 best=3@L65 Not every bulk import needs a file. When the rows already exist in the system (for example records the user picks from a list and turns into another k
+B2@1 n=10 best=3@L48 // return the FileType (id, fileName, mimeType, size) in the output object
+R1543@3 n=3 best=1@L43 The reference entities are docks, slots, resource types, handling types, time windows, product categories, units and storage types. Most share a name 
+R2832@7 n=7 best=2@L3 Platform facts: an `OperationCallInterceptor` fires only for built-in operations such as create, update, delete, list and set/add/remove reference. Cu
+B15@2 n=6 best=2@L12 - Actor identity resolution: `VariableResolver.resolve(String.class, "ACTOR", "email")` retrieves the current user's email, then `UserDao.query().filt
+KC11@3 n=15 best=7@L3 Platform facts: an `OperationCallInterceptor` fires only for built-in operations such as create, update, delete, list and set/add/remove reference. Cu
+R2169@4 n=5 best=1@L43 - **Localised names.** Member names in another language, used where the domain vocabulary requires it. The meaning stays the same: open and closed.
+G008@5 n=57 best=2@L4 description: "A two-value status enumeration with ACTIVE and INACTIVE, used when an entity is either in use or switched off and no third state is need
+B16@3 n=11 best=2@L30 The enumeration has two members. ACTIVE has ordinal 1 and INACTIVE has ordinal 2. An entity that uses it holds one required attribute of this enumerat
+B16@2 n=11 best=2@L6 - An entity that needs an on or off lifecycle holds one required attribute of type Status. The enumeration does not own operations or relations.
+R0321@5 n=7 best=2@L7 - **PlanVersion** is the archive: timestamp and the two totals (all required). It composes its period rows (0..*).
+R0378@1 n=8 best=1@L18 The user-facing transfer objects mirror the entities: the parent exposes the current rows and the versions as aggregations (embedded lists of mapped t
+R2449@4 n=3 best=1@L26 +String month [1]
+R0511@1 n=3 best=1@L19 Custom frontend logic (masks, validation feedback, prefill rules) breaks silently when the model changes. Unit tests catch that, but only if they live
+R0677@1 n=4 best=1@L4 description: Put unit tests for custom frontend code under src/custom next to the helper they test (or in one dedicated non-generated folder), keep th
+G063@5 n=54 best=3@L25 - Files the generator never emits, including anything you add under `src/custom/`, are outside generator scope and need no `.generator-ignore` entry (
+R0769@5 n=11 best=1@L35 - The stored value is a hash. The plain token exists only in the email and in the request that the recipient sends back.
+R2833@5 n=4 best=2@L38 - A failed check raises a modeled fault, declared on the operation in the model (HTTP 422 with an `X-Fault` header). A bad field value raises the plat
+R1954@1 n=4 best=1@L3 The verification flow is implemented by custom operations on the request entity. Each one checks the status and the token before it changes anything. 
+R1504@2 n=9 best=2@L27 - JSON parsing is not a platform feature of the operation: use Jackson in your own code. The platform's shared `ObjectMapper` for REST is configured s
+R2324@2 n=7 best=0@L0 
+B2@3 n=10 best=2@L31 `FileStoreService` (`fsService`) and the inner record class are example code.
+R1717@1 n=11 best=3@L25 A failed feed write is a platform failure. Fail the publishing operation so the source and the feed stay consistent. Do not throw a business fault for
+G014@5 n=53 best=4@L5 A single application service (not platform API) creates and removes the rows through the generated data-access objects (DAOs). Publishing a source ite
+KC17@2 n=5 best=1@L5 The generated list of feed rows is a table. For a feed, replace it with a custom component that loads the rows in pages and renders each row as a card
+G003@4 n=53 best=4@L27 - The item has an instance operation `setAsPrimary` (`togglePrimary` when it can also clear the choice). It sets the parent's `primaryAccount` to the 
+B19@2 n=8 best=4@L28 - The item reaches its parent through a derived back-reference `partner` (0..1) whose getter is `self!container(Partner)`; the `!container(type)` func
+B30@2 n=10 best=4@L37 Single-primary is a modelling convention. The platform has no uniqueness rule for a flag; the guarantee comes from the single reference and the operat
+R0498@2 n=7 best=7@L34 The platform documents the UI side: `hiddenBy` on a menu item access must reference a boolean `DataMember` on the principal transfer object, and `hidd
+G035@4 n=44 best=10@L34 The platform documents the UI side: `hiddenBy` on a menu item access must reference a boolean `DataMember` on the principal transfer object, and `hidd
+R1066@3 n=10 best=1@L4 description: A static operation on the transfer layer acts as a factory that creates an entity along with a complete set of pre-populated child entiti
+KC13@7 n=7 best=2@L26 - The body can be a JCL script or custom Java ([JCL scripts](../../agent-docs/model/jcl-operation-scripts.md)). In JCL, `new Type(...)` must list ever
+R1568@3 n=10 best=2@L19 An entity needs a short, human-readable, increasing code (`PRT-00001`) that the user does not type. When the code depends on logic only Java has (a pr
+G037@3 n=62 best=3@L27 - Sequences can have gaps: values of rolled-back transactions are not reused (same section). A code is unique and increasing, not gap-free.
+R2425@2 n=12 best=4@L6 keywords: [derived attribute, literal, getterExpression, constant, hiddenBy, enabledBy, transfer object, boolean flag]
+G035@2 n=44 best=9@L32 `hiddenBy`, `enabledBy` and `requiredBy` must reference a boolean data member of the same transfer object that owns the widget ([UI authoring guide](.
+G065@3 n=49 best=5@L25 - The create form is prepopulated from a template: the REST layer serves a blank prototype of the transfer object under `<TO>/~template` (operation `G
+B34@3 n=12 best=3@L26 - Dialog and page hooks receive `(data, editMode, storeDiff, ...)`; `storeDiff(attributeName, value)` updates page state so validation and diff tracki
+AU8@5 n=23 best=3@L24 This is a convention built on platform mechanisms: OSGi components with `@Reference` injection and generated DAOs with the fluent query builder (see [
+BA-178@1 n=14 best=3@L24 This is a convention built on platform mechanisms: OSGi components with `@Reference` injection and generated DAOs with the fluent query builder (see [
+R1534@3 n=8 best=1@L48 ## Example
+R2203@5 n=11 best=3@L14 The guards are derived boolean attributes on the entity and are mapped read-only to the transfer object, which the backend computes on read. The negat
+R2838@1 n=11 best=4@L65 public class RunCustomImplementation implements Run {
+G125@2 n=49 best=7@L27 - A custom component is attached through a custom implementation visual element of the model and registered as a service under `CUSTOM_VISUAL_ELEMENT_
+B22@1 n=5 best=4@L26 - The default expression names the initial state with the literal syntax `Type#VALUE`, for example `Status#DRAFT` ([[default-value-patterns]]).

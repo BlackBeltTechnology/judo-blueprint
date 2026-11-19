@@ -1,0 +1,66 @@
+{"id": "G047", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G048", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G049", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G050", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G051", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G052", "verdict": "ok", "note": "left unverified; no one-lookup confirmation"}
+{"id": "G053", "verdict": "ok", "note": "left unverified; no one-lookup confirmation"}
+{"id": "G091", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G092", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G093", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G133", "verdict": "ok", "note": "left unverified; no one-lookup confirmation"}
+{"id": "KC04", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "KC05", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "KC17", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "KC19", "verdict": "ok", "note": "left unverified; no one-lookup confirmation"}
+{"id": "DE-023", "verdict": "ok", "note": "left unverified; no one-lookup confirmation"}
+{"id": "NG0030", "verdict": "ok", "note": "already in doc"}
+{"id": "NG0049", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0053", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0073", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0078", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0081", "verdict": "ok", "note": "already in doc"}
+{"id": "NG0089", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0090", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0094", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0096", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0113", "verdict": "ok", "note": "already in doc"}
+{"id": "NG0114", "verdict": "ok", "note": "already in doc"}
+{"id": "NG0124", "verdict": "ok", "note": "already in doc"}
+{"id": "NG0129", "verdict": "ok", "note": "left not-platform; no one-lookup confirmation"}
+{"id": "NG0131", "verdict": "ok", "note": "already in doc"}
+{"id": "NG0137", "verdict": "ok", "note": "already in doc"}
+{"id": "NG0149", "verdict": "ok", "note": "left rejected; no one-lookup confirmation"}
+{"id": "NG0150", "verdict": "ok", "note": "already in doc"}
+{"id": "G052", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G053", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "G133", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "DE-023", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1030", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1048", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1049", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1058", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1065", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1066", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1067", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1107", "verdict": "ok", "note": "already in doc"}
+{"id": "U1108", "verdict": "ok", "note": "already in doc"}
+{"id": "U1109", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1113", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U1125", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U0012", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U0021", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U0022", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U0023", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U0024", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U0031", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U0032", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "U0112", "verdict": "ok", "note": "evidence/diff checked; supported"}
+{"id": "R1581", "verdict": "ok", "note": "judo-karaf.env.hbs:1 ships a fixed literal signer secret in every generated file; 'fixed placeholder, replace per environment' is supported."}
+{"id": "R0308", "verdict": "fixed", "note": "CrossOriginResourceSharingFilterProvider.java:74 returns new unconfigured filter; text narrowed to the JUDO_PLATFORM_CORS_ALLOW_ORIGIN variable in the Guice CXF runtime. Original parenthetical kept. Note: osgi-runtime-services.md per-model cors_* keys are a separate mechanism, not contradicted."}
+{"id": "R1112", "verdict": "ok", "note": "docker-compose.yml.hbs: app service (lines 46-68) has no volumes; only postgres mounts <app>_filestore:/filestore (line 80). Verified."}
+{"id": "R0580", "verdict": "ok", "note": "TokenServiceConfig.java:37 audiencePrefix; DefaultTokenIssuer.java:77 and DefaultTokenValidator.java:83 both apply it"}
+{"id": "R2321", "verdict": "fixed", "note": "DatabaseParameters.java:79-83 prints the messages and continues; but the sentence sat under Maven-Based Migrations and AbstractSchemaMojo.java:119-122 logs the same messages via getLog().error. Reworded to cover CLI and Maven goals"}
+{"id": "R2723", "verdict": "ok", "note": "CxfServerManager.java:184-189 reads applicationPath from application.getProperties(); warns when missing and no @ApplicationPath"}
+{"id": "R0981", "verdict": "ok", "note": "docs 04_security.adoc keycloakUser default admin; JudoKeycloakModuleConfiguration.java:23,26 admin/judo bound into KeycloakConnectorProvider via JudoKeycloakModule.java:146-147 (the provider field default admin is overridden)"}
+{"id": "R1065", "verdict": "ok", "note": "handoff confirmed: judo.sh.hbs:369-392 exact Y continues, else Aborting prune exit 13; sentence applied in build-process.md (deployment-a check line)"}

@@ -1,0 +1,30 @@
+import json,re,glob,collections,pathlib,importlib.util,importlib.machinery
+ld=importlib.machinery.SourceFileLoader('fl','.pi/skills/judo-catalog-expand/scripts/findings-ledger')
+spec=importlib.util.spec_from_loader('fl',ld); fl=importlib.util.module_from_spec(spec); ld.exec_module(fl)
+W='target/apply-findings'
+items=[]
+for l in open(W+'/raw.jsonl'):
+    x=json.loads(l); items.append(dict(id=x['id'],src='judo-ng-'+x['kind'],text=f"claim: {x['claim']} | fact: {x['fact']} | at {x['repo']}:{x['path']}"))
+for l in open(W+'/inventory.jsonl'):
+    x=json.loads(l)
+    if not x['src'].startswith('judo-ng-read'): items.append(dict(id=x['id'],src=x['src'].split(':')[0],text=x['text'][:1500]))
+for l in open('target/apply-findings-r16/inventory.jsonl'):
+    x=json.loads(l); items.append(dict(id=x['id'],src='webshop-r16',text=x['text']))
+D={str(p):p.read_text() for g in ('model-blueprints/**/*.md','best-practices/**/*.md') for p in pathlib.Path('catalog').glob(g)}
+D={k:v for k,v in D.items() if not k.endswith(('AGENTS.md','.agent.md'))}
+ALL='\n'.join(D.values())
+out=[];pairs=collections.defaultdict(list)
+for it in items:
+    I=[x for x in fl.idents(it['text']) if x in ALL]; hits=collections.Counter()
+    for x in I:
+        r=re.compile(r"(?<![\w.])"+re.escape(x)+r"(?![\w])")
+        for f,b in D.items():
+            if x in b and r.search(b): hits[f]+=1
+    n_id=len(fl.idents(it['text']))
+    c=[f for f,n in hits.most_common(3) if n>=2 or (n==1 and n_id<=2)]
+    out.append(dict(it,candidates=c))
+    for f in c: pairs[f].append(it['id'])
+json.dump(out,open('target/bp-check/scan.json','w'))
+print('findings',len(items),'with candidates',sum(1 for o in out if o['candidates']),'pairs',sum(len(v) for v in pairs.values()),'files',len(pairs),'of',len(D))
+print(collections.Counter(o['src'] for o in out if o['candidates']))
+print(sorted(((len(v),f) for f,v in pairs.items()),reverse=True)[:10])

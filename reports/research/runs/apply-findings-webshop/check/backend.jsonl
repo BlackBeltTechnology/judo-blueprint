@@ -1,0 +1,6 @@
+{"id": "WR16-6", "verdict": "ok", "note": "callOperation name <package>.<Class>#<op> matches getOperationFullyQualifiedName (NameingConventioBasedDispatcherImpl:217)."}
+{"id": "WR16-14", "verdict": "ok", "note": "dto.builder.from(map)/build and __version payload check (UpdateStatementExecutor:120,148) confirmed; mask is read-back only."}
+{"id": "WR18-4", "verdict": "ok", "note": "T_/C_ default prefixes (Asm2RdbmsZetaTransformation:125-126) and enum column Integer (AttributeRules:199) confirmed."}
+{"id": "WR18-5", "verdict": "ok", "note": "__signedIdentifier key (IdentifierSigner:32); DefaultDispatcher:434 signs operation outputs, recursing into relations."}
+{"id": "WR18-10", "verdict": "ok", "note": "OperationCallInterceptor in judo-runtime-core-dispatcher; interceptors/ module exists in the app template; provided-dependency form matches template pom."}
+{"id": "WR17-8", "verdict": "ok", "note": "osgi-email-api is a bundle with groupId hu.blackbelt (pom.xml:6-11); provided scope is a recommendation, not contradicted."}

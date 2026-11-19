@@ -1,0 +1,100 @@
+[
+ {
+  "id": "R1896",
+  "kind": "triage",
+  "file": "catalog/agent-docs/e2e-testing/README.md",
+  "text": "The generated e2e aggregate pom's build section contains only pluginManagement and omits the extra-plugins fragment.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/e2e/pom.xml.hbs:29"
+ },
+ {
+  "id": "R2294",
+  "kind": "triage",
+  "file": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+  "text": "clearPrimitiveField accepts a backCheck argument that is never used, so no value check runs after clearing.",
+  "evidence": "judo-ui-e2e-template:judo-ui-playwright-e2e-template/src/main/resources/actor/playwright/helpers/utils.ts.hbs:154"
+ },
+ {
+  "id": "R2295",
+  "kind": "triage",
+  "file": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+  "text": "createSingleRelationElement does not await submitSingleRelationElementCreate, so the submit promise is unhandled.",
+  "evidence": "judo-ui-e2e-template:judo-ui-playwright-e2e-template/src/main/resources/actor/playwright/helpers/utils.ts.hbs:235"
+ },
+ {
+  "id": "R2296",
+  "kind": "triage",
+  "file": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+  "text": "createCollectionRelationElement does not await submitCollectioRelationElementCreate, so the submit promise is unhandled.",
+  "evidence": "judo-ui-e2e-template:judo-ui-playwright-e2e-template/src/main/resources/actor/playwright/helpers/utils.ts.hbs:317"
+ },
+ {
+  "id": "R2297",
+  "kind": "triage",
+  "file": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+  "text": "acceptChangesOnDialogElement clicks an Ok button with a different icon label than the other Ok helpers.",
+  "evidence": "judo-ui-e2e-template:judo-ui-playwright-e2e-template/src/main/resources/actor/playwright/helpers/utils.ts.hbs:331"
+ },
+ {
+  "id": "R2298",
+  "kind": "triage",
+  "file": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+  "text": "Labels in generated Playwright locators are escaped only for double quotes; backslashes and newlines are emitted raw.",
+  "evidence": "judo-ui-e2e-template:judo-ui-playwright-e2e-template/src/main/java/hu/blackbelt/judo/ui/generator/playwright/VisualElementHelper.java:204"
+ },
+ {
+  "id": "R2299",
+  "kind": "triage",
+  "file": "catalog/agent-docs/e2e-testing/model-screen-layout.md",
+  "text": "Container, table and tab elements without children are generated as leaves, without their _id/_label (and tab) entries.",
+  "evidence": "judo-ui-e2e-template:judo-ui-playwright-e2e-template/src/main/java/hu/blackbelt/judo/ui/generator/playwright/VisualElementHelper.java:281"
+ },
+ {
+  "id": "R2301",
+  "kind": "triage",
+  "file": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+  "text": "APP_URL is interpolated into a RegExp without escaping, so regex metacharacters in the URL change what is matched.",
+  "evidence": "judo-ui-e2e-template:judo-ui-playwright-e2e-template/src/main/resources/actor/playwright/helpers/ApiHelper.ts.hbs:4"
+ },
+ {
+  "id": "R2837",
+  "kind": "triage",
+  "file": "catalog/agent-docs/integration-testing/getting-started.md",
+  "text": "No alwaysRollback test setting exists; AlwaysRollbackTransactionalBehaviourCall is only a base class.",
+  "evidence": "judo-runtime-core:judo-runtime-core-dispatcher/src/main/resources/claude/plugins/judo-dispatcher/skills/debug-operations/SKILL.md:188"
+ },
+ {
+  "id": "R2847",
+  "kind": "triage",
+  "file": "catalog/agent-docs/integration-testing/getting-started.md",
+  "text": "The @JudoTest modelName annotation default is \"example\".",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice-testkit/src/main/java/hu/blackbelt/judo/runtime/core/guice/testkit/fixture/JudoTest.java:44"
+ },
+ {
+  "id": "R2848",
+  "kind": "triage",
+  "file": "catalog/agent-docs/integration-testing/getting-started.md",
+  "text": "resolveDialect is package-private, so application test code cannot call it.",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice-testkit/agent-docs/api-reference.md:24"
+ },
+ {
+  "id": "R2849",
+  "kind": "triage",
+  "file": "catalog/agent-docs/integration-testing/getting-started.md",
+  "text": "tearDown rolls back an open transaction only; it does not close the injector or datasource.",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice-testkit/agent-docs/api-reference.md:17"
+ },
+ {
+  "id": "R2850",
+  "kind": "triage",
+  "file": "catalog/agent-docs/integration-testing/getting-started.md",
+  "text": "The testkit does not read injection annotations; it injects all eligible fields and set* setters.",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice-testkit/agent-docs/api-reference.md:154"
+ },
+ {
+  "id": "R2851",
+  "kind": "triage",
+  "file": "catalog/agent-docs/integration-testing/getting-started.md",
+  "text": "Derived test artifacts are reused across methods only when shareInjector is true; the default false rebuilds them.",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice-testkit/TEST-CONFIGURATION.md:300"
+ }
+]

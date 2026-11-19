@@ -1,0 +1,68 @@
+{"id": "G066", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "G067", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "G068", "verdict": "ok", "note": "unverified accepted"}
+{"id": "G069", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "G070", "verdict": "fixed", "note": "removed unsupported separate-steps route"}
+{"id": "AU2", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "AU10", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "KC06", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "NG0000", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0002", "verdict": "ok", "note": "already correct"}
+{"id": "NG0003", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "NG0006", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0007", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0019", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0023", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0026", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0029", "verdict": "ok", "note": "already correct"}
+{"id": "NG0031", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "NG0033", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0041", "verdict": "ok", "note": "already correct"}
+{"id": "NG0042", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0045", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0047", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0048", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0055", "verdict": "ok", "note": "already correct"}
+{"id": "NG0056", "verdict": "ok", "note": "already correct"}
+{"id": "NG0057", "verdict": "ok", "note": "already correct"}
+{"id": "NG0061", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0065", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0071", "verdict": "ok", "note": "unverified accepted"}
+{"id": "NG0077", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0079", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0085", "verdict": "ok", "note": "already correct"}
+{"id": "NG0086", "verdict": "ok", "note": "already correct"}
+{"id": "NG0097", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0102", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0122", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0132", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "NG0141", "verdict": "ok", "note": "not-platform accepted"}
+{"id": "B37", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "G068", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U0909", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U0911", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U0919", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U0920", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U1031", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U1032", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U1033", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U1034", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U1035", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U0115", "verdict": "ok", "note": "unverified accepted"}
+{"id": "U0118", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U0380", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "U0381", "verdict": "ok", "note": "evidence checked / consistent"}
+{"id": "NG0024", "verdict": "ok", "note": "rejected accepted"}
+{"id": "NG0123", "verdict": "ok", "note": "rejected accepted"}
+{"id": "R1603", "verdict": "fixed", "note": "Scoped: resetChecksums(GeneratorParameter) builds remover without run(); Maven reset goal uses resetChecksumsInDirectory, which runs it. Bullet now names the non-InDirectory overloads only."}
+{"id": "R1604", "verdict": "fixed", "note": "Same scoping as R1603: cleanGeneratedFromChecksum(GeneratorParameter) never runs remover (ModelGenerator.java:985-994); clean goal uses the InDirectory variant, which does run it."}
+{"id": "R1605", "verdict": "fixed", "note": "Same scoping: synchronizeGitignore(GeneratorParameter) calls getDirectoryChecksumRemover instead of the gitignore synchronizer; synchronizeGitignore goal uses synchronizeGitignoreInDirectory."}
+{"id": "R1607", "verdict": "ok", "note": "GitIgnoreSynchronizer.java:97-111: START without END loops to EOF, nothing after START is re-appended. Verified."}
+{"id": "R2031", "verdict": "ok", "note": "judo.sh.hbs:210 parses -w/--skip-watch-bundles for start; no -W branch (-W only in help line 45). Also fixed the same -W error in deployment/local-development.md (deployment-b file), which is outside this batch's listed files."}
+{"id": "R2032", "verdict": "fixed", "note": "judo.sh.hbs:59 help only; no code reads java_compiler. Removed unsupported '(default)' marker for ejc."}
+{"id": "R1065", "verdict": "applied-now", "note": "Handoff from deployment-b ledger. judo.sh.hbs:369-371 prompt only when pruneConfirmation=1 (not -y); continues only for exact Y, otherwise 'Aborting prune.' exit 13. Added paragraph after the prune variants table in build-process.md, heading unchanged."}
+{"id": "R0485", "verdict": "ok", "note": "assembly.xml.hbs fileSet src/main/resources/themes -> outputDirectory / ; theme folders at zip root"}
+{"id": "R0856", "verdict": "ok", "note": "DefaultWorkflowMojo.java:474 loads dialect rdbms only when getAsm2rdbmsTrace() != null"}
+{"id": "R2354", "verdict": "ok", "note": "FlutterMojo.java:72 property flutter.parallel defaultValue false"}
+{"id": "R1949", "verdict": "ok", "note": "AbstractVersionUpdateMojo.java:54 property judo-version-update-channel default develop; -DupdateChannel does not bind (name only)"}
+{"id": "R1950", "verdict": "ok", "note": "AbstractVersionUpdateMojo.java:110 property judo-version-rules-serverId default serverId"}

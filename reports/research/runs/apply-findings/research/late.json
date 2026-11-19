@@ -1,0 +1,146 @@
+[
+ {
+  "id": "G008",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/judo-cli.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G008 `c02-39` R3 S11: judo move --dry-run printed the reordered element as 'changed ... description (in components)' rather than the element being moved, so the dry-run output was misread while reordering the form fields. \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not in catalog. Add: move --dry-run reports the sibling that shifted, not the moved element; check the order with a query and use discard --force to clear a wrong reorder.\n- **Why:** The dry-run summary names the sibling that shifts, not the moved element, and the status output lists unsaved reorders by sibling. **Workaround:** Used move --json and graphql to confirm the child order, then discard --force and re-applied the move.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L1527`, `session:L1528`, `session:L1529`, `session:L1530`"
+ },
+ {
+  "id": "G013",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/judo-cli.md",
+  "owner": "model-a",
+  "first_pass": "Not reproduced; not written",
+  "text": "#### G013 `c04-12` R8 F21: postCallAccessNavigation cannot be cleared once set, and move --index had no effect on the position of the action group; move --after did reorder the menu entries.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not in catalog; evidence is session-only. Add as verify: postCallAccessNavigation cannot be unset once set; move --index is ignored for action groups, use --before/--after.\n- **Why:** CLI behaviour: unset is refused for this attribute and move with an index is ignored for these elements. **Workaround:** Left postCallAccessNavigation set (the clear attempt was refused, session:L2481); used move --after for menu order, since move --index had no effect.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L2481`, `session:L2544`, `session:L2547`, `session:L2572`"
+ },
+ {
+  "id": "G021",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/judo-cli.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G021 `c09-12` R14 F62, F63, F67: update --add feature failed for actions containers that do not exist yet ('Container not found', 'element not found'); fill reported 'unchanged'; a row action on a relation table was refused ('refund \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not documented. Add order: create the actions container first, then update --add feature; row actions on relation tables must be added to the relation table, not placed anywhere (verify).\n- **Why:** CLI order of creating the actions group and row actions is not documented; error text does not say what to run first. **Workaround:** Used the generated refund table operation that already exists on the lines table; the test then opens the action group menu to click it.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L5222`, `session:L5224`, `session:L5226`, `session:L5228`"
+ },
+ {
+  "id": "G025",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G025 `c03-17` R6 F07, F02: Builder tried representationComponent link, autocomplete and tag on the category relation; the CLI accepted only table (then button after relationKind changed). The catalog lists table, button and tag\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Shape table (line 257) lists to-one options table, button, tag, which matches the builder's note; the CLI behaviour (options depend on relationKind, e.g. table before kind change) is not stated. Add a line on that.\n- **Why:** Allowed representationComponent values depend on relationKind as enforced by the CLI, which the catalog's shape table does not state clearly; the builder guessed values before reading the catalog. **Workaround:** Set relationKind to AGGREGATION on ProductInfo.category, then set representationComponent to table on Form and View_Edit.\n- **Validation:** partly; kind catalog-wrong; catalog partly-covered. Evidence: `session:L1919`, `session:L1920`, `session:L1921`, `session:L1923`"
+ },
+ {
+  "id": "G026",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G026 `c03-07` R6 F07: update --feature name failed on CategoryInfo and ProductInfo: name is not a placeable feature on the table or view element because the feature is on the nested relation.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Guide does not say a name feature on a nested relation table is added on the nested element, not the table/view. Add one CLI example of update --add feature on a relation table element (verify).\n- **Why:** Builder targeted the wrong element; the feature belongs to the nested category or products relation. **Workaround:** Targeted the nested element instead (CategoryInfo_View_Edit products column).\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L1793`"
+ },
+ {
+  "id": "G027",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G027 `c03-36` R7 F08: kb_search for eager or isEager and embedded tables on views returned generic embedded-table sections; the view-table example (TabularReferenceField with representationComponent=table) was only found b\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. kb has no isEager entry (grep only finds jsl eager note and sessionStorage). Add a view-table example with TabularReferenceField representationComponent=table and say whether an eager attribute exists (verify against esm.ecore).\n- **Why:** The orchestrator's term isEager is not a catalog concept; the catalog answer is the to-many TabularReferenceField on the view, which the search did not rank first. **Workaround:** Read the catalog by grep, then used a to-many TabularReferenceField with representationComponent table on the view.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L1961`, `session:L1963`, `session:L1966`, `session:L1967`"
+ },
+ {
+  "id": "G028",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G028 `c03-37` R7 F08: Builder noted that the CLI lists table, button, tag and card as valid representationComponent values for a to-many relation, while the catalog shape table lists table, card and tag only.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Shape table (line 257) lists table, card, tag for to-many; builder reports the CLI also accepts button. Verify with `create --schema` and align the table.\n- **Why:** Possible mismatch between the catalog shape table and the CLI schema for to-many relations.\n- **Validation:** partly; kind catalog-wrong; catalog partly-covered. Evidence: `session:L1972`, `session:L1966`, `session:L2297`"
+ },
+ {
+  "id": "G029",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G029 `c03-71` R7 F10, F16: Variants and addresses inside a product or profile view are saved only with the page Update button; the tests failed until they clicked Update.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. No statement found. Add: composed child rows edited in a view are saved only by the page Update button; tests must click it.\n- **Why:** Composed child rows belong to the parent view and are stored with the parent save; the catalog does not say so next to the inline table pattern. **Workaround:** Tests click Update (saveView, saveProfile) after adding the child rows.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2275`, `session:L2281`, `session:L2287`"
+ },
+ {
+  "id": "G030",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written; CLI validation does not reproduce the error",
+  "text": "#### G030 `c04-11` R8 F17, F21: An OperationForm placed directly in a view fails UI validation (ActionContainerSameWithActionDefinition, NamedElementHaveToBeInApplication); the operation must sit in an ActionGroup, and the catalog s\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. ui-authoring-guide lines 131 and 190 say OperationForm can sit directly in a View/Form; the session shows the transformation rejects it and needs an ActionGroup. Already listed as open in judo-doc-problems (ActionGroup-wrapped OperationForms). Change the text: operation buttons go inside a ui:ActionGroup.\n- **Why:** The catalog section on operation wiring says OperationForm inside View or Form works; the transformation rejects it. The openspec sweep already lists ActionGroup-wrapped OperationForms as an open item (FR-033). Even inside an ActionGroup, the validator still reported action container errors after the wrap (session:L2494). **Workaround:** Moved both operations into an ActionGroup named actions, set label Actions and featuredActions=1; for checkout the action container errors cleared only after it became void with generateActionsHook=true (validation passed, session:L2522).\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L2445`, `session:L2447`, `session:L2457`, `session:L2493`"
+ },
+ {
+  "id": "G032",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G032 `c05-54` R10 F36, F39: Invoice and coupon actions were placed directly into the view again (OperationForm outside an ActionGroup), giving ActionContainerSameWithActionDefinition and NamedElementHaveToBeInApplication errors.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Line 302 only says OperationForm inside ActionGroup is for grouping; no sentence says direct placement fails validation. Add the rule: operations must be inside an ActionGroup (error ActionContainerSameWithActionDefinition). Repeated mistake, so a catalog entry would have helped.\n- **Why:** Builder repeated the R8-7 mistake; the lesson was not applied. **Workaround:** Deleted the actions, moved them into an ActionGroup with relocate, validate passed.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L3072`, `session:L3074`, `session:L3076`, `session:L3077`"
+ },
+ {
+  "id": "G033",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G033 `c06-17` R11 : 'Ordered' is a custom field and the generator draws custom fields after the generated ones, so after the move it sits just above the buttons; field order in the order view is not fully controllable.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `agent-docs/model/ui-authoring-guide.md`. Custom field after generated ones is the same field-order problem as the esmToUi position lookup (other batch). Note in the guide that generated field order is not fully controllable, and that move only works partly.\n- **Why:** Custom fields are placed after generated fields; the field-order platform bug may apply. **Workaround:** Used the CLI move command to reorder the generated fields; left Ordered last.\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `session:L3417`, `session:L3420`, `session:L3742`"
+ },
+ {
+  "id": "G034",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G034 `c09-44` R14 F60, F63, F67: Relation tables inside a view show raw member names (TotalLabel, SellerName) unless every column of that table gets its own label and order; row actions sit behind the generated action group drop-down\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Builder reports relation tables in a view need labels and order per column; no catalog text on this. Single observation, add with verify.\n- **Why:** Labels set on the target transfer object do not reach a relation table in a view; not documented as far as checked. **Workaround:** Each relation column labelled and moved to an index via a script (cols function).\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L5417`, `session:L5418`, `session:L5531`"
+ },
+ {
+  "id": "G035",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G035 `c10-13` R15 : No documented way to hide the generated 'Check out' dialog action on the cart page, so the old and new checkout both exist.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. hiddenBy exists (ui-behaviour.md line 44, ui-authoring-guide line 275) but there is no recipe for hiding a generated action; add one: put a boolean on the owner transfer object and set hiddenBy on the action.\n- **Why:** Hiding a generated action needs a hiddenBy boolean in the model; the builder left the model change for the owner. **Workaround:** Left the generated checkout dialog in place; documented in GAPS R15-3.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L5867`, `session:L6092`"
+ },
+ {
+  "id": "G087",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/model-development.md",
+  "owner": "model-a",
+  "first_pass": "Not written",
+  "text": "#### G087 `c07-09` R12 F48: The top-N expression form is unclear: !sort(...)!heads(5) fails in asm2query with 'Missing variable name', and !heads(p \\| ..., 5) validates but returns only one row at runtime. The catalog lists !hea\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/model-development.md`. model-development line 332 lists !heads(n) with no top-N example; judo-doc-problems already notes heads is under-documented. Add a validated top-N form and its runtime result once checked (verify).\n- **Why:** The catalog documents heads and sort separately; the lambda form and its runtime behaviour are not shown. **Workaround:** Used filter then sort with DESC and let the table page show 5 rows.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3941`, `session:L3945`, `session:L3947`, `session:L3950`. add\u2192modify (target file exists; add a section)"
+ },
+ {
+  "id": "G083",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "owner": "frontend-b",
+  "first_pass": "Could not find textWidget=TEXT label handling in generator quickly; not written",
+  "text": "#### G083 `c10-11` R15 : Setting textWidget=TEXT on read-only string fields removed their labels in the generated order view (values with an icon, no label). The change was reverted to INPUT; the 'read-only shows as text' req\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md`. widgets.md line 45 says TEXT=read-only but not that the label is dropped in the generated view. Add that effect; possible generator bug worth a ticket.\n- **Why:** The kb says TEXT means read-only but says nothing about labels; the generated theme styles read-only inputs but the builder found no documented labelled-text route. **Workaround:** Reverted all 158 fields to INPUT via .scratch/r15-model.py; relied on the generated theme read-only styling.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L5735`, `session:L5937`, `session:L5938`, `session:L5940`"
+ },
+ {
+  "id": "G096",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+  "owner": "frontend-b",
+  "first_pass": "Principal context has refreshPrincipal; menu non-refresh claim not confirmed; not written",
+  "text": "#### G096 `c08-20` R13 F55: After the buyer joins with the key, the My company menu does not appear until the shell starts again.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/frontend/hooks/action-hooks.md`. Menu is built at shell start; after an operation changes the actor access, reload with window.location.assign. Session only, low evidence.\n- **Why:** Builder comment says menu entries are decided from the principal read at shell start, so a page change does not refresh them. **Workaround:** Post-join hook calls window.location.assign on the start URL to reload the shell.\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `session:L4868`, `session:L4879`, `session:L4889`"
+ },
+ {
+  "id": "KC10",
+  "src": "knowledge-check",
+  "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+  "owner": "frontend-b",
+  "first_pass": "No general statement in doc; correct replacement text not known; nothing written",
+  "text": "| K77.C3 FALSE: bytes always come from `DownloadServlet` | `frontend/hooks/action-hooks.md` names DownloadServlet; there is no general statement | **No** (not added) |"
+ },
+ {
+  "id": "KC18",
+  "src": "knowledge-check",
+  "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "owner": "frontend-b",
+  "first_pass": "smallTable/isEager fragility not confirmed in generator in 3 lookups",
+  "text": "| R19: small table loads every row, and inline edit only works with `isEager` | `frontend/esm-to-ui-mappings/widgets.md:106` says \"without pagination\"; no fragility caveat | Partly (pre-existing text) |"
+ }
+]

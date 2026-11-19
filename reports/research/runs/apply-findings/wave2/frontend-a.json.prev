@@ -1,0 +1,93 @@
+[
+ {
+  "id": "R1680",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/i18n.md",
+  "text": "Translation keys are built from the root PageContainer name plus the element name, with no ClassType segment.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/internationalization/spec.md:13"
+ },
+ {
+  "id": "R1682",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/i18n.md",
+  "text": "Enumeration keys use the restParamName of the enumeration type and add an enumerations.<type>._null key.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/internationalization/spec.md:63"
+ },
+ {
+  "id": "R1683",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/i18n.md",
+  "text": "Menu keys use NavigationItem.getLabel(), not an item name.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/internationalization/spec.md:79"
+ },
+ {
+  "id": "R1684",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/i18n.md",
+  "text": "i18next is initialised in l10n-context.tsx; src/config/general.ts holds toast and debounce settings, not i18n setup.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/internationalization/spec.md:110"
+ },
+ {
+  "id": "R1685",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+  "text": "The frontend build script runs tsgo (TypeScript type-check) before vite build.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/integration-testing/spec.md:19"
+ },
+ {
+  "id": "R0052",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+  "text": "The React UI generator reads debugPrint from the template context (ThreadLocalContextHolder variable), set through templateParameters in the pom, not templateVariables.",
+  "evidence": "template/judo-ui-react-template:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/ReactStoredVariableHelper.java:50"
+ },
+ {
+  "id": "R0053",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/i18n.md",
+  "text": "The i18n extra fragment is public/i18n/application_default_extra.fragment.hbs (folder spelled i18n).",
+  "evidence": "template/judo-ui-react-template:docs/pages/01_ui_react.adoc:119"
+ },
+ {
+  "id": "R2481",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/advanced-patterns.md",
+  "text": "The generated relation remove<Rel> posts the unserialized selected objects instead of the serialized input array.",
+  "evidence": "judo-ui-typescript-rest-template:judo-ui-typescript-rest-axios/src/main/resources/data-axios/relationServiceImpl.ts.hbs:309"
+ },
+ {
+  "id": "R2517",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/error-handling.md",
+  "text": "The generated FeedbackLevel type includes 'WARNING ' with a trailing space.",
+  "evidence": "judo-ui-typescript-rest-template:judo-ui-typescript-rest-api/src/main/resources/common/errors/FeedbackLevel.ts.hbs:1"
+ },
+ {
+  "id": "R1066",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/advanced-patterns.md",
+  "text": "A component defined inside a hook body is recreated on every render, so React remounts it and drops its state.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/advanced-patterns.md.hbs:1294"
+ },
+ {
+  "id": "R1223",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/extension-points.md",
+  "text": "Generated container action hook keys are camelCase names from the container and action, with no actor or entity segment.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/runtime-extensibility/spec.md:13"
+ },
+ {
+  "id": "R1225",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+  "text": "Generated package.json scripts are dev, build:reckless, build, preview, test:dev, test and coverage; there is no build:ci.",
+  "evidence": "template/judo-ui-react-template:judo-ui-react/src/main/resources/actor/README.md.hbs:59"
+ },
+ {
+  "id": "R1226",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/build-and-deployment.md",
+  "text": "The build:reckless script is plain vite build; it runs no type check and has no custom cache layer.",
+  "evidence": "template/judo-ui-react-template:judo-ui-react/src/main/resources/actor/README.md.hbs:16"
+ }
+]

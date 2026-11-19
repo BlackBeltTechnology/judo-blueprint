@@ -1,0 +1,146 @@
+[
+ {
+  "id": "B53",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "generator output for unmapped operation output not checked in budget",
+  "text": "| B53 | **Unmapped operation output, mapped TO minimum** | What the generator emits for an unmapped operation output; that a mapped transfer object needs at least one mapped attribute. | mg2 |"
+ },
+ {
+  "id": "B54",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "derived-path membership vs custom ops/DAO writes not verifiable quickly",
+  "text": "| B54 | **Derived-path membership vs writes** | Whether custom operations and direct DAO writes bypass a derived-path membership filter. | mg2 |"
+ },
+ {
+  "id": "B55",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "frontend topic (typeahead, row-action icons) belongs to a frontend batch; no verified text available",
+  "text": "| B55 | **Frontend typeahead and row-action icons** | `TextWithTypeAhead`, freeSolo, `getForm_<field>Options` getter names and signature `(searchText, data, editMode, validation)`; operation-form icon precedence and the `chevron_right` default for row actions; `ComponentProxy` placeholder pages; flow-manager input keys. | mg4 |"
+ },
+ {
+  "id": "B56",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "no cxf-rt-rs-sse found in judo-ng sources",
+  "text": "| B56 | **SSE endpoints** | JAX-RS SSE with `cxf-rt-rs-sse` and the CXF version. | mg3 |"
+ },
+ {
+  "id": "B14",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "code calls authenticate() inside authenticateActor with operationFQName whenever a principal exists; finding wording ambiguous, not written",
+  "text": "| B14 | **Authentication interceptor scope** | `AuthenticationInterceptor` runs on authentication events, not operations. This is stated nowhere. | bp14 |"
+ },
+ {
+  "id": "B15",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "platform references DataTypeManager without a target filter; need not confirmed",
+  "text": "| B15 | **`VariableResolver` target filter** | Whether a `judo.model.name` target filter is needed. | pb06 |"
+ },
+ {
+  "id": "B16",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "claim-attribute mapping rule not verified in budget",
+  "text": "| B16 | **Mapped claim attributes** | A claim attribute on a mapped principal must map to an identifier or derived attribute, and the `required` flags must match. Only partly stated. | pm01, pm05 |"
+ },
+ {
+  "id": "B17",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "enum ordinal runtime behaviour not verified in budget",
+  "text": "| B17 | **Enum ordinals** | How the runtime rejects an out-of-range ordinal, whether JQL can compare ordinals, and `getByOrdinal` (only one known-issue mention). | bp05, bp08, bp11 |"
+ },
+ {
+  "id": "B18",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "BusinessErrorException generation not verified in budget",
+  "text": "| B18 | **Generated `BusinessErrorException`** | That it is generated per project from a modeled fault. Several entries had to explain this from scratch. | bp10, pb07 |"
+ },
+ {
+  "id": "AU8",
+  "src": "findings-audit",
+  "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+  "owner": "backend-b",
+  "first_pass": "service properties of DataTypeManager not confirmed; left unchanged",
+  "text": "| 8 | `backend/patterns-and-best-practices.md:173,176` | `@Reference(target = \"(judo.model.name=YourApplicationName)\")` on `DataTypeManager` / `AsmModel` | unverified; still in the doc without a *verify* mark | `judo-runtime-core@b9bd93e8:judo-runtime-core-guice/.../DataTypeManagerProvider.java:29` (service properties not checked) | agent-docs-review BE-011 / ledger BA-178 \"unverified\" |"
+ },
+ {
+  "id": "KC12",
+  "src": "knowledge-check",
+  "target": "catalog/agent-docs/backend/architectural-patterns.md",
+  "owner": "backend-b",
+  "first_pass": "operator answer is a bare No on a question; direction unclear and doc already states typed form at line 88; not written",
+  "text": "| R20: `getVariable` needs a type prefix (`String!getVariable`) | 77 uses in the catalog, 28 typed: identical to the count in U8. Untyped in `backend/architectural-patterns.md:63` and `integration-testing/access-and-derived-testing.md:163,198` | **No** |"
+ },
+ {
+  "id": "BA-018",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"Guice DAO module generation not verified and generator-internal\"}"
+ },
+ {
+  "id": "BA-045",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"rackinspect conventions; only the generic mapping rule was applied (BA-046)\"}"
+ },
+ {
+  "id": "BA-050",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"operator codes not verified; only INVALID_QUERY_MASK code listed in error guide\"}"
+ },
+ {
+  "id": "BA-051",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"EXPORT/Jxls SPI: UnsupportedExportImpl binding seen in JudoDefaultModule but JxlsExport not verified\"}"
+ },
+ {
+  "id": "BA-077",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"CxfContext wiring not added\"}"
+ },
+ {
+  "id": "BA-103",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"IdentifierProvider not added\"}"
+ },
+ {
+  "id": "BA-107",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"cited runtime.core.PayloadTraverser not found (dao-rdbms version is package-private)\"}"
+ }
+]
