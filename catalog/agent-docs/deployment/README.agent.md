@@ -29,6 +29,7 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/README.md.
 - Health: `http://localhost:8181/system/health?tags=<app>`.
 - Keycloak admin: `http://localhost:8080/auth` (started with `--http-relative-path /auth`; app is on 8181).
 - Karaf SSH: `ssh -p 8101 karaf@localhost`, password `karaf` (Karaf defaults, not set by the template).
+- Root `/`: Karaf serves the `web-root` module's static `index.html` for every actor set; to replace it, add that file to `.generator-ignore` and edit it (see frontend README Routing).
 
 ## Health Check Endpoint
 - Endpoint is `/system/health`, not `/health`. Query-param, status-code and serializer details: OSGi Runtime Services guide (health-check endpoint details). Custom checks are implemented there too.

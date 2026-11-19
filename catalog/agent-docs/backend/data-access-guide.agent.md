@@ -41,7 +41,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/data-access-guide.md
   - Existence check: `dao.getById(id, EntityMask.entityMask()).isPresent()`.
   - List view: `maskedBy(...)` with only displayed columns.
   - Detail view: nested masks for relations.
-  - Partial update: `update(entity)` and `update(entity, mask)` write only attributes present in the payload; unloaded/unset fields are left unchanged (not nulled). Mask only shapes the read-back, does not limit writes. `update` requires identifier; defaults applied only to payloads without identifier, so updates do not reset to defaults.
+  - Partial update: `update(entity)` and `update(entity, mask)` write only attributes present in the payload; unloaded/unset fields are left unchanged (not nulled). Stale version: re-read, set changed attributes on the fresh copy, retry (business rule in the retry code). Mask only shapes the read-back, does not limit writes. `update` requires identifier; defaults applied only to payloads without identifier, so updates do not reset to defaults.
 - Best practices: always mask queries; empty mask for existence; minimal masks in loops; chain nested masks; masks in updates.
 - Don't: full loads for few fields; omit masks; load large collections unmasked; read unmasked fields (they are `null`).
 

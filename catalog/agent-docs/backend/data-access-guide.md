@@ -452,6 +452,8 @@ entityDao.update(
 
 To send a partial update that keeps the optimistic-lock check, put the identifier, the entity type, the version and the changed attributes into the payload with the generated builder: `<Entity>Builder.from(Map.of("__identifier", <identifier>, "__entityType", "<Entity>", "__version", <version>, "<attribute>", <value>)).build()`. A `__version` in the payload makes the check apply; the mask only shapes the returned entity.
 
+On the stale-update error (the stored row has a newer version than the payload), read the entity again, set the changed attributes on the fresh copy and repeat the update. The business rule that decides whether the change still applies belongs in the code around the retry. See [optimistic locking](platform-behavior-reference.md#optimistic-locking-and-__version).
+
 ### Performance Comparison
 
 The performance difference is significant, especially with large datasets.

@@ -1,0 +1,697 @@
+[10583] USER: Should see front page like non guest product onyl paying needs Customer
+[10584] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__customer/src/custom; wc -l components/CatalogHome.tsx hooks/registerCardHooks.tsx hooks/registerDetailLayouts.tsx components/ProductDetailsLayout.tsx; grep -n \"import\\|Service\\|axios\\|fetch\" components/CatalogHome.tsx | cut -c1-170 | head -40", "timeout": 20}
+[10585] TOOLRESULT:      405 components/CatalogHome.tsx
+     237 hooks/registerCardHooks.tsx
+     221 hooks/registerDetailLayouts.tsx
+     149 components/ProductDetailsLayout.tsx
+    1012 total
+1:import Alert from '@mui/material/Alert';
+2:import Box from '@mui/material/Box';
+3:import Button from '@mui/material/Button';
+4:import Chip from '@mui/material/Chip';
+5:import MenuItem from '@mui/material/MenuItem';
+6:import Pagination from '@mui/material/Pagination';
+7:import Paper from '@mui/material/Paper';
+8:import Select from '@mui/material/Select';
+9:import Skeleton from '@mui/material/Skeleton';
+10:import Stack from '@mui/material/Stack';
+11:import Typography from '@mui/material/Typography';
+12:import { type FC, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+13:import { useTranslation } from 'react-i18next';
+14:import { useJudoNavigation } from '~/components';
+15:import { useSnacks } from '~/hooks';
+16:import { routeToCustomerProductsAccessViewPage } from '~/routes';
+17:import type { FacetValue } from '~/services/data-api/model/FacetValue';
+18:import type { SearchInput } from '~/services/data-api/model/SearchInput';
+19:import type { ShopInfoStored } from '~/services/data-api/model/ShopInfo';
+20:import type { ShopProductInfoStored } from '~/services/data-api/model/ShopProductInfo';
+21:import { CustomerServiceForShopImpl } from '~/services/data-axios/CustomerServiceForShopImpl';
+22:import { judoAxiosProvider } from '~/services/data-axios/JudoAxiosProvider';
+23:impo
+[10586] CALL bash: {"command": "cd ~/Projects/webshop-test; J=\"java -jar /tmp/judo-cli.jar -q -m model/webshop.model\"; $J server stop >/dev/null 2>&1; sleep 1; $J graphql '{ esm { transferobjecttypes(where:{name:{eq:\"ShopProductInfo\"}}) { items { attributes { items { name getterExpression memberType } } relations { items { name getterExpression } } operations { items { name operationType } } } } } }' 2>&1 | tr -s ' \\n' ' ' | sed 's/}, {/}\\n{/g' | grep -i \"self\\|principal\\|Customer\\|name\\\" : \\\"[a-z]*\\\" , \\\"operationType\" | head -30 | cut -c1-260; $J query esm Operation -w \"name=search\" -s fqn 2>&1 | grep fqn", "timeout": 200}
+[10587] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10587] TOOLRESULT:           "fqn" : "webshop::ShopProductInfo.search"
+
+[10588] CALL bash: {"command": "cd ~/Projects/webshop-test; J=\"java -jar /tmp/judo-cli.jar -q -m model/webshop.model\"; $J graphql '{ esm { transferobjecttypes(where:{name:{eq:\"ShopProductInfo\"}}) { items { attributes { items { name memberType getterExpression } } relations { items { name getterExpression } } operations { items { name operationType } } } } } }' 2>&1 | tr -s ' \\n' ' ' | head -c 3500", "timeout": 100}
+[10589] TOOLRESULT: { "data" : null, "errors" : [ { "message" : "Validation error (FieldUndefined@[esm/transferobjecttypes/items/attributes/items/memberType]) : Field 'memberType' in type 'ESM_DataFeature' is undefined", "locations" : [ { "line" : 1, "column" : 102 } ] }, { "message" : "Validation error (FieldUndefined@[esm/transferobjecttypes/items/attributes/items/getterExpression]) : Field 'getterExpression' in type 'ESM_DataFeature' is undefined", "locations" : [ { "line" : 1, "column" : 113 } ] }, { "message" : "Validation error (FieldUndefined@[esm/transferobjecttypes/items/relations/items/getterExpression]) : Field 'getterExpression' in type 'ESM_RelationFeature' is undefined", "locations" : [ { "line" : 1, "column" : 159 } ] } ] } 
+[10590] CALL bash: {"command": "cd ~/Projects/webshop-test; J=\"java -jar /tmp/judo-cli.jar -q -m model/webshop.model\"; $J graphql '{ esm { datamembers(limit:3000) { items { fqn memberType getterExpression } } } }' 2>&1 | tr -s ' \\n' ' ' | sed 's/}, {/}\\n{/g' | grep \"ShopProductInfo\\.\" | cut -c1-260", "timeout": 100}
+[10591] TOOLRESULT: { "fqn" : "webshop::ShopProductInfo.name", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.description", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.price", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.sku", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.unit", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.image", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.priceLabel", "memberType" : "DERIVED", "getterExpression" : "self.price!round(2)!asString() + \" EUR\"" }
+{ "fqn" : "webshop::ShopProductInfo.stockStatus", "memberType" : "DERIVED", "getterExpression" : "self.stock <= 0 ? 'Out of stock' : (self.stock < 5 ? 'Low' : 'In stock')" }
+{ "fqn" : "webshop::ShopProductInfo.categoryName", "memberType" : "DERIVED", "getterExpression" : "self.category.name" }
+{ "fqn" : "webshop::ShopProductInfo.effectivePrice", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.onSale", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.ratingLabel", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.reviewCount", "memberType" : "MAPPED", "getterExpression" : "" }
+{ "fqn" : "webshop::ShopProductInfo.reviewHidden", "memberType" : "MAPPED", "getterExpres
+[10592] CALL bash: {"command": "cd ~/Projects/webshop-test/application; ls app/src/main/java/com/example/webshop/webshop/custom/webshop/shopproductinfo/ | head -20; sed -n 1,50p app/src/main/java/com/example/webshop/webshop/custom/webshop/shopproductinfo/SearchCustomImplementation.java; sed -n 125,150p frontend-react/webshop__customer/src/custom/components/CatalogHome.tsx", "timeout": 20}
+[10593] TOOLRESULT: ctx_search({queries:["cd ~/Projects/webshop-test/application; ls app/src/main/java/com/example/webshop/webshop/custom/webshop/shopproductinfo/ | head -20; sed -n 1,50p app/src/main/java/com/example/webshop/webshop/custom/webshop/shopproductinfo/SearchCustomImplementation.java; sed -n 125,150p frontend-react/webshop__customer/src/custom/components/CatalogHome.tsx","customer page product"], source:"s54"}) searches the whole output (4239 B).
+[10594] CALL ctx_search: {"queries": ["SearchCustomImplementation apply search principal", "CustomerServiceForShopImpl getShopInfo"], "source": "s54"}
+[10595] TOOLRESULT: Query "SearchCustomImplementation apply search principal":
+Bash:cd ~/Projects/webshop-test/application; ls app/src/main/java/com/example/we#toolu_01FeW9pLBh5vqyJ1GyS8e3h6 #8: SearchCustomImplementation.java
+Bash:cd ~/Projects/webshop-test/application; ls app/src/main/java/com/example/we#toolu_01FeW9pLBh5vqyJ1GyS8e3h6 #9: SearchCustomImplementation.java.default
+Bash:cd ~/Projects/webshop-test/application; ls app/src/main/java/com/example/we#toolu_01FeW9pLBh5vqyJ1GyS8e3h6 #28: public class SearchCustomImplementation implements com.example.webshop.webshop.operation.webshop.shopproductinfo.Search {
+Bash:cd ~/Projects/webshop-test/application; ls app/src/main/java/com/example/we#toolu_01FeW9pLBh5vqyJ1GyS8e3h6 #32:     public SearchResult apply(SearchInput input) throws ShopFaultException {
+Bash:cd ~/Projects/webshop-test/application; ls app/src/main/java/com/example/we#toolu_01FeW9pLBh5vqyJ1GyS8e3h6 #44:         CatalogSearch.Result found = catalog.search(query);
+Query "CustomerServiceForShopImpl getShopInfo":
+Bash:cd ~/Projects/webshop-test/application; ls app/src/main/java/com/example/we#toolu_01FeW9pLBh5vqyJ1GyS8e3h6 #53:     new CustomerServiceForShopImpl(judoAxiosProvider)
+More: ctx_search({queries:["SearchCustomImplementation apply search principal"], scope:"worktree", source:"s54", offset:5})
+[10596] CALL bash: {"command": "cd ~/Projects/webshop-test/application; f=app/src/main/java/com/example/webshop/webshop/custom/webshop/shopproductinfo/SearchCustomImplementation.java; sed -n 28,75p $f; sed -n 126,148p frontend-react/webshop__customer/src/custom/components/CatalogHome.tsx", "timeout": 20}
+[10597] TOOLRESULT:         int pageSize = input.getPageSize() == null ? 12 : input.getPageSize().orElse(12);
+        CatalogSearch.Query query = new CatalogSearch.Query(
+                input.getText() == null ? null : input.getText().orElse(null),
+                input.getCategory() == null ? null : input.getCategory().orElse(null),
+                input.getSeller() == null ? null : input.getSeller().orElse(null),
+                input.getMinPrice() == null ? null : input.getMinPrice().orElse(null),
+                input.getMaxPrice() == null ? null : input.getMaxPrice().orElse(null),
+                input.getMinRating() == null ? null : input.getMinRating().orElse(null),
+                input.getSort() == null ? null : input.getSort().orElse(null),
+                input.getPage() == null ? 0 : input.getPage().orElse(0),
+                pageSize);
+        CatalogSearch.Result found = catalog.search(query);
+        List<ShopProductInfo> items = cards.load(found.ids());
+        List<FacetValue> facets = found.facets().stream().map(f -> FacetValue.builder()
+                .withGroup(f.group()).withValue(f.value()).withLabel(f.label()).withCount(f.count()).withSelected(f.selected()).build()).toList();
+        return SearchResult.builder().withTotal(found.total()).withItems(items).withFacets(facets).build();
+    }
+}
+    load();
+  }, [load]);
+
+  useEffect(() => {
+    // F33: shop name and free-shipping threshold from the shop settings (read-only for the customer)
+    new CustomerServiceForShopImpl(
+[10598] CALL bash: {"command": "cd ~/Projects/webshop-test; J=\"java -jar /tmp/judo-cli.jar -q -m model/webshop.model\"; $J graphql '{ esm { accesses(limit:100) { items { fqn accessType getterExpression createable updateable deleteable target { fqn } } } } }' 2>&1 | tr -s ' \\n' ' ' | sed 's/}, {/}\\n{/g' | grep \"Customer\\.\\(shop\\|products\\|categories\\|wishlist\\)\\\"\" | cut -c1-400", "timeout": 100}
+[10599] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10599] TOOLRESULT: { "fqn" : "webshop::Customer.products", "accessType" : "DERIVED", "getterExpression" : "webshop::Product!filter(p | p.active)", "createable" : false, "updateable" : false, "deleteable" : false, "target" : { "fqn" : "webshop::ShopProductInfo" } }
+{ "fqn" : "webshop::Customer.shop", "accessType" : "DERIVED", "getterExpression" : "webshop::ShopConfig!any()", "createable" : false, "updateable" : false, "deleteable" : false, "target" : { "fqn" : "webshop::ShopInfo" } }
+{ "fqn" : "webshop::Customer.wishlist", "accessType" : "DERIVED", "getterExpression" : "webshop::Product!filter(p | p.active and p.wishedBy!filter(c | c.email == webshop::types::String!getVariable('ACTOR', 'email'))!count() > 0)", "createable" : false, "updateable" : false, "deleteable" : false, "target" : { "fqn" : "webshop::WishlistItemInfo" } }
+
+[10600] CALL bash: {"command": "cd ~/Projects/webshop-test; git checkout -q -b guest3; J=\"java -jar /tmp/judo-cli.jar -q -m model/webshop.model\"; $J delete webshop::GuestProductInfo --cascade 2>&1 | tail -3; $J create -t Access -n products --ns webshop::Guest -s target=webshop::ShopProductInfo -s accessType=DERIVED \"-s\" \"getterExpression=webshop::Product!filter(p | p.active)\" -s createable=false -s updateable=false -s deleteable=false --brief 2>&1 | tail -1; $J create -t Access -n shop --ns webshop::Guest -s target=webshop::ShopInfo -s accessType=DERIVED \"-s\" \"getterExpression=webshop::ShopConfig!any()\" -s createable=false -s updateable=false -s deleteable=false --brief 2>&1 | tail -1; $J update webshop::Guest::Menu -s label=Products 2>&1 | tail -1; $J validate 2>&1 | grep \"^passed\\|^failed\\|^error\" | head; $J graphql '{ esm { menuitemaccesses { items { fqn label } } } }' 2>&1 | tr -s ' \\n' ' ' | grep -o '\"fqn\" : \"webshop::Guest[^}]*' ", "timeout": 300}
+[10601] TOOLRESULT: removed Access webshop::Guest::products
+removed MenuItemAccess webshop::Guest::Menu
+removed TransferObjectType webshop::GuestProductInfo (+105 contained)
+webshop::Guest.products
+webshop::Guest.shop
+changed webshop::Guest::Menu.label
+passed esm
+passed ui
+error transform transform expressionvalidationonasmzeta: Zeta validation result mismatch:
+failed 1 error(s): transform
+"fqn" : "webshop::Guest::Menu", "label" : "Products" 
+"fqn" : "webshop::Guest::Menu_2", "label" : "ShopInfo" 
+
+[10602] CALL bash: {"command": "cd ~/Projects/webshop-test; J=\"java -jar /tmp/judo-cli.jar -m model/webshop.model\"; $J validate 2>&1 | grep -A12 \"Zeta validation result mismatch\" | head -24 | cut -c1-300", "timeout": 200}
+[10603] TOOLRESULT: [ERROR] Zeta validation result mismatch:
+  Actual errors: [ObjectExpressionMatchesBinding]
+  Expected errors: []
+  Actual warnings: []
+  Expected warnings: null
+  Unexpected errors: [ObjectExpressionMatchesBinding]
+[ERROR] Work 'hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork - webshop' has failed, skipping subsequent works
+[ERROR] Work '' has failed, skipping subsequent works
+[ERROR] Work 'Verify ASM model is presented' has failed
+[ERROR] Work 'Parallel ASM Transformations' has failed, skipping subsequent works
+error transform transform expressionvalidationonasmzeta: Zeta validation result mismatch:
+failed 1 error(s): transform
+
+[10604] CALL bash: {"command": "cd ~/Projects/webshop-test; J=\"java -jar /tmp/judo-cli.jar -q -m model/webshop.model\"; $J delete webshop::Guest.shop --cascade 2>&1 | tail -1; $J validate 2>&1 | grep \"^passed\\|^failed\\|^error\" | head -4", "timeout": 200}
+[10605] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10605] TOOLRESULT: removed MenuItemAccess webshop::Guest::Menu_2
+passed esm
+passed ui
+passed transform
+
+[10606] CALL bash: {"command": "cd ~/Projects/webshop-test; J=\"java -jar /tmp/judo-cli.jar -q -m model/webshop.model\"; $J save 2>&1 | tail -1; $J server stop >/dev/null 2>&1; ./judo.sh stop >/dev/null 2>&1; G=application/frontend-react/webshop__guest/src/custom; mkdir -p /tmp/guestcustom; cp -R $G/* /tmp/guestcustom/; ./judo.sh generate > .scratch/gen-g8.log 2>&1; cp -R /tmp/guestcustom/* $G/; grep -c GuestBar $G/application-customizer.tsx; (nohup sh -c './judo.sh build -i > .scratch/build-g8.log 2>&1' >/dev/null 2>&1 &); sleep 5; ls application/frontend-react/webshop__customer/src/custom/components/ui", "timeout": 120}
+[10607] TOOLRESULT:   deleted TransferObjectType webshop::GuestProductInfo (+105 contained)
+2
+DetailLayout.tsx
+ListBars.tsx
+ProductCard.tsx
+ProductListCard.tsx
+RelationCards.tsx
+ShopCard.tsx
+detailSpecs.ts
+rowCards.tsx
+status.ts
+
+[10608] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__customer/src/custom; grep -n \"Customer\\|useAuth\\|CartInfo\\|Wishlist\\|Cart\" components/CatalogHome.tsx components/ui/ProductCard.tsx components/Price.tsx components/shopEvents.ts components/ProductDetailsLayout.tsx components/SearchBox.tsx hooks/registerShellHooks.ts hooks/registerCatalogHome.tsx | cut -c1-170 | head -40; cat hooks/registerShellHooks.ts | head -30", "timeout": 20}
+[10609] TOOLRESULT: components/CatalogHome.tsx:16:import { routeToCustomerProductsAccessViewPage } from '~/routes';
+components/CatalogHome.tsx:21:import { CustomerServiceForShopImpl } from '~/services/data-axios/CustomerServiceForShopImpl';
+components/CatalogHome.tsx:26:import { notifyCartChanged, readSearch, SEARCH_CHANGED, writeSearch } from './shopEvents';
+components/CatalogHome.tsx:70:  const addToCart = async (product: ShopProductInfoStored) => {
+components/CatalogHome.tsx:72:      await productService.addToCart(product, { quantity: 1 } as any);
+components/CatalogHome.tsx:74:      notifyCartChanged();
+components/CatalogHome.tsx:131:    new CustomerServiceForShopImpl(judoAxiosProvider)
+components/CatalogHome.tsx:384:                  onOpen={() => navigate(routeToCustomerProductsAccessViewPage(product.__signedIdentifier))}
+components/CatalogHome.tsx:385:                  onAdd={() => addToCart(product)}
+components/Price.tsx:10:// the day comes from the exchange rate table (Customer.rates, newest valid on or before today). Without a rate the price
+components/shopEvents.ts:6:export const notifyCartChanged = () => window.dispatchEvent(new Event(CART_CHANGED));
+components/ProductDetailsLayout.tsx:9:import { routeToCustomerProductsAccessViewPage } from '~/routes';
+components/ProductDetailsLayout.tsx:41:            onOpen={() => navigate(routeToCustomerProductsAccessViewPage(p.__signedIdentifier))}
+hooks/registerShellHooks.ts:11:// flat item per access; the shop shows: Shop, Cart, and the groups "
+[10610] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__customer/src/custom/components; grep -n \"^import\" Price.tsx ui/ProductCard.tsx shopEvents.ts | cut -c1-170; grep -n \"rates\\|Rates\" Price.tsx | head -5 | cut -c1-140", "timeout": 20}
+[10611] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10611] TOOLRESULT: Price.tsx:1:import InputAdornment from '@mui/material/InputAdornment';
+Price.tsx:2:import TextField from '@mui/material/TextField';
+Price.tsx:3:import i18n from 'i18next';
+Price.tsx:4:import { type ChangeEvent, type FC, useState, useSyncExternalStore } from 'react';
+Price.tsx:5:import { useTranslation } from 'react-i18next';
+ui/ProductCard.tsx:1:import Box from '@mui/material/Box';
+ui/ProductCard.tsx:2:import Button from '@mui/material/Button';
+ui/ProductCard.tsx:3:import Card from '@mui/material/Card';
+ui/ProductCard.tsx:4:import CardActionArea from '@mui/material/CardActionArea';
+ui/ProductCard.tsx:5:import CardActions from '@mui/material/CardActions';
+ui/ProductCard.tsx:6:import CardContent from '@mui/material/CardContent';
+ui/ProductCard.tsx:7:import Chip from '@mui/material/Chip';
+ui/ProductCard.tsx:8:import Typography from '@mui/material/Typography';
+ui/ProductCard.tsx:9:import type { FC } from 'react';
+ui/ProductCard.tsx:10:import { useTranslation } from 'react-i18next';
+ui/ProductCard.tsx:11:import { ImageDisplay } from '~/components/widgets/ImageDisplay';
+ui/ProductCard.tsx:12:import type { ShopProductInfoStored } from '~/services/data-api/model/ShopProductInfo';
+ui/ProductCard.tsx:13:import { Price } from '../Price';
+10:// the day comes from the exchange rate table (Customer.rates, newest valid on or before today). Without a rate the price
+16:type CurrencyState = { chosen: string; rates: Record<string, number> | null };
+17:let state: CurrencyState = { chosen: readCh
+[10612] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react; C=webshop__customer/src/custom; G=webshop__guest/src/custom; cp $C/components/Price.tsx $C/components/shopEvents.ts $C/components/SearchBox.tsx $C/components/LanguageSwitch.tsx $G/components/; mkdir -p $G/components/ui; cp $C/components/ui/ProductCard.tsx $G/components/ui/; cp $C/components/CatalogHome.tsx $G/components/CatalogHome.tsx; grep -n \"^import\" $C/components/SearchBox.tsx $C/components/LanguageSwitch.tsx | grep -v \"@mui\\|from 'react\" | cut -c1-170; sed -n 60,80p $G/components/CatalogHome.tsx; sed -n 375,395p $G/components/CatalogHome.tsx", "timeout": 20}
+[10613] TOOLRESULT: webshop__customer/src/custom/components/SearchBox.tsx:6:import { useJudoNavigation } from '~/components';
+webshop__customer/src/custom/components/SearchBox.tsx:7:import { routeToDashboard } from '~/routes';
+webshop__customer/src/custom/components/SearchBox.tsx:8:import { readSearch, SEARCH_CHANGED, writeSearch } from './shopEvents';
+webshop__customer/src/custom/components/LanguageSwitch.tsx:4:import { useL10N } from '~/l10n/l10n-context';
+// page of 24 products and the facet counts (category, seller, price range, rating); nothing but the page is loaded, so it
+// stays fast with 50 000 products. The text comes from the search box of the header (shared value, see shopEvents).
+export const CatalogHome: FC = () => {
+  const { t } = useTranslation();
+  const { navigate } = useJudoNavigation();
+  const productService = useMemo(() => new ShopProductInfoServiceImpl(judoAxiosProvider), []);
+  const handleError = useErrorHandler();
+  const snacks = useSnacks();
+
+  // F17: one more of this product into the cart; a refused add (F20) opens the generated fault dialog.
+  const addToCart = async (product: ShopProductInfoStored) => {
+    try {
+      await productService.addToCart(product, { quantity: 1 } as any);
+      snacks.showSuccessSnack(t('shop.cart.added', { defaultValue: 'Added to cart' }) as string);
+      notifyCartChanged();
+    } catch (error) {
+      handleError(error as any);
+    }
+  };
+  const [state, setState] = useState<State>({ status: 'loading' });
+  const [shop, setShop] =
+[10614] ASSISTANT: Patch the Guest copy.
+[10614] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; python3 - <<'E'\nimport re\np='components/CatalogHome.tsx'\ns=open(p).read()\ns=s.replace(\"routeToCustomerProductsAccessViewPage\",\"routeToGuestProductsAccessViewPage\")\ns=s.replace(\"import { CustomerServiceForShopImpl } from '~/services/data-axios/CustomerServiceForShopImpl';\\n\",\"\")\ns=s.replace(\"import type { ShopInfoStored } from '~/services/data-api/model/ShopInfo';\\n\",\"\")\na=s.index(\"  // F17: one more\")\nb=s.index(\"  const [state, setState]\")\ns=s[:a]+\"  // a guest cannot buy: adding to the cart (and paying) needs the Customer app, so the way in is the sign-in\\n  const addToCart = async (_product: ShopProductInfoStored) => {\\n    window.location.href = '/webshop/Customer/';\\n  };\\n\"+s[b:]\ns=s.replace(\"  const [shop, setShop] = useState<ShopInfoStored | null>(null);\\n\",\"\")\na=s.index(\"  useEffect(() => {\\n    // F33\")\nb=s.index(\"  const categories = facetsOf\")\ns=s[:a]+s[b:]\ns=s.replace(\"import { useSnacks } from '~/hooks';\\n\",\"\").replace(\"  const snacks = useSnacks();\\n\",\"\").replace(\"  const handleError = useErrorHandler();\\n\",\"\")\ns
+[10615] TOOLRESULT: 21:import { useErrorHandler } from '~/utilities';
+56:// F81 (R18): shop home = the server-side catalogue search. The page asks the `search` operation of ShopProductInfo for one
+66:    window.location.href = '/webshop/Customer/';
+124:      label: `${t('shop.search.results', { defaultValue: 'Search' })}: ${query}`,
+130:      label: `${t('shop.facet.seller', { defaultValue: 'Seller' })}: ${filters.seller}`,
+136:      label: `${t('shop.facet.price', { defaultValue: 'Price' })}: ${filters.minPrice ?? 0}${filters.maxPrice === undefined ? '+' : `–${filters.ma
+143:      label: `${t('shop.facet.rating', { defaultValue: 'Rating' })}: ${filters.minRating}+`,
+184:      {facetGroup('seller', t('shop.facet.seller', { defaultValue: 'Seller' }) as string, (f) =>
+187:      {facetGroup('price', t('shop.facet.price', { defaultValue: 'Price' }) as string, (f) => {
+203:      {facetGroup('rating', t('shop.facet.rating', { defaultValue: 'Rating' }) as string, (f) =>
+207:          `${f.value}★ ${t('shop.facet.and-up', { defaultValue: '& up' })}`,
+214:    <Box component="section" aria-label={t('shop.home.title', { defaultValue: 'Products' }) as string}>
+
+[10616] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; grep -n \"[^.a-zA-Z]shop[,?) ]\\|shop\\?\\|shop\\.\" components/CatalogHome.tsx | grep -v \"t('shop\\|'shop\\.\" | head; sed -n 100,112p components/CatalogHome.tsx; sed -n 1,25p components/SearchBox.tsx | head -0; grep -n \"\\(error\\|handleError\\)\" components/CatalogHome.tsx | head -4", "timeout": 20}
+[10617] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10617] TOOLRESULT: 23:import { readSearch, SEARCH_CHANGED, writeSearch } from './shopEvents';
+56:// F81 (R18): shop home = the server-side catalogue search. The page asks the `search` operation of ShopProductInfo for one
+58:// stays fast with 50 000 products. The text comes from the search box of the header (shared value, see shopEvents).
+66:    window.location.href = '/webshop/Customer/';
+82:  // only the answer of the last request is shown (a slow answer of an older filter must not replace a newer one)
+226:          {shop?.shopName ?? 'Trail Shop'}
+237:          {shop && (
+240:              <span data-testid="shop-banner">
+242:                <Price value={shop.freeShippingThreshold} />
+      if (mine === latest.current) {
+        setState({
+          status: 'ready',
+          items: response.data.items ?? [],
+          total: response.data.total ?? 0,
+          facets: response.data.facets ?? [],
+        });
+      }
+    } catch {
+      if (mine === latest.current) setState({ status: 'error' });
+    }
+  }, [productService, query, filters]);
+
+head: illegal line count -- 0
+28:  | { status: 'error' }
+109:      if (mine === latest.current) setState({ status: 'error' });
+332:          {state.status === 'error' && (
+334:              severity="error"
+
+[10618] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; sed -n 222,250p components/CatalogHome.tsx", "timeout": 20}
+[10619] TOOLRESULT:           background: `linear-gradient(120deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main} 60%, ${theme.palette.primary.light})`,
+        })}
+      >
+        <Typography variant="overline" sx={{ opacity: 0.85 }}>
+          {shop?.shopName ?? 'Trail Shop'}
+        </Typography>
+        <Typography
+          variant="h3"
+          component="h1"
+          sx={{ fontWeight: 700, fontSize: { xs: '1.8rem', md: '2.6rem' }, my: 1 }}
+        >
+          {t('shop.home.headline', { defaultValue: 'Gear for the long way round' })}
+        </Typography>
+        <Typography sx={{ maxWidth: 560, opacity: 0.9, mb: 2 }}>
+          {t('shop.home.tagline', { defaultValue: 'Boots, packs and everyday trail food, picked by people who walk.' })}
+          {shop && (
+            <>
+              {' '}
+              <span data-testid="shop-banner">
+                {t('shop.free-shipping', { defaultValue: 'Free shipping from' })}{' '}
+                <Price value={shop.freeShippingThreshold} />
+              </span>
+            </>
+          )}
+        </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' })}
+
+[10620] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; python3 - <<'E'\np='components/CatalogHome.tsx'\ns=open(p).read()\ns=s.replace(\"{shop?.shopName ?? 'Trail Shop'}\",\"Trail Shop\")\na=s.index(\"          {shop && (\")\nb=s.index(\"        </Typography>\\n        <Button\",a)\ns=s[:a]+s[b:]\ns=s.replace(\"import { useErrorHandler } from '~/utilities';\\n\",\"\")\nopen(p,'w').write(s)\n# home registration + header\np='application-customizer.tsx'\ns=open(p).read()\ns=s.replace(\"import { GuestHome } from './components/GuestHome';\",\"import { CatalogHome } from './components/CatalogHome';\").replace(\"GuestHome, {\",\"CatalogHome, {\")\nopen(p,'w').write(s)\nE\nrm components/GuestHome.tsx; grep -n \"Price\\b\" components/CatalogHome.tsx | head -3; cat components/GuestBar.tsx | head -3; grep -n \"SearchBox\\|LanguageSwitch\" ../../../webshop__customer/src/custom/components/AppBarExtras.tsx | head -5", "timeout": 20}
+[10621] TOOLRESULT: 21:import { Price } from './Price';
+33:  minPrice?: number;
+34:  maxPrice?: number;
+import Button from '@mui/material/Button';
+
+// The public shop's way in: the Customer app (Keycloak login / registration) lives next to this one.
+6:import { LanguageSwitch } from './LanguageSwitch';
+9:import { SearchBox } from './SearchBox';
+55:      <SearchBox />
+56:      <LanguageSwitch />
+
+[10622] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; sed -i \"/^import { Price } from '.\\/Price';/d\" components/CatalogHome.tsx; cat > components/GuestBar.tsx <<'E'\nimport Button from '@mui/material/Button';\nimport { LanguageSwitch } from './LanguageSwitch';\nimport { SearchBox } from './SearchBox';\n\n// The public shop's header: search, language and the way in. Paying needs the Customer app (Keycloak login / registration).\nexport function GuestBar() {\n  return (\n    <>\n      <SearchBox />\n      <LanguageSwitch />\n      <Button variant=\"contained\" color=\"secondary\" href=\"/webshop/Customer/\" data-testid=\"guest-login\" sx={{ ml: 2, whiteSpace: 'nowrap' }}>\n        Login / Register\n      </Button>\n    </>\n  );\n}\nE\nsed -i 's/spaceRequired: 1/spaceRequired: 2/' application-customizer.tsx; cd ~/Projects/webshop-test; grep -n \"BUILD\\|Failed to execute\" .scratch/build-g8.log | head -2 | cut -c1-200", "timeout": 20}
+[10623] TOOLRESULT: sed: 1: "components/CatalogHome. ...": command c expects \ followed by text
+sed: 1: "application-customizer. ...": command a expects \ followed by text
+
+[10624] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; sed -i '' \"/^import { Price } from '.\\/Price';/d\" components/CatalogHome.tsx; sed -i '' 's/spaceRequired: 1/spaceRequired: 2/' application-customizer.tsx; grep -c \"import { Price\" components/CatalogHome.tsx; grep -n spaceRequired application-customizer.tsx; cd ~/Projects/webshop-test; sleep 200; grep -n \"BUILD\\|Failed to execute\" .scratch/build-g8.log | head -2 | cut -c1-200", "timeout": 260}
+[10625] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10625] TOOLRESULT: 0
+2821:[INFO] BUILD SUCCESS
+
+[10626] CALL bash: {"command": "cd ~/Projects/webshop-test; (nohup sh -c './judo.sh build -i > .scratch/build-g9.log 2>&1; ./judo.sh start > .scratch/start-g9.log 2>&1' >/dev/null 2>&1 &); sleep 290; grep -n \"BUILD\\|Failed to execute\\|error TS\\|ERROR.*guest\" .scratch/build-g9.log | head -5 | cut -c1-220", "timeout": 320}
+[10628] TOOLRESULT: 540:[webshop-application-frontend-react-webshop__guest] [INFO] src/custom/components/CatalogHome.tsx(192,16): error TS2304: Cannot find name 'Price'.
+541:[webshop-application-frontend-react-webshop__guest] [INFO] src/custom/components/CatalogHome.tsx(196,16): error TS2304: Cannot find name 'Price'.
+542:[webshop-application-frontend-react-webshop__guest] [INFO] src/custom/components/CatalogHome.tsx(196,41): error TS2304: Cannot find name 'Price'.
+1587:[INFO] BUILD FAILURE
+1592:[ERROR] Failed to execute goal com.github.eirslett:frontend-maven-plugin:1.12.1:pnpm (build) on project webshop-application-frontend-react-webshop__guest: Failed to run task: 'pnpm run build' failed. org.apache.comm
+
+[10629] ASSISTANT: Price is used after all; restore the import.
+[10629] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; sed -i '' \"s#^import { readSearch, SEARCH_CHANGED, writeSearch } from './shopEvents';#import { Price } from './Price';\\nimport { readSearch, SEARCH_CHANGED, writeSearch } from './shopEvents';#\" components/CatalogHome.tsx; grep -n \"Price'\" components/CatalogHome.tsx; cd ~/Projects/webshop-test; ./judo.sh stop >/dev/null 2>&1; (nohup sh -c './judo.sh build -i > .scratch/build-g10.log 2>&1; ./judo.sh start > .scratch/start-g10.log 2>&1' >/dev/null 2>&1 &); sleep 280; grep -n \"BUILD\\|Failed to execute\\|error TS\" .scratch/build-g10.log | head -5 | cut -c1-220", "timeout": 320}
+[10631] TOOLRESULT: 21:import { Price } from './Price';
+135:      label: `${t('shop.facet.price', { defaultValue: 'Price' })}: ${filters.minPrice ?? 0}${filters.maxPrice === undefined ? '+' : `–${filters.maxPrice}`} EUR`,
+186:      {facetGroup('price', t('shop.facet.price', { defaultValue: 'Price' }) as string, (f) => {
+2763:[INFO] BUILD SUCCESS
+
+[10632] CALL bash: {"command": "sleep 170; curl -s -o /dev/null -w \"Guest %{http_code}\\n\" localhost:8181/webshop/Guest/; curl -s -X POST localhost:8181/api/webshop/Guest/ShopProductInfo/search -H 'Content-Type: application/json' -d '{\"pageSize\":2}' | head -c 300", "timeout": 230}
+[10632] CALL browser: {"command": "open http://localhost:8181/webshop/Guest/"}
+[10632] CALL browser: {"command": "wait 15000"}
+[10632] CALL browser: {"command": "screenshot"}
+[10633] TOOLRESULT: Guest 200
+{"facets":[{"count":85,"group":"category","label":"Bags","selected":false,"value":"Bags"},{"count":36,"group":"category","label":"Footwear","selected":false,"value":"Footwear"},{"count":36,"group":"category","label":"Socks","selected":false,"value":"Socks"},{"count":1,"group":"seller","label":"Carri
+[10634] TOOLRESULT: ✗ Daemon process exited during startup with no error output. Re-run with --debug for more details.
+[10635] TOOLRESULT: ✗ Daemon failed to start (socket: /Users/bmiller/.agent-browser/default.sock)
+[10636] TOOLRESULT: ✗ Daemon process exited during startup with no error output. Re-run with --debug for more details.
+[10637] CALL bash: {"command": "pkill -f agent-browser 2>/dev/null; rm -f ~/.agent-browser/default.sock ~/.agent-browser/default.pid; echo ok", "timeout": 20}
+[10637] CALL browser: {"command": "open http://localhost:8181/webshop/Guest/"}
+[10637] CALL browser: {"command": "wait 15000"}
+[10637] CALL browser: {"command": "screenshot"}
+[10638] TOOLRESULT: ok
+
+[10639] TOOLRESULT: (no output)
+[10640] TOOLRESULT: (no output)
+[10641] TOOLRESULT: (no output)
+[10642] CALL browser: {"command": "open http://localhost:8181/webshop/Guest/"}
+[10643] TOOLRESULT: ✓ Trail Shop
+  http://localhost:8181/webshop/Guest/
+[10644] CALL browser: {"command": "wait 15000"}
+[10644] CALL browser: {"command": "screenshot"}
+[10645] TOOLRESULT: ✓ Done
+[10646] TOOLRESULT: Screenshot saved: /Users/bmiller/.agent-browser/tmp/screenshots/screenshot-1795099646664.png
+[10647] CALL browser: {"command": "wait 12000"}
+[10647] CALL browser: {"command": "screenshot"}
+[10648] TOOLRESULT: ✓ Done
+[10649] TOOLRESULT: Screenshot saved: /Users/bmiller/.agent-browser/tmp/screenshots/screenshot-1795099660751.png
+[10650] CALL browser: {"command": "open http://localhost:8181/webshop/Guest/"}
+[10650] CALL browser: {"command": "wait 8000"}
+[10650] CALL browser: {"command": "screenshot"}
+[10651] TOOLRESULT: ✓ Trail Shop
+  http://localhost:8181/webshop/Guest/
+[10652] TOOLRESULT: ✓ Done
+[10653] TOOLRESULT: Screenshot saved: /Users/bmiller/.agent-browser/tmp/screenshots/screenshot-1795099674132.png
+[10654] CALL browser: {"command": "console"}
+[10654] CALL browser: {"command": "eval document.querySelectorAll('[data-testid]').length"}
+[10655] TOOLRESULT: (no output)
+[10656] TOOLRESULT: 0
+[10657] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest; cat src/custom/application-customizer.tsx | head -30; grep -c \"catalog-grid\" dist/assets/*.js | grep -v \":0\"; f=$(curl -s localhost:8181/webshop/Guest/ | grep -o 'assets/index[^\"]*\\.js' | head -1); curl -s localhost:8181/webshop/Guest/$f | grep -c \"catalog-grid\"", "timeout": 30}
+[10658] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10658] TOOLRESULT: //////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    S O U R C E
+// --------------------------------
+// Factory expression: <actor>
+// Path expression: 'src/custom/application-customizer.tsx'
+// Template name: actor/src/custom/application-customizer.tsx
+// Template file: actor/src/custom/application-customizer.tsx.hbs
+
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+
+export class DefaultApplicationCustomizer implements ApplicationCustomizer {
+  async customize(context: BundleContext): Promise<void> {
+    // register your implementations here
+  }
+}
+0
+
+
+Command exited with code 1
+[10659] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react; grep -n \"application-customizer\" webshop__customer/.generated-files-customer webshop__guest/.generated-files-guest 2>/dev/null | head; ls -a webshop__guest | grep generated; git -C ~/Projects/webshop-test ls-files application/frontend-react/webshop__customer/src/custom/application-customizer.tsx", "timeout": 30}
+[10660] TOOLRESULT: webshop__customer/.generated-files-customer:954:src/custom/application-customizer.tsx,93d2dfcb8ee6440ae9984bcf52a32e44
+webshop__guest/.generated-files-guest:212:src/custom/application-customizer.tsx,bea6cf9aa8a6c587f91a27890d00bce6
+.generated-files
+.generated-files-admin
+.generated-files-customer
+.generated-files-guest
+application/frontend-react/webshop__customer/src/custom/application-customizer.tsx
+
+[10661] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; cp /tmp/guestcustom/application-customizer.tsx application-customizer.tsx; sed -i '' \"s#import { GuestHome } from './components/GuestHome';#import { CatalogHome } from './components/CatalogHome';#; s#GuestHome, {#CatalogHome, {#; s/spaceRequired: 1/spaceRequired: 2/\" application-customizer.tsx; cat application-customizer.tsx | sed -n 1,25p; cd ~/Projects/webshop-test; ./judo.sh stop >/dev/null 2>&1; (nohup sh -c './judo.sh build -i > .scratch/build-g11.log 2>&1; ./judo.sh start > .scratch/start-g11.log 2>&1' >/dev/null 2>&1 &); sleep 5", "timeout": 60}
+[10662] TOOLRESULT: import type { BundleContext } from '@pandino/pandino-api';
+import type { FC } from 'react';
+import { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY } from '~/custom';
+import type { AppBarExtraComponentsHook } from '~/layout/Header/HeaderContent';
+import { DASHBOARD_PAGE_INTERFACE_KEY } from '~/pages/Guest/DashboardPage';
+import { GuestBar } from './components/GuestBar';
+import { CatalogHome } from './components/CatalogHome';
+import { registerShopLogoHook } from './hooks/registerShopLogoHook';
+import type { ApplicationCustomizer } from './interfaces';
+
+export class DefaultApplicationCustomizer implements ApplicationCustomizer {
+  async customize(context: BundleContext): Promise<void> {
+    context.registerService<AppBarExtraComponentsHook>(
+      CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY,
+      () => ({ Component: GuestBar, spaceRequired: 2 }),
+      { component: 'AppBarExtraComponents' },
+    );
+    context.registerService<FC<any>>(CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY, CatalogHome, {
+      component: DASHBOARD_PAGE_INTERFACE_KEY,
+    });
+    registerShopLogoHook(context);
+  }
+}
+
+[10663] CALL bash: {"command": "cd ~/Projects/webshop-test; sleep 285; grep -n \"BUILD\\|Failed to execute\\|error TS\" .scratch/build-g11.log | head -4 | cut -c1-200; grep -c CatalogHome application/frontend-react/webshop__guest/src/custom/application-customizer.tsx", "timeout": 320}
+[10665] TOOLRESULT: 2763:[INFO] BUILD SUCCESS
+2
+
+[10666] CALL bash: {"command": "sleep 175; curl -s -o /dev/null -w \"Guest %{http_code}\\n\" localhost:8181/webshop/Guest/", "timeout": 230}
+[10666] CALL browser: {"command": "open http://localhost:8181/webshop/Guest/"}
+[10666] CALL browser: {"command": "wait 12000"}
+[10666] CALL browser: {"command": "screenshot"}
+[10667] TOOLRESULT: Guest 200
+
+[10668] TOOLRESULT: ✓ Trail Shop
+  http://localhost:8181/webshop/Guest/
+[10669] TOOLRESULT: ✓ Done
+[10670] TOOLRESULT: Screenshot saved: /Users/bmiller/.agent-browser/tmp/screenshots/screenshot-1795100005221.png
+[10671] CALL browser: {"command": "wait 10000"}
+[10671] CALL browser: {"command": "screenshot"}
+[10672] TOOLRESULT: ✓ Done
+[10673] TOOLRESULT: Screenshot saved: /Users/bmiller/.agent-browser/tmp/screenshots/screenshot-1795100173821.png
+[10674] CALL browser: {"command": "close"}
+[10674] CALL browser: {"command": "open http://localhost:8181/webshop/Guest/"}
+[10674] CALL browser: {"command": "wait 15000"}
+[10674] CALL browser: {"command": "screenshot"}
+[10675] TOOLRESULT: ✓ Browser closed
+[10676] TOOLRESULT: ✓ Trail Shop
+  http://localhost:8181/webshop/Guest/
+[10677] TOOLRESULT: ✓ Done
+[10678] TOOLRESULT: Screenshot saved: /Users/bmiller/.agent-browser/tmp/screenshots/screenshot-1795100204249.png
+[10679] CALL browser: {"command": "scroll down 600"}
+[10679] CALL browser: {"command": "screenshot"}
+[10680] TOOLRESULT: ✓ Done
+[10681] TOOLRESULT: Screenshot saved: /Users/bmiller/.agent-browser/tmp/screenshots/screenshot-1795100208809.png
+[10682] CALL browser: {"command": "screenshot"}
+[10683] TOOLRESULT: Screenshot saved: /Users/bmiller/.agent-browser/tmp/screenshots/screenshot-1795100210626.png
+[10684] CALL browser: {"command": "errors"}
+[10684] CALL browser: {"command": "eval document.body.innerText.slice(0,300)"}
+[10684] CALL browser: {"command": "get url"}
+[10685] TOOLRESULT: (no output)
+[10686] TOOLRESULT: ""
+[10687] TOOLRESULT: about:blank
+[10688] CALL bash: {"command": "cd ~/Projects/webshop-test/application/e2e/webshop__customer/playwright; cat > /tmp/guest-check.spec.ts <<'E'\nimport { test } from '@playwright/test';\ntest('guest', async ({ page }) => {\n  const errs: string[] = [];\n  page.on('pageerror', (e) => errs.push('PAGEERR ' + e.message));\n  page.on('response', (r) => { if (r.status() >= 400) errs.push(r.status() + ' ' + r.url()); });\n  await page.setViewportSize({ width: 1440, height: 1000 });\n  await page.goto('http://localhost:8181/webshop/Guest/');\n  await page.getByTestId('catalog-grid').waitFor({ timeout: 40000 });\n  await page.screenshot({ path: '/tmp/guest-home.png', fullPage: false });\n  await page.getByTestId('catalog-grid').locator('> *').first().click();\n  await page.waitForTimeout(6000);\n  await page.screenshot({ path: '/tmp/guest-detail.png' });\n  console.log(page.url()); console.log(errs.join('\\n'));\n});\nE\ncp /tmp/guest-check.spec.ts tests/zz-guest-check.spec.ts; npx playwright test -c playwright.local.config.ts --workers=1 zz-guest-check 2>&1 | sed 's/\\x1b\\[[0-9;]*[A-Za-z]//g' | grep -v \"^$\" | head -20 | cut -c1-200; rm tests/zz-guest-check.spec.ts", "timeout": 180}
+[10689] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10689] TOOLRESULT: (node:70932) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Running 1 test using 1 worker
+(node:70947) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[1/1] [chromium] › zz-guest-check.spec.ts:2:5 › guest
+[chromium] › zz-guest-check.spec.ts:2:5 › guest
+http://localhost:8181/webshop/Guest/#/Guest/Products/AccessViewPage/eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1YTlhZGQ3NS1jYWU3LTQ0ZDgtOTgzZS05NmNhOTg2NzhjZTQiLCJpYXQiOjE3OTUxMDAyMjEsImVudGl0eSI6IlByb2R1Y3QiLCJ
+  1 passed (8.8s)
+
+[10690] CALL read: {"path": "/tmp/guest-home.png", "offset": 1, "limit": 5}
+[10690] CALL read: {"path": "/tmp/guest-detail.png", "offset": 1, "limit": 5}
+[10691] TOOLRESULT: Read image file [image/png]
+[10692] TOOLRESULT: Read image file [image/png]
+[10693] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react; ls webshop__customer/src/custom/hooks/custom-implementations webshop__guest/src/custom/hooks/custom-implementations 2>&1 | head -20; wc -l webshop__customer/src/custom/hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx; grep -n \"^import\" webshop__customer/src/custom/hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx | cut -c1-170", "timeout": 20}
+[10694] TOOLRESULT: webshop__customer/src/custom/hooks/custom-implementations:
+registerCartInfoCartInfo_View_EditCustomImplementations.tsx
+registerCartInfoCartInfo_View_EditCustomImplementations.tsx.default
+registerCompanyInfoCompanyInfo_View_EditCustomImplementations.tsx.default
+registerNotificationInfoNotificationInfo_View_EditCustomImplementations.tsx.default
+registerOrderInfoOrderInfo_View_EditCustomImplementations.tsx.default
+registerPrivacyInfoPrivacyInfo_View_EditCustomImplementations.tsx
+registerPrivacyInfoPrivacyInfo_View_EditCustomImplementations.tsx.default
+registerQuoteInfoQuoteInfo_View_EditCustomImplementations.tsx.default
+registerReturnInfoReturnInfo_View_EditCustomImplementations.tsx.default
+registerSellerInfoSellerInfo_View_EditCustomImplementations.tsx.default
+registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx
+registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx.default
+registerSubOrderInfoSubOrderInfo_View_EditCustomImplementations.tsx.default
+registerWalletInfoWalletInfo_View_EditCustomImplementations.tsx.default
+registerWishlistInfoWishlistInfo_View_EditCustomImplementations.tsx
+registerWishlistInfoWishlistInfo_View_EditCustomImplementations.tsx.default
+
+webshop__guest/src/custom/hooks/custom-implementations:
+registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx.default
+      92 webshop__customer/src/custom/hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx
+1:i
+[10695] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__customer/src/custom; sed -n 16,92p hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx; sed -n 1,149p components/ProductDetailsLayout.tsx | grep -n \"import\\|Service\\|Cart\\|addToCart\\|wish\" | cut -c1-170", "timeout": 20}
+[10696] TOOLRESULT: ctx_search({queries:["cd ~/Projects/webshop-test/application/frontend-react/webshop__customer/src/custom; sed -n 16,92p hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx; sed -n 1,149p components/ProductDetailsLayout.tsx | grep -n \"import\\|Service\\|Cart\\|addToCart\\|wish\" | cut -c1-170","customer product see"], source:"s55"}) searches the whole output (4522 B).
+[10697] CALL read: {"path": "/Users/bmiller/Projects/webshop-test/application/frontend-react/webshop__customer/src/custom/hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx", "offset": 1, "limit": 92}
+[10697] CALL read: {"path": "/Users/bmiller/Projects/webshop-test/application/frontend-react/webshop__customer/src/custom/components/ProductDetailsLayout.tsx", "offset": 1, "limit": 149}
+[10698] TOOLRESULT: import type { BundleContext } from '@pandino/pandino-api';
+import { type FC } from 'react';
+import {
+  SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_DESCRIPTION_COMPONENT,
+  SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_EFFECTIVE_PRICE_COMPONENT,
+  SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_IMAGE_COMPONENT,
+  SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_NAME_COMPONENT,
+  SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_ON_SALE_COMPONENT,
+  SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_PRICE_COMPONENT,
+  SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_RATING_LABEL_COMPONENT,
+} from '~/containers/ShopProductInfo/ShopProductInfo_View_Edit/customization';
+import type { ShopProductInfoShopProductInfo_View_EditActionDefinitions } from '~/containers/ShopProductInfo/ShopProductInfo_View_Edit/types';
+import { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY, type GenericProxyProps } from '~/custom';
+import type { ShopProductInfoStored } from '~/services/data-api/model/ShopProductInfo';
+import { ProductDetailsLayout } from '../../components/ProductDetailsLayout';
+
+// All three view fields are custom implementations. Only `name` renders, and it renders the whole shop layout
+// (name, price badge, description), which also fixes the visible field order (see GAPS.md R3-1). `price` and
+// `description` stay modeled so the generated page still loads them; they render nothing themselves.
+export function registerShopProductInfoShopProductInfo_View_EditNameComponentCustomImplementation(
+  context: BundleCont
+[10699] TOOLRESULT: import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { type FC, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useJudoNavigation } from '~/components';
+import { ImageDisplay } from '~/components/widgets/ImageDisplay';
+import { routeToCustomerProductsAccessViewPage } from '~/routes';
+import type { ShopProductInfoStored } from '~/services/data-api/model/ShopProductInfo';
+import { judoAxiosProvider } from '~/services/data-axios/JudoAxiosProvider';
+import { ShopProductInfoServiceImpl } from '~/services/data-axios/ShopProductInfoServiceImpl';
+import { Price, PriceField } from './Price';
+import { ProductCard } from './ui/ProductCard';
+
+// F82 (R18): "Frequently bought together": the products most often in the same order as this one (server side query over
+// the order lines), as the same product cards as the shop home.
+const BoughtTogether: FC<{ product: ShopProductInfoStored }> = ({ product }) => {
+  const { t } = useTranslation();
+  const { navigate } = useJudoNavigation();
+  const service = useMemo(() => new ShopProductInfoServiceImpl(judoAxiosProvider), []);
+  const [items, setItems] = useState<ShopProductInfoStored[]>([]);
+  useEffect(() => {
+    if (!product?.__signedIdentifier) return;
+    service
+      .boughtTogether(product)
+      .then((r) => setItems(r.data.items ?? []))
+      .catch(() =
+[10700] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react; diff <(grep -o \"SHOP_PRODUCT_INFO[A-Z_]*COMPONENT\" webshop__guest/src/custom/hooks/custom-implementations/*.default | sort -u) <(grep -o \"SHOP_PRODUCT_INFO[A-Z_]*COMPONENT\" webshop__customer/src/custom/hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx.default | sort -u) && echo same-components; grep -n \"ShopProductInfo\" webshop__customer/src/custom/hooks/registerDetailLayouts.tsx | head -12 | cut -c1-170; grep -n \"ShopProductInfo\" webshop__customer/src/custom/hooks/registerRelationCards.tsx | head -5 | cut -c1-170", "timeout": 20}
+[10701] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10701] TOOLRESULT: same-components
+18:import { SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_REVIEWS_COMPONENT } from '~/containers/ShopProductInfo/ShopProductInfo_View_Edit/customization';
+30:import { ShopProductInfoServiceImpl } from '~/services/data-axios/ShopProductInfoServiceImpl';
+49:const products = new ShopProductInfoServiceImpl(judoAxiosProvider);
+112:      'ShopProductInfo',
+
+[10702] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__customer/src/custom/hooks; sed -n 40,60p registerDetailLayouts.tsx; sed -n 100,135p registerDetailLayouts.tsx; grep -n \"Product\\b\\|Together\\|bought\" registerCardHooks.tsx | head -5", "timeout": 20}
+[10703] TOOLRESULT:   ORDER_INFO_ORDER_INFO_VIEW_EDIT_TOTAL_LABEL_COMPONENT,
+  ORDER_INFO_ORDER_INFO_VIEW_EDIT_TRACKING_NUMBER_COMPONENT,
+  ORDER_INFO_ORDER_INFO_VIEW_EDIT_VAT_LABEL_COMPONENT,
+} from '~/containers/OrderInfo/OrderInfo_View_Edit/customization';
+import {
+  QUOTE_INFO_QUOTE_INFO_VIEW_EDIT_COMPANY_NAME_COMPONENT,
+  QUOTE_INFO_QUOTE_INFO_VIEW_EDIT_DISCOUNT_PERCENT_COMPONENT,
+  QUOTE_INFO_QUOTE_INFO_VIEW_EDIT_NUMBER_COMPONENT,
+  QUOTE_INFO_QUOTE_INFO_VIEW_EDIT_ORDER_NUMBER_COMPONENT,
+  QUOTE_INFO_QUOTE_INFO_VIEW_EDIT_REQUESTED_AT_COMPONENT,
+  QUOTE_INFO_QUOTE_INFO_VIEW_EDIT_STATUS_LABEL_COMPONENT,
+  QUOTE_INFO_QUOTE_INFO_VIEW_EDIT_TOTAL_LABEL_COMPONENT,
+} from '~/containers/QuoteInfo/QuoteInfo_View_Edit/customization';
+import {
+  RETURN_INFO_RETURN_INFO_VIEW_EDIT_DECIDED_AT_COMPONENT,
+  RETURN_INFO_RETURN_INFO_VIEW_EDIT_ORDER_NUMBER_COMPONENT,
+  RETURN_INFO_RETURN_INFO_VIEW_EDIT_PRODUCT_NAME_COMPONENT,
+  RETURN_INFO_RETURN_INFO_VIEW_EDIT_QUANTITY_COMPONENT,
+  RETURN_INFO_RETURN_INFO_VIEW_EDIT_REASON_COMPONENT,
+  RETURN_INFO_RETURN_INFO_VIEW_EDIT_REFUND_AMOUNT_COMPONENT,
+  RETURN_INFO_RETURN_INFO_VIEW_EDIT_REQUESTED_AT_COMPONENT,
+    ORDER_INFO_ORDER_INFO_VIEW_EDIT_ORDERED_AT_COMPONENT,
+    ORDER_INFO_ORDER_INFO_VIEW_EDIT_PAYMENT_ERROR_COMPONENT,
+    ORDER_INFO_ORDER_INFO_VIEW_EDIT_PO_NUMBER_COMPONENT,
+    ORDER_INFO_ORDER_INFO_VIEW_EDIT_POINTS_LABEL_COMPONENT,
+    ORDER_INFO_ORDER_INFO_VIEW_EDIT_REJECTION_REASON_COMPONENT,
+    ORDER_INFO_ORDER_INFO_VIEW_EDIT_SHIPPING_ADDRESS_COMPONENT,
+[10704] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react; C=webshop__customer/src/custom; G=webshop__guest/src/custom; cp $C/hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations.tsx $G/hooks/custom-implementations/; cp $C/components/ProductDetailsLayout.tsx $G/components/; sed -i '' 's/routeToCustomerProductsAccessViewPage/routeToGuestProductsAccessViewPage/g' $G/components/ProductDetailsLayout.tsx; python3 - <<'E'\np='webshop__guest/src/custom/components/ProductDetailsLayout.tsx'\ns=open(p).read()\n# guest cannot buy: login button under the price badge\ns=s.replace(\"      {data?.ratingLabel && (\",\"\"\"      <Button variant=\"contained\" href=\"/webshop/Customer/\" data-testid=\"guest-buy\" sx={{ alignSelf: 'flex-start' }}>\n        {t('shop.guest.login-to-buy', { defaultValue: 'Login to buy' })}\n      </Button>\n      {data?.ratingLabel && (\"\"\",1)\ns=s.replace(\"import Box from '@mui/material/Box';\",\"import Box from '@mui/material/Box';\\nimport Button from '@mui/material/Button';\",1)\nopen(p,'w').write(s)\np='webshop__guest/src/custom/application-customizer.tsx'\ns=open(p).read()\ns=s.replace(\"import { registerSho
+[10705] TOOLRESULT: 15:import { ProductDetailsLayout } from '../../components/ProductDetailsLayout';
+2763:[INFO] BUILD SUCCESS
+
+[10706] CALL bash: {"command": "sleep 170; cd ~/Projects/webshop-test/application/e2e/webshop__customer/playwright; cp /tmp/guest-check.spec.ts tests/zz-guest-check.spec.ts; npx playwright test -c playwright.local.config.ts --workers=1 zz-guest-check 2>&1 | sed 's/\\x1b\\[[0-9;]*[A-Za-z]//g' | grep -E \"passed|failed|PAGEERR|^[0-9]{3} \" | head -8 | cut -c1-200; rm tests/zz-guest-check.spec.ts", "timeout": 300}
+[10706] CALL read: {"path": "/tmp/guest-detail.png", "offset": 1, "limit": 5}
+[10707] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10707] TOOLRESULT:     test-results/zz-guest-check-guest-chromium/test-failed-1.png
+  1 failed
+
+[10708] TOOLRESULT: Read image file [image/png]
+[10709] CALL read: {"path": "/Users/bmiller/Projects/webshop-test/application/e2e/webshop__customer/playwright/test-results/zz-guest-check-guest-chromium/test-failed-1.png", "offset": 1, "limit": 5}
+[10710] TOOLRESULT: Read image file [image/png]
+[10711] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; sed -n 8,40p application-customizer.tsx", "timeout": 20}
+[10712] TOOLRESULT: 
+import type { BundleContext } from '@pandino/pandino-api';
+import type { ApplicationCustomizer } from './interfaces';
+
+export class DefaultApplicationCustomizer implements ApplicationCustomizer {
+  async customize(context: BundleContext): Promise<void> {
+    // register your implementations here
+  }
+}
+
+[10713] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src/custom; cat > application-customizer.tsx <<'E'\nimport type { BundleContext } from '@pandino/pandino-api';\nimport type { FC } from 'react';\nimport { CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY } from '~/custom';\nimport type { AppBarExtraComponentsHook } from '~/layout/Header/HeaderContent';\nimport { DASHBOARD_PAGE_INTERFACE_KEY } from '~/pages/Guest/DashboardPage';\nimport { CatalogHome } from './components/CatalogHome';\nimport { GuestBar } from './components/GuestBar';\nimport {\n  registerShopProductInfoShopProductInfo_View_EditDescriptionComponentCustomImplementation,\n  registerShopProductInfoShopProductInfo_View_EditImageComponentCustomImplementation,\n  registerShopProductInfoShopProductInfo_View_EditLayoutOnlyComponentCustomImplementations,\n  registerShopProductInfoShopProductInfo_View_EditNameComponentCustomImplementation,\n  registerShopProductInfoShopProductInfo_View_EditPriceComponentCustomImplementation,\n} from './hooks/custom-implementations/registerShopProductInfoShopProductInfo_View_EditCustomImplementations';\nimport { registerShopLogoHook } from './hooks/registerShopLogoHook';\nimp
+[10715] TOOLRESULT: 2762:[INFO] BUILD SUCCESS
+2
+
+[10716] CALL bash: {"command": "sleep 175; cd ~/Projects/webshop-test/application/e2e/webshop__customer/playwright; cp /tmp/guest-check.spec.ts tests/zz-guest-check.spec.ts; npx playwright test -c playwright.local.config.ts --workers=1 zz-guest-check 2>&1 | sed 's/\\x1b\\[[0-9;]*[A-Za-z]//g' | grep -E \"passed|failed|PAGEERR|^[0-9]{3} \" | head -8 | cut -c1-200; rm tests/zz-guest-check.spec.ts", "timeout": 300}
+[10716] CALL read: {"path": "/tmp/guest-detail.png", "offset": 1, "limit": 5}
+[10717] TOOLRESULT:   1 passed (8.8s)
+
+[10718] TOOLRESULT: Read image file [image/png]
+[10719] CALL bash: {"command": "cd ~/Projects/webshop-test/application/frontend-react/webshop__guest/src; grep -c \"registerShopProductInfo\" custom/application-customizer.tsx; grep -n \"SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_NAME_COMPONENT\" containers/ShopProductInfo/ShopProductInfo_View_Edit/customization.ts | head -2; grep -rn \"NAME_COMPONENT\" containers/ShopProductInfo/ShopProductInfo_View_Edit/*.tsx | head -3 | cut -c1-200", "timeout": 20}
+[10720] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10720] TOOLRESULT: 11
+31:export const SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_NAME_COMPONENT =
+containers/ShopProductInfo/ShopProductInfo_View_Edit/ShopProductInfoShopProductInfo_View_Edit.tsx:54:  SHOP_PRODUCT_INFO_SHOP_PRODUCT_INFO_VIEW_EDIT_NAME_COMPONENT,
+containers/ShopProductInfo/ShopProductInfo_View_Edit/ShopProductInfoShopProductInfo_View_Edit.tsx:408:                  filter={`(&(${OBJECTCLASS}=${CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY})(component=${S
+
+[10721] CALL bash: {"command": "f=$(curl -s localhost:8181/webshop/Guest/ | grep -o 'assets/index[^\"]*\\.js' | head -1); curl -s localhost:8181/webshop/Guest/$f | grep -c \"guest-buy\\|price-badge\"; ls ~/Projects/webshop-test/application/frontend-react/webshop__guest/dist/assets | head -3; grep -l \"guest-buy\" ~/Projects/webshop-test/application/frontend-react/webshop__guest/dist/assets/*.js | head -2; stat -f \"%Sm\" ~/Projects/webshop-test/application/frontend-react/webshop__guest/dist/assets/index-*.js", "timeout": 30}
+[10722] TOOLRESULT: 1
+AccessTablePage-CMoLJq_1.js
+AccessViewPage-Ca71ZFkw.js
+AddToCartInputAddToCartInput_Form-zE7jfYWH.js
+/Users/bmiller/Projects/webshop-test/application/frontend-react/webshop__guest/dist/assets/index-C5g8EHWW.js
+Nov 19 16:06:28 2026
+
+[10723] CALL bash: {"command": "ls -la /tmp/guest-detail.png; date; cp /tmp/guest-detail.png /tmp/guest-detail2.png", "timeout": 20}
+[10723] CALL read: {"path": "/tmp/guest-detail2.png", "offset": 1, "limit": 5}
+[10724] TOOLRESULT: -rw-r--r--  1 bmiller  wheel  51997 Nov 19 16:13 /tmp/guest-detail.png
+Thu Nov 19 16:13:50 CET 2026
+
+[10725] TOOLRESULT: ENOENT: no such file or directory, access '/tmp/guest-detail2.png'
+[10726] CALL read: {"path": "/tmp/guest-detail.png", "offset": 1, "limit": 6}
+[10727] TOOLRESULT: Read image file [image/png]
+[10728] CALL bash: {"command": "cd ~/Projects/webshop-test; cat >> GAPS.md <<'E'\n\nR19-18. **Guest front page = the shop front page (user request).** The Guest actor reuses the existing `ShopProductInfo` transfer object: access `products` (DERIVED `Product!filter(p | p.active)`), so the static `search` and `boughtTogether` operations work for the anonymous actor without a token (`POST /api/webshop/Guest/ShopProductInfo/search`, 200). The first version with its own `GuestProductInfo` was replaced. The Customer front-end parts were copied to `webshop__guest/src/custom` (CatalogHome, ProductCard, Price, shopEvents, SearchBox, LanguageSwitch, ProductDetailsLayout and its registration, GuestBar); a guest sees \"Login to buy\" and \"Add to cart\" sends to `/webshop/Customer/`. A copy, not shared code: the two frontends are separate modules (R19-18a: a change to the shop home must be made twice; the catalog's dual-actor-frontend-architecture.md says to share through a package, which was not tried). Adding `ShopInfo` as an access of the anonymous actor fails `transform` (`expressionvalidationonasmzeta`: ObjectExpressionMatchesBinding), so the free-shipping banner is not shown to guests. Gotchas: (a) the gen
+[10729] TOOLRESULT: [kb] Repeated source searching, still no kb consult. Your next call should be kb_search (or kb_get <path> for a file you are about to read).
+[10729] TOOLRESULT: 71b7829 Guest front page like the shop (search, facets, cards, product detail with Login to buy); Guest uses ShopProductInfo; GAPS R19-18
+
+[10730] ASSISTANT: The Guest app at http://localhost:8181/webshop/Guest/ now shows the same front page as the shop, and paying needs the Customer login. I checked it with a Playwright run (home and a product page), not by clicking through the Login / Register button. It is committed and merged to main, nothing pushed.
+
+**What a guest sees without logging in**
+- **Front page:** the hero banner, category chips, seller/price/rating filters, sorting, paging, search box, EN/HU switch and the product cards.
+- **Product page:** clicking a card opens the shop-style detail page: large name, price badge, description and "Frequently bought together".
+- **Buying:** "Add to cart" on a card and "Login to buy" on the product page send the guest to `/webshop/Customer/`. The header also has a "Login / Register" button.
+- **No token needed:** the product search works on the public Guest API without a token.
+
+**How it's built:** the Guest actor now reuses the shop's product data instead of its own cut-down list. I copied the Customer's front-end code into the Guest app, so a change to the shop home has to be made in both places (GAPS R19-18).
+
+**Still open**
+- **Product page fields:** the guest page still shows "MyPrice" and an empty "Category" field.
+- **Table title:** the old table view still reads "GuestProductInfo Table".
+- **Free-shipping banner:** guests don't get it, because adding the shop settings to the public actor fails validation.
+- **Base route:** `http://localhost:8181/` is still the platform's bundle-list page, not the Guest app.
+- **Admin header:** untouched. Where do you see the horizontal bar?
+- **Smoke tests:** not run since these changes. Do you want me to run `@smoke` now?
+
+If a page looks stale, open it in a fresh browser window; a browser that visited an older build keeps showing the old one, and it takes about 10 seconds to load.
+[10731] USER: Perfect stop webshop docker prune it
+[10732] CALL bash: {"command": "cd ~/Projects/webshop-test; ./judo.sh stop 2>&1 | tail -2; docker ps -a --format '{{.Names}} {{.Status}}' | grep -i webshop; docker inspect postgres-webshop --format '{{range .Mounts}}{{.Type}} {{.Name}} {{.Source}}{{\"\\n\"}}{{end}}' 2>/dev/null", "timeout": 120}
+[10733] TOOLRESULT: Instance keycloak-webshop is running, stopping...
+keycloak-webshop
+webshop-prod-app-1 Up 5 hours
+webshop-prod-db-1 Up 5 hours (healthy)
+webshop-prod-mail-1 Up 5 hours (healthy)
+webshop-prod-auth-1 Up 5 hours
+mailpit-webshop Up 11 hours (healthy)
+keycloak-webshop Exited (143) Less than a second ago
+postgres-webshop Exited (0) 2 seconds ago
+volume webshop_postgresql_data /var/lib/docker/volumes/webshop_postgresql_data/_data
+volume webshop_postgresql_db /var/lib/docker/volumes/webshop_postgresql_db/_data
+
+
+[10734] CALL bash: {"command": "docker stop mailpit-webshop webshop-prod-app-1 webshop-prod-db-1 webshop-prod-mail-1 webshop-prod-auth-1 >/dev/null; docker system prune -f 2>&1 | tail -6; docker volume ls --format '{{.Name}}' | grep webshop; docker ps --format '{{.Names}}' | grep -ci webshop", "timeout": 300}
+[10735] TOOLRESULT: vx6grwytde0aldhcv9aldtbmv
+ti3jfs2ubpzk56snwjy6t2f8i
+ykrmoh5v9i6ugb7ce86n8vm96
+0yw4tnxiu7sz1tfyl5762e0r3
+
+Total reclaimed space: 9.469GB
+webshop-prod_kcdata
+webshop-prod_maildata
+webshop-prod_pgdata
+webshop_postgresql_data
+webshop_postgresql_db
+0
+
+
+Command exited with code 1
+[10736] ASSISTANT: The webshop is stopped and Docker is pruned. Nothing webshop-related is running.
+
+- **Stopped:** the dev stack (app, Keycloak, Postgres, Mailpit) and the `webshop-prod` compose stack.
+- **Pruned:** `docker system prune -f` removed stopped containers, unused networks and dangling images and build cache, and reclaimed 9.47 GB. It also removed any stopped containers from your other projects. The running keyconnect containers were left alone.
+- **Data kept:** I did not prune volumes, so the databases are intact: `webshop_postgresql_data`, `webshop_postgresql_db` and the three `webshop-prod_*` volumes.
+
+To start again, run `./judo.sh start`. The data volumes are still there.

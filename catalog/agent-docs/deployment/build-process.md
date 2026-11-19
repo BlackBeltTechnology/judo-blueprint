@@ -300,7 +300,7 @@ The app realm's name is `ActorType.realm` emitted verbatim by `asm2keycloak` as 
 | `generate-root` (`-i`) | Regenerate the application root structure (`-DgenerateRoot`) |
 | `dump` | Dump PostgreSQL data before clearing and starting |
 | `import` (`-dn <name>`) | Import a dump; without a name the last one is loaded |
-| `schema-upgrade` | Persistent PostgreSQL only: generates the difference against the running database and applies it |
+| `schema-upgrade` | Persistent PostgreSQL only: generates the difference against the running database and applies it. The schema module path is set with `schema_dir` (default `model_dir`) in `judo.properties` or the environment. See [schema evolution](schema-evolution.md#when-no-manual-step-is-needed). |
 | `build` | Build the project (options below) |
 | `reckless` | Build and run as fast as possible (skips validation and Docker) |
 | `start` | Run the application with PostgreSQL and Keycloak |

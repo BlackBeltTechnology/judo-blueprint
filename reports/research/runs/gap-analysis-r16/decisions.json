@@ -1,0 +1,881 @@
+[
+{
+"id": "c11-31",
+"type": "decision",
+"round": "R16",
+"functions": [
+"F71",
+"F72",
+"F73",
+"F74",
+"F75"
+],
+"what": "Before the Round 16 model change the builder copied the old RDBMS model (base5-rdbms_postgresql.model) and ran pg_dump to dump-before-r16.sql (8.3 MB) so that the existing data could be migrated, not wiped.",
+"why": "schema-upgrade applies generate and execute in one step, so no hand-written backfill can be inserted; the documented route is generate, backfill, then execute.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"agent-docs/deployment/schema-evolution.md",
+"agent-docs/deployment/build-process.md"
+],
+"gaps_ref": "R12-1",
+"evidence": [
+"session:L6211",
+"session:L6214",
+"session:L6310"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c11-32",
+"type": "decision",
+"round": "R16",
+"functions": [],
+"what": "The review round (no code changes) discarded the unsaved model edits left by the aborted build with judo-cli discard --force, rather than saving them, so that the model matched e35dddd.",
+"why": "The review round forbids model or code changes; the dirty edits were partial and unreviewed.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L6226",
+"session:L6230",
+"session:L6231",
+"session:L6232"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c11-33",
+"type": "decision",
+"round": "R16",
+"functions": [],
+"what": "Customer rows are provisioned by a hand-written CustomerProvisioningInterceptor on the first customer-client login, and Admin rows are not created automatically. The reason given is the catalog's gotcha that the runtime does lookup only, not first-login insert.",
+"why": "The access-point and authentication pages state that managed/claim actors are looked up and a missing row raises AUTHENTICATED_ENTITY_NOT_FOUND; the interceptor must insert the row.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"agent-docs/model/esm_metamodel/accesspoint.agent.md",
+"agent-docs/backend/authentication-guide.md",
+"best-practices/backend/keycloak-jit-user-provisioning.md"
+],
+"gaps_ref": "R7-3",
+"evidence": [
+"session:L6138",
+"session:L6291",
+"session:L6292",
+"session:L6294",
+"session:L6306"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c12-18",
+"type": "decision",
+"round": "R16",
+"functions": [
+"F74"
+],
+"what": "Used the documented route schema_dir=application ./judo.sh schema-upgrade after a pg_dump backup. It finished in 36 s, added the new columns and a stock reservation table, and kept 308 orders. This route failed in R6 and R10 according to GAPS; it worked this round.",
+"why": "The catalog now documents the route (schema-evolution.md 'When No Manual Step Is Needed'); the builder confirmed it on the running database.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"agent-docs/deployment/schema-evolution.md"
+],
+"gaps_ref": "R16-13",
+"evidence": [
+"session:L6806",
+"session:L6807",
+"session:L6808",
+"session:L6879",
+"session:L6880"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c12-24",
+"type": "decision",
+"round": "R16",
+"functions": [
+"F72"
+],
+"what": "The payment webhook is a static operation on the Admin actor (hidden access 'gateway'), called with a bearer token of a technical admin user plus an HMAC signature. An anonymous SYSTEM actor was tried first but made the admin build fail (c12-15).",
+"why": "A truly anonymous public endpoint was the catalog's answer, but the third actor broke the build; the Admin route was the least-bad documented option.",
+"kind": "catalog-gap",
+"workaround": "Admin access with DERIVED 0..1 getter ShopConfig!any(); webhook route POST /api/webshop/Admin/PaymentGatewayInfo/receive.",
+"catalog_paths": [
+"best-practices/model/token-based-verification-workflow.md",
+"agent-docs/model/esm_metamodel/accesspoint.md"
+],
+"gaps_ref": "R16-4",
+"evidence": [
+"session:L6777",
+"session:L6778",
+"session:L6796",
+"session:L6824",
+"session:L6862"
+],
+"proposed": "add-catalog",
+"proposed_target": "agent-docs/model/esm_metamodel/accesspoint.md (anonymous actor and static operations)",
+"confidence": "high"
+},
+{
+"id": "c12-30",
+"type": "decision",
+"round": "R16",
+"functions": [
+"F71"
+],
+"what": "The payment provider is an enum on the existing shop settings row (ShopConfig.paymentProvider: STUB_SUCCEED, STUB_FAIL, STUB_TIMEOUT, HTTP). PaymentService picks the adapter from that setting; deployment values come from system properties or environment variables.",
+"why": "The catalog gives the adapter pattern but no recipe for a provider an admin can switch at runtime.",
+"kind": "catalog-gap",
+"workaround": "Settings row enum plus PaymentAdapter interface with stub and HTTP adapters.",
+"catalog_paths": [
+"best-practices/backend/external-api-adapter-pattern.md",
+"model-blueprints/external-api-adapter-provider-pattern/backend.md"
+],
+"gaps_ref": "R16-7",
+"evidence": [
+"session:L6548",
+"session:L6679",
+"session:L6683"
+],
+"proposed": "add-catalog",
+"proposed_target": "best-practices/backend/external-api-adapter-pattern.md",
+"confidence": "medium"
+},
+{
+"id": "c12-31",
+"type": "decision",
+"round": "R16",
+"functions": [
+"F73"
+],
+"what": "The clock is a parameter, not a global: ReservationService.releaseExpired(LocalDateTime now). The admin button 'Release expired reservations' takes a Minutes input that moves the clock for that run, so the browser test does not sleep.",
+"why": "BusinessClock is read once at class load and cannot be changed by a browser test; the catalog has no page for a clock a running app can move.",
+"kind": "catalog-gap",
+"workaround": "Scheduled job passes BusinessClock.now(); tests pass any date.",
+"catalog_paths": [
+"best-practices/backend/injectable-business-clock.md"
+],
+"gaps_ref": "R16-8",
+"evidence": [
+"session:L6805",
+"session:L6988"
+],
+"proposed": "add-catalog",
+"proposed_target": "best-practices/backend/injectable-business-clock.md",
+"confidence": "medium"
+},
+{
+"id": "c13-24",
+"type": "decision",
+"round": "R16U",
+"functions": [],
+"what": "Customer lists become card containers: 22 cards configuration hooks registered (product list, orders, returns, returnable items, notifications, addresses, company members and invitations, quotes, sub-orders, wallet gift cards and points, seller entries, reviews, exchange rates), with a shared ShopCard, status colour map, ListBars toolbar and ProductCard at 4:3 image ratio.",
+"why": "One consistent look across the customer app, and generated paging and data loading stay in the generated container.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/cards-container-configuration-hook/BLUEPRINT.md",
+"catalog/model-blueprints/custom-notification-card-inbox/BLUEPRINT.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7369",
+"session:L7371",
+"session:L7376",
+"session:L7382",
+"session:L7388",
+"session:L7390"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c13-25",
+"type": "decision",
+"round": "R16U",
+"functions": [],
+"what": "Model changes for R16U: representationComponent=card on about 12 TransferObjectTables (orders, returns, returnable items, notifications, addresses, quotes, seller products, sub-orders, exchange rates, admin orders, admin returns, admin quotes) and on relation tables (wallet gift cards and points, and others), rowsPerPage 12, and customImplementation=true on 93 view fields; validate then save, then generate and build -f -i.",
+"why": "Cards need the table representation set, and the custom elements need the model mark before generation.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/ui.md",
+"catalog/agent-docs/model/ui-authoring-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7284",
+"session:L7287",
+"session:L7288",
+"session:L7445",
+"session:L7446",
+"session:L7447"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c13-26",
+"type": "decision",
+"round": "R16U",
+"functions": [],
+"what": "Detail screens (orders, quotes, sub-orders, returns, wallet, seller, company, notifications) get one summary layout (DetailLayout with detailSpecs) rendered by the first custom element of each view; the other fields render nothing, and a GlobalStyles rule hides their empty grid cells.",
+"why": "Keeps the generated view page (title, back, actions, relation cards) and gives a summary header with sections.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": "R16U-7",
+"evidence": [
+"session:L7457",
+"session:L7459",
+"session:L7461",
+"session:L7476"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c14-12",
+"type": "decision",
+"round": "R16U",
+"functions": [],
+"what": "Customer lists are cards through the cards container hook; the detail views are custom visual elements with a summary and sections; relation lists are custom RelationCards instead of the generated relation container.",
+"why": "The generated relation cards container cannot refresh (R16U-2), so a custom element loads its own rows.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/cards-container-configuration-hook/BLUEPRINT.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md",
+"catalog/model-blueprints/custom-post-detail-views/BLUEPRINT.md",
+"catalog/model-blueprints/custom-statistics-dashboard/BLUEPRINT.md"
+],
+"gaps_ref": "R16U-2",
+"evidence": [
+"session:L7539",
+"session:L7582",
+"session:L8184",
+"session:L8367"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c14-27",
+"type": "decision",
+"round": "R16U",
+"functions": [],
+"what": "The model's DataColumn sort replaces the UI-side sort hack in ListBars: sort DESC on orderedAt of the orders, requestedAt of quotes and returns, and name ASC for products.",
+"why": "Model default sort is the documented place; the UI hack applied only on first load.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/ui.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7991",
+"session:L7993",
+"session:L7994"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c14-33",
+"type": "decision",
+"round": "R16U",
+"functions": [
+"F42",
+"F43"
+],
+"what": "The shop card grid uses sm 6 (two columns on a tablet) instead of sm 12, because the builder found the catalog example gave one 700 px card at sm. The catalog grid example shows xs 12, md 6, lg 4 with no sm.",
+"why": "Visual result on the 768 px screenshot.",
+"kind": "catalog-gap",
+"workaround": "CARD_CELL changed in ShopCard.tsx for customer and admin.",
+"catalog_paths": [
+"catalog/model-blueprints/cards-container-configuration-hook/frontend.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8304"
+],
+"proposed": "modify-catalog",
+"proposed_target": "catalog/model-blueprints/cards-container-configuration-hook/frontend.md",
+"confidence": "low"
+},
+{
+"id": "c15-19",
+"type": "decision",
+"round": "R16U",
+"functions": [],
+"what": "Profile form, all operation input forms, the shop settings view and admin plain CRUD tables stay generated; only lists and detail views were converted.",
+"why": "Editing forms need the generated validation and error messages; plain CRUD tables are not in the custom UI rule.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/cards-container-configuration-hook/BLUEPRINT.md"
+],
+"gaps_ref": "R16U-12",
+"evidence": [
+"session:L8567",
+"session:L8620"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c15-42",
+"type": "decision",
+"round": "R17",
+"functions": [
+"F73",
+"F76",
+"F77",
+"F78",
+"F79"
+],
+"what": "The scheduled work is an OSGi scheduler (ShopScheduler and ReservationJob, own executor) that calls modeled static operations (ShopJobs: releaseExpired, syncCarrier, sendMails, remindCarts, processImport) through the Dispatcher, so each runs in a transaction. The admin buttons run the same work with an optional minutes input, so tests never sleep.",
+"why": "Platform has no scheduler; the agent-docs Scheduled Work section says to use Dispatcher.callOperation for modeled ops.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/platform-behavior-reference.agent.md",
+"catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md",
+"catalog/best-practices/backend/quartz-scheduled-job.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8653",
+"session:L8732",
+"session:L8715",
+"session:L8858",
+"session:L9032"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c15-43",
+"type": "decision",
+"round": "R17",
+"functions": [
+"F77"
+],
+"what": "Order mails are sent by an OrderMails post-call trigger from each operation that changes an order, not by interceptors, because interceptors do not run around custom operations.",
+"why": "catalog platform-email-template-service says interceptors fire only on built-in operations.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/platform-email-template-service/backend.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8708",
+"session:L8709",
+"session:L8885"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c15-44",
+"type": "decision",
+"round": "R17",
+"functions": [
+"F76",
+"F77"
+],
+"what": "Carrier and mail are stubs behind one interface each, switched by shop settings (STUB_SUCCEED, STUB_FAIL, STUB_TIMEOUT). The timeout stub throws at once and nothing sleeps.",
+"why": "Pattern from the external API adapter practice; tests need succeed, fail and timeout.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/external-api-adapter-pattern.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8872",
+"session:L8874"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c15-45",
+"type": "decision",
+"round": "R17",
+"functions": [
+"F77"
+],
+"what": "Local mail: a Mailpit container on port 1025 and judo-karaf.env SMTP variables; JUDO_PLATFORM_LOG_SMTP_SERVER set to false.",
+"why": "Catalog says for local testing point SMTP at localhost:1025 in judo-karaf.env.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/application-config.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8689",
+"session:L8835"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c15-46",
+"type": "decision",
+"round": "R17",
+"functions": [
+"F78"
+],
+"what": "Adding to the cart resets the reminder marker (cartReminderSentAt) so that a new quiet period starts; the reminder job sends at most one mail per cart.",
+"why": "A reminder belongs to the old cart content.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8891"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c16-17",
+"type": "decision",
+"round": "R17",
+"functions": [
+"F76"
+],
+"what": "Land raw carrier status in a staging entity first, then process only new statuses.",
+"why": "Catalog pattern for external system data.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/external-system-staging-entity.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9200"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c16-18",
+"type": "decision",
+"round": "R17",
+"functions": [
+"F79"
+],
+"what": "Own limit: cart touch only on add-to-cart and checkout; quantity edit and remove-line not treated as touch in this round.",
+"why": "Time; the interceptor route was not built.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/interceptors.md"
+],
+"gaps_ref": "R17-10",
+"evidence": [
+"session:L9250",
+"gaps:R17-10"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c16-21",
+"type": "decision",
+"round": "R18",
+"functions": [
+"F80"
+],
+"what": "Seed the 50 000 products directly into PostgreSQL instead of through the API.",
+"why": "Speed of the volume seed; no catalog entry used.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L9425"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c16-23",
+"type": "decision",
+"round": "R18",
+"functions": [
+"F81"
+],
+"what": "Facet counts and aggregates use native SQL in one isolated service (CatalogSearch), because the DAO has no aggregate method.",
+"why": "Catalog says no DAO aggregate; native SQL only via JDBC DataSource.",
+"kind": "platform-limit",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/data-access-guide.agent.md"
+],
+"gaps_ref": "R18-4",
+"evidence": [
+"session:L9419",
+"session:L9421",
+"gaps:R18-4"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c16-25",
+"type": "decision",
+"round": "R18",
+"functions": [
+"F83"
+],
+"what": "Versioning is a convention: each version a full copy grouped by a container, one approved at a time.",
+"why": "Catalog says the platform has no versioning feature.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/product-versioning-container.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9314",
+"session:L9311"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c16-27",
+"type": "decision",
+"round": "R18",
+"functions": [
+"F84"
+],
+"what": "GDPR delete repoints kept references to one placeholder user, then hard-deletes the real user.",
+"why": "Catalog pattern: keep authored content, drop the person.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/gdpr-placeholder-user-on-delete.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9311",
+"session:L9313"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c17-32",
+"type": "decision",
+"round": "R19",
+"functions": [
+"F86"
+],
+"what": "Reports: aggregation in native SQL in a custom service (ReportService), one answer for table, chart and PDF; PDF from MarkdownPdf.",
+"why": "DAO cannot group; the catalog documents native SQL from a custom service.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/data-access-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9958",
+"session:L9901"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c17-33",
+"type": "decision",
+"round": "R19",
+"functions": [
+"F88"
+],
+"what": "Push built as a stub provider switched by a shop setting; browser polls every 4 s; real Web Push not built.",
+"why": "No push service available in the build; the blueprint names the pipeline.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/push-notification-system"
+],
+"gaps_ref": "R19-1..11",
+"evidence": [
+"session:L9998",
+"session:L10143"
+],
+"proposed": "one-off",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c17-34",
+"type": "decision",
+"round": "R19",
+"functions": [
+"F89"
+],
+"what": "Backfill changeset (06_updateDataAfterIncremental) hand-written inside the generated migration folder; the orchestrator rule says never patch generated files, while the best practice says write it in the generated version folder.",
+"why": "Catalog says the generator overwrites the output folder except review files; survival of a hand-written changeset is marked verify.",
+"kind": "catalog-gap",
+"workaround": "Changeset kept; re-check after each regeneration.",
+"catalog_paths": [
+"catalog/best-practices/backend/migration-backfill-default-where-null.md",
+"catalog/agent-docs/deployment/schema-evolution.agent.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9897",
+"session:L10016",
+"session:L10018"
+],
+"proposed": "modify-catalog",
+"proposed_target": "catalog/best-practices/backend/migration-backfill-default-where-null.md",
+"confidence": "medium"
+},
+{
+"id": "c17-38",
+"type": "decision",
+"round": "R19",
+"functions": [
+"F90"
+],
+"what": "Compose app container runs the Karaf offline distribution of this build (copied into deploy/karaf), not a Docker image, because build -d failed.",
+"why": "Image build did not work (see c17-37).",
+"kind": "cli-tool",
+"workaround": "deploy/up.sh unpacks the distribution.",
+"catalog_paths": [
+"catalog/agent-docs/deployment/production.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L10031",
+"session:L10053",
+"session:L10055",
+"session:L10167"
+],
+"proposed": "one-off",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c18-26",
+"type": "decision",
+"round": "R19",
+"functions": [],
+"what": "Put the Guest actor first in the model (create --index 0) so the generated Admin dialogs do not duplicate imports.",
+"why": "Avoid the Zeta per-actor order bug; catalog known-issue entry gives this workaround.",
+"kind": "none",
+"workaround": "Guest created with --index 0; Admin build passed.",
+"catalog_paths": [
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": "R19-17",
+"evidence": [
+"session:L10473",
+"session:L10476",
+"session:L10580"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c18-27",
+"type": "decision",
+"round": "R19",
+"functions": [],
+"what": "Interim public landing on Customer: set supportGuestAccess=true and register a GuestPage (Trail Shop title and Login / Register button), while the Guest actor was blocked.",
+"why": "Catalog Guest Page entry gives the documented way; user had asked for a public actor, so this is a stop-gap.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": "R19-16",
+"evidence": [
+"session:L10423",
+"session:L10425",
+"session:L10427",
+"session:L10457"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c18-28",
+"type": "decision",
+"round": "R19",
+"functions": [],
+"what": "Admin home: register AdminHome as the DashboardPage visual element, which redirects / to the Dashboard view, instead of editing generated routes.",
+"why": "Catalog Dashboard Page entry: an empty dashboard renders the DashboardPage visual element; Customer already does the same with CatalogHome.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": "R19-14",
+"evidence": [
+"session:L10325",
+"session:L10320",
+"session:L10455"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c18-29",
+"type": "decision",
+"round": "R19",
+"functions": [],
+"what": "Give ImportRunInfo.undo its own output TO (UndoMessage) to clear the duplicate import, and change UndoCustomImplementation to return UndoMessage.",
+"why": "Builder read the shared output type as the trigger; catalog says a shared output alone did not reproduce it, so this is a workaround with an unproven cause.",
+"kind": "platform-bug",
+"workaround": "Model change plus Java change; build -i passed; commit e4897a7.",
+"catalog_paths": [
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": "R19-15",
+"evidence": [
+"session:L10380",
+"session:L10397",
+"session:L10402"
+],
+"proposed": "platform-ticket",
+"proposed_target": "judo-ui-react generator (UiPageHelper.getApiImportsForPage)",
+"confidence": "medium"
+},
+{
+"id": "c18-30",
+"type": "decision",
+"round": "R19",
+"functions": [],
+"what": "Guest products access is read-only and derived: DERIVED getter webshop::Product!filter(p | p.active) on GuestProductInfo (name, sku, price, unit, description).",
+"why": "Show only active products to the public; keep the public TO minimal.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L10404",
+"session:L10407"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c19-04",
+"type": "decision",
+"round": "R19",
+"functions": [
+"F81"
+],
+"what": "The Guest actor reuses the ShopProductInfo transfer object through an access instead of its own GuestProductInfo transfer object.",
+"why": "The first version with GuestProductInfo was replaced: the shop search and boughtTogether operations then work for the anonymous actor with no token (POST /api/webshop/Guest/ShopProductInfo/search returned 200).",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md"
+],
+"gaps_ref": "R19-18",
+"evidence": [
+"session:L10600",
+"session:L10633",
+"session:L10728"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c19-05",
+"type": "decision",
+"round": "R19",
+"functions": [],
+"what": "Customer front-end parts were copied into the Guest module instead of shared through a package, so a change to the shop home must be made in two places.",
+"why": "The two frontends are separate modules. The builder says the catalog recommends sharing through a package but did not try it.",
+"kind": "none",
+"workaround": "Copy, with a note in GAPS (R19-18a).",
+"catalog_paths": [
+"catalog/best-practices/frontend/dual-actor-frontend-architecture.md",
+"catalog/best-practices/frontend/structure-cross-actor-shared-overrides.md"
+],
+"gaps_ref": "R19-18",
+"evidence": [
+"session:L10612",
+"session:L10728"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c19-06",
+"type": "decision",
+"round": "R19",
+"functions": [
+"F17",
+"F20"
+],
+"what": "On the Guest app, Add to cart and Login to buy do not put items in a cart. They send the visitor to /webshop/Customer/ to sign in.",
+"why": "A guest cannot buy; payment needs the Customer login.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R19-18",
+"evidence": [
+"session:L10614",
+"session:L10704"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+}
+]

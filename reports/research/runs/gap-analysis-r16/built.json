@@ -1,0 +1,1227 @@
+[
+{
+"id": "c12-38",
+"type": "built",
+"round": "R16",
+"functions": [
+"F71"
+],
+"what": "Payment provider adapter: PaymentAdapter interface with StubPaymentAdapter and HttpPaymentAdapter, PaymentService picks the adapter from the shop setting; provider enum on ShopConfig; failure shown as a readable payment error on the order. Integration and smoke tests passed for the stub decline path.",
+"why": "",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"best-practices/backend/external-api-adapter-pattern.md",
+"model-blueprints/external-api-adapter-provider-pattern/backend.md"
+],
+"gaps_ref": "R16-7",
+"evidence": [
+"session:L6679",
+"session:L6683",
+"session:L6548",
+"session:L6998"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c12-39",
+"type": "built",
+"round": "R16",
+"functions": [
+"F72"
+],
+"what": "Payment webhook: static operation PaymentGatewayInfo.receive on the Admin actor with a bearer token; HMAC-SHA256 check of eventId|orderNumber|status; idempotency by event id stored on the order; PAID transition in PaymentService. Unknown order gives 422 UNKNOWN_ORDER.",
+"why": "",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"best-practices/model/token-based-verification-workflow.md",
+"agent-docs/model/esm_metamodel/accesspoint.md",
+"agent-docs/model/esm_metamodel/operation.md"
+],
+"gaps_ref": "R16-4",
+"evidence": [
+"session:L6796",
+"session:L6838",
+"session:L6882",
+"session:L6846"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c12-40",
+"type": "built",
+"round": "R16",
+"functions": [
+"F73"
+],
+"what": "Stock reservation: checkout creates StockReservation rows for 15 minutes; ReservationJob (OSGi component, own executor) and the admin button 'Release expired reservations' call ShopJobs.releaseExpired through the same service; the admin button takes a minutes input for the clock.",
+"why": "",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"model-blueprints/reservation-booking-entity/BLUEPRINT.md",
+"model-blueprints/osgi-scheduled-background-jobs/backend.md",
+"best-practices/backend/injectable-business-clock.md",
+"agent-docs/backend/platform-behavior-reference.md"
+],
+"gaps_ref": "R16-6",
+"evidence": [
+"session:L6800",
+"session:L6805",
+"session:L6838",
+"session:L6988",
+"session:L7036"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c12-41",
+"type": "built",
+"round": "R16",
+"functions": [
+"F74"
+],
+"what": "Last-item stock take: StockService.take(product, quantity) writes with the product version and retries once on a stale version when enough stock remains; otherwise the buyer gets NOT_ENOUGH_STOCK. Integration tests (22 Level9a, 35 across order-tests) pass; the parallel two-context browser test was not seen in this chunk.",
+"why": "",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"agent-docs/backend/platform-behavior-reference.md",
+"agent-docs/backend/data-access-guide.md"
+],
+"gaps_ref": "R16-14",
+"evidence": [
+"session:L6891",
+"session:L6893",
+"session:L6901",
+"session:L6908"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c12-42",
+"type": "built",
+"round": "R16",
+"functions": [
+"R16-R2"
+],
+"what": "Fix of review R16-R2: the checkout stock loop in CheckoutCustomImplementation no longer does an unguarded DAO update; it calls StockService.take, so a concurrent loser gets a business refusal instead of a 500.",
+"why": "",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"agent-docs/backend/platform-behavior-reference.md",
+"agent-docs/backend/interceptors.md"
+],
+"gaps_ref": "R16-14",
+"evidence": [
+"session:L6800",
+"session:L6801",
+"session:L6802"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c12-43",
+"type": "built",
+"round": "R16",
+"functions": [
+"F75"
+],
+"what": "Two admins, one product: ProductConflictInterceptor (built-in product update) takes the version from the payload or from the signed identifier and refuses a stale save with 422 CONFLICT and a readable message. Checked by REST (second save 422, first 200) and by a browser test (conflict message; repeated change saved). Screenshots in checks/F75.",
+"why": "",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"agent-docs/backend/interceptors.md",
+"agent-docs/backend/platform-behavior-reference.md"
+],
+"gaps_ref": "R16-9",
+"evidence": [
+"session:L6931",
+"session:L6981",
+"session:L7029",
+"session:L7036",
+"session:L7045"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c13-27",
+"type": "built",
+"round": "R16",
+"functions": [
+"F71"
+],
+"what": "Payment provider: PaymentAdapter with stub (succeed, fail, timeout without sleeping) and HTTP adapter, chosen by the Shop settings Payment provider setting; Pay now on the order; a decline or timeout leaves the order NEW with a Payment problem and a history row.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/external-api-adapter-pattern.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7063",
+"session:L7192"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c13-28",
+"type": "built",
+"round": "R16",
+"functions": [
+"F72"
+],
+"what": "Payment webhook as static operation PaymentGatewayInfo.receive with HMAC signature; idempotency key is the event id stored on the order; repeated events write no second history row. Called with the Admin bearer token (see c13-01).",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/token-based-verification-workflow.md"
+],
+"gaps_ref": "R16-4",
+"evidence": [
+"session:L7192",
+"session:L7061"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c13-29",
+"type": "built",
+"round": "R16",
+"functions": [
+"F73"
+],
+"what": "Stock reservation at checkout for the Stock reservation (minutes) setting (15 by default); paying consumes the reservation; an unpaid order is cancelled and its stock returned; clock passed as a parameter; executor job every minute; admin button Release expired reservations with a Minutes input.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/reservation-booking-entity/BLUEPRINT.md",
+"catalog/model-blueprints/reservation-booking-entity/backend.md"
+],
+"gaps_ref": "R16-6",
+"evidence": [
+"session:L7050",
+"session:L7056",
+"session:L7192"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c13-30",
+"type": "built",
+"round": "R16",
+"functions": [
+"F74",
+"R16-R2"
+],
+"what": "StockService: one write with identifier, version, stock and soldUnits only; on a stale version it re-reads, repeats if enough stock is left, else NOT_ENOUGH_STOCK with the real stock. Checkout uses it, which removes the 500 on concurrent update (R16-R2) and gives the last-item race fix.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/platform-behavior-reference.md",
+"catalog/agent-docs/backend/data-access-guide.md",
+"catalog/agent-docs/backend/custom-operations.agent.md",
+"catalog/best-practices/backend/safe-failure-pattern.md"
+],
+"gaps_ref": "R16-14",
+"evidence": [
+"session:L7063",
+"session:L7192"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c13-31",
+"type": "built",
+"round": "R16",
+"functions": [
+"F75"
+],
+"what": "ProductConflictInterceptor refuses a stale product save with a readable 422 CONFLICT (two admins case).",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R16-9",
+"evidence": [
+"session:L7192",
+"session:L7066"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c13-32",
+"type": "built",
+"round": "R16U",
+"functions": [],
+"what": "Shop home and product list: shared ProductCard with ImagePlaceholder (4:3), CatalogHome grid uses it; ProductListCard registered for the Products list container; both use the same CARD_CELL grid (1, 2, 3 columns).",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/cards-container-configuration-hook/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7369",
+"session:L7376",
+"session:L7378",
+"session:L7390"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c13-33",
+"type": "built",
+"round": "R16U",
+"functions": [],
+"what": "Admin dashboard custom elements found in the model (DashboardInfo_View_Edit ordersToday and revenueToday) already exist in webshop__admin/src/custom; the builder read them as the start point for an admin figures card. No admin card converted within this chunk.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L7334",
+"session:L7335",
+"session:L7441"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "low"
+},
+{
+"id": "c14-37",
+"type": "built",
+"round": "R16U",
+"functions": [
+"F16"
+],
+"what": "Addresses: the customer My addresses list is card-based; the profile form and its address table stay generated (create, update, delete).",
+"why": "Round 16U screen work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/cards-container-configuration-hook/BLUEPRINT.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": "R16U-12",
+"evidence": [
+"session:L7706",
+"session:L7710",
+"session:L8314"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c14-38",
+"type": "built",
+"round": "R16U",
+"functions": [
+"F41"
+],
+"what": "Wishlist: custom WishlistItems element for the items of the wishlist (name, price, Move to cart, Remove).",
+"why": "Round 16U screen work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7529",
+"session:L7530"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c14-39",
+"type": "built",
+"round": "R16U",
+"functions": [
+"F46"
+],
+"what": "Notifications: card inbox with a New badge; opening a card marks it read.",
+"why": "Round 16U screen work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/custom-notification-card-inbox/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7980",
+"session:L7984"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c14-40",
+"type": "built",
+"round": "R16U",
+"functions": [
+"F48"
+],
+"what": "Admin dashboard: KPI tiles for orders and revenue today, best sellers, and work waiting, each tile opens its queue (DashboardOverview.tsx).",
+"why": "Round 16U screen work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/custom-statistics-dashboard/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7572",
+"session:L7575",
+"session:L8081"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c14-41",
+"type": "built",
+"round": "R16U",
+"functions": [
+"F49"
+],
+"what": "Returns: return-request queue as cards with Approve and Reject; customer Return an item and My returns as cards with Request return.",
+"why": "Round 16U screen work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/cards-container-configuration-hook/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7955",
+"session:L7956",
+"session:L8061"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c14-42",
+"type": "built",
+"round": "R16U",
+"functions": [
+"F42",
+"F43"
+],
+"what": "Reviews: product reviews as a custom relation card list on the product detail view.",
+"why": "Round 16U screen work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L7535",
+"session:L7923"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "low"
+},
+{
+"id": "c15-20",
+"type": "built",
+"round": "R16U",
+"functions": [
+"F01",
+"F02",
+"F07",
+"F10",
+"F11",
+"F12",
+"F52"
+],
+"what": "Admin specs fixed (seek helper, idempotent seed, verified typing); 35 of 35 admin tests passed in the last full run.",
+"why": "Spec and seed fixes, no product change.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R16U-17",
+"evidence": [
+"session:L8457",
+"session:L8486",
+"session:L8561"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c15-21",
+"type": "built",
+"round": "R16U",
+"functions": [
+"F23",
+"F48",
+"F49"
+],
+"what": "Customer specs fixed and made tolerant of shared data (F23, F48, F49); final customer runs 78/78 and 77/78, then F23 rerun green.",
+"why": "Test changes only.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R16U-17, R16U-18, R16U-19",
+"evidence": [
+"session:L8504",
+"session:L8535",
+"session:L8626"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c15-48",
+"type": "built",
+"round": "R17",
+"functions": [
+"F76"
+],
+"what": "Carrier integration: CarrierAdapter stubs, CarrierService, CarrierSyncService, CarrierEvent staging entity, SyncCarrier job, shop setting for the carrier provider, tracking number and carrier status on the shipment card (customer). Build passes; screenshots and specs not finished in the chunk.",
+"why": "Built in the R17 Level 9b work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/external-system-staging-entity.md",
+"catalog/best-practices/backend/scheduled-data-sync-pipeline.md",
+"catalog/best-practices/backend/external-api-adapter-pattern.md",
+"catalog/best-practices/backend/quartz-scheduled-job.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8874",
+"session:L8905",
+"session:L8909",
+"session:L8969",
+"session:L9045",
+"session:L9046"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c15-49",
+"type": "built",
+"round": "R17",
+"functions": [
+"F77"
+],
+"what": "Transactional mail: MailService with templates (MailTemplate), OutgoingMail outbox, OrderMails trigger, SendMails job, admin Sent mails and Mail templates screens (cards). Build passes; the F77 smoke spec was still failing at chunk end (mail row error, see the platform mail issue).",
+"why": "Built in the R17 Level 9b work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/platform-email-template-service/BLUEPRINT.md",
+"catalog/best-practices/backend/handlebars-email-template.md",
+"catalog/best-practices/backend/email-service-integration.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8876",
+"session:L8885",
+"session:L8903",
+"session:L9039",
+"session:L9107"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c15-50",
+"type": "built",
+"round": "R17",
+"functions": [
+"F78"
+],
+"what": "Abandoned-cart reminder: CartReminderService, touch() in CartService.add, RemindCarts job, cart reminder settings, mail template for the reminder. Build passes; spec not run in the chunk.",
+"why": "Built in the R17 Level 9b work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8891",
+"session:L8897",
+"session:L8905"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c15-51",
+"type": "built",
+"round": "R17",
+"functions": [
+"F79"
+],
+"what": "Product import: ImportRun and ImportRowError entities, BulkImportInput with CSV and JSON file types (two BinaryTypes), ImportService, MiniJson reader, admin Import runs cards (A8) with Undo, scripts/gen-import-products.py for 5 000 rows with 10 bad rows. Build passes; the 5 000-row run was not done in the chunk.",
+"why": "Built in the R17 Level 9b work.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/bulk-csv-import-export.md",
+"catalog/best-practices/backend/bulk-json-import-export.md",
+"catalog/model-blueprints/bulk-json-upload-entity/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L8811",
+"session:L8895",
+"session:L9029",
+"session:L9030",
+"session:L9039"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c16-13",
+"type": "built",
+"round": "R17",
+"functions": [
+"F76"
+],
+"what": "Carrier label sync: CarrierEvent staging entity, nightly sync at 02:00 and admin button call CarrierSyncService.sync(asOf); built and committed in 5e43f39.",
+"why": "Round 17 build.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/external-system-staging-entity.md",
+"catalog/best-practices/backend/scheduled-data-sync-pipeline.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9200",
+"session:L9283",
+"session:L9297",
+"commit:5e43f39"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c16-14",
+"type": "built",
+"round": "R17",
+"functions": [
+"F77"
+],
+"what": "Mails from templates with retry: MAX_ATTEMPTS 5, attempts due at fixed minutes after creation; committed in 5e43f39 with screenshots in a679fac.",
+"why": "Round 17 build.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L9115",
+"session:L9297",
+"commit:5e43f39",
+"commit:a679fac"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c16-15",
+"type": "built",
+"round": "R17",
+"functions": [
+"F78"
+],
+"what": "Cart reminder with quiet period and nightly job; tested by the level9b spec and committed in 5e43f39.",
+"why": "Round 17 build.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L9113",
+"session:L9297",
+"commit:5e43f39"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c16-16",
+"type": "built",
+"round": "R17",
+"functions": [
+"F79"
+],
+"what": "5000-row CSV or JSON import with run card, errors and undo; StartImportCustomImplementation checks CSV and JSON presence; committed in 5e43f39.",
+"why": "Round 17 build.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L9153",
+"session:L9297",
+"commit:5e43f39"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c16-20",
+"type": "built",
+"round": "R18",
+"functions": [
+"F80"
+],
+"what": "Volume seed: scripts/seed-volume-products.sh writes 50 000 products (VOL-nnnnn) straight into PostgreSQL; response timings checked with REST probes.",
+"why": "Round 18 build; timings not confirmed in this chunk.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L9425",
+"session:L9447",
+"session:L9455"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c16-22",
+"type": "built",
+"round": "R18",
+"functions": [
+"F81"
+],
+"what": "Faceted catalog search: CatalogSearch.java with native SQL for counts and SearchCustomImplementation for the ShopProductInfo search operation; CatalogHome.tsx rewritten.",
+"why": "Round 18 build.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/data-access-guide.agent.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9421",
+"session:L9637",
+"session:L9641"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c16-24",
+"type": "built",
+"round": "R18",
+"functions": [
+"F83"
+],
+"what": "Product versioning: ProductVersions.java, ProductVersionInterceptor, wiring into ChangePrices, checkout and quote.",
+"why": "Round 18 build.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/product-versioning-container.md",
+"catalog/agent-docs/backend/interceptors.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9311",
+"session:L9623",
+"session:L9625",
+"session:L9635"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c16-26",
+"type": "built",
+"round": "R18",
+"functions": [
+"F84",
+"F85"
+],
+"what": "GDPR: PrivacyService erases via placeholder user, JsonOut exports the own data; PrivacyInfo operations exportMyData and eraseAccount added and built.",
+"why": "Round 18 build.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/gdpr-placeholder-user-on-delete.md",
+"catalog/best-practices/backend/bulk-json-import-export.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9580",
+"session:L9657",
+"session:L9659",
+"session:L9687"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c17-01",
+"type": "built",
+"round": "R18",
+"functions": [
+"F80"
+],
+"what": "50 000 volume products seeded by scripts/seed-volume-products.sh (run once, removed after the volume test); list and filter checks in level10a volume test.",
+"why": "Volume requirement of Level 10a.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R18-2",
+"evidence": [
+"session:L9837",
+"session:L9855",
+"commit:a2a8832"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c17-02",
+"type": "built",
+"round": "R18",
+"functions": [
+"F81"
+],
+"what": "Shop home is a server side search (24 per page, newest first) with free text, category chips, facets for seller, price and rating with counts (native SQL in CatalogSearch), sort and paging.",
+"why": "Faceted search requirement.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/custom-visual-element-override",
+"catalog/model-blueprints/infinite-scroll-feed-component"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9853",
+"session:L9826",
+"commit:a2a8832"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c17-03",
+"type": "built",
+"round": "R18",
+"functions": [
+"F82"
+],
+"what": "Product page shows Frequently bought together: three shared product cards from a server side query over order lines (BoughtTogether in ProductDetailsLayout).",
+"why": "Bought together requirement.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/custom-visual-element-override"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9716",
+"session:L9853",
+"commit:a2a8832"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c17-04",
+"type": "built",
+"round": "R18",
+"functions": [
+"F83"
+],
+"what": "Product versions: interceptor makes an immutable version on each product edit or bulk price change; order lines link to the version and show version and description as ordered (OrderLineCard); admin Product history card list (ProductVersionCard).",
+"why": "Product versioning requirement.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/product-versioning-container.md",
+"catalog/model-blueprints/cards-container-configuration-hook"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L9722",
+"session:L9785",
+"session:L9853",
+"commit:a2a8832"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c17-05",
+"type": "built",
+"round": "R18",
+"functions": [
+"F84"
+],
+"what": "Erasure: orders, reviews, quotes and gift cards move to a Deleted user placeholder; addresses, cart, notifications, points and queued mails are deleted; shipping address text blanked; My data page with type-DELETE confirmation dialog (PrivacyPanel).",
+"why": "GDPR erasure requirement.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/gdpr-placeholder-user-on-delete.md"
+],
+"gaps_ref": "R18-1",
+"evidence": [
+"session:L9781",
+"session:L9757",
+"session:L9855",
+"commit:a2a8832"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c17-06",
+"type": "built",
+"round": "R18",
+"functions": [
+"F85"
+],
+"what": "Export: one JSON file with only the customer's own data (PrivacyInfo exportMyData), download from My data page.",
+"why": "Data export requirement.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/bulk-json-import-export.md"
+],
+"gaps_ref": "R18-1",
+"evidence": [
+"session:L9775",
+"session:L9781",
+"session:L9855",
+"commit:a2a8832"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c17-07",
+"type": "built",
+"round": "R19",
+"functions": [
+"F86"
+],
+"what": "Back office Sales reports: date range, grouping by day, category or seller, table, bar chart and PDF download, all from one SQL answer (ReportService, ReportPanel on ReportInfo_View_Edit.shopName).",
+"why": "Sales report requirement.",
+"kind": "none",
+"workaround": "Operations run and pdf removed from the view of the derived access; custom panel calls the generated service.",
+"catalog_paths": [
+"catalog/model-blueprints/report-definition-with-run-operation/BLUEPRINT.md",
+"catalog/model-blueprints/custom-statistics-dashboard/BLUEPRINT.md",
+"catalog/agent-docs/backend/data-access-guide.md"
+],
+"gaps_ref": "R19-1..11",
+"evidence": [
+"session:L9958",
+"session:L9953",
+"session:L9992",
+"commit:f6c0641"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c17-08",
+"type": "built",
+"round": "R19",
+"functions": [
+"F88"
+],
+"what": "Push notifications: stub provider chosen by a shop setting (succeed, fail, timeout), push sent on sub-order shipment, browser toggle and toast polling every 4 s, admin Push messages outbox. No real Web Push.",
+"why": "Push requirement; real provider out of reach of the build.",
+"kind": "none",
+"workaround": "Stub provider; browser polls.",
+"catalog_paths": [
+"catalog/model-blueprints/push-notification-system"
+],
+"gaps_ref": "R19-1..11",
+"evidence": [
+"session:L9998",
+"session:L10143",
+"commit:f6c0641"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c17-09",
+"type": "built",
+"round": "R19",
+"functions": [
+"F89"
+],
+"what": "Address split: new street, postal code and city members on CustomerAccount; schema generated; backfill changeset written by hand in the after-incremental file and executed; four seeded one-line addresses split with data kept.",
+"why": "Rolling model change with data.",
+"kind": "none",
+"workaround": "Changeset edited inside the generated migration folder.",
+"catalog_paths": [
+"catalog/agent-docs/deployment/schema-evolution.md",
+"catalog/best-practices/backend/migration-backfill-default-where-null.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L10008",
+"session:L10018",
+"session:L10019",
+"commit:3fd39f6"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c17-10",
+"type": "built",
+"round": "R19",
+"functions": [
+"F90"
+],
+"what": "Production-like compose stack in deploy/ (app, PostgreSQL, Keycloak, Mailpit, named volumes), deploy/verify-restart.sh proof run once; DB restored from dump because an empty DB could not be initialised.",
+"why": "Deployment requirement.",
+"kind": "none",
+"workaround": "Karaf offline distribution in the app container; pg_restore from dump.",
+"catalog_paths": [
+"catalog/agent-docs/deployment/production.md",
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": "R19-3",
+"evidence": [
+"session:L10053",
+"session:L10096",
+"session:L10078",
+"commit:f6c0641"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c18-31",
+"type": "built",
+"round": "R19",
+"functions": [],
+"what": "Public Guest actor (anonymous, HUMAN, first in model) with read-only GuestProductInfo TO and products access; products page at /webshop/Guest/ with no login.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": "R19-17",
+"evidence": [
+"session:L10404",
+"session:L10474",
+"session:L10520",
+"session:L10540"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c18-32",
+"type": "built",
+"round": "R19",
+"functions": [],
+"what": "Guest home redirect (GuestHome) to the product list and GuestBar Login / Register button linking to /webshop/Customer/; Guest branding (title, logo, colours, horizontal menu) and menu label Products.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L10503",
+"session:L10526",
+"session:L10528"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c18-33",
+"type": "built",
+"round": "R19",
+"functions": [],
+"what": "Admin home: AdminHome component and registerAdminHome hook redirect / to the Dashboard view (DashboardPage visual element).",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": "R19-14",
+"evidence": [
+"session:L10325",
+"session:L10455"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c18-34",
+"type": "built",
+"round": "R19",
+"functions": [],
+"what": "Customer guest page: registerGuestPage hook with Trail Shop title and Login / Register button, and supportGuestAccess=true on Customer.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": "R19-16",
+"evidence": [
+"session:L10423",
+"session:L10427",
+"session:L10454"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c18-35",
+"type": "built",
+"round": "R19",
+"functions": [],
+"what": "ImportRunInfo.undo returns its own UndoMessage TO (model plus UndoCustomImplementation.java), which clears the admin duplicate-import error.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": "R19-15",
+"evidence": [
+"session:L10390",
+"session:L10397",
+"session:L10402"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c18-36",
+"type": "built",
+"round": "R19",
+"functions": [],
+"what": "Customer shop logo hook (registerShopLogoHook) copied to the Guest app, and trail-shop icon and logo assets copied to its public folder.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L10547"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c19-03",
+"type": "built",
+"round": "R19",
+"functions": [
+"F17",
+"F33",
+"F81",
+"F82"
+],
+"what": "Guest front page (R19-18): the Guest actor reads ShopProductInfo (access products, DERIVED Product!filter(p | p.active)); search and boughtTogether work without a token. Customer CatalogHome, ProductCard, Price, shopEvents, SearchBox, LanguageSwitch and ProductDetailsLayout were copied into webshop__guest/src/custom, plus a new GuestBar header. Committed as 71b7829.",
+"why": "User request: the public front page should look like the shop front page; paying needs the Customer login.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/dual-actor-frontend-architecture.md"
+],
+"gaps_ref": "R19-18",
+"evidence": [
+"session:L10728",
+"session:L10633",
+"commit:71b7829"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+}
+]

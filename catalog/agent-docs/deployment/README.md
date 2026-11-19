@@ -165,6 +165,7 @@ When services are running locally:
 - **Health Check**: http://localhost:8181/system/health?tags=<app>
 - **Keycloak Admin**: http://localhost:8080/auth (`judo.sh` starts Keycloak with `--http-relative-path /auth`; Keycloak's port; the application is on 8181)
 - **Karaf SSH**: `ssh -p 8101 karaf@localhost` (password: karaf; Apache Karaf defaults, not set by the template)
+- **Root `/`**: not an actor page. Karaf serves the static `index.html` of the generated `web-root` module for every actor set. To replace that page, add `web-root/src/main/resources/index.html` to `.generator-ignore` and edit it. See the [Routing section](../frontend/README.md#routing) of the frontend development guide.
 
 ## Health Check Endpoint
 

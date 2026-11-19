@@ -16,7 +16,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 
 ## Optimistic Locking and `__version`
 - On by default in RDBMS (`rdbmsDaoOptimisticLockEnabled = true`). Insert sets version 1; each write increments.
-- Check in `UpdatePayloadDaoProcessor` ONLY when payload has `__version`; mismatch → `IllegalArgumentException("Outdated instance to update")`. Omitting `__version` silently disables the guard.
+- Check in `UpdatePayloadDaoProcessor` ONLY when payload has `__version`; mismatch → `IllegalArgumentException("Outdated instance to update")`. Over REST: HTTP 500, `code: INTERNAL_SERVER_ERROR` (not a BusinessException). Omitting `__version` silently disables the guard.
 - SQL: `VERSION` predicate only on meta UPDATE (`WHERE ID = :id AND VERSION = :__version`). Stale → no rows → "There is illegal state, no records updated".
 - Clients echo `__version`; custom update ops rebuilding payloads must carry current version.
 
@@ -135,6 +135,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 
 ## Transaction Rollback
 - A call that joins an existing transaction is not rolled back; rollback happens only when the call started a new transaction (`isNewTransaction()`).
+- Read-type calls (refresh, list, input validation) roll back the transaction they start; a write in their interceptors (e.g. postCall of `_refresh`) is discarded. Write in update or custom operations.
 
 ## Scheduled Work
 - No platform scheduler. `judo-services-job` only runs initializers at startup; no Quartz/scheduling component. Periodic work = app code (e.g. OSGi component with own executor).

@@ -26,11 +26,11 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/README.md.
 - Custom: `src/custom/` (hooks, customizations), `src/theme/`, `src/custom/application-customizer.tsx` (`customize(context)` registers Pandino services).
 
 ### Code Generation and Checksum Protection
-- Tracked by checksum in `.generated-files__[actor_fqn]` (module root).
+- Tracked by checksum in `.generated-files-<actor>` (module root; one per actor).
 - Files not in `.generator-ignore` regenerated on `./judo.sh build` / `mvn clean install`.
 - Checksum mismatch (edited file) → build FAILS. Unchanged → regenerated.
 - Last-resort edit of generated file: edit, then add path to `.generator-ignore`. Prefer hooks.
-- Checksum errors from formatting/git checkout/Prettier/Biome: `mvn clean install -Dignore-checksums` (module) or `./judo.sh build -i`.
+- Checksum errors from formatting/git checkout/Prettier/Biome: `mvn clean install -DvalidateChecksum=false` (module) or `./judo.sh build -i`.
 
 ## Project Structure
 - Tree: `model/` (UI model pom, `target/generated-resources/model/<app>-ui.model`); `src/` (generated containers/pages/dialogs/components/layout/utilities/auth; `extra-routes.tsx`; `custom/` with `application-customizer.tsx`, `hooks/`, `components/`, `hooks/**/*.default`; `theme/palette.ts`; `App.tsx`); `public/i18n/` (`default`, `en-US`, `hu-HU`); `.generator-ignore`; `package.json`; `vite.config.ts`; `pom.xml`.
@@ -87,7 +87,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/README.md.
 
 ## Troubleshooting
 - File overwritten after build → add to `.generator-ignore`.
-- Checksum mismatch → (1) add to `.generator-ignore` and rebuild; (2) `git checkout <file>` and rebuild; (3) `mvn clean install -Dignore-checksums` or `./judo.sh build -i` for formatting-only changes.
+- Checksum mismatch → (1) add to `.generator-ignore` and rebuild; (2) `git checkout <file>` and rebuild; (3) `mvn clean install -DvalidateChecksum=false` or `./judo.sh build -i` for formatting-only changes.
 - Hook not called → check registration in `application-customizer.tsx`; export name matches interface.
 - Type errors after regeneration → `pnpm install`; check breaking changes in generated types.
 

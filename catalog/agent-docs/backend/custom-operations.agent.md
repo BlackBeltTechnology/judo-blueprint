@@ -53,7 +53,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/custom-operations.md
 - Load with mask: `ParentEntityMask.parentEntityMask().withValidationErrors(...).withIsValid()`.
 - Navigate relations via DAO query methods: `queryChildEntities(parent).maskedBy(...).selectList()`, `queryDefaultChild(...)`.
 - Compare identity with `identifier().getIdentifier().equals(...)`, not object equality.
-- Update with mask to write only selected fields: `dao.update(entity, Mask)`.
+- Update with mask: the mask shapes only the read-back; the write carries the entity's payload. To write fewer fields, set only those fields: `dao.update(entity, Mask)`.
 
 ## Example 3: External Service Integration
 

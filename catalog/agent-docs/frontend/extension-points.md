@@ -70,6 +70,10 @@ The cards container also renders no row operation buttons. Its generated templat
 
 A cards container on a relation needs a refresh action on that relation table. The generated cards container calls `fetch` unconditionally when it loads, and the generated page passes `fetch` only when the table has a refresh action, so without one the load fails with `fetch is not a function`.
 
+The default toolbar of a cards container is an empty placeholder. A container with no configured toolbar has no filter, sort or refresh control. Configure `ToolbarElement` for filters and refresh, and `ActionbarElement` for table operations, in the configuration hook; the default does not provide them.
+
+The `components/<Container><Relation>Component/customization.ts` module is generated only for a relation shown as cards (`ui-react.yaml`, factory `#getCardsForPageContainers`). After switching such a relation to another `representationComponent` (for example `table`), remove the hand-written cards hook registrations under `src/custom/` that import it; otherwise the build fails with `TS2307: Cannot find module '.../components/<...>Component/customization'`.
+
 ## Multi-Application Switcher
 
 When the model has alternative applications, the profile popup shows an application switcher (`useApplicationSelector()`). `changeApplication(key)` clears the security storage and navigates the whole page to `origin + '/' + key`. `generateAlternativeApplications` builds the key-to-name map from translation keys `applications.<simpleName>`.

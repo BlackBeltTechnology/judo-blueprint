@@ -23,7 +23,7 @@ Make permission checks a single boolean read. Instead of joining user, roles and
 
 - Interceptors fire only for the built-in behaviour operations (create, update, delete, set/unset/add/remove reference and so on). Custom, MAPPED and script operations never hit interceptors, so permission checks for custom operations must sit inside each `*CustomImplementation` ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). The recalculation is triggered from interceptors on the built-in role and role-assignment operations; it does not guard any custom operation by itself.
 - Authorization belongs in the model's access control where possible; the stored flags are readable from access filters and expressions through the actor variables ([ACTOR vs PRINCIPAL vs USER](../../agent-docs/model/advanced-modeling-patterns.md#actor-vs-principal-vs-user-context-variables)). Which variable category applies depends on the actor shape; a wrong attribute name yields empty results silently.
-- The update call is the plain DAO update, with a mask limiting the written fields ([mutable entity update](../../agent-docs/backend/data-access-guide.md#using-masks-projections)).
+- The update call is the plain DAO update, with a mask that shapes only the read-back, not the written fields ([mutable entity update](../../agent-docs/backend/data-access-guide.md#using-masks-projections)).
 
 ### Practice notes: recalculate flags from roles
 

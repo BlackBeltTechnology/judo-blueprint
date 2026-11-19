@@ -59,7 +59,7 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/build-process.md.
 - `update` (`-i`): update dependency versions.
 - `generate` (`-i`): regenerate app from model (`-DgenerateApplication -DskipApplicationBuild`). `generate-root` (`-i`): `-DgenerateRoot`.
 - `dump`: dump PostgreSQL before clearing and starting. `import` (`-dn <name>`): import dump; no name loads last.
-- `schema-upgrade`: persistent PostgreSQL only; generates the diff against the running DB and applies it immediately. Do NOT use when a backfill changeset is needed (no insertion point).
+- `schema-upgrade`: persistent PostgreSQL only; generates the diff against the running DB and applies it immediately. Do NOT use when a backfill changeset is needed (no insertion point). Schema dir: `schema_dir` (default `model_dir`) in `judo.properties`/env.
 - `build` options: `-v <version>`, `-p`, `-a`, `-f`, `-sc`, `-d`/`--docker`, `-M`, `-B`, `-F`, `-KA`, `-S`, `-ma <arg>` (extra Maven arg), `-q`, `-i`.
 - `reckless`: build and run fast; skips validation and Docker. `start`: app with PostgreSQL and Keycloak. `stop`. `status`.
 - `start` options: `-w` (no bundle watch; `-W` is not parsed), `-K` (skip Keycloak), `-o "<name>=<value>,..."`:

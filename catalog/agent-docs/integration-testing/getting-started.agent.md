@@ -12,6 +12,7 @@ Pull-only condensed map. Source: catalog/agent-docs/integration-testing/getting-
 ## Dependencies
 - `hu.blackbelt.judo.runtime:judo-runtime-core-guice-testkit` (test scope): `@JudoTest`, `JudoRuntimeFixture`, transaction utilities.
 - Project `<yourmodel>-model` and `<yourmodel>-service` (test scope, `${project.version}`).
+- App-declared `provided` libs (e.g. PDFBox) are not on the IT class path (NoClassDefFoundError): declare them `provided` in the integration-test module too; the IT pom has no fragment, so use generator-ignore.
 - `junit-jupiter`, `mockito-core` (test); `logback-classic` (test).
 - Surefire `3.2.5`; includes `**/*Test.java`, `**/*IntegrationTest.java`.
 

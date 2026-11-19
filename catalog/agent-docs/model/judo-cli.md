@@ -161,6 +161,10 @@ The GraphQL schema maps `Integer` and `Long` attributes to GraphQL `Int`; `Long`
 
 For model type `ui`, FQNs are non-uniform: an Application is its simple name, a Theme is `<App>::Theme`, a Frame is `<containerFQN>::Frame`, a MimeType is `type/subType`, other named elements use `::` hierarchy, unnamed elements fall back to the XMI URI fragment.
 
+GraphQL string filters accept only `eq`, `contains`, `startsWith`, `endsWith`, `regex` and their case-insensitive forms (`icontains`, `istartsWith`, `iendsWith`, `iregex`). There is no `in` operator on `StringFilter`. To match several values, query the type with a limit and filter the returned items in code.
+
+The `ESM_DataFeature` interface in graphql does not define `memberType` or `getterExpression`. The concrete `ESM_DataMember` type (the `datamembers` list) has both, so read them from there: `graphql '{esm{datamembers(limit:3000){items{fqn memberType getterExpression}}}}'`, then match on `fqn`.
+
 ## Reach for the CLI when…
 
 - You need to know what is currently in the model (entities, attributes, relations, actors, UI definitions).

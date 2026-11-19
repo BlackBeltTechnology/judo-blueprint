@@ -114,6 +114,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 ## Querying and UI FQNs
 - `query <model> <Type>`: `--select`, `--where`, `--limit`, `--offset`. Operators: `eq`, `contains`, `startsWith`, `endsWith`, `regex`; case-insensitive `icontains`, `istartsWith`, `iendsWith`, `iregex`; `gt`, `gte`, `lt`, `lte`. Collections pluralised; nested reference filters AND-combined.
 - `graphql` takes `--variables`, `-o`; `--schema` writes SDL to `.judo-schema.graphql`.
+- String filters have no `in` operator (use `limit` and filter in code). The `ESM_DataFeature` interface has no `memberType`/`getterExpression`; the `datamembers` items (`ESM_DataMember`) have them: read via `graphql '{esm{datamembers(limit:3000){items{fqn memberType getterExpression}}}}'`.
 - `--select` scalars only (`name`, `fqn`, `createable`, `_type`). `--select "target{name}"` / `target.name` → `not a field of <Type>`; reference selected alone → `SubselectionRequired`. Read reference via `graphql '{esm{accesses{items{name target{name}}}}}'`.
 - `-w "fqn.eq=<fqn>"` exact FQN; `name.contains` for loose.
 - `ui` has no `MenuItem`, `MenuItemAccess`, `Access`, `ActorType`, `TableOperation`: those are `esm` types (`query ui MenuItemAccess` → `ui type 'MenuItemAccess' does not exist`). Error lists valid types. `not a field` lists valid fields (e.g. `textWidget` belongs to `DataField`, not `StringType`).

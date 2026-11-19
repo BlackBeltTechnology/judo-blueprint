@@ -55,7 +55,7 @@ The base URL `/` is not an actor frontend route. Karaf serves the static `index.
 ### Code Generation and Checksum Protection
 
 **How Generation Works:**
-1. All generated files are tracked by **checksum** in `.generated-files__[actor_fqn]` (located in the frontend module root)
+1. All generated files are tracked by **checksum** in `.generated-files-<actor>` (one file per actor, in the frontend module root, for example `.generated-files-customer`). A `.generated-files` file without a suffix holds the entries that are not actor specific.
 2. Files NOT in `.generator-ignore` will be regenerated on `./judo.sh build` or `mvn clean install`
 3. **Checksum validation**: Before overwriting, the generator checks if a file was manually edited
    - If file was edited (checksum mismatch) → ❌ **Build FAILS** with error
@@ -81,14 +81,14 @@ If you get checksum errors due to code formatting changes (e.g., after `git chec
 ```bash
 # Ignore checksum errors and force regeneration (frontend module)
 cd application/frontend-react/<app>__[actor_fqn]
-mvn clean install -Dignore-checksums
+mvn clean install -DvalidateChecksum=false
 
 # Or from root with judo.sh
 ./judo.sh build -i
 ```
 
 **Checksum File Locations:**
-- `.generated-files__[actor_fqn]` - In frontend module root directory
+- `.generated-files-<actor>` - In frontend module root directory (one per actor; `.generated-files` without a suffix for entries that are not actor specific)
 - Format: Tracks file paths and their checksums for the specific actor module
 
 **Best Practice:** Always prefer using hooks over editing generated files. Only edit generated code when absolutely no hook exists for your use case.
@@ -451,7 +451,7 @@ git checkout src/pages/MyPage.tsx
 mvn clean install
 
 # Option 3: Formatting-only changes - ignore checksums
-mvn clean install -Dignore-checksums
+mvn clean install -DvalidateChecksum=false
 # or
 ./judo.sh build -i
 ```

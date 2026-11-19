@@ -10,6 +10,8 @@ Everything used to update the catalog: sources, analyses, agent outputs, ledgers
 | `runs/apply-findings-r16/` | webshop review round R16 (9 catalog issues) |
 | `runs/bp-check/` | 3,109 findings checked against model blueprints and best practices |
 | `runs/apply-findings-webshop/` | webshop build-test gaps R16–R19 (74 findings incl. R19-12..17), `r19b/` agent outputs of the last pass |
+| `runs/gap-analysis/` | earlier session mining of the webshop run, lines 1–6093 (R0–R15): chunks, miners, validated batches, `GAP-ANALYSIS.md` |
+| `runs/gap-analysis-r16/` | session mining of lines 6094–10736 (R16–R19-18): chunks, miners, settle verdicts (`validated/`), ledgers, checker, `SUMMARY.md` |
 | `runs/open-verify/`, `runs/open-verify2/` | verification of the 106 open items from judo-ng code, and the settle pass of the last 22 |
 | `judo-ng-read/` | the full judo-ng read: `findings.md`, reader/validator prompts, `review.md`, worktree update log (`wt-update.log`, latest `develop`), `judo-ng.lock`, `manifest.json` |
 | `webshop-run/` | the complete webshop build-test sessions (`*.jsonl.gz`, unmodified pi session logs; raw `.jsonl` kept locally, git-ignored), `GAPS.md` at the time of copy, orchestration log |
@@ -29,6 +31,7 @@ Every ledger reconciles with `.pi/skills/judo-catalog-expand/scripts/findings-le
 | 11-19 | Webshop gaps R16–R19 | 68 gaps | 23 platform facts applied and double-checked | `377bfa1` |
 | 11-19 | Open items from judo-ng (latest develop, CLI pin bumped) | 106 | 41 fixes, 22 already correct, 12 rejected, 9 not platform, 22 left | `8d3ce43` |
 | 11-19 | Settle the 22 left (no open status allowed) | 22 | 17 fixes, 3 already correct, 2 rejected | `133e736` |
+| 11-19 | Whole-run session mining R16–R19-18 | 358 mined items | 17 applied, 41 already correct, 107 duplicate, 80 not platform, 8 rejected, 18 upstream, 87 build/decision records | this commit |
 | 11-19 | Webshop gaps R19-12..17 | 6 gaps, 18 sub-claims | 10 applied, 5 already correct, 4 rejected; checker fixed 1 citation | `c577545`, `b054a6b` |
 
 ## 2026-11-19: webshop gaps R19-12..17
@@ -86,3 +89,20 @@ Source: `webshop-run/2026-11-11T14-06-20-342Z_01a1caee-...jsonl.gz`, entries fro
 3. **The frontmatter `meta` chunk wins and hides the body.** For `best-practices/backend/gdpr-placeholder-user-on-delete.md` the top hit is `chunkId …:meta` (headingPath = title, `suppressedSections: 4`); `kb_get` of that section returns the description plus the keyword list; a path-only `kb_get` returns the intro and "(+7 more sections)" without their names. Agents then read the file from disk (webshop R16-10, R16U-1, R17-1, R18-1). Reproduced 11-19.
 4. **Weak ranking for some queries:** "database index on attribute unique identifier rdbms index" → `application-config.agent.md` and AGENTS indexes (the catalog fact was missing then: R18-2, since added); "root context redirect default application Karaf servlet / landing" → unrelated (catalog gap, filled by the `web-root` note in `frontend/README.md`).
 5. **Usage, not a kb defect:** the build agent stopped using kb for the last three hours of the run; prompts must repeat "kb_search / kb_get first on any problem".
+
+## 2026-11-19: whole-run session mining (R16 to R19-18)
+
+Work dir `runs/gap-analysis-r16/`. Lines 1–6093 of the session were mined earlier (`runs/gap-analysis/`, 137 items through `runs/apply-findings/`); this pass mined the rest (lines 6094–10736, 9 chunks, 9 miners).
+
+| Step | Result |
+|---|---|
+| Miners | 358 items: 226 issues, 40 platform claims, 37 decisions, 50 built, 5 mistyped |
+| GAPS coverage | every R16+ GAPS item is in `runs/apply-findings-webshop` (12 not re-mined: all settled there) |
+| Settle (8 agents, validate + settle in one pass, no open status) | 266 batched items: 102 duplicate, 70 not platform, 47 already correct, 23 upstream, 15 proposed, 9 rejected |
+| Apply (one writer) | 15 applied; the masked-update error corrected in 6 more places |
+| Checker | 14 ok, 1 fixed (`ESM_DataFeature` is an interface; `ESM_DataMember` has `memberType`/`getterExpression`) |
+| Lead (5 mistyped items) | stale `__version` over REST is HTTP 500 (`RuntimeExceptionMapper.java:101-102`); cards `customization.ts` is cards-only (`ui-react.yaml:980-983`); 2 duplicates of WR16-9/WR16-11; 1 already correct |
+| Upstream merge | CLI.md +4 sections (9 merged, 4 dropped), FRAMEWORK.md +12 (15 merged, 8 dropped), KB.md +3 (29 merged); dropped ids with reasons in `ledger/upstream.jsonl` |
+| Reconcile | 358 total, 0 unaccounted, 0 open |
+
+Catalog changes: masked update writes every payload attribute (mask only shapes the read-back); caught DAO failure aborts the PostgreSQL transaction; `schema_dir`; initializers run on every start; Quartz is not a Karaf feature; checksum files `.generated-files-<actor>` and `-DvalidateChecksum=false`; stale-update retry; read-type calls roll back; cards toolbar is empty by default; `ObjectExpressionMatchesBinding` validator mismatch; provided-scope libraries in integration tests; graphql `StringFilter` operators and `ESM_DataMember` fields; root `/` in deployment access points; stale `__version` HTTP 500; cards-only `customization.ts`.

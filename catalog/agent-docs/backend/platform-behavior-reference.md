@@ -28,7 +28,7 @@ Platform behaviours that surprise backend developers and are not visible in the 
 - Optimistic locking is **on by default** in the RDBMS runtime (`rdbmsDaoOptimisticLockEnabled = true`). Inserts set the version to 1; each write increments it.
 - The check happens in `UpdatePayloadDaoProcessor` and **only when the update payload contains `__version`**: it must equal the stored version, otherwise `IllegalArgumentException("Outdated instance to update")`. If `__version` is absent, no check is performed, so omitting it silently disables the guard.
 - At SQL level the `VERSION` predicate is added only to the meta `UPDATE` (`WHERE ID = :id AND VERSION = :__version`), not to the attribute `UPDATE`. A stale version makes the statement update no rows, and the executor fails with "There is illegal state, no records updated".
-- Clients must echo `__version` back and handle the stale-update error. Custom update operations that rebuild payloads must carry the current version.
+- Clients must echo `__version` back and handle the stale-update error. Over REST the stale update answers HTTP 500 with `code: INTERNAL_SERVER_ERROR` (the `IllegalArgumentException` is not a `BusinessException`, so `RuntimeExceptionMapper` gives no conflict status); detect it by the message `Outdated instance to update`. Custom update operations that rebuild payloads must carry the current version.
 - The generated TypeScript REST client copies `__version` only when its runtime type is `string`, but the generated `JudoStored` type declares it as `number`, so a UI built on that client drops the version on update. Send `__version` explicitly in the update payload until the generator copies numbers.
 
 ## Reserved Payload Keys
@@ -205,6 +205,8 @@ The generated `<Entity>Initializer.initBuilder()` Java interface belongs to the 
 ## Transaction Rollback
 
 A call that joins an existing transaction is not rolled back. The rollback happens only when the call started a new transaction (`AlwaysRollbackTransactionalBehaviourCall` checks `isNewTransaction()`).
+
+- Read-type calls are always rolled back. The refresh call, the list call and the input validation call each start a transaction when none exists and roll it back at the end. A write made in one of their interceptors (for example in the postCall of a _refresh operation) is discarded. Make such writes in an update operation or a custom operation.
 
 ## Scheduled Work
 

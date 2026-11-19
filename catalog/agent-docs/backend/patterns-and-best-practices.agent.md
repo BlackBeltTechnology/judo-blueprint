@@ -108,7 +108,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/patterns-and-best-pr
 - Load specific fields: `UserMask.userMask().withUserName().withEmail()`.
 - In queries: `.maskedBy(...)` before `.selectList()`.
 - Nested: `withSettlement(SettlementMask.settlementMask().withName().withCounty(...))`.
-- Partial update: `dao.update(entity, EntityMask.entityMask().withStatus())`.
+- Partial update: set only the changed fields, then `dao.update(entity, EntityMask.entityMask().withStatus())` (the mask shapes the read-back only).
 - See [Data Access Guide - Using Masks](data-access-guide.md#using-masks-projections).
 
 ## General Best Practices

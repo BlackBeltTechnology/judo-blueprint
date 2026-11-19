@@ -99,6 +99,8 @@ This provides:
 </dependency>
 ```
 
+Platform libraries that the app module declares with `provided` scope (for example PDFBox) are not on the integration-test class path, because provided dependencies are not passed on to other modules. A test that uses such a library fails with `NoClassDefFoundError`. Declare the same artifact in the integration-test module with `provided` scope as well. The generated integration-test pom has no dependency fragment, so keep the edit under generator-ignore control (see [generator-ignore config protection](../../best-practices/backend/generator-ignore-config-protection.md)).
+
 ### Testing Dependencies
 
 ```xml
