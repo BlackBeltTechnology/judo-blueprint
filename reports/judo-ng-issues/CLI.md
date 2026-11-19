@@ -12,7 +12,7 @@ The catalog (`catalog/agent-docs/model/judo-cli.md`, "Known limitations and gotc
 | 2 | `managed` refused on an anonymous actor, but stored as `true` | wrong default | R19-12 (b), scratch |
 | 3 | Mapped TO creation silently adds every member; adding one again fails only at `validate` | silent side effect, late error | R7-14, R8-4, R19-12 (a) |
 | 4 | Duplicate elements are not refused at `create` | missing check | R7-14, R11-10 |
-| 5 | A failed script keeps its earlier edits | non-atomic script | R11-10 |
+| 5 | A failed script keeps its earlier edits; recovery is `save` before the script + `discard --force` (no new code needed) | missing hint | R11-10 |
 | 6 | `update` on a duplicate FQN acts on the first element, with no way to select another | missing selector | catalog |
 | 7 | `--unset postCallAccessNavigation` does not clear it | broken command | catalog |
 | 8 | `move` reports a different element than the moved one | misleading output | catalog |
@@ -52,9 +52,11 @@ The catalog (`catalog/agent-docs/model/judo-cli.md`, "Known limitations and gotc
 
 ## 5. A failed script keeps its earlier edits
 
-- **Behaviour:** when a command in a script fails, the commands before it stay applied in memory and in the overlay; rerunning the fixed script duplicates them.
-- **Expected:** a script is atomic (all or nothing), or the CLI offers a rollback to the state before the script.
-- **Workaround:** `discard --force` before retrying.
+- **Behaviour:** when a command in a script fails, the commands before it stay applied in memory and in the `.dirty` overlay; rerunning the fixed script duplicates them.
+- **Not a missing feature:** `save` before the script makes the saved file the restore point; `discard --force` reverts to it (all unsaved edits, so save first). This survives a daemon restart, which in-memory undo would not.
+- **Evidence:** every edit runs as one step on an EMF command stack (`EsmTransaction.run` → `session.execute`); `--dry-run` already undoes its step (`runtime__judo-model-cli/src/main/java/hu/blackbelt/judo/cli/mutation/EsmTransaction.java:85-86`); `save` and `discard` clear the stack with `tx.flush()` (`.../commands/SaveCommand.java:89`, `.../commands/DiscardCommand.java:96`; `discard` reloads the model).
+- **Expected (small):** when a command fails partway through a script, the error ends with the hint `fix: discard --force` (and the recipe is documented in the CLI's model-mutations docs). An `undo N` / checkpoint (session.undo() N times, then rewrite the overlay) is optional: it gives a restore point without saving an unfinished model, and is cheaper than reloading a large model.
+- **Workaround:** `save` → run the script → on failure `discard --force`, fix, rerun.
 
 ## 6. `update` on a duplicate FQN
 

@@ -96,7 +96,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - Duplicate FQNs: `update` acts on first element; no suffix to select; rename first.
 - `MimeType` CreateInput has no `name` (derives from type/subType); `create -t MimeType -n ...` fails.
 - Operation parameters: `containment` + `target`, not type/direction.
-- Failed script leaves earlier edits in memory/overlay; rerun duplicates elements → `discard --force` first. `discard` reverts ALL unsaved edits.
+- Failed script leaves earlier edits in memory/overlay; rerun duplicates elements → `discard --force` first. `discard` reverts ALL unsaved edits. Recipe: `save` → script → on failure `discard --force`, fix, rerun.
 
 #### Validation, history, action placement
 - Some EVL checks (e.g. MAPPED member `required` vs binding) reliably run only in full build. After build re-run `validate`; check ASM/SDK timestamps contain change before marking verified.
