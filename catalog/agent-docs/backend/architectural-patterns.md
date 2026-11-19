@@ -79,13 +79,13 @@ Access getters on an `ActorType` are strict; violating any rule below yields an 
 
 3. **`accessType="DERIVED"` requires a reference-returning expression.** A boolean literal (`getterExpression="true"`) is rejected by `ReferenceBindingExpressionIsValid`. For an unrestricted "see everything" access, drop the getter and set `accessType="ALL"`.
 
-4. **`!getVariable(...)` returns a scalar `String` only.** Compare with `==`, not `!memberOf(...)`:
+4. **`<Type>!getVariable(...)` returns a scalar value of the named type.** The receiver must be a type name; a bare `!getVariable(...)` is not a valid form. Compare with `==`, not `!memberOf(...)`:
 
     ```text
     e.<path> == <model>::types::String!getVariable('PRINCIPAL', 'partner_code')
     ```
 
-    Primitives must be fully qualified; bare `String!getVariable(...)` fails with `Unknown symbol: String`. Multi-value claims (`Sequence<String>!getVariable(...)` does not exist in the grammar) must be consumed via a backend interceptor — see `interceptors.md` → "Backend-computed TO attribute".
+    Primitives must be fully qualified; bare `String!getVariable(...)` fails with `Unknown symbol: String`. The type must be a primitive, enumeration or custom type, otherwise the build fails with `Type is not valid for environment variable`. Multi-value claims (`Sequence<String>!getVariable(...)` does not exist in the grammar) must be consumed via a backend interceptor — see `interceptors.md` → "Backend-computed TO attribute".
 
 When one of these rules blocks the filter you need — bipartite quantifiers, multi-value claims, external lookups — reach for the **`TRANSIENT` TO attribute + `OperationCallInterceptor`** pattern. See [Interceptors Guide](./interceptors.md), *Backend-Computed TO Attribute (JQL Escape Hatch)*.
 

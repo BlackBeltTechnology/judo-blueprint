@@ -30,6 +30,7 @@ Some entities need a classification from a small fixed vocabulary that is set at
 - Filter and group by it in access getters and derived members with the same literal form.
 - Practice note: category enumerations that drive branching in operations (for example which credential type is valid) are fine, but if the value changes through transitions it is a state, not a category: use [[enum-state-machine]].
 - Known generated-DAO issue (agent-docs backend data-access guide): the generated `query<Attribute>()` on an enumeration attribute can fail with a cast error because the runtime delivers the ordinal; read the value through the DTO or convert with `<Enum>.getByOrdinal(...)`.
+- `<Enum>.getByOrdinal(ordinal)` throws `IllegalArgumentException` with the message `Invalid ordinal: <n>` for an ordinal that matches no member, and with the message `Invalid ordinal: null` for `null`. The generated DTO mapping calls it when it converts a non-null ordinal to an enumeration value, so an out-of-range ordinal fails there.
 
 ### When the set must grow at runtime
 

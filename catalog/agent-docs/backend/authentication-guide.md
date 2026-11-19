@@ -241,6 +241,7 @@ Details of the lookup:
 - `authenticateByPrincipal` builds the claims map from the string-valued token attributes only; non-string claims are ignored for the lookup.
 - The lookup value is coerced to the attribute type (string, numeric, date, time, timestamp, boolean, enumeration by literal); other types log a warning and run the search without a filter.
 - Transient actor attributes whose name equals a claim key receive the claim value on the actor payload.
+- **Timing.** The actor lookup runs after the `authenticate` hooks and before the operation body. A first call from a new user, with no actor row yet, fails with `AUTHENTICATED_ENTITY_NOT_FOUND` unless an `AuthenticationInterceptor.authenticate` hook has already created the row; a row created in `success` or in the operation body is too late for that request.
 
 ### Several Keycloak clients in one realm
 

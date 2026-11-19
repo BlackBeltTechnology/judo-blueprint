@@ -22,9 +22,9 @@ Update an existing record without a separate update object: the entity returned 
 ### Platform: the DAO update call
 
 - Generated DAOs offer `update(entity)` and `update(entity, mask)`. `update` returns the persisted entity, so assign the result when the code continues with it ([DAO operations](../../agent-docs/backend/data-access-guide.md)).
-- With a mask, only the fields named in the mask are written ("Pattern 4: Partial Updates" in the [data access guide](../../agent-docs/backend/data-access-guide.md#using-masks-projections)). Without a mask the whole entity is updated.
+- With a mask, only the fields named in the mask are written ("Pattern 4: Partial Updates" in the [data access guide](../../agent-docs/backend/data-access-guide.md#using-masks-projections)). Without a mask every attribute the payload carries is updated.
 - Optimistic locking is on by default, but the version check runs only when the update payload contains `__version`; an entity loaded from the DAO and written back carries its version, while a payload rebuilt by hand without `__version` silently skips the guard. A stale version fails the update ([optimistic locking](../../agent-docs/backend/platform-behavior-reference.md#optimistic-locking-and-__version)).
-- Fields not included in the mask used to load an entity are `null` ([mask best practices](../../agent-docs/backend/data-access-guide.md#mask-best-practices)). The docs do not say what an unmasked update does with them, so for an entity loaded with a narrow mask pass an update mask naming only the changed fields.
+- Fields not included in the mask used to load an entity are `null` ([mask best practices](../../agent-docs/backend/data-access-guide.md#mask-best-practices)). An update without a mask writes only the attributes the object carries: a field that was not loaded is absent from the payload and is left unchanged. For an entity loaded with a narrow mask, pass an update mask naming only the changed fields to keep the write explicit.
 
 ### Practice notes: fetch, mutate, update
 

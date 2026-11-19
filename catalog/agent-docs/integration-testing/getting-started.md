@@ -566,6 +566,7 @@ public class MultiTransactionTest {
 - Use try-catch to ensure rollback on exceptions
 - Each transaction boundary is explicit and controlled
 - Useful for testing transaction isolation and consistency
+- `JudoRuntimeFixture.tearDown()` only rolls back a transaction that is still open. It does not close the injector or the datasource, so close the datasource yourself (for example in `@AfterEach`) when a test manages its own datasource.
 
 ---
 

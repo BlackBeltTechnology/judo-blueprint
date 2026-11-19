@@ -236,6 +236,8 @@ Main orchestration script that simplifies common operations.
 | `-q` | `--quick` | Quick mode — use cache, skip validations. |
 | `-i` | `--ignore-checksum` | Ignore generator checksum errors and refresh checksums. |
 
+`-KA` (skip Karaf) does not rebuild the `karaf-offline` package. `./judo.sh start` re-extracts that package on every start, so `build -F -KA` after Java changes leaves the running backend on the old custom operations. Drop `-KA` before `start`.
+
 **Model-only changes need a full `./judo.sh build` (no flags) — not `-M`.** The `asm2keycloak` transformation (which emits the Keycloak realm from your `ActorType`s) only runs when model build is enabled. With `-M` the previous build's Keycloak realm artifact sticks and a new actor / claim / realm-name change never reaches Keycloak; the local stack starts but the React app shows blank and `/system/health` reports `JaxRsApplicationsReady` missing because the Keycloak adapter cannot find a realm matching `schema_name`.
 
 ### Local-dev Keycloak realm dependency

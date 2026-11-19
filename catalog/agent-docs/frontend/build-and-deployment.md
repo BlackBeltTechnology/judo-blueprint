@@ -28,6 +28,8 @@ System properties: `-DskipFrontendModel`, `-DskipPrepareNodeJS`, `-DskipGenerate
 
 Defined in the generated pom: `model-artifactId`, `model-name`, `model-version`, `actor-name`, `node-install-dir` (default `${maven.multiModuleProjectDirectory}/.nodejs`, set in the parent frontend-react pom and inherited by the actor pom), `override-dir` (default `${project.parent.basedir}/generator-overrides`), `muiLicensePlan` (default `community`) and `appVersion` (default `1.0.0`).
 
+Generator template parameters, including `debugPrint`, are set in the `<templateParameters>` element of the `judo-ui-generator-maven-plugin` `generate` configuration. The React template reads `debugPrint` from the template context (`ReactStoredVariableHelper.isDebugPrint`). That context value comes from the `templateVariables` step of `variablePrecedence` (default `projectProperties,templateVariables,propertiesFiles,environmentVariables,systemProperties`), which is the `<templateParameters>` map. No separate `<templateVariables>` element exists. When `debugPrint` is unset it is false.
+
 ## Context Path and Base Href
 
 In a multi-actor application each actor frontend is served under the context path `/<model-name>_react/<actor-name>`; a single-actor application is served at its single application path or `/`. The profile `replace-base-href` (active when `local` is not set and the application is not single-actor) rewrites `<base href="/">` in `dist/index.html` to `/<model-name>_react/<actor-name>/` so that assets resolve. `-Dlocal` keeps `<base href="/">`. The backend URL is set with `VITE_API_DEFAULT_BASE_URL` (not `VITE_API_BASE_URL`).

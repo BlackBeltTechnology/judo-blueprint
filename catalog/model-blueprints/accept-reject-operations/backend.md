@@ -21,6 +21,7 @@ Put the transition and its checks in a service class, and let the two operations
 
 - The service is application code. Its name and layout belong to the reference implementation, not to the platform.
 - Log an audit record after the transition, from the same operation (common practice). See [[audit-log-entity]] for the record shape.
+- A JCL script operation cannot raise a modeled fault and cannot call an OSGi service. The JCL grammar has no `throw` or fault statement and no service-reference form; its statements are declarations, calls, `return`, `unset`, `delete`, `new`, blocks, `if`, `for` and `while`. Put fault-raising logic and OSGi service calls in a Java custom implementation.
 
 ### Interceptors cannot guard these operations
 

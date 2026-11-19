@@ -196,6 +196,8 @@ flowchart TD
 | Bulk action from toolbar | `<tableOperations operation="<xmi-id>" isBulk="true">` with nested `<operationForm>` |
 | Static text / separator / spacer | `ui:TextField` / `ui:Divider` / `ui:Placeholder` |
 
+An `OperationForm` may sit directly in a view. The validation rule `ActionContainerSameWithActionDefinition` requires the view's container to be the same as the action definition's container, or that container's page container; it does not require an `ActionGroup`.
+
 ---
 
 ## 5. Data-binding cheat sheet
@@ -331,7 +333,7 @@ flowchart LR
 
 **CLI recipe for an `ActionGroup`.** `create -t ActionGroup --ns <viewFqn> -n <group>` creates it in a view (`--ns` is required; a transfer object is refused with `Cannot create ActionGroup in TransferObjectType`). Place an operation with `update <viewFqn> --add feature --feature <operation>`, then `relocate <viewFqn>::<operation> --to <viewFqn>::<group>` to move it into the group.
 
-**Field order.** The order of generated form and view fields follows the order of the container's `components` in the ESM. The generator (`esmToUi.etl`) takes each child's 1-based index in its container's `components` list and sorts the generated children by it; name, label and attribute order do not change it. A field that appears above another one precedes it in `components`. Reorder with `move <fqn> --index n` (or `--before` / `--after`) instead of deleting and re-adding the widget.
+**Field order.** The order of generated form and view fields follows the order of the container's `components` in the ESM. The generator (`esmToUi.etl`) takes each child's 1-based index in its container's `components` list and sorts the generated children by it; name, label and attribute order do not change it. A field that appears above another one precedes it in `components`. Reorder with `move <fqn> --index n` (or `--before` / `--after`) instead of deleting and re-adding the widget. A UI child with no position in its ESM container's `components` list stops the generator with `Missing position parameter(s)`, so place every widget with `move <fqn> --index n` before generation.
 
 ---
 

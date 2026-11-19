@@ -16,7 +16,7 @@ Supported extension points of the generated React frontend that are not hooks of
 
 ## Guest Page
 
-With `supportGuestAccess` enabled on the application, an unauthenticated user is not redirected to `signinRedirect`. The auth gate renders a guest page instead. Register your own component as a service under `GUEST_PAGE_INTERFACE_KEY` (the value `'GuestPage'`, imported from `~/auth/Auth`):
+With `supportGuestAccess` enabled on the application, an unauthenticated user is not redirected to `signinRedirect`. The auth gate renders a guest page instead. If no `GuestPage` service is registered, the gate shows the application name and a `Login / Register` button that calls `signinRedirect()`. Register your own component as a service under `GUEST_PAGE_INTERFACE_KEY` (the value `'GuestPage'`, imported from `~/auth/Auth`):
 
 ```typescript
 context.registerService<FC<any>>(GUEST_PAGE_INTERFACE_KEY, GuestPage);
@@ -65,6 +65,10 @@ The registration function is `register<Component>CardsContainerConfig(context)`.
 A custom `CardElement` should render a `<Grid size={ { sm: 12, md: 6, lg: 4, xl: 4 } }>` as its root so cards line up on all devices.
 
 The cards container renders no create button of its own. `ActionbarElement` is the place for one: it renders above the cards when set, and without it the container shows no action bar.
+
+The cards container also renders no row operation buttons. Its generated template passes row actions only as row-click handlers (`onRowClick`) and never builds the `tableRowActions` that the table container uses, so table operations such as `<Operation>` must be added in a custom `CardElement`.
+
+A cards container on a relation needs a refresh action on that relation table. The generated cards container calls `fetch` unconditionally when it loads, and the generated page passes `fetch` only when the table has a refresh action, so without one the load fails with `fetch is not a function`.
 
 ## Multi-Application Switcher
 

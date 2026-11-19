@@ -16,6 +16,10 @@ This document covers widget components that display and edit data within contain
 
 ## Widget Components
 
+### Form Autofocus
+
+In a form container the first input whose attribute is not read-only receives focus after `autoFocusRefDelay` (200 ms). The selection checks only the attribute's read-only flag, not visibility, so a hidden input that comes first can receive focus.
+
 ### DataField (ui:DataField)
 
 **Supertypes:** `Widget` → `Component` → `FormElement` → `VisualElement` → `NamedElement`

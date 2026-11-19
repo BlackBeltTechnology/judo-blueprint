@@ -180,7 +180,7 @@ When a `DataField` is bound to a `DataMember`, the available widget properties d
 | `EnumerationMember` | `ordinal` | Auto-incremented |
 | `EnumerationMember` | `name` | `LITERAL_` + ordinal |
 
-String type limits are model data, not platform constants; the platform enforces a string type's `maxLength` with `MAX_LENGTH_VALIDATION_FAILED`. *Verify:* the seeded string and numeric types of a new model (names, `maxLength`, `regExp`) against the project template before documenting them.
+String type limits are model data, not platform constants; the platform enforces a string type's `maxLength` with `MAX_LENGTH_VALIDATION_FAILED`. The seeded string types in the platform test fixture models are `String` (`maxLength` 255), `Text` (250), `Phone` (20), `URL` (1024) and `Email` (255, with an email `regExp`). A new model may change them, so check its own types before relying on these limits.
 
 ### Cardinality Conventions
 

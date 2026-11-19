@@ -94,7 +94,7 @@ With `modelNames` empty, only root model declarations are candidates; the build 
 
 ### RDBMS naming prefixes
 
-Generated tables, columns, foreign keys, inverse foreign keys and junction tables use configurable prefixes `T_`, `C_`, `FK_`, `FK_INV_`, `J_`; each can be overridden, and `-` suppresses the prefix. They are set in the workflow plugin configuration. Entity tables are therefore named like `T_ENTITIES_<NAME>` (for example `T_ENTITIES_ADDRESS`) and columns `C_<NAME>`.
+Generated tables, columns, foreign keys, inverse foreign keys and junction tables use configurable prefixes `T_`, `C_`, `FK_`, `FK_INV_`, `J_`; each can be overridden. An empty value removes the prefix; any other value, including `-`, is used as written. They are set in the workflow plugin configuration. Entity tables are therefore named like `T_ENTITIES_<NAME>` (for example `T_ENTITIES_ADDRESS`) and columns `C_<NAME>`.
 
 ### Indexes
 
@@ -134,7 +134,7 @@ The generator `jaxrs-cxf-client-osgi-ds` (`openapi-generator-cxf-jaxrs-client-os
 
 ## Generator Fragment Slots
 
-Fragments are files named `<target>.<slot>.fragment.hbs`: `feature.xml` slots `extra-repositories`, `extra-bundles`, `model-bundles`; each module `pom.xml` slots `project-definition`, `properties-definition`, `extra-plugin-management`, `extra-plugins`, `extra-dependencies`; the root pom `extra-modules`. Slot names come from the `<!-- To define create ... -->` markers in the generated file. Tools that scan for overrides should glob `*.fragment.hbs`. See also the [Backend README](../backend/README.md).
+Fragments are files named `<target>.<slot>.fragment.hbs`: `feature.xml` slots `extra-repositories`, `extra-bundles`, `model-bundles`; each module `pom.xml` slots `project-definition`, `properties-definition`, `extra-plugin-management`, `extra-plugins`, `extra-dependencies`; the application `pom.xml` `extra-modules`. Slot names come from the `<!-- To define create ... -->` markers in the generated file. Tools that scan for overrides should glob `*.fragment.hbs`. See also the [Backend README](../backend/README.md).
 
 ## Custom Keycloak Login Theme
 

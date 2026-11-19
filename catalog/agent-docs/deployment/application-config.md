@@ -124,6 +124,8 @@ JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL    → keycloakAuthPublicUrl
 
 **Pool and datasource factory parameters:** the connection pool is selected by `rdbmsDbPool` (env `JUDO_PLATFORM_RDBMS_DB_POOL`; options `none`, `hikari`, `dbcp2`, `transx`; default `hikari`). There is no `rdbmsDbPoolType` or `dbPoolType`. `managedDatasourceFactory` (options `none`, `transx`) defaults to `none`, meaning transactions are handled by the JDBC datasource; `transx` wraps the datasource in the Transx JTA transaction manager.
 
+**Guice PostgreSQL pool size:** the Guice PostgreSQL module stores a `poolSize` setting (default `10`) but does not apply it: `PostgresqlDataSourceProvider` wraps the driver in a `HikariDataSource` without setting a maximum pool size, so HikariCP's own default applies.
+
 For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtime](./spring-boot-runtime.md). For runtime datasource behaviour (pax-jdbc keys, version checks) see [OSGi Runtime Services](./osgi-runtime-services.md).
 
 ### 2. Keycloak (Security)
@@ -143,6 +145,9 @@ For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtim
 
 **JUDO_PLATFORM_KEYCLOAK_MANAGEMENT_ENABLED / JUDO_PLATFORM_USER_MANAGER_ENABLED / JUDO_PLATFORM_KEYCLOAK_USER / JUDO_PLATFORM_KEYCLOAK_PASSWORD**
 - **Description**: Enable the built-in Keycloak user management and the Keycloak admin credentials the backend uses for it (seen in production Compose files of real applications). When unset, the admin user is `admin` and the admin password is `judo`.
+- The `JUDO_PLATFORM_*` variables in this section are read by the OSGi configuration mapper. The Guice runtime does not read Keycloak settings from environment variables: `JudoKeycloakModule` binds them from the `JudoKeycloakModuleConfiguration` object.
+- In the Guice runtime, `JudoKeycloakModule` binds the Keycloak server URL from `JudoKeycloakModuleConfiguration` (default `http://localhost:8080/auth`). The `KeycloakConnectorProvider` field default (`http://localhost:8080`) applies only when no server URL binding exists.
+- In the Guice runtime, the Keycloak admin password comes from `JudoKeycloakModuleConfiguration` (default `judo`). The `KeycloakConnectorProvider` field default (`admin`) applies only when no admin password binding exists.
 
 ### 3. REST API
 

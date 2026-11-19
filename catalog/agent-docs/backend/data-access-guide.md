@@ -552,6 +552,8 @@ Per multi-valued relation the DAO generates `count<Rel>(owner)`, `create<Rel>(ow
 
 For calls the fluent SDK cannot express, the generic `DAO` accepts a `QueryCustomizer` (Lombok `@Builder`) with `filter` (a JQL expression string), `orderBy` entries (`OrderBy.attribute` is `@NonNull`), `seek`, `withoutFeatures`, `mask`, `parameters` and `instanceIds`.
 
+The generated update call passes the access `QueryCustomizer` that the dispatcher builds for the caller into the DAO update. The runtime does not re-check derived-path membership after the write. Custom operations and direct DAO writes that do not pass such a customizer are not limited by the caller's membership filter, so enforce membership in the operation itself.
+
 ### The `Payload` Type
 
 `Payload` (`hu.blackbelt.judo.dao.api.Payload`) is a `Map<String, Object>` with static factories `asPayload(map)`, `map(k1, v1, ...)` (overloads for 1 to 20 key/value pairs), `map(Entry...)` and `entry(k, v)`, and typed accessors `getAs(Class<T>, String)`, `getAsPayload(String)` and `getAsCollectionPayload(String)`. `getAs` returns `null` for an absent key, so do not unbox it directly (`Boolean.TRUE.equals(...)`).

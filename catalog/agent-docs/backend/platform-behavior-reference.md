@@ -29,6 +29,7 @@ Platform behaviours that surprise backend developers and are not visible in the 
 - The check happens in `UpdatePayloadDaoProcessor` and **only when the update payload contains `__version`**: it must equal the stored version, otherwise `IllegalArgumentException("Outdated instance to update")`. If `__version` is absent, no check is performed, so omitting it silently disables the guard.
 - At SQL level the `VERSION` predicate is added only to the meta `UPDATE` (`WHERE ID = :id AND VERSION = :__version`), not to the attribute `UPDATE`. A stale version makes the statement update no rows, and the executor fails with "There is illegal state, no records updated".
 - Clients must echo `__version` back and handle the stale-update error. Custom update operations that rebuild payloads must carry the current version.
+- The generated TypeScript REST client copies `__version` only when its runtime type is `string`, but the generated `JudoStored` type declares it as `number`, so a UI built on that client drops the version on update. Send `__version` explicitly in the update payload until the generator copies numbers.
 
 ## Reserved Payload Keys
 
@@ -122,6 +123,7 @@ On the wire, the download request is `GET /download?id=<fileId>` with the `X-Tok
 - Generated EC keys always use the P-521 curve, whatever `ES256` or `ES384` algorithm is configured.
 - `UploadAction` hands the received file items to its `executeAction` method and does not store them in `FileStoreService`; `UploadServlet.doPost` stores each item with `put`.
 - `DownloadServlet` has no size limit setting; only `UploadServlet` has `maxSize`.
+- Every file the generated frontend downloads comes through the app's `download` path (`/<app>/download`, served by `DownloadServlet`). An operation's `downloadToken` is redeemed on that path.
 
 ### Excel Export Operations
 
@@ -171,6 +173,7 @@ Identifier or number sequences default to database sequences. To plug in your ow
 - The shared Jackson `ObjectMapper` is obtained with the OSGi filter `(&(source=judo-services-jackson-objectmapper)(type=extended))`. `JacksonProvider` reads `JacksonProvider.SerializationFeature.<NAME>` and `JacksonProvider.DeserializationFeature.<NAME>` configuration keys.
 - Each CXF bus is a `CxfContext` component (`configurationPolicy=REQUIRE`, required `busId`). Its optional keys are `interceptors.in.components`, `interceptors.out.components` and `interceptors.fault.components` (OSGi filters selecting `org.apache.cxf.interceptor.Interceptor` services), `metrics.enabled` and `logging.enabled` (both default `false`), `wadl.service.description.available` (default `true`) and `skip.default.json.provider.registration` (default `true`). The application manager creates the default bus `DEFAULT_CXF_BUS_FOR_JAXRS_APPLICATIONS`; a `BasicApplication` can use another context through its optional `CxfContext` reference.
 - Request correlation: see `X-Exchange-Id` in the [Debugging and Monitoring Guide](debugging-and-monitoring-guide.md).
+- The platform does not provide Server-Sent Events. No SSE classes or `text/event-stream` handling exist in the JUDO sources, and the Karaf features install only the upstream `cxf-jaxrs` feature (Apache CXF 3.6.8). An SSE endpoint needs a CXF SSE module that the platform does not install.
 
 ## Configuration Mapper for Custom Parameters
 

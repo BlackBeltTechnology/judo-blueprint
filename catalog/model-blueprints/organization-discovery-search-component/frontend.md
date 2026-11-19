@@ -6,6 +6,8 @@ The generated discovery panel shows organizations as a table. This pattern repla
 
 **Registration:** the discovery panel must be exposed by the model as a custom implementation element. Register the component with `registerService(CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY, ..., { component: <ELEMENT>_COMPONENT_INTERFACE_KEY })`, using the per-element key generated in the container's `customization.ts` and the register function from the generated scaffold. For a table the props type is `TableProxyProps` from `~/custom`. Do not reuse another project's key.
 
+**Layout:** a generated container's layout is replaced only through its custom implementation element: the frontend registers a component for the element's key, and the generated page renders it through a component proxy. The generated `data-name` attributes (for example `PageHeaderContainer`) identify the element in the DOM; they are not a replacement hook.
+
 **Container:** a container component wires the three parts together: the filters, the seek-based pagination and the infinite scroll. The infinite-scroll hook can be shared with other list components in the same frontend.
 
 **Cards:** each organization is one card with a logo avatar (letter fallback), name, address, contact details and capability chips. The logo is a binary token. Convert it to a blob URL with a small hook and release the URL when the card unmounts.

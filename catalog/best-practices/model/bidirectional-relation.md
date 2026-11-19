@@ -22,7 +22,7 @@ Two entities need to navigate to each other and the platform should keep both en
 ### Declare both ends and point them at each other
 
 - A TwoWayRelationMember exists only on entities, never on transfer objects. Each end names the other as its `partner`. The two ends may have different cardinalities: a Customer has `0..*` orders, an Order has `0..1` customer.
-- When the CLI creates a `TwoWayRelationMember`, it also creates the partner end, named after the target type in lower case (for example `a` for type `A`) and with cardinality `0..1`. Rename the partner and set its cardinality (`0..*` for many-to-many) right after creating it; a JQL expression over a collection fails if the partner is still `0..1`.
+- When the CLI creates a `TwoWayRelationMember`, it also creates the partner end on the target type, named after the source type (the type that declares the new member) with a lower-case first letter (for example `b` when the member is declared on `B`, `a` when declared on `A`) and with cardinality `0..1`. Rename the partner and set its cardinality (`0..*` for many-to-many) right after creating it; a JQL expression over a collection fails if the partner is still `0..1`.
 - Setting the relation from either side changes the other, because it is one stored relation seen from two ends. There is no second column to keep in step.
 - Many-to-many is allowed (`0..*` on both ends). Exactly one end of each pair is `primary`, which resolves ownership of the stored relation; a convention is to make the "many"/owning side primary.
 

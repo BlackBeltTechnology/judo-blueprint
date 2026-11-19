@@ -401,6 +401,7 @@ placeholder: {
 - A table emits its columns inside a `columns` wrapper (for example `dataTable.columns.nameColumn`); its filters, `toolbarActions` and `rowActions` are wrapped the same way. Where the examples on this page show columns or actions directly under the table, read them with this wrapper.
 - Tab elements are flagged with a boolean `tabElement` (set by `setTabElement(true)`) and a `tab` property; they are not tagged with a `tab` category.
 - The only dialog suffix emitted is `-dialog-title`, on filter leaves. Suffixed ids such as `-action-confirm`, `-action-cancel` or `-dialog-close-wrapper` are not generated as visual element ids.
+- A node with no children is emitted as a leaf that carries only `id` and `label` (binary inputs and filters get their extra keys). A container, table or tab element without children therefore has no `_id`, `_label` or `tab` entries.
 
 ### Tab Bar Component
 

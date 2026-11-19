@@ -20,6 +20,10 @@ The accept form holds the password and its confirmation. Render both as password
 
 When the backend refuses an expired or unknown key, show a clear message and no form. Do not show the accept form for an invitation the backend has already refused.
 
+### List counts and per-row actions
+
+A list call also returns the record count when the request sends a non-blank `X-Judo-CountRecords` header; the rows are still returned. A row action is hidden per row with the button's hidden condition; the generated table evaluates it for each row.
+
 ## Examples
 
 ### Variant seen in practice
