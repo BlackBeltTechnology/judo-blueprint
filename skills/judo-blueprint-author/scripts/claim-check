@@ -27,7 +27,7 @@ def body(p): return p.read_text()
 def strip_code_comments(t): return t
 checks=[
  # (id, regex, scope predicate, explanation, allow-context regex on the same line)
- ("A1 AGGREGATION via CLI", r"(create|update)[^\n`]*relationKind=AGGREGATION|--set aggregation=true", None, "CLI cannot set AGGREGATION", None),
+ ("A1 AGGREGATION via CLI", r"(create|update)[^\n`]*relationKind=AGGREGATION|--set aggregation=true", lambda p:'agent-docs' not in str(p), "no CLI commands in entries; CLI rejects AGGREGATION on entity relations (valid: ASSOCIATION, COMPOSITION), accepts it on transient TO relations", None),
  ("A1 AGGREGATION unqualified on entity rel", r"\bAGGREGATION\b", lambda p:'agent-docs' not in str(p), "entry mentions AGGREGATION, check it is not presented as CLI-settable", r"not valid|rejects|modeling tool|XMI|asymmetric|owner end|cannot|only accepts|ASSOCIATION"),
  ("A2 unmapped panel as access target", r"unmapped[^.\n]{0,80}(panel|dashboard|view model)|(panel|dashboard|view model)[^.\n]{0,80}unmapped", None, "Access target must be mapped", r"must be mapped|have to be mapped|not as an access target|operation input|rejected|rejects"),
  ("A3 palette.ts edit without model hint", r"palette\.ts", lambda p:'agent-docs/frontend/theming.' not in str(p) and 'README' not in p.name, "prefer ActorType colours", r"ActorType|actor colour|actor color|model-driven|Prefer the model|only for values|generated"),

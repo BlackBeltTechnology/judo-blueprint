@@ -316,7 +316,7 @@ Modify the generated navigation menu structure.
 
 ### Adding Menu Items
 
-Menu item `id` values of generated entries are the model element ids with `@` removed (long strings), so ids such as `dashboard` or `entities` in the examples below are placeholders: match on `title` (the model `label`, when set) or on a suffix of the real id, and log `menuItems` once to see them. Valid `type` values are `'group'`, `'collapse'` and `'item'`. A top-level entry with children is a `group`; a nested entry with children is a `collapse`; a leaf is an `item`. The drawer renders top-level entries only as `group` or `item`, so a top-level custom entry typed `collapse` renders wrongly.
+Menu item `id` values of generated entries are the model element ids with `@` removed (long strings), so ids such as `dashboard` or `entities` in the examples below are placeholders: match on `title` (the model `label`, when set) or on a suffix of the real id, and log `menuItems` once to see them. Valid `type` values are `'group'`, `'collapse'` and `'item'`. A top-level entry with children is a `group`; a nested entry with children is a `collapse`; a leaf is an `item`. The drawer renders top-level entries only as `group` or `item`, so a top-level custom entry typed `collapse` renders wrongly. Group and item titles are translated with `t('menuTree.<title>', { defaultValue: title })`. The generator emits `menuTree.<label>` keys only for model navigation labels, so a group title created in a hook has no key and shows its English title in other locales. Known issue; workaround: add `"menuTree.<Group title>": "<translation>"` to each locale's application translation file for every title that a hook creates.
 
 ```typescript
 // src/custom/hooks/menuCustomizer.tsx

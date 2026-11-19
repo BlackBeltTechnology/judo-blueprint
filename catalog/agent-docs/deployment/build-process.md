@@ -365,6 +365,8 @@ When `./judo.sh build -i` fails in the frontend reactor (typically after model o
 
 After renaming a transfer object, container or page, the generated names derived from it change: customization component names and interface keys (`<ContainerComponentName>...Component`, upper-snake `..._INTERFACE_KEY`), page and dialog folders. Rename the matching custom files and constants by hand, delete the stale generated `src/pages/`, `src/dialog/`, `src/containers/` and `src/services/` folders, then run `./judo.sh build -i`.
 
+**Known issue: UI validation errors print as `{}: {}`.** The UI validation step logs through `StringBuilderLogger`, which formats messages with `String.format`. Slf4j-style `{}` placeholders are not replaced, so each failing UI constraint is logged as the bare line `{}: {}` with no constraint name or message. The Java validator path (`UiJavaValidator`) logs this way; the build reaches it when the Epsilon UI executor cannot be loaded, and then logs `Validator class ... not found. Using fallback.` Workaround: run `judo-cli -m <model-path> validate`, which prints each UI finding as `error ui <constraint> <element>: <message>`, and fix the reported constraints. Platform fix: format the placeholders in `StringBuilderLogger` the way slf4j does.
+
 ## Stale Artifacts and Multi-Module Build Order
 
 - A JUDO application is a Maven reactor (model, schema, sdk, internal, app, common). The SDK POM is regenerated at `generate-sources` **from the installed model jar in `~/.m2`**, not from the edited model source, so a stale installed jar poisons the whole chain. Building `sdk` standalone fails with `Could not collect dependencies` until model and schema are installed; then use `-pl` with `-o` and `validateModels=false`.
@@ -588,6 +590,10 @@ export MAVEN_OPTS="-Xmx4g"
 
 **Solution:**
 - Increase Maven memory: `export MAVEN_OPTS="-Xmx4g"`
+
+### Duplicate type imports with a third actor (known issue)
+
+A third actor can break the generated frontend build: `./judo.sh build` stops at `pnpm run format` (biome) with `Declarations inside of a import declaration may not have duplicates` (for example `import type { CsvFile, CsvFile, ... }`) when an operation has an input and an output of the same type. The template emits one import per entry of `getApiImportsForPage`, built from a `HashSet<ClassType>` that deduplicates by object identity, so two `ClassType` objects for one class produce duplicate lines. It appears with any third actor (human or system, anonymous or not) and disappears when the third actor is removed. A two-actor build right after a model switch (for example after leaving a branch with the third actor) can show the same error from a stale, mixed model; run `./judo.sh generate` and `./judo.sh build -i` again before blaming the actor count. Workaround: keep the frontend to two actors and route the extra operation through an existing actor.
 
 ## Best Practices
 

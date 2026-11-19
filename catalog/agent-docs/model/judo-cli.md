@@ -50,7 +50,7 @@ These rules are **platform invariants**, not preferences. Violating them produce
 
 2. **Never edit the `.model` XML file directly.** Even tiny hand edits can break `xmi:id` references in distant parts of the file. Always go through CLI mutations.
 
-3. **Always paginate query results.** Use `limit`, `offset`, and `totalCount` together. Without explicit pagination, large result sets are silently truncated and the assistant operates on a partial view of the model.
+3. **Always paginate query results.** Use `limit`, `offset`, and `totalCount` together. `query` and `graphql` apply `limit` only when it is given, so without it every match is returned and nothing is truncated by the CLI. Helper scripts that pass a fixed `--limit` (for example `--limit 800`) do truncate silently, so check `totalCount` against the number of items returned.
 
 4. **One writer per model file.** A model file is changed by exactly one CLI session at a time. Never point two agents, two terminals or a CLI and the Designer at the same `.model` file: each holds its own in-memory copy and the last `save` silently overwrites the other's edits.
 
@@ -127,8 +127,13 @@ The CLI runs one daemon per model. Its session lives under `~/.judo/sessions/<ha
 - **A type change must reach the mapped members.** Changing the `dataType` of an entity member leaves the mapped member of each transfer object on the old type; `validate` warns `Data type of data member ... must match the data type of its binding`. Update the mapped members too.
 - **Gate `save` on `validate`.** `validate` exits non-zero when it reports a validation error (`--strict` is deprecated and not needed for the exit code); chain `validate && save` (not `;`), otherwise an invalid model is written to disk.
 - **Duplicate FQNs.** `update` acts on the first element with a given FQN and there is no suffix to select the other; give the elements distinct names first.
+
+#### Types, parameters, relation kinds and scripts
+
 - **`MimeType`** has no `name` in its `CreateInput` either (the name derives from type and subType); `create -t MimeType -n ...` fails with `contains a field name ... not defined for input object type 'MimeTypeCreateInput'`. Working form: `create -t MimeType --ns <ns> -s type=application -s subType=json` (creates `application/json`). `BinaryType.mimeTypes` rejects a comma-separated list on `create` (`-s mimeTypes=a,b` fails with `'a' is not an allowed value`).
 - **Operation parameters** are declared with `containment` + `target`, not type/direction.
+- **`managed` on an anonymous actor is refused.** `create -t ActorType ... -s anonymous=true -s managed=false` fails with `managed: does not apply to this ActorType (applies when not anonymous)`; leave `managed` out. The stored value then stays at its default (`true`), which has no effect for an anonymous actor without a principal (see [Anonymous vs Authenticated Behaviour](esm_metamodel/accesspoint.md)).
+- **`relationKind` per layer.** On an entity relation `create -t OneWayRelationMember ... -s relationKind=AGGREGATION` is refused (`valid ASSOCIATION · COMPOSITION`). On a transient relation of an unmapped transfer object `AGGREGATION` is accepted (and is the required kind); `ASSOCIATION` is still created there and only `validate` reports `must be aggregation if transient`, so run `validate` before `save`.
 - **A failed script leaves its earlier edits in memory** (and in the overlay), so running it again duplicates elements: `discard --force` before retrying. `discard` reverts **all** unsaved edits, not only the last one.
 #### Validation, history and action placement
 

@@ -41,7 +41,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/esm_metamodel/structur
 - Unmapped TO transient relation: target must be `AGGREGATION`. ASSOCIATION fails: `Relation: <rel> (in: <TO>) must be aggregation if transient.` / `Unmapped transfer object type: <TO> can only have aggregation kind relations.`
 - CLI default relationKind for relations is AGGREGATION; set `relationKind`, not `aggregation=true` (rejected read-only).
 - Unmapped target → UI treats relation as inline transient (create inline). Mapped target → pick from existing instances.
-- Open verify item: meaning of `mutable input.<rel>` for transient relation in JCL, and widget (nested form vs picker).
+- `mutable input.<rel>` in JCL wraps the operand as a mutable expression (`immutable` sets the immutable flag instead). Unmapped target → nested inline form (inline create); mapped target → picker.
 - DataMember attribute availability: `identifier` only in EntityType AND STORED; `defaultExpression` only STORED; `binding` only MAPPED; `required` always.
 - Read-only: MAPPED AND binding source read-only.
 - TwoWayRelationMember: `partner` required; `primary` for many-to-many; `reverseCascadeDelete` = partner side also cascade delete.

@@ -463,6 +463,7 @@ Then, on each `ActorType` that should see the entity:
 | `RelationColumn` used on a **top-level** `TransferObjectTable` (the one backing an `Access` / menu entry) | Frontend **codegen bug**: emits broken relation refs in the generated list screen (observed symptom: dangling `View<X>Stored`-style references, e.g. `ViewGalaxyStored`), plus fragile sorting / filtering and runtime errors | Do **not** put `RelationColumn` on top-level tables. Show related data via either (a) a `TabularReferenceField` placed inside the `<view>`/`<form>` of the detail page, or (b) a plain `DataColumn` bound to a mapped scalar `DataMember` (bound or `DERIVED`) on the TO that flattens the related value (e.g. `owner.fullName`). Reserve `RelationColumn` for embedded relation tables inside a detail screen where navigation semantics are expected. |
 | Multiple sibling TOs each using the bare names `View` / `Form` / `Table` for their UI containers | FQN collisions (`<package>::View` etc.) — downstream tooling resolves the wrong sibling, generator output is non-deterministic, references break after regeneration | Rename container elements to `<TO>View` / `<TO>Form` / `<TO>Table` **before** populating them with components. Renaming after wiring forces re-pointing every contained binding. |
 | Adding `minValueBy`/`maxValueBy` on a DataField inside a `TableOperation` | Attribute disabled/ignored | Put range constraints on the non-table `DataField` instead |
+| Operation forms placed in the view of a derived singleton access (`Access` with `accessType=DERIVED`) | The Maven UI validation fails with `ActionContainerSameWithActionDefinition` and `NamedElementHaveToBeInApplication` on the access page's `OperationFormCallAction` and on the `::Open::Operation::Form` / `::ViewOperation` definitions, while `validate` may pass (known issue) | Remove the generated operation forms from that view and call the operations through a custom component or the generated service |
 
 ---
 
@@ -661,6 +662,8 @@ Sort and filter controls appear only for references whose target is mapped and h
 ### Placing a feature into a relation table
 
 A column of a relation table belongs to the target transfer object of the relation. Address the table element, not the page: `update <viewFqn>::<relation> --add feature --feature <member>` (the member is a feature of the relation's target type). On the page element the same name fails with `'<member>' is not a feature of <PageTO> placeable here`. The error also fires when the member is already placed; the `valid` list that follows shows only the features that can still be placed. `fill <TO>` already places a column for every member.
+
+Known issue: a `DataField`, `DataColumn` or `RelationColumn` that `fill` or `update <table> --add feature` creates gets an explicit `label` at creation: the member name with only its first letter capitalized (`TotalLabel`, not `Total Label`). The generated table shows that label as the column header; the generator splits words only when `label` is unset. Workaround: set a readable header on each such column with `update <column-fqn> --set label=<Header text>` (for example `<TO>::<TO>_Table::<member>`), including columns added after `fill`, and check with `query esm DataColumn --select label`.
 
 ### Embedded tables in a view and `isEager`
 

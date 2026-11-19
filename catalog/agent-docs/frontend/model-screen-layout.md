@@ -743,7 +743,7 @@ The ESM relation member types directly control which UI actions are generated:
 | `MAPPED` | Direct mapping to entity relation | Full CRUD based on flags |
 | `DERIVED` | Computed/read-only relation | No Create, limited Update/Delete |
 | `TRANSIENT` | Temporary/non-persisted | View only, no CRUD actions |
-| (null/absent) | Direct entity relation | Based on entity CRUD flags |
+| (null/absent) | Direct entity relation | Based on the relation's CRUD flags (entity-level flags do not block writes on mapped transfer objects) |
 
 **Example ESM definitions:**
 
@@ -862,14 +862,14 @@ The `primary="true"` side typically gets the table view with CRUD actions.
 
 ### ESM Entity Type Flags
 
-Entity-level flags affect all transfer objects mapped to that entity:
+Entity-level flags are stored on the entity and do not by themselves block create, update or delete on the transfer objects mapped to it; the actor's access points and the relation flags decide those writes. The example shows the flags on the entity:
 
 ```xml
 <elements xsi:type="structure:EntityType"
   name="Order"
-  createable="true"   <!-- Entity can be created -->
-  updateable="true"   <!-- Entity can be updated -->
-  deleteable="true">  <!-- Entity can be deleted -->
+  createable="true"   <!-- Stored on the entity; the generator does not read it for create -->
+  updateable="true"   <!-- Stored on the entity; the generator does not read it for update -->
+  deleteable="true">  <!-- Stored on the entity; the generator does not read it for delete -->
 ```
 
 ### ESM Operations to UI Actions

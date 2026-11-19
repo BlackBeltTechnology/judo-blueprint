@@ -532,6 +532,7 @@ Alternatively count all rows minus `isTrue` minus `isFalse`.
 - **Setter names for embedded mapped relations contain a double dot** (`relation..name`) in the collection branch of the generated create builder (template bug).
 - **`count()` with query parameters references an undeclared variable.** The generated `count()` passes `effectiveParams.toMap()` when `self.hasParam` is set, but the class never declares `effectiveParams`, so the emitted code fails to compile in that case.
 - **PostgreSQL `max_uuid` helper returns its first argument.** The helper always returns the first argument, so `max` aggregates over UUID values return the wrong value.
+- **A single-valued reference loaded through a sub-select runs one statement per parent row.** When the sub-select is not joined directly to the root query, or has a limit, the runtime loads the reference with one SQL statement per parent row, so the time grows with the number of parent rows. Derived members in the reference's mask (their getter expressions) are evaluated inside each of those statements. Workaround: map the referenced entity with a smaller transfer object that leaves out the derived members the page does not show, or compute the value on the referenced entity once. The per-row loop is the code path behind this growth.
 - Generated DAO code lives under `target/` and is not in git; when debugging a stack trace, open the generated `<Entity>DaoImpl` there.
 
 ### Pagination

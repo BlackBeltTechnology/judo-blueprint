@@ -2,7 +2,7 @@
 
 ### Let the anonymous page read the key from the link
 
-The acceptance page belongs to an anonymous actor, so it is reached without signing in. The platform's guest-page hook (`supportGuestAccess`) only governs what an unauthenticated visitor sees at the root; this entry's page is an anonymous actor's own app. It reads the key from the query parameter of the link, and sends the key with each API call so the backend can find the invitation. Register one request interceptor for this (the generated frontend uses an axios request interceptor for header enrichment, see the platform's advanced patterns), not one per call. The key-in-URL scheme is common practice.
+The acceptance page belongs to an anonymous actor, so it is reached without signing in. The generated app of an actor without a principal has no sign-in: it creates no OIDC provider, no `Auth` wrapper and no token interceptor, and the metamodel marks `supportGuestAccess` as applicable only to actors that are not anonymous. An actor with a principal, even an unmapped one, gets the sign-in wrapper instead. It reads the key from the query parameter of the link, and sends the key with each API call so the backend can find the invitation. Register one request interceptor for this in the project's `custom` folder, which runs before the app renders, not one per call. The key-in-URL scheme is common practice.
 
 ### Redirect after accept or cancel
 

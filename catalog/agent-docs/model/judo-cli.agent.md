@@ -83,6 +83,8 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 ### Known limitations and gotchas
 
 #### Creating, filling, changing
+- Anonymous `ActorType`: `-s managed=...` refused (`applies when not anonymous`); omit it (stored default `true`, no effect).
+- `relationKind=AGGREGATION`: refused on entity relations (valid `ASSOCIATION`, `COMPOSITION`); accepted and required on transient relations of unmapped TOs (`ASSOCIATION` there only fails `validate`).
 - Reference-derived UI elements (`DataField`, `DataColumn`, `DataFilter`, `ReferenceField`/`TabularReferenceField`, `OperationForm`, `Inherited*`) have NO `name` in CreateInput; name/FQN come from binding (`dataFeature`, `relationFeature`, `operation`). Passing `name` → `contains a field not in <Kind>CreateInput: name`. Place with `update <container> --add feature ...` or `create -t ... --set dataFeature=...`. "No name field" can mean ambiguous FQN.
 - `RowOperation`: no create type; if CLI can't express it, edit that one XMI element by hand and verify with `validate` (`model-development.md`).
 - Don't hand-add members to mapped TO: `create -t TransferObjectType -s mapping=<entity>` creates mapped members and view/form/table pages. Duplicate → `Named element ... is not unique in its container`; unbound mapped member → `Mapped data member ... must have binding`.

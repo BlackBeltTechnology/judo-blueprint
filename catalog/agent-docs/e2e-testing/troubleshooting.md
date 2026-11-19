@@ -261,6 +261,21 @@ await page.getByTitle('Upload file').click();
 (await chooser).setFiles('path/to/file.png');
 ```
 
+#### Typed date keys are lost, or keys typed into a second date field land in the first
+
+**Cause**: Generated date fields (`DatePicker`) call `storeDiff` on every change, with no debounce, unlike text fields. The form focuses its first input 200 ms after mount (`autoFocusRefDelay`). If a burst starts in a second date field before that timer fires, focus moves back to the first field and the keys go there.
+
+**Solution**: Wait for the first input to lose the autofocus, then type into the target field with real key presses and check the value:
+```typescript
+const target = page.getByRole('textbox', { name: '<SecondDateLabel>' });
+await page.waitForTimeout(300); // autofocus timer (200 ms) has fired
+await target.click();
+await target.pressSequentially('<date text>', { delay: 20 });
+await expect(target).not.toHaveValue('');
+```
+
+**Known issue**: The timer explains the focus move. Lost keys inside a burst after the timer has fired are not explained by the generated code; this has not been reproduced in a browser, so check the value after each date field.
+
 ### Relation Issues
 
 #### Autocomplete doesn't show options
