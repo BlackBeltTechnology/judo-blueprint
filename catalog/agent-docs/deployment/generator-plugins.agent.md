@@ -20,7 +20,7 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/generator-plugins
 
 ## Tatami Workflow Plugins
 - Client `default-workflow`: `saveModels` and `validateModels` default `false`; models are saved only with `saveModels=true` or on failure.
-- JSL `default-model-workflow`: `dialects` default `postgresql,hsqldb`, `transformationMode` `ETL`, `saveModels` `true`; column length key is `rdbmsColumnMaxNameSize`.
+- JSL `default-model-workflow`: `dialects` default `postgresql,hsqldb`, `transformationMode` `ETL` (set `ZETA` for Zeta; the ESM client workflow already defaults to `ZETA`), `saveModels` `true`; column length key is `rdbmsColumnMaxNameSize`.
 - JSL `generator-maven-plugin`: more than one root model with empty `modelNames` fails with `Multiple root model`.
 - RDBMS prefixes `T_`, `C_`, `FK_`, `FK_INV_`, `J_` (configurable; `-` suppresses).
 

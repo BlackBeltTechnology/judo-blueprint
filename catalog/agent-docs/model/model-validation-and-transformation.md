@@ -66,7 +66,7 @@ A transfer object used as a `CREATE_INSTANCE` or `VALIDATE_CREATE` target must n
 
 ## Transformation Mode and Generation Switches
 
-The tatami engine runs in `ETL` (Epsilon), `ZETA` (Java) or `DUAL` (both, compared) mode, chosen with `-Djudo.transformation.mode=ETL` or per step with `transformationMode(...)`. The default is `ZETA`; use `ETL` to compare when debugging.
+The tatami engine runs in `ETL` (Epsilon), `ZETA` (Java) or `DUAL` (both, compared) mode, chosen with `-Djudo.transformation.mode=ETL` or per step with `transformationMode(...)`. The default is `ZETA` (`TransformationMode.DEFAULT`, used by the ESM client workflow, which has no mode parameter); use `ETL` to compare when debugging. Exception: the JSL workflow plugin (`default-model-workflow`) defaults to `ETL`; set `transformationMode=ZETA` there to use Zeta ([generator plugins](../deployment/generator-plugins.md#jsl-model-workflow-judo-tatami-jsl-workflow-maven-plugin-goal-default-model-workflow)).
 
 ESM-to-PSM is gated by `generateActors`, `generateOperations`, `generateBehaviours`, `generateTransferObjectTypes` and `generateDefaultTransferObjectTypes` (all `true`) and `stringMaxLength` (65536). The switches are not uniform: default-transfer-object attribute rules follow `generateDefaultTransferObjectTypes`, and the query customizer, ordering and filter families follow `generateBehaviours`; but not every rule is guarded (query ordering, filter and seeking types and the upload-token type are generated regardless).
 
