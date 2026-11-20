@@ -47,7 +47,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - `fill <toFqn> [--pages view,form,table]`: create/populate TO view/form/table from members.
 - `split <container> --layout VERTICAL|HORIZONTAL`.
 - `merge <theirs.model> --base <base.model>`: three-way merge. Conflict kinds: `change-change`, `delete-change`, `change-delete`, `add-add`, `validation`; resolve `--take <key>`, `--prefer mine|theirs`, or printed fix commands.
-- `validate [--strict]`: ESM EVL, esm2ui/UI EVL, transform dry run, in-memory. `--strict` deprecated: errors always exit non-zero.
+- `validate [--strict]`: ESM EVL, esm2ui/UI EVL, transform dry run, in-memory. `--strict` deprecated (warns since `1.1.0.20261119_155735_a64aa981_develop`): errors always exit non-zero. Since `1.1.0.20261119_155735_a64aa981_develop` UI check = build's `Esm2UiWork`, engine `judo.transformation.mode` (default Zeta) → same verdict as Maven.
 - `transform [--load] [--skip steps] [--validate]`.
 - `status [--json]`: clean/dirty, unsaved changes and intent.
 - `save` / `discard [--force] [--derived]`: `save` never runs git.
@@ -74,7 +74,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - `status` stuck dirty after save/discard → `discard --force`; last resort: stop server and delete overlay by hand.
 
 ### Version and jar pitfalls
-- `--version` shows stale `1.0.0` (baked manifest). Real versions: Maven properties `judo-model-cli-version` and `judo-meta-esm-version` in root `pom.xml`.
+- `--version` prints the CLI version. Pinned versions: Maven properties `judo-model-cli-version` and `judo-meta-esm-version` in root `pom.xml`.
 - Jar downloaded only when MISSING. After bumping versions: delete old jar, run `./mvnw -f application/model/pom.xml -N validate`.
 - Pinned jar may be newer than local CLI source; read docs at pinned commit: `git show <sha>:docs/commands/<cmd>.md`.
 - Mutations stay in memory until `save`.
@@ -87,13 +87,13 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - `relationKind=AGGREGATION`: refused on entity relations (valid `ASSOCIATION`, `COMPOSITION`); accepted and required on transient relations of unmapped TOs (`ASSOCIATION` there only fails `validate`).
 - Reference-derived UI elements (`DataField`, `DataColumn`, `DataFilter`, `ReferenceField`/`TabularReferenceField`, `OperationForm`, `Inherited*`) have NO `name` in CreateInput; name/FQN come from binding (`dataFeature`, `relationFeature`, `operation`). Passing `name` → `contains a field not in <Kind>CreateInput: name`. Place with `update <container> --add feature ...` or `create -t ... --set dataFeature=...`. "No name field" can mean ambiguous FQN.
 - `RowOperation`: no create type; if CLI can't express it, edit that one XMI element by hand and verify with `validate` (`model-development.md`).
-- Don't hand-add members to mapped TO: `create -t TransferObjectType -s mapping=<entity>` creates mapped members and view/form/table pages. Duplicate → `Named element ... is not unique in its container`; unbound mapped member → `Mapped data member ... must have binding`.
+- Don't hand-add members to mapped TO: `create -t TransferObjectType -s mapping=<entity>` creates mapped members and view/form/table pages. Duplicate name: refused at create/rename/relocate since `1.1.0.20261119_155735_a64aa981_develop` (`name '<n>' is already used`); older → `Named element ... is not unique in its container`; unbound mapped member → `Mapped data member ... must have binding`.
 - `create -t MenuItemAccess` refused. `create -t Access --ns <actor> --set target=<TO>` creates Access + `MenuItemAccess` named `Menu`; rename/reuse. Deleting an Access referenced by a menu item needs `--cascade`. New Access has `createable`/`updateable`/`deleteable` all `false`: set explicitly.
 - `fill <toFqn>` adds DataColumn + DataField per member; run `fill <toFqn> --dry-run` first; delete unwanted after. `fill`/adding DataColumns clears `Columns are not defined for the viewable table of <TO>` (`ExposedTransferObjectTableHasColumns`). DataColumn/DataFilter don't exist before `fill` or `--add feature`; `query esm DataColumn` empty until then.
 - Access with list cardinality needs table column: `create -t Access ... target=<TO>` also creates `<TO>::<TO>_Table`. Without a column → validation error, ESM invalid (`error esm Invalid model`, transform skipped). Fix: `create -t DataColumn --ns <TO>::<TO>_Table --set dataFeature=<TO>.<attribute>` or `fill <TO>`.
 - Type change must reach mapped members: change `dataType` of entity member → mapped member of each TO keeps old type; `validate` warns `Data type of data member ... must match the data type of its binding`.
 - Gate save: `validate && save` (not `;`) — otherwise invalid model written.
-- Duplicate FQNs: `update` acts on first element; no suffix to select; rename first.
+- Duplicate FQNs: since `1.1.0.20261119_155735_a64aa981_develop` writes refuse an ambiguous FQN and list `id:`s; select with `id:<xmi:id>`. Older: `update` acts on first element; rename first.
 - `MimeType` CreateInput has no `name` (derives from type/subType); `create -t MimeType -n ...` fails.
 - Operation parameters: `containment` + `target`, not type/direction.
 - Failed script leaves earlier edits in memory/overlay; rerun duplicates elements → `discard --force` first. `discard` reverts ALL unsaved edits. Recipe: `save` → script → on failure `discard --force`, fix, rerun.
@@ -104,7 +104,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - `git checkout -- model/<app>.model` reverts ALL structural changes (rule 8).
 - Merge may print `[WARN] Zeta transformation not yet implemented, falling back to ETL`; harmless.
 - Signed identifiers cannot be minted with CLI; runtime mints only while serving REST (`../backend/README.md`).
-- `move`: one-line `changed <fqn> (in components)` may name the sibling that shifted. `move <fqn> --json` prints `reordered <fqn> in <list>`; `status` shows `move <fqn> index=n` / `after=<fqn>`. Verify via `graphql` on container `components`; `discard --force` drops wrong reorder (and all other unsaved edits).
+- `move`: since `1.1.0.20261119_155735_a64aa981_develop` prints `moved <fqn> index <from> -> <to>` (`--json` `fromIndex`); older one-line `changed <fqn> (in components)` may name the sibling that shifted. `move <fqn> --json` prints `reordered <fqn> in <list>`; `status` shows `move <fqn> index=n` / `after=<fqn>`. Verify via `graphql` on container `components`; `discard --force` drops wrong reorder (and all other unsaved edits).
 - `postCallAccessNavigation`: attribute of `OperationForm` only. `--unset` refused (`cannot be cleared on OperationForm <name>`); `--clear` fails (`not a list`); `--set postCallAccessNavigation=` not allowed. Set only when final. To remove: delete OperationForm, re-place via `update <container> --add feature --feature <operation>`. Allowed values = accesses whose target type matches the operation output; `--set` lists them on error.
 - Place actions with `update <container> --add feature`. Container must exist, by exact FQN (`Container not found: <fqn>`): create ActionGroup first with `create -t ActionGroup --ns <viewFqn> -n <group>`. Operation must be member of container's TO (`'<op>' is not a feature of <TO> placeable here` lists placeable features). For relation table `<view>::<relation>`: operation of the relation's target TO.
   - Table actions: `update <viewFqn>::<relation> --add feature --feature <operation> --as rowAction|tableAction|bulkAction` → `TableOperation` with nested `OperationForm`.
