@@ -1,0 +1,179 @@
+{"key": "a003", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "a008", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a016", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a022", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a034", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a051", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a055", "points": [0, 1, 0.5], "score": 0.5, "wrong": 1}
+{"key": "a057", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a058", "points": [0.5, 0.5, 1], "score": 0.667, "wrong": 1}
+{"key": "a059", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a061", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a070", "points": [1, 1, 1, 0.5], "score": 0.875, "wrong": 0}
+{"key": "a072", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a082", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a000", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a001", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a002", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a003", "points": [0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a004", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a005", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a006", "points": [0, 1, 1], "score": 0.6667, "wrong": 0}
+{"key": "a007", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a008", "points": [0, 0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a009", "points": [0, 1, 0.5], "score": 0.5, "wrong": 1}
+{"key": "a010", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a011", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a012", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a013", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a014", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a015", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a016", "points": [0, 0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a017", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a018", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a019", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a020", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a021", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a022", "points": [0, 0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a023", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a024", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a025", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a026", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a027", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a028", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a029", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a030", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a031", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a032", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a033", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a034", "points": [0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a035", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a036", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "a037", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a038", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a039", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a040", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a041", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a042", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "a043", "points": [1, 1, 0], "score": 0.6667, "wrong": 0}
+{"key": "a044", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a045", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a046", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a047", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a048", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a049", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a050", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a051", "points": [0, 0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a052", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a053", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a054", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a055", "points": [0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a056", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a057", "points": [0, 0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a058", "points": [0, 0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a059", "points": [0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a060", "points": [0.5, 1, 1], "score": 0.8333, "wrong": 0}
+{"key": "a061", "points": [0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a062", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a063", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a064", "points": [0, 1, 1], "score": 0.6667, "wrong": 0}
+{"key": "a065", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a066", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a067", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a068", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a069", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a070", "points": [0, 0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a071", "points": [1, 1, 0.5], "score": 0.8333, "wrong": 0}
+{"key": "a072", "points": [0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a073", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a074", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a075", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "a076", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a077", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a078", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a079", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a080", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a081", "points": [1, 1, 1, 0.75], "score": 0.9375, "wrong": 0}
+{"key": "a082", "points": [0, 0, 0], "score": 0.0, "wrong": 0}
+{"key": "a083", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "a084", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b000", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "b001", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b002", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b003", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "b004", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b005", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "b006", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b007", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b008", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b009", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b010", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b011", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b012", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b013", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b014", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b015", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b016", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b017", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b018", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b019", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "b020", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "b021", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b022", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b023", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b024", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b025", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b026", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "b027", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b028", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "b029", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b030", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "b031", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "c000", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c001", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "c002", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c003", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "c004", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c005", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c006", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c007", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c008", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c009", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c010", "points": [0, 1, 0.5], "score": 0.5, "wrong": 1}
+{"key": "c011", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c012", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "c013", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c014", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "c015", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d000", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d001", "points": [0, 1, 0.5], "score": 0.5, "wrong": 1}
+{"key": "d002", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "d003", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d004", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d005", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "d006", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d007", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d008", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d009", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d010", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d011", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "d012", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d013", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "d014", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d015", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d016", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d017", "points": [0, 1, 0.5], "score": 0.5, "wrong": 0}
+{"key": "d018", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d019", "points": [0, 1, 0.5], "score": 0.5, "wrong": 1}
+{"key": "d020", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d021", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d022", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d023", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d024", "points": [1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d025", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d026", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d027", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d028", "points": [0, 1, 0.5], "score": 0.5, "wrong": 1}
+{"key": "d029", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d030", "points": [1, 1, 1, 1], "score": 1.0, "wrong": 0}
+{"key": "d031", "points": [1, 1, 1], "score": 1.0, "wrong": 0}

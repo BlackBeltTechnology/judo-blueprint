@@ -13,6 +13,7 @@ Everything used to update the catalog: sources, analyses, agent outputs, ledgers
 | `runs/gap-analysis/` | earlier session mining of the webshop run, lines 1–6093 (R0–R15): chunks, miners, validated batches, `GAP-ANALYSIS.md` |
 | `runs/gap-analysis-r16/` | session mining of lines 6094–10736 (R16–R19-18): chunks, miners, settle verdicts (`validated/`), ledgers, checker, `SUMMARY.md` |
 | `runs/apply-audit/` | audit of the 2,328 "not platform" triage verdicts: 231 platform gaps applied through batches, settle, wave 2 and checkers |
+| `runs/kbab/` | kb structure A/B test: variant scripts, session harness, metrics, blind grades, 165 archived test sessions; report `kb-structure-ab.md` |
 | `runs/cli-verify/` | CLI fix verification (fix 13 on the re-created build-test model) |
 | `runs/open-verify/`, `runs/open-verify2/` | verification of the 106 open items from judo-ng code, and the settle pass of the last 22 |
 | `judo-ng-read/` | the full judo-ng read: `findings.md`, reader/validator prompts, `review.md`, worktree update log (`wt-update.log`, latest `develop`), `judo-ng.lock`, `manifest.json` |
@@ -33,6 +34,7 @@ Every ledger reconciles with `.pi/skills/judo-catalog-expand/scripts/findings-le
 | 11-19 | Webshop gaps R16–R19 | 68 gaps | 23 platform facts applied and double-checked | `377bfa1` |
 | 11-19 | Open items from judo-ng (latest develop, CLI pin bumped) | 106 | 41 fixes, 22 already correct, 12 rejected, 9 not platform, 22 left | `8d3ce43` |
 | 11-19 | Settle the 22 left (no open status allowed) | 22 | 17 fixes, 3 already correct, 2 rejected | `133e736` |
+| 11-20 | kb structure A/B test (emoji, bold headings, generic headings, hierarchy, file split; 165 live sessions) | 9 variants + replication | no reliable gain; the 22 % gain of the file split did not replicate next to a same-time baseline (0.97, adopted form 1.00); nothing adopted, rule unchanged | this commit |
 | 11-19 | Audit of the 2,328 "not platform" triage verdicts (12 auditors) | 2,328 | 2,019 confirmed, 78 already documented, 231 platform gaps: 211 applied and checked (checkers fixed 60, removed 2), 11 rejected, 5 already correct, 4 not platform | this commit |
 | 11-19 | CLI `a64aa981` verification | fixes 4, 5, 7, 13, 16 | all confirmed; new CLI issue 21 | `828b34c`, `ea68fd5` |
 | 11-19 | Whole-run session mining R16–R19-18 | 358 mined items | 17 applied, 41 already correct, 107 duplicate, 80 not platform, 8 rejected, 18 upstream, 87 build/decision records | this commit |
