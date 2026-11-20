@@ -92,7 +92,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - `fill <toFqn>` adds DataColumn + DataField per member; run `fill <toFqn> --dry-run` first; delete unwanted after. `fill`/adding DataColumns clears `Columns are not defined for the viewable table of <TO>` (`ExposedTransferObjectTableHasColumns`). DataColumn/DataFilter don't exist before `fill` or `--add feature`; `query esm DataColumn` empty until then.
 - Access with list cardinality needs table column: `create -t Access ... target=<TO>` also creates `<TO>::<TO>_Table`. Without a column → validation error, ESM invalid (`error esm Invalid model`, transform skipped). Fix: `create -t DataColumn --ns <TO>::<TO>_Table --set dataFeature=<TO>.<attribute>` or `fill <TO>`.
 - Type change must reach mapped members: change `dataType` of entity member → mapped member of each TO keeps old type; `validate` warns `Data type of data member ... must match the data type of its binding`.
-- Gate save: `validate && save` (not `;`) — otherwise invalid model written.
+- Gate save: `validate && save` (not `;`) — otherwise invalid model written. Trust exit code, not summary (`0 errors` can follow UI errors, a64aa981).
 - Duplicate FQNs: since `1.1.0.20261119_155735_a64aa981_develop` writes refuse an ambiguous FQN and list `id:`s; select with `id:<xmi:id>`. Older: `update` acts on first element; rename first.
 - `MimeType` CreateInput has no `name` (derives from type/subType); `create -t MimeType -n ...` fails.
 - Operation parameters: `containment` + `target`, not type/direction.
