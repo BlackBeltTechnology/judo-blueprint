@@ -21,7 +21,7 @@ The catalog (`catalog/agent-docs/model/judo-cli.md`, "Known limitations and gotc
 | 10 | `MenuItemAccess` refused; the auto item is labelled with the TO name | poor default | R18-8, R18 (session L9509–L9510) |
 | 11 | `name` errors on reference-derived elements and `MimeType` are misleading | error message | R17-2, R17 (session L8803), catalog |
 | 12 | A binary type with two MIME types cannot be created | missing feature | R17-2, R17 (session L9250) (Not a defect: works once the MIME types exist) |
-| 13 | `validate` passes, the Maven UI validation of the same model fails | validator mismatch | R18-6, R19-1, R18 (session L9557–L9583), R19 (session L10381–L10390) (Fix in `a64aa981`; confirmation on the failing model pending) |
+| 13 | `validate` passes, the Maven UI validation of the same model fails | validator mismatch | R18-6, R19-1, R18 (session L9557–L9583), R19 (session L10381–L10390) (**Fixed** in `a64aa981`, confirmed on the failing model) |
 | 14 | UI validation failure prints `{}: {}` | broken log format | R18-7 |
 | 15 | `Zeta transformation not yet implemented, falling back to ETL` on every merge | noise | catalog |
 | 16 | `--strict` is accepted silently although it has no effect | stale option | catalog, scratch (**Fixed** in `a64aa981`) |
@@ -29,6 +29,7 @@ The catalog (`catalog/agent-docs/model/judo-cli.md`, "Known limitations and gotc
 | 18 | The allowed-value error lists MIME types as object identities | unreadable error | R17 (session L8787–L8800) |
 | 19 | `validate --strict` fails on an orphan operation form after `fill` | stale state after `fill` | R17 (session L8758–L8782) |
 | 20 | `query --select` reference-field error does not name the fix | error message | R16 (session L6135, L6520), R18 (session L9889–L9890, L10222) |
+| 21 | `validate` summary says `0 errors` after printing UI errors | contradicts exit code | CLI `a64aa981`, R18-6 model |
 
 ## 1. `create` accepts an `ASSOCIATION` transient relation that `validate` rejects
 
@@ -157,6 +158,12 @@ The catalog (`catalog/agent-docs/model/judo-cli.md`, "Known limitations and gotc
 - **Workaround:** use `judo graphql` for reference fields.
 - **Source:** R16 (session L6135, L6297, L6520, L6670); R18 (session L9889–L9890, L10222, L10269).
 
+## 21. `validate` summary ignores UI errors
+
+- **Behaviour:** with CLI `1.1.0.20261119_155735_a64aa981_develop` on the re-created R18-6 model, `validate` prints four UI errors, omits `passed ui`, exits 1, and still ends with `Validation complete: 0 errors, 2 warnings`.
+- **Expected:** the summary counts the UI (and transform) errors, so it agrees with the exit code.
+- **Evidence:** `reports/research/runs/cli-verify/fix13.md` (lines 28-36).
+
 ## Verification of `1.1.0.20261119_155735_a64aa981_develop`
 
 Pinned in `pom.xml` on 2026-11-19; scratch copy of `tests/fixtures/Sandbox.model`.
@@ -168,7 +175,7 @@ Pinned in `pom.xml` on 2026-11-19; scratch copy of `tests/fixtures/Sandbox.model
 | 7 | `move Sandbox::EA.code2 --index 0` | `moved Sandbox::EA.code2 index 1 -> 0`; `--json` has `fromIndex` |
 | 16 | `validate --strict` | `warn --strict is deprecated: validation errors always give a non-zero exit` |
 | 12 | create both MIME types, then `create -t BinaryType -n Bin2 -s mimeTypes=application/json,application/xml` | stored; the earlier failure came from MIME types that did not exist |
-| 13 | rerun of the failing build-test model with the old CLI, the new CLI and the Maven step | pending |
+| 13 | R18-6 model re-created in a worktree (`fill` on the derived singleton access): old CLI, new CLI, Maven frontend-react model step | old: `passed ui`, exit 0; new: the same four UI errors as Maven, exit 1; Maven: `BUILD FAILURE`. Record: `reports/research/runs/cli-verify/fix13.md` |
 | 1, 2 | rechecked | unchanged (known ESM issues, see triage) |
 
 The catalog (`catalog/agent-docs/model/judo-cli.md`) documents the new behaviour with the version, and keeps the old behaviour for older pinned CLIs.
