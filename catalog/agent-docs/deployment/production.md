@@ -138,6 +138,8 @@ The project template ships two Compose profiles under `application/docker/`:
 
 **Known issue:** in `compose-postgresql-https` only the `postgres` service mounts the filestore volume (at `/filestore`). The `app` service sets `JUDO_PLATFORM_FILESTORE_DIRECTORY=/filestore` but has no volume for it, so files it writes are not stored in that volume.
 
+**Known issue:** the `app` router in `compose-postgresql-https` gets the auth service certificate domains (`auth.traefik.me`, `auth-*.traefik.me`), not the app hostname (`app.traefik.me`), so the app certificate does not match the app hostname. Open the app through the hostname the certificate covers, or use `compose-develop` (plain HTTP) for local work.
+
 ### Persisting container state
 
 If a container seeds credentials or data only once on first start (for example the AI analyzer plugin `pi-analyzer`, whose seed script skips when its auth file already exists, so a changed `RI_AUTH_JSON` is ignored afterwards), rotating the value requires deleting the seeded file (for example `docker compose rm -sf <service>` and recreating it). Mount such state on a **named volume**; otherwise it lives in the container layer and is lost on replace, and a persisted volume means the data lives on the host's boot disk.

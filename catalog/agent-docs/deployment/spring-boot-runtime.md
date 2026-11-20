@@ -54,7 +54,7 @@ The modules `judo-runtime-core-spring`, `-spring-hsqldb` and `-spring-postgresql
 
 ### SDK DAO autoconfiguration
 
-The Spring part of the SDK generator emits one `@Configuration` class per model (`<Model>DaoModules` in the `springPrefix` package) with `@Autowired` DAO, `AsmModel` and `PayloadValidator` fields and one `@Bean` per DAO, static navigation and static data. It also writes `META-INF/spring.factories` and `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`, so the configuration registers itself when the SDK is on the classpath.
+The Spring part of the SDK generator emits one `@Configuration` class per model (`<Model>DaoModules` in the `springPrefix` package) with `@Autowired` DAO, `AsmModel` and `PayloadValidator` fields and one `@Bean` per DAO, static navigation and static data. It also writes `META-INF/spring.factories` and `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`, so the configuration registers itself when the SDK is on the classpath. `springPrefix` must not be empty: with an empty prefix the `<Model>DaoModules` class gets a package name that starts with a dot, and the generated code does not compile.
 
 ## Integration-Test Database Selection
 

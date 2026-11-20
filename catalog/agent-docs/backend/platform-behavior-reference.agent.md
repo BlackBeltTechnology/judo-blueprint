@@ -29,7 +29,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 - List: `_orderBy`, `_seek` keyset (`lastItem` with signed id + sort key, `limit`, `offset`, `reverse`), per-attribute filter operators. Unparseable mask → `INVALID_QUERY_MASK`.
 - Wire: enums as ordinals; binaries as file-store tokens; dates ISO strings.
 - Status: no bound dispatcher → 503; malformed params → 400; op without output → 204; export streams file with `Content-Disposition`.
-- `java.util.Date` params: `yyyy-MM-dd` by default (`ISO8601DateParamHandler`); else `IllegalArgumentException("Invalid date parameter")`. OSGi bundle reads key `ISO8601DateParamHandler.DATE_FORMAT`; Guice/CXF server does not.
+- `java.util.Date` params: `yyyy-MM-dd` by default (`ISO8601DateParamHandler`); else `IllegalArgumentException("Invalid date parameter")`. OSGi bundle reads key `ISO8601DateParamHandler.DATE_FORMAT`; Guice/CXF server does not. Both handlers share one static `SimpleDateFormat`: parallel requests may parse wrongly or fail.
 - Error shapes: error-handling-guide.md.
 - Class names: `<Name>Response`, `<Name>Request`, `<Name>CreateRequest`, `<Name>RangeRequest` (no `For`).
 - Response DTOs of mapped TOs carry `__deleteable`, `__updateable`, `__entityType`, `__identifier`, `__signedIdentifier`, `__version`, `__referenceId`. Request DTOs: only `__identifier`, `__signedIdentifier`, `__referenceId`. Use `__updateable`/`__deleteable` for row actions.
@@ -45,9 +45,12 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 - Backend via `JUDO_PLATFORM_FILESTORE`: `filesystem` (dir `filestoreDirectory`, default `$HOME/file-store`), `rdbms` (table `FILESTORE`), `s3`. Any other value (typo too) disables file store and upload/download endpoints.
 - `JUDO_PLATFORM_FILESTORE_TOKEN_EXPIRY`: upload token lifetime in minutes (`0` = no expiry).
 
+- Names: `makeValidFilename` removes `$()+=[];#@~,&'`, reserved Windows names → `reserved`; >128 chars → first 127. Null/empty name + MIME → `<fileId>.<ext>` (no MIME → `.bin`).
+- RDBMS `get` stream is read after the result set closes → read `<Entity>` files via REST download.
 ### Range and Choice Operations
 - `getRangeFor<Name>` ops take synthesized `_GetRangeInput...` (`owner` relation; `queryCustomizer` for mapped refs). Out-of-range → `NOT_ACCEPTED_BY_RANGE`.
 
+- Range-input relation targets get `<Name>CreateRequest` (generator `RelationHelper`); hand-write `<Name>RangeRequest` in clients until fixed.
 ### Protocol Headers
 - `X-Judo-CountRecords` → `__countRecords` (response `X-Judo-Count`).
 - `X-Judo-Mask` → `__mask` (projection).
@@ -63,16 +66,23 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 - SDK enum: `getOrdinal()`, `getName()`, static `getByOrdinal(Integer)` (throws `Invalid ordinal: <n>` for null/unknown).
 - Query customizer filter operator codes: strings `0 <`, `1 >`, `2 <=`, `3 >=`, `4 ==`, `5 !=`, `6 ~` (matches), `7 like`; numbers/dates/times `0`–`5`; booleans only `0` (equal); enums `0` (equal), `1` (not equal).
 
+- Response DTO setters `set__deleteable`/`set__updateable` take primitive `boolean`; null `Boolean` → NPE. Metadata `clientBaseUrl` is literal `TODO`.
 ### Client Side of the Upload Token Flow
 - Axios `accessServiceImpl.ts`: token in header `X-Token`. `uploadFile` requests `<attributePath>/~upload-token` then posts multipart with `X-Token`.
 - `downloadFile`: `?disposition=inline|attachment` + `X-Token`. Inline renders in dialog frame in generated frontend; replaced handlers may open new tab, so check generated caller.
 - Wire: `GET /download?id=<fileId>` with `X-Token`; param is `id`, not `fileId`. Uploaded file JSON keys: `id`, `token` (plus `field`, `name`, `url`, `ctype`, `size`); not `fileId`/`downloadToken`.
 - File-store servlets: `*` CORS origin answered with literal `*`, never with `Access-Control-Allow-Credentials`.
+- Filesystem store: ids not format-checked (`idToPath` splits raw id; `/`, `..` not rejected) → use only server-issued ids. RDBMS helper concatenates ids into SQL.
+- `DownloadServlet`: file name in `Content-Disposition` unescaped; `disposition` param unvalidated.
+- `UploadServlet`: MIME-mismatched file not stored, its JSON entry has `error` instead of `id`; JSON built without escaping.
+- Non-preflight request from disallowed Origin gets preflight error status.
 
 ### Excel Export Operations
 - Modeled `EXPORT` ops call `Export` SPI. Reference `JxlsExport` (JXLS/POI): row 0 headers, row 1 placeholders, data from row 2.
 - Cell formats: timestamp `dd/mm/yyyy hh:mm:ss`, date `dd/mm/yyyy`, time `hh:mm:ss`, decimal `#,##0.00`, integer `0`.
 - Only overloads taking ASM model + FQN work. `Class`-based `exportToInputStream` throws `UnsupportedOperationException`.
+- Null data list → NPE (file and stream variant). `_mask`/`__mask` absent → NPE.
+- Last column letter from `targetTypes` size (all attributes); header range by string concatenation (malformed, e.g. `A1:D31`). Primitive `double` not converted to `BigDecimal`.
 - Default binding `UnsupportedExportImpl` (Guice and Spring): all methods throw `Not implemented`. Karaf: `DefaultJxlsExportComponent` registers `JxlsExport`. Guice: pass as `export` in module configuration.
 
 ### Payload Type
@@ -88,6 +98,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 - Mixing clocks for write vs compare gives fixed offset that breaks age/duration limits. Use one clock for both.
 - UI timestamps format in browser zone (`Intl.DateTimeFormat` without `timeZone`). Model-built strings use `defaultZoneId` → mismatch (e.g. 18:00 vs 20:00). Model cannot read browser zone: show the timestamp itself, avoid derived formatted strings.
 
+- Generated TS client serializes time as `HH:mm:ss` always (ms dropped); keep whole seconds or use timestamps.
 ## Variables and Sequences
 
 ### Variable Providers
@@ -107,6 +118,8 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/platform-behavior-re
 - Shared Jackson `ObjectMapper`: OSGi filter `(&(source=judo-services-jackson-objectmapper)(type=extended))`. `JacksonProvider` keys `JacksonProvider.SerializationFeature.<NAME>` / `DeserializationFeature.<NAME>`.
 - Each bus = `CxfContext` component (`configurationPolicy=REQUIRE`, required `busId`). Optional keys: `interceptors.in|out|fault.components` (OSGi filters), `metrics.enabled` (false), `logging.enabled` (false), `wadl.service.description.available` (true), `skip.default.json.provider.registration` (true).
 - Default bus `DEFAULT_CXF_BUS_FOR_JAXRS_APPLICATIONS` from application manager; `BasicApplication` may reference another `CxfContext`.
+- `jaxrs.resource.classes`: split only on comma with whitespace both sides (`a.A , b.B`); `a.A,b.B` → one unknown class, logged. Removing the key on a running app → NPE; restart.
+- `logging.enabled` change on running `CxfContext` not reliably applied (compares to metrics flag); restart bus.
 - Request correlation: `X-Exchange-Id` (debugging-and-monitoring-guide.md).
 
 ## Configuration Mapper for Custom Parameters

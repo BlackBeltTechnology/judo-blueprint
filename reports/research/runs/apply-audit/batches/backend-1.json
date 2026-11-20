@@ -1,0 +1,237 @@
+{
+ "batch": "backend-1",
+ "files": [
+  "catalog/agent-docs/backend/README.md",
+  "catalog/agent-docs/backend/architectural-patterns.md",
+  "catalog/agent-docs/backend/authentication-guide.md",
+  "catalog/agent-docs/backend/custom-operations.md",
+  "catalog/agent-docs/backend/internationalization-guide.md",
+  "catalog/agent-docs/backend/patterns-and-best-practices.md",
+  "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "catalog/agent-docs/backend/testing-guide.md"
+ ],
+ "items": [
+  {
+   "id": "R1349",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Backend Platform Behavior Reference > REST Wire Contract > FileStore Java API': Uploaded file names are cleaned before storage: disallowed characters are replaced, and a reserved Windows device name is replaced with a fixed literal string rather than removed. Do not rely on the stored name matching the upload name exactly. | EVIDENCE: runtime/osgi-filestore filestore-api/src/main/java/hu/blackbelt/osgi/filestore/api/FilenameUtils.java | judo-ng finding: disagrees: the row says makeValidFilename 'strips reserved Windows device names'. The code replaces a reserved name with the literal string "
+  },
+  {
+   "id": "R1348",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Backend Platform Behavior Reference > REST Wire Contract > FileStore Java API': File names longer than 128 characters are cut to 127 characters on storage, so names of exactly 128 characters also lose one character. Keep <Entity> file names at 127 characters or fewer. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-api/src/main/java/hu/blackbelt/osgi/filestore/api/FilenameUtils.java:18 | judo-ng finding: The length check is '> 128' but the truncation is substring(0, 127), so the result is at most 127 characters and names of exactly 128 charac"
+  },
+  {
+   "id": "R0802",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Backend Platform Behavior Reference > REST Wire Contract > FileStore Java API': File names longer than 128 characters are cut to 127 characters on storage. Keep <Entity> file names at 127 characters or fewer. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-api/src/main/java/hu/blackbelt/osgi/filestore/api/FilenameUtils.java:19 | judo-ng finding: For names longer than 128 characters the code returns substring(0,127), giving 127 characters, while the specs say 128."
+  },
+  {
+   "id": "R1346",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Backend Platform Behavior Reference > REST Wire Contract > FileStore Java API': When a file is stored with an empty name and a known MIME type, the generated name mixes the extension into the name in an unexpected way. Send a file name with every upload. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-filesystem/src/main/java/hu/blackbelt/osgi/filestore/filesystem/FileSystemFileStoreService.java:130 | judo-ng finding: When a mime type is supplied and the file name is empty, the code concatenates mimeTypeService.getExtension(mimeType) into the file name wit"
+  },
+  {
+   "id": "R0801",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'File-Store Servlet Checks': Filesystem file store: file ids are split into path segments without checking the id format, so crafted ids can address paths outside the store. Do not pass raw request values as file ids to custom <Actor> operations on this store. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-filesystem/src/main/java/hu/blackbelt/osgi/filestore/filesystem/FileSystemFileStoreService.java:249 | judo-ng finding: idToPath splits the fileId into 2-character segments without checking the id is 32 hex characters. An id containing '/' or '..' can point ou"
+  },
+  {
+   "id": "R0779",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'File-Store Servlet Checks': Same defect as the path split in idToPath: ids are not rejected when they contain path separators. Use only server-issued file ids. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-filesystem/src/main/java/hu/blackbelt/osgi/filestore/filesystem/FileSystemFileStoreService.java:250 | judo-ng finding: idToPath splits the raw id into 2-character segments and joins them with the path separator. getStrippedId (lines 268-274) does not reject '"
+  },
+  {
+   "id": "R0795",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Backend Platform Behavior Reference > REST Wire Contract > FileStore Java API': RDBMS file store: the download stream is read after the query's result set is closed, so reads can fail. Read the file through the REST download or keep the file small. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-rdbms/src/main/java/hu/blackbelt/osgi/filestore/rdbms/RdbmsFileStoreService.java:162 | judo-ng finding: get() returns rs.getBinaryStream(DATA) from inside a JdbcTemplate.queryForObject row mapper. JdbcTemplate closes the ResultSet, statement an"
+  },
+  {
+   "id": "R0776",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Backend Platform Behavior Reference > REST Wire Contract > FileStore Java API': RDBMS file store: the returned stream is read after JdbcTemplate closes the result set, so reads can fail. Use the REST download for <Entity> files. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-rdbms/src/main/java/hu/blackbelt/osgi/filestore/rdbms/RdbmsFileStoreService.java:163 | judo-ng finding: get() returns rs.getBinaryStream(DATA_FIELD) from inside a RowMapper. JdbcTemplate closes the ResultSet after mapping, so the returned strea"
+  },
+  {
+   "id": "R0775",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'File-Store Servlet Checks': RDBMS file store helper builds SQL by concatenating file ids. Only server-issued file ids should reach it; do not expose raw ids to <Actor> input. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-rdbms/src/main/java/hu/blackbelt/osgi/filestore/rdbms/helper/FilestoreHelper.java:33 | judo-ng finding: count, read and meta concatenate the file id into the SQL string literal. The id comes from the request: DownloadServlet reads PARAM_FILE_ID"
+  },
+  {
+   "id": "R0796",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'File-Store Servlet Checks': RDBMS file store helper builds SQL by concatenating file ids taken from the caller. Only server-issued file ids should reach it. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-rdbms/src/main/java/hu/blackbelt/osgi/filestore/rdbms/helper/FilestoreHelper.java:33 | judo-ng finding: count(), read() and meta() build SQL by concatenating the fileId taken from the caller (after getStrippedId) into the query string, so a cra"
+  },
+  {
+   "id": "R0577",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'File-Store Servlet Checks': Download responses put the file name into the Content-Disposition header without escaping and accept the disposition parameter unchecked. Do not expose downloads of user-named files without a filter on the name. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/DownloadServlet.java:188 | judo-ng finding: The 'disposition' URL parameter (line 161) is used unvalidated, and fileName is concatenated into the Content-Disposition header without esc"
+  },
+  {
+   "id": "R0574",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'File-Store Servlet Checks': On upload, a file whose MIME type does not match is skipped silently and the request still reports success for the other files. Check the uploaded file count against the request. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/UploadServlet.java:295 | judo-ng finding: On a MIME-type mismatch, error is assigned and the file is skipped with continue. The error variable is never checked afterwards, so the req"
+  },
+  {
+   "id": "R0578",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'File-Store Servlet Checks': Upload responses are built without JSON escaping, so a file name with a quote or backslash produces invalid JSON. Parse the upload response defensively. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/UploadServlet.java:309 | judo-ng finding: The file name, field name, content type and error text are inserted into JSON with String.format and no escaping. A quote or backslash in an"
+  },
+  {
+   "id": "R1955",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'File-Store Servlet Checks': CORS: a non-preflight request from a disallowed Origin gets the preflight status instead of a plain response. Browser clients from other origins see unexpected status codes. | EVIDENCE: runtime/osgi-filestore osgi-filestore@937a4ae:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/utils/CorsProcessor.java:78 | judo-ng finding: In handleRequest, a non-preflight request from a disallowed Origin calls createPreflightResponse(response, false), which sets the status to "
+  },
+  {
+   "id": "R2210",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'REST Wire Contract': Relations whose target is a range input should use the <Name>RangeRequest type. The generated jaxrs RelationHelper gives these targets the <Name>CreateRequest type instead, because its first branch catches every non-query-customizer target. Use the range request type by hand in REST clients until fixed. | EVIDENCE: judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-api/src/main/java/hu/blackbelt/judo/psm/generator/jaxrs/api/RelationHelper.java:35-39 | judo-ng finding: The first branch tests only !isQueryCustomizer(), so the branches at lines 37 and 39 can never run. Range-input targets get the 'CreateReque"
+  },
+  {
+   "id": "R2005",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Response Metadata and Wire Conversion': Generated response DTOs declare the __deleteable and __updateable setters with a primitive boolean, while their fields and getters are Boolean. Passing a null Boolean to these setters fails with a NullPointerException at unboxing. Pass an explicit true or false. | EVIDENCE: judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-api/src/main/resources/rest/api/dtoForResponse.java.hbs:64 (getters at :60, :73) | judo-ng finding: Metadata setters __deleteable and __updateable take primitive boolean while the fields and getters are Boolean (getters at lines 60 and 73)."
+  },
+  {
+   "id": "R0191",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Time and Time Zones': Time attributes are always serialized as HH:mm:ss, so milliseconds are dropped even where the spec says they are kept. Workaround: keep time attributes at whole-second precision or use timestamp attributes. | EVIDENCE: template/judo-ui-typescript-rest-template:openspec/specs/serialization/spec.md:94 | judo-ng finding: serializeTime produces HH:mm:ss, or HH:mm:ss.SSS for sub-second precision"
+  },
+  {
+   "id": "R2330",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom REST Endpoints and CXF': Changing logging.enabled on a running CxfContext is not applied reliably (the update checks the metrics flag). Restart the bus after changing logging.enabled. | EVIDENCE: cxf-jaxrs-application-manager@9d3737e:src/main/java/hu/blackbelt/jaxrs/CxfContext.java:186 | judo-ng finding: update() tests loggingEnabled against newMetricsEnabled (copy-paste from the metrics block above), so a logging_enabled change is only appli"
+  },
+  {
+   "id": "R2731",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom REST Endpoints and CXF': Changing logging.enabled on a running CxfContext is not applied reliably (the update checks the metrics flag). Restart the bus after changing logging.enabled. | EVIDENCE: cxf-jaxrs-application-manager@9d3737e:src/main/java/hu/blackbelt/jaxrs/CxfContext.java:186 | judo-ng finding: The logging-feature change check compares loggingEnabled with newMetricsEnabled. With metrics=false and logging=false, changing logging to t"
+  },
+  {
+   "id": "R2333",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom REST Endpoints and CXF': jaxrs.resource.classes is split only on a comma with a space on both sides. Write the list as `a.A , b.B`. A plain comma (`a.A,b.B` or `a.A, b.B`) gives one unknown class name, which is logged and skipped. | EVIDENCE: cxf-jaxrs-application-manager@9d3737e:src/main/java/hu/blackbelt/jaxrs/application/BasicApplication.java:178 | judo-ng finding: setClasses splits jaxrs.resource.classes with a regex that needs whitespace on both sides of each comma, so 'a.A,b.B' is treated as one unkn"
+  },
+  {
+   "id": "R2334",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom REST Endpoints and CXF': Removing jaxrs.resource.classes from a running application makes the update fail with a NullPointerException. Restart the application after removing the key. | EVIDENCE: cxf-jaxrs-application-manager@9d3737e:src/main/java/hu/blackbelt/jaxrs/application/BasicApplication.java:178 | judo-ng finding: update() calls setClasses(classesDef) even when jaxrs.resource.classes was removed (null, line 104); classesDef.split then throws NullPointe"
+  },
+  {
+   "id": "R2732",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom REST Endpoints and CXF': jaxrs.resource.classes is split only on a comma with a space on both sides. Write the list as `a.A , b.B`. A plain comma (`a.A,b.B` or `a.A, b.B`) gives one unknown class name, which is logged and skipped. | EVIDENCE: cxf-jaxrs-application-manager@9d3737e:src/main/java/hu/blackbelt/jaxrs/application/BasicApplication.java:178 | judo-ng finding: classesDef.split(\"\\\\s,\\\\s\") only splits on a comma with whitespace on both sides. 'a.A,b.B' is not split and becomes one bogus class name th"
+  },
+  {
+   "id": "R2734",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'REST Wire Contract': The default java.util.Date parser in the runtime is one shared SimpleDateFormat, so parallel requests can parse a date wrongly or fail. Until fixed, send dates in a JSON request body rather than as query or path parameters on busy endpoints. | EVIDENCE: cxf-jaxrs-application-manager@9d3737e:src/main/java/hu/blackbelt/jaxrs/providers/ISO8601DateParamHandler.java:50 | judo-ng finding: The default formatter is a static SimpleDateFormat shared by all threads and used by DateParameterConverter for concurrent request parsing. "
+  },
+  {
+   "id": "R2132",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': An EXPORT operation called without a _mask (or __mask) parameter fails with NullPointerException. Always send _mask with an export request. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/behaviours/ExportCall.java:153 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: queryCustomizer.getMask().keySet() is called unconditionally. QueryCustomizerParameterProcessor leaves the mask null when no '_mask' or '__m"
+  },
+  {
+   "id": "R2135",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Response Metadata and Wire Conversion': The security descriptor in the metadata response returns clientBaseUrl as the literal 'TODO'. Do not use it as the application base URL; configure the frontend base URL separately. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/behaviours/GetMetadataCall.java:79 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: The clientBaseUrl field of the security descriptor is always the placeholder string \"TODO\", which is returned to clients."
+  },
+  {
+   "id": "R2328",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The reference Excel export fails with NullPointerException when the data list is null. Pass a non-null list (an empty list for no rows). | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:125 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: createExcelExport calls list.size() without a null check (also in createExcelExportToInputStream at :158), but the code later guards columns"
+  },
+  {
+   "id": "R2842",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The reference Excel export fails with NullPointerException when the data list is null. Pass a non-null list (an empty list for no rows). | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:125 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: list.size() == 0 is evaluated before the list != null guard at line 131 (and at 166 in the InputStream variant), so a null list throws NullP"
+  },
+  {
+   "id": "R2329",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The reference Excel export computes the last column letter from all model attributes, not the selected ones, so the header area can extend past the data columns. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:128 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: The last column letter is computed as (char)('A' + targetTypes.size()). This counts all model attributes, not the selected attributes list, "
+  },
+  {
+   "id": "R2844",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The reference Excel export computes the last column letter from all model attributes, not the selected ones, so the header area can extend past the data columns. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:128 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Last column letter is computed from targetTypes.size(), which is the count of all class attributes (getAttributesFromModel), not the number "
+  },
+  {
+   "id": "R2326",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The reference Excel export builds the header range by string concatenation, so the range is wrong (for example A1:D31 for three rows). Do not rely on the header range in templates. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:138 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: The header area range is built as sheetName + \"!A1:\" + column + columns + 1, which is string concatenation. For 3 rows it yields \"...!A1:E31"
+  },
+  {
+   "id": "R2840",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The reference Excel export builds the header range by string concatenation, so the range is wrong (for example A1:D31 for three rows). Do not rely on the header range in templates. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:138 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Range string is built by concatenation: \"!A1:\" + column + columns + 1 (columns = list.size()). With 3 rows this yields 'A1:D31' instead of '"
+  },
+  {
+   "id": "R2843",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The stream variant of the reference Excel export fails with NullPointerException when the data list is null. Pass a non-null list. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:158 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Same null-list NullPointerException in createExcelExportToInputStream: createTemplateSheet(..., list.size() == 0) is called before any null "
+  },
+  {
+   "id": "R2327",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The stream variant of the reference Excel export builds the header range by string concatenation, so the range is wrong. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:173 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Same string-concatenation bug in createExcelExportToInputStream: sheetName + \"!A1:\" + column + columns + 1 yields e.g. \"E31\" for 3 rows."
+  },
+  {
+   "id": "R2841",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': The stream variant of the reference Excel export builds the header range by string concatenation, so the range is wrong. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:173 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Same concatenation bug in createExcelExportToInputStream: \"!A1:\" + column + columns + 1."
+  },
+  {
+   "id": "R2845",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'Excel Export Operations': Primitive double attributes may be exported as plain numeric cells instead of decimal cells in the reference Excel export. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-export-jxls/src/main/java/hu/blackbelt/judo/runtime/core/export/JxlExportUtil.java:76 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Double conversion checks getInstanceClass().equals(Double.class). For a primitive EDouble the instance class is double.class, so the BigDeci"
+  },
+  {
+   "id": "R1703",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'REST Wire Contract': Date query parameters are parsed with one shared, non-thread-safe formatter, so concurrent requests can parse a date wrongly. Send dates as yyyy-MM-dd and avoid relying on the value under heavy concurrency until fixed. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/providers/ISO8601DateParamHandler.java:44 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: A single static SimpleDateFormat (DEFAULT_DATE_FORMAT) is shared by all requests via the mutable instance field dateFormat, but SimpleDateFo"
+  },
+  {
+   "id": "R0696",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "FACT TO ADD/CORRECT under 'REST Wire Contract': Date query parameters are parsed with one shared, non-thread-safe formatter, so concurrent requests can parse a date wrongly. Send dates as yyyy-MM-dd and avoid relying on the value under heavy concurrency until fixed. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/providers/ISO8601DateParamHandler.java:44 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: A static SimpleDateFormat is shared by every instance and request thread. SimpleDateFormat is not thread-safe, so concurrent parse() calls c"
+  }
+ ]
+}

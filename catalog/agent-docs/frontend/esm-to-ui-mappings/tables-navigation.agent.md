@@ -14,6 +14,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/esm-to-ui-mappings/
 - `name` generated: `dataFeature.member.name + "Filter"`.
 - Attributes: `label`, `iconName`, `dataFeature`, `filterOperationType`, `placeholder`, `defaultValue`, `hidden`, `col` (grid column).
 - `filterOperationType`: `EQUALS`, `NOT_EQUALS`, `LESS_THAN`, `LESS_OR_EQUAL`, `GREATER_THAN`, `GREATER_OR_EQUAL`, `LIKE` (contains), `NOT_LIKE`, `RANGE` (from/to), `ENUMERATION` (dropdown), `BOOLEAN` (checkbox/toggle).
+- Known defects: operator labels use `judo.modal.filter.<operator>` with default `Operation`; boolean checkbox stores `!!event.target.value` (unchecking does not clear it); single-value filter throws when `filters` is `undefined`, and its `useCallback` omits `enumValues` from deps; in-memory filters apply each filter to the original `data` (only the last applies); default operation lookup resolves to `undefined`; enum operator lookups cast to `keyof typeof _BooleanOperation` (same four keys, no runtime effect).
 
 ### TableOperation (ui:TableOperation)
 - Attributes: `name`, `label`, `iconName`, `operation`, `isBulk` (multi-select), `variant` (contained/outlined/text), `hiddenBy`, `enabledBy`, `operationForm` (nested form for params), `confirmationType` (`NONE`/`CONDITIONAL`/`MANDATORY`), `confirmationMessage`, `confirmationCondition` (Boolean DataFeature).

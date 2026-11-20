@@ -1,0 +1,128 @@
+        final Map<String, Object> currentContext = new TreeMap<>(validationContext);
+        currentContext.put(LOCATION_KEY, (containerLocation.isEmpty() ? "" : containerLocation + "/") + ctx.getPathAsString());
+        currentContext.put(IS_ROOT_KEY, ctx.getPathAsString().isEmpty());
+        feedbackContext.put(LOCATION_KEY, currentContext.get(LOCATION_KEY));
+        feedbackContext.put(IS_ROOT_KEY, currentContext.get(IS_ROOT_KEY));
+
+        EClass transferObjectType = ctx.getType();
+
+        // Validate only elements which is contained only from root payload
+        final boolean validate = !validatorProvider.getValidators().isEmpty() && ctx.getPath().stream().allMatch(e -> e.getReference().isContainment());
+        final boolean ignoreInvalidValues = (Boolean) validationContext.getOrDefault(IGNORE_INVALID_VALUES_KEY, IGNORE_INVALID_VALUES_DEFAULT);
+
+        if (dao != null) {
+            // load default values if current payload is being "instantiated"
+            if (identifierProvider != null && !instance.containsKey(identifierProvider.getName())) {
+                dao.applyDefaultsOf(transferObjectType, instance);
+            }
+        } else {
+            log.warn("Default values cannot be loaded: DAO is not available for Request converter");
+        }
+
+        EList<EAttribute> attributes = transferObjectType.getEAllAttributes();
+        for (EAttribute attribute : attributes) {
+            processAttribute(instance, attribute, validationResults, validate, feedbackContext, ignoreInvalidValues);
+        }
+
+        EList<EReference> references = transferObjectType.getEAllReferences();
+        if ((Boolean) validationContext.getOrDefault(VALIDATE_FOR_CREATE_OR_UPDATE_KEY, VALIDATE_FOR_CREATE_OR_UPDATE_DEFAULT) && identifierProvider != null) {
+            references.stream()
+                      .filter(r -> isEmbedded(r)
+                                   && !AsmUtils.isAllowedToCreateEmbeddedObject(r)
+                                   && asmUtils.getMappedReference(r).filter(EReference::isContainment).isPresent())
+                      .forEach(c -> removeNonCreatableReferenceElements(instance, c));
+        }
+        if (validate) {
+            for (EReference reference : references) {
+                processReference(instance, reference, validationResults, currentContext, feedbackContext, ignoreInvalidValues);
+            }
+        }
+        instance.entrySet().removeIf(entry -> transferObjectType.getEAllStructuralFeatures().stream()
+                                                                .noneMatch(f -> Objects.equals(f.getName(), entry.getKey()))
+                                              && !keepProperties.contains(entry.getKey()));
+    }
+
+    private void removeNonCreatableReferenceElements(Payload instance, EReference reference) {
+        if (reference.isMany()) {
+            final Collection<Payload> containments = instance.getAsCollectionPayload(reference.getName());
+            if (containments != null) {
+                for (final Iterator<Payload> it = containments.iterator(); it.hasNext(); ) {
+                    final Payload p = it.next();
+                    if (p == null || p.get(identifierProvider.getName()) == null && p.get(IdentifierSigner.SIGNED_IDENTIFIER_KEY) == null) {
+                        it.remove();
+                        log.debug("Removed non-createable, not existing reference: {}, instance: {}", getReferenceFQName(reference), p);
+                    }
+                }
+            }
+        } else {
+            final Payload containment = instance.getAsPayload(reference.getName());
+            if (containment != null && containment.get(identifierProvider.getName()) == null && containment.get(IdentifierSigner.SIGNED_IDENTIFIER_KEY) == null) {
+                instance.remove(reference.getName());
+                log.debug("Removed non-createable, not existing reference: {}, instance: {}", getReferenceFQName(reference), containment);
+            }
+        }
+    }
+
+    private void processReference(Payload instance, EReference reference, Collection<ValidationResult> validationResults, Map<String, Object> currentContext, Map<String, Object> feedbackContext, boolean ignoreInvalidValues) {
+        validateReferencedIdentifiers(instance, reference, validationResults, currentContext, feedbackContext);
+        validationResults.addAll(payloadValidator.validateReference(reference, instance, currentContext, ignoreInvalidValues));
+    }
+
+    private void validateReferencedIdentifiers(Payload instance, EReference reference, Collection<ValidationResult> validationResults, Map<String, Object> validationContext, Map<String, Object> feedbackContext) {
+        final String referenceLocation = validationContext.get(LOCATION_KEY) + (((String) validationContext.get(LOCATION_KEY)).isEmpty() || ((String) validationContext.get(LOCATION_KEY)).endsWith("/") ? "" : ".");
+        final Map<String, Object> referenceValidationContext = new TreeMap<>(feedbackContext);
+        referenceValidationContext.put(LOCATION_KEY, referenceLocation);
+
+        if (instance.get(reference.getName()) instanceof Payload && !reference.isMany()) {
+            referenceValidationContext.put(LOCATION_KEY, referenceLocation + reference.getName());
+            validationResults.addAll(validateIdentifier(reference.getEReferenceType(), instance.getAsPayload(reference.getName()), referenceValidationContext));
+        } else if (instance.get(reference.getName()) instanceof Collection && reference.isMany()) {
+            int idx = 0;
+            for (Iterator<Payload> it = instance.getAsCollectionPayload(reference.getName()).iterator(); it.hasNext(); idx++) {
+                referenceValidationContext.put(LOCATION_KEY, referenceLocation + reference.getName() + "[" + idx + "]");
+                validationResults.addAll(validateIdentifier(reference.getEReferenceType(), it.next(), referenceValidationContext));
+            }
+        }
+    }
+
+
+    private List<ValidationResult> validateIdentifier(final EClass clazz, final Map<String, Object> instance, final Map<String, Object> validationContext) {
+        if (instance == null) {
+            return Collections.emptyList();
+        }
+
+        final List<ValidationResult> validationResults = new ArrayList<>();
+
+        if (identifierSigner != null) {
+            try {
+                identifierSigner.extractSignedIdentifier(clazz, instance);
+            } catch (RuntimeException ex) {
+                log.info("Invalid signature: {}", ex.getMessage());
+                if (log.isDebugEnabled()) {
+                    log.debug("Extracting signature failed", ex);
+                }
+                addValidationError(ImmutableMap.of(
+                        DefaultDispatcher.REFERENCE_ID_KEY, Optional.ofNullable(instance.get(DefaultDispatcher.REFERENCE_ID_KEY))),
+                        validationContext.get(LOCATION_KEY),
+                        validationResults,
+                        ERROR_INVALID_IDENTIFIER
+                );
+
+            }
+        }
+        return validationResults;
+    }
+
+    private void processAttribute(final Payload instance, final EAttribute attribute, Collection<ValidationResult> validationResults, final boolean validate, final Map<String, Object> validationContext, final boolean ignoreInvalidValue) {
+        final Object value = instance.get(attribute.getName());
+
+        final String containerLocation = (String) validationContext.getOrDefault(LOCATION_KEY, "");
+        final Map<String, Object> attributeContext = new TreeMap<>(validationContext);
+        attributeContext.put(LOCATION_KEY, containerLocation + (containerLocation.isEmpty() || containerLocation.endsWith("/") ? "" : ".") + attribute.getName());
+
+        Object converted = null;
+        try {
+            if (value != null) {
+                if (attribute.getEAttributeType() instanceof EEnum) {
+judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/RequestConverter.java:160:        } catch (IllegalArgumentException ex) {
+judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/RequestConverter.java:359:                .orElseThrow(() -> new IllegalArgumentException("Invalid enumeration literal '" + literal + "' of type: " + AsmUtils.getClassifierFQName(dataType)));

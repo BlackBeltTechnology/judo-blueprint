@@ -12,6 +12,8 @@ Everything used to update the catalog: sources, analyses, agent outputs, ledgers
 | `runs/apply-findings-webshop/` | webshop build-test gaps R16–R19 (74 findings incl. R19-12..17), `r19b/` agent outputs of the last pass |
 | `runs/gap-analysis/` | earlier session mining of the webshop run, lines 1–6093 (R0–R15): chunks, miners, validated batches, `GAP-ANALYSIS.md` |
 | `runs/gap-analysis-r16/` | session mining of lines 6094–10736 (R16–R19-18): chunks, miners, settle verdicts (`validated/`), ledgers, checker, `SUMMARY.md` |
+| `runs/apply-audit/` | audit of the 2,328 "not platform" triage verdicts: 231 platform gaps applied through batches, settle, wave 2 and checkers |
+| `runs/cli-verify/` | CLI fix verification (fix 13 on the re-created build-test model) |
 | `runs/open-verify/`, `runs/open-verify2/` | verification of the 106 open items from judo-ng code, and the settle pass of the last 22 |
 | `judo-ng-read/` | the full judo-ng read: `findings.md`, reader/validator prompts, `review.md`, worktree update log (`wt-update.log`, latest `develop`), `judo-ng.lock`, `manifest.json` |
 | `webshop-run/` | the complete webshop build-test sessions (`*.jsonl.gz`, unmodified pi session logs; raw `.jsonl` kept locally, git-ignored), `GAPS.md` at the time of copy, orchestration log |
@@ -31,6 +33,8 @@ Every ledger reconciles with `.pi/skills/judo-catalog-expand/scripts/findings-le
 | 11-19 | Webshop gaps R16–R19 | 68 gaps | 23 platform facts applied and double-checked | `377bfa1` |
 | 11-19 | Open items from judo-ng (latest develop, CLI pin bumped) | 106 | 41 fixes, 22 already correct, 12 rejected, 9 not platform, 22 left | `8d3ce43` |
 | 11-19 | Settle the 22 left (no open status allowed) | 22 | 17 fixes, 3 already correct, 2 rejected | `133e736` |
+| 11-19 | Audit of the 2,328 "not platform" triage verdicts (12 auditors) | 2,328 | 2,019 confirmed, 78 already documented, 231 platform gaps: 211 applied and checked (checkers fixed 60, removed 2), 11 rejected, 5 already correct, 4 not platform | this commit |
+| 11-19 | CLI `a64aa981` verification | fixes 4, 5, 7, 13, 16 | all confirmed; new CLI issue 21 | `828b34c`, `ea68fd5` |
 | 11-19 | Whole-run session mining R16–R19-18 | 358 mined items | 17 applied, 41 already correct, 107 duplicate, 80 not platform, 8 rejected, 18 upstream, 87 build/decision records | this commit |
 | 11-19 | Webshop gaps R19-12..17 | 6 gaps, 18 sub-claims | 10 applied, 5 already correct, 4 rejected; checker fixed 1 citation | `c577545`, `b054a6b` |
 
@@ -106,3 +110,17 @@ Work dir `runs/gap-analysis-r16/`. Lines 1–6093 of the session were mined earl
 | Reconcile | 358 total, 0 unaccounted, 0 open |
 
 Catalog changes: masked update writes every payload attribute (mask only shapes the read-back); caught DAO failure aborts the PostgreSQL transaction; `schema_dir`; initializers run on every start; Quartz is not a Karaf feature; checksum files `.generated-files-<actor>` and `-DvalidateChecksum=false`; stale-update retry; read-type calls roll back; cards toolbar is empty by default; `ObjectExpressionMatchesBinding` validator mismatch; provided-scope libraries in integration tests; graphql `StringFilter` operators and `ESM_DataMember` fields; root `/` in deployment access points; stale `__version` HTTP 500; cards-only `customization.ts`.
+
+## 2026-11-19: audit of the "not platform" triage verdicts
+
+The judo-ng read triage had marked 2,328 of 2,864 findings "not platform" with a one-line reason and no second check. Twelve auditors (`runs/apply-findings/audit/`, about 194 rows each, grouped by repository) re-judged every row: does the code fact describe behaviour an application developer meets?
+
+| Audit verdict | Rows | By kind |
+|---|---|---|
+| Confirmed not platform | 2,019 | bug 847, doc 982, index 190 |
+| Platform, already documented | 78 | bug 47, doc 20, index 11 |
+| Platform, missing or wrong in the catalog | 231 | bug 209, doc 17, index 5 |
+
+The 231 went through the normal apply flow in `runs/apply-audit/`: 8 batches with one writer per file (one applier stopped after 8 of 34 items and was rerun for the other 26), a settle pass for 8 unverified items, a wave-2 applier, and one checker per batch. Checkers fixed 60 applied texts and removed 2 unsupported claims. Result: 211 applied, 11 rejected, 5 already correct, 4 not platform; reconcile 0 unaccounted. The audit verdicts are recorded in `runs/apply-findings/triage/verdicts-zz-audit.jsonl`, so the judo-ng ledger shows every row's audited status.
+
+Most hidden facts were judo-ng bugs an application meets (generator templates, runtime error mapping, transformations, schema migration), now in agent-docs as known issues with workarounds. All 2,819 distinct judo-ng rows are also listed for the judo-ng developers in `../judo-ng-issues/DOCS.md`.

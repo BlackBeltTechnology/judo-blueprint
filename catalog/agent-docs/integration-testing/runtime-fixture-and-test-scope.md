@@ -27,7 +27,7 @@ With `@JudoTest` all of this happens in the extension. A custom fixture only nee
 
 ## Fixture Lifecycle per Test
 
-For every test method the extension prepares a fixture, begins a transaction (`AUTO_ROLLBACK` and `AUTO_COMMIT` only), and in the after-each step rolls back (`AUTO_ROLLBACK`), commits and optionally truncates (`AUTO_COMMIT`), or only truncates (`MANUAL`). `tearDown()` always rolls back a transaction that is still open. The `JudoRuntimeFixture` is the only fixture type the test method may declare as a parameter, next to `JudoDatasourceFixture`.
+For every test method the extension prepares a fixture, begins a transaction (`AUTO_ROLLBACK` and `AUTO_COMMIT` only), and in the after-each step rolls back (`AUTO_ROLLBACK`), commits and optionally truncates (`AUTO_COMMIT`), or only truncates (`MANUAL`). `tearDown()` always rolls back a transaction that is still open. The `JudoRuntimeFixture` is the only fixture type the test method may declare as a parameter, next to `JudoDatasourceFixture`. With a method-level `@JudoTest` and `dataSourceMode` `SINGLETON`, the after-each step throws `ClassCastException` because the stored value is not a `CloseableDatasourceFixture`. Use `BY_CLASS` for such tests.
 
 ## Runtime Caching Details
 

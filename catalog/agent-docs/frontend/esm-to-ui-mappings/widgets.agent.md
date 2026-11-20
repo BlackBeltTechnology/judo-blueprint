@@ -65,3 +65,4 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/esm-to-ui-mappings/
 
 ### ActionGroup (ui:ActionGroup)
 - Groups actions with overflow: `label` (i18n header), `featuredActions` (first N shown as buttons), `actions` (PerformableAction list). Remaining actions go into a popup menu.
+- FAB: a page counts as having a FAB group when any nested ButtonGroup is FAB; place FAB groups directly under the page container.

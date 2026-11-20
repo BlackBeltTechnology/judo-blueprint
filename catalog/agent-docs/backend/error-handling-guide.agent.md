@@ -19,6 +19,8 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/error-handling-guide
 - Field errors carry the attribute or relation name as `location`.
 - Platform results without location: `AUTHENTICATION_REQUIRED`, `ACCESS_DENIED`, `INVALID_IDENTIFIER`.
 - A `ValidationException` may carry only a code (for example `SHIPPED_TIME_MUST_AFTER_ORDER_TIME`).
+- Nested locations: `container/child.attr`, list indexes `[n]` (for example `orders[0]/items[2].price`); use as returned.
+- Traversal `IllegalArgumentException` is logged at debug only; results may be incomplete.
 - Do not assume every error renders next to an input field.
 
 ## Modeled Faults
@@ -42,6 +44,8 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/error-handling-guide
 - `BusinessException` (module `judo-dispatcher-api`) extends `RuntimeException`, not `ClientException`.
 - Exceptions are not unwrapped recursively: a `ClientException` or `BusinessException` inside a cause chain is not mapped.
 - CXF `FaultInterceptor` handles only exceptions that escape the mapper and sets only the HTTP status.
+- Known issue: `ClientException` subclass with `getStatusCode()` returning `null` → mapper gives 400, but the CXF fault path throws NPE (unboxing in `FaultInterceptor`). Workaround: always return a status code.
+- Request values that fail conversion are logged at debug only; they may not appear as validation errors.
 - Exposed operations validate input in a transaction that is rolled back; no interceptors run then.
 - No `FeedbackItem` class exists; the equivalent is `ValidationResult`.
 
@@ -52,6 +56,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/error-handling-guide
 ## Best Practices
 - Validate all inputs at the start of an operation.
 - Collect all validation errors and throw them in one `ValidationException`.
+- `enableValidation` false clears all validators, including application-registered ones.
 - Declare faults on operations whose callers must handle a typed business error.
 - Use the most specific exception type; use exceptions for errors, not normal control flow.
 - Messages: clear, actionable, localized; never expose internal details or stack traces.

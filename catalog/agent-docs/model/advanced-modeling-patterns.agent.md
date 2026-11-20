@@ -67,6 +67,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/advanced-modeling-patt
 
 ### Pattern: A MAPPED member's `required` flag must match its binding
 - Required flag on a MAPPED member must agree with its binding.
+- Mixin relations: match an included relation only when bindings are equal; a null mixin binding matches any. Give every mixin relation an explicit binding.
 
 ### Pattern: Mandatory UI scaffolding for operation-I/O TOs
 - Operation input/output TOs need UI scaffolding views.

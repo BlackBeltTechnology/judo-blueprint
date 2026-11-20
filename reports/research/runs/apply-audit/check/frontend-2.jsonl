@@ -1,0 +1,30 @@
+{"id": "R0152", "verdict": "fixed", "note": "workaround removed (colours are lightened anyway); 4th function is getSelectedHoverBackgroundColor, fontColor unchanged"}
+{"id": "R0641", "verdict": "fixed", "note": "unsupported advice replaced by LazyTable Pro-gated code evidence"}
+{"id": "R1155", "verdict": "fixed", "note": "removed unsupported ?code= claim and app-root advice; redirect_uri=window.location.href verified"}
+{"id": "R1230", "verdict": "fixed", "note": "narrowed to the String... overload (Set<String> overload has no Set.of)"}
+{"id": "R1718", "verdict": "fixed", "note": "BOOLEAN->boolean"}
+{"id": "R1840", "verdict": "fixed", "note": "wording: uses, not lists"}
+{"id": "R1839", "verdict": "fixed", "note": "throws only when filter has a value"}
+{"id": "R0196", "verdict": "fixed", "note": "qualified as single-valued get (list has headers)"}
+{"id": "R0197", "verdict": "fixed", "note": "workaround wording; impl Stored vs interface Partial verified"}
+{"id": "R0195", "verdict": "fixed", "note": "scoped to access relation import helper (line 105)"}
+{"id": "R0563", "verdict": "fixed", "note": "covered by reworded import-helper bullet"}
+{"id": "R0564", "verdict": "fixed", "note": "covered by reworded import-helper bullet; rangeable branch is not an NPE source"}
+{"id": "R0566", "verdict": "fixed", "note": "interface requires queryCustomizer, impl and class service optional; workaround reworded"}
+{"id": "R1723", "verdict": "fixed", "note": "removed unverified \"dialog does not open\"; render throws"}
+{"id": "R1943", "verdict": "fixed", "note": "routeTo only in non-dialog branch"}
+{"id": "R0912", "verdict": "ok", "note": "filter string \"(&\" unclosed verified"}
+{"id": "R1153", "verdict": "ok", "note": "empty deps [] verified"}
+{"id": "R1722", "verdict": "ok", "note": "verified"}
+{"id": "R0601", "verdict": "ok", "note": "verified data passed each iteration"}
+{"id": "R0602", "verdict": "ok", "note": "verified _FilterOperationType enum values vs key lookup"}
+{"id": "R0356", "verdict": "ok", "note": "verified"}
+{"id": "R0911", "verdict": "ok", "note": "verified -1 -> 0"}
+{"id": "R0606", "verdict": "ok", "note": "verified"}
+{"id": "R0607", "verdict": "ok", "note": "verified"}
+{"id": "R0612", "verdict": "ok", "note": "verified"}
+{"id": "R1944", "verdict": "ok", "note": "verified doLogout defined unused"}
+{"id": "R1942", "verdict": "ok", "note": "verified slice(3) vs slice(4)"}
+{"id": "R1945", "verdict": "ok", "note": "verified"}
+{"id": "R1150", "verdict": "ok", "note": "verified"}
+{"id": "R0565", "verdict": "ok", "note": "verified"}

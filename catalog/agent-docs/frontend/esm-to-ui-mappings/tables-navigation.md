@@ -107,6 +107,15 @@ Filter control for a table, allowing users to search or narrow down results.
   col="4"/>
 ```
 
+Known defects in the generated filter UI and helpers:
+
+- Operator labels in the filter dialog use the keys `judo.modal.filter.<operator>` with default `Operation`; add the operator keys to i18n, or every untranslated operator shows `Operation`.
+- A boolean filter stores `!!event.target.value`. A checkbox's value is `on` even when unchecked, so unchecking does not switch the filter off. Verify boolean filters after unchecking.
+- The single-value filter component uses `enumValues` in its `useCallback` body but not in its dependency list, so changed enumeration values are not picked up. It also pushes into `filters?.filter(...)`, which is `undefined` when `filters` is `undefined`, so it throws when the filter has a value; initialise the filter array in a custom hook.
+- In-memory filtering (`applyInMemoryFilters`) passes the original `data` to every filter instead of the accumulated result, so only the last filter applies. Verify each filter result in the generated table.
+- The enumeration operator lookups (`getOperationEnumValue`, `getOperation`) cast to `keyof typeof _BooleanOperation`. Both operation enums define the same four keys, so this is a type-level mistake with no runtime effect today.
+- The default operation lookup passes the enum value `equal` and then reads the enum by key, so it resolves to `undefined`.
+
 ### TableOperation (ui:TableOperation)
 
 **Supertypes:** `PerformableAction` → `VisualElement` → `NamedElement`

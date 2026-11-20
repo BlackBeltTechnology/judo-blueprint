@@ -230,6 +230,7 @@ These patterns capture rules the JUDO ESM EVL validator enforces but that neithe
 *   **Rule (EVL constraint `MappedAttributeRequiredMatchesBindingRequired`)**: a `MAPPED` data member on a mapped transfer object must have the same `required` flag as the entity attribute it binds: *"Required flag of data member: X (in: TO) must match the required flag of its binding"*.
 *   **Also**: give the mapped member the same `dataType` as the bound attribute; `dataType` is a mandatory feature of `DataMember`.
 *   **Authoring**: when projecting an entity attribute into a transfer object (including the principal transfer object), copy `required` and `dataType` from the entity attribute. A default `required=false` on the transfer object member against a `required=true` entity attribute is the common slip.
+*   **Mixin relations** (PSM expression adapter mixin check): a mixin relation matches an included relation only when both bindings are equal. A mixin relation with no binding matches any included relation, because the binding check tests the mixin side's null binding twice. Give every mixin relation an explicit binding.
 
 ### Pattern: Mandatory UI scaffolding for operation-I/O TOs
 

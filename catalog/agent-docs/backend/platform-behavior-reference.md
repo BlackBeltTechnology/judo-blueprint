@@ -54,7 +54,7 @@ Do not use these names for model features. DAO payload processors and the dispat
 - Wire conversions: enumerations travel as ordinals, binaries as file-store tokens (see below), dates as ISO strings.
 - JSON response payloads are written with the platform default charset, not UTF-8: `PayloadMessageBodyWriter` wraps the entity stream in an `OutputStreamWriter` without a charset.
 - Behaviours: no bound dispatcher gives 503, malformed request parameters give 400, an operation without output gives 204, export operations stream a file with `Content-Disposition`.
-- `java.util.Date` query/path parameters are parsed as `yyyy-MM-dd` by default (`ISO8601DateParamHandler`); anything else fails with `IllegalArgumentException("Invalid date parameter")`. The OSGi bundle reads the key `ISO8601DateParamHandler.DATE_FORMAT` to change the format; the Guice/CXF server does not read it.
+- `java.util.Date` query/path parameters are parsed as `yyyy-MM-dd` by default (`ISO8601DateParamHandler`); anything else fails with `IllegalArgumentException("Invalid date parameter")`. Each of the two handlers (OSGi bundle and Guice/CXF server) uses one static default `SimpleDateFormat` shared by all requests, and `SimpleDateFormat` is not thread-safe, so parallel requests can parse a date wrongly or fail. The OSGi bundle reads the key `ISO8601DateParamHandler.DATE_FORMAT` to change the format; the Guice/CXF server does not read it.
 - Error shapes are described in the [Error Handling Guide](error-handling-guide.md).
 
 ### Binary Upload Tokens
@@ -71,9 +71,11 @@ Custom Java code reads and writes binary content through the OSGi service `hu.bl
 
 A binary attribute value in generated Java is `hu.blackbelt.judo.dispatcher.api.FileType` (Lombok `@Builder`, getters): `id`, `fileName`, `size` (`Long`), `mimeType`. It is persisted as a JSON string `{"id":..,"fileName":..,"size":..,"mimeType":..}`. To attach a file from Java, `put` the content and set a `FileType` built with the returned id, name, size and MIME type.
 
-File names longer than 128 characters are cut to their first 127 characters by `FilenameUtils.makeValidFilename`, which the filesystem, RDBMS and S3 backends call on the name they store.
+File names longer than 128 characters are cut to their first 127 characters by `FilenameUtils.makeValidFilename`, which the filesystem, RDBMS and S3 backends call on the name they store. The same function removes the characters `$()+=[];#@~,&'` and replaces a whole-name reserved Windows device name (`AUX`, `CLOCK`, `CON`, `NUL`, `PRN`, `COM1`-`COM9`, `LPT1`-`LPT9`, matched case-insensitively) with the literal `reserved`.
 
-A `null` file name stores the file as `<fileId>.<mimeType>` (for example `uuid.image/png`). The stored `size` comes from `InputStream.available()`, which is not guaranteed to equal the content length.
+A `null` or empty file name stores the file as `<fileId>.<extension>` for the MIME type (for example `uuid.png`), or as `<fileId>.bin` without a MIME type. The stored `size` comes from `InputStream.available()`, which is not guaranteed to equal the content length.
+
+The RDBMS file store `get` returns `rs.getBinaryStream` from inside a `JdbcTemplate` row mapper, so the stream is handed out after the result set is closed; reading it can fail depending on the JDBC driver. The download servlet reads through the same `get`.
 
 The backend is chosen with `JUDO_PLATFORM_FILESTORE`: `filesystem` (directory `filestoreDirectory`, default `$HOME/file-store`), `rdbms` (table `FILESTORE`) or `s3`. Any other value, including a typo, disables the file store and the upload/download endpoints. `JUDO_PLATFORM_FILESTORE_TOKEN_EXPIRY` sets the upload token lifetime in minutes (`0` = no expiry).
 
@@ -86,6 +88,8 @@ A list access is served at `/api/<Model>/<Actor>/<Actor>/<access>/~list`: the ac
 ### Range and Choice Operations
 
 Choice and range lookups are generated as `getRangeFor<Name>` operations whose input is a synthesized `_GetRangeInput...` transfer object (an `owner` relation and, for mapped references, a `queryCustomizer`). Values outside the allowed range fail with `NOT_ACCEPTED_BY_RANGE`.
+
+In the generated `<Name>CreateRequest` DTO, `RelationHelper.relationTargetTypeDefinitionForCreateRequest` types every relation whose target is not a query customizer as `<Target>CreateRequest`; its `Request` and `RangeRequest` branches can never be reached.
 
 ### Protocol Headers
 
@@ -110,12 +114,14 @@ Generated REST operations read these request headers (`rest.service.operation.fr
 - Enumeration values are stored and sent as the member ordinal. An ordinal that is not a member of the enumeration is rejected: the response conversion throws `IllegalArgumentException` ("Invalid enumeration value '<n>' of type <FQN>"), the request conversion throws it for an unknown literal, and a query-customizer filter with an unknown ordinal throws "Invalid enumeration member".
 - JQL compares two values of the same enumeration with `==`, `!=`, `<`, `>`, `<=` and `>=`; comparing different enumerations is rejected ("Operands are not of the same enumeration").
 - The generated SDK enum has `getOrdinal()`, `getName()` and a static `getByOrdinal(Integer)`; `getByOrdinal` throws `IllegalArgumentException` ("Invalid ordinal: <n>") for null or an unknown ordinal.
+- Generated response DTOs declare the `__deleteable` and `__updateable` setters with a primitive `boolean`, while their getters return `Boolean`. Passing a null `Boolean` to a setter throws `NullPointerException`; pass an explicit `true` or `false`.
+- The security descriptor in the metadata response sets `clientBaseUrl` to the literal `TODO` for an actor with a realm. Do not use it as the application base URL; configure the frontend base URL separately.
 
 ### Client Side of the Upload Token Flow
 
 The generated axios service (`accessServiceImpl.ts`) sends the token in the `X-Token` header. `uploadFile` first requests `<attributePath>/~upload-token`, then posts the multipart data with `X-Token`. `downloadFile` calls the download path with `?disposition=inline|attachment` and `X-Token`; an inline download renders in a dialog frame in the generated frontend. Projects that replace the handler may open a new tab instead, so check the generated `downloadFile` caller in your version before relying on either.
 
-On the wire, the download request is `GET /download?id=<fileId>` with the `X-Token` header; the file id parameter is `id`, not `fileId`. Each uploaded file's JSON entry has the keys `id` and `token` (plus `field`, `name`, `url`, `ctype`, `size`), not `fileId` or `downloadToken`. In the file-store servlets, a `*` CORS origin is answered with a literal `*` and never with `Access-Control-Allow-Credentials`.
+On the wire, the download request is `GET /download?id=<fileId>` with the `X-Token` header; the file id parameter is `id`, not `fileId`. Each successfully stored file's JSON entry has the keys `id` and `token` (plus `field`, `name`, `url`, `ctype`, `size`), not `fileId` or `downloadToken`. In the file-store servlets, a `*` CORS origin is answered with a literal `*` and never with `Access-Control-Allow-Credentials`.
 
 ### File-Store Servlet Checks
 
@@ -126,12 +132,26 @@ On the wire, the download request is `GET /download?id=<fileId>` with the `X-Tok
 - `UploadAction` hands the received file items to its `executeAction` method and does not store them in `FileStoreService`; `UploadServlet.doPost` stores each item with `put`.
 - `DownloadServlet` has no size limit setting; only `UploadServlet` has `maxSize`.
 - Every file the generated frontend downloads comes through the app's `download` path (`/<app>/download`, served by `DownloadServlet`). An operation's `downloadToken` is redeemed on that path.
+- The filesystem file store does not check the file id format: `idToPath` splits the raw id into path segments and `getStrippedId` does not reject `/` or `..`, so a crafted id can address files outside the store. Pass only server-issued file ids.
+- The RDBMS file store helper builds SQL by concatenating the file id into the query string (`count`, `read`, `meta`). Only server-issued file ids should reach it.
+- `DownloadServlet` writes the file name into `Content-Disposition` without escaping and uses the `disposition` URL parameter unvalidated. Do not expose downloads of user-named files without a filter on the name.
+- `UploadServlet` skips a file whose MIME type does not match the upload token and does not store it; its entry in the response JSON has an `error` key instead of `id`. Check each entry.
+- `UploadServlet` builds its JSON response with `String.format` and no escaping, so a file name with a quote or backslash produces invalid JSON. Parse the upload response defensively.
+- A non-preflight request from a disallowed `Origin` gets the preflight error status (`CORS preflight error code`) instead of a plain response.
 
 ### Excel Export Operations
 
 Modeled `EXPORT` operations call the `Export` SPI. The reference implementation is `JxlsExport` (JXLS/POI): row 0 holds headers, row 1 placeholders and data starts at row 2. Cell formats follow the type: timestamp `dd/mm/yyyy hh:mm:ss`, date `dd/mm/yyyy`, time `hh:mm:ss`, decimal `#,##0.00`, integer `0`. Only the overloads taking an ASM model and a fully qualified name work. When no `Export` is configured the default module binds `UnsupportedExportImpl`, and export calls fail with `Not implemented`.
 
 `Export` is bound to `UnsupportedExportImpl` by default in the Guice module and in the Spring configuration; every method throws `UnsupportedOperationException("Not implemented")`, so an `EXPORT` operation fails until `JxlsExport` is supplied. In the Karaf platform `DefaultJxlsExportComponent` registers `JxlsExport`; in a Guice setup pass it as the `export` of the module configuration. `JxlsExport` implements only the `AsmModel`/FQN variants; the `Class`-based `exportToInputStream` throws `UnsupportedOperationException`.
+
+The reference export has these defects:
+
+- The file and stream variants fail with `NullPointerException` when the data list is null. Pass an empty list for no rows.
+- An `EXPORT` call without a `_mask` (or `__mask`) parameter fails with `NullPointerException`. Always send `_mask`.
+- The last column letter is `'A'` plus the size of the `targetTypes` map, which counts all attributes of the class rather than the selected ones and is one column past the last attribute even when all are selected, so the header area can extend past the data columns.
+- The header range is built by string concatenation, so it is malformed (for example `A1:D31` for three rows). Do not rely on the header range in templates.
+- Only attributes whose instance class is the boxed `Double` or `Float` are converted to `BigDecimal`; an attribute whose instance class is primitive `double` is exported unconverted.
 
 ### Payload Type
 
@@ -150,6 +170,7 @@ Writing with one clock and comparing against the other yields a fixed offset (fo
 - Generated UI columns and fields format timestamps in the **browser** time zone (the React template calls `Intl.DateTimeFormat` without a `timeZone`). A string built in a model expression uses `defaultZoneId`, so the same instant shows with the zone offset between the two (for example `18:00` in a model-built string and `20:00` in a history column). The model cannot read the browser zone: show the timestamp itself in the UI and avoid a derived string that formats it.
 
 - The generated TypeScript REST client turns `yyyy-MM-dd` strings into dates with `new Date(string)`, which reads them as UTC midnight. With a negative UTC offset the displayed date is one day earlier.
+- The generated TypeScript client serializes every time attribute as `HH:mm:ss`, so milliseconds are dropped even where the model keeps them. Keep time attributes at whole-second precision or use timestamp attributes.
 
 ## Variables and Sequences
 
@@ -169,13 +190,16 @@ Identifier or number sequences default to database sequences. To plug in your ow
 
 ## Custom REST Endpoints and CXF
 
-- A custom endpoint is an OSGi DS component annotated `@Path`, registered with a discriminator property and bound into a `BasicApplication` (`cxf-jaxrs-application-manager`) through the `jaxrs.resource.components` LDAP filter (matching services become singletons) or a comma-separated `jaxrs.resource.classes` list (`Class.forName`, failures are logged and skipped).
+- A custom endpoint is an OSGi DS component annotated `@Path`, registered with a discriminator property and bound into a `BasicApplication` (`cxf-jaxrs-application-manager`) through the `jaxrs.resource.components` LDAP filter (matching services become singletons) or a `jaxrs.resource.classes` list separated by ` , ` (comma with one whitespace character on each side, see below; `Class.forName`, failures are logged and skipped).
 - Custom JAX-RS providers (`@Provider`) are picked up only when the bundle manifest has `X-JAXRS-Provider: true`. Without an `applications.filter` property a provider applies to all applications.
 - CXF interceptors are OSGi components implementing `org.apache.cxf.interceptor.Interceptor` with properties `judo.model.name` and `interceptor.direction` (`in`, `out` or `fault`).
 - The shared Jackson `ObjectMapper` is obtained with the OSGi filter `(&(source=judo-services-jackson-objectmapper)(type=extended))`. `JacksonProvider` reads `JacksonProvider.SerializationFeature.<NAME>` and `JacksonProvider.DeserializationFeature.<NAME>` configuration keys.
 - Each CXF bus is a `CxfContext` component (`configurationPolicy=REQUIRE`, required `busId`). Its optional keys are `interceptors.in.components`, `interceptors.out.components` and `interceptors.fault.components` (OSGi filters selecting `org.apache.cxf.interceptor.Interceptor` services), `metrics.enabled` and `logging.enabled` (both default `false`), `wadl.service.description.available` (default `true`) and `skip.default.json.provider.registration` (default `true`). The application manager creates the default bus `DEFAULT_CXF_BUS_FOR_JAXRS_APPLICATIONS`; a `BasicApplication` can use another context through its optional `CxfContext` reference.
 - Request correlation: see `X-Exchange-Id` in the [Debugging and Monitoring Guide](debugging-and-monitoring-guide.md).
 - The platform does not provide Server-Sent Events. No SSE classes or `text/event-stream` handling exist in the JUDO sources, and the Karaf features install only the upstream `cxf-jaxrs` feature (Apache CXF 3.6.8). An SSE endpoint needs a CXF SSE module that the platform does not install.
+- `jaxrs.resource.classes` is split only on a comma with exactly one whitespace character on each side (regex `\s,\s`). Write the list as `a.A , b.B`; `a.A,b.B` yields one unknown class name, which is logged and skipped.
+- Removing `jaxrs.resource.classes` from a running application makes the update fail with a `NullPointerException`. Restart the application after removing the key.
+- Changing `logging.enabled` on a running `CxfContext` is not applied reliably, because the update compares it with the metrics flag. Restart the bus after changing it.
 
 ## Configuration Mapper for Custom Parameters
 

@@ -190,6 +190,10 @@ public class MyFirstIntegrationTest {
 | `shareInjector` | `boolean` | `false` | Reuse the Guice injector across the methods of a class (with `BY_CLASS`/`SINGLETON`). Derived test artifacts are reused across methods only when this is `true`; the default `false` rebuilds them |
 | `interceptors` | `Class<? extends OperationCallInterceptor>[]` | `{}` | Interceptors registered for the test |
 
+With `dialect` `postgresql`, `container` `none` and `postgresql` start a PostgreSQL container, and `yugabytedb` starts a YugabyteDB container. Any other value creates no container, and datasource setup then fails. With `dialect` `hsqldb` the `container` value is not used.
+
+The yugabytedb container's liveness check is built with the wrong constructor and is effectively empty. Do not rely on the liveness check for yugabytedb tests.
+
 ### Transaction Handling Modes
 
 The `transaction` parameter accepts the following values:
@@ -563,8 +567,11 @@ public class MultiTransactionTest {
 }
 ```
 
+#### Transaction rules
+
 **Key Points**:
 - Always wrap operations in `beginTransaction()` / `commitTransaction()` / `rollbackTransaction()` blocks
+- Calling `beginTransaction()` while a transaction is still open throws `IllegalStateException`: 'Previous transaction was not completed'. Commit or roll back the open transaction first.
 - Use try-catch to ensure rollback on exceptions
 - Each transaction boundary is explicit and controlled
 - Useful for testing transaction isolation and consistency
@@ -625,6 +632,10 @@ Then run:
 ```bash
 mvn clean test
 ```
+
+### Model Load Errors
+
+With `modelSource` `AUTO`, a model that cannot be loaded from the filesystem or the classpath fails with `Could not load model '<name>'. Filesystem error: ... Classpath error: ...`. Check the model name and that the model artifact is on the test classpath.
 
 ### Skip Tests During Build
 

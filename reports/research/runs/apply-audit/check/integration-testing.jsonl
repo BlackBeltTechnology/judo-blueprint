@@ -1,0 +1,6 @@
+{"id": "R0283", "verdict": "ok", "note": "AutoLoad catch at JudoRuntimeFixture:306-320 builds exactly that message; only for AUTO (switch :286)."}
+{"id": "R0284", "verdict": "ok", "note": "JudoRuntimeFixture.beginTransaction:373-376 confirmed."}
+{"id": "R0467", "verdict": "ok", "note": "JudoDatasourceFixture.setupDatabase:98-105; null sqlContainer fails at start(); hsqldb branch ignores container. Confirmed."}
+{"id": "R2421", "verdict": "ok", "note": "YugabytedbSQLContainer.getLivenessCheckPortNumbers uses new HashSet<>(int) (capacity ctor) -> empty set. Confirmed."}
+{"id": "R0281", "verdict": "ok", "note": "getInterceptorProvider:507-511 message confirmed."}
+{"id": "R2420", "verdict": "ok", "note": "JudoTestExtension:124 stores NonClosingDatasourceReference for SINGLETON; :421 casts store.remove to CloseableDatasourceFixture on method-level -> ClassCastException. Confirmed."}

@@ -1,0 +1,35 @@
+{"id": "R2561", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2208", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R0599", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2209", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2004", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R1400", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R0216", "verdict": "fixed", "note": "reworded: reads config supplier and replaces it, not \"returned by previous call\""}
+{"id": "R0513", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R0713", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2357", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2699", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R1624", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2090", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R0854", "verdict": "fixed", "note": "listFiles null only for unreadable dirs; missing paths are skipped with a warning; removed missing/not-a-directory claim"}
+{"id": "R1611", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R0457", "verdict": "fixed", "note": "json preset collapses space runs and strips whitespace around structural chars (not all spaces); reworded"}
+{"id": "R1380", "verdict": "fixed", "note": "glob is relative to the folder of its .generator-ignore; added"}
+{"id": "R1381", "verdict": "fixed", "note": "ok after R1380 wording; verified any-level match, no child override"}
+{"id": "R2181", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2179", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2177", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2178", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2180", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2182", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2184", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2183", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R0855", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2375", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R1174", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2707", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2705", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2710", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R2708", "verdict": "fixed", "note": "NPE only for mvn:...!path archive extraction; narrowed"}
+{"id": "R2709", "verdict": "ok", "note": "evidence read in judo-ng; sentence supported"}
+{"id": "R0021", "verdict": "fixed", "note": "save failure check path now `destination` (not hardcoded default)"}

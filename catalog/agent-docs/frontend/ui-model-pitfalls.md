@@ -19,6 +19,8 @@ Add a field, column or operation to the UI by modeling it: add the element to th
 - `booleanWidget: "SWITCH"` does not exist; the generator fails with a missing `switch.hbs` partial. Use `CHECKBOX` or `COMBO`.
 - Tabular reference field columns that reference attributes of an external transfer object or namespace on an unmapped input transfer object break the build.
 - Wrapping operation forms in an action group on a view can fail UI validation; placing them directly on the view passes.
+- A mask entry that lists the same primitive type twice in `addPrimitives(String...)` fails the generator with `IllegalArgumentException`, because the list is built with `Set.of`. List each primitive type once.
+- Known issue: a table column with no attribute type that comes before the first string column makes UI generation fail with a `NullPointerException` in `getFirstTitleColumnForTable` (`UiTableHelper.java:330`). The helper runs for the bulk delete, bulk remove and bulk call-operation dialogs. Workaround: put a string attribute column before any reference column in such a table. An attribute with no data type does not fail: the helper skips it and uses the next string column.
 
 ## Opaque UiValidationException
 

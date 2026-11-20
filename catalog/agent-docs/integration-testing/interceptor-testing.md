@@ -81,7 +81,7 @@ class MyInterceptorIntegrationTest {
 
 ## Pattern: Programmatic Interceptor Registration
 
-Use this when an interceptor needs constructor arguments. Register interceptors **before** `init()`; `getInterceptorProvider()` is only available after `init()`.
+Use this when an interceptor needs constructor arguments. Register interceptors **before** `init()`; `getInterceptorProvider()` is only available after `init()`. Calling it earlier throws `IllegalStateException`: 'Interceptor provider not available. Call init() first.'
 
 ```java
 fixture = new JudoRuntimeFixture();

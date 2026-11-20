@@ -230,6 +230,8 @@ No additional type-specific attributes (file upload widget).
 - `CONDITIONAL` - Confirmation shown when selected boolean attribute is `true`
 - `MANDATORY` - Confirmation always shown before execution
 
+**Dismissal:** closing the confirmation dialog by backdrop click or Escape does not resolve the pending answer as `no`, so a calling flow that waits on it can hang. Treat dismissal as cancel in custom code, and do not wait on the dialog without a timeout.
+
 ### OperationForm Navigation
 
 | Attribute | Description | Candidates |

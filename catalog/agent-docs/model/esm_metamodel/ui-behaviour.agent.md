@@ -29,7 +29,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/esm_metamodel/ui-behav
 
 ## Conditional Attribute Rules
 
-- OperationForm confirmation: `confirmationType` (`NONE`, `CONDITIONAL`, `MANDATORY`); message enabled unless NONE; condition enabled only for CONDITIONAL.
+- OperationForm confirmation: `confirmationType` (`NONE`, `CONDITIONAL`, `MANDATORY`); message enabled unless NONE; condition enabled only for CONDITIONAL. Dismiss (backdrop/Escape) does not resolve as no; treat as cancel.
 - Confirmation candidates: boolean attributes of the owner TransferObjectType.
 - `postCallAccessNavigation`: accesses whose type matches the operation output.
 - TableOperation: `isBulk`; `confirmationCondition` disabled when `isBulk = true` (bulk ops cannot use row-level conditions).

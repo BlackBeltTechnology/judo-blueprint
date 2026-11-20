@@ -27,12 +27,14 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/build-process.md.
 - Theme fragments: see [Theming](../frontend/theming.md).
 - Template helpers: `elementHasAnnotation(element, "<name>")`; `operation.output.target`. Escape a literal expression with `\{{name}}`.
 - Prefer fragments over `.generator-ignore`: `.generator-ignore` freezes output and drifts from templates.
+- Root `pom.xml` does not include the `extra-dependency-management` / `extra-modules` fragments (silently ignored). Until wired in, use an explicit version in `app/pom.xml.extra-dependencies.fragment.hbs`.
 - Common params: `rdbmsCreateSimpleName` (false), `validateModels` (true), `useCache` (false), `sqlDialects`, `frontendType` (react), `generateDockerModule` (true).
 
 ## judo.sh Script
 
 - Orchestrates env setup (SDKMAN, tools), model transformation, build, service lifecycle (start/stop/status), Docker compose.
 - Location: `/judo.sh`.
+- Known issue: frontend module list (`install_bundles`) uses `find` newline output with `xargs -0`; frontend modules can collapse. Build each frontend module by path until fixed.
 
 ### `judo.sh build` flag reference
 
@@ -137,6 +139,7 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/build-process.md.
 
 ## Maven Commands
 
+- `parseHutn` goal logs HUTN parse errors and does not fail the build; check the log for `Could parse HUTN`.
 - Full: `mvn clean install`. Skip flags: `-DskipFrontendReact`, `-DskipDocker`, `-DskipSchema`. Single module: `cd application/app && mvn clean install`. Parallel: `-T 4`.
 
 ## Build Profiles

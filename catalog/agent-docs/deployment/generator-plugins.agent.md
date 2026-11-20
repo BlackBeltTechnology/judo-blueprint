@@ -17,12 +17,21 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/generator-plugins
 ## Surviving Regeneration: checksum ignore and normalisation
 - `.generator-checksum-ignore` forces overwrite of matching files; `.generator-ignore` keeps a file under manual control.
 - Whitespace-tolerant comparison via `fileNormalizers` (default `auto`); `normalizeContent=false` disables it.
+- Normalisers hide edits: tab removal joins words (`public<TAB>class` becomes `publicclass`); the `json` preset ignores spaces inside strings.
+- `.generator-ignore` has no `!` negation; any matching `.generator-ignore` up the tree excludes the file, and a child cannot override a parent.
 
 ## Tatami Workflow Plugins
 - Client `default-workflow`: `saveModels` and `validateModels` default `false`; models are saved only with `saveModels=true` or on failure.
+- Client: `overrides` and `additionalFiles` are accepted but have no effect; an unreadable `mvn:` artifact gives an NPE; EMF save errors are swallowed (`catchError=true`).
+- Multi-dialect JSL builds: the Liquibase step may take another dialect's `LiquibaseModel`; check each changelog.
 - JSL `default-model-workflow`: `dialects` default `postgresql,hsqldb`, `transformationMode` `ETL` (set `ZETA` for Zeta; the ESM client workflow already defaults to `ZETA`), `saveModels` `true`; column length key is `rdbmsColumnMaxNameSize`.
 - JSL `generator-maven-plugin`: more than one root model with empty `modelNames` fails with `Multiple root model`.
 - RDBMS prefixes `T_`, `C_`, `FK_`, `FK_INV_`, `J_` (configurable; `-` suppresses).
+- Known issue: bidirectional many-to-many with both ends named the same → two junction tables, each with one `C_<NAME>` FK and no `ID` PK (`<= 0` in ETL vs `< 0` in EOL). Workaround: give the two ends different names.
+- Known issue: non-actor templates get only the default Handlebars context; per-element template-context values are not passed (`JslDslGenerator.java:226` vs `:197`; same in ESM/PSM generators). Workaround: check generated output; do not rely on template-context variables there.
+- Empty column prefix: attributes `id`, `type`, `version` become `DOMAIN_ID`, `DOMAIN_TYPE`, `DOMAIN_VERSION`.
+- Tatami workflow: `esm`/`psm`/`asm` are Strings; `useCache` is false unless set in the POM; `destination` has no default but is required (`mkdirs`); `<asm>`/`<measure>` need `psm2AsmTrace`/`psm2MeasureTrace`; ESM/PSM need `esmModelFile`/`psmModelFile` without a generator; an ESM save failure can be silent; unreadable archives give an NPE.
+- JSL generator: unreadable archive or input directory gives an NPE, not a clear error.
 
 ## Derived Models via the Model CLI
 - `transform` writes PSM/ASM/RDBMS/UI models to `cli-generated/` (or `-o`); `--load` reloads them; `discard --derived` resets.
@@ -33,18 +42,22 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/generator-plugins
 
 ## OpenAPI / Swagger Documentation
 - `generateOpenApiAnnotations=true` writes OpenAPI to `target/api-documentation-swagger`; Swagger UI at runtime via `JUDO_PLATFORM_SWAGGER_UI` (path default `/swagger-ui`).
+- Annotations are off unless the flag is set (unset reads as `false`). Relation DTO `@Schema` names can differ from the getter; use the getter name.
 
 ## SDK Generator Template Parameters
 - `apiPrefix`, `generateOptionalTypes`, `generatePayloadValidator`, `debugPrint`, `identifierType` change the SDK shape.
+- `apiPrefix`: empty gives a dot-leading (invalid) default package; non-empty is mangled to slashes by `replaceAll(".", "/")` in jaxrs, restassured and sdk-core.
 
 ## Report Generator (JasperReports)
 - `psm-report` generates `{Type}Report` facades and `ReportUtil` (PDF, XLSX, CSV, HTML); call them from custom operations.
 
 ## REST Assured Test Client
 - `ApiClient.api(Config)`, `BASE_URL_<ACTOR>`, `authTo<Actor>(...)`; no Postman collections in generated projects.
+- `authTo<Actor>` chains headers from earlier calls on the same builder; use one client per actor in tests.
 
 ## OpenAPI Client for OSGi (`jaxrs-cxf-client-osgi-ds`)
 - CXF JAX-RS client bundle with a DS activator; config `endPoint`, timeouts 10000/15000 ms.
+- `useGzipFeature` uses GZIP classes without imports; the bundle may not compile. Disable it or add imports.
 
 ## Generator Fragment Slots
 - `<target>.<slot>.fragment.hbs`; slots for `feature.xml`, module `pom.xml` and root pom `extra-modules`.
@@ -54,6 +67,7 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/generator-plugins
 
 ## Flutter Frontends
 - Goals `install-flutter` and `flutter` (default `pub get`); `flutter.parallel` default `false`.
+- `flutter-download-root` defaults to a fixed storage URL that is always passed on; set a reachable mirror if that host is unreachable.
 
 ## Frontend Environment Variables
 - `VITE_API_DEFAULT_BASE_URL` (fallback origin) + `VITE_API_RELATIVE_PATH` (fallback `/api`); `VITE_FILE_DEFAULT_BASE_URL`; optional `VITE_MUI_LICENSE_KEY`.

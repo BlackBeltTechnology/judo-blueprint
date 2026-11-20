@@ -24,6 +24,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/model-screen-layout
 - `EmptyDashboardPageContainer`: landing page with no widgets. Page `dashboard: true`. Generated `src/pages/Dashboard/index.tsx`, `src/containers/Dashboard/EmptyDashboard*.tsx`.
 - `TransferObjectFormPageContainer`: CREATE forms. `openInDialog`, `dialogSize` (`XS|SM|MD|LG|XL`). Generated `src/containers/{Entity}/{Entity}_Form/`.
 - `TransferObjectTablePageContainer`: LIST in DataGrid. Generated `src/containers/{Entity}/{Entity}_Table/` + `components/{Entity}_TableComponent/`. IDs: `…TableContainer`, `…TableTable`.
+- Row selection callbacks wired only in selector mode. Grid `rowCount` = page size (server totals wrong). Workaround: custom table hook.
 - `TransferObjectViewPageContainer`: VIEW/UPDATE. Generated `src/containers/{Entity}/{Entity}_View_Edit/`. IDs: `…ViewPageContainer`, `…ViewVisualElement`.
 
 ## Visual Element Types (Field Inputs)
@@ -34,17 +35,27 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/model-screen-layout
 - Enumeration: `EnumerationTypeToggleButtonbar` (ToggleButtonGroup), `EnumerationTypeCombo` (Select), `EnumerationTypeRadio` (RadioGroup).
 - Generated TextField: `name`, `data-testid` = `@id`, label key `entities.[Entity].[Component].[field]` with `defaultValue`, `disabled={isLoading}`, `error`/`helperText` from `validation`, `onChange` → `storeDiff`. See `i18n.md`.
 - Layout elements: `DividerVisualElement`, `TextFieldVisualElement` (static text), `PlaceholderVisualElement`, `TabBarVisualElement`.
+- Page header `Grid` uses `alignItems="vertical"` (ignored by MUI): header items not aligned. Workaround: override `PageHeader` fragment.
+- Binary tag delete: handler gets the whole list as `target` and the removed option as `removed`. Binary input without `uploadCallback`: upload TypeError is caught, upload-error snack shown.
 
 ## Relation Element Types
 - Single link: `TabularReferenceFieldRelationDefinedLink` — Autocomplete with view/set/unset.
+- Debounced owner search rebuilds on `ownerData`/`allowFetch` change; a pending search from the previous owner (200 ms) still runs the old handler, and the handler is not rebuilt when only the search callback changes. Workaround: remount the field on owner change.
+- `TextWithTypeAhead`: debounced search created once (empty deps), keeps the first-render `handleSearch`. Remount the field when the search source changes.
 - Multiple table: `TabularReferenceFieldRelationDefinedTable` — DataGrid with toolbar and row actions.
+- Table relation autocomplete rows always 10 (configured row count ignored). Relation table update passes `owner.current` whenever the table has a relation name.
 - Relation button: `TabularReferenceFieldButton` — opens relation in page/dialog.
 
 ## Action Definition Types
 - Page-level (suffix): BackActionDefinition `*BackButton`; CreateActionDefinition `*CreateButton`; UpdateActionDefinition `*UpdateButton`; DeleteActionDefinition `*DeleteButton`; CancelActionDefinition `*CancelButton`; RefreshActionDefinition `*RefreshButton`; GetTemplateActionDefinition `*GetTemplateButton`.
+- Get-template action: owner cloned from stale render-time `data`, not the fetched result. Reload after the action.
 - Table: FilterActionDefinition `*FilterButton` (filter dialog); RefreshActionDefinition `*RefreshButton`; ExportActionDefinition `*ExportButton`; OpenCreateFormActionDefinition `*CreateButton`; OpenAddSelectorActionDefinition `*AddSelectorButton`; OpenSetSelectorActionDefinition `*SetSelectorButton`; ClearActionDefinition `*ClearButton`; BulkRemoveActionDefinition `*BulkRemoveButton`; BulkDeleteActionDefinition `*BulkDeleteButton`; InlineCreateRowActionDefinition `TabularReferenceTableInlineCreateButton`.
+- Set-selector create action has no target page (`setTargetPageDefinition` is never called). Add-from-autocomplete on eager table writes under a different name than it reads: refresh after adding.
+- Set-selector `alreadySelected` tests bare `container.table`, which is never true (only `page` is in the template context; add-selector uses `page.container.table`), so it always takes the `data.<relation>` branch. Workaround: custom action for the already-selected list.
 - Row: OpenPageActionDefinition `*RowViewButton`; RemoveActionDefinition `*RowRemoveButton` (remove relation); RowDeleteActionDefinition `*RowDeleteButton` (delete entity).
+- Row button disabled condition: `&&` binds tighter than `||`, bulk-remove check is outside the relation guard. Workaround: explicit `enabledBy`.
 - Custom operations: `OperationFormVisualElement` (operation button), `OperationFormCallButton` (submit), `OperationFormTableRowCallOperationButton` (row-level), `OperationMenuButton` (static/menu), `ActionButtonVisualElement` (standalone Ok/Cancel).
+- Operation parameter of relation type: relation-service branch is unreachable. View redirect uses `data[0]` without an empty check: return at least one row. Redirect memo depends on `[handleResult]` only; filter-options memo misses `data`. Workaround: reload after redirect changes.
 
 ## File Path Generation Patterns
 - Pages: factory `#getPagesForRouting(#application)`; `src/pages/{PagePath}/index.tsx` + `context.tsx`. e.g. `TagContainerTransfer::manyAssociationAssociation::RelationViewPage` → `src/pages/TagContainerTransfer/ManyAssociationAssociation/RelationViewPage/index.tsx`.
@@ -70,9 +81,12 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/model-screen-layout
 
 ## Page Definition Properties
 - `openInDialog`, `dialogSize` (XS–XL), `dashboard`, `generateActionsHook` (generate actions hook for customization), `isSelector`, `isRelationSelector`.
+- Page title warning never fires (breadcrumb initial label is `undefined`, not `null`). Workaround: set the page title on every page.
 
 ## Action References
 - Page `actions[]`: `actionDefinition` ($ref to type definition), `targetPageDefinition` (navigation), `ownerDataElement`, `isMenuAction` (true → dropdown menu).
+
+- Input-selector action lookup: prefix match (`startsWith`, no separator) on `::Relation::Table::CallSelector` page names. Workaround: avoid page names that prefix other page names.
 
 ## Discriminators in IDs
 - Same element type in several contexts (e.g. a column in several tables) gets `(discriminator/<parent @id>)` appended, keeping IDs unique.

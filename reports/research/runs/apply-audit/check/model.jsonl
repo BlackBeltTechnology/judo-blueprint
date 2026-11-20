@@ -1,0 +1,36 @@
+{"id": "R0598", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R2207", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R0213", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1399", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R0209", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R0514", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R0255", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1721", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1076", "verdict": "rejected-removed", "note": "ecore default enumWidget=COMBO (esm.ecore:702), so unset never reaches the null guard; claim unsupported"}
+{"id": "R0808", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1412", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R2605", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R2427", "verdict": "fixed", "note": "ETL rule is reached via _metadata output rule gated by generateBehaviours; added"}
+{"id": "R2431", "verdict": "fixed", "note": "same as R2427"}
+{"id": "R2426", "verdict": "fixed", "note": "same as R2427"}
+{"id": "R0156", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1160", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1161", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1171", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1172", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R0094", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R2604", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R0623", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R0158", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1518", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1821", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R2378", "verdict": "fixed", "note": "excelToRules.etl:41-45 reads t.cascade (always false); reworded"}
+{"id": "R2364", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R1989", "verdict": "fixed", "note": "isMixin is PSM expression adapter; scoped"}
+{"id": "R1016", "verdict": "fixed", "note": "same as R1989"}
+{"id": "R1805", "verdict": "fixed", "note": "NPE only when numeric primitive type declaration lacks scale modifier; reworded, workaround corrected"}
+{"id": "R1827", "verdict": "fixed", "note": "same as R1805"}
+{"id": "R2791", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R2792", "verdict": "ok", "note": "evidence confirmed"}
+{"id": "R2764", "verdict": "fixed", "note": "workaround (split string parts) unverified; removed it"}
+{"id": "R1257", "verdict": "fixed", "note": "only ZETA EsmTabularExtensions:100-120 returns null for IS_EMPTY/IS_NOT_EMPTY, and only for DataFilter defaultOperation; ETL/other extension maps them; reworded + agent.md"}

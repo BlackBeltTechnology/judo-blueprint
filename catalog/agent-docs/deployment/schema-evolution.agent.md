@@ -62,6 +62,11 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/schema-evolution.
 - `ignoreReview`: default `false` for `generate`, `true` for Maven `execute`/`apply`. Pipelines set explicitly (`--ignoreReview`).
 - Consolidate per-snapshot folders: regenerate one folder from oldest base → current model; move hand-written steps in; delete intermediates. `DATABASE HAVE TO BE UPDATED` during this generate is normal.
 - Projects may have many steps (e.g. 18 steps, changesets `00`..`08`); only non-empty data changesets carry knowledge.
+- PK constraints are `PK_<column>` (no table name): same-named key/mandatory columns across entities break the migration; rename in the model.
+- Multi-field unique constraints: one single-column constraint per field (combined uniqueness not enforced; add a manual index) and one `DropUniqueConstraint` per field.
+- DbCheckup emits `TableExists` for every table, including new ones; review preconditions.
+- Zeta incremental compares previous model with itself (container checks always true): constraints on new elements can be missing; review changelog.
+- Known issue: backup names for long table names are truncated in the post-check and backup-delete steps but not in the pre-check; check `BACKUP_` names in the script before running it.
 - Pipeline script example: `./update.sh --version <v> --schema generate|execute --ignoreReview`; runner snapshots backup (e.g. Neon branch `backup-<ts>`) before `execute`; rollback `--schema restore --branch backup-<ts>`.
 
 ### Step 4: Test Migration

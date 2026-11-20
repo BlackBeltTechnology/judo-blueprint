@@ -26,8 +26,10 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/theming.md.
 ## Advanced Theme Customization
 
 - Typography: `fontFamily` (array joined by `,`), `h1`/`h2` size and weight, `button.textTransform: 'none'`.
+- Button `lineHeight` uses `scaleXs` in all breakpoint branches (wrong at larger widths). Workaround: set `button.lineHeight` in a theme override fragment.
 - Component overrides: `components.MuiButton` (`styleOverrides` root/contained, `defaultProps.disableElevation`), `MuiCard` (`borderRadius`, `boxShadow`), `MuiTextField` (`defaultProps.variant: 'outlined'`).
 - Spacing: `spacing: 8` (default 8px unit). Breakpoints `values`: xs 0, sm 600, md 960, lg 1280, xl 1920.
+- Known issue: `MuiTab` breakpoint keys sit beside `root`, not inside a slot, so the MUI resolver ignores them. Workaround: move each breakpoint block inside `root` in an `index.ts.mui-tab.fragment.hbs` override.
 
 ## Theme Override Fragments
 
@@ -44,6 +46,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/theming.md.
 - Registration: `context.registerService<SubThemeHook>(SUB_THEME_HOOK_INTERFACE_KEY, fn, { name: '<toSafeCamelCase of model sub-theme name>' })`.
 - Function signature `(parentTheme: Theme, data?: any)`; `data` is the wrapped widget's data (e.g. status colour).
 - Example: `MuiPaper` root `background: alpha(parentTheme.palette.secondary.main, 0.97)`.
+- Sub-theme filter `(&(objectClass=SubThemeHook)(name=<name>)` lacks its closing `)`; the sub-theme can fail to resolve. Workaround: exact name plus browser-console lookup check.
 - Use cases: highlight dashboard card or status field; different palette or table style (`MuiDataGrid` `styleOverrides`) for admin sections.
 
 ## CSS-in-JS Styling

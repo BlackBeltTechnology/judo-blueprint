@@ -152,6 +152,8 @@ Fragments are Handlebars templates, so you can use expression syntax and generat
 
 Every generated module (application root, app, interceptors, karaf-features, schema, e2e, web-root) has these empty stubs; a file with exactly that name in the override directory survives regeneration and needs no `.generator-ignore` entry.
 
+The generated project-root `pom.xml` template does not include the `extra-dependency-management` and `extra-modules` fragments (the application-root `pom.xml` does), so root-level files with those names are silently ignored even though the table below lists them. Until the template wires them in, declare the extra dependency with an explicit version in the `app/pom.xml.extra-dependencies.fragment.hbs` fragment.
+
 **Available fragment extension points (from `judo-esm-fullstack-project-template`):**
 
 | Scope | Fragment | Typical use |
@@ -209,6 +211,8 @@ See `generator-parameter.properties` for complete list.
 Main orchestration script that simplifies common operations.
 
 **Location:** `/judo.sh`
+
+**Known issue:** the frontend module list in `install_bundles` pipes newline-separated `find` output into `xargs -0`, which reads it as one entry, so several frontend `pom.xml` files can collapse into one module entry. Until `judo.sh` is fixed, build each frontend module by its path.
 
 **Capabilities:**
 - Environment setup (SDKMAN, tools)
@@ -408,6 +412,8 @@ The template ships Eclipse m2e launchers: `BuildApplication.launch` (clean insta
 The generated agent-docs are Handlebars templates in the project template. They use only `docLink`/`localHubLink` helpers (defined in `EsmProjectHelper`, `judo-esm-fullstack-project-template-common`), a lower-case model-name expression and a model-name expression; literal double braces are escaped with a backslash. `docLink` becomes `[text](path)` and `localHubLink` becomes `[text](./README.md)`. Code constructs like `#if`/`#each` inside docs are examples only.
 
 ## Maven Commands
+
+The `parseHutn` goal catches every exception and only logs it, so the build can succeed when a HUTN file fails to parse. Check the build log for `Could parse HUTN` errors, or add a step that fails on them.
 
 ### Essential Maven Commands
 

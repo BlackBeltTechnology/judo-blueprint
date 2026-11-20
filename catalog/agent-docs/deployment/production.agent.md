@@ -23,6 +23,7 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/production.md.
   - `compose-develop`: Traefik, Keycloak in `start-dev` mode, app on `*.traefik.me` over plain HTTP; `JUDO_PLATFORM_FILESTORE=rdbms`.
   - `compose-postgresql-https`: TLS on 80/443; Keycloak and app on PostgreSQL; filesystem filestore (`JUDO_PLATFORM_FILESTORE_DIRECTORY=/filestore`; only `postgres` mounts that volume, see the known issue in the main doc); helper container downloads the traefik.me certificate.
 - `compose-postgresql-https` declares network and volumes as external: create them before `docker compose up`. Select with the `compose_env` start option.
+- Known issue: `compose-postgresql-https` `app` router uses auth cert domains (`auth.traefik.me`, `auth-*.traefik.me`), so the app cert does not match `app.traefik.me`. Use the certificate's hostname or `compose-develop`.
 - Persisting state: seeded-once data (e.g. `pi-analyzer` seed skips when its auth file exists, so a changed `RI_AUTH_JSON` is ignored) needs a named volume. Container-layer state is lost on replace.
 
 ## Environment Configuration

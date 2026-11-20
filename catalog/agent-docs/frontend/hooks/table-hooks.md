@@ -20,6 +20,8 @@ Table hooks allow you to customize the behavior and appearance of data tables. T
 
 Apply conditional background colors to table rows based on data values. Useful for visually identifying important or problematic records.
 
+The generated highlighting always derives the background colours for the light theme: `getBackgroundColor`, `getHoverBackgroundColor`, `getSelectedBackgroundColor` and `getSelectedHoverBackgroundColor` receive the literal `'light'`, so background tints can look wrong in dark mode. `fontColor` is applied unchanged.
+
 ### Basic Implementation
 
 ```typescript
@@ -223,6 +225,8 @@ context.registerService<ColumnCustomizerHook<ServiceLocationStored>>(
   { component: 'ServiceLocationsTable', column: 'qualityScore' }
 );
 ```
+
+The generated column customizer lookup uses a service filter string that is never closed (`(&(objectClass=…)(component=…)(column=…)` has one `)` too few), so the lookup can fail. Until this is fixed in the generator, use a custom column hook instead.
 
 ### Advanced Examples
 

@@ -72,6 +72,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/README.md.
 - Context: `#self`, `#application`, `#applications`, `#model`, `#template`, `#addDebugToTemplate` (when `-DtemplateDebug`).
 - Override layering: same name + new `templateName`/`pathExpression` replaces; `<name>.override.hbs` decorates (can include original as partial); `exclude: true` removes. Theme fragments: see theming.md.
 - Helpers: `toSafeCamelCase`, `firstToUpperCase`, etc. `classDataName('MyPackage::MyClass', '')` → `MyPackageMyClass` (only first char uppercased per joined name).
+- Non-POSIX (Windows): `permission` uses file flags; owner-write calls `setReadable` instead of `setWritable`, so a read-only generated file can stay read-only. Clear the read-only flag before regenerating.
 
 ## Related Documentation
 - Authoring vs customizing: UI layout (Form/Table/View on TOs, menu on ActorType) is authored in ESM model → ../model/ui-authoring-guide.md.

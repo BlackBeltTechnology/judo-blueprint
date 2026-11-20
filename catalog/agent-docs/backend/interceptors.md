@@ -181,6 +181,10 @@ public interface OperationCallInterceptor {
 | `async()` | `true` runs the interceptor on a different thread, outside the transaction and without context variables. Its exceptions are lost and it cannot change the payload. |
 | `terminateOnException()` | Defaults to `true`: an exception terminates the call. Ignored for async interceptors. |
 
+With `async()` true the runtime calls `preCall`, not `postCall`, after the operation, on a background thread, so `postCall` never runs. Put post-operation logic in a synchronous interceptor (`async()` false).
+
+For validate-create and validate-update operations, an interceptor that skips the original call (`ignoreDecoratedCall()` returns `true`) makes the operation fail with a `NullPointerException`. Do not skip the original call for these operations.
+
 Interceptors may throw only `InterceptorCallBusinessException` (see [Throwing a Business Error from an Interceptor](#throwing-a-business-error-from-an-interceptor)).
 
 ### Which Operations Are Intercepted

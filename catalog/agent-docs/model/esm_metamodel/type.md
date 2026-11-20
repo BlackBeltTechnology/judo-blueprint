@@ -26,7 +26,7 @@ These are the basic, indivisible data types. All inherit from the abstract `Prim
 | **`TimeType`** | Represents a time of day. | `baseUnit` (`DurationType` Enum: `second`, `millisecond`, etc.) |
 | **`TimestampType`** | Represents a specific point in time (date and time). | `baseUnit` (`DurationType` Enum) |
 | **`BinaryType`** | Represents binary data, such as a file. | `maxFileSize` (Long), `mimeTypes` (`MimeType`, 1..*) |
-| **`PasswordType`**| A specialized string type that implies masked UI widgets and secure handling. **Not usable in a generated application:** the PSM→ASM transformation throws `Password type is not supported yet.` | - |
+| **`PasswordType`**| A specialized string type that implies masked UI widgets and secure handling. **Not usable in a generated application:** the ETL PSM→ASM transformation throws `Password type is not supported yet.` (the ZETA engine creates no data type and does not throw, so an attribute typed `PasswordType` has no data type in the generated ASM) | - |
 | **`CustomType`**| A primitive type whose implementation is defined externally. | - |
 | **`XMLType`**| A string-based type that represents XML content. **Not usable in a generated application:** the PSM→ASM transformation throws `XML type is not supported yet.` | `xmlNamespace` (String), `xmlElement` (String) |
 
@@ -122,7 +122,7 @@ Omitting `mimeTypes` on a `BinaryType` fails EMF validation: *"The feature 'mime
 | `name` | Yes | Enumeration type name |
 | `members` | Yes (1..*) | List of enumeration members |
 
-**Numeric to Java mapping.** The SDK generator (`JavaApiHelper`) chooses the Java type from precision and scale: integer numerics with precision 1-9 become `java.lang.Integer`, 10-19 `java.lang.Long`, larger ones `java.math.BigDecimal`; decimal numerics with precision 1-7 and scale at most 4 become `java.lang.Float`, precision 8-15 with scale at most 4 `java.lang.Double`, anything else `java.math.BigDecimal`. `BinaryType` becomes `hu.blackbelt.judo.dispatcher.api.FileType`; an unmapped data type falls back to `java.lang.Object`.
+**Numeric to Java mapping.** The SDK generator (`JavaApiHelper`) chooses the Java type from precision and scale: integer numerics with precision 1-9 become `java.lang.Integer`, 10-19 `java.lang.Long`, larger ones `java.math.BigDecimal`; decimal numerics with precision 1-7 and scale at most 4 become `java.lang.Float`, precision 8-15 with scale at most 4 `java.lang.Double`, anything else `java.math.BigDecimal`. `BinaryType` becomes `hu.blackbelt.judo.dispatcher.api.FileType`; an unmapped data type falls back to `java.lang.Object`. A measured type whose values are not integers also falls back to `java.lang.Object`: the measured-type branch tests `isInteger()` twice, so its `java.math.BigDecimal` return is unreachable (SDK, restassured and jaxrs generators). Use a decimal attribute for such values until this is fixed.
 
 **JSL binary modifiers.** In JSL a binary primitive declares both `mime-type:` (entries `type/subtype`, the subtype may be `*`; the keyword is the singular `mime-type`) and `max-file-size:`. The size takes an optional unit: decimal `KB`/`MB`/`GB` (1000-based) or binary `KiB`/`MiB`/`GiB` (1024-based); the unit needs an uppercase `K`, so `kB` does not parse. Values are converted to bytes.
 

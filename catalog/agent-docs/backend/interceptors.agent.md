@@ -20,7 +20,9 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/interceptors.md.
 - `preCall` return replaces input; must be assignable to expected payload type (else `IllegalArgumentException`). With `ignoreDecoratedCall()==true` it must return the decorated call's return payload type.
 - `postCall` gets input and return payload (`Payload` or collection); returned object becomes result.
 - `ignoreDecoratedCall()` true skips the platform DAO call; decorated call runs only if no interceptor returns true.
+- Validate-create/update: skipping the original call makes the operation fail with NullPointerException; do not skip it.
 - `async()` true: different thread, outside transaction, no context variables; exceptions lost; cannot change payload.
+- `async()` true: the runtime calls `preCall` (not `postCall`) after the operation, so `postCall` never runs; use a sync interceptor for post-operation logic.
 - `terminateOnException()` defaults to `true`; ignored for async.
 - Interceptors may throw only `InterceptorCallBusinessException`.
 

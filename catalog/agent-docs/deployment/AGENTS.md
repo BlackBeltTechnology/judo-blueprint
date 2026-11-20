@@ -16,6 +16,7 @@
 | `generator-plugins.md` | ESM and UI generator goals, checksums, Tatami workflow plugins, generation toggles, OpenAPI, Flutter and frontend environment variables. |
 | `local-development.agent.md` | Condensed map of `local-development.md`: read first, then `kb_get` one section |
 | `local-development.md` | Starting the application locally, hot deployment, Karaf console, logs and local troubleshooting. |
+| `osgi-runtime-services.agent.md` | Condensed map of `osgi-runtime-services.md`: read first, then `kb_get` one section |
 | `osgi-runtime-services.md` | Model bundles, datasource provisioning, model version checks, startup readiness, health checks and Karaf administration. |
 | `production.agent.md` | Condensed map of `production.md`: read first, then `kb_get` one section |
 | `production.md` | Production builds, Docker and Compose deployment, environment configuration, monitoring and deployment checklist. |

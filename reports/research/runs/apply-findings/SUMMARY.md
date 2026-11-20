@@ -30,17 +30,23 @@
 
 | kind | outcome | count |
 |---|---|---|
+| bug | triage: already documented (audit 11-19) | 47 |
 | bug | triage: duplicate | 25 |
 | bug | triage: keep | 82 |
-| bug | triage: not-platform | 1103 |
+| bug | triage: not-platform (audited 11-19) | 847 |
+| bug | triage: platform (audit 11-19, see apply-audit) | 209 |
 | doc | in inventory | 232 |
 | doc | triage: already documented | 11 |
+| doc | triage: already documented (audit 11-19) | 20 |
 | doc | triage: duplicate | 15 |
 | doc | triage: keep | 128 |
-| doc | triage: not-platform | 1019 |
+| doc | triage: not-platform (audited 11-19) | 982 |
+| doc | triage: platform (audit 11-19, see apply-audit) | 17 |
 | dox | in inventory | 24 |
+| dox | triage: already documented (audit 11-19) | 11 |
 | dox | triage: duplicate | 5 |
 | dox | triage: keep | 14 |
-| dox | triage: not-platform | 206 |
+| dox | triage: not-platform (audited 11-19) | 190 |
+| dox | triage: platform (audit 11-19, see apply-audit) | 5 |
 
 Total 684: applied 411, not-platform 145, already-correct 96, rejected 32

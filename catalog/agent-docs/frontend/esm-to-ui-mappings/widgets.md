@@ -386,6 +386,7 @@ Container for grouping related actions/buttons with automatic overflow handling.
 - The speed-dial toggle shows the group icon or no icon; it never uses a `SpeedDialIcon` element.
 - `hiddenBy` applies to featured FAB buttons, not to speed-dial items in the same group.
 - Dialog FAB groups render after `DialogContent`, outside the dialog body.
+- A page counts as having a FAB group when any nested `ButtonGroup` is a FAB, even if no top-level group is. Workaround: place FAB groups directly under the page container.
 
 **Example:**
 ```xml

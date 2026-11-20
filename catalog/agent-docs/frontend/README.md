@@ -385,6 +385,8 @@ Handlebars helpers are provided by the generator helper classes (for example `to
 
 Naming helpers only uppercase the first character of the joined name: `classDataName('MyPackage::MyClass', '')` generates `MyPackageMyClass`, not `MypackageMyclass`.
 
+On non-POSIX file systems (Windows), the `permission` attribute is applied with file flags, and the owner-write case calls `setReadable` instead of `setWritable`. A generated file that is already read-only can stay read-only after regeneration. Clear the read-only flag on the file before regenerating.
+
 ## Related Documentation
 
 **Authoring vs customizing.** This skill covers **customizing the generated React frontend** (hooks, theming, i18n, overrides). The UI layout itself — Form / Table / View scaffolds on each `TransferObjectType`, the menu on each `ActorType` — is **authored in the ESM model**. For that, see the model skill's [UI Authoring Guide](../model/ui-authoring-guide.md).

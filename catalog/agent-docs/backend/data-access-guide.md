@@ -106,6 +106,8 @@ import hu.blackbelt.judo.sdk.query.StringFilter;
 .filterByName(StringFilter.ilike("BUDAPEST"))
 ```
 
+The SDK escapes double quotes only. A value that ends in a backslash (for example `C:\`) breaks the quoted filter value, so the query returns a wrong result or fails. Do not end a string filter value with a backslash.
+
 #### NumberFilter
 
 For filtering numeric fields (Integer, Long, BigDecimal).

@@ -180,6 +180,8 @@ export const customTheme = createTheme({
 });
 ```
 
+Button `lineHeight` in the generated theme options uses the extra-small scale factor (`scaleXs`) in the `sm-md`, `md-lg`, `lg-xl` and `up-xl` breakpoint branches, so buttons get the wrong line height at larger widths. Workaround: set `button.lineHeight` in a theme override fragment (see [Theme Override Fragments](#theme-override-fragments)).
+
 ### Component Overrides
 
 ```typescript
@@ -239,6 +241,8 @@ export const customTheme = createTheme({
 });
 ```
 
+Known issue: breakpoint keys in a `MuiTab` override must sit inside a slot. The generated Tab fragment (`actor/src/theme/index.ts.mui-tab.fragment.hbs`) puts the `breakpoints.down`, `between` and `up` keys directly under `styleOverrides`, beside `root`. MUI's Tab `overridesResolver` reads only named slots (`root`, `labelIcon`, `iconWrapper` and similar), so these responsive tab overrides are not applied. Workaround: in an `index.ts.mui-tab.fragment.hbs` override, move each breakpoint block inside `root`.
+
 ## Theme Override Fragments
 
 The generated theme (`src/theme/index.tsx`) is assembled from fixed fragments that you can override by creating a same-named file in the application's `actor/src/theme/` override directory (see [Template Override Process](./README.md#template-override-process)):
@@ -284,6 +288,8 @@ const serviceEntityCardSubTheme = (parentTheme: Theme, data?: any) => ({
 ```
 
 The function receives `(parentTheme: Theme, data?: any)` where `data` is the data of the wrapped widget, so styling can depend on values (for example a status colour).
+
+The generated `SubThemeWrapper` builds the service filter `(&(objectClass=SubThemeHook)(name=<name>)` without its closing parenthesis, so a custom sub-theme can fail to resolve. Workaround: register the sub-theme under the exact name and check the lookup in the browser console.
 
 ### Use Cases
 

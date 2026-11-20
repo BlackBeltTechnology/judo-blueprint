@@ -12,6 +12,7 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/data-access-guide.md
 - Fluent: `dao.query().filterBy<Attr>(Filter.x(...)).orderBy...(…Attribute.X).selectList()|selectOne()|count()`. Filters are AND-combined.
 - Filter classes in `hu.blackbelt.judo.sdk.query`:
   - `StringFilter`: `equalTo`, `notEqualTo`, `like` (SQL LIKE, `%`), `ilike` (case-insensitive).
+  - `StringFilter` escapes double quotes only; a value ending in a backslash breaks the quoting. Avoid trailing backslashes.
   - `NumberFilter`: `equalTo`, `notEqualTo`, `greaterThan`, `greaterOrEqualThan`, `lessThan`, `lessOrEqualThan` (Integer/Long/BigDecimal).
   - `DateFilter`: same comparisons on `LocalDate`.
   - `TimestampFilter`: same comparisons on `LocalDateTime`.

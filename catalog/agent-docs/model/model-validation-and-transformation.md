@@ -38,7 +38,7 @@ A project keeps exactly one designer-owned model file `model/<app>.model` (the n
 ## Annotations and RDBMS tailoring
 
 - Semantic annotations on ESM and ASM elements are EAnnotations with the source `http://blackbelt.hu/judo/meta/ExtendedMetadata/<name>` and the value in the detail key `value`. The operation behaviour annotation `type` string (for example `list`, `createInstance`, `getUploadToken`) is the model contract; unknown strings resolve to nothing.
-- The RDBMS generator reads three Excel workbooks at build time: `RDBMS_Data_Types_<Dialect>.xlsx` (type to SQL type, size, precision, scale), `RDBMS_Table_Mapping_Rules.xlsx` (relation shape rules) and `RDBMS_Sql_Name_Mapping.xlsx` (FQN to SQL name overrides).
+- The RDBMS generator reads three Excel workbooks at build time: `RDBMS_Data_Types_<Dialect>.xlsx` (type to SQL type, size, precision, scale), `RDBMS_Table_Mapping_Rules.xlsx` (relation shape rules) and `RDBMS_Sql_Name_Mapping.xlsx` (FQN to SQL name overrides). The `cascade` column of `RDBMS_Table_Mapping_Rules.xlsx` has no effect: the ETL loader reads the cascade of the target rule instead of the spreadsheet cell, so the rule cascade is always `false`.
 
 ## Reusing schema fragments
 
@@ -54,6 +54,8 @@ The `merge-schema` goal of `judo-esm-schema-merge-maven-plugin` (phase `generate
 
 Measures are base measures (such as `Mass` with `kilogram`) or derived measures built from other measures with exponents (`Area = Length.metre^2`); a derived measure may not reference itself. Units convert to the base unit with `rateDividend` and `rateDivisor` (`kilometrePerHour` has divisor 3.6 relative to `metrePerSecond`). A measure defines one base unit (`rateDividend == rateDivisor`). A measured type ties a numeric type to a stored unit, for example `MassStoredInKilograms` (precision 15, scale 4, store unit `kilogram`). At runtime the DAO converts between the transfer and entity unit using both rates, rounds to scale 20 with `HALF_UP`, and returns an integer when the entity attribute is an integer.
 
+- **Derived-measure exponents**: when a derived measure has several terms, the expression validator reads the running exponent of a base measure under the term's own measure, not the base measure it writes. A later term can therefore overwrite an earlier one: `Volume = Area * Length` with the `Length` term listed first can come out as `Length^2`. Until fixed, list derived-measure terms before base-measure terms, or keep each derived measure to one base measure.
+
 ## Static navigations and static data
 
 A *static navigation* exposes a fixed collection through a getter (for example `allCategories` with getter `app::entities::Category`) and can feed relation ranges. *Static data* holds a single value from a getter expression; its names are unique across the model (case-insensitive) and it cannot be required.
@@ -68,9 +70,14 @@ A transfer object used as a `CREATE_INSTANCE` or `VALIDATE_CREATE` target must n
 
 ## Transformation Mode and Generation Switches
 
-The tatami engine runs in `ETL` (Epsilon), `ZETA` (Java) or `DUAL` (both, compared) mode, chosen with `-Djudo.transformation.mode=ETL` or per step with `transformationMode(...)`. The default is `ZETA` (`TransformationMode.DEFAULT`, used by the ESM client workflow, which has no mode parameter); use `ETL` to compare when debugging. Exception: the JSL workflow plugin (`default-model-workflow`) defaults to `ETL`; set `transformationMode=ZETA` there to use Zeta ([generator plugins](../deployment/generator-plugins.md#jsl-model-workflow-judo-tatami-jsl-workflow-maven-plugin-goal-default-model-workflow)).
+The tatami engine runs in `ETL` (Epsilon), `ZETA` (Java) or `DUAL` mode (it does not compare results, see below), chosen with `-Djudo.transformation.mode=ETL` or per step with `transformationMode(...)`. The default is `ZETA` (`TransformationMode.DEFAULT`, used by the ESM client workflow, which has no mode parameter); to compare the two engines when debugging, build the same model with `ETL` and with `ZETA` and diff the generated output. Exception: the JSL workflow plugin (`default-model-workflow`) defaults to `ETL`; set `transformationMode=ZETA` there to use Zeta ([generator plugins](../deployment/generator-plugins.md#jsl-model-workflow-judo-tatami-jsl-workflow-maven-plugin-goal-default-model-workflow)).
 
 ESM-to-PSM is gated by `generateActors`, `generateOperations`, `generateBehaviours`, `generateTransferObjectTypes` and `generateDefaultTransferObjectTypes` (all `true`) and `stringMaxLength` (65536). The switches are not uniform: default-transfer-object attribute rules follow `generateDefaultTransferObjectTypes`, and the query customizer, ordering and filter families follow `generateBehaviours`; but not every rule is guarded (query ordering, filter and seeking types and the upload-token type are generated regardless).
+
+- **DUAL does not compare results.** The ESM-to-PSM step runs only the ZETA engine; no ETL run and no comparison happen. The ESM validation step runs EPSILON, then the ZETA validator, whose outcome is discarded (a TODO remains in the code).
+- **Actor metadata types**: in the ETL engine, `_MetadataFor<Actor>` and its security type (`CreateMetadataType`, `CreateMetadataSecurityType`) are generated even when `generateActors` is `false` (they are created by the `_metadata` operation output rule, which `generateBehaviours` gates). The ZETA engine guards `CreateMetadataType` with `generateActors`.
+- **Default transfer-object relations** always get lower bound `0` in both engines, whatever the lower bound of the ESM relation. A required relation therefore shows as optional in the generated default transfer object.
+- **Junction foreign keys differ by engine**: ZETA marks them NOT NULL when the relation lower bound is above `0`; ETL only when both bounds are `1`. Compare the generated junction tables when you switch engines.
 
 ### Embedding the transformations
 

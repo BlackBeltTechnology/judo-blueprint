@@ -12,6 +12,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/hooks/table-hooks.m
 - Register: `registerService<TableRowHighlightingHook>(TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY, hook, { component: 'ServiceItemsTable' })`.
 - Rules are multiple per hook; `condition` returns boolean. Examples: overdue (`new Date(row.dateField) < now && !row.completed`), same-day, `priorityLevel === 'HIGH'`, status equality, quality/coordinate null checks.
 - Type with the entity: `<ServiceItemStored>` from `~/services/data-api/model/ServiceItem`.
+- Colours are always computed for the light theme (`'light'` literal); set explicit dark colours in the rule. Known defect, no fix in generated code.
 
 ## Custom Columns
 - `ColumnCustomizerHook<T> = () => ColumnCustomizer<T>`; `ColumnCustomizer<T> = (original: GridColDef<T>) => GridColDef<T>`.
@@ -19,6 +20,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/hooks/table-hooks.m
 - Register: `TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY`, `{ component: 'ServiceLocationsTable', column: 'qualityScore' }`.
 - Examples (MUI DataGrid `renderCell`): Chip status by value; action button (e.g. open Google Maps, disable when null coords); LinearProgress with percentage (guard total=0); computed days-until Chip (error <0, warning ≤3, success ≤7).
 - Use `{...original, ...}` to keep generated defaults; `sortable:false`/`filterable:false` to disable.
+- Known defect: the generated customizer lookup filter string is never closed, so the lookup can fail; use a custom column hook until fixed.
 
 ## Sidekick Components
 - Sidekick = custom visual element above table, within table container.

@@ -11,6 +11,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/hooks/navigation-an
 - Boolean controls: `hiddenBy` (not rendered when true), `enabledBy` (disabled when false), `requiredBy` (field required when true).
 - Backend interceptors set booleans on transfer objects; frontend reads them via `hiddenBy`/`enabledBy` expressions. Decide access on the backend.
 - Scope: actor accesses (menu), relations (tabs, tables, links), attributes (form fields).
+- Profile/bottom menu defects: Profile item wired only when `profilePage` is set; logout button only inside the `profilePage` block; `doLogout` never rendered in mobile popover; `routeTo<Page>` unimported in drawer profile; "Other" popover index 3 vs `itemOther()` index 4. Configure a profile page; customise the menu where needed.
 
 ## RedirectServiceHook
 - Generated `Redirect` page (`src/pages/Redirect.tsx`) calls the registered redirect service with URL search params.

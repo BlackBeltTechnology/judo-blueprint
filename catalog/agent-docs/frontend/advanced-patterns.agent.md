@@ -52,12 +52,13 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/advanced-patterns.m
 - `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY`; `type TableRowHighlightingHook<T> = () => () => RowStylerConfigured<T>[]`.
 - Each entry: `{ name, label, condition(params: GridRowClassNameParams<T>), backgroundColor?, fontColor? }`.
 - Register with service property `component` = table component name.
-- Styling limited to background and font colour (derived per light/dark mode). No `shouldHighlight`/`getHighlightStyle`, arbitrary CSS, borders or row index.
+- Styling limited to background and font colour (always computed for the light theme). No `shouldHighlight`/`getHighlightStyle`, arbitrary CSS, borders or row index.
 - Stylers evaluated per row; make conditions specific so one applies.
 - Sections: hook interface, registration, priority-based, threshold-based.
 
 ## Custom Component Replacement
 - No generic `CUSTOM_COMPONENT_HOOK_INTERFACE_KEY` or `CustomComponentHook`.
+- Generated relation service methods (nested and access relations) do not match their interface: nested `get` lacks `headers`; relation `update` takes `Stored` not `Partial<Stored>`; nested `unset` takes only `owner`; nested `getRangeFor` requires `queryCustomizer`. Call the top-level relation service; pass a full stored object and an empty query customizer.
 - A custom implementation is a model visual element exposed as extension point: register an `FC` under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` (from `~/custom`) with service property `component` = per-element key from the container's `customization.ts`.
 - Scaffold `src/custom/hooks/custom-implementations/register<Container>CustomImplementations.tsx.default` has one `register<Interface>CustomImplementation(context)` per element, with proxy props type (`GenericProxyProps`, `TableProxyProps`, `LinkProxyProps` from `~/custom`).
 - Element is created in the ESM UI model as a custom implementation widget; arbitrary generated components are not replaced.

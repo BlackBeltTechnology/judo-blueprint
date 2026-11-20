@@ -1,0 +1,212 @@
+{
+ "batch": "frontend-2",
+ "files": [
+  "catalog/agent-docs/frontend/advanced-patterns.md",
+  "catalog/agent-docs/frontend/build-and-deployment.md",
+  "catalog/agent-docs/frontend/error-handling.md",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+  "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+  "catalog/agent-docs/frontend/hooks/table-hooks.md",
+  "catalog/agent-docs/frontend/ui-model-pitfalls.md"
+ ],
+ "items": [
+  {
+   "id": "R0199",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/table-hooks.md",
+   "text": "FACT TO ADD/CORRECT under 'Computed Value Column': Data columns: the generated table applies value formatting (formatValue) to data columns too. If a column needs a custom display format, use a computed value column or a column customizer hook in the frontend hooks. | EVIDENCE: runtime/judo-tatami-client judo-tatami-client@c0d1a6a6e:judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/transformations/ui/DataColumnTransformations.java:55 | judo-ng finding: DATA_COLUMN rule duplicates the COLUMN rule in ColumnTransformations (same DataColumn -> Column mapping, same defaults) but omits formatValu"
+  },
+  {
+   "id": "R0912",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/table-hooks.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom Columns': The column customizer's service filter string is never closed, so the lookup can fail. Workaround: use a custom column hook until fixed. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/containers/components/table/index.tsx.hbs:190 | judo-ng finding: The column-customizer Pandino filter string opens '(&' and never closes it: (&(objectClass=...)(component=...)(column=...) has one closing p"
+  },
+  {
+   "id": "R0152",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/table-hooks.md",
+   "text": "FACT TO ADD/CORRECT under 'Table Row Highlighting': Row highlight colours are always computed for the light theme, so highlights look wrong in dark mode. Workaround: set explicit dark colours in the highlight rule. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/theme/table-row-highlighting.ts.hbs:37 | judo-ng finding: createRowThemes always passes the literal 'light' to getBackgroundColor, getHoverBackgroundColor, getSelectedBackgroundColor and getSelected"
+  },
+  {
+   "id": "R0641",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "text": "FACT TO ADD/CORRECT under 'MUI License Plan': The generator's Pro-feature check treats only 'pro' as licensed, so a 'premium' plan can skip Pro-only code paths. Workaround: after generating with muiLicensePlan=premium, check the @mui/x-data-grid imports and DataGridPremium usage; use 'pro' if they differ. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/ReactStoredVariableHelper.java:62 | judo-ng finding: isMUILicensePlanPro() returns true only when the plan equals \"pro\"; a \"premium\" plan returns false, while getMUIPickersPlanSuffix() (line 11"
+  },
+  {
+   "id": "R1155",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "text": "FACT TO ADD/CORRECT under 'Login Metadata': The OIDC redirect URI is the browser URL at startup, so it can include a hash route or code parameter and break the login redirect; the redirect effect also runs with an empty dependency list. Workaround: set the redirect URI to the app root in the auth configuration and reload after changing the redirect service. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/main.tsx.hbs:91 | judo-ng finding: OIDC redirect_uri is set to window.location.href at startup, which can include the hash route and query string (for example a ?code= paramet"
+  },
+  {
+   "id": "R1153",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/build-and-deployment.md",
+   "text": "FACT TO ADD/CORRECT under 'Login Metadata': The OIDC redirect URI is the browser URL at startup, so it can include a hash route or code parameter and break the login redirect; the redirect effect also runs with an empty dependency list. Workaround: set the redirect URI to the app root in the auth configuration and reload after changing the redirect service. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/pages/Redirect.tsx.hbs:34 | judo-ng finding: The redirect effect has an empty dependency list while it reads the redirect service obtained at render time. If the RedirectServiceHook ser"
+  },
+  {
+   "id": "R1229",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "text": "FACT TO ADD/CORRECT under 'Values That Break the Generator': The generator stops with a null error when the first title column of a table has an attribute without a data type. Workaround: give every attribute shown as a table title column a data type. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiTableHelper.java:330 | judo-ng finding: getFirstTitleColumnForTable calls c.getAttributeType().getDataType() without a null check. Other helpers (isColumnString, isColumnSortable) "
+  },
+  {
+   "id": "R1230",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/ui-model-pitfalls.md",
+   "text": "FACT TO ADD/CORRECT under 'Values That Break the Generator': Listing the same primitive type twice in a mask entry makes the generator fail with IllegalArgumentException. Workaround: list each primitive type once. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/mask/MaskEntry.java:40 | judo-ng finding: addPrimitives(String...) uses Set.of(p). Set.of throws IllegalArgumentException on duplicate arguments and NullPointerException on null. The"
+  },
+  {
+   "id": "R1722",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "FACT TO ADD/CORRECT under 'DataFilter (ui:DataFilter)': Filter dialog labels are wrong for some filter parts: every operator option uses the 'Operation' key, and the boolean checkbox stores the raw checkbox value, so the filter may not switch off when unchecked. Workaround: translate the 'Operation' key and verify boolean filters after unchecking. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/dialog/FilterDialog.tsx.hbs:58 | judo-ng finding: Every operator MenuItem label is translated with defaultValue 'Operation' regardless of the operator item, so untranslated operators all dis"
+  },
+  {
+   "id": "R1718",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "FACT TO ADD/CORRECT under 'DataFilter (ui:DataFilter)': Filter dialog labels are wrong for some filter parts: every operator option uses the 'Operation' key, and the boolean checkbox stores the raw checkbox value, so the filter may not switch off when unchecked. Workaround: translate the 'Operation' key and verify boolean filters after unchecking. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/dialog/FilterDialog.tsx.hbs:81 | judo-ng finding: Boolean filter checkbox calls setFilterValue(filter, !!event.target.value). event.target.value of a checkbox is its value attribute ('on' by"
+  },
+  {
+   "id": "R1840",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "FACT TO ADD/CORRECT under 'DataFilter (ui:DataFilter)': Table filter helpers can behave wrongly: a single-value filter can use stale enumeration values or throw when no filter list exists, in-memory filters apply to the original data so earlier filters are lost, and operator lookups can resolve to the wrong operation. Workaround: verify each filter result in the generated table and initialise the filter array in a custom hook. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/table/SingleValueFilterComponent.tsx.hbs:59 | judo-ng finding: updateFilter's useCallback uses enumValues but the dependency list is [filterType, operator, attributeName], so a changed enumValues is not "
+  },
+  {
+   "id": "R1839",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "FACT TO ADD/CORRECT under 'DataFilter (ui:DataFilter)': Table filter helpers can behave wrongly: a single-value filter can use stale enumeration values or throw when no filter list exists, in-memory filters apply to the original data so earlier filters are lost, and operator lookups can resolve to the wrong operation. Workaround: verify each filter result in the generated table and initialise the filter array in a custom hook. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/table/SingleValueFilterComponent.tsx.hbs:70 | judo-ng finding: newArr is the result of filters?.filter(...), which is undefined when filters is undefined; newArr.push(filter) (and onFiltersChange(newArr)"
+  },
+  {
+   "id": "R0601",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "FACT TO ADD/CORRECT under 'DataFilter (ui:DataFilter)': Table filter helpers can behave wrongly: a single-value filter can use stale enumeration values or throw when no filter list exists, in-memory filters apply to the original data so earlier filters are lost, and operator lookups can resolve to the wrong operation. Workaround: verify each filter result in the generated table and initialise the filter array in a custom hook. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/filter-helper.ts.hbs:201 | judo-ng finding: applyInMemoryFilters loops over the filters but each branch calls filterByX(filter, data) with the original data instead of newData, so only"
+  },
+  {
+   "id": "R0603",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "FACT TO ADD/CORRECT under 'DataFilter (ui:DataFilter)': Table filter helpers can behave wrongly: a single-value filter can use stale enumeration values or throw when no filter list exists, in-memory filters apply to the original data so earlier filters are lost, and operator lookups can resolve to the wrong operation. Workaround: verify each filter result in the generated table and initialise the filter array in a custom hook. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/filter-helper.ts.hbs:40 | judo-ng finding: getOperationEnumValue (line 40) and getOperation (line 61) cast the operator to keyof typeof _BooleanOperation for the _EnumerationOperation"
+  },
+  {
+   "id": "R0602",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "FACT TO ADD/CORRECT under 'DataFilter (ui:DataFilter)': Table filter helpers can behave wrongly: a single-value filter can use stale enumeration values or throw when no filter list exists, in-memory filters apply to the original data so earlier filters are lost, and operator lookups can resolve to the wrong operation. Workaround: verify each filter result in the generated table and initialise the filter array in a custom hook. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/filter-helper.ts.hbs:75 | judo-ng finding: getOperationFromFilterOperationType looks up _FilterOperationType by key (_FilterOperationType[opType]), but its default call at line 73 pas"
+  },
+  {
+   "id": "R1723",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "FACT TO ADD/CORRECT under 'Operation Fault Dialog (HTTP 422)': The fault dialog throws when an operation fault payload value is null, so the dialog may not open. Workaround: never send null values in fault payloads; use an empty string. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/dialog/OperationFaultDialog.tsx.hbs:66 | judo-ng finding: Each fault payload value is rendered with value.toString(), which throws a TypeError if a payload value is null or undefined."
+  },
+  {
+   "id": "R0356",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated Error Handling Matrix': A failed tag search shows 'No matches' instead of an error because the catch sets an empty options list. Workaround: check network errors separately; the empty hint is not a search result. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/widgets/Tags.tsx.hbs:127 | judo-ng finding: On a failed search the catch block calls setOptions([]); with loading then false, the new hook shows 'No matching results' for a fetch error"
+  },
+  {
+   "id": "R0911",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "FACT TO ADD/CORRECT under 'Validation Errors Without Location': When a new table row is not yet in the owner data, a 400 error can be attributed to the first row. Workaround: save the row before validating it. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/containers/components/table/index.tsx.hbs:167 | judo-ng finding: When findIndex returns -1 (row not yet in ownerData) the code substitutes index 0, so a 400 error for a new row is attributed to the first r"
+  },
+  {
+   "id": "R0606",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated Error Handling Matrix': A 400 response without an error list makes the handler read errorList[0] and fail, the file upload call sits outside its try block, and the nested validation check returns the response instead of a boolean. Workaround: always return a FeedbackItem list with 400 responses and wrap uploads in a custom try block. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/error-handling.ts.hbs:151 | judo-ng finding: For a 400 response, exists(errorList[0].location) dereferences errorList[0] without a guard, so an empty 400 body throws a TypeError inside "
+  },
+  {
+   "id": "R0607",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated Error Handling Matrix': A 400 response without an error list makes the handler read errorList[0] and fail, the file upload call sits outside its try block, and the nested validation check returns the response instead of a boolean. Workaround: always return a FeedbackItem list with 400 responses and wrap uploads in a custom try block. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/error-handling.ts.hbs:237 | judo-ng finding: isErrorNestedValidationError is declared to return boolean, but the && chain returns response, the number response.data.length, or undefined"
+  },
+  {
+   "id": "R0612",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/error-handling.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated Error Handling Matrix': A 400 response without an error list makes the handler read errorList[0] and fail, the file upload call sits outside its try block, and the nested validation check returns the response instead of a boolean. Workaround: always return a FeedbackItem list with 400 responses and wrap uploads in a custom try block. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/file-handling.tsx.hbs:108 | judo-ng finding: uploadFile awaits accessServiceImpl.uploadFile outside the try block, but the try block then swallows the non-200 failure (throw is caught a"
+  },
+  {
+   "id": "R1944",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+   "text": "FACT TO ADD/CORRECT under 'Actor Accesses as Menu Items': The profile and bottom-menu entries are inconsistent: logout is defined but not rendered in the mobile profile popover, the logout button exists only when a profile page is configured, the profile action calls an unimported route helper, the Profile item is generated without a wired page, and the 'Other' popover splits items at a different index. Workaround: configure a profile page and customise the bottom menu or drawer where needed. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/layout/BottomMenu/BottomProfile/index.tsx.hbs:70 | judo-ng finding: doLogout is defined (sign-out with signoutRedirect) but is never referenced in the component's JSX, so the mobile profile popover offers no "
+  },
+  {
+   "id": "R1942",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+   "text": "FACT TO ADD/CORRECT under 'Actor Accesses as Menu Items': The profile and bottom-menu entries are inconsistent: logout is defined but not rendered in the mobile profile popover, the logout button exists only when a profile page is configured, the profile action calls an unimported route helper, the Profile item is generated without a wired page, and the 'Other' popover splits items at a different index. Workaround: configure a profile page and customise the bottom menu or drawer where needed. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/layout/BottomMenu/index.tsx.hbs:240 | judo-ng finding: itemOther() slices bottomMenuItems from index 4, but the 'Other' popover (handleOtherPopupOpen, line 181) slices from index 3, and itemOther"
+  },
+  {
+   "id": "R1945",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+   "text": "FACT TO ADD/CORRECT under 'Actor Accesses as Menu Items': The profile and bottom-menu entries are inconsistent: logout is defined but not rendered in the mobile profile popover, the logout button exists only when a profile page is configured, the profile action calls an unimported route helper, the Profile item is generated without a wired page, and the 'Other' popover splits items at a different index. Workaround: configure a profile page and customise the bottom menu or drawer where needed. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/layout/Drawer/DrawerContent/DrawerProfile/index.tsx.hbs:175 | judo-ng finding: The logout button is generated only inside the application.profilePage block (lines 165-179), so applications with authentication but no pro"
+  },
+  {
+   "id": "R1943",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+   "text": "FACT TO ADD/CORRECT under 'Actor Accesses as Menu Items': The profile and bottom-menu entries are inconsistent: logout is defined but not rendered in the mobile profile popover, the logout button exists only when a profile page is configured, the profile action calls an unimported route helper, the Profile item is generated without a wired page, and the 'Other' popover splits items at a different index. Workaround: configure a profile page and customise the bottom menu or drawer where needed. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/layout/Drawer/DrawerContent/DrawerProfile/index.tsx.hbs:70 | judo-ng finding: openProfilePage calls navigate(routeTo<PageName>()), but the only import from '~/routes' is calculateNavigationRoute(profilePage) (line 33)."
+  },
+  {
+   "id": "R1150",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+   "text": "FACT TO ADD/CORRECT under 'Actor Accesses as Menu Items': The profile and bottom-menu entries are inconsistent: logout is defined but not rendered in the mobile profile popover, the logout button exists only when a profile page is configured, the profile action calls an unimported route helper, the Profile item is generated without a wired page, and the 'Other' popover splits items at a different index. Workaround: configure a profile page and customise the bottom menu or drawer where needed. | EVIDENCE: template/judo-ui-react-template:template__judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/layout/ProfilePopup/index.tsx.hbs:78 | judo-ng finding: The Profile item is generated whenever application.authentication is set, but it is only wired to openProfilePage, which HeaderProfile passe"
+  },
+  {
+   "id": "R0197",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated relation service methods': Nested and access-relation generated service methods do not match their interface: nested get omits headers, nested update takes a full stored object, nested unset takes only the owner, nested range calls require a query customizer, and some import lists can be incomplete. Workaround: call the top-level relation service where possible and pass a full stored object and an empty query customizer. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-axios/src/main/resources/data-axios/relationServiceImpl.ts.hbs:214 | judo-ng finding: The Axios update(target: Stored, queryCustomizer?) takes a full stored type, but the interface declares update(target: Partial<Stored>, ...)"
+  },
+  {
+   "id": "R0196",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated relation service methods': Nested and access-relation generated service methods do not match their interface: nested get omits headers, nested update takes a full stored object, nested unset takes only the owner, nested range calls require a query customizer, and some import lists can be incomplete. Workaround: call the top-level relation service where possible and pass a full stored object and an empty query customizer. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-axios/src/main/resources/data-axios/relationServiceImpl.ts.hbs:334 | judo-ng finding: The nested get<TargetRel>(owner, queryCustomizer?) implementation omits the headers parameter, although the interface declares get<TargetRel"
+  },
+  {
+   "id": "R0565",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated relation service methods': Nested and access-relation generated service methods do not match their interface: nested get omits headers, nested update takes a full stored object, nested unset takes only the owner, nested range calls require a query customizer, and some import lists can be incomplete. Workaround: call the top-level relation service where possible and pass a full stored object and an empty query customizer. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-axios/src/main/resources/data-axios/relationServiceImpl.ts.hbs:501 | judo-ng finding: The Axios implementation of the nested unset<TargetRel> takes only (owner). The interface at relationService.ts.hbs:96 declares (owner, targ"
+  },
+  {
+   "id": "R0195",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated relation service methods': Nested and access-relation generated service methods do not match their interface: nested get omits headers, nested update takes a full stored object, nested unset takes only the owner, nested range calls require a query customizer, and some import lists can be incomplete. Workaround: call the top-level relation service where possible and pass a full stored object and an empty query customizer. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-service/src/main/java/hu/blackbelt/judo/ui/generator/typescript/rest/service/UiServiceHelper.java:105 | judo-ng finding: joinedTokensForApiImportForAccessRelationServiceImpl calls operationType.getInput().getTarget() without a null check, while sibling helpers "
+  },
+  {
+   "id": "R0563",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated relation service methods': Nested and access-relation generated service methods do not match their interface: nested get omits headers, nested update takes a full stored object, nested unset takes only the owner, nested range calls require a query customizer, and some import lists can be incomplete. Workaround: call the top-level relation service where possible and pass a full stored object and an empty query customizer. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-service/src/main/java/hu/blackbelt/judo/ui/generator/typescript/rest/service/UiServiceHelper.java:105 | judo-ng finding: joinedTokensForApiImportForAccessRelationServiceImpl calls operationType.getInput().getTarget() for every operation of the relation target w"
+  },
+  {
+   "id": "R0564",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated relation service methods': Nested and access-relation generated service methods do not match their interface: nested get omits headers, nested update takes a full stored object, nested unset takes only the owner, nested range calls require a query customizer, and some import lists can be incomplete. Workaround: call the top-level relation service where possible and pass a full stored object and an empty query customizer. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-service/src/main/java/hu/blackbelt/judo/ui/generator/typescript/rest/service/UiServiceHelper.java:92 | judo-ng finding: fillImportTokens dereferences operation.getInput() when getIsInputRangeable() is true, with no null check on the input. Line 146 in fillOper"
+  },
+  {
+   "id": "R0566",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/advanced-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Generated relation service methods': Nested and access-relation generated service methods do not match their interface: nested get omits headers, nested update takes a full stored object, nested unset takes only the owner, nested range calls require a query customizer, and some import lists can be incomplete. Workaround: call the top-level relation service where possible and pass a full stored object and an empty query customizer. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-service/src/main/resources/data-service/relationService.ts.hbs:72 | judo-ng finding: The nested getRangeFor<TargetRel> declares queryCustomizer as required. The same method in classService.ts.hbs:42 declares it optional (quer"
+  }
+ ]
+}

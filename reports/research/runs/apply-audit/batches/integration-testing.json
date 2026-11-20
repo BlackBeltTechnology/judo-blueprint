@@ -1,0 +1,89 @@
+{
+ "batch": "integration-testing",
+ "files": [
+  "catalog/agent-docs/integration-testing/README.md",
+  "catalog/agent-docs/integration-testing/access-and-derived-testing.md",
+  "catalog/agent-docs/integration-testing/advanced-patterns.md",
+  "catalog/agent-docs/integration-testing/best-practices.md",
+  "catalog/agent-docs/integration-testing/getting-started.md",
+  "catalog/agent-docs/integration-testing/interceptor-testing.md",
+  "catalog/agent-docs/integration-testing/osgi-ds-descriptor-tests.md",
+  "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+  "catalog/agent-docs/integration-testing/supplementary-patterns.md",
+  "catalog/agent-docs/integration-testing/type-safety.md"
+ ],
+ "items": [
+  {
+   "id": "R0283",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/getting-started.md",
+   "text": "FACT TO ADD/CORRECT under 'Running Tests': If a test model cannot be loaded, the fixture reports 'Could not load model '<name>'. Filesystem error: ... Classpath error: ...'. Check the model name and that the model artifact is on the test classpath. | EVIDENCE: judo-runtime-core-guice-testkit/agent-docs/troubleshooting.md:123 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Error text 'java.lang.IllegalArgumentException: Could not load model from classpath: myModel'."
+  },
+  {
+   "id": "R0284",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/getting-started.md",
+   "text": "FACT TO ADD/CORRECT under 'Pattern 3: Manual Transaction Control': Starting a transaction while another is still open fails with 'Previous transaction was not completed'. Commit or roll back the open transaction first. | EVIDENCE: judo-runtime-core-guice-testkit/agent-docs/troubleshooting.md:147 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Error text 'java.lang.IllegalStateException: Transaction already active' from beginTransaction()."
+  },
+  {
+   "id": "R0467",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/getting-started.md",
+   "text": "FACT TO ADD/CORRECT under '@JudoTest Parameters': An unknown container value gets no test database container, so the test runs against the default datasource. Use none, postgresql or yugabytedb. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-guice-testkit/src/main/java/hu/blackbelt/judo/runtime/core/guice/testkit/fixture/JudoDatasourceFixture.java:144 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: setupDatabase() creates a container only for dialect 'postgresql' with container 'none', 'postgresql' or 'yugabytedb'. Any other container v"
+  },
+  {
+   "id": "R2421",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/getting-started.md",
+   "text": "FACT TO ADD/CORRECT under '@JudoTest Parameters': The yugabytedb test container's liveness check is built with the wrong constructor and is effectively empty. Do not rely on the liveness check for yugabytedb tests. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-guice-testkit/src/main/java/hu/blackbelt/judo/runtime/core/guice/testkit/fixture/YugabytedbSQLContainer.java:79 | judo-ng finding: getLivenessCheckPortNumbers returns new HashSet<>(getMappedPort(YUGABYTE_PORT)). getMappedPort returns an Integer, so this calls the HashSet"
+  },
+  {
+   "id": "R0043",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/getting-started.md",
+   "text": "FACT TO ADD/CORRECT under '@JudoTest Parameters': The yugabytedb test container's liveness check is built with the wrong constructor and is effectively empty. Do not rely on the liveness check for yugabytedb tests. | EVIDENCE: judo-runtime-core-esm-itest@dfba968:src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/fixture/YugabytedbSQLContainer.java:69 | judo-ng finding: getLivenessCheckPortNumbers returns new HashSet<>(getMappedPort(...)). HashSet(int) is chosen, so the result is an empty set with capacity e"
+  },
+  {
+   "id": "R0281",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/interceptor-testing.md",
+   "text": "FACT TO ADD/CORRECT under 'Pattern: Programmatic Interceptor Registration': Reading the interceptor provider before init() fails with 'Interceptor provider not available. Call init() first.' Register interceptors with addInterceptor before init(). | EVIDENCE: judo-runtime-core-guice-testkit/agent-docs/troubleshooting.md:27 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Error text 'java.lang.IllegalStateException: Cannot get interceptor provider before fixture is initialized'."
+  },
+  {
+   "id": "R2420",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "FACT TO ADD/CORRECT under 'Fixture Lifecycle per Test': For dataSourceMode SINGLETON the after-each step may fail with ClassCastException, so use BY_CLASS until fixed. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-guice-testkit/src/main/java/hu/blackbelt/judo/runtime/core/guice/testkit/fixture/JudoTestExtension.java:421 | judo-ng finding: afterEach casts store.remove(DATASOURCE_FIXTURE_KEY) to CloseableDatasourceFixture unconditionally. For SINGLETON the stored value is a NonC"
+  },
+  {
+   "id": "R0041",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "FACT TO ADD/CORRECT under 'Fixture Lifecycle per Test': If the after-each commit of a test transaction fails, the error may be swallowed and the test still passes. Check database state after tests that commit. | EVIDENCE: judo-runtime-core-esm-itest@dfba968:src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/fixture/JudoDatasourceByClassExtension.java:59 | judo-ng finding: afterEach calls getTransaction with PROPAGATION_MANDATORY, which throws when no transaction is active, and the empty catch hides it. The com"
+  },
+  {
+   "id": "R0042",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "FACT TO ADD/CORRECT under 'Fixture Lifecycle per Test': For dataSourceMode SINGLETON, after-each commit errors may be swallowed. Check database state after tests that commit. | EVIDENCE: judo-runtime-core-esm-itest@dfba968:src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/fixture/JudoDatasourceSingletonExtension.java:62 | judo-ng finding: Same PROPAGATION_MANDATORY plus empty catch as JudoDatasourceByClassExtension. The afterEach commit is effectively a no-op."
+  },
+  {
+   "id": "R0739",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "FACT TO ADD/CORRECT under 'Fixture Lifecycle per Test': For dataSourceMode SINGLETON, after-each commit errors may be swallowed. Check database state after tests that commit. | EVIDENCE: judo-runtime-core-esm-itest@dfba968:src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/fixture/JudoDatasourceSingletonExtension.java:64 | judo-ng finding: afterEach() commits the PROPAGATION_MANDATORY transaction inside an empty catch block, so commit or transaction errors are silently discarde"
+  },
+  {
+   "id": "R0046",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "FACT TO ADD/CORRECT under 'Guice Injector Composition in Tests': If the fixture fails to load the model or build the injector, the error is only logged and the test continues. Check the test log for the first error when a test fails oddly. | EVIDENCE: judo-runtime-core-esm-itest@dfba968:src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/fixture/JudoRuntimeFixture.java:252 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Both init overloads catch Throwable or Exception and only call log.error (lines 252-254 and 455-457). A failed transformation or injector bu"
+  },
+  {
+   "id": "R0738",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "FACT TO ADD/CORRECT under 'Guice Injector Composition in Tests': If the fixture fails to load the model or build the injector, the error is only logged and the test continues. Check the test log for the first error when a test fails oddly. | EVIDENCE: judo-runtime-core-esm-itest@dfba968:src/main/java/hu/blackbelt/judo/runtime/core/dao/rdbms/fixture/JudoRuntimeFixture.java:252 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: init(ESM model) catches Throwable and only logs it as Exception in RdbmDaoFixture.init. The same pattern occurs in init(Model) at line 455-4"
+  }
+ ]
+}

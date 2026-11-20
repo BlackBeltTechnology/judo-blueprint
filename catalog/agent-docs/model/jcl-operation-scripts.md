@@ -19,6 +19,7 @@ JCL (JUDO Control Language) is the imperative language of operation bodies. An o
 - **Control flow**: `if (cond) stmt [else stmt]`, `for (x in <collection>) stmt`, `while (cond) stmt`, `return [value]`, and blocks `{ ... }`.
 - **Creating objects**: `new [mutable|immutable] Type(...)` takes either a single assignable value or named assignments, and must list every required attribute and relation. `new Type[] { a, b }` creates several at once.
 - **String comparisons**: `>` and `<=` on strings generate Java with a stray character, so the generated code does not compile.
+- **Comment end in strings**: each statement is copied into a Java block comment without escaping, so a string constant that contains the two characters star and slash breaks the generated Java and it does not compile. Avoid that character pair in operation scripts.
 - **For-all expressions**: a for-all expression is generated as an exists check (`functionRunner.exists`), which is not the same as for-all.
 - **Removing**: `delete <navigation>` removes composition parts; `unset <navigation>` clears a reference.
 - **Reference sets** are changed with `+=` (add) and `-=` (remove).
@@ -48,3 +49,6 @@ A derived feature that takes an input transfer object is a *parameterized query*
 ## Validation
 
 The editor validator `ScriptValid` (EVL constraint, ERROR) builds every non-custom operation body and reports the JCL validator's message; operations with `customImplementation = true` are skipped, so their Java body is never parsed by the editor. See also [Model validation](model-validation-and-transformation.md).
+
+- **Return statements are checked against the bound operation**: output cardinality and output type must match. A mismatch is reported as `don't match the output cardinality of operation '<Operation>'` or `... output type of operation '<Operation>'`. If the operation or one of its types cannot be resolved, the check passes without an error. After renaming or retyping an operation, run a full build and check the return statements of every script that calls it.
+- **Unknown bound operation is not reported**: if the bound operation of a script operation binding cannot be found, the cardinality check is skipped and reports nothing. After renaming an operation, check that every script binding still names an existing operation.

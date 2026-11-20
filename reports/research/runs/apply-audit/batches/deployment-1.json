@@ -1,0 +1,234 @@
+{
+ "batch": "deployment-1",
+ "files": [
+  "catalog/agent-docs/deployment/README.md",
+  "catalog/agent-docs/deployment/application-config.md",
+  "catalog/agent-docs/deployment/generator-plugins.md",
+  "catalog/agent-docs/deployment/local-development.md",
+  "catalog/agent-docs/deployment/tooling-guide.md"
+ ],
+ "items": [
+  {
+   "id": "R2561",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'OpenAPI / Swagger Documentation': OpenAPI annotations are off unless generateOpenApiAnnotations is set. An unset flag is read as false, so set generateOpenApiAnnotations to true in the generator plugin configuration of the <app> rest module to get @Schema annotations and the OpenAPI output. | EVIDENCE: judo-esm-fullstack-project-template@6273a87:judo-esm-fullstack-project-template-common/src/main/java/hu/blackbelt/judo/esm/fullstack/project/archetype/StoredVariableHelper.java:177 | judo-ng finding: isGenerateOpenApiAnnotations parses the unset variable as null, so it returns false when generateOpenApiAnnotations is not bound."
+  },
+  {
+   "id": "R2208",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'SDK Generator Template Parameters': An empty apiPrefix makes the default API package start with a dot, which is not a valid Java package. Set apiPrefix to a non-empty value when generating the REST API module. | EVIDENCE: judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-api/src/main/java/hu/blackbelt/judo/psm/generator/jaxrs/api/JavaApiHelper.java:182 (guard at :52-54) | judo-ng finding: apiDefaultPackageName concatenates apiPrefix + '.' without the empty-prefix check that apiPackageName uses at lines 52-54. With an empty api"
+  },
+  {
+   "id": "R0599",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'SDK Generator Template Parameters': Same defect as R2209: a non-empty apiPrefix is mangled into slashes by an unescaped regex dot. Keep apiPrefix empty until fixed. | EVIDENCE: judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-api/src/main/java/hu/blackbelt/judo/psm/generator/jaxrs/api/JavaApiHelper.java:47 | judo-ng finding: namespaceElementApiFqPath calls replaceAll(\".\", \"/\") with an unescaped regex dot, which replaces every character of the api prefix (e.g. \"co"
+  },
+  {
+   "id": "R2209",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'SDK Generator Template Parameters': A non-empty apiPrefix is turned into a file path with replaceAll(\".\", \"/\"), where the dot is a regex wildcard. The whole prefix becomes slashes, so generated API files go to a wrong path. Keep apiPrefix empty until fixed. | EVIDENCE: judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-api/src/main/java/hu/blackbelt/judo/psm/generator/jaxrs/api/JavaApiHelper.java:47; checked in target/judo-ng-read/wt | judo-ng finding: namespaceElementApiFqPath calls replaceAll(\".\", \"/\"), where '.' is an unescaped regex that matches every character. Line 67 uses the escaped"
+  },
+  {
+   "id": "R2004",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'OpenAPI / Swagger Documentation': In generated DTOs for relations, the OpenAPI @Schema name is built from the wrong element, so the documented property name can differ from the Java getter name. Until fixed, take the property name from the generated getter, not from the Swagger UI. | EVIDENCE: judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-api/src/main/resources/rest/api/dtoForResponse.java.hbs:25 | judo-ng finding: Inside the relation loop the Schema annotation name uses {{ attribute.name }}, but no attribute is in scope there, so the emitted name is em"
+  },
+  {
+   "id": "R1400",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'SDK Generator Template Parameters': Same defect as R2209 in the restassured generator: a non-empty apiPrefix is mangled into slashes by an unescaped regex dot. Keep apiPrefix empty until fixed. | EVIDENCE: judo-psm-generator-restassured@ecff962:judo-psm-generator-restassured-api/src/main/java/hu/blackbelt/judo/psm/generator/restassured/api/JavaApiHelper.java:47; checked in target/judo-ng-read/wt | judo-ng finding: namespaceElementApiFqPath calls replaceAll(\".\", \"/\"); in a regex the unescaped dot matches every character, so the whole prefix becomes slas"
+  },
+  {
+   "id": "R0216",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'REST Assured Test Client': authTo<Actor>(\u2026) wraps the request-spec supplier returned by the previous call, so headers from earlier calls on the same builder are chained. In tests, create one client per actor. | EVIDENCE: judo-psm-generator-restassured@ecff962:judo-psm-generator-restassured-api/src/main/resources/restassured/api/apiClient.java.hbs:94 | judo-ng finding: authTo<Actor> captures the RequestSpecBuilder returned by the previous supplier and replaces the supplier with a lambda that calls addHeader"
+  },
+  {
+   "id": "R0513",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'SDK Generator Template Parameters': Same defect as R2209 in the SDK core generator: a non-empty apiPrefix is mangled into slashes by an unescaped regex dot. Keep apiPrefix empty until fixed. | EVIDENCE: judo-psm-generator-sdk-core@7d2e251:judo-psm-generator-sdk-core-api/src/main/java/hu/blackbelt/judo/psm/generator/sdk/core/api/JavaApiHelper.java:59 | judo-ng finding: namespaceElementApiFqPath calls .replaceAll(\".\", \"/\"); in a regex '.' matches every character, so a non-empty api prefix such as 'com.acme' "
+  },
+  {
+   "id": "R0713",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'SDK Generator Template Parameters': Same defect as R2209 in the SDK core generator: a non-empty apiPrefix is mangled into slashes by an unescaped regex dot. Keep apiPrefix empty until fixed. | EVIDENCE: judo-psm-generator-sdk-core@7d2e251:judo-psm-generator-sdk-core-api/src/main/java/hu/blackbelt/judo/psm/generator/sdk/core/api/JavaApiHelper.java:59 | judo-ng finding: namespaceElementApiFqPath calls .replaceAll(\".\", \"/\"). In a regex the unescaped dot matches every character, so any non-empty api prefix tur"
+  },
+  {
+   "id": "R2357",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Flutter Frontends': The default Flutter SDK download root is a fixed storage path, so install-flutter fails when that path changes. Workaround: set the flutter download root parameter explicitly to a reachable mirror. | EVIDENCE: tools/flutter-maven-plugin:flutter-maven-plugin@bd51a8c:src/main/java/hu/blackbelt/flutter/maven/plugin/mojos/flutter/InstallFlutterMojo.java:41 | judo-ng finding: The default flutterDownloadRoot value is \"https://storage.googleapis.com/flutter_infra_release/releases/\", and since the mojo always sets a "
+  },
+  {
+   "id": "R2699",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Flutter Frontends': The default Flutter SDK download root is a fixed storage path, so install-flutter fails when that path changes. Workaround: set the flutter download root parameter explicitly to a reachable mirror. | EVIDENCE: tools/flutter-maven-plugin:flutter-maven-plugin@bd51a8c:src/main/java/hu/blackbelt/flutter/maven/plugin/mojos/flutter/InstallFlutterMojo.java:41 | judo-ng finding: The flutter-download-root default value is 'https://storage.googleapis.com/flutter_infra_release/releases/', which differs from the field's "
+  },
+  {
+   "id": "R1624",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'OpenAPI Client for OSGi (`jaxrs-cxf-client-osgi-ds`)': With the gzip feature enabled, the generated OSGi service activator references GZIP interceptor classes without importing them, so the bundle may not compile. Workaround: disable useGzipFeature or add the missing imports in a custom template. | EVIDENCE: tools/openapi-generator-cxf-jaxrs-client-osgi-ds:openapi-generator-cxf-jaxrs-client-osgi-ds@9feeefa:src/main/resources/JavaJaxRS/cxf/osgi/ds/modelServiceActivator.mustache:96 | judo-ng finding: The template references GZIPOutInterceptor and GZIPInInterceptor in the {{#useGzipFeature}} block (lines 96-101) and LoggingOutInterceptor i"
+  },
+  {
+   "id": "R2088",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under '### Template URI priority and naming helpers': Non-actor templates get only the default Handlebars context; values set on the template context are not passed to them (known defect). Check generated output of such templates. | EVIDENCE: models/judo-meta-jsl:generator-engine/src/main/java/hu/blackbelt/judo/meta/jsl/generator/engine/JslDslGenerator.java:226 (pinned SHA, not re-checked on develop) | judo-ng finding: For non-actor-type templates the Handlebars context is built from templateContext-less contextBuilder, but generatorTemplate.evalToContextBu"
+  },
+  {
+   "id": "R2090",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under '### JSL generator plugin (`generator-maven-plugin`)': If an input archive cannot be read, the JSL generator fails with a NullPointerException that hides the real I/O error. Check the archive path and its read permission, and read the stack trace in the build log for the cause. | EVIDENCE: models/judo-meta-jsl:generator-maven-plugin/src/main/java/hu/blackbelt/judo/meta/jsl/generator/maven/plugin/ArtifactResolver.java:111 (pinned SHA, not re-checked on develop) | judo-ng finding: In the catch block, fileFromArchive is still null, so fileFromArchive.getAbsolutePath() throws NullPointerException and hides the IOExceptio"
+  },
+  {
+   "id": "R0854",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under '### JSL generator plugin (`generator-maven-plugin`)': If an input path is missing, not a directory or not readable, the JSL generator fails with a NullPointerException instead of a clear error. Check that the input path is an existing, readable directory. | EVIDENCE: models/judo-meta-jsl:generator-maven-plugin/src/main/java/hu/blackbelt/judo/meta/jsl/generator/maven/plugin/ResourceList.java:112 (pinned SHA, not re-checked on develop) | judo-ng finding: directory.listFiles() result is iterated without a null check; it returns null for an unreadable or non-directory path, causing an NullPoint"
+  },
+  {
+   "id": "R1611",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Surviving Regeneration: checksum ignore and normalisation': The whitespace-tolerant comparison deletes tab characters instead of turning them into spaces, so a hand edit that joins two words with a tab (public<TAB>class to publicclass) is not detected as a change. | EVIDENCE: judo-generator-commons@caeda00:src/main/java/hu/blackbelt/judo/generator/commons/FileTypeNormalizer.java:105 | judo-ng finding: removeTabs deletes each tab character instead of replacing it with a space, so 'public\\tclass' becomes 'publicclass'. Two different token se"
+  },
+  {
+   "id": "R0457",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Surviving Regeneration: checksum ignore and normalisation': The json preset also removes spaces inside JSON string values during the whitespace-tolerant comparison, so a hand edit that changes only spaces inside a string is not detected as a change. | EVIDENCE: judo-generator-commons@caeda00:src/main/java/hu/blackbelt/judo/generator/commons/NormalizerPresets.java:343 | judo-ng finding: The json preset pattern \\s*([{}\\[\\]:,])\\s* is applied to the whole text, so it also strips spaces inside JSON string values. Strings 'a, b' "
+  },
+  {
+   "id": "R1380",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Surviving Regeneration: checksum ignore and normalisation': .generator-ignore has no negation. Each line is a glob on the file path, so a line starting with \"!\" does not re-include a file. A file is excluded when any .generator-ignore from its folder up to the project root matches, and a child folder cannot override a parent rule. Narrow the broader pattern instead of negating it. | EVIDENCE: src/main/resources/agent-docs/components/generator-ignore.md:73 | judo-ng finding: A '!' prefix in .generator-ignore negates a pattern, so '!generated/important.txt' keeps the file."
+  },
+  {
+   "id": "R1381",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Surviving Regeneration: checksum ignore and normalisation': .generator-ignore has no negation. Each line is a glob on the file path, so a line starting with \"!\" does not re-include a file. A file is excluded when any .generator-ignore from its folder up to the project root matches, and a child folder cannot override a parent rule. Narrow the broader pattern instead of negating it. | EVIDENCE: src/main/resources/agent-docs/components/generator-ignore.md:96 | judo-ng finding: Patterns from deeper directories take precedence over patterns from higher levels."
+  },
+  {
+   "id": "R2181",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': useCache is effectively false when the POM does not set it: the @Parameter default (false) overrides the field initialiser (true) in the ESM and PSM mojos. Set <useCache>true</useCache> to enable caching. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/DefaultWorkflowMojo.java:192-193; PsmDefaultWorkflowMojo.java:123-124 | judo-ng finding: useCache is annotated defaultValue false (line 189) but the field is initialised true (line 190). Maven injects the annotation defaultValue "
+  },
+  {
+   "id": "R2179",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': When an archive model cannot be read, the build reports a NullPointerException instead of the read error. Check the archive path and mvn: coordinates first. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/DefaultWorkflowMojo.java:303 | judo-ng finding: In the IOException catch block, fileFromArchive is still null (it was assigned inside the try that threw), so fileFromArchive.getAbsolutePat"
+  },
+  {
+   "id": "R2177",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': When <asm> is set and ignorePsm2AsmTrace keeps its default (true), the mojo calls getArtifact(null) and fails with a NullPointerException unless <psm2AsmTrace> is also set. Set <psm2AsmTrace> to the ASM trace artifact. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/DefaultWorkflowMojo.java:442, :283 | judo-ng finding: When asm is set and ignorePsm2AsmTrace is at its default true but psm2AsmTrace is not set, the condition passes and getArtifact(psm2AsmTrace"
+  },
+  {
+   "id": "R2178",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': When <measure> is set and ignorePsm2MeasureTrace keeps its default (true), set <psm2MeasureTrace> or the mojo fails with a NullPointerException. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/DefaultWorkflowMojo.java:452 | judo-ng finding: Same pattern for measure: with ignorePsm2MeasureTrace defaulting to true and psm2MeasureTrace unset, getArtifact(null) is called and throws "
+  },
+  {
+   "id": "R2180",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': <destination> has no default, but the mojo creates it whenever saveModels (default true) is on. Set <destination> explicitly, for example ${project.basedir}/target/model, or the build fails with a NullPointerException. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/DefaultWorkflowMojo.java:126, :535 | judo-ng finding: destination has no default (line 126) but destination.mkdirs() is called whenever saveModels (default true) or an error occurs; a missing de"
+  },
+  {
+   "id": "R2182",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': Without a generator class and method, the ESM mojo needs <esmModelFile>. If neither is set, the build fails with a NullPointerException. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/EsmDefaultWorkflowMojo.java:212-218 | judo-ng finding: If neither esmGeneratorClassName/esmGeneratorMethodName nor esmModelFile is set, esmModelFile.toURI() throws NullPointerException, which is "
+  },
+  {
+   "id": "R2184",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': On the IllegalStateException path the ESM mojo saves the model inside a try block with an empty catch, so a failed save is silent and model files can be missing without an error. Check the destination after a failed build. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/EsmDefaultWorkflowMojo.java:229 | judo-ng finding: On the IllegalStateException path the model save is attempted inside try/catch with an empty catch block, so a save failure is silently disc"
+  },
+  {
+   "id": "R2183",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': Same as the ESM case: without a generator, the PSM mojo needs <psmModelFile>; otherwise it fails with a NullPointerException. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/PsmDefaultWorkflowMojo.java:192 | judo-ng finding: Same pattern for PSM: psmModelFile.toURI() is called without a null check when no generator is configured."
+  },
+  {
+   "id": "R0855",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Tatami workflow plugin (`judo-tatami-workflow-maven-plugin`)': The default workflow mojo reads esm, psm and asm as String parameters (an mvn: URL or a path), not as File parameters. Configure them as strings. | EVIDENCE: runtime__judo-tatami/judo-tatami-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/workflow/maven/plugin/DefaultWorkflowMojo.java:97 | judo-ng finding: DefaultWorkflowMojo accepts pre-built model file references (esm, psm, asm) as File parameters."
+  },
+  {
+   "id": "R2375",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'RDBMS naming prefixes': With an empty column prefix, user attributes named id, type or version would clash with system columns, so they are written as DOMAIN_ID, DOMAIN_TYPE and DOMAIN_VERSION. With the default prefix C_ no clash occurs. | EVIDENCE: judo-tatami-asm2rdbms/src/main/epsilon/transformations/modules/class.etl.AGENTS.md:7 (fieldSqlName in attribute.eol) | judo-ng finding: attribute.eol maps user attributes named id/type/version to DOMAIN_* to avoid the clash with system columns."
+  },
+  {
+   "id": "R2379",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'RDBMS naming prefixes': If both ends of a bidirectional many-to-many relation have the same name, the generated junction table gets no primary key and both ends map to one column. Give the two relation ends different names. | EVIDENCE: judo-tatami-base@14847b0 judo-tatami-asm2rdbms/src/main/epsilon/transformations/modules/reference.etl:96 vs asm/reference.eol isFirst() | judo-ng finding: The bidirectional junction picks main side with s.name.compareTo(s.eOpposite.name) <= 0, while asm/reference.eol isFirst() uses < 0. For equ"
+  },
+  {
+   "id": "R1174",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'JSL model workflow (`judo-tatami-jsl-workflow-maven-plugin`, goal `default-model-workflow`)': When several dialects run in one build, the Liquibase step takes whichever Liquibase model is already in the context, not the model for the current dialect, so one dialect may be built on another dialect's model. Check each dialect changelog after a multi-dialect build (dialects default to postgresql,hsqldb). | EVIDENCE: judo-tatami-base@14847b0 judo-tatami-rdbms2liquibase/src/main/java/hu/blackbelt/judo/tatami/rdbms2liquibase/Rdbms2LiquibaseWork.java:98-101 | judo-ng finding: The full-transformation work takes ANY LiquibaseModel in the TransformationContext (getByClass) instead of the model keyed for this dialect,"
+  },
+  {
+   "id": "R2707",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Client workflow (`judo-tatami-client-workflow-maven-plugin`, goal `default-workflow`)': The client workflow accepts an overrides list, but the generated UI never applies it: the override URIs are resolved and then dropped. Workaround: put custom frontend code in the hook scaffolds (see the frontend hooks docs) instead of relying on overrides. | EVIDENCE: judo-tatami-client-workflow-maven-plugin-docs/pages/index.adoc:102 | judo-ng finding: <17> overrides: the template override URIs are 'used to override / extend templates'."
+  },
+  {
+   "id": "R2705",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Client workflow (`judo-tatami-client-workflow-maven-plugin`, goal `default-workflow`)': The additionalFiles parameter is accepted but ignored: files listed as dest/source are not copied into the generated project and no error is raised. Workaround: copy the files with a separate Maven step (for example maven-resources-plugin) after the workflow runs. | EVIDENCE: judo-tatami-client-workflow-maven-plugin-docs/pages/index.adoc:47 | judo-ng finding: additionalFiles (<dest>/<source>) adds files to the generated project (also callout <5> at line 81)."
+  },
+  {
+   "id": "R2710",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Client workflow (`judo-tatami-client-workflow-maven-plugin`, goal `default-workflow`)': The additionalFiles parameter is accepted but ignored: files listed as dest/source are not copied into the generated project and no error is raised. Workaround: copy the files with a separate Maven step after the workflow runs. | EVIDENCE: judo-tatami-client@c0d1a6a6e:judo-tatami-client-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/client/workflow/maven/plugin/DefaultWorkflowMojo.java:121 | judo-ng finding: The additionalFiles parameter is declared but never read. Configured dest/source entries have no effect and no error is raised."
+  },
+  {
+   "id": "R2708",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Client workflow (`judo-tatami-client-workflow-maven-plugin`, goal `default-workflow`)': If a mvn: model artifact cannot be read, the plugin fails with a NullPointerException instead of the read error, so the cause is hidden. Workaround: check the artifact coordinates and that the artifact resolves (for example with mvn dependency:get) before rebuilding. | EVIDENCE: judo-tatami-client@c0d1a6a6e:judo-tatami-client-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/client/workflow/maven/plugin/DefaultWorkflowMojo.java:193 | judo-ng finding: In the IOException catch of getArtifact, the message uses fileFromArchive.getAbsolutePath(). fileFromArchive is null there (it was just assi"
+  },
+  {
+   "id": "R2709",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Client workflow (`judo-tatami-client-workflow-maven-plugin`, goal `default-workflow`)': The overrides parameter is read into a list that is never passed to the UI transformation, so overrides have no effect. Workaround: use hook scaffolds for custom frontend code. | EVIDENCE: judo-tatami-client@c0d1a6a6e:judo-tatami-client-workflow-maven-plugin/src/main/java/hu/blackbelt/judo/tatami/client/workflow/maven/plugin/DefaultWorkflowMojo.java:342 | judo-ng finding: overridedUris is built from the overrides parameter (lines 342-346) and never passed to the Esm2UiWorkParameter or the TransformationContext"
+  },
+  {
+   "id": "R0021",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/deployment/generator-plugins.md",
+   "text": "FACT TO ADD/CORRECT under 'Client workflow (`judo-tatami-client-workflow-maven-plugin`, goal `default-workflow`)': With saveModels=true, an EMF save failure for <model>-esm.model or <model>-ui.model is caught and the build still succeeds. Workaround: after the build, check that both files exist in target/classes/model and read the build log for the save error. | EVIDENCE: judo-tatami-client@c0d1a6a6e:judo-tatami-client-workflow/src/main/java/hu/blackbelt/judo/tatami/client/workflow/DefaultClientWorkflowSave.java:63 | judo-ng finding: The public saveModels(TransformationContext, File) overload defaults catchError to true, so EMF save errors are swallowed by the quiet wrapp"
+  }
+ ]
+}

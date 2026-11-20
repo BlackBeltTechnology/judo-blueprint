@@ -82,6 +82,18 @@ Access control applies to:
 <attributes name="salary" hiddenBy="not self.canViewSalary" enabledBy="self.canEditSalary"/>
 ```
 
+### Profile and Bottom Menu Entries
+
+The generated profile and bottom-menu entries are inconsistent:
+
+- The Profile item is generated whenever `application.authentication` is set, but it is wired only to `openProfilePage`, which is passed only when `application.profilePage` is also set. Configure a profile page.
+- The logout button exists only inside the `application.profilePage` block of the drawer profile. Applications with authentication but no profile page get no logout button there.
+- `doLogout` is defined in the mobile profile popover but never rendered, so the popover offers no logout.
+- When the profile page is not opened in a dialog, the drawer profile action calls `routeTo<Page>()`, but only `calculateNavigationRoute` is imported from `~/routes`.
+- The "Other" popover opens with items from index 3 (`handleOtherPopupOpen`), but `itemOther()` starts at index 4, so the two splits disagree.
+
+Workaround: configure a profile page and customise the bottom menu or drawer where needed.
+
 ## RedirectServiceHook
 
 ### Purpose

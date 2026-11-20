@@ -38,6 +38,8 @@ In a multi-actor application each actor frontend is served under the context pat
 
 For an actor with a `realm` annotation the backend metadata operation (`GET_METADATA`) returns an OpenID descriptor in its `security` list: `issuer`, `authEndpoint`, `tokenEndpoint`, `logoutEndpoint` (from `end_session_endpoint`) and `defaultScopes` (always `email`). The `clientBaseUrl` entry is currently the literal string `"TODO"`; do not rely on it.
 
+The generated OIDC client sets `redirect_uri` to `window.location.href` at startup (`src/main.tsx`). The current URL, including any hash route or query parameter, is therefore sent as the redirect URI; verify the login redirect when the app starts from such a URL. The generated `Redirect` page's effect has an empty dependency list, so it does not re-run when the redirect service changes; reload the app after changing the redirect service.
+
 ## MUI License Plan
 
 The generator parameter `muiLicensePlan` is `community` (default or empty), `pro` or `premium`. Supply it per application through the generator parameters (for example from `secret.env` via `judo.sh`).
@@ -46,6 +48,7 @@ The generator parameter `muiLicensePlan` is `community` (default or empty), `pro
 - Identifiers change: `DataGrid` becomes `DataGridPro`/`DataGridPremium`; the `@mui/x-data-grid` import gets a `-pro`/`-premium` suffix; the date-pickers import gets `-pro` for both licensed plans.
 - Gated features: `useInlineColumnFilters=true` is honoured only with a licensed plan (otherwise forced to false); multi-column default sort is generated only on the Pro plan; pinned action column and the `mui-data-grid-pro` theme fragment apply on Pro.
 - Without a plan the code is generated for community and Pro features are silently omitted.
+- Known issue: the generator's Pro-feature check (`isMUILicensePlanPro`) is true only for the plan `pro`, so with `premium` the Pro-only code paths (for example the persisted column state in `LazyTable`) are not generated. Check the generated table code after generating with `muiLicensePlan=premium`.
 
 ## Checksum Handling
 

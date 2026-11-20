@@ -1,0 +1,50 @@
+
+        Object converted = null;
+        try {
+            if (value != null) {
+                if (attribute.getEAttributeType() instanceof EEnum) {
+                    converted = convertEnumerationValue(attribute.getEAttributeType(), value);
+                } else if (AsmUtils.isByteArray(attribute.getEAttributeType()) && value instanceof String) {
+                    converted = convertBinaryValue(attribute.getEAttributeType(), value);
+                } else {
+                    converted =  coercer.coerce(value, attribute.getEAttributeType().getInstanceClassName());
+                }
+                if (trimString && converted instanceof String && AsmUtils.isString(attribute.getEAttributeType())) {
+                    converted = ((String) converted).trim();
+                }
+            }
+        } catch (InvalidTokenException ex) {
+            addValidationError(
+                    ImmutableMap.of(
+                            Validator.FEATURE_KEY, ATTRIBUTE_TO_MODEL_TYPE.apply(attribute),
+                            DefaultPayloadValidator.REFERENCE_ID_KEY, Optional.ofNullable(instance.get(DefaultPayloadValidator.REFERENCE_ID_KEY)),
+                            Validator.VALUE_KEY, value
+                    ),
+                    attributeContext.get(LOCATION_KEY),
+                    validationResults,
+                    ERROR_INVALID_FILE_TOKEN);
+        } catch (RuntimeException ex) {
+            if (!ignoreInvalidValue) {
+                if (!validate) {
+                    throw ex;
+                } else {
+                    addValidationError(
+                            ImmutableMap.of(
+                                    Validator.FEATURE_KEY, ATTRIBUTE_TO_MODEL_TYPE.apply(attribute),
+                                    DefaultPayloadValidator.REFERENCE_ID_KEY, Optional.ofNullable(instance.get(DefaultPayloadValidator.REFERENCE_ID_KEY)),
+                                    Validator.VALUE_KEY, value
+                            ),
+                            attributeContext.get(LOCATION_KEY),
+                            validationResults,
+                            ERROR_CONVERSION_FAILED
+                    );
+                }
+            } else {
+                log.debug("Ignored invalid value of {}: {}", new Object[] {getAttributeFQName(attribute), value}, ex);
+            }
+        }
+
+        if (instance.containsKey(attribute.getName())) {
+            instance.put(attribute.getName(), converted);
+        }
+

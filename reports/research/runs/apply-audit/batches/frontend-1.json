@@ -1,0 +1,224 @@
+{
+ "batch": "frontend-1",
+ "files": [
+  "catalog/agent-docs/frontend/README.md",
+  "catalog/agent-docs/frontend/development-workflow.md",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "catalog/agent-docs/frontend/extension-points.md",
+  "catalog/agent-docs/frontend/hooks/README.md",
+  "catalog/agent-docs/frontend/hooks/action-hooks.md",
+  "catalog/agent-docs/frontend/hooks/data-hooks.md",
+  "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+  "catalog/agent-docs/frontend/hooks/validation-hooks.md",
+  "catalog/agent-docs/frontend/i18n.md",
+  "catalog/agent-docs/frontend/model-screen-layout.md",
+  "catalog/agent-docs/frontend/theming.md"
+ ],
+ "items": [
+  {
+   "id": "R1072",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Page-Level Actions': The create container takes its create button from the first button of the first button group only. Workaround: keep the create operation in the first ActionButtonGroup of the page. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiPageContainerHelper.java:533 | judo-ng finding: getCreateActionDefinitionForCreateContainer streams the first ActionButtonGroup's buttons and calls findFirst(), but the result is not retur"
+  },
+  {
+   "id": "R1228",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom Operations': For an operation parameter whose type is a relation, the generated page can pick the wrong service class in one branch. Workaround: check the generated page's service import and use a non-relation parameter until fixed. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiPageHelper.java:295 | judo-ng finding: getServiceClassForPage: the branch 'if (operationParameterType.eContainer() instanceof RelationType relationType)' is nested inside 'if (ope"
+  },
+  {
+   "id": "R1224",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Row Actions': Row-button disabled conditions combine '&&' and '||' with the wrong precedence, so a row button can be enabled when its precondition is not met. Workaround: add an explicit enabledBy condition on the row button and check its state in the generated table. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiWidgetHelper.java:451 | judo-ng finding: Condition is 'table.getIsRelationType() && table.getRelationType().isIsInlineCreatable() && (button.getActionDefinition().getIsRemoveAction("
+  },
+  {
+   "id": "R1231",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Row Actions': Row-button disabled conditions combine '&&' and '||' with the wrong precedence, so a row button can be enabled when its precondition is not met. Workaround: add an explicit enabledBy condition on the row button and check its state in the generated table. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiWidgetHelper.java:451 | judo-ng finding: tableRowButtonDisabledConditions: '&&' binds tighter than '||', so the condition is 'inlineCreatable && isRelationType && (isRemove) || isBu"
+  },
+  {
+   "id": "R1688",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Relation Element Types': The autocomplete row count for a table relation is always 10 and ignores the table argument and configured row count. Workaround: accept 10 rows or use a custom autocomplete widget. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiWidgetHelper.java:509 | judo-ng finding: calculateTableAutocompleteRows(Table table) ignores its table argument and always returns 10. The Link variant honours element-specific row "
+  },
+  {
+   "id": "R1720",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Page Definition Properties': The 'Page title has not been set!' warning never fires because the breadcrumb's initial label is undefined, not null. Workaround: set the page title explicitly on every page. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/CustomBreadcrumb.tsx.hbs:153 | judo-ng finding: The 'Page title has not been set!' warning checks nextBreadcrumbItem.label === null. The initial state has no label (undefined), so the chec"
+  },
+  {
+   "id": "R1719",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Layout Visual Elements': The page header uses alignItems=\"vertical\", which MUI ignores, so header items are not aligned as the model implies. Workaround: override the PageHeader fragment in the custom folder. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/PageHeader.tsx.hbs:79 | judo-ng finding: Grid is given alignItems=\"vertical\", which is not a valid MUI alignItems value (valid values are flex-start, center, flex-end, stretch, base"
+  },
+  {
+   "id": "R1836",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under '3. TransferObjectTablePageContainer': Row-selection callbacks are wired only in selector mode, and the grid row count is set to the page size rather than the total, so server-side pages show the wrong total. Workaround: use a custom table hook for the row count and set selector mode when row selection is needed. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/table/LazyTable.tsx.hbs:449 | judo-ng finding: handleIsRowSelectable is assigned from a useCallback that is only called when containerIsSelector is true, so a React hook is called conditi"
+  },
+  {
+   "id": "R1838",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under '3. TransferObjectTablePageContainer': Row-selection callbacks are wired only in selector mode, and the grid row count is set to the page size rather than the total, so server-side pages show the wrong total. Workaround: use a custom table hook for the row count and set selector mode when row selection is needed. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/table/LazyTable.tsx.hbs:732 | judo-ng finding: The DataGrid rowCount is set to rowsPerPage (the page size), although pagination is server-side and the table keeps a totalCount state (set "
+  },
+  {
+   "id": "R1841",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Primitive Input Mappings': A binary input without an upload callback throws when a file is picked. Workaround: pass an uploadCallback in the custom binary widget. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/widgets/BinaryInput.tsx.hbs:126 | judo-ng finding: props.uploadCallback! is called with a non-null assertion without a guard; when no uploadCallback is passed, the TypeError is caught by the "
+  },
+  {
+   "id": "R1843",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Single Relation (Link)': The debounced search can call a stale search handler after owner data changes, so suggestions may come from the previous owner. Workaround: remount the field when the owner changes. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/widgets/SingleRelationInput.tsx.hbs:119 | judo-ng finding: The debounced onInputChange depends only on [ownerData, allowFetch], but it calls handleSearch, which uses onAutoCompleteSearch; when that p"
+  },
+  {
+   "id": "R0908",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Primitive Input Mappings': Deleting one value in a binary tag list passes the whole list as the change target, and get/set share one path cache keyed only by path, so custom handlers can receive the wrong shape or a stale value. Workaround: use a custom handler that reads the removed option and distinct paths for read and write. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/widgets/Tags.tsx.hbs:232 | judo-ng finding: In the isBinary delete button, onValueChange is called with the full current values list as target and [option] as removed. The target still"
+  },
+  {
+   "id": "R0913",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Single Relation (Link)': The debounced search can call a stale search handler after owner data changes, so suggestions may come from the previous owner. Workaround: remount the field when the owner changes. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/widgets/TextWithTypeAhead.tsx.hbs:76 | judo-ng finding: propagateChange is memoized with an empty dependency list, so the debounced callback keeps the handleSearch (and therefore onAutoCompleteSea"
+  },
+  {
+   "id": "R0910",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom Operations': Generated custom operation helpers can show stale or empty results: the memoised filter options miss data dependencies, the view operation opens data[0] without checking for an empty list, and the redirect memo misses its helpers. Workaround: return at least one row from view operations and reload after changing redirects. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/containers/container.tsx.hbs:75 | judo-ng finding: The useMemo that builds effective<Attr>Options calls actions.filter<Attr>Options(data, ...) but its dependency list is only [actions.filter<"
+  },
+  {
+   "id": "R1631",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Multiple Relation (Table)': Relation table updates always send the owner's current state, so relation saves can carry unsaved owner values. Workaround: save the owner before editing relation tables and verify relation saves. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/dialogs/index.tsx.hbs:304 | judo-ng finding: Relation table update passes owner.current whenever table.relationName is set (always true for relation tables), whereas the create call on "
+  },
+  {
+   "id": "R1154",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Table Actions': Adding from the autocomplete on an eager table reads the list from the relation name but writes it back under the data element name, so the added item may not show. Workaround: refresh the table after adding. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/pages/actions/AutocompleteAddAction.fragment.hbs:6 | judo-ng finding: For eager tables the list is read from data.<table.relationName> but written back via storeDiff under table.dataElement.name. Other eager fr"
+  },
+  {
+   "id": "R1180",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Table Actions': A get-template action updates the owner from stale data instead of the fetched result, and the already-selected check of the set-selector action tests the wrong container field. Workaround: reload after the get-template action and check selections in a custom action. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/pages/actions/GetTemplateAction.fragment.hbs:9 | judo-ng finding: After setData(result), owner.current is set from simpleCloneDeep(data); `data` is the stale render-time state, not the fetched result."
+  },
+  {
+   "id": "R1181",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Table Actions': A get-template action updates the owner from stale data instead of the fetched result, and the already-selected check of the set-selector action tests the wrong container field. Workaround: reload after the get-template action and check selections in a custom action. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/pages/actions/OpenSetSelectorAction.fragment.hbs:11 | judo-ng finding: The alreadySelected branch tests `container.table`, while the rest of the template (line 5 and OpenAddSelectorAction) uses `page.container.t"
+  },
+  {
+   "id": "R0610",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom Operations': Generated custom operation helpers can show stale or empty results: the memoised filter options miss data dependencies, the view operation opens data[0] without checking for an empty list, and the redirect memo misses its helpers. Workaround: return at least one row from view operations and reload after changing redirects. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/application/operation-utils.tsx.hbs:144 | judo-ng finding: processRedirect is a useCallback with dependency array [handleResult], but its body also uses navigate (line 89, 115) and the open* / routeT"
+  },
+  {
+   "id": "R0611",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Custom Operations': Generated custom operation helpers can show stale or empty results: the memoised filter options miss data dependencies, the view operation opens data[0] without checking for an empty list, and the redirect memo misses its helpers. Workaround: return at least one row from view operations and reload after changing redirects. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/application/operation-utils.tsx.hbs:89 | judo-ng finding: In the view case, data[0] is used without checking the list result (lines 85-87 and 89); if the filtered list is empty, data[0] is undefined"
+  },
+  {
+   "id": "R0605",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Primitive Input Mappings': Deleting one value in a binary tag list passes the whole list as the change target, and get/set share one path cache keyed only by path, so custom handlers can receive the wrong shape or a stale value. Workaround: use a custom handler that reads the removed option and distinct paths for read and write. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/utilities/helper.ts.hbs:99 | judo-ng finding: getValue and setValue share one pathCache keyed only by the path string, but normalise differently: getValue (line 99) keeps empty segments,"
+  },
+  {
+   "id": "R1784",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'UI Model to Frontend Mapping': Action lookup matches on page-name prefix without a separator, so a page can pick up the action of another page whose name starts with the same text. Workaround: avoid page names that are prefixes of other page names. | EVIDENCE: judo-tatami-client@c0d1a6a6e:judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/Esm2UiZetaTransformation.java:1026 | judo-ng finding: Action lookup uses action.getName().startsWith(pageNamePrefix) with no \"::\" separator, so prefix \"E3::e3View\" also matches an action of \"E3:"
+  },
+  {
+   "id": "R2716",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/model-screen-layout.md",
+   "text": "FACT TO ADD/CORRECT under 'Table Actions': The Create action of a set-selector table opens the create form but has no target page, so generated code has nothing to open. Workaround: add the create form as a separate table action or use the add-selector action (OpenAddSelectorActionDefinition). | EVIDENCE: judo-tatami-client@c0d1a6a6e:judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/transformations/structure/RelationFeatureTableSetSelectorTransformations.java:221 | judo-ng finding: createCreateOpenAction builds an inline OpenCreateFormActionDefinition but never calls action.setTargetPageDefinition(...), so the set-selec"
+  },
+  {
+   "id": "R2206",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "text": "FACT TO ADD/CORRECT under 'ActionGroup (ui:ActionGroup)': A page is treated as having a FAB group when any nested button group in the container is a FAB, even if no top-level group is. Workaround: place FAB groups directly under the page container. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiPageContainerHelper.java:570 | judo-ng finding: containerHasFabButtonGroups also scans every ButtonGroup element nested in the container (collectElementsOfType), but getFabButtonGroupsForC"
+  },
+  {
+   "id": "R1686",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "text": "FACT TO ADD/CORRECT under 'ActionGroup (ui:ActionGroup)': A FAB button group with one button and featuredActions set to 0 is not rendered as a speed dial, so the button may not appear as expected. Workaround: set featuredActions to 1 or add a second button. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiWidgetHelper.java:357 | judo-ng finding: displaySpeedDialForFabButtonGroup requires more than one button. With a single button and featuredActions=0, featuredButtonsForButtonGroup ("
+  },
+  {
+   "id": "R1687",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "text": "FACT TO ADD/CORRECT under 'ActionGroup (ui:ActionGroup)': Speed-dial items ignore hiddenBy, so a button hidden by its condition can still appear in a FAB speed dial. Workaround: avoid hiddenBy on FAB group buttons. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/containers/widget-fragments/fab-button-group.fragment.hbs:21 | judo-ng finding: SpeedDialAction items are rendered without the button.hiddenBy guard. The featured Fab branch applies that guard (lines 43 and 67)."
+  },
+  {
+   "id": "R1834",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/i18n.md",
+   "text": "FACT TO ADD/CORRECT under 'Key Naming Conventions': The cards-filter 'Clear all' button uses the 'Filter' label key as its default, so it shows the wrong text in non-English UIs. Workaround: add a judo key override for the clear label. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/widgets/CardsFilter.tsx.hbs:69 | judo-ng finding: The 'Clear all' button's defaultValue is 'Filter' (copy-paste of the heading key)."
+  },
+  {
+   "id": "R1946",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "text": "FACT TO ADD/CORRECT under 'OperationFlowManager': The action queue changes queue items in place and reads an in-progress flag that is missing from its dependency list, so queue status can be stale. Workaround: do not start a second action run while one is in progress. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/hooks/useCRUDDialog.tsx.hbs:104 | judo-ng finding: updateQueueItem mutates the existing QueueItem object in place (prevQueue[idx].status = status) before returning a new array, and idx is not"
+  },
+  {
+   "id": "R1947",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "text": "FACT TO ADD/CORRECT under 'OperationFlowManager': The action queue changes queue items in place and reads an in-progress flag that is missing from its dependency list, so queue status can be stale. Workaround: do not start a second action run while one is in progress. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/hooks/useCRUDDialog.tsx.hbs:116 | judo-ng finding: runActions reads inProgress, but its useCallback dependency list is [queue, progress] (line 152), so the 'already in progress' guard can see"
+  },
+  {
+   "id": "R1156",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/theming.md",
+   "text": "FACT TO ADD/CORRECT under 'Customizing Theme': Both branches of the theme menu's container handler set the menu orientation, so the container choice does not take effect. Workaround: set the container and orientation separately in the theme options. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/layout/Header/HeaderContent/Customization/ThemeMenuLayout.tsx.hbs:20 | judo-ng finding: Both branches of handleContainerChange call onChangeMenuOrientation(e.target.value) with the same value; the commented-out lines were the on"
+  },
+  {
+   "id": "R1179",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/theming.md",
+   "text": "FACT TO ADD/CORRECT under 'Sub-Themes for Components': The sub-theme service lookup uses a filter string with an unclosed group, so a custom sub-theme can fail to resolve. Workaround: register the sub-theme under the exact name and check the lookup in the browser console. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/theme/SubThemeWrapper.tsx.hbs:20 | judo-ng finding: The useTrackService filter string is `(&(${OBJECTCLASS}=${SUB_THEME_HOOK_INTERFACE_KEY})(name=${subTheme})` - the outer `(&` is never closed"
+  },
+  {
+   "id": "R0151",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/theming.md",
+   "text": "FACT TO ADD/CORRECT under 'Spacing and Breakpoints': Breakpoint keys for the Tab theme sit next to the style slots instead of inside a slot, so the responsive tab overrides are not applied. Workaround: move the breakpoint overrides into the slot style in a theme override fragment. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/theme/index.ts.mui-tab.fragment.hbs:4 | judo-ng finding: The breakpoint media-query keys (breakpoints.down/between/up, lines 4-43) are placed directly under MuiTab.styleOverrides, next to the slot "
+  },
+  {
+   "id": "R0150",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/theming.md",
+   "text": "FACT TO ADD/CORRECT under 'Typography': All button line-height breakpoint branches use the extra-small scale factor, so buttons get the wrong line height at larger widths. Workaround: set button lineHeight in a theme override. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/theme/index.ts.theme-options.fragment.hbs:19 | judo-ng finding: In the button typography lineHeight, the sm-md, md-lg, lg-xl and up-xl breakpoint branches (lines 19, 23, 27, 31) all multiply by scaleXs in"
+  },
+  {
+   "id": "R1606",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/frontend/README.md",
+   "text": "FACT TO ADD/CORRECT under 'Template Variables': On non-POSIX file systems (Windows) the permission attribute is applied with file flags, and the owner-write case sets the readable flag instead of the writable flag. A generated file that is already read-only can stay read-only after regeneration. Clear the read-only flag on the file before regenerating. | EVIDENCE: judo-generator-commons@caeda00:src/main/java/hu/blackbelt/judo/generator/commons/ModelGenerator.java:759 | judo-ng finding: In the non-POSIX permission fallback, the OWNER_WRITE branch calls outFile.setReadable(...) instead of setWritable(...)."
+  }
+ ]
+}

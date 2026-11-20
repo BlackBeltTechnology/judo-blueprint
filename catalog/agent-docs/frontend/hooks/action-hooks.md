@@ -609,6 +609,8 @@ export const customFlowManager: OperationFlowManager = {
 };
 ```
 
+The generated action queue (`CRUDDialog` in `src/hooks/useCRUDDialog.tsx`) changes queue items in place, and `runActions` reads the `inProgress` flag without listing it in its dependency array, so queue status can be stale. Workaround: do not start a second action run while one is in progress.
+
 ## Best Practices
 
 ### 1. Async/Await for API Calls

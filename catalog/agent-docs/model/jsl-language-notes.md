@@ -29,7 +29,7 @@ When JSL is translated to JQL some functions are renamed: `right` to `last`, `le
 - A collection cannot be `required`; a bidirectional relation cannot be required on both ends.
 - An entity member with `required` set to `false` is still treated as required, because its `isRequired` check (`JslDslModelExtension`) only looks for the modifier. Transfer members do honour `false`.
 - An abstract entity cannot be used as a field type and can only be inherited.
-- An identifier cannot be calculated and cannot be a numeric type with a scale. The validator does not reject a binary primitive as an identifier.
+- An identifier cannot be calculated and cannot be a numeric type with a scale. The validator does not reject a binary primitive as an identifier. An identifier whose numeric primitive type declaration has no `scale` modifier makes validation fail with a `NullPointerException` instead of an error message; give that type an explicit `scale` (for example `scale = 0`).
 - `eager` is invalid on primitive fields. Entity relations are lazy by default (writing `eager:false` only produces an informational hint).
 - A default expression cannot reference `self`; calculated and composition members cannot have a default.
 - A cycle of required members is an ERROR; eager cycles are only warnings.

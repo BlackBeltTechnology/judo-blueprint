@@ -1434,7 +1434,7 @@ Declarative system for applying conditional styling to table rows based on data 
 
 #### Hook Interface
 
-The real API is in `~/theme/table-row-highlighting` (`src/theme/table-row-highlighting.ts`): `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY` and `type TableRowHighlightingHook<T> = () => () => RowStylerConfigured<T>[]`, where each entry is `{ name, label, condition(params: GridRowClassNameParams<T>), backgroundColor?, fontColor? }`. The hook is registered with the service property `component` set to the table component name. Styling is limited to background and font colour (derived per light/dark mode); `shouldHighlight`/`getHighlightStyle` with arbitrary CSS, borders or row index do not exist. See [Table Hooks](./hooks/table-hooks.md).
+The real API is in `~/theme/table-row-highlighting` (`src/theme/table-row-highlighting.ts`): `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY` and `type TableRowHighlightingHook<T> = () => () => RowStylerConfigured<T>[]`, where each entry is `{ name, label, condition(params: GridRowClassNameParams<T>), backgroundColor?, fontColor? }`. The hook is registered with the service property `component` set to the table component name. Styling is limited to background and font colour (the generated code always derives the background colours for the light theme, see [Table Hooks](./hooks/table-hooks.md)); `shouldHighlight`/`getHighlightStyle` with arbitrary CSS, borders or row index do not exist. See [Table Hooks](./hooks/table-hooks.md).
 
 ```typescript
 import {
@@ -1727,6 +1727,16 @@ For a relation `<rel>` on class `<Class>` the generated service (`<Class>Service
 The generated `remove<Rel>` posts the unserialized `selected` objects as the request body, although a serialized `input` array is computed in the same method.
 
 There is no `clear` method for a collection; call `set<Rel>(owner, [])` only if the relation is settable (verify on the generated service). Failures throw an `AxiosError` whose `data` is a `FeedbackItem` list (400, 401, 403).
+
+The nested and access-relation methods in the generated code do not match their interface:
+
+- The single-valued nested `get<Rel>` implementation omits the `headers` parameter that the interface declares.
+- The relation `update` implementation takes a full `Stored` object, but the interface declares `Partial<Stored>`.
+- The nested `unset<Rel>` implementation takes only `owner`, but the interface declares `(owner, target)`.
+- The relation service interface declares `queryCustomizer` of nested `getRangeFor<Rel>` as required, while its implementation and the class service declare it optional.
+- The generator's import helper for access relation services dereferences every target operation's input without a null check, so generation can fail with a null pointer error for relation targets with an operation that has no input.
+
+Workaround: pass a full stored object to `update` and pass an explicit query customizer to `getRangeFor<Rel>`.
 
 ---
 

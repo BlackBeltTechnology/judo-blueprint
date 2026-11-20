@@ -189,6 +189,9 @@ Actor/(esm/_xxx)/TransferObjectTablePageContainer
 Actor/(esm/_xxx)/TransferObjectTableTable
 ```
 
+- Row selection callbacks are wired only in selector mode. Workaround: set selector mode when row selection is needed, or use a custom table hook.
+- The grid `rowCount` is set to the page size, not the total, so server-paged tables show the wrong total. Workaround: use a custom table hook for the row count.
+
 ### 4. TransferObjectViewPageContainer
 
 Used for viewing/editing existing entities (UPDATE/VIEW).
@@ -237,6 +240,9 @@ Actor/(esm/_xxx)/TransferObjectViewVisualElement
 | Enumeration | `EnumerationTypeCombo` | `Select` | Dropdown |
 | Enumeration | `EnumerationTypeRadio` | `RadioGroup` | Radio buttons |
 
+- Binary tag list: deleting one value calls the change handler with the whole current list as `target`, `[]` as `added` and the removed option as `removed`. Workaround: use a custom handler that reads `removed`.
+- Binary input without `uploadCallback`: picking a file raises a `TypeError`, which is caught and shown as the upload-error message. Workaround: pass an `uploadCallback` in the custom binary widget.
+
 ### Example TextField Generation
 
 **UI Model (StringTypeTextInput):**
@@ -278,6 +284,8 @@ Actor/(esm/_xxx)/TransferObjectViewVisualElement
 | Placeholder | `PlaceholderVisualElement` | Empty space placeholder |
 | Tab Bar | `TabBarVisualElement` | Tab container for grouped content |
 
+- Page header: `Grid` uses `alignItems="vertical"`, which MUI ignores, so header items are not aligned as the model implies. Workaround: override the `PageHeader` fragment in the custom folder.
+
 ## Relation Element Types
 
 ### Single Relation (Link)
@@ -298,6 +306,9 @@ Displays a single entity reference with autocomplete/selector.
 **Generated React:**
 Autocomplete component with view/set/unset actions.
 
+- The debounced owner search in the single-relation input is rebuilt when `ownerData` or `allowFetch` changes (`SingleRelationInput.tsx.hbs:119`), so a new owner gets the current search callback. Known issue: a search still pending from the previous owner (200 ms debounce) runs with the previous owner's handler, and the handler is not rebuilt when only the search callback changes. Workaround: remount the field when the owner changes.
+- The string type-ahead widget (`TextWithTypeAhead`) creates its debounced search once (`useMemo` with an empty dependency list), so it keeps the `handleSearch` of its first render and a later change of the search callback is not picked up. Workaround: remount the field when the search source changes.
+
 ### Multiple Relation (Table)
 
 **Element Type:** `TabularReferenceFieldRelationDefinedTable`
@@ -315,6 +326,9 @@ Displays a table of related entities with CRUD actions.
 
 **Generated React:**
 DataGrid component with toolbar actions and row actions.
+
+- Autocomplete row count for table relations is always 10; the configured row count is ignored (link relations honour their row setting).
+- Relation table update passes `owner.current` whenever the table has a relation name (`dialogs/index.tsx.hbs`); the create call passes it unless the page data element is an access.
 
 ### Relation Button
 
@@ -336,6 +350,9 @@ Opens relation in a new page/dialog.
 | RefreshActionDefinition | `*RefreshButton` | Reload data |
 | GetTemplateActionDefinition | `*GetTemplateButton` | Get blank template |
 
+- Create container: the create button is searched only in the first `ActionButtonGroup`, and the found button is not returned (the helper returns `null`).
+- Get-template action: after `setData(result)`, the owner is cloned from the render-time `data` instead of the fetched result, so the owner can hold stale values when no `ownerData` is passed. Workaround: reload after the get-template action.
+
 ### Table Actions
 
 | Action Definition | Element Type Suffix | Description |
@@ -351,6 +368,10 @@ Opens relation in a new page/dialog.
 | BulkDeleteActionDefinition | `*BulkDeleteButton` | Delete selected |
 | InlineCreateRowActionDefinition | `TabularReferenceTableInlineCreateButton` | Inline row create |
 
+- Set-selector table, create action: the inline `OpenCreateFormActionDefinition` has no target page: the set-selector transformation never calls `setTargetPageDefinition` for it.
+- Add from autocomplete on an eager table: the list is read from `data.<relationName>` but written back under the data element name, so the added item may not show. Workaround: refresh the table after adding.
+- Set-selector `alreadySelected` tests bare `container.table` (`OpenSetSelectorAction.fragment.hbs:11`), while the `ownerData` check and the add-selector action use `page.container.table`. The page template context holds only `page` (`container` is a feature of `PageDefinition`), so the bare `container.table` is never true and the set-selector always takes the `data.<relation>` branch instead of `[]`. Workaround: compute the already-selected list in a custom action.
+
 ### Row Actions
 
 | Action Definition | Element Type Suffix | Description |
@@ -358,6 +379,8 @@ Opens relation in a new page/dialog.
 | OpenPageActionDefinition | `*RowViewButton` | View row details |
 | RemoveActionDefinition | `*RowRemoveButton` | Remove relation |
 | RowDeleteActionDefinition | `*RowDeleteButton` | Delete entity |
+
+- Row button disabled conditions: `&&` binds tighter than `||`, so the bulk-remove check is evaluated outside the relation and inline-creatable guard. Workaround: add an explicit `enabledBy` condition on the row button and check its state in the generated table.
 
 ### Custom Operations
 
@@ -368,6 +391,11 @@ Opens relation in a new page/dialog.
 | `OperationFormTableRowCallOperationButton` | Row-level custom operation |
 | `OperationMenuButton` | Static/menu operation button |
 | `ActionButtonVisualElement` | Standalone action (Ok, Cancel) |
+
+- Operation parameter of relation type: the relation-service branch is nested under a check that is already false, so the relation service is never chosen. Workaround: use a non-relation parameter until fixed.
+- View redirect: the first returned row (`data[0]`) is used without an empty check, so an empty result fails. Workaround: return at least one row from view operations.
+- Redirect handling: the redirect callback is memoised with `[handleResult]` only, so it can keep stale helpers. Workaround: reload after changing redirects.
+- Filter options: the memoised `effective<Attr>Options` lists only the filter function as dependency, so it does not update when `data` changes.
 
 ## File Path Generation Patterns
 
@@ -614,6 +642,8 @@ Represents relationships between entities:
 | `isSelector` | boolean | Is this a selector page |
 | `isRelationSelector` | boolean | Is this a relation selector page |
 
+- Page title warning: `Page title has not been set!` never fires, because the breadcrumb's initial `label` is `undefined`, not `null`. Workaround: set the page title explicitly on every page.
+
 ## Action References
 
 Actions in page definitions reference action definitions from containers:
@@ -639,6 +669,8 @@ Actions in page definitions reference action definitions from containers:
 - `targetPageDefinition`: For navigation actions, the target page
 - `ownerDataElement`: The data element this action operates on
 - `isMenuAction`: If true, action appears in a dropdown menu
+
+- Input-selector action lookup: a `::Relation::Table::CallSelector` page gets its action by name prefix (`startsWith`, no separator), so a page can pick up an action of a page whose name starts with the same text. Workaround: avoid page names that are prefixes of other page names.
 
 ## Discriminators in IDs
 

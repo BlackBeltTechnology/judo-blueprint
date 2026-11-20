@@ -1,0 +1,194 @@
+{"id": "R0957", "verdict": "confirm", "category": "Metamodel module internals or contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1287", "verdict": "confirm", "category": "Metamodel module internals or contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "Demo class in the Northwind sample model."}
+{"id": "R0337", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0338", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0339", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0340", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0341", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0342", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0343", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0344", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0375", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0376", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0377", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0379", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2384", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "Constant-0 getter sits in the Northwind sample model in judo-meta-psm, a demo, not a platform rule."}
+{"id": "R0583", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2396", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2397", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0120", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0119", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0115", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2393", "verdict": "confirm", "category": "Maintainer build profile, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0118", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2398", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0117", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2395", "verdict": "confirm", "category": "Maintainer build profile, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0116", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2394", "verdict": "confirm", "category": "Maintainer build profile, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0124", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0126", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0123", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0125", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0127", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0129", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0130", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0131", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "Parameter name only; alias format and output unchanged."}
+{"id": "R2488", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "Throw-only-when-errors logic belongs to QueryValidator, used by query tests with expected errors (validateQuery), not by app builds."}
+{"id": "R0128", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "Null-constraint filtering in QueryValidator, used by query tests with expected errors; not an app build path."}
+{"id": "R0556", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "KARAF_VERSION default in judo-ng itest code."}
+{"id": "R0554", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0553", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0552", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0555", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2399", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0121", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0132", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0122", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2489", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2484", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2487", "verdict": "confirm", "category": "Archived or proposed change text, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2486", "verdict": "confirm", "category": "Archived or proposed change text, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2485", "verdict": "confirm", "category": "Archived or proposed change text, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0545", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0547", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0546", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0548", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0549", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0550", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0551", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0557", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2736", "verdict": "platform-covered", "file": "catalog/agent-docs/deployment/schema-evolution.md", "heading": "Review Workflow for Incremental Migrations", "proposed": "", "evidence": "models__judo-meta-rdbms model/src/main/epsilon/transformations/createIncrementalOperationModel.etl:215,240", "note": "Catalog line 190 says type changes and renames are review-required, which matches the code. The foreign-key/value switch is not named; the row is a doc-vs-code disagreement in the ETL."}
+{"id": "R2737", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0689", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0690", "verdict": "confirm", "category": "Metamodel or IDE tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2663", "verdict": "confirm", "category": "Maintainer build profile, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2665", "verdict": "confirm", "category": "Maintainer build profile, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2662", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2249", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2661", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2664", "verdict": "confirm", "category": "Maintainer build profile, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2666", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2668", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "ESM operation output is a DTO (operation.md line 26), so EDataType return cannot be modelled; the cast is latent only."}
+{"id": "R2672", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2675", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2670", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "Caller (JclScriptBuilder ~line 169) only calls getLowerBound/UpperBound when output is present; the null deref is guarded in practice."}
+{"id": "R2669", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2671", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2674", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2673", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2667", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0104", "verdict": "platform-covered", "file": "catalog/agent-docs/model/jcl-operation-scripts.md", "heading": "Statements and syntax", "proposed": "", "evidence": "models__judo-meta-script builder-jcl/.../JclScriptBuilder.java:952-959 (validateImmutable passes unwrapped left)", "note": "Immutability errors and messages are documented (line 31). The AttributeSelector unwrap detail is internal; partial coverage only."}
+{"id": "R0103", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "baseExpression on the bound void branch is always set by the caller; null path not reachable from a model."}
+{"id": "R0105", "verdict": "platform-covered", "file": "catalog/agent-docs/model/jcl-operation-scripts.md", "heading": "Statements and syntax", "proposed": "", "evidence": "models__judo-meta-script builder-jcl/.../jqloverride/JclNavigationFeatureTransformer.java:74 (createParam returns empty when the operation has no parameters)", "note": "Catalog line 30 already says later call arguments are silently dropped. The zero-parameter case is the same rule but not spelled out; no edit made."}
+{"id": "R0635", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "Else branch dereferences getParameters() without a null check; parser appears to give an empty list, so probably unreachable from modelled JCL."}
+{"id": "R0102", "verdict": "platform-covered", "file": "catalog/agent-docs/model/jcl-operation-scripts.md", "heading": "Statements and syntax", "proposed": "", "evidence": "models__judo-meta-script builder-jcl/.../jqloverride/JclSpawnOperationTransformer.java:54", "note": "Line 25 states the static-type compile-time rule for x as Type. Whether SUPERTYPE operands should be rejected is unclear from the claim; not confirmed as a defect."}
+{"id": "R0637", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0638", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0636", "verdict": "confirm", "category": "Eclipse/EMF/meta-model tooling internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2256", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2252", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": "failOnError is never read; ScriptUtils is used by the validator, which reports errors through its own results."}
+{"id": "R2791", "verdict": "platform-gap", "file": "catalog/agent-docs/model/jcl-operation-scripts.md", "heading": "Validation", "proposed": "A return statement in a script operation binding is checked against the bound operation: the output cardinality and output type must match. A mismatch is reported as \"don't match the output cardinality of operation '<Operation>'\" or \"... output type of operation '<Operation>'\". If the operation or one of its types cannot be resolved, the check passes without an error, so after you rename or retype an operation, run a full build and check the return statements of every script that calls it by hand.", "evidence": "models__judo-meta-script@5eb959b model/src/main/java/hu/blackbelt/judo/meta/script/validation/rules/OperationBindingValidations.java:304-306 (catch returns pass); binding.evl lines 4-20 (EVL messages)", "note": "Catalog has no text on operation-binding return checks. Evidence re-checked on the local judo-ng checkout (5eb959b), not on latest develop; line numbers may differ."}
+{"id": "R2792", "verdict": "platform-gap", "file": "catalog/agent-docs/model/jcl-operation-scripts.md", "heading": "Validation", "proposed": "If the bound operation of a script operation binding cannot be found, the output-cardinality rule is skipped and reports nothing. After renaming an operation, check that every script binding still names an existing operation.", "evidence": "models__judo-meta-script@5eb959b model/src/main/java/hu/blackbelt/judo/meta/script/validation/rules/OperationBindingValidations.java:69-85 (guards return false when operation not found)", "note": "Not sure whether a separate rule reports a missing operation elsewhere; verify before publishing. Checked on 5eb959b, not latest develop."}
+{"id": "R2788", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2790", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2789", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1650", "verdict": "confirm", "category": "framework internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1646", "verdict": "confirm", "category": "framework internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2255", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1647", "verdict": "confirm", "category": "framework internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2254", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1648", "verdict": "confirm", "category": "framework internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2253", "verdict": "confirm", "category": "Metamodel framework internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1649", "verdict": "confirm", "category": "framework internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2250", "verdict": "confirm", "category": "Model build script detail, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2251", "verdict": "confirm", "category": "Model build script detail, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2257", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2781", "verdict": "confirm", "category": "Archived or proposed change text, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2784", "verdict": "confirm", "category": "Archived or proposed change text, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2782", "verdict": "confirm", "category": "Archived or proposed change text, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2783", "verdict": "confirm", "category": "Archived or proposed change text, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2785", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2786", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2787", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2778", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2777", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2776", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2780", "verdict": "confirm", "category": "Metamodel module internals, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1651", "verdict": "confirm", "category": "Metamodel module internals or contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1652", "verdict": "confirm", "category": "Metamodel module internals or contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1653", "verdict": "confirm", "category": "Metamodel module internals or contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1051", "verdict": "confirm", "category": "Metamodel module internals or contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1248", "verdict": "confirm", "category": "Metamodel module internals or contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1859", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1877", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1878", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1879", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1880", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1881", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1860", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1861", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1862", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1863", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1864", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1865", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1866", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1867", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1868", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1869", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1870", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1871", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1872", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1873", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1874", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1875", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1876", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1885", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1886", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1882", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1884", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1883", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1100", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1104", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1103", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1102", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1101", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1203", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1202", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1204", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1205", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2458", "verdict": "confirm", "category": "Repackaged OSGi bundles, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0489", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1480", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1479", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2459", "verdict": "confirm", "category": "Repackaged OSGi bundles, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0490", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1481", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1478", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1482", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0488", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1477", "verdict": "confirm", "category": "Feature repository packaging; contributor doc", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2460", "verdict": "confirm", "category": "Repackaged OSGi bundles, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0835", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0836", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0837", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0838", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0839", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0840", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0841", "verdict": "confirm", "category": "Packaging and release internals", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2465", "verdict": "confirm", "category": "Repackaged OSGi bundles, not platform", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1483", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1485", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1486", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1487", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1488", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1484", "verdict": "confirm", "category": "OSGi packaging metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2109", "verdict": "confirm", "category": "Packaging of judo-ng bundles, not application-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2112", "verdict": "confirm", "category": "Packaging of judo-ng bundles, not application-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2113", "verdict": "confirm", "category": "Packaging of judo-ng bundles, not application-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2110", "verdict": "confirm", "category": "Packaging of judo-ng bundles, not application-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2114", "verdict": "confirm", "category": "Packaging of judo-ng bundles, not application-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R2111", "verdict": "confirm", "category": "Packaging of judo-ng bundles, not application-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1338", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R1337", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}
+{"id": "R0845", "verdict": "confirm", "category": "packaging or build metadata, not app-facing", "file": "", "heading": "", "proposed": "", "evidence": "", "note": ""}

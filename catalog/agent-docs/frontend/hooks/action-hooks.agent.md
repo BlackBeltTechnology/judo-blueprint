@@ -50,6 +50,7 @@ Pull-only condensed map. Source: catalog/agent-docs/frontend/hooks/action-hooks.
 - `filterRecords`: `{ field: [{ operator: 'equal', value }] }`.
 - Input is the stored operation result; examples with `input.operation`, `entityType`, `id`, `tab` are illustrative.
 - Register: `context.registerService<OperationFlowManager>(OPERATION_FLOW_MANAGER_INTERFACE_KEY, manager)`.
+- Generated action queue (`src/hooks/useCRUDDialog.tsx`): updates items in place; `runActions` reads `inProgress` but it is missing from deps, so status can be stale. Do not start a second run while one is in progress.
 
 ## Best Practices
 

@@ -657,7 +657,7 @@ For a `CONDITIONAL` operation-form confirmation, `confirmationCondition` must be
 
 ### What enables sorting and filtering in the generated UI
 
-Sort and filter controls appear only for references whose target is mapped and has at least one non-`TRANSIENT` attribute of a supported type (orderable: string, numeric, date, timestamp, time, boolean; filterable: those plus enumeration). See [model-validation-and-transformation.md](./model-validation-and-transformation.md).
+Sort and filter controls appear only for references whose target is mapped and has at least one non-`TRANSIENT` attribute of a supported type (orderable: string, numeric, date, timestamp, time, boolean; filterable: those plus enumeration). In the ZETA engine, a `DataFilter` whose `defaultOperation` is `IS_EMPTY` or `IS_NOT_EMPTY` is converted to no operation (the ETL engine maps both); use another `defaultOperation` such as `EQUAL` or `LIKE`. See [model-validation-and-transformation.md](./model-validation-and-transformation.md).
 
 ### Placing a feature into a relation table
 
