@@ -39,6 +39,7 @@ Workflows that grow the catalog beyond single entries (`judo-blueprint-author`).
 | `findings-ledger plan <work>` | Batches with one writer per file (`batches/`, `file-owners.json`) |
 | `findings-ledger wave2 <work>` | Research proposals, triage facts and handoffs → per-owner wave-2 lists |
 | `findings-ledger reconcile <work>` | Every finding accounted for; writes `SUMMARY.md` and `OPEN-ITEMS.md`; exit 1 if not |
+| `session-steer.mts <id> <text\|@file>` | Message a running session (build test, webshop) with steer delivery; never use followUp (`dashboard-bus.ts prompt`). Needs `DASHBOARD_BUS`; run with `npx tsx` |
 
 ## 1. Build session → gap analysis
 
