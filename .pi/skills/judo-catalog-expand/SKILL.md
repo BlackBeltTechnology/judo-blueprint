@@ -1,6 +1,6 @@
 ---
 name: judo-catalog-expand
-description: Grow and harden the judo-blueprint catalog with parallel background agents - mine a build session into a validated gap analysis, audit swept projects for compliance, then fix the catalog in ONE edit pass per file (evidence backfill, neutral wording, generic ids and diagram class names), apply verified findings to agent-docs with a reconciled ledger, and mine structure best practices. Use on "apply the findings", "update agent-docs from the review", "mine this build session", "gap analysis", "check projects against the catalog", "backfill evidence", "remove project specific wording", "make blueprints generic", "structure best practices from project X", "run a build test".
+description: Grow and harden the judo-blueprint catalog with parallel background agents - mine a build session into a validated gap analysis, audit swept projects for compliance, then fix the catalog in ONE edit pass per file (evidence backfill, neutral wording, generic ids and diagram class names), apply verified findings to agent-docs with a reconciled ledger, and mine structure best practices. Use on "apply the findings", "update agent-docs from the review", "mine this build session", "gap analysis", "check projects against the catalog", "backfill evidence", "remove project specific wording", "make blueprints generic", "structure best practices from project X", "run a build test", "A/B test a kb structure change", "does this format help kb search".
 ---
 
 # judo-catalog-expand
@@ -16,10 +16,11 @@ Workflows that grow the catalog beyond single entries (`judo-blueprint-author`).
 5. **Dedupe before validation.** `gap-report batch` drops duplicates and batches by kind, so validators judge each problem once.
 6. **Background, disjoint, no gates in agents.** `Agent(run_in_background: true)`, `@coding` for miners, explorers and editors, `@review` for validators. Agents never edit outside their scope, never run `check-all` or `dox-agents`, never commit.
 7. **Short agent answers.** Prompts ask for a 3-line final answer; the detail lives in the agent's JSONL log. Do not relay every late report: compare with what you verified and report only news.
-8. **Account for every finding.** A pass is done only when `findings-ledger reconcile` reports 0 unaccounted. Every exclusion (not-platform, rejected, open) is reported to the user with counts from `SUMMARY.md`, never presented as a fact in one line. Never drop findings by a path or source rule: route by content (`findings-ledger route`), and give leftovers to triage agents. Count against the RAW source, not your own inventory: write `raw.jsonl` with one row per raw finding of every source (all kinds: doc, bug, index), so reconcile fails on any row that never reached the inventory or a triage verdict. Triage agents write a verdict for EVERY input line, not only the kept ones.
-9. **Content is add-or-correct only.** Agents never rename, reorder or remove headings and never shorten or reword correct text, also not for "format" or "kb" work. `content-guard` (in `check-all`) fails on lost headings and pure deletions. Approved work is applied in the same session, not left in a report.
-   One tested format rule applies: a bold-only label line is a sub-heading (see AGENTS.md and `reports/research/kb-structure-ab.md`); `entry-lint` fails on new bold-only label lines.
-10. **Verify once, at the end.** `claim-verify` / `vocab-scan` / `rename-ids`, then `dox-agents` and `check-all` (its `kb-eval` catches search regressions).
+8. **No parking as open.** The framework is entirely in judo-ng, so a finding left `open` after a quick check goes to a settle pass (`references/findings-settle-prompt.md`: full code trace plus CLI reproduction, no open status). Report open items to the user only after that pass, each with its concrete blocker.
+9. **Account for every finding.** A pass is done only when `findings-ledger reconcile` reports 0 unaccounted. Every exclusion (not-platform, rejected, open) is reported to the user with counts from `SUMMARY.md`, never presented as a fact in one line. Never drop findings by a path or source rule: route by content (`findings-ledger route`), and give leftovers to triage agents. Count against the RAW source, not your own inventory: write `raw.jsonl` with one row per raw finding of every source (all kinds: doc, bug, index), so reconcile fails on any row that never reached the inventory or a triage verdict. Triage agents write a verdict for EVERY input line, not only the kept ones.
+10. **Content is add-or-correct only.** Agents never rename, reorder or remove headings and never shorten or reword correct text, also not for "format" or "kb" work. `content-guard` (in `check-all`) fails on lost headings and pure deletions. Approved work is applied in the same session, not left in a report.
+    One tested format rule applies: a bold-only label line is a sub-heading (see AGENTS.md and `reports/research/kb-structure-ab.md`); `entry-lint` fails on new bold-only label lines. Any other format or file-structure change for kb needs a won A/B test first (workflow 6).
+11. **Verify once, at the end.** `claim-verify` / `vocab-scan` / `rename-ids`, then `dox-agents` and `check-all` (its `kb-eval` catches search regressions).
 
 ## Scripts
 
@@ -74,6 +75,15 @@ Work dir `target/apply-findings/`. About 20 agents for ~400 findings; not one ag
 5. One `@review` checker per batch with [findings-check-prompt.md](references/findings-check-prompt.md), after the batch's last wave. Spot-check a few `ok` verdicts yourself against the source.
 6. Rewrite the `.agent.md` companions of every changed doc from the corrected text (one `@coding` agent per ~10 files).
 7. `findings-ledger reconcile` must pass; report `SUMMARY.md` and send `OPEN-ITEMS.md` to the developers. Then Finish.
+
+## 6. A/B test a kb structure change (format or file layout, never content)
+
+Scripts in `scripts/kb-ab/`, guide and lessons in [kb-ab-test.md](references/kb-ab-test.md), last results in `reports/research/kb-structure-ab.md`.
+
+1. Add the change as a transform in `scripts/kb-ab/variants.py`; `make-variant.sh <name> <transforms>` builds a scratch kb project per variant (catalog copy, own kb config, fresh index, static eval) with the same kb build the sessions load (`KB_CLI`).
+2. `plan.py base <variant,...> > plan.txt`, then `xargs -P 6 -L 1 scripts/kb-ab/run-session.sh < plan.txt`: one new session per run, kb tools only, archived when idle.
+3. `metrics.py`, `blind.py`, one `@review` grader with the written `grade-prompt.md`, `analyze.py base`.
+4. A variant below 1.00 with its CI under 1.00 gets ONE confirmation run, decided before looking (`plan.py base <variant> --reps 8 --first-rep 11`). Adopt only a confirmed winner at equal answer quality, with the user's approval, a lint rule that keeps it, and a note in AGENTS.md.
 
 ## Finish (parent only)
 

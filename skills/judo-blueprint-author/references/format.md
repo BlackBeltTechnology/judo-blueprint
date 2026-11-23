@@ -92,6 +92,7 @@ tags: [domain:backend, layer:backend, status:platform]
 - `domain:` is the area: `model`, `backend`, `frontend`, `deployment`, `testing` (integration and e2e). `layer:` is `model`, `backend`, `frontend`, `infrastructure` or `test`. `status:platform` marks a platform fact; no `project:` tags.
 - New headings name their subject (`## Interceptor ordering`, not `## Overview`): kb returns the heading path as the hit. Existing headings and text are kept as written; format work only adds frontmatter, companions and sub-headings.
 - No section body over 4000 characters without a sub-heading (kb chunk size).
+- A line that is only a bold label (`**Usage:**`) is written as a sub-heading one level below its enclosing heading, without the colon (`#### Usage`). Bold links (`**[◄ Back to Index](./README.md)**`) stay bold. Tested: about 9 % fewer kb calls at equal answer quality (`reports/research/kb-structure-ab.md`); `entry-lint` fails on bold-only label lines.
 
 ## Companion: `<name>.agent.md` for large files
 

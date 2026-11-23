@@ -45,6 +45,7 @@ holding `catalog/` and `skills/`).
 
 - Never commit model files (`.model`) to this repo.
 - Never put CLI commands, GraphQL or `judo.sh` commands in `catalog/`.
+- Labels are sub-headings, not bold lines: `#### Usage`, never a line with only `**Usage:**` ([format.md](references/format.md); `entry-lint` enforces it). Other format changes for kb need a won A/B test first.
 - Neutral element names in diagrams. Project names only in `projects:`,
   `evidence:` and `project:` tags.
 - Do not run git commands that change history (commit, reset, checkout).
