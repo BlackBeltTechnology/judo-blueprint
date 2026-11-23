@@ -34,6 +34,7 @@ Every ledger reconciles with `.pi/skills/judo-catalog-expand/scripts/findings-le
 | 11-19 | Webshop gaps R16–R19 | 68 gaps | 23 platform facts applied and double-checked | `377bfa1` |
 | 11-19 | Open items from judo-ng (latest develop, CLI pin bumped) | 106 | 41 fixes, 22 already correct, 12 rejected, 9 not platform, 22 left | `8d3ce43` |
 | 11-19 | Settle the 22 left (no open status allowed) | 22 | 17 fixes, 3 already correct, 2 rejected | `133e736` |
+| 11-23 | kb structure A/B rerun on the new kb (fixed parent links, section-not-found list), harness id bug fixed; 225 live sessions incl. a V2 confirmation run | 8 variants + confirmation | bold-only lines as sub-headings: 0.91 kb calls (CI 0.84-0.99) at equal quality, third consistent measurement; others in the noise; not applied (needs approval) | this commit |
 | 11-20 | kb structure A/B test (emoji, bold headings, generic headings, hierarchy, file split; 165 live sessions) | 9 variants + replication | no reliable gain; the 22 % gain of the file split did not replicate next to a same-time baseline (0.97, adopted form 1.00); nothing adopted, rule unchanged | this commit |
 | 11-19 | Audit of the 2,328 "not platform" triage verdicts (12 auditors) | 2,328 | 2,019 confirmed, 78 already documented, 231 platform gaps: 211 applied and checked (checkers fixed 60, removed 2), 11 rejected, 5 already correct, 4 not platform | this commit |
 | 11-19 | CLI `a64aa981` verification | fixes 4, 5, 7, 13, 16 | all confirmed; new CLI issue 21 | `828b34c`, `ea68fd5` |
