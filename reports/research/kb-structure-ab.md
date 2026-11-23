@@ -63,4 +63,4 @@ Replication, interleaved in one batch:
 - Always run each variant interleaved with a same-time baseline in one batch; never compare against an earlier batch.
 - Use more runs per cell (8 or more) or more tasks, and a fixed seed or temperature if the provider allows it.
 - Record the spawned session id from the spawn response for that call (or spawn sequentially); `run-session.sh` must not take the first id in the output.
-- Candidates worth a proper test: kb-side changes are more likely to matter than catalog structure. Per the classification in `../kb-issues/KB.md`, the bugs (1 wrong parent, 2b misleading not-found) are being fixed in kb and can be measured after the fix; a lower `ranking.laneQuota` in this repo's kb config is a no-code experiment for this harness; 2a and 3 (meta chunk hiding the body) wait for a kb spec decision.
+- Candidates worth a proper test: kb-side changes are more likely to matter than catalog structure. Rerun this harness on the new kb version against a same-time baseline on the previous one, and try a lower `ranking.laneQuota` in this repo's kb config (no code change).
