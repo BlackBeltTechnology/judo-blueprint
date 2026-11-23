@@ -79,6 +79,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - Pinned jar may be newer than local CLI source; read docs at pinned commit: `git show <sha>:docs/commands/<cmd>.md`.
 - Mutations stay in memory until `save`.
 - `target/judo-cli.jar` can be missing after `./judo.sh generate` or `build` (they run `mvnd clean`). Restore: `./judo.sh generate-root` or `mvn -DgenerateRoot validate` (root `pom.xml`, profile `download-cli-for-generate-root`). Missing jar shows `Unable to access jarfile`.
+- Avoid the missing jar: copy `target/judo-cli.jar` outside `target/` (e.g. `/tmp/judo-cli.jar`) and call the copy; `mvnd clean` leaves it. Refresh after a version bump.
 
 ### Known limitations and gotchas
 
@@ -96,6 +97,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - Duplicate FQNs: since `1.1.0.20261119_155735_a64aa981_develop` writes refuse an ambiguous FQN and list `id:`s; select with `id:<xmi:id>`. Older: `update` acts on first element; rename first.
 - `MimeType` CreateInput has no `name` (derives from type/subType); `create -t MimeType -n ...` fails.
 - Operation parameters: `containment` + `target`, not type/direction.
+- `-s operationType=INITIALIZER` stores INITIALIZER with `initializer=false` (Designer's STATIC + `initializer=true` not applied). Unmapped TO: `validate` exit 1 (`must be static in unmapped transfer object type`). Entity: validates, but no initializer; instance op, generated `accept(<Entity> _this)`. Working form: `-s operationType=STATIC -s initializer=true` (check `--schema`); generated `void run()` on entity and unmapped TO alike (no input/output).
 - Failed script leaves earlier edits in memory/overlay; rerun duplicates elements → `discard --force` first. `discard` reverts ALL unsaved edits. Recipe: `save` → script → on failure `discard --force`, fix, rerun.
 
 #### Validation, history, action placement
@@ -103,6 +105,7 @@ Pull-only condensed map. Source: catalog/agent-docs/model/judo-cli.md.
 - Rename keeps identity: `update <fqn> --set name=...` on data member keeps `xmi:id` → incremental Liquibase emits `renameColumn` (data survives). `discard --force` exploratory renames.
 - `git checkout -- model/<app>.model` reverts ALL structural changes (rule 8).
 - Merge may print `[WARN] Zeta transformation not yet implemented, falling back to ETL`; harmless.
+- Same warning (`Zeta ASM to Script`, `Script to Operation`) on every `validate`/`transform`, also without actors: tatami asm2script/script2operation run ETL; the Zeta default is for ESM to UI only. Ignore; trust exit code and `passed <step>`.
 - Signed identifiers cannot be minted with CLI; runtime mints only while serving REST (`../backend/README.md`).
 - `move`: since `1.1.0.20261119_155735_a64aa981_develop` prints `moved <fqn> index <from> -> <to>` (`--json` `fromIndex`); older one-line `changed <fqn> (in components)` may name the sibling that shifted. `move <fqn> --json` prints `reordered <fqn> in <list>`; `status` shows `move <fqn> index=n` / `after=<fqn>`. Verify via `graphql` on container `components`; `discard --force` drops wrong reorder (and all other unsaved edits).
 - `postCallAccessNavigation`: attribute of `OperationForm` only. `--unset` refused (`cannot be cleared on OperationForm <name>`); `--clear` fails (`not a list`); `--set postCallAccessNavigation=` not allowed. Set only when final. To remove: delete OperationForm, re-place via `update <container> --add feature --feature <operation>`. Allowed values = accesses whose target type matches the operation output; `--set` lists them on error.

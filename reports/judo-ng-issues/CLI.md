@@ -30,6 +30,7 @@ The catalog (`catalog/agent-docs/model/judo-cli.md`, "Known limitations and gotc
 | 19 | `validate --strict` fails on an orphan operation form after `fill` | stale state after `fill` | R17 (session L8758–L8782) |
 | 20 | `query --select` reference-field error does not name the fix | error message | R16 (session L6135, L6520), R18 (session L9889–L9890, L10222) |
 | 21 | `validate` summary says `0 errors` after printing UI errors | contradicts exit code | CLI `a64aa981`, R18-6 model |
+| 22 | `operationType=INITIALIZER` is stored without `initializer=true` | CLI skips the Designer's translation | R20 C1, R20 F6 |
 
 ## 1. `create` accepts an `ASSOCIATION` transient relation that `validate` rejects
 
@@ -156,6 +157,7 @@ The catalog (`catalog/agent-docs/model/judo-cli.md`, "Known limitations and gotc
 - **Expected:** the message says that reference fields cannot be selected with `--select` and names `judo graphql` with a nested selection.
 - **Note:** the scalar-only rule itself is documented (`judo-cli.md:156`); only the message is in scope. `--where fqn~=…` is not an operator (`fqn.contains` works); that was a builder mistake.
 - **Workaround:** use `judo graphql` for reference fields.
+- **Also:** `query esm Access -s name,target` prints `"data": null` plus the GraphQL `SubselectionRequired` error and exits 0 (rerun with CLI `1.1.0.20261119_155735_a64aa981_develop` on a Sandbox copy); a script cannot detect the failure by the exit code.
 - **Source:** R16 (session L6135, L6297, L6520, L6670); R18 (session L9889–L9890, L10222, L10269).
 
 ## 21. `validate` summary ignores UI errors
@@ -163,6 +165,16 @@ The catalog (`catalog/agent-docs/model/judo-cli.md`, "Known limitations and gotc
 - **Behaviour:** with CLI `1.1.0.20261119_155735_a64aa981_develop` on the re-created R18-6 model, `validate` prints four UI errors, omits `passed ui`, exits 1, and still ends with `Validation complete: 0 errors, 2 warnings`.
 - **Expected:** the summary counts the UI (and transform) errors, so it agrees with the exit code.
 - **Evidence:** `reports/research/runs/cli-verify/fix13.md` (lines 28-36).
+
+## 22. `operationType=INITIALIZER` is stored without `initializer=true`
+
+- **Reproduction:** scratch copy of `tests/fixtures/Sandbox.model`; `create -t TransferObjectType -n Jobs --ns Sandbox`; `create -t Operation -n seed --ns Sandbox::Jobs -s operationType=INITIALIZER`. The same create on an entity (`--ns <pkg>::<Entity>`), followed by `transform --skip=asm,rdbms`, shows the PSM result.
+- **Behaviour:** exit 0, and `update <fqn> --schema` shows `operationType = INITIALIZER`, `initializer = false`.
+  - On an unmapped transfer object `create` prints `warn Operation: Jobs.seed must be static in unmapped transfer object type`, and `validate` (also `--strict`) exits 1 (`error esm Invalid model`).
+  - On an entity there is no warning and `validate` passes, but ESM to PSM treats the operation as an instance operation (`BoundTransferOperation`, guards use `operationType != STATIC`, `OperationRules.java:3163-3185`), so the generated interface is `accept(<Entity> _this)` and the operation is no initializer (`initializer = false`).
+- **Expected:** the selection maps to `STATIC` plus `initializer = true`, as in the Designer (`esm.odesign:14821,14837-14857`), or `INITIALIZER` is not offered (`EsmCandidates.java:224-239` lists it as a plain enum value; the CLI has no mapping, no `INITIALIZER` hit in its `src/main`), or `validate` rejects the literal on an entity too.
+- **Workaround:** `update <fqn> -s operationType=STATIC -s initializer=true` (an unmapped transfer object also needs `customImplementation=true` or a body). With STATIC + `initializer=true` the PSM holds an `UnboundOperation` with `initializer="true"`, and the generated interface is `void run()` on an entity as well as on an unmapped transfer object (`judo-psm-generator-sdk-core-api/.../OperationHelper.java:105,196,237-240`).
+- **Source:** R20 C1, R20 F6 (the item's "entity-hosted initializers get `accept(_this)`" came from this literal, not from the host kind); judo-meta-esm 87578dd. Triage: ESM candidate list, not CLI code.
 
 ## Verification of `1.1.0.20261119_155735_a64aa981_develop`
 

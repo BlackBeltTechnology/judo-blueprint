@@ -603,6 +603,14 @@ export MAVEN_OPTS="-Xmx4g"
 
 The generated frontend can fail in `pnpm run format` (biome) with `Declarations inside of a import declaration may not have duplicates` (for example `import type { <Type>, <Type>, ... }`). Cause: the ESM to UI transformation (Zeta) runs once per actor in model file order, and its `fixCallOperationActionDefinitions` pass rebinds call-operation actions of all actors in the shared UI model to the current actor's copy of a same-named class and operation (`runtime__judo-tatami-client/judo-tatami-esm2ui/.../zeta/Esm2UiZetaTransformation.java:835-907`, loop `:1720-1723`). A page of an earlier actor then holds two `ClassType` objects for one class (its own and the later actor's), and `getApiImportsForPage` collects them in a `HashSet<ClassType>` that deduplicates by object identity (`UiPageHelper.java:154`), so the import is emitted twice. Seen when a third actor was added last; a shared output type with two actors alone did not reproduce it. Workaround (verified on one model: 48 files with duplicates with the new actor last, none with it first): create the new actor at the first position (`create -t ActorType ... --index 0`), then check the generated sources for duplicate imports after `generate`. A build right after a model switch (for example after leaving a branch with another actor set) can show the same error from a stale, mixed model; run `./judo.sh generate` and `./judo.sh build -i` again before investigating.
 
+### `XMI ID COLLISION DETECTED` in the build log
+
+The model steps of the frontend and e2e modules, and the CLI `validate`/`transform`, can log `[ERROR] XMI ID COLLISION DETECTED: ID '<Actor>/(esm/<id>)/TabularReferenceFieldLink...Action' is being reassigned from Action ... to Action ...` for five `TabularReferenceFieldLink*Action` ids (Create, AutocompleteSet, SetSelectorOpenPage, AutocompleteRange, Unset). Known framework issue, not a model error: it appears when one actor has two accesses to the same transfer object whose view has a tabular reference field. The line is logged at error level, but the build still ends `BUILD SUCCESS` and the CLI `validate` exits 0. It is not a sign of an unhealthy build; no workaround is needed. To check whether other collisions exist, compare the ids in the log with these five names.
+
+### Stale `.default` skeleton after moving an operation
+
+`generate` deletes generated files that are listed in the target directory's `.generated-files` record and no longer produced, unless a `.generator-ignore` entry matches. A `<Operation>CustomImplementation.java.default` skeleton at the old location of a moved operation is normally removed this way. If one is left (for example after the record was reset), delete it by hand; it is only a scaffold. The implementation `.java` file you created from a skeleton is your code and is never removed.
+
 ## Best Practices
 
 ### Performance Optimization

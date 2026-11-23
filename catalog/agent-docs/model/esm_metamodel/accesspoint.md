@@ -243,6 +243,10 @@ Access CRUD flags are rung 2 of the relation-CUD capability ladder. Full ladder 
 
 The `anonymous` attribute defaults to `true` (`esm.ecore`), so an `ActorType` created without an explicit `anonymous` value and without a mapped principal has no realm, and its calls need no bearer token. Set `anonymous=false` on every actor that must authenticate, and check the stored value with `query esm ActorType`.
 
+A project that never sets `anonymous` stores `true` on every actor, including actors with a mapped principal; that is harmless there (the mapped principal makes the actor authenticated) and only matters if the principal mapping is later removed.
+
+With the CLI, `anonymous` is read-only once the actor has a mapped principal (`update <actor> -s anonymous=false` fails with `does not apply to this ActorType (applies when effectively anonymous)`, `-u anonymous` the same). To store `false` on an actor with a mapped principal, pass it in the same `create` command as the principal (either option order works): `create -t ActorType ... -s anonymous=false -s principal=<TO>`; on an existing actor, set it only while no principal is mapped. The stored value has no effect on the actor with a mapped principal.
+
 ### Visual Style Indicators
 
 | Condition | Visual Effect |

@@ -50,6 +50,8 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/local-development
 ## Troubleshooting
 ### Runtime Issues
 - Port 8181 or 8080 in use: `lsof -i :<port>`; stop conflicting service or `-o karaf_port=<port>`.
+  - Also `-o keycloak_port=<port>` (default 8080), `-o postgres_port=<port>` (default 5432); only `runtime=karaf`, not compose. Browser login works on another Karaf port (generated Keycloak clients accept any redirect URI `*`; web origins follow the CORS allow-origin). Playwright: `APP_URL=http://localhost:<port>` (default `http://localhost:8181`).
+- No mails / `ECONNREFUSED` on the SMTP port: `./judo.sh start` and the compose environments start no SMTP server or mail catcher (`JUDO_PLATFORM_LOG_SMTP_SERVER=true` only enables logging). Run one yourself (e.g. `docker run -d --name <app>-mail -p 1025:1025 -p 8025:8025 axllent/mailpit`) and point the SMTP variables (`application-config.md`, Email (SMTP)) at it; `docker system prune` removes a stopped one.
 - Database connection failed: check PostgreSQL container (`docker ps | grep postgres`), restart it.
 - Keycloak auth failed: check Keycloak container and env vars.
 - Bundle not starting: `bundle:diag`, `bundle:info`, `log:tail`.

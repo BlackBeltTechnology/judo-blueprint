@@ -219,7 +219,8 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 
 ##### Solution
 - Check running processes: `lsof -i :8181` (Karaf) or `lsof -i :8080` (Keycloak)
-- Stop the conflicting service or start with another port: `./judo.sh start -o karaf_port=<port>`
+- Stop the conflicting service or start with another port: `./judo.sh start -o karaf_port=<port>` (Karaf, default 8181), `-o keycloak_port=<port>` (Keycloak, default 8080), `-o postgres_port=<port>` (PostgreSQL, default 5432); combine with commas. These options apply to the default `runtime=karaf`, not to the compose environments.
+- The browser login works on another Karaf port because the generated Keycloak clients allow any redirect URI (`*`); web origins depend on the configured CORS allow-origin. Run Playwright against it with `APP_URL=http://localhost:<port>` (the generated config defaults to `http://localhost:8181`).
 
 #### "Database connection failed"
 
@@ -239,6 +240,11 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 - Check dependencies: `bundle:diag [bundle-id]`
 - View bundle details: `bundle:info [bundle-id]`
 - Check logs: `log:tail`
+
+#### No mails arrive / `ECONNREFUSED` on the SMTP port
+
+##### Solution
+- `./judo.sh start` and the template's compose environments start no SMTP server or mail catcher (`JUDO_PLATFORM_LOG_SMTP_SERVER=true` only enables logging). Run one yourself, for example `docker run -d --name <app>-mail -p 1025:1025 -p 8025:8025 axllent/mailpit`, and point the SMTP variables of [Email (SMTP)](application-config.md) at it. A stopped container is removed by `docker system prune`; recreate it with the same command.
 
 #### `Unable to access jarfile` for `target/judo-cli.jar`
 

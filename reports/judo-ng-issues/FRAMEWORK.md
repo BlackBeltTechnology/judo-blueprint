@@ -7,17 +7,17 @@ judo-ng base: latest `develop` (worktrees in `target/judo-ng-read/wt/`); paths b
 | # | Issue | Repo | Source |
 |---|---|---|---|
 | 1 | Generated frontend imports a type twice; depends on actor order | runtime__judo-tatami-client (esm2ui Zeta), template__judo-ui-react-template | R16-1, R16-4, R19-12, R19-17, session L6619, L10287, L10473 |
-| 2 | `XMI ID COLLISION DETECTED` for action ids in the ESM to UI transform | runtime__judo-tatami-client | R10-15, R19-17, R17 and R18 (session L8990, L9547–L9551) |
+| 2 | `XMI ID COLLISION DETECTED` for action ids in the ESM to UI transform | runtime__judo-tatami-client | R10-15, R19-17, R17 and R18 (session L8990, L9547–L9551), R20-F3, R20-8 |
 | 3 | `anonymous` defaults to `true`: an actor created without the flag skips token checks | models__judo-meta-esm | R19-12 |
 | 4 | `judo.sh build -M -B` stops and deletes Karaf, then builds only the frontend | template__judo-esm-fullstack-project-template | R19-12 (d) |
 | 5 | Generated Playwright config retries every failing test four times | template__judo-ui-e2e-template | R16 |
 | 6 | Integration-test pom uses an unset `i18n-api` version | template__judo-esm-fullstack-project-template | R16 |
-| 7 | Liquibase prehook logs ERROR on every start; health stays 503 | runtime__judo-platform | R16, R17, R19, session L6813, L8946, L9047, L10124 |
+| 7 | Liquibase prehook logs ERROR on every start; health stays 503 | runtime__judo-platform | R16, R17, R19, R20-F1, R20-2, session L6813, L8946, L9047, L10124 |
 | 8 | Generated REST client drops a numeric `__version` | template__judo-ui-typescript-rest-template | R16-9 |
 | 9 | Cards container in a view is fed a refresh action the page does not provide | template__judo-ui-react-template | R16U, session L7474–L7477, L7514–L7556, L8563, L8620 |
 | 10 | Company price rows compute derived product fields for every product | runtime__judo-runtime-core | R16U, session L8150–L8182, L8620, L9004 |
 | 11 | Schema apply fails on an empty PostgreSQL database | runtime__judo-rdbms-schema | R19, session L10063–L10079 |
-| 12 | Foreign-key columns get no index | runtime__judo-tatami-base | R18, R19, session L9838–L9849, L10126–L10145 |
+| 12 | Foreign-key columns get no index | runtime__judo-tatami-base | R18, R19, R20-3, session L9838–L9849, L10126–L10145 |
 | 13 | Integration-test module has no dependency hook; provided libraries are missing | template__judo-esm-fullstack-project-template | R19, session L10023–L10028 |
 | 14 | Zeta and EVL validators disagree; the mismatch names no element | models__judo-meta-expression | R19, session L10598–L10605 |
 | 15 | `judo-cli.jar` disappears after generate or build | template__judo-esm-fullstack-project-template | R16U, R17, R19, session L7321, L7339, L8817–L8820, L10344–L10405 |
@@ -38,7 +38,9 @@ judo-ng base: latest `develop` (worktrees in `target/judo-ng-read/wt/`); paths b
 
 ## 2. XMI ID collisions in the ESM to UI transform
 
-- **Behaviour:** the frontend-react model step logs `[ERROR] XMI ID COLLISION DETECTED: ID 'Admin/(esm/<id>)/TabularReferenceFieldLinkCreateAction' is being reassigned from Action (obj@...) to Action (obj@...)` for five `TabularReferenceFieldLink*Action` ids of one tabular reference field, in every actor order; the build continues. A transform UI model also had 111 `xmi:id` values used twice, all on `icon` elements.
+- **Behaviour:** the frontend-react model step logs `[ERROR] XMI ID COLLISION DETECTED: ID 'Admin/(esm/<id>)/TabularReferenceFieldLinkCreateAction' is being reassigned from Action (obj@...) to Action (obj@...)` for five `TabularReferenceFieldLink*Action` ids of one tabular reference field; the build continues. The trigger is one actor with two accesses to the same transfer object whose view has a tabular reference field (R20 reproduced it with the CLI; the actor count does not matter). A transform UI model also had 111 `xmi:id` values used twice, all on `icon` elements.
+- **Reproduction (CLI, no build):** copy the model, run `java -jar judo-cli.jar -m <copy> validate` (or `transform`): exit 0 with `[ERROR] XMI ID COLLISION DETECTED` x5. The written UI model has the five ids twice, on two `Action` elements with the same name and different `ownerDataElement` (two `Access` elements of one actor that target the same transfer object).
+- **Cause:** `runtime__judo-tatami-client/judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/transformations/ui/TabularReferenceFieldLinkTransformations.java:786-805` (and the sibling rules) create the Action from the field only (`ctx.createTarget(Action.class, source, RULE)`), without the owning access as discriminator. Expected: add the discriminator the other access-level actions already use.
 - **Expected:** unique ids, or no error-level log when the duplicate is harmless.
 - **Also seen:** R17 and R18 builds print many `XMI ID COLLISION DETECTED` errors for `TabularReferenceField` link actions, about ten per build (session L8990, L9547–L9551).
 
@@ -73,8 +75,9 @@ judo-ng base: latest `develop` (worktrees in `target/judo-ng-read/wt/`); paths b
 ## 7. Liquibase prehook logs ERROR on every start; health stays 503
 
 - **Behaviour:** every start logs `ERROR … Could not find compatible schema model` with `NoClassDefFoundError` for `hu.blackbelt.epsilon.runtime.execution.contexts.EolExecutionContext` (from the rdbms OSGi bundle). The compatibility check cannot run. `/system/health` stays 503 (`PersistenceReady`, `InitScriptsCompleted` missing) while the application serves requests.
+- **Cause:** `runtime__judo-platform/judo-platform-karaf-features/src/main/feature/feature.xml:172-178` (feature `judo-meta-rdbms`) does not install `epsilon-runtime` (only the optional `*-etl` features at `:473-525` do); `models__judo-meta-rdbms/osgi/pom.xml:29-35` imports the Epsilon packages with `resolution:=optional`; `CheckRdbmsModelCompatibility.java:47` calls `RdbmsIncremental.transformRdbmsIncrementalModel`, which needs `EtlExecutionContext`. Expected fix: `judo-meta-rdbms` (or `judo-services-persistence`) depends on feature `epsilon-runtime`. Whether the health 503 has the same cause was not traced.
 - **Expected:** the class is resolvable in the bundle; health is 200 after a normal start.
-- **Workaround:** none. The catalog documents the message as known (`catalog/agent-docs/deployment/schema-evolution.md`, "When No Manual Step Is Needed").
+- **Workaround:** add `<feature>epsilon-runtime</feature>` through the `feature.xml.extra-bundles.fragment.hbs` generator override of the `karaf-features` module (a generator override, survives regeneration); the log line is then gone (R20). The catalog documents the message as known (`catalog/agent-docs/deployment/schema-evolution.md`, "When No Manual Step Is Needed").
 - **Evidence:** `runtime__judo-platform/judo-platform-services/judo-services-persistence/src/main/java/hu/blackbelt/judo/services/persistence/LiquibaseModelDataSourcePrehook.java:228` logs the error.
 - **Source:** R16, R17, R19; session L6813, L8946, L9047, L10124.
 
@@ -116,6 +119,7 @@ judo-ng base: latest `develop` (worktrees in `target/judo-ng-read/wt/`); paths b
 - **Expected:** index foreign-key columns by default, or allow index declarations in the model.
 - **Workaround:** a schema changeset with a hand-made index (`catalog/agent-docs/deployment/generator-plugins.md`, "Indexes").
 - **Evidence:** `runtime__judo-tatami-base/judo-tatami-asm2rdbms/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/zeta/rules/AttributeRules.java:283-287` (identifier guard); session L10126–L10145.
+- **Also (R20):** a fresh database has no hook for hand-written changesets either (`SimpleLiquibaseExecutor.executueOnLiquibaseModel` runs only the serialized model changelog; migration-folder changesets run only on upgrade), so a manual index script is unavoidable per new database. Expected: generate FK indexes, or run a project changelog after the model changelog on creation.
 - **Note:** a slow first call of a list check in R18 (1204 ms) was a warm-up effect of the test, not a platform defect (session L9838–L9849).
 - **Source:** R19; R18 (session L9838–L9849).
 

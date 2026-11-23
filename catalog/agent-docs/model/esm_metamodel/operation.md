@@ -133,6 +133,9 @@ The `INITIALIZER` type is internally stored as a combination of `STATIC` type wi
 - When `INITIALIZER` is selected: sets `initializer = true`, stores `operationType = STATIC`
 - When switching from `INITIALIZER` to another type: sets `initializer = false`
 
+#### Creating an initializer with the CLI
+The CLI does not apply the Designer's translation. `create`/`update -s operationType=INITIALIZER` stores the literal `INITIALIZER` with `initializer = false`. On an unmapped transfer object `validate` then fails (`must be static in unmapped transfer object type`, exit 1); on an entity it validates, but the operation is an instance operation, not an initializer, and the generated implementation interface is `accept(<Entity> _this)`. Write the stored form directly: `-s operationType=STATIC -s initializer=true` (check with `update <fqn> --schema`). The generated interface is then `void run()` on an entity and on an unmapped transfer object alike (no input, no output; with an output it is `<Output> get()`).
+
 ### Operation Attribute Rules
 
 | Attribute | Enabled When | Description |

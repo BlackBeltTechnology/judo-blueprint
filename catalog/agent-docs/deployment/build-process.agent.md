@@ -192,6 +192,14 @@ Pull-only condensed map. Source: catalog/agent-docs/deployment/build-process.md.
 - "Frontend build failed": Node version (source says 18+); `rm -rf node_modules && pnpm install`.
 - "Out of memory": `export MAVEN_OPTS="-Xmx4g"`.
 
+### XMI ID COLLISION DETECTED in the build log
+- Frontend/e2e model steps and CLI `validate`/`transform` can log `[ERROR] XMI ID COLLISION DETECTED: ID '<Actor>/(esm/<id>)/TabularReferenceFieldLink...Action' is being reassigned` for five `TabularReferenceFieldLink*Action` ids (Create, AutocompleteSet, SetSelectorOpenPage, AutocompleteRange, Unset).
+- Known framework issue, not a model error. Trigger: one actor has two accesses to the same TO whose view has a tabular reference field. Build still `BUILD SUCCESS`, CLI `validate` exits 0; no workaround needed.
+
+### Stale `.default` skeleton after moving an operation
+- `generate` deletes files listed in the target dir's `.generated-files` that are no longer produced, unless `.generator-ignore` matches; a `<Operation>CustomImplementation.java.default` at the old location is normally removed that way.
+- A leftover (e.g. record reset): delete by hand, it is only a scaffold. The `.java` you created from a skeleton is your code, never removed.
+
 ## Best Practices
 
 ### Performance Optimization

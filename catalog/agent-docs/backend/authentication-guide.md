@@ -261,7 +261,11 @@ Actor lookup from the request path is a plain string prefix match with no segmen
 
 ### Discovery endpoints for custom frontends
 
-Each actor exposes `GET /api/<Model>/Actor/<Actor>/~meta` and `GET .../~principal` (the authenticated principal with `__identifier` and `__signedIdentifier`). The `security` entry of `~meta` carries `tokenEndpoint`, `clientId` and `openIdConfigurationUrl`, which a custom frontend needs to obtain an access token for that actor. The generated React layout waits for `principal.__signedIdentifier` before rendering, maps `AUTHENTICATED_ENTITY_NOT_FOUND` to a "User not found" message, and logs out with `signoutRedirect` using the current URL without its hash as `post_logout_redirect_uri`.
+Each actor exposes `GET /api/<Model>/<Actor>/<Actor>/~meta` and `GET /api/<Model>/<Actor>/<Actor>/~principal` (the authenticated principal with `__identifier` and `__signedIdentifier`). The `security` entry of `~meta` carries `tokenEndpoint`, `clientId` and `openIdConfigurationUrl`, which a custom frontend needs to obtain an access token for that actor. The generated React layout waits for `principal.__signedIdentifier` before rendering, maps `AUTHENTICATED_ENTITY_NOT_FOUND` to a "User not found" message, and logs out with `signoutRedirect` using the current URL without its hash as `post_logout_redirect_uri`.
+
+#### Provisioning a new user from a script
+
+A user-written interceptor that filters on `#_principal` and creates the actor row runs only for that call. A data call (`.../~list`) with a new user's token answers 403 `AUTHENTICATED_ENTITY_NOT_FOUND` and creates no row. Call `GET /api/<Model>/<Actor>/<Actor>/~principal` with the bearer token once first (the generated frontend does this); the interceptor then creates the row and later calls succeed.
 
 ## Operation Exposure, Public Access and Password Policy
 

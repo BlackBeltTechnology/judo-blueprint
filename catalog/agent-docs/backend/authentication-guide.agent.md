@@ -75,9 +75,10 @@ Pull-only condensed map. Source: catalog/agent-docs/backend/authentication-guide
 - Keycloak login interceptor accepts `clientToActorMap` (renames `azp` values). Realm side: `../deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration`.
 
 ### Discovery endpoints for custom frontends
-- `GET /api/<Model>/Actor/<Actor>/~meta` — `security` entry has `tokenEndpoint`, `clientId`, `openIdConfigurationUrl`.
-- `GET .../~principal` — returns `__identifier` and `__signedIdentifier`.
+- `GET /api/<Model>/<Actor>/<Actor>/~meta` — `security` entry has `tokenEndpoint`, `clientId`, `openIdConfigurationUrl`.
+- `GET /api/<Model>/<Actor>/<Actor>/~principal` — returns `__identifier` and `__signedIdentifier`.
 - Generated React waits for `principal.__signedIdentifier`; logout is `signoutRedirect` with current URL minus hash as `post_logout_redirect_uri`.
+- Provisioning a new user from a script: a user-written interceptor filtering on `#_principal` (creating the actor row) runs only for that call. A data call (`.../~list`) with a new user's token → 403 `AUTHENTICATED_ENTITY_NOT_FOUND`, no row created. Call `GET /api/<Model>/<Actor>/<Actor>/~principal` with the bearer token once first; the interceptor creates the row, later calls succeed.
 
 ## Operation Exposure, Public Access and Password Policy
 - No `exposedBy` annotation → empty expected-role list. An access point without `@actor` is public; one public access point makes the whole operation public.
