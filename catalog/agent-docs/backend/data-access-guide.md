@@ -247,7 +247,7 @@ List<User> users = userDao.query()
     .selectList();
 ```
 
-**JQL (JUDO Query Language) Expression Syntax:**
+#### JQL (JUDO Query Language) Expression Syntax
 
 | Element | Example | Description |
 |---------|---------|-------------|
@@ -262,7 +262,7 @@ List<User> users = userDao.query()
 | Grouping | `(expr1 or expr2)` | Parentheses for precedence |
 | String literals | `'value'` | Single quotes for strings |
 
-**IMPORTANT - What Does NOT Work:**
+#### IMPORTANT - What Does NOT Work
 - Navigation: `this.relation.field` is NOT supported in filterBy
 - Single equals: `this.field = value` - use `==` instead
 - SQL-style LIKE: `this.field like 'pattern'` - use `(this.field)!like('pattern')` instead
@@ -375,12 +375,12 @@ entityDao.delete(entity);
 
 ### Why Use Masks?
 
-**Without masks:**
+#### Without masks
 - ❌ Loads ALL fields and relationships, leading to N+1 query problems.
 - ❌ Slower database queries and higher memory usage.
 - ❌ Unnecessary data transfer between the application and the database.
 
-**With masks:**
+#### With masks
 - ✅ Loads only the fields you explicitly need.
 - ✅ Results in significantly faster queries and lower memory consumption.
 - ✅ Gives you explicit control over your data fetching strategy.
@@ -476,14 +476,14 @@ List<Address> addresses = addressDao.query()
 
 ### Mask Best Practices
 
-**✅ DO:**
+#### ✅ DO
 1.  **Always use masks for queries** to prevent loading unnecessary data.
 2.  Use **empty masks** for the fastest existence checks.
 3.  Use **minimal masks in loops** to reduce memory overhead.
 4.  **Chain masks** for nested relationships to control loading depth.
 5.  Use **masks in updates** to perform efficient partial updates.
 
-**❌ DON'T:**
+#### ❌ DON'T
 1.  Don't perform full entity loads when you only need a few fields.
 2.  Don't forget masks in queries, as this can lead to N+1 problems.
 3.  Don't load large collections without a mask.

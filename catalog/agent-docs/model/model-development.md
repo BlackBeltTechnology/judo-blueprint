@@ -62,7 +62,7 @@ This section provides a step-by-step guide to the fundamental process of creatin
 
 The `.model` file is a single XMI document that accumulates every mutation from every stage of a change. Standard git commands treat it as one opaque blob, so it is very easy to lose hours of authoring work with a single rollback.
 
-**Rules of thumb when a change spans multiple stages (Stage A, B, C…):**
+#### Rules of thumb when a change spans multiple stages (Stage A, B, C…)
 
 1.  **Commit per stage, or at least per green checkpoint.** `git commit -m "Stage B: ..."` after each stage validates. This gives you an explicit rollback target and prevents accidental loss.
 2.  **Never run `git restore model/*.model` (or `git checkout -- model/*.model`) with uncommitted mutations unless you have a backup.** It silently reverts *every* ESM mutation made since the last commit — there is no partial undo. One wrong `git restore` has cost full stages of work.
@@ -136,7 +136,7 @@ This section is a "cookbook" of reusable design patterns for solving common mode
 
 JQL is the powerful expression language used in model scripts, such as `Getter expression`s and `Operation` bodies. It provides a rich set of features for data manipulation, navigation, and logic execution.
 
-**Key Concepts:**
+### Key Concepts
 -   **The `self` variable** to refer to the current object context.
 -   **Navigation** across relationships using the `.` operator.
 -   A library of **built-in functions** for strings, numbers, and collections, called with the `!` operator.

@@ -56,7 +56,7 @@ Consider a scenario where a user can only access `MyEntity` records that belong 
 />
 ```
 
-**Breakdown:**
+### Breakdown
 
 -   `MyModel::entities::MyEntity!filter(...)`: This specifies that the access rule applies to queries for `MyEntity`.
 -   `e | e.tenant == ...`: This is the filter predicate. It dictates that the `tenant` relationship of an entity must match the context value.

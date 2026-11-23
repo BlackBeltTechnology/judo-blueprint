@@ -194,13 +194,13 @@ No additional type-specific attributes (file upload widget).
 | `autocompleteRows` | Rows in autocomplete dropdown | Relation is **single** (`upper = 1`) |
 | `additionalMaskFeatures` | Additional features for queries | Always |
 
-**Representation Component Options:**
+#### Representation Component Options
 - `table` - Renders as a data table (default for many relations)
 - `card` - Renders as card view
 - `tag` - Renders as tag/chip list
 - `button` - Renders as a navigation button (available for single relations)
 
-**Relation Kind Operations:**
+#### Relation Kind Operations
 - **Composition** relations: `{create, delete}` operations
 - **Aggregation** relations: `{add, remove}` operations
 
@@ -225,7 +225,7 @@ No additional type-specific attributes (file upload widget).
 
 **Confirmation Condition Candidates:** Only **boolean attributes** from the owner TransferObjectType are available for selection.
 
-**Confirmation Type Behaviour:**
+#### Confirmation Type Behaviour
 - `NONE` - Operation executes without confirmation
 - `CONDITIONAL` - Confirmation shown when selected boolean attribute is `true`
 - `MANDATORY` - Confirmation always shown before execution
@@ -473,7 +473,7 @@ These rules determine attribute availability based on element context and hierar
 | Is Card Mode | `representationComponent = 'card'` |
 | Is Button Mode | `representationComponent = 'button'` |
 
-**Available Representation Options:**
+#### Available Representation Options
 - Single relation (`upper = 1`): `table`, `button`, `tag`
 - Many relation (`upper = -1`): `table`, `card`, `tag`
 

@@ -115,7 +115,7 @@ The `operationType` attribute is constrained by the owner class type and mapping
 
 An unmapped transfer object accepts only `STATIC` operations (EVL `UnmappedTransferObjectTypeHasStaticOperations`). The ESM→PSM transformation creates each as an unbound operation placed in that transfer object's own PSM equivalent (rule `CreateInPlaceUnboundOperation`); a `STATIC` operation on an entity is instead placed in the entity's default transfer object. Any unmapped transfer object can therefore carry static operations, not only a `StaticOperations` container. An actor reaches the operation through a derived access on the actor whose target is a mapped transfer object; the validator reports `Access target have to be mapped` otherwise. The REST route is `POST /api/<app>/<Actor>/<TransferObject>/<operation>` with the input as the JSON body; a business fault returns 422 with the `X-Fault` header.
 
-**Summary Constraints:**
+##### Summary Constraints
 - `operationType = ABSTRACT` → owner is `EntityType` AND `advanced mode = true`
 - `operationType = MAPPED` → owner is `TransferObjectType` AND `mapping` is NOT null
 - `operationType = INSTANCE` → owner is `EntityType` OR (owner is `TransferObjectType` AND `mapping` is NOT null)
@@ -129,7 +129,7 @@ The `INITIALIZER` type is internally stored as a combination of `STATIC` type wi
 | `INITIALIZER` | `operationType = STATIC`, `initializer = true` |
 | Any other type | `initializer = false` |
 
-**On type change:**
+#### On type change
 - When `INITIALIZER` is selected: sets `initializer = true`, stores `operationType = STATIC`
 - When switching from `INITIALIZER` to another type: sets `initializer = false`
 
@@ -161,7 +161,7 @@ The `INITIALIZER` type is internally stored as a combination of `STATIC` type wi
 | `rangeExpression` | `rangeType = DERIVED` | JQL expression for filtering range |
 | `wrapAsOptional` | `input` is NOT null AND `input.target` is NOT mapped | Wrap nulls in Optional |
 
-**Cardinality Mapping:**
+#### Cardinality Mapping
 
 | Display | lower | upper |
 |---------|-------|-------|

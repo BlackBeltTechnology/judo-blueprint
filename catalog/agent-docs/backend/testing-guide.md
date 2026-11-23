@@ -27,7 +27,7 @@ Unit tests for custom operations should be small, focused, and use mocks to isol
 
 The recommended stack is **JUnit 5** with **Mockito**.
 
-**Example: Unit Testing a Custom Operation**
+### Example: Unit Testing a Custom Operation
 
 ```java
 @ExtendWith(MockitoExtension.class)

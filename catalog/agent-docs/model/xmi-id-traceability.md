@@ -14,7 +14,7 @@ This document explains the mechanisms by which JUDO maintains traceability from 
 
 Every element created in a JUDO model—including entities, attributes, relations, and operations—is assigned a unique identifier called an `xmi:id`.
 
-**Key Characteristics:**
+### Key Characteristics
 
 1.  **Machine-Generated UUID**: The `xmi:id` is a randomly generated, universally unique identifier (e.g., `_WhYIAFnHEeyr1rjBvgyGCg`). It is **not** a human-readable identifier.
 2.  **Permanent and Stable**: Once assigned, an element's `xmi:id` **never changes**. This stability is the cornerstone of all traceability mechanisms.
@@ -106,7 +106,7 @@ The source reference is an `href` attribute whose format is the key to this syst
 
 `[source_model_filename]#[source_xmi_id]`
 
-**Example from a generated `psm.model` or `ui.model`:**
+#### Example from a generated `psm.model` or `ui.model`
 
 ```xml
 <!-- A new element with its own new xmi:id -->

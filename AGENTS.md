@@ -29,6 +29,7 @@ Run `skills/judo-catalog-maintain/scripts/check-all` before committing catalog c
 - No model files in this repo: diagrams are plain Mermaid (`judo-model-mermaid` renders them from real models).
 - Platform claims must be backed by `catalog/agent-docs`; otherwise write *verify*.
 - **agent-docs are add-or-correct only.** Never rename, reorder or remove headings or shorten correct text, also not for format or kb work; correct wrong sentences in place. `content-guard` (in `check-all`) enforces it.
+  - One tested format rule: a line that is only a bold label (`**Usage:**`) is written as a sub-heading one level below its enclosing heading, without the colon. It cut kb calls by about 9 % at equal answer quality ([kb structure A/B](reports/research/kb-structure-ab.md)); `entry-lint` enforces it. Other format changes for kb stay forbidden until an A/B test proves them.
 - **No finding is dropped silently.** Findings passes run through `.pi/skills/judo-catalog-expand/scripts/findings-ledger`; `reconcile` must report 0 unaccounted, and every exclusion is reported with counts. Approved changes are applied in the same session.
 
 ## Writing Instructions

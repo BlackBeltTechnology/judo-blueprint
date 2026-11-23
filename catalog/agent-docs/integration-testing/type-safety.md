@@ -48,12 +48,12 @@ JUDO generates two separate type hierarchies:
 
 **Represents**: Direct database representation
 
-**Package pattern**: 
+#### Package pattern
 ```
 [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.entity.<entityname>
 ```
 
-**Example**:
+#### Example
 ```
 [your.package].[yourmodel].api.[yourmodel]._default_transferobjecttypes.entity.user.User
 ```
@@ -65,12 +65,12 @@ JUDO generates two separate type hierarchies:
 
 **Represents**: External API contracts
 
-**Package pattern**:
+#### Package pattern
 ```
 [your.package].[yourmodel].api.[yourmodel].service.<servicename>
 ```
 
-**Example**:
+#### Example
 ```
 [your.package].[yourmodel].api.[yourmodel].service.user.User
 ```
@@ -100,7 +100,7 @@ Open the service input builder and verify parameter types:
 find application/sdk/target/generated-sources -name "*Input.java"
 ```
 
-**Examine the builder methods:**
+#### Examine the builder methods
 ```java
 // Service layer input class
 public class CreateChildEntityInputBuilder {
@@ -327,7 +327,7 @@ The method withSettlement(service.settlement.Settlement)
 is not applicable for the arguments (_default_transferobjecttypes.entity.settlement.Settlement)
 ```
 
-**Analysis:**
+### Analysis
 1. **Parameter name**: `withSettlement`
 2. **Expected type**: `service.settlement.Settlement` (service layer)
 3. **Provided type**: `_default_transferobjecttypes.entity.settlement.Settlement` (entity layer)
@@ -446,7 +446,7 @@ Use `dao.getById(entity.identifier())` when:
 
 ## Common Workflow: Create + Fetch + Adapt
 
-**Standard pattern for complex mappings:**
+### Standard pattern for complex mappings
 
 ```java
 @Test
@@ -575,7 +575,7 @@ Do you need to pass entity data to a service operation?
 
 **If you're done here**, return to the [Main Hub](./README.md)
 
-**If you need help with**:
+### If you need help with
 - [Getting started with tests](./getting-started.md)
 - [Advanced patterns](./advanced-patterns.md)
 - [Best practices](./best-practices.md)

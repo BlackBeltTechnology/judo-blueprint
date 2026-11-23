@@ -14,7 +14,7 @@ This guide explains how to use JUDO's backend internationalization (i18n) featur
 
 The i18n service allows you to inject a type-safe interface into your custom operations, which resolves translated message strings at runtime based on the user's language preferences.
 
-**See also:**
+### See also
 - [Error Handling Guide](error-handling-guide.md) - For details on how to throw exceptions.
 - [Custom Operations](custom-operations.md) - For examples of using i18n in business logic.
 
@@ -26,7 +26,7 @@ The i18n service allows you to inject a type-safe interface into your custom ope
 
 The i18n service provides translated message strings that can be injected into your custom operations.
 
-**Key concepts:**
+#### Key concepts
 - **Generated i18n interface** - Auto-generated from your model's translation keys
 - **OSGi service** - Injected via `@Reference`
 - **Type-safe methods** - Each translation key becomes a method
@@ -36,7 +36,7 @@ The i18n service provides translated message strings that can be injected into y
 
 The i18n interface is typically defined in your common utilities and implements translation key methods.
 
-**Example interface structure:**
+#### Example interface structure
 ```java
 package [your.package].utils.services.i18n;
 
@@ -250,7 +250,7 @@ public class CreateExternalDataCustomImplementation implements CreateExternalDat
 
 ### I18n Message Organization
 
-**Recommended message categories:**
+#### Recommended message categories
 
 ```java
 public interface ApplicationI18n {
@@ -332,7 +332,7 @@ When a modeled fault or error transfer object carries a `message` and a `locatio
 
 Translation files are typically java property files in your resources:
 
-**Example: messages_en.properties**
+### Example: messages_en.properties
 ```properties
 field_is_required:This field is required
 invalid_email_format:Please enter a valid email address
@@ -343,7 +343,7 @@ entity_not_ready_error:The item is not ready for this operation
 function_under_development:This feature is currently under development
 ```
 
-**Example: messages_hu.properties**
+### Example: messages_hu.properties
 ```properties
 field_is_required:Ez a mező kötelező
 invalid_email_format:Kérem adjon meg érvényes email címet

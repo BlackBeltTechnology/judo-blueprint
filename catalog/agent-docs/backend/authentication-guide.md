@@ -48,7 +48,7 @@ The methods are called at two different points:
 
 The `#_principal` operation is a special, framework-level operation that is automatically invoked after a user successfully authenticates with an external identity provider. This is the primary point of interception for just-in-time provisioning.
 
-**Key Characteristics:**
+### Key Characteristics
 - **Triggered Automatically**: Called by the JUDO framework after a successful external login.
 - **Provides Token Claims**: The `attributes` map in the `authenticate` method contains all the claims from the user's JWT token.
 - **Ideal for User Creation**: It's the perfect place to check if a user exists in your local database and create them if they don't.
@@ -57,7 +57,7 @@ The `#_principal` operation is a special, framework-level operation that is auto
 
 When a user authenticates, their JWT token contains claims that are passed to the interceptor as the `attributes` map. You can extract standard and custom claims to populate your local user entity.
 
-**Standard Keycloak Token Attributes:**
+### Standard Keycloak Token Attributes
 - `email` - User's email address
 - `preferred_username` - Username from the identity provider
 - `given_name` - First name

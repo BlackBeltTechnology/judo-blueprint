@@ -4,11 +4,11 @@
 
 ## Implementation Pattern
 
-**Service interfaces (common module):**
+### Service interfaces (common module)
 - `ConfigurationTemplateService` -- reads configuration values from the database: `getInvitationEmailTemplate()`, `getVerificationEmailTemplate()`, `getApprovalEmailTemplate()`, `getSenderEmail()`, `getBaseUrl()`, `getPlatformName()`, `getInvitationExpiryDays()`, `getMagicLinkExpirySeconds()`, etc.
 - Email service interface -- type-safe methods for each transactional email: `sendInvitationEmail()`, `sendVerificationEmail()`, `sendApprovalNotificationEmail()`, etc.
 
-**Implementation (common module):**
+### Implementation (common module)
 - `@Component(immediate=true, service=<EmailServiceInterface>.class)` with `@Reference` to `EmailService`, `ConfigurationTemplateService`, and entity DAOs
 - Uses `com.github.jknack.handlebars.Handlebars` for template rendering: `handlebars.compileInline(templateContent)` with `Context.newContext(model)`
 - Each email method: (1) loads template from `ConfigurationTemplateService`, (2) builds a context model with dynamic values, (3) renders HTML, (4) sends via `EmailService.sendMessage(EmailMessage.emailBuilder()...)`
@@ -16,7 +16,7 @@
 - Graceful degradation: if template is null (not configured in DB), the method logs and returns without error
 - Document attachment support: retrieves files from `FileStoreService` by ID and attaches as `BinaryAttachment`
 
-**Template variable conventions:**
+### Template variable conventions
 - Action URLs (registration, verification, magic link): built from the base URL plus a route and a token parameter.
 - Display names: platform name, organization name, user name, partner name, company name.
 - Subject and content title.
@@ -24,7 +24,7 @@
 
 Names are listed in prose rather than as template placeholders, so the guidance stays free of template syntax.
 
-**Email context pattern:**
+### Email context pattern
 - A dedicated context POJO (e.g., `EmailContext`) with builder pattern, holding all template variables
 - Context object is passed to `Handlebars.Context.newContext()` for type-safe rendering
 

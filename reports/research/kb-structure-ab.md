@@ -1,6 +1,6 @@
 # kb structure A/B test (2026-11-19/20, rerun 2026-11-23 on the new kb)
 
-**Round 2 result (new kb, see [Round 2](#round-2-new-kb-2026-11-23)): one idea holds up, bold-only lines turned into sub-headings (V2), about 9 % fewer kb calls at equal answer quality, confirmed in a dedicated run. Not yet applied: it is a format change that the add-or-correct rule forbids without approval.**
+**Round 2 result (new kb, see [Round 2](#round-2-new-kb-2026-11-23)): one idea holds up, bold-only label lines written as sub-headings (test variant V2), about 9 % fewer kb calls at equal answer quality, confirmed in a dedicated run. Adopted in catalog 2.0.0 (2026-11-23): 64 files, 456 lines; bold link lines (navigation) were kept bold; `entry-lint` enforces the rule.**
 
 **Round 1 result: no structure-only change gives a reliable kb gain, so none is adopted.** The first round suggested that splitting large agent-docs saves 22 % of kb calls; rerun next to a same-time baseline, the same split saved 3 % and the adopted form 0 %. The difference came from run-to-run noise and drift of the model's behaviour over the hours of testing, not from the structure. The AGENTS.md rule (headings add-or-correct only) and `content-guard` stay as they were.
 
@@ -111,4 +111,4 @@ Live sessions, compared with the interleaved baseline runs (kb calls ratio per t
 - **New kb against old kb:** the baselines went from 10.5 to 9.4 kb calls and from 0.61 to 0.41 weak `kb_get` per run. Those runs were days apart, so this is indicative only; it fits the two kb fixes.
 - **T4 rename point:** almost no answer in either round states that a CLI rename keeps the `xmi:id`. That is a catalog content gap, not a structure effect; worth checking where agent-docs say it.
 
-**Applying V2** would change bold-only lines (`**Usage:**`) into sub-headings in 67 catalog files. No text is removed and no existing heading changes, but it is a format change for kb, which the AGENTS.md add-or-correct rule excludes; it needs approval first.
+**Adopted (catalog 2.0.0):** bold-only label lines are now sub-headings in 64 catalog files (456 lines; the test transform also hit 12 bold navigation links, which stay bold). AGENTS.md carries the rule as the one tested format exception, and `entry-lint` fails on new bold-only label lines.

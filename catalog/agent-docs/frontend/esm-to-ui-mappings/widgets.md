@@ -60,7 +60,7 @@ Type-specific attributes:
 
 ##### Widget attributes per data type
 
-**Type-Specific Behaviour (from ui-behaviour.md):**
+###### Type-Specific Behaviour (from ui-behaviour.md)
 
 | Data Type | Available Attributes | Conditional Rules |
 |-----------|---------------------|-------------------|
@@ -79,13 +79,13 @@ Type-specific attributes:
 **Inherited from `Widget`:** `onBlur`, `requiredBy`, `minValueBy`, `maxValueBy`
 **Inherited from `Component`:** `col`, `row`, `stretch`, `fit`, `hiddenBy`, `enabledBy`
 
-**Generated input notes:**
+###### Generated input notes
 - Numeric inputs use only the attribute `scale` (as `decimalScale`); `precision` has no effect.
 - No `PasswordInput` element type exists; password fields are not produced by a separate template.
 - Text areas set `rows` only; `minRows` is not emitted.
 - Time inputs always show hours, minutes and seconds; `baseUnit` is not read.
 
-**Example:**
+###### Example
 ```xml
 <components xsi:type="ui:DataField"
   xmi:id="_T-UiwLLKEfCE0JrRXgRyVA"
@@ -159,7 +159,7 @@ A complex widget for managing relationships (to-one or to-many).
 **Inherited from `Widget`:** `onBlur`
 **Inherited from `Component`:** `col`, `hiddenBy`, `enabledBy`
 
-**Example:**
+##### Example
 ```xml
 <components xsi:type="ui:TabularReferenceField"
   xmi:id="_UINekLLKEfCE0JrRXgRyVA"
@@ -202,7 +202,7 @@ Widget that triggers an action, bound to a specific operation. Typically renders
 | `ui:OperationForm` | `generateActionsHook` | Enable actions hook | Extension point for custom actions |
 | `ui:OperationForm` | `components` | Form widgets | DataFields, ActionButtons, Groups |
 
-**Confirmation Types:**
+#### Confirmation Types
 
 | Type | Frontend Effect |
 |------|-----------------|
@@ -210,13 +210,13 @@ Widget that triggers an action, bound to a specific operation. Typically renders
 | `CONDITIONAL` | Confirmation dialog shown based on boolean attribute value |
 | `MANDATORY` | Confirmation dialog always shown before execution |
 
-**Nested Form Elements:**
+#### Nested Form Elements
 - `DataField` - Input fields bound to operation parameters
 - `ActionButton` - Submit/Cancel buttons
 - `Group` - Layout container for organizing form fields
 - `TabularReferenceField` - Relation selector within form
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:OperationForm"
   xmi:id="_ABC123"
@@ -245,7 +245,7 @@ Simple unbound text display widget for static text or labels.
 | `ui:TextField` | `col` | Grid column | Layout width |
 | `ui:TextField` | `variant` | Text style | Typography variant |
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:TextField"
   xmi:id="_DEF456"
@@ -266,7 +266,7 @@ Button for standard form actions like Submit or Cancel.
 | `ui:ActionButton` | `iconName` | Icon | Button icon |
 | `ui:ActionButton` | `variant` | Button style | contained/outlined/text |
 
-**Action Types:**
+#### Action Types
 
 | Action | Frontend Effect |
 |--------|-----------------|
@@ -314,7 +314,7 @@ Visual separator element for dividing sections within a container.
 | `ui:Divider` | `col` | Grid column | Layout width |
 | `ui:Divider` | `row` | Row span | Layout height |
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:Divider"
   xmi:id="_DIV123"
@@ -335,7 +335,7 @@ Reserved space for custom implementations or future content.
 | `ui:Placeholder` | `row` | Row span | Layout height |
 | `ui:Placeholder` | `customImplementation` | Custom flag | Marked for custom implementation; the generator has no widget for a placeholder, so it renders nothing. To plug in a custom component, set `customImplementation` on a `DataField` instead (see [hooks/ui-hooks.md → Field and View Display](../hooks/ui-hooks.md)) |
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:Placeholder"
   xmi:id="_PH123"
@@ -357,7 +357,7 @@ Standalone icon display widget.
 | `ui:Icon` | `col` | Grid column | Layout width |
 | `ui:Icon` | `row` | Row span | Layout height |
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:Icon"
   xmi:id="_ICO123"
@@ -381,14 +381,14 @@ Container for grouping related actions/buttons with automatic overflow handling.
 
 **Behaviour:** The first `featuredActions` actions are displayed as standalone buttons. Remaining actions are placed in a popup menu.
 
-**FAB button groups:**
+#### FAB button groups
 - A FAB group with one button and `featuredActions=0` renders nothing, because the speed dial needs more than one button.
 - The speed-dial toggle shows the group icon or no icon; it never uses a `SpeedDialIcon` element.
 - `hiddenBy` applies to featured FAB buttons, not to speed-dial items in the same group.
 - Dialog FAB groups render after `DialogContent`, outside the dialog body.
 - A page counts as having a FAB group when any nested `ButtonGroup` is a FAB, even if no top-level group is. Workaround: place FAB groups directly under the page container.
 
-**Example:**
+#### Example
 ```xml
 <actionGroup xsi:type="ui:ActionGroup"
   xmi:id="_AG123"

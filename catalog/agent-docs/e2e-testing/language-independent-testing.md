@@ -124,7 +124,7 @@ const adminLink = page.locator('a[href*="/Service/Actor/Administration/"]');
 await adminLink.click();
 ```
 
-**href patterns by menu type**:
+#### href patterns by menu type
 - Administration: `/Service/Actor/Administration/`
 - Dashboard: `/Service/Actor/Dashboard/`
 - Access pages: `/Service/Actor/{PageName}/`
@@ -454,7 +454,7 @@ When navigating from a grid row, tag, or single relation link to view a child el
 | `D=true` | Delete button visible on navigated element |
 | `D=false` | No delete option regardless of child's own flags |
 
-**Testing Implications:**
+#### Testing Implications
 
 ```typescript
 // If parent relation has updateable=false, navigated child is read-only
@@ -490,7 +490,7 @@ test.describe("Navigation from updatable parent", () => {
 });
 ```
 
-**Navigation Sources Affected:**
+#### Navigation Sources Affected
 - Grid/Table row view button click
 - Tag component click  
 - Single relation link click
@@ -504,7 +504,7 @@ Even when model flags are `true`, the backend can disable operations for specifi
 | `__updateable: false` | Disables edit capability for this specific record |
 | `__deleteable: false` | Hides delete button for this specific record |
 
-**Testing Implications:**
+#### Testing Implications
 
 When testing with specific data, be aware that some records may have these flags set dynamically:
 
@@ -527,7 +527,7 @@ test("should handle record with disabled delete", async ({ page }) => {
 });
 ```
 
-**Precedence:**
+#### Precedence
 1. Model relation flag `false` → operation always disabled
 2. Model flag `true` + `__updateable`/`__deleteable: false` → disabled for that record
 3. Model flag `true` + JSON flag `true` or absent → operation enabled

@@ -527,26 +527,26 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ### "AppBar component not showing"
 
-**Verify registration:**
+#### Verify registration
 ```typescript
 // Check application-customizer.tsx: the service property must be exactly
 { component: 'AppBarExtraComponents' }
 ```
 
-**Check import:**
+#### Check import
 ```typescript
 import { NotificationBell } from './components/NotificationBell';
 ```
 
 ### "Logo not displaying"
 
-**Verify file path:**
+#### Verify file path
 ```bash
 ls -la public/images/logo.svg
 # File should exist
 ```
 
-**Check configuration:**
+#### Check configuration
 ```typescript
 // CustomLogoPropsHook result
 { ...defaults, imgSrc: '/images/logo.svg' }  // Path relative to public/
@@ -554,7 +554,7 @@ ls -la public/images/logo.svg
 
 ### "Menu changes not applying"
 
-**Verify hook registration:**
+#### Verify hook registration
 ```typescript
 context.registerService<MenuItemsCustomizerHook>(
   MENU_ITEMS_CUSTOMIZER_HOOK_INTERFACE_KEY,

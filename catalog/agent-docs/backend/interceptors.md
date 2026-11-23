@@ -72,7 +72,7 @@ The JUDO framework provides two types of interceptors, `OperationCallInterceptor
 
 This pattern uses an `OperationCallInterceptor` to denormalize and aggregate data, which is a common technique to optimize read performance. By pre-calculating and storing aggregated values, the application can avoid complex and potentially slow queries when retrieving data for display.
 
-**Example**
+#### Example
 
 An interceptor like `MyEntityUpdateInterceptor` can be used to listen for updates on `MyEntity`. In the `postCall` hook, it can query for related `Tag` entities, aggregate their names into a comma-separated string, and save that string to a `tagsAggregated` field on `MyEntity`.
 
@@ -102,7 +102,7 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
 
 This pattern uses an `OperationCallInterceptor` to trigger the creation of a resource in a different service or bounded context when an operation is performed. This promotes loose coupling between services.
 
-**Example**
+#### Example
 
 An interceptor like `UserProfileCreateInterceptor` can intercept the creation of a `UserProfile`. In the `preCall` hook, it can take the profile data, transform it, and create a `WelcomeJourney` object using a different DAO. By returning `true` from `ignoreDecoratedCall()`, it prevents the original `UserProfile` from being created directly, effectively replacing the operation.
 
@@ -133,7 +133,7 @@ public boolean ignoreDecoratedCall() {
 
 This pattern uses a pair of `OperationCallInterceptor` instances to manage derived data based on a single "source of truth" field (e.g., an enumeration). One interceptor (`_refresh`) calculates derived fields on read, and the other (`_update`) enforces data consistency on write.
 
-**Example**
+#### Example
 
 - **Refresh Interceptor:** On a `_refresh` operation for a `LocatedItem` entity, the `postCall` hook inspects if a `country`, `state`, or `city` relationship exists. Based on this, it sets a `LocationScope` enum and derived boolean flags like `isCountryScope`. This simplifies UI logic.
 
@@ -209,7 +209,7 @@ All synchronous interceptors run inside the transaction of the operation. An exc
 
 ## Interceptor Component Registration
 
-**Required annotation properties:**
+### Required annotation properties
 
 ```java
 @Component(property = { "judo.model.name=<app>" })
@@ -218,7 +218,7 @@ public class MyInterceptor implements OperationCallInterceptor {
 }
 ```
 
-**Why `property = { "judo.model.name=<app>" }`?**
+### Why `property = { "judo.model.name=<app>" }`?
 - Binds interceptor to specific JUDO model
 - Runtime uses this to match interceptors to operations
 - Multiple models can coexist with different interceptors
@@ -258,7 +258,7 @@ public class LogOperationCallInterceptor implements OperationCallInterceptor {
 }
 ```
 
-**Key patterns:**
+### Key patterns
 - `@Component(property = { "judo.model.name=<app>" })` - Required for operation interceptors
 - No `getOperations()` implementation = intercept ALL built-in operations (custom and script operations are never intercepted)
 - `AsmUtils.getOperationFQName()` - Get fully qualified operation name
@@ -815,7 +815,7 @@ Operation Fully Qualified Names follow specific patterns:
 | Set Reference | `[model_name].[entity_package].[Entity]#_setReference[RelationshipName]` | `<app>.access_management.AccessRole#_setReferenceAccessPermissions` |
 | Custom Operation | `[model_name].[entity_package].[Entity]#[operationName]` | `<app>.entity_management.Entity#toggleStatus` |
 
-**Finding Operation FQNs:**
+### Finding Operation FQNs
 
 ```bash
 # Search in ASM model for operation definitions
@@ -854,7 +854,7 @@ cd application/interceptors
 mvn install
 ```
 
-**Important Notes**:
+#### Important Notes
 - Do NOT edit `.java.default` files directly - they are regenerated on each build
 - Do NOT add `.java` files to `.generator-ignore` - the generator only creates `.default` files, your `.java` implementations are never overwritten
 - Do NOT add `.java.default` files to `.generator-ignore` either — keep them regenerating as a read-only reference. See [`.generator-ignore` — One Rule](README.md#generator-ignore--one-rule).

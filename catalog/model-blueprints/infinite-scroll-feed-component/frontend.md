@@ -18,7 +18,7 @@ The pattern replaces a generated table component via Pandino's custom visual ele
 - **useCapabilitiesAutocomplete** -- Server-side autocomplete for capability filtering, debounced, using the owner's `listCapabilities` action.
 - **RequestPostDrawer** -- FAB + bottom drawer for creating "request post" entries. Shown only when `usePrincipal().role` is COMPANY_ADMIN or COMPANY_READER.
 
-**Key design decisions**:
+### Key design decisions
 - Seek-based pagination avoids count queries and offset drift on live data
 - Filter state is persisted in sessionStorage to survive tab navigation
 - Cards use color-coded left borders and gradient backgrounds to distinguish post types and announcements

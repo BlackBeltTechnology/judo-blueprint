@@ -153,7 +153,7 @@ List<ChildTO> children = childMaps.stream()
     .toList();
 ```
 
-**Key points:**
+### Key points
 - `toMap()` is the canonical read path for nested composition payloads on input TOs.
 - Each element is a `Map<String, Object>`; rehydrate with the child TO's static `from(Map)` factory to get a typed object back.
 - The same rule applies recursively: a child's own nested collections are again `List<Map<String,Object>>` under `from(...).toMap()`.

@@ -222,7 +222,7 @@ A widget for displaying/editing a single primitive value (e.g., text box, checkb
 | `onBlur` | Boolean | Generate blur event handler |
 | `tooltipText` | String | Tooltip text |
 
-**Widget Type Attributes:**
+#### Widget Type Attributes
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -324,7 +324,7 @@ A button for standard form actions like Submit or Cancel.
 | `iconName` | String | Button icon |
 | `variant` | Enum | Button style: `contained`, `outlined`, `text` |
 
-**Action Types:**
+#### Action Types
 
 | Action | Description |
 |--------|-------------|
@@ -488,7 +488,7 @@ A filter control for a table, allowing users to search or narrow down results.
 | `alwaysShown` | Boolean | Show filter in toolbar (default: false) |
 | `filterReference` | Reference | Reference to another filter definition |
 
-**Filter Operations (FilterOperationType):**
+#### Filter Operations (FilterOperationType)
 
 | Type | Description | Use Case |
 |------|-------------|----------|

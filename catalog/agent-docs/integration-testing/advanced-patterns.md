@@ -218,7 +218,7 @@ List<User> users = userDao.query()
     .selectList();
 ```
 
-**JQL (JUDO Query Language) Expression Syntax:**
+#### JQL (JUDO Query Language) Expression Syntax
 - Field reference: `this.fieldName`
 - Equality: `==` (NOT `=`)
 - Not equal: `!=`
@@ -229,7 +229,7 @@ List<User> users = userDao.query()
 - Grouping: `(expr1 or expr2)`
 - String literals: single quotes `'value'`
 
-**IMPORTANT - What Does NOT Work:**
+#### IMPORTANT - What Does NOT Work
 - Navigation: `this.relation.field` is NOT supported in filterBy
 - Single equals: `this.field = value` - use `==` instead
 - SQL-style LIKE: `this.field like 'pattern'` - use `(this.field)!like('pattern')` instead
@@ -442,7 +442,7 @@ public class CreateAddressInput {
 }
 ```
 
-**Symptom:**
+#### Symptom
 
 ```java
 // This throws NullPointerException:
@@ -823,7 +823,7 @@ public void customCall(CreateAddressInput input) {
 
 **If you're done here**, return to the [Main Hub](./README.md)
 
-**If you need help with**:
+### If you need help with
 - [Getting started with tests](./getting-started.md)
 - [Type safety and adaptTo()](./type-safety.md)
 - [Best practices and anti-patterns](./best-practices.md)

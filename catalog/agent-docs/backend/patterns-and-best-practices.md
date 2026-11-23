@@ -71,13 +71,13 @@ private List<Plugin> plugins;
 
 ### Field vs. Method Injection
 
-**Field injection (recommended for most cases):**
+#### Field injection (recommended for most cases)
 ```java
 @Reference
 private EntityDao entityDao;
 ```
 
-**Method injection (useful for the delegation pattern):**
+#### Method injection (useful for the delegation pattern)
 ```java
 @Reference
 public void setEntityDao(EntityDao entityDao) {
@@ -236,7 +236,7 @@ The platform's own checks report codes such as `MISSING_REQUIRED_ATTRIBUTE`, `MI
 
 **Purpose**: To centralize and reuse validation logic across multiple custom operations, ensuring consistency and reducing code duplication.
 
-**Why it's important**:
+#### Why it's important
 - **Consistency**: Ensures that the same validation rules (e.g., for an email or a date range) are applied everywhere.
 - **Maintainability**: When a validation rule changes, you only need to update it in one place.
 - **Readability**: Keeps your custom operation logic clean and focused on the business process, not on low-level validation details.
@@ -293,7 +293,7 @@ public final class ValidationUtils {
 }
 ```
 
-**Usage:**
+#### Usage
 ```java
 ValidationUtils.validateRequired(input.getUserName(), "Username");
 ValidationUtils.validateEmail(input.getEmail());
@@ -304,7 +304,7 @@ ValidationUtils.validateDateRange(input.getStartDate(), input.getEndDate());
 
 **Purpose**: To provide a null-safe way to convert between JUDO's service-layer `MapHolder` types and the backend entity-layer types.
 
-**Why it's important**:
+#### Why it's important
 - **Null Safety**: Prevents `NullPointerException` errors when dealing with optional relationships or fields. The generated `.from()` methods are not null-safe.
 - **Cleaner Code**: Simplifies conversion logic in your custom operations, making it more readable and less error-prone.
 
@@ -328,7 +328,7 @@ public final class TypeConverter {
 }
 ```
 
-**Usage:**
+#### Usage
 ```java
 Settlement entitySettlement = TypeConverter.convert(input.getSettlement(), Settlement.class);
 ```
@@ -553,13 +553,13 @@ Optional<Event> latestEvent = eventDao.query()
 
 Masks (projections) are critical for performance when working with entities that have many fields or relationships.
 
-**Empty mask for existence checks:**
+#### Empty mask for existence checks
 ```java
 // Only loads identifier - fastest way to check existence
 boolean exists = dao.getById(id, EntityMask.entityMask()).isPresent();
 ```
 
-**Load specific fields only:**
+#### Load specific fields only
 ```java
 // Load only required fields
 User user = userDao.getById(
@@ -571,7 +571,7 @@ User user = userDao.getById(
 ).orElseThrow();
 ```
 
-**Masks in queries:**
+#### Masks in queries
 ```java
 // Query with mask to control memory usage
 List<Address> addresses = addressDao.query()
@@ -584,7 +584,7 @@ List<Address> addresses = addressDao.query()
     .selectList();
 ```
 
-**Nested masks for relationships:**
+#### Nested masks for relationships
 ```java
 // Load entity with related entities (controlled depth)
 Address address = addressDao.getById(
@@ -600,7 +600,7 @@ Address address = addressDao.getById(
 ).orElseThrow();
 ```
 
-**Partial updates with masks:**
+#### Partial updates with masks
 ```java
 Entity entity = entityDao.getById(id).orElseThrow();
 entity.setStatus(newStatus);
@@ -612,7 +612,7 @@ entityDao.update(
 );
 ```
 
-**Performance benefits:**
+#### Performance benefits
 - 90% less memory usage for large collections
 - 10x faster queries with proper masks
 - Prevents N+1 query problems

@@ -57,7 +57,7 @@ These are the variables the shipped `judo.sh` and the Docker Compose stacks of t
 
 The generated file contains only a few defaults (identifier signer secret, Keycloak password policy, `JUDO_PLATFORM_LOG_SMTP_SERVER`, `JUDO_PLATFORM_FILESTORE=rdbms`). The generated signer secret is a fixed placeholder; replace it per environment. Add or change variables there, then restart: `./judo.sh stop && ./judo.sh start`.
 
-**Format:**
+#### Format
 ```bash
 JUDO_PLATFORM_PARAMETER_NAME=value
 ```
@@ -68,7 +68,7 @@ JUDO_PLATFORM_PARAMETER_NAME=value
 
 ### Alternative Methods (Not Recommended)
 
-**Java System Properties:**
+#### Java System Properties
 ```bash
 export JAVA_EXTRA_OPTS="-Djudo.platform.parameterName=value"
 ```
@@ -108,11 +108,11 @@ JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL    → keycloakAuthPublicUrl
 
 **For database schema migration and evolution**, see [Schema Evolution](./schema-evolution.md).
 
-**JUDO_PLATFORM_RDBMS_DIALECT**
+#### JUDO_PLATFORM_RDBMS_DIALECT
 - **Description**: Database dialect for SQL generation
 - **Options**: `postgresql`, `hsqldb` (JUDO ships only these two dialect bundles)
 
-**JUDO_PLATFORM_RDBMS_DB_HOST / _PORT / _DATABASE / _USER / _PASSWORD**
+#### JUDO_PLATFORM_RDBMS_DB_HOST / _PORT / _DATABASE / _USER / _PASSWORD
 - **Description**: Connection settings of the application database. `judo.sh` exports them for a local PostgreSQL container; the Compose stacks set them to the `postgres` service (`DB_DATABASE`, `DB_USER` and `DB_PASSWORD` default to the lower-case model name).
 - **Note**: There is no `JUDO_PLATFORM_DATASOURCE_URL` / `_USERNAME` / `_PASSWORD` variable in the template. The JDBC URL is built by the platform from these parts.
 
@@ -130,17 +130,17 @@ For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtim
 
 ### 2. Keycloak (Security)
 
-**JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL**
+#### JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL
 - **Description**: Keycloak URL used by the backend (inside the Compose network, e.g. `http://auth:8080`)
 - **Required**: Yes
 
-**JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL**
+#### JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL
 - **Description**: Keycloak URL as reachable by browsers (e.g. `https://auth-<ip>.traefik.me`). The parameter is `keycloakAuthPublicUrl`, not `keycloakPublicUrl`.
 
-**JUDO_PLATFORM_KEYCLOAK_REALM / JUDO_PLATFORM_KEYCLOAK_CLIENT_ID**
+#### JUDO_PLATFORM_KEYCLOAK_REALM / JUDO_PLATFORM_KEYCLOAK_CLIENT_ID
 - **Description**: Realm and client id (used in real-world deployments).
 
-**JUDO_PLATFORM_KEYCLOAK_DEFAULT_PASSWORD_POLICY**
+#### JUDO_PLATFORM_KEYCLOAK_DEFAULT_PASSWORD_POLICY
 - **Description**: Password policy for users created by the platform. The shipped `judo-karaf.env` sets `SAME_EMAIL`; the Compose stack sets `SAME_USERNAME`.
 
 **JUDO_PLATFORM_KEYCLOAK_MANAGEMENT_ENABLED / JUDO_PLATFORM_USER_MANAGER_ENABLED / JUDO_PLATFORM_KEYCLOAK_USER / JUDO_PLATFORM_KEYCLOAK_PASSWORD**
@@ -151,18 +151,18 @@ For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtim
 
 ### 3. REST API
 
-**JUDO_PLATFORM_SWAGGER_UI / JUDO_PLATFORM_SWAGGER_UI_PATH**
+#### JUDO_PLATFORM_SWAGGER_UI / JUDO_PLATFORM_SWAGGER_UI_PATH
 - **Description**: Switch on the Swagger UI (default path `/swagger-ui`). Consider disabling it in production.
 
-**JUDO_PLATFORM_CORS_ALLOW_ORIGIN**
+#### JUDO_PLATFORM_CORS_ALLOW_ORIGIN
 - **Description**: Allowed CORS origin(s) (used by real deployments; do not leave it open in production). In the Guice CXF JAX-RS runtime this variable has no effect: `CrossOriginResourceSharingFilterProvider` returns an unconfigured filter.
 
 ### 4. File Storage
 
-**JUDO_PLATFORM_FILESTORE**
+#### JUDO_PLATFORM_FILESTORE
 - **Options**: `rdbms` (files in the database; the shipped `judo-karaf.env` and the `compose-develop` stack use it), `filesystem` (the `compose-postgresql-https` stack), `s3`.
 
-**JUDO_PLATFORM_FILESTORE_DIRECTORY**
+#### JUDO_PLATFORM_FILESTORE_DIRECTORY
 - **Description**: Directory for the `filesystem` store (Compose stack: `/filestore`). The old name `JUDO_PLATFORM_FILESTORE_PATH` does not exist.
 
 **S3 settings**: `JUDO_PLATFORM_S3_BUCKET`, `JUDO_PLATFORM_S3_REGION`, `JUDO_PLATFORM_S3_ENDPOINT`, `JUDO_PLATFORM_S3_ACCESS_KEY`, `JUDO_PLATFORM_S3_SECRET_KEY`, plus `JUDO_PLATFORM_FILESTORE_TOKEN_EXPIRY`.
@@ -177,7 +177,7 @@ Google Cloud Storage exposes an S3-compatible XML API, so the platform's S3 file
 
 ### 5. Identifier Signing
 
-**JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET**
+#### JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET
 - **Description**: Base64-encoded HMAC secret used to sign the entity identifiers sent to clients (`__signedIdentifier`).
 - **Important**: If the secret is not configured, the runtime generates a **new random 1024-bit key on every start**. Signed identifiers then become invalid after a restart and are not valid across cluster nodes. Always set the same secret on every node and keep it stable between restarts; treat it as a secret in production.
 

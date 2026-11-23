@@ -36,7 +36,7 @@ This document defines the visual style indicators and styling rules used through
 | `AGGREGATION` | Empty diamond at source |
 | `ASSOCIATION` | Simple line (no diamond) |
 
-**Additional Relation Style Rules:**
+#### Additional Relation Style Rules
 
 | Condition | Visual Effect |
 |-----------|---------------|

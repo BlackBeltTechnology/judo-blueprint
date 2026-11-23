@@ -1,6 +1,6 @@
 {
   "name": "@blackbelt-technology/judo-blueprint",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "JUDO catalog: model blueprints, best practices and agent-docs as a kb source, plus pi skills to use, diagram, author and distill it.",
   "license": "UNLICENSED",
   "private": true,

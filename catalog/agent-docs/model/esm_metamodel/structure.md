@@ -143,7 +143,7 @@ These rules define how structural elements behave based on their context and att
 
 The `memberType` attribute is constrained by the owner class type and mapping state.
 
-**Class Hierarchy:**
+#### Class Hierarchy
 - `Class` (abstract base)
   - `EntityType` - persistent business object
   - `TransferObjectType` - DTO, can be **mapped** (has `mapping` to entity) or **unmapped**
@@ -159,7 +159,7 @@ The `memberType` attribute is constrained by the owner class type and mapping st
 
 #### RelationMember Constraints
 
-**Relation Hierarchy:**
+##### Relation Hierarchy
 - `RelationFeature` (abstract)
   - `OneWayRelationMember` - unidirectional reference
   - `TwoWayRelationMember` - bidirectional (has `partner`)
@@ -169,7 +169,7 @@ The `memberType` attribute is constrained by the owner class type and mapping st
 | `TwoWayRelationMember` | ✓ | ✗ | ✗ | Requires partner on target entity |
 | `OneWayRelationMember` | ✓ | ✓ | ✓ | Simple reference |
 
-**OneWayRelationMember MemberType:**
+##### OneWayRelationMember MemberType
 
 | MemberType | EntityType | TO (mapped) | TO (unmapped) | Notes |
 |------------|------------|-------------|---------------|-------|
@@ -178,7 +178,7 @@ The `memberType` attribute is constrained by the owner class type and mapping st
 | `MAPPED` | ✗ | ✓ | ✗ | Projects relation from entity |
 | `TRANSIENT` | ✗ | ✓ | ✓ | Temporary relation |
 
-**Summary Constraints:**
+##### Summary Constraints
 - `memberType = STORED` → owner is `EntityType`
 - `memberType = MAPPED` → owner is `TransferObjectType` AND `mapping` is not null
 - `memberType = TRANSIENT` → owner is `TransferObjectType`
@@ -195,7 +195,7 @@ The `memberType` attribute is constrained by the owner class type and mapping st
 | `defaultExpression` | `memberType = STORED` | Default value calculation |
 | `binding` | `memberType = MAPPED` | Source attribute from mapped entity |
 
-**Context Checks:**
+#### Context Checks
 - **In EntityType**: Container's type is `EntityType`
 - **Read-only**: `memberType = MAPPED` AND binding source is read-only
 
@@ -242,7 +242,7 @@ For a two-way association the same rules apply from either end.
 | `mapping.filter` | `mapping` is NOT null | Filter expression for mapped entities |
 | CRUD page | `mapping` is NOT null | CRUD tab only shown for mapped TOs |
 
-**Context Checks:**
+#### Context Checks
 - **Is Mapped**: `mapping` attribute is NOT null (has EntityType reference)
 - **Purify**: Removes invalid references after modifications
 

@@ -170,7 +170,7 @@ JUDO platform health checks (`Components`, `Bundles`, the per-model `<modelname>
 - **Auth**: HTTP Basic, `karaf` / `karaf`.
 - **Drill-down**: `…/components/<component.name>.json` returns the component's bundle, configuration policy, and every `Reference …` line — each `unsatisfied (reference)` row points at exactly the service the SCR is waiting on.
 
-**Component states to recognise:**
+##### Component states to recognise
 
 | State | Meaning | Action |
 |---|---|---|
@@ -213,7 +213,7 @@ curl -s -u karaf:karaf "http://localhost:8181/system/console/components.json" \
 
 Many JUDO "missing component" failures are wiring failures along a 3-tier chain JUDO uses to instantiate platform services *per model*. Understanding the chain is the difference between a 30-second diagnosis and an hour of grepping.
 
-**Tier 1 — Model deployers publish model services and fire events.**
+##### Tier 1 — Model deployers publish model services and fire events.
 
 - Bundles: `judo-services-karaf-model-deployer`, `judo-services-model-bundle-deployer`, `judo-services-application-index`.
 - Discover `*-internal` model bundles, register `EsmModel` / `PsmModel` / `AsmModel` OSGi services with property `name=<modelName>`, post `EventAdmin` event on topic `hu/blackbelt/judo/Event/MODEL_CHANGED` with `eventType=DEPLOY|UNDEPLOY`, `modelName=<modelName>`.
@@ -298,7 +298,7 @@ When a per-model health check reports `Missing platform components: [X]`:
 
 6. **Verify Tier 1**: are `judo-services-karaf-model-deployer` and `judo-services-model-bundle-deployer` bundles `Active`? Is the `<app>-internal` bundle active? Without these, no model services exist and no `MODEL_CHANGED` events are posted.
 
-**Endpoints used in the checklist:**
+##### Endpoints used in the checklist
 
 | Endpoint | Purpose |
 |---|---|

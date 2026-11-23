@@ -79,7 +79,7 @@ These rules define how type elements behave based on their context and attribute
 | `precision` | Yes | 9 | Maximum total decimal digits (left + right of decimal point) |
 | `scale` | Yes | 0 | Decimal digits to the right of decimal point |
 
-**Precision vs Scale:**
+#### Precision vs Scale
 - `precision` = total digits stored
 - `scale` = digits after decimal point
 - Digits before decimal = `precision - scale`
@@ -133,7 +133,7 @@ Omitting `mimeTypes` on a `BinaryType` fails EMF validation: *"The feature 'mime
 | `name` | Yes | Member name (e.g., `PENDING`) |
 | `ordinal` | Yes | Integer value (auto-generated); must be unique within the enumeration and, in JSL models, between 0 and 9999 |
 
-**On Member Creation:**
+#### On Member Creation
 - `ordinal` = `getNextOrdinal()` (auto-incremented)
 - `name` = `LITERAL_` + `ordinal` (default, can be changed)
 

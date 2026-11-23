@@ -100,7 +100,19 @@ def _project_names():
 PROJECT_NAMES = _project_names()
 
 
+# kb structure (reports/research/kb-structure-ab.md): a line that is only a bold label is a sub-heading,
+# so kb can chunk and fetch it; tested at 0.91 kb calls with equal answer quality.
+BOLD_LABEL = re.compile(r"^\*\*(?!\[)([^*]{3,80}?)\*\*:?\s*$", re.M)  # a bold link line is navigation, not a label
+
+
+def lint_bold_labels(text, errs):
+    hits = BOLD_LABEL.findall(strip_fences(text))
+    if hits:
+        errs.append(f"bold-only label line(s) {hits[:3]}{' …' if len(hits) > 3 else ''}: write a sub-heading one level below the enclosing heading")
+
+
 def lint_content(path, text, errs, profile):
+    lint_bold_labels(text, errs)
     body_nofence = strip_fences(text)
     for rx, name in CLI_PATTERNS:
         # judo-cli is allowed in agent-docs (the CLI doc itself lives there)
@@ -286,6 +298,7 @@ def lint_agent_doc(f):
                 errs.append("tags: agent-docs carry status:platform")
             if any(x.startswith("project:") for x in tags):
                 errs.append("tags: agent-docs are platform facts, no project: tag")
+        lint_bold_labels(text, errs)
         if needs_companion(f):
             lint_companion_of(f, errs)
 

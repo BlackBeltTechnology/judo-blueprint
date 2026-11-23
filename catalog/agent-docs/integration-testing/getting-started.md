@@ -207,12 +207,12 @@ public class MyTest {
 }
 ```
 
-**Behavior**:
+##### Behavior
 - Transaction starts before test method
 - Transaction rolls back after test method (success or failure)
 - Database remains clean between tests
 
-**Use when**:
+##### Use when
 - You want test isolation
 - You don't need to verify post-commit behavior
 - Most common mode for unit-style integration tests
@@ -226,12 +226,12 @@ public class MyTest {
 }
 ```
 
-**Behavior**:
+##### Behavior
 - Transaction starts before test method
 - Transaction commits after successful test
 - Transaction rolls back only on test failure
 
-**Use when**:
+##### Use when
 - You need to verify data persistence
 - Testing cascading operations
 - Verifying post-commit triggers
@@ -257,11 +257,11 @@ public class MyTest {
 }
 ```
 
-**Behavior**:
+##### Behavior
 - No automatic transaction management
 - You control `beginTransaction()`, `commitTransaction()`, and `rollbackTransaction()` on the `JudoRuntimeFixture`
 
-**Use when**:
+##### Use when
 - Testing complex multi-transaction scenarios
 - Verifying transaction boundary behavior
 - Testing error recovery
@@ -275,11 +275,11 @@ public class MyTest {
 }
 ```
 
-**Behavior**:
+##### Behavior
 - No transactions created by framework
 - Each DAO/service operation may run in its own transaction
 
-**Use when**:
+##### Use when
 - Testing read-only operations
 - Testing transaction-less operations
 - Performance testing without transaction overhead
@@ -303,7 +303,7 @@ public class MyTest {
 
 `AUTO_ROLLBACK` ignores `truncateTables`: the rollback is the cleanup, tables are never truncated. In `MANUAL` mode tables are truncated after the test even if you committed nothing. In `NONE` mode nothing is cleaned.
 
-**When to disable truncation**:
+#### When to disable truncation
 - Tests require expensive setup data
 - Testing data migration scenarios
 - Debugging - want to inspect data after test
@@ -395,7 +395,7 @@ public class UserDaoTest {
 }
 ```
 
-**Key Points**:
+#### Key Points
 - Use `fixture.getInjector().getInstance(DaoClass.class)` to get DAOs
 - Use `EntityForCreate.builder()` to create entities
 - Use `identifier()` to get entity identifiers for queries
@@ -458,7 +458,7 @@ public class CreateComplexEntityTest {
 }
 ```
 
-**Key Points**:
+#### Key Points
 - Use `ReferenceInjector.createAndInject(CustomClass.class, fixture.getInjector())` to instantiate custom operations
 - `ReferenceInjector` (`hu.blackbelt.judo.runtime.core.guice.testkit.util`) injects by **type**: every non-static, non-final field (and every single-argument `set*` method) whose type the Guice injector can provide is filled. It does not read `@Reference` / `@Inject`, because OSGi's `@Reference` has CLASS retention and is invisible to reflection. Use `createAndInject(Class, injector)` to create and wire an instance, `injectReferences(instance, injector)` for an existing one
 - Create all prerequisite entities before calling custom operations
@@ -569,7 +569,7 @@ public class MultiTransactionTest {
 
 #### Transaction rules
 
-**Key Points**:
+##### Key Points
 - Always wrap operations in `beginTransaction()` / `commitTransaction()` / `rollbackTransaction()` blocks
 - Calling `beginTransaction()` while a transaction is still open throws `IllegalStateException`: 'Previous transaction was not completed'. Commit or roll back the open transaction first.
 - Use try-catch to ensure rollback on exceptions

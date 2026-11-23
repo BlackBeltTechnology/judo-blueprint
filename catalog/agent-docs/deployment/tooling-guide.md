@@ -24,7 +24,7 @@ This guide provides an overview of the custom tools available in this project fo
 
 The `diagram_generator.py` script can be used to generate visual diagrams of the ESM model, which is useful for documentation and architectural reviews.
 
-**Functionality:**
+#### Functionality
 
 -   **Parses Model Files**: Reads the `.aird` (diagram definitions) and `.model` (ESM structure) files.
 -   **Generates Diagrams**: Creates a Markdown file with class diagrams for each entity diagram found.

@@ -1077,7 +1077,7 @@ public static void validatePattern(String value, Pattern pattern, String fieldNa
 
 **If you're done here**, return to the [Main Hub](./README.md)
 
-**If you need help with**:
+### If you need help with
 - [Getting started with tests](./getting-started.md)
 - [Type safety and adaptTo()](./type-safety.md)
 - [Advanced authentication patterns](./advanced-patterns.md)

@@ -703,7 +703,7 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ### "Hook not executing"
 
-**Check registration:**
+#### Check registration
 ```typescript
 console.log('Registering container hook');
 context.registerService(
@@ -712,7 +712,7 @@ context.registerService(
 );
 ```
 
-**Verify component name:**
+#### Verify component name
 ```bash
 # Check generated component names
 grep -rn "_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY =" src/containers | head
@@ -720,7 +720,7 @@ grep -rn "_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY =" src/containers | head
 
 ### "Filtering not working"
 
-**Debug filter logic:**
+#### Debug filter logic
 ```typescript
 filterUserOptions: (formData, options) => {
   console.log('Form data:', formData);
@@ -733,7 +733,7 @@ filterUserOptions: (formData, options) => {
 
 ### "Operation flow not redirecting"
 
-**Check return value:**
+#### Check return value
 ```typescript
 handleResult: (input) => {
   console.log('Operation input:', input);

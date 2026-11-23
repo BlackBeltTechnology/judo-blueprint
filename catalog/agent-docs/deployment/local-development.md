@@ -29,12 +29,12 @@ This guide covers local development setup, hot deployment, and development workf
 
 ### Starting Services
 
-**Start all services:**
+#### Start all services
 ```bash
 ./judo.sh start
 ```
 
-**What starts:**
+#### What starts
 - PostgreSQL (Docker container, port 5432) when `dbtype=postgresql`; the generated `judo.properties` sets `dbtype=hsqldb`, which runs the embedded HSQLDB instead
 - Keycloak (Docker container, port 8080)
 - Karaf (standalone, HTTP port **8181** by default; override with `./judo.sh start -o karaf_port=<port>`)
@@ -43,7 +43,7 @@ This guide covers local development setup, hot deployment, and development workf
 
 **Prerequisites:** generated projects and the workflow plugin build with Java 21 (`java.version` 21), not Java 1.8 or 11. There is no `run-offline-postgresql.sh` script in generated projects; use `./judo.sh start -o dbtype=postgresql` to get a PostgreSQL database.
 
-**Access points:**
+#### Access points
 - Application: http://localhost:8181/<model>/<Actor>/ (each actor frontend is served under its own context path; `/apps/` only lists the bundles)
 - Keycloak Admin: http://localhost:8080/auth (`judo.sh` starts Keycloak with `--http-relative-path /auth`; with `keycloak_port=<port>` the base URL is `http://localhost:<port>/auth`; 8080 is the Keycloak port, not the application's)
 - Karaf SSH: `ssh -p 8101 karaf@localhost` (password: karaf) - these are Apache Karaf defaults, not set by the project template
@@ -56,14 +56,14 @@ This guide covers local development setup, hot deployment, and development workf
 
 ### Stopping Services
 
-**Stop all services:**
+#### Stop all services
 ```bash
 ./judo.sh stop
 ```
 
 ### Checking Status
 
-**Check service status:**
+#### Check service status
 ```bash
 ./judo.sh status
 ```
@@ -82,13 +82,13 @@ Hot deployment allows you to make changes and see them immediately without resta
 
 ### What Supports Hot Deployment
 
-**Supports hot deployment:**
+#### Supports hot deployment
 - Custom operations (`application/app/`)
 - Interceptors (`application/interceptors/`)
 - Frontend JAR (`application/frontend-react/`)
 - REST endpoints (via bundle update)
 
-**Requires restart:**
+#### Requires restart
 - Model changes (schema evolution)
 - Configuration changes
 - Feature definition changes
@@ -158,14 +158,14 @@ mvn install -pl application/app,application/interceptors
 
 ### Karaf Console
 
-**Connect to Karaf console:**
+#### Connect to Karaf console
 ```bash
 ./application/.karaf/bin/client
 # or
 ssh -p 8101 karaf@localhost
 ```
 
-**Useful commands:**
+#### Useful commands
 ```bash
 # List bundles
 bundle:list | grep <app>
@@ -188,11 +188,11 @@ config:list
 
 ### Logs
 
-**Locations:**
+#### Locations
 - Karaf: `application/.karaf/data/log/karaf.log`
 - Docker: `docker logs <app>-app`
 
-**Tail logs:**
+#### Tail logs
 ```bash
 tail -f application/.karaf/data/log/karaf.log
 
@@ -217,25 +217,25 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 
 #### "Port 8181 (or 8080) already in use"
 
-**Solution:**
+##### Solution
 - Check running processes: `lsof -i :8181` (Karaf) or `lsof -i :8080` (Keycloak)
 - Stop the conflicting service or start with another port: `./judo.sh start -o karaf_port=<port>`
 
 #### "Database connection failed"
 
-**Solution:**
+##### Solution
 - Check PostgreSQL running: `docker ps | grep postgres`
 - Restart PostgreSQL: `docker restart [container-name]`
 
 #### "Keycloak authentication failed"
 
-**Solution:**
+##### Solution
 - Check Keycloak running: `docker ps | grep keycloak`
 - Verify Keycloak configuration in environment variables
 
 #### "Bundle not starting"
 
-**Solution:**
+##### Solution
 - Check dependencies: `bundle:diag [bundle-id]`
 - View bundle details: `bundle:info [bundle-id]`
 - Check logs: `log:tail`
@@ -248,14 +248,14 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 
 #### "Changes not applied"
 
-**Solution:**
+##### Solution
 - Verify bundle updated: `bundle:list -t 0`
 - Check JAR timestamp: `ls -l ~/.m2/repository/.../<app>-app/`
 - Force refresh: `bundle:update [bundle-id]`
 
 #### "Service not registered"
 
-**Solution:**
+##### Solution
 - Check bundle status: `bundle:list | grep <app>`
 - Restart bundle: `bundle:restart [bundle-id]`
 - Check for errors: `log:tail`

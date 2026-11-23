@@ -87,18 +87,18 @@ At startup, when the database already holds a stored model version that the buil
 
 #### Which Model Changes Need a Migration
 
-**⚠️ IMPORTANT: When Schema Migration is Required**
+##### ⚠️ IMPORTANT: When Schema Migration is Required
 
 Schema migration is **ONLY necessary when entity types change** in the model. The JUDO platform generates SQL schema from entity type definitions.
 
-**Schema migration IS required when:**
+##### Schema migration IS required when
 - ✅ Adding/removing/modifying entity types (mapped entities)
 - ✅ Adding/removing attributes on entity types
 - ✅ Changing attribute types (String → Integer, etc.)
 - ✅ Adding/removing relationships between entities
 - ✅ Modifying entity inheritance hierarchy
 
-**Schema migration is NOT required when:**
+##### Schema migration is NOT required when
 - ❌ Changing transfer object types (view models, DTOs)
 - ❌ Modifying actors or access points
 - ❌ Changing UI layouts or forms
@@ -113,7 +113,7 @@ Schema migration is **ONLY necessary when entity types change** in the model. Th
 
 **Purpose**: CLI tool and Docker image for database migrations
 
-**Key Features**:
+#### Key Features
 - **Automatic migration script generation** from model versions
 - **Incremental migrations** - migrate from any version to any version
 - **Manual migration support** - custom SQL when needed
@@ -206,7 +206,7 @@ In managed pipelines the same flow is exposed as a script, for example `./update
 
 ### Step 4: Test Migration
 
-**Always test migrations before production!**
+#### Always test migrations before production!
 
 ```bash
 # 1. Start with old version database
@@ -466,7 +466,7 @@ In `application/schema/pom.xml`:
 
 **Problem**: Cannot find model version in Maven repository
 
-**Solution**:
+#### Solution
 ```bash
 # Ensure model is built and installed
 cd application/model
@@ -480,7 +480,7 @@ mvn dependency:tree | grep <app>-model
 
 **Problem**: `migration/` directory is empty after generate
 
-**Solution**:
+#### Solution
 - Check both models are valid and different (`Update model is not defined` means `updateModel` is missing)
 - Verify model artifacts exist in local Maven repo (`~/.m2/repository`)
 - Check for errors in Maven output
@@ -493,7 +493,7 @@ mvn dependency:tree | grep <app>-model
 
 **Problem**: Migration executed partially, database is in inconsistent state
 
-**Solution**:
+#### Solution
 ```bash
 # Check Liquibase changelog lock
 SELECT * FROM databasechangeloglock;
@@ -508,7 +508,7 @@ UPDATE databasechangeloglock SET locked = false;
 
 **Problem**: Migration tries to change column type incompatibly
 
-**Solution**:
+#### Solution
 - Create manual migration script
 - Convert data explicitly:
   ```sql
@@ -529,7 +529,7 @@ UPDATE databasechangeloglock SET locked = false;
 
 **Problem**: `connection refused` or `unknown host`
 
-**Solution**:
+#### Solution
 - Use `host.docker.internal` instead of `localhost` (Docker Desktop)
 - Use `--network host` for Docker run
 - Ensure database is accessible from container network

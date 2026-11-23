@@ -149,7 +149,7 @@ These rules define how accesspoint elements behave based on their context and at
 | `managed` | `principal` is NOT null AND `principal` is mapped | System manages principal lifecycle |
 | `claims` | NOT `isEffectiveAnonymous()` | Identity claims list |
 
-**Theme Attributes (only when `kind = HUMAN`):**
+#### Theme Attributes (only when `kind = HUMAN`)
 
 | Attribute | Description |
 |-----------|-------------|
@@ -198,7 +198,7 @@ These rules define how accesspoint elements behave based on their context and at
 | `ALL` | Fixed to `0..*` (lower=0, upper=-1) | Disabled |
 | `DERIVED` | Configurable (`0..1` or `0..*`) | Enabled |
 
-**On AccessType change:**
+#### On AccessType change
 - When `ALL` is selected: automatically sets `lower = 0`, `upper = -1`
 - When `DERIVED` is selected: cardinality becomes editable
 
@@ -220,10 +220,10 @@ Access CRUD flags are rung 2 of the relation-CUD capability ladder. Full ladder 
 | `attribute` | Required, selected from `principal.getAllAttributes()` |
 | `claimType` | Enum: `EMAIL`, `USERNAME`, `UNDEFINED` |
 
-**Claim Validation:**
+#### Claim Validation
 - `attribute` is NOT null (required for OK button)
 
-**Claim Candidates:**
+#### Claim Candidates
 - Attributes are selected from the parent `ActorType.principal.getAllAttributes()`
 
 ### Anonymous vs Authenticated Behaviour
@@ -269,7 +269,7 @@ An `Access` with list cardinality (`upper = -1` — every `ALL` grant and any `D
 
 The same requirement applies to any `TransferObjectType` reached via a `TabularReferenceField.dataFeature` (selector pick-lists).
 
-**Column Selection Rules**
+#### Column Selection Rules
 
 The generator renders every listed `DataMember` as a column; no implicit filtering. Apply these rules at modelling time:
 

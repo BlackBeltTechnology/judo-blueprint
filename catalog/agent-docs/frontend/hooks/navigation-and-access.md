@@ -569,7 +569,7 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ### "Hotkeys not working"
 
-**Check event listener:**
+#### Check event listener
 ```typescript
 useEffect(() => {
   const handler = (e: KeyboardEvent) => {
@@ -582,7 +582,7 @@ useEffect(() => {
 
 ### "Access filter not showing"
 
-**Verify registration:**
+#### Verify registration
 ```typescript
 context.registerService<FC<AccessFilterComponentProps>>(
   ACCESS_FILTER_COMPONENT_INTERFACE_KEY,
@@ -593,7 +593,7 @@ context.registerService<FC<AccessFilterComponentProps>>(
 
 ### "Navigation not redirecting"
 
-**Check navigate call:**
+#### Check navigate call
 ```typescript
 const navigate = useNavigate();
 console.log('Navigating to:', path);

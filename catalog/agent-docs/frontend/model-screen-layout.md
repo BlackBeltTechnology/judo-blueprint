@@ -63,7 +63,7 @@ All UI model elements follow a consistent ID pattern:
 {Actor}/(esm/_{UniqueModelId})/{ElementType}
 ```
 
-**Components:**
+### Components
 - **Actor**: The actor/role context (e.g., `Actor`, `Admin`, `Customer`)
 - **UniqueModelId**: A unique EMF/XMI identifier (e.g., `DpoUkM8xEe6U3KSieLrWmg`)
 - **ElementType**: The component type suffix
@@ -107,7 +107,7 @@ The UI model has no per-device (mobile, tablet, desktop) containers, and the gen
 
 The default landing page for an actor without pre-defined widgets.
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/EmptyDashboardPageDefinition",
@@ -120,13 +120,13 @@ The default landing page for an actor without pre-defined widgets.
 }
 ```
 
-**Generated React:**
+#### Generated React
 ```
 src/pages/Dashboard/index.tsx
 src/containers/Dashboard/EmptyDashboard*.tsx
 ```
 
-**data-testid:**
+#### data-testid
 ```
 Actor/(esm/_xxx)/EmptyDashboardPageContainer
 ```
@@ -135,7 +135,7 @@ Actor/(esm/_xxx)/EmptyDashboardPageContainer
 
 Used for creating new entities (CREATE forms).
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/AccessFormPageDefinition",
@@ -148,17 +148,17 @@ Used for creating new entities (CREATE forms).
 }
 ```
 
-**Generated React:**
+#### Generated React
 ```
 src/containers/{Entity}/{Entity}_Form/*.tsx
 ```
 
-**data-testid Pattern:**
+#### data-testid Pattern
 ```
 Actor/(esm/_xxx)/TransferObjectFormPageContainer
 ```
 
-**Key Properties:**
+#### Key Properties
 - `openInDialog`: If `true`, form opens in a modal dialog
 - `dialogSize`: Modal size (`XS`, `SM`, `MD`, `LG`, `XL`)
 
@@ -166,7 +166,7 @@ Actor/(esm/_xxx)/TransferObjectFormPageContainer
 
 Used for listing entities in a data grid (READ/LIST).
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/AccessTablePageDefinition",
@@ -177,13 +177,13 @@ Used for listing entities in a data grid (READ/LIST).
 }
 ```
 
-**Generated React:**
+#### Generated React
 ```
 src/containers/{Entity}/{Entity}_Table/*.tsx
 src/containers/{Entity}/{Entity}_Table/components/{Entity}_TableComponent/*.tsx
 ```
 
-**data-testid Pattern:**
+#### data-testid Pattern
 ```
 Actor/(esm/_xxx)/TransferObjectTablePageContainer
 Actor/(esm/_xxx)/TransferObjectTableTable
@@ -196,7 +196,7 @@ Actor/(esm/_xxx)/TransferObjectTableTable
 
 Used for viewing/editing existing entities (UPDATE/VIEW).
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/AccessViewPageDefinition",
@@ -207,13 +207,13 @@ Used for viewing/editing existing entities (UPDATE/VIEW).
 }
 ```
 
-**Generated React:**
+#### Generated React
 ```
 src/containers/{Entity}/{Entity}_View_Edit/*.tsx
 src/containers/{Entity}/{Entity}_View_Edit/components/*.tsx
 ```
 
-**data-testid Pattern:**
+#### data-testid Pattern
 ```
 Actor/(esm/_xxx)/TransferObjectViewPageContainer
 Actor/(esm/_xxx)/TransferObjectViewVisualElement
@@ -245,7 +245,7 @@ Actor/(esm/_xxx)/TransferObjectViewVisualElement
 
 ### Example TextField Generation
 
-**UI Model (StringTypeTextInput):**
+#### UI Model (StringTypeTextInput)
 ```json
 {
   "@id": "Actor/(esm/_2u6pIIF3Ee-M3fhNedgt-g)/StringTypeTextInput",
@@ -294,7 +294,7 @@ Actor/(esm/_xxx)/TransferObjectViewVisualElement
 
 Displays a single entity reference with autocomplete/selector.
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/TabularReferenceFieldRelationDefinedLink",
@@ -303,7 +303,7 @@ Displays a single entity reference with autocomplete/selector.
 }
 ```
 
-**Generated React:**
+#### Generated React
 Autocomplete component with view/set/unset actions.
 
 - The debounced owner search in the single-relation input is rebuilt when `ownerData` or `allowFetch` changes (`SingleRelationInput.tsx.hbs:119`), so a new owner gets the current search callback. Known issue: a search still pending from the previous owner (200 ms debounce) runs with the previous owner's handler, and the handler is not rebuilt when only the search callback changes. Workaround: remount the field when the owner changes.
@@ -315,7 +315,7 @@ Autocomplete component with view/set/unset actions.
 
 Displays a table of related entities with CRUD actions.
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/TabularReferenceFieldRelationDefinedTable",
@@ -324,7 +324,7 @@ Displays a table of related entities with CRUD actions.
 }
 ```
 
-**Generated React:**
+#### Generated React
 DataGrid component with toolbar actions and row actions.
 
 - Autocomplete row count for table relations is always 10; the configured row count is ignored (link relations honour their row setting).
@@ -403,13 +403,13 @@ Opens relation in a new page/dialog.
 
 **Factory Expression:** `#getPagesForRouting(#application)`
 
-**Path Pattern:**
+#### Path Pattern
 ```
 src/pages/{PagePath}/index.tsx
 src/pages/{PagePath}/context.tsx
 ```
 
-**Example:**
+#### Example
 ```
 // UI Model: "name": "TagContainerTransfer::manyAssociationAssociation::RelationViewPage"
 // Generated Path:
@@ -420,7 +420,7 @@ src/pages/TagContainerTransfer/ManyAssociationAssociation/RelationViewPage/index
 
 **Factory Expression:** `#application.pageContainers`
 
-**Path Pattern:**
+#### Path Pattern
 ```
 src/containers/{ContainerPath}/{ContainerComponentName}.tsx
 src/containers/{ContainerPath}/{ContainerComponentName}PageContainer.tsx
@@ -428,7 +428,7 @@ src/containers/{ContainerPath}/{ContainerComponentName}DialogContainer.tsx
 src/containers/{ContainerPath}/components/{ComponentName}/index.tsx
 ```
 
-**Example:**
+#### Example
 ```
 // UI Model: "name": "TagContainerTransfer::TagContainerTransfer_View_Edit"
 // Generated Paths:
@@ -450,7 +450,7 @@ The generated component names follow this pattern:
 {TransferObjectName}{ViewType}{RelationName}Component
 ```
 
-**Examples:**
+#### Examples
 - `TagContainerTransferTagContainerTransfer_View_EditManyAggregationAssociationComponent`
 - `TransferObjectBTransferObject_ViewManyRelationComponent`
 
@@ -458,7 +458,7 @@ The generated component names follow this pattern:
 
 The navigation menu is driven by the **Actor's accesses**. Each access defined on an Actor in the ESM model becomes a menu item in the sidebar. The menu structure is generated into `navigationController`:
 
-**ESM Actor Access Definition:**
+### ESM Actor Access Definition
 ```xml
 <elements xsi:type="accesspoint:ActorType" name="Actor" realm="<APP>" principal="_UserEntity">
   <!-- Each access becomes a menu item -->
@@ -467,7 +467,7 @@ The navigation menu is driven by the **Actor's accesses**. Each access defined o
 </elements>
 ```
 
-**UI Model:**
+### UI Model
 ```json
 {
   "navigationController": {
@@ -487,7 +487,7 @@ The navigation menu is driven by the **Actor's accesses**. Each access defined o
 }
 ```
 
-**Generated React:**
+### Generated React
 ```
 src/layout/Drawer/DrawerContent/Navigation/menu-items.tsx
 ```
@@ -508,7 +508,7 @@ These attributes can be:
 1. **Static** - Set directly on the model element
 2. **Dynamic** - Controlled by backend interceptors at runtime
 
-**ESM Access with Control Attributes:**
+#### ESM Access with Control Attributes
 ```xml
 <accesses name="Administration"
   target="_AdministrationInfo"
@@ -520,7 +520,7 @@ These attributes can be:
 
 Backend interceptors can dynamically modify access control by setting boolean attributes on transfer objects. The frontend reads these attributes and applies visibility/enablement rules.
 
-**Backend Interceptor Example:**
+#### Backend Interceptor Example
 ```java
 @Override
 public AdministrationInfo preRead(AdministrationInfo input) {
@@ -531,7 +531,7 @@ public AdministrationInfo preRead(AdministrationInfo input) {
 }
 ```
 
-**ESM Transfer Object with Control Attributes:**
+#### ESM Transfer Object with Control Attributes
 ```xml
 <elements xsi:type="structure:TransferObjectType" name="AdministrationInfo">
   <!-- Boolean attributes for access control -->
@@ -576,7 +576,7 @@ Transfer object attributes mapped as screen widgets also support these control a
   requiredBy="self.isSalaryMandatory"/>
 ```
 
-**Generated React Behavior:**
+#### Generated React Behavior
 ```tsx
 // The generated component checks these boolean values
 {!data.hiddenBy && (
@@ -626,7 +626,7 @@ Represents relationships between entities:
 }
 ```
 
-**Relation Properties:**
+#### Relation Properties
 - `isCollection`: true = 1:N, false = 1:1
 - `isAssociation`: true = aggregation/association, false = composition
 - `isDerived`: true = computed/read-only relation
@@ -664,7 +664,7 @@ Actions in page definitions reference action definitions from containers:
 }
 ```
 
-**Key Properties:**
+### Key Properties
 - `actionDefinition`: Reference to the action type definition
 - `targetPageDefinition`: For navigation actions, the target page
 - `ownerDataElement`: The data element this action operates on
@@ -686,13 +686,13 @@ This ensures unique identification for elements that could otherwise have duplic
 
 Each container generates a hook interface for customization:
 
-**Generated Hook Interface Key:**
+### Generated Hook Interface Key
 ```typescript
 export const TAG_CONTAINER_TRANSFER_TAG_CONTAINER_TRANSFER_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY =
   'TagContainerTransferTagContainerTransfer_View_EditContainerHook';
 ```
 
-**Usage in Container:**
+### Usage in Container
 ```typescript
 const { service: customContainerHook } =
   useTrackService<TagContainerTransferTagContainerTransfer_View_EditContainerHook>(
@@ -716,13 +716,13 @@ Each page folder (`src/pages/<Page>/`) and dialog folder holds these files:
 
 For each page and relation, services are generated:
 
-**Path Pattern:**
+### Path Pattern
 ```
 src/services/data-axios/{Entity}ServiceImpl.ts
 src/services/data-axios/{Entity}ServiceFor{Relation}Impl.ts
 ```
 
-**Example:**
+### Example
 ```typescript
 // TagContainerTransferServiceForManyAssociationAssociationImpl
 class TagContainerTransferServiceForManyAssociationAssociationImpl {
@@ -777,7 +777,7 @@ The ESM relation member types directly control which UI actions are generated:
 | `TRANSIENT` | Temporary/non-persisted | View only, no CRUD actions |
 | (null/absent) | Direct entity relation | Based on the relation's CRUD flags (entity-level flags do not block writes on mapped transfer objects) |
 
-**Example ESM definitions:**
+##### Example ESM definitions
 
 ```xml
 <!-- MAPPED relation - full CRUD -->
@@ -802,7 +802,7 @@ The ESM relation member types directly control which UI actions are generated:
   rangeExpression="Entity!filter(...)" />
 ```
 
-**Generated UI Actions per memberType:**
+##### Generated UI Actions per memberType
 
 | memberType | RelationFeatureForm | RelationFeatureTable | Create Actions | Delete Actions |
 |------------|---------------------|----------------------|----------------|----------------|
@@ -840,7 +840,7 @@ The `relationKind` attribute affects UI representation and available actions:
 | `AGGREGATION` | Owned collection | Add/Remove/Create actions |
 | `COMPOSITION` | Strongly owned | Create/Delete, no Remove (cascade) |
 
-**Example:**
+#### Example
 ```xml
 <!-- Association - uses selector to add existing entities -->
 <relations name="tags" relationKind="AGGREGATION" memberType="MAPPED" />
@@ -860,7 +860,7 @@ The `lower` and `upper` bounds control single vs. multiple relation UI:
 | 0 | null/unbounded | Table (multiple) |
 | 1 | null/unbounded | Table with min 1 requirement |
 
-**Example:**
+#### Example
 ```xml
 <!-- Single optional -->
 <relations upper="1" name="singleAssociation" />
@@ -916,7 +916,7 @@ ESM operations generate UI operation forms and buttons:
 | `STATIC` | `ui:MenuItemOperation` | Actor menu |
 | (bound, no type) | `ui:OperationForm` | Entity view/form |
 
-**Example ESM:**
+##### Example ESM
 ```xml
 <!-- Bound operation on entity -->
 <operations name="approve" customImplementation="false" body="...">
@@ -929,7 +929,7 @@ ESM operations generate UI operation forms and buttons:
 </operations>
 ```
 
-**Generated UI:**
+##### Generated UI
 ```json
 {
   "@id": "Actor/(esm/_xxx)/OperationForm",

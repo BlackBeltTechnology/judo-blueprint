@@ -20,7 +20,7 @@ Create and operation-input usage of a `TransferObjectType` (relations with the `
 
 **Resolution:** rename the member and keep `binding` unchanged so the underlying entity relation is not disturbed (e.g. `name="template"` → `name="letterTemplate"`).
 
-**Detection (before build):**
+### Detection (before build)
 
 ```bash
 grep -nE 'createable="true"' model/*.model   # TOs at risk

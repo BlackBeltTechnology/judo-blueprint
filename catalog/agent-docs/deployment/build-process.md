@@ -42,7 +42,7 @@ This file controls how the project structure is generated from templates.
 
 **Location:** `/generator-parameter.properties`
 
-**Key Parameters:**
+#### Key Parameters
 
 ```properties
 # Model Generation
@@ -70,12 +70,12 @@ generateKarafModule=true
 
 **⚠️ IMPORTANT**: Before manually editing generated files (like `pom.xml`), check if the template supports a parameter.
 
-**Why?**
+#### Why?
 - Manual edits may be overwritten on regeneration
 - Template parameters are the proper way to configure generation
 - Ensures consistency across regenerations
 
-**Process:**
+#### Process
 
 1. **Identify the generated file** you want to modify (e.g., `application/model/pom.xml`)
 
@@ -96,7 +96,7 @@ generateKarafModule=true
 
 5. **Regenerate** if needed, or apply manually for existing projects
 
-**Example: Adding rdbmsCreateSimpleName**
+#### Example: Adding rdbmsCreateSimpleName
 
 Instead of manually editing `application/model/pom.xml`:
 ```xml
@@ -127,7 +127,7 @@ By default the fragment resolves to an empty stub from the template jar. You ove
 
 #### Worked Example: Adding a Dependency
 
-**Worked example — add a runtime dependency to `application/app/pom.xml`:**
+##### Worked example — add a runtime dependency to `application/app/pom.xml`
 
 1. Locate the marker in `application/app/pom.xml`:
    ```xml
@@ -214,7 +214,7 @@ Main orchestration script that simplifies common operations.
 
 **Known issue:** the frontend module list in `install_bundles` pipes newline-separated `find` output into `xargs -0`, which reads it as one entry, so several frontend `pom.xml` files can collapse into one module entry. Until `judo.sh` is fixed, build each frontend module by its path.
 
-**Capabilities:**
+### Capabilities
 - Environment setup (SDKMAN, tools)
 - Model transformation
 - Build orchestration
@@ -344,20 +344,20 @@ Defaults for the options can be placed in `judo.properties` (or the properties f
 
 Without `-y`, the `[Y/n]` prompt continues only for an exact `Y`; Enter, `y` and any other input abort (`Aborting prune.`, exit 13).
 
-**What gets wiped that you likely care about:**
+#### What gets wiped that you likely care about
 
 - Custom frontend code that has not yet been committed (Pandino hooks, theme overrides, custom components, i18n overrides under `frontend-react/<app>/src/custom/**`, `.../theme/**`, `.../i18n/**`).
 - Any scratch files, notes, screenshots, or locally generated artifacts in the working tree (for the bare `prune` variant).
 - `node_modules/`, generator caches, and other untracked build output — this is the *intended* use case.
 
-**Mandatory safety checklist before running `prune` / `prune -f`:**
+#### Mandatory safety checklist before running `prune` / `prune -f`
 
 1. `git status` — confirm every custom file you want to keep is either tracked or intentionally disposable.
 2. `git stash -u` (or `git add` + commit) any untracked customizations you want to preserve.
 3. Prefer `./judo.sh prune` (interactive) over `./judo.sh prune -y`. Never chain `-y` in an automated agent workflow unless the working tree is verified clean first.
 4. For agents: treat `prune -y` as equivalent to `rm -rf` on customer code. Require explicit human confirmation.
 
-**When `prune -f` is actually the right tool:**
+#### When `prune -f` is actually the right tool
 
 - The JUDO designer freezes on opening the model project (stale generated frontend state).
 - After major model refactors where generator output layout changed (e.g. actor renamed) and stale per-actor dirs need to disappear.
@@ -470,7 +470,7 @@ mvn clean install -DskipDocker
 ./judo.sh build
 ```
 
-**Steps Executed:**
+#### Steps Executed
 1. **Environment Check** - Verify Docker, Java, Maven
 2. **Model Transformation**
    - Load `/model/<app>.model`
@@ -499,7 +499,7 @@ mvn clean install -DskipDocker
    - Build container image
    - Include Karaf distribution
 
-**Duration:**
+#### Duration
 - First build: 10-15 minutes
 - Incremental: 3-5 minutes
 - With cache: 1-2 minutes
@@ -529,18 +529,18 @@ Fastest build for rapid iteration:
 ./judo.sh reckless
 ```
 
-**What it does:**
+#### What it does
 - Enables Maven caching
 - Disables validation
 - Skips non-essential checks
 - Uses incremental compilation
 
-**Use for:**
+#### Use for
 - Rapid prototyping
 - Frequent small changes
 - Development iterations
 
-**Don't use for:**
+#### Don't use for
 - Production builds
 - Breaking changes
 - Final testing
@@ -565,7 +565,7 @@ Fastest build for rapid iteration:
 
 ### Memory Configuration
 
-**Increase Maven memory for large builds:**
+#### Increase Maven memory for large builds
 
 ```bash
 export MAVEN_OPTS="-Xmx4g"
@@ -577,26 +577,26 @@ export MAVEN_OPTS="-Xmx4g"
 
 #### "Model validation failed"
 
-**Solution:**
+##### Solution
 - Check model file: `/model/<app>.model`
 - Run: `mvn clean install -X` for detailed errors
 
 #### "Could not resolve dependencies"
 
-**Solution:**
+##### Solution
 - Check Maven settings: `~/.m2/settings.xml`
 - Verify repository credentials
 - Clear cache: `rm -rf ~/.m2/repository/hu/blackbelt`
 
 #### "Frontend build failed"
 
-**Solution:**
+##### Solution
 - Check Node.js version: `node --version` (should be 18+)
 - Clear node_modules: `rm -rf node_modules && pnpm install`
 
 #### "Out of memory"
 
-**Solution:**
+##### Solution
 - Increase Maven memory: `export MAVEN_OPTS="-Xmx4g"`
 
 ### Duplicate type imports with a third actor (known issue)

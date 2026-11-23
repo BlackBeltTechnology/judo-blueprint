@@ -108,7 +108,7 @@ All element IDs follow this pattern:
 {Actor}/(esm/_{UniqueModelId})/ElementType
 ```
 
-**Components:**
+### Components
 - **Actor**: The actor/role context (e.g., `God`, `Admin`, `User`, `ActorWithRealm`)
 - **UniqueModelId**: A unique EMF/XMI identifier from the model (e.g., `DpoUkM8xEe6U3KSieLrWmg`)
 - **ElementType**: The UI component type
@@ -198,7 +198,7 @@ export const ActorDashboard = {
 
 Used for creating new entities.
 
-**VisualElementIds Structure:**
+#### VisualElementIds Structure
 ```typescript
 export const EntityName_Form = {
   _id: "Actor/(esm/_xxx)/TransferObjectFormPageContainer",
@@ -220,7 +220,7 @@ export const EntityName_Form = {
 };
 ```
 
-**Test Usage:**
+#### Test Usage
 ```typescript
 import { EntityName_Form } from '../helpers/visualElementIds/VisualElementIds';
 
@@ -238,7 +238,7 @@ await page.getByTestId(EntityName_Form.pageActions.create.id).click();
 
 Used for listing entities in a data grid.
 
-**VisualElementIds Structure:**
+#### VisualElementIds Structure
 ```typescript
 export const EntityName_Table = {
   _id: "Actor/(esm/_xxx)/TransferObjectTablePageContainer",
@@ -293,7 +293,7 @@ export const EntityName_Table = {
 
 Used for viewing and editing existing entities.
 
-**VisualElementIds Structure:**
+#### VisualElementIds Structure
 ```typescript
 export const EntityName_View_Edit = {
   _id: "Actor/(esm/_xxx)/TransferObjectViewPageContainer",
@@ -1337,13 +1337,13 @@ The VisualElementIds export names follow this pattern:
 {FeatureGroup}{TransferObjectName}{TransferObjectName}_{PageType}
 ```
 
-**Examples:**
+### Examples
 - `BinaryTypeTestGalaxyDocumentTransferGalaxyDocumentTransfer_Form`
 - `ReadOnlyTestSpaceShipTransferSpaceShipTransfer_View_Edit`
 - `ViewAstronomerTransferObject_Table`
 - `GodDashboard` (special case for dashboards)
 
-**Page Types:**
+### Page Types
 - `_Form` - Create form page
 - `_Table` - List/table page
 - `_View_Edit` or `_View` - View/edit page

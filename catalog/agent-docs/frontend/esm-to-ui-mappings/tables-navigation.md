@@ -41,7 +41,7 @@ A column within a table displaying a single attribute for each row.
 | `ui:DataColumn` | `formatValue` | Apply formatting | Format numeric values: with `true` the generated column uses `new Intl.NumberFormat(<locale>).format(value)` (locale grouping and decimal separators, default fraction digits); with `false` the raw value is shown. The attribute `scale` and currencies are not applied, so `89.9` stays `89.9`. For fixed decimals or a currency use a derived string attribute or a `customImplementation` column |
 | `ui:DataColumn` | `customImplementation` | Custom column | Extension point for custom rendering |
 
-**Default Sort Values:**
+#### Default Sort Values
 
 | Value | Frontend Effect |
 |-------|-----------------|
@@ -49,7 +49,7 @@ A column within a table displaying a single attribute for each row.
 | `DESC` | Descending sort on initial load |
 | `NONE` | No initial sort (default) |
 
-**Example:**
+#### Example
 ```xml
 <columns xsi:type="ui:DataColumn"
   xmi:id="_GHI789"
@@ -80,7 +80,7 @@ Filter control for a table, allowing users to search or narrow down results.
 | `ui:DataFilter` | `hidden` | Hidden state | Filter not displayed |
 | `ui:DataFilter` | `col` | Grid column | Filter width in grid |
 
-**Filter Operation Types:**
+#### Filter Operation Types
 
 | Type | Frontend Effect |
 |------|-----------------|
@@ -96,7 +96,7 @@ Filter control for a table, allowing users to search or narrow down results.
 | `ENUMERATION` | Dropdown selection |
 | `BOOLEAN` | Checkbox/toggle |
 
-**Example:**
+#### Example
 ```xml
 <filters xsi:type="ui:DataFilter"
   xmi:id="_JKL012"
@@ -147,7 +147,7 @@ java -jar target/judo-cli.jar -m <model> update '<ns>::<Entity>_Table::<op>Table
 - `rowOperations` - Appears in row action menu, operates on single row
 - `tableOperations` - Appears in table toolbar, can be bulk operations
 
-**Example:**
+#### Example
 ```xml
 <rowOperations xsi:type="ui:TableOperation"
   xmi:id="_MNO345"
@@ -187,7 +187,7 @@ A column within a table displaying a relation (link to related entity).
 | `ui:RelationColumn` | `attributePath` | Display path | Attribute to show from related entity |
 | `ui:RelationColumn` | `customImplementation` | Custom column | Extension point |
 
-**Example:**
+#### Example
 ```xml
 <columns xsi:type="ui:RelationColumn"
   xmi:id="_REL123"
@@ -249,7 +249,7 @@ Menu item that navigates to an Access (data table/view).
 | `ui:MenuItemAccess` | `hidden` | Hidden state | Not displayed |
 | `ui:MenuItemAccess` | `order` | Sort order | Menu position |
 
-**Example:**
+#### Example
 ```xml
 <menuItems xsi:type="ui:MenuItemAccess"
   xmi:id="_PQR678"
@@ -275,7 +275,7 @@ Menu item that triggers a static operation.
 | `ui:MenuItemOperation` | `hidden` | Hidden state | Not displayed |
 | `ui:MenuItemOperation` | `order` | Sort order | Menu position |
 
-**Example:**
+#### Example
 ```xml
 <menuItems xsi:type="ui:MenuItemOperation"
   xmi:id="_OPR678"
@@ -303,7 +303,7 @@ A container for creating sub-menus within the main navigation.
 | `ui:MenuItemGroup` | `collapsed` | Initial state | Collapsed by default |
 | `ui:MenuItemGroup` | `orientation` | Menu direction | `HORIZONTAL`/`VERTICAL` |
 
-**Example:**
+#### Example
 ```xml
 <menuItems xsi:type="ui:MenuItemGroup"
   xmi:id="_STU901"

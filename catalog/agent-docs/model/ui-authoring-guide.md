@@ -356,7 +356,7 @@ flowchart LR
   Actor --> Access
 ```
 
-**Checklist for each new entity that must appear in the UI:**
+### Checklist for each new entity that must appear in the UI
 
 1. Mapped `TransferObjectType` exists and projects the entity.
 2. `<form>`, `<table>`, `<view>` scaffolds are authored on the TO with the canonical names.
@@ -538,7 +538,7 @@ judo_cli -q graphql '{
 }' 2>/dev/null | jq
 ```
 
-**Read the result like this**:
+#### Read the result like this
 
 - `actors::<Actor>::<access>::AccessTablePage` missing for any access ⇒ P0 (no table on target).
 - `AccessFormPage` missing while `createable=true`/`updateable=true` ⇒ P1.

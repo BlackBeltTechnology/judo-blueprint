@@ -571,7 +571,7 @@ sx={{
 
 ### "Theme changes not applying"
 
-**Clear cache and rebuild:**
+#### Clear cache and rebuild
 ```bash
 rm -rf node_modules/.cache
 pnpm run dev
@@ -579,7 +579,7 @@ pnpm run dev
 
 ### "Custom fonts not loading"
 
-**Check font path:**
+#### Check font path
 ```typescript
 // Font file should be in public/fonts/
 src: url('/fonts/CustomFont.woff2')  // Correct

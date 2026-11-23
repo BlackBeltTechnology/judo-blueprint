@@ -34,7 +34,7 @@ await apiHelper.triggerAndWaitWithRegex(
 
 **Cause**: Wrong regex pattern or API not called.
 
-**Solutions**:
+##### Solutions
 1. Check the network tab to see actual API endpoints
 2. Update regex pattern to match:
 ```typescript
@@ -71,7 +71,7 @@ projects: [
 
 **Cause**: Element not rendered, wrong selector, or element inside shadow DOM.
 
-**Solutions**:
+##### Solutions
 1. Use Playwright Inspector to find correct selector:
 ```bash
 npx playwright test --debug
@@ -185,7 +185,7 @@ await applyFilters(page, apiHelper, 1, true);  // true = doWait
 
 **Cause**: Need to specify operationNth and valueNth for additional filters.
 
-**Solution**:
+##### Solution
 ```typescript
 await openAddAndApplyFilters(page, apiHelper, [
   { attributeName: 'Name', startOption: 'Like', option: 'Like', value: 'A', type: 'text' },
@@ -207,7 +207,7 @@ await openAddAndApplyFilters(page, apiHelper, [
 
 **Cause**: Field disabled, readonly, or covered by overlay.
 
-**Solutions**:
+##### Solutions
 1. Check field state:
 ```typescript
 await expect(page.getByLabel('Name')).toBeEnabled();
@@ -230,7 +230,7 @@ await page.locator('.MuiBackdrop-root').waitFor({ state: 'hidden' });
 
 **Cause**: Click target wrong or options not loaded.
 
-**Solution**:
+##### Solution
 ```typescript
 // Ensure clicking the right element
 await page.getByLabel('Status').click();
@@ -282,7 +282,7 @@ await expect(target).not.toHaveValue('');
 
 **Cause**: Range API not triggered or no matching results.
 
-**Solution**:
+##### Solution
 ```typescript
 // Use fillSingleRelationElement which handles API wait
 await fillSingleRelationElement(page, page, "Owner", "John");
@@ -338,7 +338,7 @@ await expect(page.getByRole('button', { name: '󰖕 Process' })).toBeEnabled();
 
 **Cause**: Wrong regex pattern for template endpoint.
 
-**Solution**:
+##### Solution
 ```typescript
 // Check pattern matches API
 await apiHelper.triggerAndWaitWithRegex(
@@ -356,12 +356,12 @@ An action group shows only its first `featuredActions` actions as buttons; the r
 
 #### Tests work locally but fail in CI
 
-**Causes**:
+##### Causes
 1. Different timing (CI is slower)
 2. Missing dependencies
 3. Different browser versions
 
-**Solutions**:
+##### Solutions
 1. Retries: the generated `playwright.config.ts` already sets `retries: 4` unconditionally (the template comment says "Retry on CI only", but the value is not conditional), so failing tests are retried 4 times locally as well. To retry only on CI, change it yourself:
 ```typescript
 // playwright.config.ts
@@ -413,7 +413,7 @@ export default defineConfig({
 
 **Cause**: The JUDO backend/integration suite forks several JVMs, each with its own heap (configured in `test/pom.xml`). Memory builds up from class to class; when a JVM dies with `Java heap space`, every class still queued on it never runs, yet the aggregate result can still look green (for example "524 tests, 0 failures" while hundreds of classes were never executed).
 
-**Solutions**:
+##### Solutions
 1. Raise the per-JVM heap (for example to 4 GB) in `test/pom.xml`.
 2. Do not run scenarios in parallel on a local machine; run them one after another or class by class.
 3. Do not trust the aggregate pass count: confirm that all test classes actually ran (compare the number of executed classes with the number of test classes, and check the build exit code and logs for `OutOfMemoryError`).

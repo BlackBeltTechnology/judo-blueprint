@@ -304,22 +304,22 @@ await openAddAndApplyFilters(page, apiHelper, [
 
 ### Filter Types and Options
 
-**Text Filters:**
+#### Text Filters
 - `Like` - Contains substring
 - `Equal` - Exact match
 - `Not equal` - Does not match
 - `Matches` - Regex pattern
 - `Less than`, `Greater than`, `Less or equal`, `Greater or equal`
 
-**Numeric Filters:**
+#### Numeric Filters
 - `Equal`, `Not equal`
 - `Less than`, `Greater than`, `Less or equal`, `Greater or equal`
 - `Is empty`, `Is not empty`
 
-**Boolean Filters:**
+#### Boolean Filters
 - `Is empty`, `Is not empty`
 
-**Enum Filters:**
+#### Enum Filters
 - `Equal` - Select from dropdown
 
 ### Clear Filters

@@ -740,7 +740,7 @@ export const activityFormHook: ServiceActivityViewEditContainerHook = (data, edi
 
 ### "Validation not triggering"
 
-**Check hook registration:**
+#### Check hook registration
 ```typescript
 context.registerService(
   SERVICE_ENTITY_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY,
@@ -759,7 +759,7 @@ const debouncedCheck = debounceAsync(async (value) => {
 
 ### "Error message not showing"
 
-**Return string, not throw:**
+#### Return string, not throw
 ```typescript
 // ✅ Good
 return 'Error message';

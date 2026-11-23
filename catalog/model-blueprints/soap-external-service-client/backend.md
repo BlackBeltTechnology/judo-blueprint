@@ -6,7 +6,7 @@ All classes below (service interface, implementation, DTOs) are example project 
 
 ## Implementation Pattern
 
-**Module structure:**
+### Module structure
 ```
 application/
   <soap-client-module>/
@@ -19,28 +19,28 @@ application/
     pom.xml                                 -- cxf-codegen-plugin for wsdl2java
 ```
 
-**Build-time code generation:**
+### Build-time code generation
 - `cxf-codegen-plugin` with `wsdl2java` goal generates JAX-WS client stubs from the WSDL
 - JAXB bindings customize generated code (boolean getters, collection setters)
 - Generated sources go to `target/generated-sources/cxf/`
 
-**Service interface:**
+### Service interface
 - Plain Java interface with domain-oriented method signatures (e.g., `getCurrencyRates(LocalDate, LocalDate, Collection<String>)`)
 - No OSGi annotations on the interface -- only the implementation carries `@Component`
 - Domain DTOs use builder pattern for clean construction
 
-**Implementation (`@Component`):**
+### Implementation (`@Component`)
 - `@Activate` method initializes `JaxWsProxyFactoryBean` with WSDL URL (loaded from classpath), service class, and endpoint address
 - CXF logging interceptors (`LoggingInInterceptor`, `LoggingOutInterceptor`) added for request/response debugging
 - Methods delegate to generated SOAP proxy, then parse XML responses into domain DTOs
 - XML parsing uses DOM (`DocumentBuilderFactory`) with locale-aware number formatting
 
-**OSGi bundle packaging:**
+### OSGi bundle packaging
 - `maven-bundle-plugin` with `<Export-Package>` limited to the `osgi` package (interface + DTOs)
 - Generated SOAP stubs are internal (not exported), keeping the public API clean
 - Import-Package includes `javax.jws` and `javax.xml.ws` with version ranges
 
-**Consumption:**
+### Consumption
 - Scheduled jobs or custom operations `@Reference` the service interface
 - The SOAP client module is a separate Maven module, decoupled from the application logic
 

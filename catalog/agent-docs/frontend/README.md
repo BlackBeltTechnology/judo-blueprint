@@ -40,28 +40,28 @@ The base URL `/` is not an actor frontend route. Karaf serves the static `index.
 
 ### Generated vs Custom Code
 
-**Generated (Do Not Edit Directly):**
+#### Generated (Do Not Edit Directly)
 - `src/containers/`, `src/pages/`, `src/dialogs/`, `src/components/`, `src/layout/`, `src/utilities/`, `src/auth/` - React containers, pages, dialogs, components and helpers
 - `src/App.tsx` - Main application component
 - `src/routes.tsx` - Route definitions (custom routes go in `src/extra-routes.tsx`, see below)
 - API client services
 - Model type definitions
 
-**Custom Code (Edit Here):**
+#### Custom Code (Edit Here)
 - `src/custom/` - Hooks and customizations
 - `src/theme/` - Theme and styling customizations
 - `src/custom/application-customizer.tsx` - Hook registration (a plain generated file; the `customize(context)` method is where you register Pandino services)
 
 ### Code Generation and Checksum Protection
 
-**How Generation Works:**
+#### How Generation Works
 1. All generated files are tracked by **checksum** in `.generated-files-<actor>` (one file per actor, in the frontend module root, for example `.generated-files-customer`). A `.generated-files` file without a suffix holds the entries that are not actor specific.
 2. Files NOT in `.generator-ignore` will be regenerated on `./judo.sh build` or `mvn clean install`
 3. **Checksum validation**: Before overwriting, the generator checks if a file was manually edited
    - If file was edited (checksum mismatch) → ❌ **Build FAILS** with error
    - If file unchanged → ✅ File is regenerated normally
 
-**When You Must Edit Generated Files:**
+#### When You Must Edit Generated Files
 
 Sometimes there's no hook available for customization, and you must edit generated code directly. This is **NOT the preferred way**, but when necessary:
 
@@ -74,7 +74,7 @@ Sometimes there's no hook available for customization, and you must edit generat
 
 See [Understanding .generator-ignore](#understanding-generator-ignore) below for the full rule.
 
-**Handling Checksum Errors:**
+#### Handling Checksum Errors
 
 If you get checksum errors due to code formatting changes (e.g., after `git checkout`, Prettier/Biomé auto-format, or dev mode changes):
 
@@ -87,7 +87,7 @@ mvn clean install -DvalidateChecksum=false
 ./judo.sh build -i
 ```
 
-**Checksum File Locations:**
+#### Checksum File Locations
 - `.generated-files-<actor>` - In frontend module root directory (one per actor; `.generated-files` without a suffix for entries that are not actor specific)
 - Format: Tracks file paths and their checksums for the specific actor module
 
@@ -194,7 +194,7 @@ Adding purely-custom files to `.generator-ignore` is noise; remove such entries.
 
 **Location:** `application/frontend-react/<app>__[actor_fqn]/.generator-ignore`
 
-**Syntax:**
+#### Syntax
 ```
 # Comments start with #
 
@@ -214,7 +214,7 @@ src/custom/
 
 Entries are glob patterns only. `!` negation is not supported; a leading `!` is matched literally. Ignore files in parent directories also apply to the files below them.
 
-**Common Patterns:**
+#### Common Patterns
 ```
 # Ignore all customizations
 src/custom/
@@ -229,14 +229,14 @@ src/theme/
 src/theme/table-row-highlighting.ts
 ```
 
-**Workflow:**
+#### Workflow
 1. Generate code initially
 2. Identify file you need to customize
 3. Add to `.generator-ignore`
 4. Make your changes
 5. On rebuild, your changes are preserved
 
-**Verification:**
+#### Verification
 ```bash
 # Check if file is ignored
 grep "src/custom/application-customizer.tsx" .generator-ignore
@@ -292,7 +292,7 @@ The JUDO platform uses two main template projects for code generation:
 
 **Purpose**: Generates TypeScript REST API client
 
-**Generated Content:**
+#### Generated Content
 - Model type definitions (interfaces for entities)
 - Service implementations (API calls)
 - DTO transformations
@@ -301,7 +301,7 @@ The JUDO platform uses two main template projects for code generation:
 
 **Template Technology**: Handlebars (`.hbs` files)
 
-**Typical Generated Files:**
+#### Typical Generated Files
 - `data-api/**/*.ts` - Type definitions and service interfaces
 - `data-service/*.ts` - Service implementations (the typescript-rest template writes to `data-service/`)
 - Axios-based HTTP clients (`data-axios` template, e.g. `accessServiceImpl`)
@@ -310,7 +310,7 @@ The JUDO platform uses two main template projects for code generation:
 
 **Purpose**: Generates React frontend UI components
 
-**Generated Content:**
+#### Generated Content
 - React components (pages, dialogs, forms, tables)
 - Route definitions
 - Navigation structure
@@ -320,7 +320,7 @@ The JUDO platform uses two main template projects for code generation:
 
 **Template Technology**: Handlebars (`.hbs` files)
 
-**Typical Generated Files:**
+#### Typical Generated Files
 - `src/containers/**/*.tsx` - Container components (views, forms, tables; `ui-react.yaml` path `src/containers/<containerPath>/<Component>.tsx`)
 - `src/pages/*.tsx` - Page components
 - `src/components/**/*.tsx` - Reusable components
@@ -330,12 +330,12 @@ The JUDO platform uses two main template projects for code generation:
 
 ### Template Override Process
 
-**When to Override:**
+#### When to Override
 - Hook system cannot achieve desired behavior
 - Need to change generated code structure
 - Want to use different libraries/patterns
 
-**How to Override:**
+#### How to Override
 
 1. **Identify template name** from generated file header
    ```
@@ -360,7 +360,7 @@ The JUDO platform uses two main template projects for code generation:
 
 5. **Result**: Your custom template is used instead of default
 
-**Important Notes:**
+#### Important Notes
 - Overrides are checked before default templates
 - You must maintain the template on upgrades
 - Prefer hooks over overrides for maintainability

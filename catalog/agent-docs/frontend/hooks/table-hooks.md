@@ -672,7 +672,7 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ### "Highlighting not applying"
 
-**Check condition logic:**
+#### Check condition logic
 ```typescript
 condition: (params) => {
   console.log('Row data:', params.row);
@@ -680,14 +680,14 @@ condition: (params) => {
 }
 ```
 
-**Verify component name:**
+#### Verify component name
 ```bash
 grep -rn "component=" src/containers/components 2>/dev/null | head   # or check the generated table component name
 ```
 
 ### "Custom column not showing"
 
-**Check registration:**
+#### Check registration
 ```typescript
 context.registerService<ColumnCustomizerHook>(
   TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY,
@@ -698,7 +698,7 @@ context.registerService<ColumnCustomizerHook>(
 
 ### "Sidekick component not rendering"
 
-**Verify props:**
+#### Verify props
 ```typescript
 export const MySidekick: FC<{ data: any[] }> = ({ data }) => {
   console.log('Sidekick data:', data);

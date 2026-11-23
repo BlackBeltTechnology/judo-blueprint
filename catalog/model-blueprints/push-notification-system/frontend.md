@@ -17,7 +17,7 @@ The pattern consists of several cooperating modules registered through the Pandi
 
 The module names are project code; the app bar registration, the customizer and the extra routes file are platform extension points. The generated frontend has no push support of its own.
 
-**Key design decisions**:
+### Key design decisions
 - Device registration is idempotent: `Preferences` stores the registered token and skips re-registration on app resume
 - Pending registrations and token updates are persisted in Preferences and retried on `appStateChange` resume events
 - Auth guard suppresses foreground notifications when not authenticated

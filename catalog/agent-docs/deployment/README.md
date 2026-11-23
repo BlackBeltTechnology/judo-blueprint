@@ -303,7 +303,7 @@ Most JUDO platform health checks (`Components`, `Bundles`, the per-model `<model
 - **Auth**: HTTP Basic, `karaf` / `karaf`.
 - **Drill-down**: `…/components/<component.name>.json` returns the component's bundle, configuration policy, and every `Reference …` line — the unsatisfied reference is what the SCR is waiting on.
 
-**States to recognise:**
+#### States to recognise
 
 | State | Meaning | Action |
 |---|---|---|

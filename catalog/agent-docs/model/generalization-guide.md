@@ -115,7 +115,7 @@ All documentation has been generalized to avoid domain-specific examples. This a
 
 ### Backend - Custom Operation
 
-**Generic Pattern:**
+#### Generic Pattern
 ```java
 @Component(immediate = true, service = OperationInterface.class)
 public class OperationNameCustomImplementation implements OperationInterface {
@@ -170,7 +170,7 @@ See [Interceptors](../backend/interceptors.md) for the full interceptor referenc
 
 ### Frontend - Data Hook
 
-**Generic Pattern:**
+#### Generic Pattern
 ```typescript
 export const ServiceEntityViewPageDataHook: ViewPageDataHook<ServiceEntityStored> = () => {
   const { data: entity, isLoading } = useViewData();
@@ -188,7 +188,7 @@ export const ServiceEntityViewPageDataHook: ViewPageDataHook<ServiceEntityStored
 
 ### Frontend - Table Hook
 
-**Generic Pattern:**
+#### Generic Pattern
 ```typescript
 export const ServiceItemsTableRowHighlightingHook: TableRowHighlightingHook<ServiceItemStored> = () => {
   return (row: ServiceItemStored) => {
@@ -209,7 +209,7 @@ export const ServiceItemsTableRowHighlightingHook: TableRowHighlightingHook<Serv
 
 ### Validation Rules
 
-**Generic:**
+#### Generic
 ```java
 if (!entity.meetsConstraint()) {
     throw new ValidationException("Entity does not meet required constraints");
@@ -218,7 +218,7 @@ if (!entity.meetsConstraint()) {
 
 ### Permission Checks
 
-**Generic:**
+#### Generic
 ```java
 if (!validationDao.queryMinimumRequiredEntities().orElse(false)) {
     throw new IllegalStateException("Maintain minimum required entities with specific permissions");
@@ -227,7 +227,7 @@ if (!validationDao.queryMinimumRequiredEntities().orElse(false)) {
 
 ### Self-Modification Prevention
 
-**Generic:**
+#### Generic
 ```java
 if (!_this.getIdentifier().equals(variableResolver.resolve(String.class, "ACTOR", "id"))) {
     // Prevent self-modification
