@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/generator-overrides/ui-react/actor/public", "rackinspect:application/frontend-react/rackinspect__services__generic_user/pom.xml"]
 alternatives: []
 related: [structure-frontend-react-parent-layout, dual-actor-frontend-architecture, i18n-generator-override-extra-fragment, custom-public-assets, shared-service-helper-module, generator-override-extra-dependencies]
-fragment: "none: frontend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

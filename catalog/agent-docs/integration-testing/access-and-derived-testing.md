@@ -7,6 +7,9 @@ user-invocable: false
 model: inherit
 context: fork
 agent: general-purpose
+aliases: [test access rules, test derived attributes, getterExpression test, per actor access test, derived getter test, dispatcher access test]
+keywords: [getterExpression, DERIVED, ACTOR, Dispatcher, DAO, Access, JQL]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Testing Access Rules and DERIVED Attributes
 
@@ -31,7 +34,7 @@ Both are evaluated by the runtime, both are easy to get wrong in subtle ways, an
 
 *   **Plain DAO reads do not populate the variable resolver context.** A `<TO>Dao.query()` call has no `__principal` in scope, so any `DERIVED` getter that calls `!getVariable("ACTOR", …)` evaluates against an empty resolver and returns empty / wrong values. Do **not** test these via Pattern A; use Pattern C.
 *   **`managed=true` first-login auto-insert is not implemented in the current runtime** (see [Authentication Guide](../backend/authentication-guide.md)). For Pattern B and Pattern C the test must `dao.create(...)` the principal row itself before calling the dispatcher with a matching `JudoPrincipal`.
-*   **Only the Managed Mapped Principal actor shape exposes `ACTOR.*`** to JQL. For the *Token-only* (`claimPrincipal: true`) and *Transient principal* shapes, access getters can only reference `USER.*` / `PRINCIPAL.*`; the dispatcher exchange must carry the corresponding attributes, and there is no persisted row to seed.
+*   **Only the Managed Mapped Principal actor shape exposes `ACTOR.*`** to JQL. For the *Token-only* (no `principal`) and *Transient principal* shapes, access getters can only reference `USER.*` / `PRINCIPAL.*`; the dispatcher exchange must carry the corresponding attributes, and there is no persisted row to seed.
 
 ---
 

@@ -1,0 +1,24 @@
+{"id": "R0780", "verdict": "ok", "note": "get() throws only on 404; other statuses returned"}
+{"id": "R1595", "verdict": "ok", "note": "indexOf('-') cut confirmed"}
+{"id": "R2493", "verdict": "fixed", "note": "substring with -1 confirmed; clarified file id must have no dash"}
+{"id": "R0015", "verdict": "ok", "note": "URISyntaxException swallowed, empty list returned"}
+{"id": "R0016", "verdict": "fixed", "note": "list() is in StreamResourceAccessor and returns registered stream names, not bundle entries; reworded"}
+{"id": "R0012", "verdict": "ok", "note": "catch(Exception) empty, nothing logged"}
+{"id": "R0313", "verdict": "ok", "note": "return null on app without classes stops loop"}
+{"id": "R2750", "verdict": "ok", "note": "JobActivator removes InitScriptExecutor PID for target"}
+{"id": "R1730", "verdict": "fixed", "note": "default empty gives blank dialect; overstated 'nothing loads' narrowed to dialect-specific resources"}
+{"id": "R1769", "verdict": "rejected-removed", "note": "KeycloakSecurityActivator.getPIDs calls removeAll on immutable key set; not an emptied map; claim unsupported, removed"}
+{"id": "R0072", "verdict": "fixed", "note": "realm.etl uses raw value, client.etl trims; reworded padded-name consequence"}
+{"id": "R0653", "verdict": "ok", "note": "duplicate of R0072"}
+{"id": "R1111", "verdict": "ok", "note": "app router tls domains are auth.traefik.me in compose file"}
+{"id": "R2034", "verdict": "ok", "note": "find newline output piped to xargs -0 at judo.sh.hbs:674"}
+{"id": "R2039", "verdict": "fixed", "note": "project-root pom.xml.hbs lacks the two includes but application-root pom includes them; table lists them; clarified"}
+{"id": "R1004", "verdict": "ok", "note": "ParseHutnMojo catches Exception and logs 'Could parse HUTN:'"}
+{"id": "R0028", "verdict": "ok", "note": "empty prefix gives leading-dot name in springDaoProviderModuleImplName"}
+{"id": "R0714", "verdict": "ok", "note": "duplicate of R0028"}
+{"id": "R1457", "verdict": "fixed", "note": "code has placeholder checks returning true for containers; conclusion 'constraints missing' softened"}
+{"id": "R2159", "verdict": "fixed", "note": "covered by R1457 rewrite"}
+{"id": "R2161", "verdict": "ok", "note": "DropUniqueConstraint per field, same name"}
+{"id": "R2160", "verdict": "ok", "note": "TableExists for every table, isPreviousModelContainsElement returns true"}
+{"id": "R2164", "verdict": "fixed", "note": "PK_<column> only on add-column path; mandatory columns get no PK name; narrowed"}
+{"id": "R2162", "verdict": "fixed", "note": "added same constraint name per field; one AddUniqueConstraint per field confirmed"}

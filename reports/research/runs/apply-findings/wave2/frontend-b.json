@@ -1,0 +1,9 @@
+[
+ {
+  "id": "R1008",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "Boolean view fields become TrinaryLogicCombo in the view transformation; the BooleanTypeCheckbox rule is commented out, so booleanWidget=CHECKBOX does not select a checkbox.",
+  "evidence": "runtime/judo-tatami-jsl:judo-tatami-jsl-jsl2ui/src/main/epsilon/transformations/ui/modules/view/viewWidgetDeclaration.etl:45-70"
+ }
+]

@@ -10,7 +10,6 @@ status: established
 projects: [mlszksz-platform, rackinspect, indamedia-adtrack, park-here]
 evidence: ["mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/SingleInstanceSchedulerActivator.java", "rackinspect:application/scheduler/src/main/java/hu/blackbelt/rackinspect/scheduler/SingleInstanceSchedulerActivator.java", "indamedia-adtrack:unrecorded", "park-here:unrecorded"]
 alternatives: []
-fragment: none: backend-only
 related: [osgi-service-layer-delegation, ongoing-finished-deleted-status-enum]
 first_seen: 2026-03-09
 last_updated: 2026-11-10
@@ -42,6 +41,7 @@ Jobs fall into five kinds: data cleanup (delete or transition stale records), pr
 - A job has no acting user of its own. If a rule depends on who acts, the service must receive that information explicitly.
 - The scheduler is not a JUDO interceptor and not a custom operation, so interceptors never run for it (interceptors fire only on built-in operations, and not even on custom ones). Rules that apply to the data must be enforced in the service it calls.
 - A scheduled run is outside any request-scoped transaction. In the source projects each job or service manages its own transaction around its database work (project practice, see [[quartz-scheduled-job]]).
+- A scheduler thread has no principal and no `ACTOR` ([platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md#scheduled-work)). To get the platform's transaction and operation handling, call a modeled operation through the `Dispatcher` (`callOperation`) instead of the DAO.
 
 ## Variations
 

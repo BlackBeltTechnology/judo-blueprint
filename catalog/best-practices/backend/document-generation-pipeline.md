@@ -11,7 +11,6 @@ projects: [rackinspect, doors-model]
 evidence: ["rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/OfferServiceImpl.java", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/services/fault_registry_services/document/GeneratePdfCustomImplementation.java", "doors-model:unrecorded"]
 alternatives: []
 related: [filestore-mediated-file-transfer, email-service-integration]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

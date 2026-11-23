@@ -10,8 +10,6 @@ status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, park-here, indamedia-adtrack, judo-partner, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "alba:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-fragment: custom-implementation-placeholder
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -51,7 +49,6 @@ Seen in eight projects: many custom operations in integration-heavy ones (extern
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=custom-implementation-placeholder cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Order {
@@ -72,4 +69,3 @@ classDiagram
     +String code
   }
 ```
-<!-- /mermaid:generated -->

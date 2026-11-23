@@ -9,7 +9,6 @@ The enumeration is used as the status attribute of the owning entity. The genera
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=active-inactive-status-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Status {
@@ -18,4 +17,3 @@ classDiagram
     INACTIVE
   }
 ```
-<!-- /mermaid:generated -->

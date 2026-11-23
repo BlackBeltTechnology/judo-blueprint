@@ -1,6 +1,9 @@
 ---
 title: Frontend Error Handling
 description: How the generated React frontend handles 400, 401, 403, 404, 422 and 500 responses, the operation fault dialog and fault translation keys.
+aliases: [frontend error handling, HTTP error toast, operation fault dialog, business fault message, validation error field, customize 422 handling]
+keywords: [useErrorHandler, error-handling.ts, useFaultDialog, openFaultDialog, OperationFaultDialog, registerErrorHandlerInterceptorHook, ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY, X-Fault, errorList, judo.error.validation-failed]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Frontend Error Handling
@@ -22,6 +25,15 @@ The generated `src/utilities/error-handling.ts` (hook `useErrorHandler`) maps HT
 
 A custom error handler interceptor (`src/custom/hooks/register-error-handler-interceptor.ts.default`, interface key `ERROR_HANDLER_INTERCEPTOR_INTERFACE_KEY`, registered with `registerErrorHandlerInterceptorHook`) runs before the default handling and can take over a response.
 
+The generated `FeedbackLevel` type is `'ERROR' | 'WARNING '`. The `WARNING` literal has a trailing space, so a comparison with `'WARNING'` does not match the type.
+
+Known defects in the generated handler:
+
+- A 400 response with an empty body throws: `errorList[0].location` is read without a guard. Always return a `FeedbackItem` list with 400 responses.
+- `isErrorNestedValidationError` is typed `boolean` but returns the response, a number or `undefined`; use it only for truthiness.
+- `uploadFile` awaits the access service call outside its `try` block, and the `try` block logs a non-200 upload response instead of rethrowing it, so the call returns `undefined` without an error. Wrap uploads in your own `try` block.
+- A failed tag search sets an empty option list in its `catch`, so the autocomplete shows its empty-result hint instead of an error. Check network errors separately.
+
 ## Operation Fault Dialog (HTTP 422)
 
 On 422 the handler takes only the first key of the response body (`Object.keys(data)[0]`) and calls `openFaultDialog(key, data[key])`. The `useFaultDialog()` hook returns `(faultObjectKey: string, payload: any) => void`; it opens an `OperationFaultDialog` in the stackable dialog provider with title `judo.error.error` and body `judo.error.business-fault`. Every payload entry is rendered as a key/value pair:
@@ -31,9 +43,15 @@ On 422 the handler takes only the first key of the response body (`Object.keys(d
 
 Add the `faults.*` keys to your translation files (see [i18n](./i18n.md)); without them the raw attribute name is shown. The batch/CRUD dialog variant (`useCRUDDialog`) builds messages from `error.response.data` keys as `faults.<faultPrefix>.<object>.<attribute>` and renders them itself, so it is not affected by an interceptor that replaces the 422 handling.
 
+Fault payload values must not be `null` or `undefined`: the dialog renders each value with `value.toString()`, which throws during rendering. Send an empty string instead.
+
 ## Validation Errors Without Location
 
-For 400 responses, field mapping happens only when the first error has a `location`. Errors without `location` are grouped under an empty key and no field shows them; only the generic validation toast appears. Only three validation codes are translated by default in en-US (`REQUIRED_GROUP_MUST_HAVE_AT_LEAST_ONE_ROW`, `REQUIRED_FIELD_MISSING`, `VALUE_NOT_ALLOWED`); every other code falls back to the raw code string. Add `judo.error.validation-failed.<CODE>` keys for your own codes.
+For 400 responses, field mapping happens only when the first error has a `location`. Errors without `location` are grouped under an empty key and no field shows them; only the generic validation toast appears. The generated `system_en-US.json` translates the platform validation codes (21 keys, for example `MISSING_REQUIRED_ATTRIBUTE`, `MAX_LENGTH_VALIDATION_FAILED`, `PATTERN_VALIDATION_FAILED`, `IDENTIFIER_ATTRIBUTE_UNIQUENESS_VIOLATION`, `NOT_ACCEPTED_BY_RANGE`); any other code falls back to the raw code string. Add `judo.error.validation-failed.<CODE>` keys for your own codes.
+
+In a table with eager loading (`isEager`), a 400 error for a new row that is not yet in the owner data is attributed to the first row, because the row index falls back to `0`. Save the row before validating it.
+
+Validation errors (HTTP 400) are translated with the key `judo.error.validation-failed.<CODE>`, falling back to the raw code (`defaultValue: error.code` in `utilities/error-handling.ts`). Example: `IDENTIFIER_ATTRIBUTE_UNIQUENESS_VIOLATION` ("Identifier attribute is not unique") is returned when a value is already used by another instance of an entity whose attribute is marked as identifier; its details carry `feature` (attribute name) and `value`. Override the text by adding that key to the app's i18n files.
 
 ## Customizing the 422 Handling
 

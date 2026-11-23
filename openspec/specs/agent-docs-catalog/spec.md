@@ -33,10 +33,21 @@ agent-docs SHALL contain:
 
 ### Requirement: kb-conformant agent-docs
 agent-docs SHALL:
-- have kb frontmatter;
-- use headings no larger than one kb chunk;
+- have kb frontmatter: `title`, one-sentence `description`, `aliases`, `keywords`, `tags` (`domain:`, `layer:`, `status:platform`);
+- have a companion `<name>.agent.md` when over 300 lines or 15000 bytes;
+- keep each section within one kb chunk;
 - have a DOX `AGENTS.md` per directory;
 - be covered by golden queries.
+
+Format work only adds; it SHALL NOT rewrite existing text or headings.
+
+#### Scenario: Agent-doc frontmatter
+- **WHEN** an agent-doc lacks `aliases`, `keywords` or `tags`
+- **THEN** `entry-lint` fails and names the key
+
+#### Scenario: Stale companion
+- **WHEN** a doc gains a `##` section its companion does not list
+- **THEN** `entry-lint` fails and names the section
 
 #### Scenario: Golden query
 - **WHEN** `kb eval` runs the agent-docs golden queries

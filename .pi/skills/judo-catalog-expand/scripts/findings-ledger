@@ -1,0 +1,289 @@
+#!/usr/bin/env python3
+"""findings-ledger: plan, route and RECONCILE a findings pass, so no finding is ever dropped silently.
+
+Usage:
+  findings-ledger route <work> <items.jsonl>       content-route items without a target file
+  findings-ledger plan <work> [--split N]          batches with ONE writer per file
+  findings-ledger wave2 <work>                     research/triage/handoff output -> per-owner wave-2 lists
+  findings-ledger reconcile <work>                 account for every finding; exit 1 if any is unaccounted
+
+Work dir layout (all JSON lines unless noted):
+  inventory.jsonl            every finding: {"id","src","target","text"}; target = catalog file or area dir
+  file-owners.json           {file: batch}                        (plan)
+  batches/<b>.json           {"batch","files","items"}            (plan)
+  ledger/<b>.jsonl           applier lines: {"id","status","file","evidence","change"[,"wave":2]}
+  research/<n>.json|.out.jsonl  re-checked items and their proposals ("proposed|open|already-correct|not-platform")
+  triage/kept-*.jsonl        content-routed findings from `route` leftovers: {"id","target","fact","evidence","already_documented"}
+  wave2/<b>.json             second-wave items per owner                (wave2)
+  check/<b>.jsonl            checker verdicts: {"id","verdict"}
+
+route: an item whose target is not a catalog file is matched by the identifiers in its text
+(backticked names, CamelCase, SNAKE_CASE, dotted names) against catalog/agent-docs. Two or more
+hits route it to the best file; the rest go to triage/unrouted.txt for triage agents. Routing is
+by CONTENT, never by the finding's source path: a path rule once dropped 1,332 of 1,405 findings.
+
+raw.jsonl (optional, one row per finding of every RAW source: {"id","kind","covered_by"}): reconcile also fails
+for any raw row that is neither covered by an inventory/legacy-triage id nor has a triage/verdicts-*.jsonl line.
+Build it for every pass; the inventory alone cannot show findings that never entered it.
+
+reconcile: every inventory item and every new triage item must end in exactly one of
+  applied (with a checker verdict) | already-correct | rejected | not-platform | open (research could not settle)
+Anything else (no ledger line, unverified without research, applied but unchecked) fails.
+Writes OPEN-ITEMS.md (for developers) and SUMMARY.md (counts per source and status).
+Report the SUMMARY counts to the user, including every exclusion, before calling the pass done.
+"""
+import collections
+import glob
+import json
+import os
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[4]
+AREAS = ("model", "backend", "frontend", "deployment", "e2e-testing", "integration-testing")
+STOP = set("String Boolean Integer Long Double Object Exception README AGENTS Java JUDO Maven Override List Optional Map Set Collection Default".split())
+
+
+def jl(p):
+    out = []
+    if os.path.exists(p):
+        for line in open(p):
+            line = line.strip()
+            if line:
+                try:
+                    out.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+    return out
+
+
+def docs():
+    return {str(f.relative_to(ROOT)): f.read_text() for f in (ROOT / "catalog/agent-docs").rglob("*.md")
+            if not f.name.endswith(("AGENTS.md", ".agent.md"))}
+
+
+def idents(t):
+    s = set(re.findall(r"`([^`\s]{5,60})`", t))
+    s |= set(re.findall(r"\b([a-z]+[A-Z]\w{3,}|[A-Z][a-z]+[A-Z]\w{3,}|[A-Z][A-Z0-9]*_[A-Z0-9_]{3,}|[a-z]+\.[a-z][\w.]{4,})\b", t))
+    return {x.strip("()") for x in s if x.strip("()") not in STOP}
+
+
+def route(work, items_path):
+    D = docs()
+    routed, left = [], []
+    for it in jl(items_path):
+        t = it.get("target", "")
+        if t.startswith("catalog/") and t.endswith(".md"):
+            routed.append(it)
+            continue
+        hits = collections.Counter()
+        I = idents(it.get("text", ""))
+        for x in I:
+            rx = re.compile(r"(?<![\w.])" + re.escape(x) + r"(?![\w])")
+            for f, body in D.items():
+                if rx.search(body):
+                    hits[f] += 1
+        if hits:
+            f, n = hits.most_common(1)[0]
+            if n >= 2 or (n == 1 and len(I) <= 2):
+                routed.append(dict(it, target=f))
+                continue
+        left.append(it)
+    with open(work / "inventory.jsonl", "a") as fh:
+        for it in routed:
+            fh.write(json.dumps(it) + "\n")
+    (work / "triage").mkdir(parents=True, exist_ok=True)
+    (work / "triage/unrouted.txt").write_text("".join(f"{i['id']} | {i.get('src','')} | {i.get('text','')[:500].replace(chr(10),' ')}\n" for i in left))
+    print(f"routed {len(routed)} to inventory.jsonl; {len(left)} to triage/unrouted.txt (split it for triage agents; NOT dropped)")
+
+
+def area_of(t):
+    p = t.replace("catalog/agent-docs/", "").split("/")[0]
+    return p if p in AREAS else ("entries" if not t.startswith("catalog/agent-docs/") else "root")
+
+
+def plan(work, split):
+    inv = jl(work / "inventory.jsonl")
+    by_file = collections.defaultdict(list)
+    for i in inv:
+        by_file[i["target"]].append(i)
+    # one batch per area; big areas split by file, area-level items go to the area's first batch
+    owners, batches = {}, collections.defaultdict(lambda: {"files": set(), "items": []})
+    for a in sorted({area_of(t) for t in by_file}):
+        files = sorted(t for t in by_file if area_of(t) == a and t.endswith(".md"))
+        n = max(1, min(split, (sum(len(by_file[f]) for f in files) + 39) // 40))
+        load = [0] * n
+        for f in sorted(files, key=lambda f: -len(by_file[f])):
+            k = load.index(min(load))
+            b = f"{a}-{k + 1}" if n > 1 else a
+            owners[f] = b
+            load[k] += len(by_file[f])
+        for t in by_file:
+            if area_of(t) == a and not t.endswith(".md"):
+                owners[t] = f"{a}-1" if n > 1 else a
+    for f in (str(p.relative_to(ROOT)) for p in (ROOT / "catalog/agent-docs").rglob("*.md")):
+        if f not in owners and not f.endswith(("AGENTS.md", ".agent.md")):
+            a = area_of(f)
+            cands = sorted({b for b in owners.values() if b == a or b.startswith(a + "-")})
+            if cands:
+                owners[f] = cands[0]
+    for t, its in by_file.items():
+        batches[owners[t]]["items"] += its
+    for f, b in owners.items():
+        if f.endswith(".md"):
+            batches[b]["files"].add(f)
+    (work / "batches").mkdir(parents=True, exist_ok=True)
+    for b, v in batches.items():
+        json.dump({"batch": b, "files": sorted(v["files"]), "items": v["items"]}, open(work / f"batches/{b}.json", "w"), indent=1)
+        print(f"{b:24s} items {len(v['items']):4d} files {len(v['files']):3d}")
+    json.dump({f: b for f, b in owners.items() if f.endswith(".md")}, open(work / "file-owners.json", "w"), indent=0)
+
+
+def latest(work):
+    final = {}
+    for f in sorted(glob.glob(str(work / "ledger/*.jsonl"))):
+        b = pathlib.Path(f).stem
+        for x in jl(f):
+            old = final.get(x["id"])
+            # a resolved or wave-2 line is never overwritten by a handoff or by an earlier wave
+            if old and (old.get("wave") == 2 and x.get("wave") != 2 or x.get("status") == "handoff" and old.get("status") != "handoff"):
+                continue
+            final[x["id"]] = dict(x, batch=b)
+    return final
+
+
+def research(work):
+    r = {}
+    for f in glob.glob(str(work / "research/*.out.jsonl")):
+        for x in jl(f):
+            r[x["id"]] = x
+    return r
+
+
+def wave2(work):
+    own = json.load(open(work / "file-owners.json"))
+    W, bad = collections.defaultdict(list), []
+    done = {k for k, x in latest(work).items() if x.get("status") != "handoff"}  # resolved earlier: never hand out twice
+    def put(o, x):
+        if x["id"] in done:
+            return
+        (W[o].append(x) if o else bad.append(x["id"]))
+    for x in research(work).values():
+        if x.get("status") == "proposed":
+            put(own.get(x.get("file")), dict(x, kind="research"))
+    for f in glob.glob(str(work / "triage/kept-*.jsonl")):
+        for x in jl(f):
+            if not x.get("already_documented"):
+                put(own.get(x.get("target")), dict(id=x["id"], kind="triage", file=x.get("target"), text=x.get("fact"), evidence=x.get("evidence")))
+    for x in latest(work).values():
+        if x.get("status") == "handoff":
+            put(own.get(x.get("file")), dict(id=x["id"], kind="handoff", file=x.get("file"), text=x.get("proposed", x.get("change")), evidence=x.get("evidence")))
+    (work / "wave2").mkdir(exist_ok=True)
+    for old in glob.glob(str(work / "wave2/*.json")):  # previous wave lists are kept for the record
+        os.replace(old, old + ".prev")
+    for o, v in W.items():
+        json.dump(v, open(work / f"wave2/{o}.json", "w"), indent=1)
+    print({o: len(v) for o, v in W.items()}, "| no owner (assign by hand):", bad)
+    return 1 if bad else 0
+
+
+def reconcile(work):
+    inv = {i["id"]: i for i in jl(work / "inventory.jsonl")}
+    for f in glob.glob(str(work / "triage/kept-*.jsonl")):
+        for x in jl(f):
+            if not x.get("already_documented"):
+                inv.setdefault(x["id"], {"id": x["id"], "src": "triage", "target": x.get("target"), "text": x.get("fact", "")})
+    final, res = latest(work), research(work)
+    checked = {}
+    for f in glob.glob(str(work / "check/*.jsonl")):
+        for x in jl(f):
+            checked[x.get("id")] = x.get("verdict")
+    status, problems, open_rows = {}, [], []
+    for k, it in inv.items():
+        x, r = final.get(k), res.get(k)
+        if not x:
+            st = "MISSING"
+        else:
+            st = x["status"]
+            if st == "unverified":
+                if r or x.get("wave") == 2:  # research ran, or a wave-2 owner checked the evidence: developer question
+                    st = "open"
+                else:
+                    st = "UNVERIFIED-NOT-RESEARCHED"
+            if st == "handoff":
+                st = "applied" if checked.get(k) == "applied-now" else "HANDOFF-NOT-APPLIED"
+            if st == "applied" and k not in checked:
+                st = "APPLIED-UNCHECKED"
+            if checked.get(k) == "removed":
+                st = "removed-by-checker"
+        status[k] = st
+        if st in ("MISSING", "UNVERIFIED-NOT-RESEARCHED", "HANDOFF-NOT-APPLIED", "APPLIED-UNCHECKED"):
+            problems.append((k, st, it.get("target", "")))
+        if st in ("open", "removed-by-checker"):
+            note = (r or {}).get("evidence") or (x or {}).get("change", "")
+            open_rows.append((k, it.get("target", ""), it.get("text", "")[:160], str(note)[:220]))
+    # RAW coverage: every row of every raw source (raw.jsonl) must reach the inventory or get a triage verdict.
+    # Without this, findings that never entered inventory.jsonl are invisible here (1,516 judo-ng rows once were).
+    raw_by = collections.Counter()
+    if (work / "raw.jsonl").exists():
+        verdict = {}
+        for f in glob.glob(str(work / "triage/verdicts-*.jsonl")):
+            for x in jl(f):
+                verdict[x.get("id")] = x.get("verdict")
+        legacy, documented = set(), set()
+        for f in glob.glob(str(work / "triage/kept-*.jsonl")):
+            documented |= {y["id"] for y in jl(f) if y.get("already_documented")}
+        for f in glob.glob(str(work / "triage/part-*")):
+            legacy |= {l.split("|")[0].strip() for l in open(f) if l.strip()}
+        for x in jl(work / "raw.jsonl"):
+            c, k = x.get("covered_by"), x["id"]
+            if c and c in inv:
+                raw_by[(x.get("kind"), "in inventory")] += 1
+            elif verdict.get(k):  # a recorded per-item verdict wins over a legacy drop
+                raw_by[(x.get("kind"), "triage: " + verdict[k])] += 1
+            elif c and c in documented:
+                raw_by[(x.get("kind"), "triage: already documented")] += 1
+            elif c and c in legacy:
+                raw_by[(x.get("kind"), "triage (legacy): dropped, no per-item reason")] += 1
+            else:
+                raw_by[(x.get("kind"), "RAW-UNTRIAGED")] += 1
+                problems.append((k, "RAW-UNTRIAGED", x.get("repo", "")))
+    by = collections.Counter((inv[k].get("src", "?").split(":")[0], s) for k, s in status.items())
+    lines = ["# Findings pass summary", "", "| source | status | count |", "|---|---|---|"]
+    lines += [f"| {a} | {b} | {n} |" for (a, b), n in sorted(by.items())]
+    if raw_by:
+        lines += ["", "## Raw source coverage (raw.jsonl)", "", "| kind | outcome | count |", "|---|---|---|"]
+        lines += [f"| {a} | {b} | {n} |" for (a, b), n in sorted(raw_by.items())]
+    total = f"Total {len(inv)}: " + ", ".join(f"{s} {n}" for s, n in collections.Counter(status.values()).most_common())
+    lines += ["", total]
+    (work / "SUMMARY.md").write_text("\n".join(lines) + "\n")
+    rows = ["# Open findings: need a JUDO developer", "", "Answer per item: correct / wrong / how it really works.", "",
+            "| id | doc | finding | what the source check found |", "|---|---|---|---|"]
+    rows += [f"| {k} | `{t}` | {a.replace('|', '/').replace(chr(10), ' ')} | {n.replace('|', '/').replace(chr(10), ' ')} |" for k, t, a, n in sorted(open_rows)]
+    (work / "OPEN-ITEMS.md").write_text("\n".join(rows) + "\n")
+    print(total)
+    for (a, b), n in sorted(raw_by.items()):
+        print(f"  raw {a}: {b} {n}")
+    for k, s, t in problems[:40]:
+        print(f"  UNACCOUNTED {k}: {s} ({t})")
+    print(f"{len(problems)} unaccounted; {len(open_rows)} open for developers -> {work}/OPEN-ITEMS.md")
+    return 1 if problems else 0
+
+
+def main(a):
+    if len(a) < 2 or a[0] not in ("route", "plan", "wave2", "reconcile"):
+        print(__doc__)
+        return 2
+    work = pathlib.Path(a[1])
+    if a[0] == "route":
+        return route(work, a[2]) or 0
+    if a[0] == "plan":
+        return plan(work, int(a[a.index("--split") + 1]) if "--split" in a else 2) or 0
+    if a[0] == "wave2":
+        return wave2(work)
+    return reconcile(work)
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

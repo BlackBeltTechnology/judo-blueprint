@@ -12,7 +12,6 @@ Generated UI pages follow from the entity: View, Form and Table pages for Organi
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=organization-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Address {
@@ -54,4 +53,3 @@ classDiagram
   Organization --> "*" User : users
   Organization ..> OrganizationStatus : status
 ```
-<!-- /mermaid:generated -->

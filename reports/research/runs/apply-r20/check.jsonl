@@ -1,0 +1,20 @@
+{"id": "R20-C1", "file": "reports/judo-ng-issues/CLI.md", "verdict": "fixed", "note": "reproduced unmapped (exit 1) and entity (validates, BoundTransferOperation vs UnboundOperation) with CLI; accept(_this)/run()/get() match OperationHelper; line refs corrected"}
+{"id": "R20-F6", "file": "reports/judo-ng-issues/CLI.md", "verdict": "ok", "note": "merged into C1; entity case reproduced by transform to esm2psm"}
+{"id": "R20-4", "file": "catalog/best-practices/model/initializer-operation.md", "verdict": "ok", "note": "matches repro; accept(_this) holds for no-input/no-output"}
+{"id": "R20-C2", "file": "catalog/agent-docs/model/esm_metamodel/accesspoint.md", "verdict": "fixed", "note": "read-only behaviour reproduced; 'before the principal' was wrong: either option order works at create"}
+{"id": "R20-C3", "file": "catalog/agent-docs/model/judo-cli.md", "verdict": "ok", "note": "WARNs reproduced on validate/transform (Asm2ScriptWork/Script2OperationWork)"}
+{"id": "R20-C4", "file": "reports/judo-ng-issues/CLI.md", "verdict": "ok", "note": "exit 0 + data:null per verdict rerun; note only in CLI.md"}
+{"id": "R20-C5", "file": "catalog/agent-docs/model/judo-cli.md", "verdict": "ok", "note": "additive workaround, mvnd clean in judo.sh"}
+{"id": "R20-5", "file": "catalog/agent-docs/model/esm_metamodel/accesspoint.md", "verdict": "ok", "note": "default true stored with mapped principal; verified via --schema"}
+{"id": "R20-1", "file": "kb", "verdict": "ok", "note": "skipped target, nothing written"}
+{"id": "R20-3", "file": "catalog/agent-docs/deployment/schema-evolution.md", "verdict": "ok", "note": "fresh DB runs generated changelog only per SimpleLiquibaseExecutor evidence"}
+{"id": "R20-6", "file": "catalog/agent-docs/deployment/local-development.md", "verdict": "ok", "note": "template compose/judo.sh start no SMTP; placeholders neutral"}
+{"id": "R20-7", "file": "catalog/agent-docs/backend/authentication-guide.md", "verdict": "fixed", "note": "route /api/<Model>/<Actor>/<Actor>/~principal confirmed against generated rest (@Path /Customer/~principal under applicationPath <model>/<Actor>); removed project example; interceptor reworded as user-written"}
+{"id": "R20-9", "file": "catalog/agent-docs/deployment/local-development.md", "verdict": "ok", "note": "port options and comma syntax confirmed in judo.sh.hbs"}
+{"id": "R20-F1", "file": "reports/judo-ng-issues/FRAMEWORK.md", "verdict": "ok", "note": "cause/workaround per verdict evidence"}
+{"id": "R20-2", "file": "catalog/agent-docs/deployment/schema-evolution.md", "verdict": "ok", "note": "fragment path per verdict evidence"}
+{"id": "R20-F2", "file": "none", "verdict": "ok", "note": "skipped"}
+{"id": "R20-F3", "file": "catalog/agent-docs/deployment/build-process.md", "verdict": "ok", "note": "five ids/trigger per CLI repro; e2e+frontend per earlier build logs"}
+{"id": "R20-8", "file": "catalog/agent-docs/deployment/build-process.md", "verdict": "ok", "note": "merged into F3"}
+{"id": "R20-F4", "file": "none", "verdict": "ok", "note": "skipped"}
+{"id": "R20-F5", "file": "catalog/agent-docs/deployment/build-process.md", "verdict": "ok", "note": "ModelGenerator.java:318-337 stale deletion confirmed"}

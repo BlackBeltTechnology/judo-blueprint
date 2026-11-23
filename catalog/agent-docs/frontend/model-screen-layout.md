@@ -1,6 +1,9 @@
 ---
 title: UI Model to Frontend Mapping
 description: Mapping between UI model elements and generated React components, element ids, file paths, access control and ESM to UI traceability.
+aliases: [generated react screen, ui model json, data-testid element id, page container type, relation table on a screen, customize a generated page, generated file path, memberType effect on UI, action definition types]
+keywords: [data-testid, navigationController, openInDialog, dialogSize, hiddenBy, enabledBy, requiredBy, memberType, relationKind, featuredActions, confirmationType, createable, updateable, deleteable]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # UI Model to Frontend Mapping
@@ -60,7 +63,7 @@ All UI model elements follow a consistent ID pattern:
 {Actor}/(esm/_{UniqueModelId})/{ElementType}
 ```
 
-**Components:**
+### Components
 - **Actor**: The actor/role context (e.g., `Actor`, `Admin`, `Customer`)
 - **UniqueModelId**: A unique EMF/XMI identifier (e.g., `DpoUkM8xEe6U3KSieLrWmg`)
 - **ElementType**: The component type suffix
@@ -92,13 +95,19 @@ This allows for:
 - Debugging and inspecting elements
 - Custom styling based on `data-testid`
 
+Generated layout sections (`Flex` containers, accordions, cards and their grid wrappers) carry two attributes: `data-testid="<xmiId>"` and `data-name="<element name>"`. Select a section for CSS or tests with `[data-name="<Name>"]`; the name is the model element name, so it survives model id changes but must be unique per page to be unambiguous. The page header uses `data-name="PageHeaderContainer"`.
+
+A container layout cannot be swapped by a runtime hook. Replace it either with a custom implementation element on the container's visual element, or by overriding the generator template `containers/widget-fragments/flex.hbs` through the generator override directory (same-name template override).
+
 ## Page Container Types
+
+The UI model has no per-device (mobile, tablet, desktop) containers, and the generator does not read device-specific layouts. A section's width is its `col` value out of 12 (scaled by the parent's `col`), applied from the `md` breakpoint up; below `md` every section is full width (`xs: 12, sm: 12`). For device-specific rendering use a custom implementation element with MUI `useMediaQuery`.
 
 ### 1. EmptyDashboardPageContainer
 
 The default landing page for an actor without pre-defined widgets.
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/EmptyDashboardPageDefinition",
@@ -111,13 +120,13 @@ The default landing page for an actor without pre-defined widgets.
 }
 ```
 
-**Generated React:**
+#### Generated React
 ```
 src/pages/Dashboard/index.tsx
 src/containers/Dashboard/EmptyDashboard*.tsx
 ```
 
-**data-testid:**
+#### data-testid
 ```
 Actor/(esm/_xxx)/EmptyDashboardPageContainer
 ```
@@ -126,7 +135,7 @@ Actor/(esm/_xxx)/EmptyDashboardPageContainer
 
 Used for creating new entities (CREATE forms).
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/AccessFormPageDefinition",
@@ -139,17 +148,17 @@ Used for creating new entities (CREATE forms).
 }
 ```
 
-**Generated React:**
+#### Generated React
 ```
 src/containers/{Entity}/{Entity}_Form/*.tsx
 ```
 
-**data-testid Pattern:**
+#### data-testid Pattern
 ```
 Actor/(esm/_xxx)/TransferObjectFormPageContainer
 ```
 
-**Key Properties:**
+#### Key Properties
 - `openInDialog`: If `true`, form opens in a modal dialog
 - `dialogSize`: Modal size (`XS`, `SM`, `MD`, `LG`, `XL`)
 
@@ -157,7 +166,7 @@ Actor/(esm/_xxx)/TransferObjectFormPageContainer
 
 Used for listing entities in a data grid (READ/LIST).
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/AccessTablePageDefinition",
@@ -168,23 +177,26 @@ Used for listing entities in a data grid (READ/LIST).
 }
 ```
 
-**Generated React:**
+#### Generated React
 ```
 src/containers/{Entity}/{Entity}_Table/*.tsx
 src/containers/{Entity}/{Entity}_Table/components/{Entity}_TableComponent/*.tsx
 ```
 
-**data-testid Pattern:**
+#### data-testid Pattern
 ```
 Actor/(esm/_xxx)/TransferObjectTablePageContainer
 Actor/(esm/_xxx)/TransferObjectTableTable
 ```
 
+- Row selection callbacks are wired only in selector mode. Workaround: set selector mode when row selection is needed, or use a custom table hook.
+- The grid `rowCount` is set to the page size, not the total, so server-paged tables show the wrong total. Workaround: use a custom table hook for the row count.
+
 ### 4. TransferObjectViewPageContainer
 
 Used for viewing/editing existing entities (UPDATE/VIEW).
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/AccessViewPageDefinition",
@@ -195,13 +207,13 @@ Used for viewing/editing existing entities (UPDATE/VIEW).
 }
 ```
 
-**Generated React:**
+#### Generated React
 ```
 src/containers/{Entity}/{Entity}_View_Edit/*.tsx
 src/containers/{Entity}/{Entity}_View_Edit/components/*.tsx
 ```
 
-**data-testid Pattern:**
+#### data-testid Pattern
 ```
 Actor/(esm/_xxx)/TransferObjectViewPageContainer
 Actor/(esm/_xxx)/TransferObjectViewVisualElement
@@ -228,9 +240,12 @@ Actor/(esm/_xxx)/TransferObjectViewVisualElement
 | Enumeration | `EnumerationTypeCombo` | `Select` | Dropdown |
 | Enumeration | `EnumerationTypeRadio` | `RadioGroup` | Radio buttons |
 
+- Binary tag list: deleting one value calls the change handler with the whole current list as `target`, `[]` as `added` and the removed option as `removed`. Workaround: use a custom handler that reads `removed`.
+- Binary input without `uploadCallback`: picking a file raises a `TypeError`, which is caught and shown as the upload-error message. Workaround: pass an `uploadCallback` in the custom binary widget.
+
 ### Example TextField Generation
 
-**UI Model (StringTypeTextInput):**
+#### UI Model (StringTypeTextInput)
 ```json
 {
   "@id": "Actor/(esm/_2u6pIIF3Ee-M3fhNedgt-g)/StringTypeTextInput",
@@ -269,6 +284,8 @@ Actor/(esm/_xxx)/TransferObjectViewVisualElement
 | Placeholder | `PlaceholderVisualElement` | Empty space placeholder |
 | Tab Bar | `TabBarVisualElement` | Tab container for grouped content |
 
+- Page header: `Grid` uses `alignItems="vertical"`, which MUI ignores, so header items are not aligned as the model implies. Workaround: override the `PageHeader` fragment in the custom folder.
+
 ## Relation Element Types
 
 ### Single Relation (Link)
@@ -277,7 +294,7 @@ Actor/(esm/_xxx)/TransferObjectViewVisualElement
 
 Displays a single entity reference with autocomplete/selector.
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/TabularReferenceFieldRelationDefinedLink",
@@ -286,8 +303,11 @@ Displays a single entity reference with autocomplete/selector.
 }
 ```
 
-**Generated React:**
+#### Generated React
 Autocomplete component with view/set/unset actions.
+
+- The debounced owner search in the single-relation input is rebuilt when `ownerData` or `allowFetch` changes (`SingleRelationInput.tsx.hbs:119`), so a new owner gets the current search callback. Known issue: a search still pending from the previous owner (200 ms debounce) runs with the previous owner's handler, and the handler is not rebuilt when only the search callback changes. Workaround: remount the field when the owner changes.
+- The string type-ahead widget (`TextWithTypeAhead`) creates its debounced search once (`useMemo` with an empty dependency list), so it keeps the `handleSearch` of its first render and a later change of the search callback is not picked up. Workaround: remount the field when the search source changes.
 
 ### Multiple Relation (Table)
 
@@ -295,7 +315,7 @@ Autocomplete component with view/set/unset actions.
 
 Displays a table of related entities with CRUD actions.
 
-**UI Model:**
+#### UI Model
 ```json
 {
   "@id": "Actor/(esm/_xxx)/TabularReferenceFieldRelationDefinedTable",
@@ -304,8 +324,11 @@ Displays a table of related entities with CRUD actions.
 }
 ```
 
-**Generated React:**
+#### Generated React
 DataGrid component with toolbar actions and row actions.
+
+- Autocomplete row count for table relations is always 10; the configured row count is ignored (link relations honour their row setting).
+- Relation table update passes `owner.current` whenever the table has a relation name (`dialogs/index.tsx.hbs`); the create call passes it unless the page data element is an access.
 
 ### Relation Button
 
@@ -327,6 +350,9 @@ Opens relation in a new page/dialog.
 | RefreshActionDefinition | `*RefreshButton` | Reload data |
 | GetTemplateActionDefinition | `*GetTemplateButton` | Get blank template |
 
+- Create container: the create button is searched only in the first `ActionButtonGroup`, and the found button is not returned (the helper returns `null`).
+- Get-template action: after `setData(result)`, the owner is cloned from the render-time `data` instead of the fetched result, so the owner can hold stale values when no `ownerData` is passed. Workaround: reload after the get-template action.
+
 ### Table Actions
 
 | Action Definition | Element Type Suffix | Description |
@@ -342,6 +368,10 @@ Opens relation in a new page/dialog.
 | BulkDeleteActionDefinition | `*BulkDeleteButton` | Delete selected |
 | InlineCreateRowActionDefinition | `TabularReferenceTableInlineCreateButton` | Inline row create |
 
+- Set-selector table, create action: the inline `OpenCreateFormActionDefinition` has no target page: the set-selector transformation never calls `setTargetPageDefinition` for it.
+- Add from autocomplete on an eager table: the list is read from `data.<relationName>` but written back under the data element name, so the added item may not show. Workaround: refresh the table after adding.
+- Set-selector `alreadySelected` tests bare `container.table` (`OpenSetSelectorAction.fragment.hbs:11`), while the `ownerData` check and the add-selector action use `page.container.table`. The page template context holds only `page` (`container` is a feature of `PageDefinition`), so the bare `container.table` is never true and the set-selector always takes the `data.<relation>` branch instead of `[]`. Workaround: compute the already-selected list in a custom action.
+
 ### Row Actions
 
 | Action Definition | Element Type Suffix | Description |
@@ -349,6 +379,8 @@ Opens relation in a new page/dialog.
 | OpenPageActionDefinition | `*RowViewButton` | View row details |
 | RemoveActionDefinition | `*RowRemoveButton` | Remove relation |
 | RowDeleteActionDefinition | `*RowDeleteButton` | Delete entity |
+
+- Row button disabled conditions: `&&` binds tighter than `||`, so the bulk-remove check is evaluated outside the relation and inline-creatable guard. Workaround: add an explicit `enabledBy` condition on the row button and check its state in the generated table.
 
 ### Custom Operations
 
@@ -360,19 +392,24 @@ Opens relation in a new page/dialog.
 | `OperationMenuButton` | Static/menu operation button |
 | `ActionButtonVisualElement` | Standalone action (Ok, Cancel) |
 
+- Operation parameter of relation type: the relation-service branch is nested under a check that is already false, so the relation service is never chosen. Workaround: use a non-relation parameter until fixed.
+- View redirect: the first returned row (`data[0]`) is used without an empty check, so an empty result fails. Workaround: return at least one row from view operations.
+- Redirect handling: the redirect callback is memoised with `[handleResult]` only, so it can keep stale helpers. Workaround: reload after changing redirects.
+- Filter options: the memoised `effective<Attr>Options` lists only the filter function as dependency, so it does not update when `data` changes.
+
 ## File Path Generation Patterns
 
 ### Page Files
 
 **Factory Expression:** `#getPagesForRouting(#application)`
 
-**Path Pattern:**
+#### Path Pattern
 ```
 src/pages/{PagePath}/index.tsx
 src/pages/{PagePath}/context.tsx
 ```
 
-**Example:**
+#### Example
 ```
 // UI Model: "name": "TagContainerTransfer::manyAssociationAssociation::RelationViewPage"
 // Generated Path:
@@ -383,7 +420,7 @@ src/pages/TagContainerTransfer/ManyAssociationAssociation/RelationViewPage/index
 
 **Factory Expression:** `#application.pageContainers`
 
-**Path Pattern:**
+#### Path Pattern
 ```
 src/containers/{ContainerPath}/{ContainerComponentName}.tsx
 src/containers/{ContainerPath}/{ContainerComponentName}PageContainer.tsx
@@ -391,7 +428,7 @@ src/containers/{ContainerPath}/{ContainerComponentName}DialogContainer.tsx
 src/containers/{ContainerPath}/components/{ComponentName}/index.tsx
 ```
 
-**Example:**
+#### Example
 ```
 // UI Model: "name": "TagContainerTransfer::TagContainerTransfer_View_Edit"
 // Generated Paths:
@@ -413,7 +450,7 @@ The generated component names follow this pattern:
 {TransferObjectName}{ViewType}{RelationName}Component
 ```
 
-**Examples:**
+#### Examples
 - `TagContainerTransferTagContainerTransfer_View_EditManyAggregationAssociationComponent`
 - `TransferObjectBTransferObject_ViewManyRelationComponent`
 
@@ -421,7 +458,7 @@ The generated component names follow this pattern:
 
 The navigation menu is driven by the **Actor's accesses**. Each access defined on an Actor in the ESM model becomes a menu item in the sidebar. The menu structure is generated into `navigationController`:
 
-**ESM Actor Access Definition:**
+### ESM Actor Access Definition
 ```xml
 <elements xsi:type="accesspoint:ActorType" name="Actor" realm="<APP>" principal="_UserEntity">
   <!-- Each access becomes a menu item -->
@@ -430,7 +467,7 @@ The navigation menu is driven by the **Actor's accesses**. Each access defined o
 </elements>
 ```
 
-**UI Model:**
+### UI Model
 ```json
 {
   "navigationController": {
@@ -450,7 +487,7 @@ The navigation menu is driven by the **Actor's accesses**. Each access defined o
 }
 ```
 
-**Generated React:**
+### Generated React
 ```
 src/layout/Drawer/DrawerContent/Navigation/menu-items.tsx
 ```
@@ -471,7 +508,7 @@ These attributes can be:
 1. **Static** - Set directly on the model element
 2. **Dynamic** - Controlled by backend interceptors at runtime
 
-**ESM Access with Control Attributes:**
+#### ESM Access with Control Attributes
 ```xml
 <accesses name="Administration"
   target="_AdministrationInfo"
@@ -483,7 +520,7 @@ These attributes can be:
 
 Backend interceptors can dynamically modify access control by setting boolean attributes on transfer objects. The frontend reads these attributes and applies visibility/enablement rules.
 
-**Backend Interceptor Example:**
+#### Backend Interceptor Example
 ```java
 @Override
 public AdministrationInfo preRead(AdministrationInfo input) {
@@ -494,7 +531,7 @@ public AdministrationInfo preRead(AdministrationInfo input) {
 }
 ```
 
-**ESM Transfer Object with Control Attributes:**
+#### ESM Transfer Object with Control Attributes
 ```xml
 <elements xsi:type="structure:TransferObjectType" name="AdministrationInfo">
   <!-- Boolean attributes for access control -->
@@ -539,7 +576,7 @@ Transfer object attributes mapped as screen widgets also support these control a
   requiredBy="self.isSalaryMandatory"/>
 ```
 
-**Generated React Behavior:**
+#### Generated React Behavior
 ```tsx
 // The generated component checks these boolean values
 {!data.hiddenBy && (
@@ -589,7 +626,7 @@ Represents relationships between entities:
 }
 ```
 
-**Relation Properties:**
+#### Relation Properties
 - `isCollection`: true = 1:N, false = 1:1
 - `isAssociation`: true = aggregation/association, false = composition
 - `isDerived`: true = computed/read-only relation
@@ -604,6 +641,8 @@ Represents relationships between entities:
 | `generateActionsHook` | boolean | Generate actions hook for customization |
 | `isSelector` | boolean | Is this a selector page |
 | `isRelationSelector` | boolean | Is this a relation selector page |
+
+- Page title warning: `Page title has not been set!` never fires, because the breadcrumb's initial `label` is `undefined`, not `null`. Workaround: set the page title explicitly on every page.
 
 ## Action References
 
@@ -625,11 +664,13 @@ Actions in page definitions reference action definitions from containers:
 }
 ```
 
-**Key Properties:**
+### Key Properties
 - `actionDefinition`: Reference to the action type definition
 - `targetPageDefinition`: For navigation actions, the target page
 - `ownerDataElement`: The data element this action operates on
 - `isMenuAction`: If true, action appears in a dropdown menu
+
+- Input-selector action lookup: a `::Relation::Table::CallSelector` page gets its action by name prefix (`startsWith`, no separator), so a page can pick up an action of a page whose name starts with the same text. Workaround: avoid page names that are prefixes of other page names.
 
 ## Discriminators in IDs
 
@@ -645,13 +686,13 @@ This ensures unique identification for elements that could otherwise have duplic
 
 Each container generates a hook interface for customization:
 
-**Generated Hook Interface Key:**
+### Generated Hook Interface Key
 ```typescript
 export const TAG_CONTAINER_TRANSFER_TAG_CONTAINER_TRANSFER_VIEW_EDIT_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY =
   'TagContainerTransferTagContainerTransfer_View_EditContainerHook';
 ```
 
-**Usage in Container:**
+### Usage in Container
 ```typescript
 const { service: customContainerHook } =
   useTrackService<TagContainerTransferTagContainerTransfer_View_EditContainerHook>(
@@ -660,17 +701,28 @@ const { service: customContainerHook } =
 const containerActions = customContainerHook?.(data, editMode, storeDiff) || {};
 ```
 
+### Generated page files
+
+Each page folder (`src/pages/<Page>/`) and dialog folder holds these files:
+
+- `index.tsx`: the page component. It loads data, builds the page actions (merged with the custom hook if one is registered) and renders the container inside the view-model provider.
+- `context.tsx`: declares `<Container>ViewModel` (the container's page props plus `setIsLoading`, `setEditMode`, `refresh`, and `selectionDiff` on selector pages), the `<Container>ViewModelContext` and the `use<Container>ViewModel()` hook. Child components and custom elements call that hook to reach page state and actions. It throws outside the provider.
+- `customization.ts`: declares the actions hook contract: `<PAGE>_ACTIONS_HOOK_INTERFACE_KEY` and the type `<Container>ActionsHook = (data, editMode, storeDiff?, selectionDiff?, refresh?, submit?) => <Container>PageActionsExtended`.
+- `types.ts`: declares `<Container>PageActionsExtended` (the container's action types plus the optional `post<Action>` handlers) and the `<Page>XMIID` constant.
+
+`src/config/layout.ts` is app-wide: layout constants (`DRAWER_WIDTH`, `MINI_DRAWER_WIDTH`, `DIVIDER_HEIGHT`, `SUBMENU_MIN_WIDTH`), the `ThemeMode`, `MenuOrientation` and `ThemeDirection` enums, the customization prop types, `defaultLayoutConfig` (the menu orientation comes from the model, other defaults are fixed: light mode, header on, boxed container) and the `menuBehaviour` options. Do not edit it; it is regenerated.
+
 ## Service Generation
 
 For each page and relation, services are generated:
 
-**Path Pattern:**
+### Path Pattern
 ```
 src/services/data-axios/{Entity}ServiceImpl.ts
 src/services/data-axios/{Entity}ServiceFor{Relation}Impl.ts
 ```
 
-**Example:**
+### Example
 ```typescript
 // TagContainerTransferServiceForManyAssociationAssociationImpl
 class TagContainerTransferServiceForManyAssociationAssociationImpl {
@@ -723,9 +775,9 @@ The ESM relation member types directly control which UI actions are generated:
 | `MAPPED` | Direct mapping to entity relation | Full CRUD based on flags |
 | `DERIVED` | Computed/read-only relation | No Create, limited Update/Delete |
 | `TRANSIENT` | Temporary/non-persisted | View only, no CRUD actions |
-| (null/absent) | Direct entity relation | Based on entity CRUD flags |
+| (null/absent) | Direct entity relation | Based on the relation's CRUD flags (entity-level flags do not block writes on mapped transfer objects) |
 
-**Example ESM definitions:**
+##### Example ESM definitions
 
 ```xml
 <!-- MAPPED relation - full CRUD -->
@@ -750,7 +802,7 @@ The ESM relation member types directly control which UI actions are generated:
   rangeExpression="Entity!filter(...)" />
 ```
 
-**Generated UI Actions per memberType:**
+##### Generated UI Actions per memberType
 
 | memberType | RelationFeatureForm | RelationFeatureTable | Create Actions | Delete Actions |
 |------------|---------------------|----------------------|----------------|----------------|
@@ -788,7 +840,7 @@ The `relationKind` attribute affects UI representation and available actions:
 | `AGGREGATION` | Owned collection | Add/Remove/Create actions |
 | `COMPOSITION` | Strongly owned | Create/Delete, no Remove (cascade) |
 
-**Example:**
+#### Example
 ```xml
 <!-- Association - uses selector to add existing entities -->
 <relations name="tags" relationKind="AGGREGATION" memberType="MAPPED" />
@@ -808,7 +860,7 @@ The `lower` and `upper` bounds control single vs. multiple relation UI:
 | 0 | null/unbounded | Table (multiple) |
 | 1 | null/unbounded | Table with min 1 requirement |
 
-**Example:**
+#### Example
 ```xml
 <!-- Single optional -->
 <relations upper="1" name="singleAssociation" />
@@ -842,14 +894,14 @@ The `primary="true"` side typically gets the table view with CRUD actions.
 
 ### ESM Entity Type Flags
 
-Entity-level flags affect all transfer objects mapped to that entity:
+Entity-level flags are stored on the entity and do not by themselves block create, update or delete on the transfer objects mapped to it; the actor's access points and the relation flags decide those writes. The example shows the flags on the entity:
 
 ```xml
 <elements xsi:type="structure:EntityType"
   name="Order"
-  createable="true"   <!-- Entity can be created -->
-  updateable="true"   <!-- Entity can be updated -->
-  deleteable="true">  <!-- Entity can be deleted -->
+  createable="true"   <!-- Stored on the entity; the generator does not read it for create -->
+  updateable="true"   <!-- Stored on the entity; the generator does not read it for update -->
+  deleteable="true">  <!-- Stored on the entity; the generator does not read it for delete -->
 ```
 
 ### ESM Operations to UI Actions
@@ -864,7 +916,7 @@ ESM operations generate UI operation forms and buttons:
 | `STATIC` | `ui:MenuItemOperation` | Actor menu |
 | (bound, no type) | `ui:OperationForm` | Entity view/form |
 
-**Example ESM:**
+##### Example ESM
 ```xml
 <!-- Bound operation on entity -->
 <operations name="approve" customImplementation="false" body="...">
@@ -877,7 +929,7 @@ ESM operations generate UI operation forms and buttons:
 </operations>
 ```
 
-**Generated UI:**
+##### Generated UI
 ```json
 {
   "@id": "Actor/(esm/_xxx)/OperationForm",

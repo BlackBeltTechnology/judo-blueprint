@@ -1,0 +1,88 @@
+            target.setDialogSize(DialogSize.LG);
+
+            target.getActions().add(ctx.equivalent(source, Action.class,
+                    OPERATION_OUTPUT_BACK_ACTION));
+
+            if (source.getReturn().getMap() != null) {
+                if (isRefreshSupported(source.getReturn().getMap().getTransfer())) {
+                    target.getActions().add(ctx.equivalent(source, Action.class,
+                            OPERATION_OUTPUT_REFRESH_ACTION));
+                }
+                if (isUpdateSupported(source.getReturn().getMap().getTransfer())) {
+                    target.getActions().add(ctx.equivalent(source, Action.class,
+                            OPERATION_OUTPUT_UPDATE_ACTION));
+                }
+                if (isDeleteSupported(source.getReturn().getMap().getTransfer())) {
+                    target.getActions().add(ctx.equivalent(source, Action.class,
+                            OPERATION_OUTPUT_DELETE_ACTION));
+                }
+            }
+
+----
+    @TransformRule(name = OPERATION_OUTPUT_UPDATE_ACTION, description = "Create update action for output page")
+    @Lazy
+    @Transform(type = UIActionDeclaration.class)
+    @To(type = Action.class)
+    public TransformFunction<UIActionDeclaration, Action> operationOutputUpdateAction() {
+        return (source, ctx) -> {
+            UIFrontendDeclaration frontend = ctx.getAttribute("frontend");
+            if (source.getReturn() == null) return null;
+
+            Action target = ctx.createTarget(Action.class);
+            ctx.setElementId(target, frontend.getName()
+                    + "/(jsl/" + getJslId(source) + ")/OperationOutputUpdateAction");
+            target.setName(source.getName() + "::Update");
+            target.setOwnerDataElement(ctx.equivalent(source.getTransferAction().getTarget(),
+                    OperationType.class, OPERATION_TYPE));
+            target.setActionDefinition(ctx.equivalent(source.getReturn(),
+                    UpdateActionDefinition.class, VIEW_PAGE_CONTAINER_UPDATE_ACTION_DEFINITION));
+            LOG.debug("OperationOutputUpdateAction: {}", target.getName());
+----
+{{# if button.confirmation }}
+  {{# if (shouldRenderConfirmationCondition button) }}
+    {{# and container container.table }}
+    if (getValue<any>(ownerData, dataPath || '')?.{{ button.confirmation.confirmationCondition.name }}) {
+    {{ else }}
+    if ({{ dataParam }}?.{{ button.confirmation.confirmationCondition.name }}) {
+    {{/ and }}
+  {{/ if }}
+  const result = await openConfirmDialog(
+    '{{ getXMIID button }}',
+    t('{{ getTranslationKeyForVisualElement button }}.confirmation', { defaultValue: '{{ button.confirmation.confirmationMessage }}' }) as string,
+    t('judo.modal.confirm.confirm-title', { defaultValue: 'Confirm action' }) as string,
+  );
+
+  if (!result) {
+    return;
+  }
+  {{# if (shouldRenderConfirmationCondition button) }}
+    }
+  {{/ if }}
+{{/ if }}
+-----
+            if ((selector == HEAD || selector == HEADS) && descending || (selector == TAIL || selector == TAILS) && !descending) {
+                aggregatedExpressionTransformer = JqlAggregatedExpressionTransformer.createMaxInstance(expressionTransformer);
+            } else {
+                aggregatedExpressionTransformer = JqlAggregatedExpressionTransformer.createMinInstance(expressionTransformer);
+            }
+            AggregatedExpression aggregationExpression = aggregatedExpressionTransformer.createAggregatedExpression(filteringBase, sortingEx
+            JqlBinaryOperationTransformer jqlBinaryOperationTransformer = new JqlBinaryOperationTransformer((JqlTransformers) expressionTran
+            condition = (LogicalExpression) jqlBinaryOperationTransformer.createBinaryOperationExpression(sortingExpression, aggregationExpr
+            CollectionFilterExpression collectionFilterExpression = newCollectionFilterExpressionBuilder()
+                    .withCollectionExpression(argument)
+                    .withCondition(condition)
+                    .build();
+            if (selector == HEADS || selector == TAILS) {
+                result = collectionFilterExpression;
+                if (context.peekBaseExpression() instanceof CollectionExpression) {
+                    result = retransformResult(result, aggregationExpression);
+                }
+            } else {
+                result = new JqlAnyFunctionTransformer(expressionTransformer).apply(collectionFilterExpression, null, context);
+                if (context.peekBaseExpression() instanceof CollectionExpression) {
+                    result = retransformResult(result, aggregationExpression);
+                }
+            }
+
+        }
+        return result;

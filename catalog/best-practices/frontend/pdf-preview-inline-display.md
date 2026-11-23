@@ -11,7 +11,6 @@ projects: [rackinspect, park-here]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditGenerateAssessmentSheetPreviewInputFormActionsHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/dialogs/registerServicesFault_registry_servicesFaultRegistryFaultRegistry_View_EditGenerateReviewReportPreviewInputFormActionsHook.tsx"]
 alternatives: []
 related: [pandino-action-hook-override, generator-override-extra-dependencies]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

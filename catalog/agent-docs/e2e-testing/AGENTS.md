@@ -7,9 +7,15 @@
 | File | Purpose |
 |---|---|
 | `README.md` | E2E testing guide for JUDO React frontends using Playwright. |
+| `helpers-reference.agent.md` | Condensed map of `helpers-reference.md`: read first, then `kb_get` one section |
 | `helpers-reference.md` | API reference for the generated Playwright helpers (TableHelper, ApiHelper, VisualElementIds). |
+| `language-independent-testing.agent.md` | Condensed map of `language-independent-testing.md`: read first, then `kb_get` one section |
 | `language-independent-testing.md` | Write Playwright tests that do not depend on translated UI labels. |
+| `model-screen-layout.agent.md` | Condensed map of `model-screen-layout.md`: read first, then `kb_get` one section |
 | `model-screen-layout.md` | How model elements map to rendered screen components and VisualElementIds. |
+| `testing-patterns.agent.md` | Condensed map of `testing-patterns.md`: read first, then `kb_get` one section |
 | `testing-patterns.md` | Reusable Playwright test patterns for JUDO React frontends. |
+| `troubleshooting.agent.md` | Condensed map of `troubleshooting.md`: read first, then `kb_get` one section |
 | `troubleshooting.md` | Common Playwright E2E failures and fixes. |
+| `writing-tests.agent.md` | Condensed map of `writing-tests.md`: read first, then `kb_get` one section |
 | `writing-tests.md` | How to write Playwright tests for generated JUDO UIs. |

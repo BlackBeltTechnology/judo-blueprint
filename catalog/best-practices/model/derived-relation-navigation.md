@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, alba, skillmatrix-model, sanctuary-backend, park-here, judo-partner, workflow-poc]
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "alba:unrecorded", "skillmatrix-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-fragment: derived-relation-navigation
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -55,7 +54,6 @@ Seen in 8 projects.
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=derived-relation-navigation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Assessment {
@@ -86,4 +84,3 @@ classDiagram
   Event --> "*" Question : questions
   Event --> "0..1" Assessment : latestAssessment
 ```
-<!-- /mermaid:generated -->

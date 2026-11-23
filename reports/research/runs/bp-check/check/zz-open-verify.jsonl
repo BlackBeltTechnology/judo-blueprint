@@ -1,0 +1,16 @@
+{"id": "B24@2", "verdict": "ok", "note": "psm.ecore: immutable EAttribute only on TransferOperation (L625); no entity-level immutable attribute."}
+{"id": "B30@1", "verdict": "ok", "note": "DeletePayloadDaoProcessor: back refs are removed unless reverseCascadeDelete; refusal only when lowerBound>0; blueprint says primary link 0..1"}
+{"id": "B36@2", "verdict": "ok", "note": "customization.ts, types.ts and config/layout.ts.hbs content matches description; new sub-heading only, no deletions."}
+{"id": "B38@4", "verdict": "ok", "note": "page.tsx.hbs renders custom elements via ComponentProxy; data-name=PageHeaderContainer is only a DOM attribute. 'not a replacement hook' is an inference from absence, accepted."}
+{"id": "B3@5", "verdict": "ok", "note": "InitScriptExecutor GREEDY refs to persistence, scripts, SDK ops, identity manager; empty TreeMap exchange; no principal set in the class"}
+{"id": "B41@4", "verdict": "fixed", "note": "ListCall keeps returning rows and adds the record count; 'returns only a count' was wrong. Reworded; per-row hidden in react table ok"}
+{"id": "B7@4", "verdict": "ok", "note": "CreateInstanceCall interceptors attached to dispatcher behaviours; dao-core src/main has no Interceptor reference."}
+{"id": "B8@4", "verdict": "fixed", "note": "Replacement sentence supported by UpdatePayloadDaoProcessor:172-181 (attributes filtered by payload containsKey). Existing bullet 'Without a mask the whole entity is updated.' contradicted it; reworded to 'every attribute the payload carries is updated.'"}
+{"id": "G134@1", "verdict": "fixed", "note": "Partner end is named after the source type (the type declaring the member), not the target; createTwoWayRelation sets relBack.target=source. Reworded, example neutralised to b/a"}
+{"id": "B10@2", "verdict": "ok", "note": "JclDsl.xtext Statement rule has no throw/fault or service-reference form; statement list matches (create = 'new')."}
+{"id": "B10@4", "verdict": "ok", "note": "Same JclDsl.xtext statement list as B10@2; no throw/fault or service-reference form."}
+{"id": "B10@5", "verdict": "ok", "note": "JclDsl.xtext statement rules have no throw/fault/service form; generator emits no faults or service calls"}
+{"id": "B15@2", "verdict": "ok", "note": "DefaultVariableResolverComponent registers with judo.model.name props; osgi template uses the same per-model target pattern (Dispatcher reference, cited as pattern only)"}
+{"id": "B17@3", "verdict": "fixed", "note": "getByOrdinal(null) throws message 'Invalid ordinal: null', not 'Invalid ordinal: <n>'; DTO mapping only calls it for non-null ordinals. Reworded in place."}
+{"id": "B1@7", "verdict": "ok", "note": "TransactionalOperationCall: rollback on exception; finally commits only if stateful and no FAULT, otherwise rolls back."}
+{"id": "R2039@1", "verdict": "fixed", "note": "Root pom.xml.hbs has no extra-modules, extra-dependency-management, judo-properties-definition or release-profiles include; application pom.xml.hbs has extra-modules (L296), extra-dependency-management (L422), judo-properties-definition (L19), release-profiles (L386). Root list and application list rewritten to match the includes."}

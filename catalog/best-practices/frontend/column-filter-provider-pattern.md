@@ -11,7 +11,6 @@ projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: []
 related: [table-row-actions-utility, session-storage-table-state]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -24,7 +23,7 @@ Table pages with many columns and filter types get cluttered when definitions si
 ### Platform base
 
 - In the generated frontend, columns and filters come from the UI model: a table's columns (`DataColumn`) carry label, width or flex, sortable, filterable, hidden, default sort and alignment, and its filters (`DataFilter`) carry label, bound attribute and filter operation type ([tables and navigation mapping](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md)). Change them in the model first.
-- Per-column adjustments that the model cannot express go through column customizer hooks, which receive the original column definition and return a changed one (width, hidden, not sortable) ([column width and order](../../agent-docs/frontend/hooks/table-hooks.md)); see also [table column customization](../../agent-docs/frontend/advanced-patterns.md).
+- Per-column adjustments that the model cannot express go through column customizer hooks, which return a customizer that receives the original column definition and returns a changed one (width, hidden, not sortable) ([column width and order](../../agent-docs/frontend/hooks/table-hooks.md)); see also [table column customization](../../agent-docs/frontend/advanced-patterns.md).
 - Provider functions are only needed in a hand-written table page. With the generated tables, hooks and the model already do this job.
 
 ### Practice notes: providers for columns and filters

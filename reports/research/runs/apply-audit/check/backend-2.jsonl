@@ -1,0 +1,13 @@
+{"id": "R2519", "verdict": "ok", "note": "not-platform, no edit; confirmed no diff in type-system-guide"}
+{"id": "R0567", "verdict": "ok", "note": "not-platform, no edit"}
+{"id": "R2338", "verdict": "ok", "note": "ExchangeIdDecorator MDC.put only, no remove; text matches"}
+{"id": "R0697", "verdict": "ok", "note": "no MDC.remove for RequestExchangeId (only 'operation' removed in DefaultDispatcher:829)"}
+{"id": "R1220", "verdict": "ok", "note": "same as R0697"}
+{"id": "R2118", "verdict": "ok", "note": "RequestConverter/validator location building: '/' between containers, '.' before attribute, [idx]"}
+{"id": "R1470", "verdict": "ok", "note": "DefaultDispatcher:243-245 clears validatorProvider validators"}
+{"id": "R1473", "verdict": "fixed", "note": "original claim wrong: attribute conversion failures give CONVERSION_FAILED or are rethrown; only IllegalArgumentException from traversal is debug-logged (RequestConverter:160). Reworded"}
+{"id": "R2122", "verdict": "fixed", "note": "DefaultPayloadValidator:153 debug-logs then throws ValidationException or stores results; reworded 'returns' to 'continues'"}
+{"id": "R0290", "verdict": "ok", "note": "CallInterceptorUtil:78-82 async branch calls preCall"}
+{"id": "R2133", "verdict": "ok", "note": "ValidateCreateCall markedIdRemover.process(result) with null result; processAndCollect dereferences payload"}
+{"id": "R2134", "verdict": "ok", "note": "ValidateUpdateCall:119 result null when original skipped"}
+{"id": "R0680", "verdict": "ok", "note": "StringFilter:76 escapes only quotes; trailing backslash escapes closing quote"}

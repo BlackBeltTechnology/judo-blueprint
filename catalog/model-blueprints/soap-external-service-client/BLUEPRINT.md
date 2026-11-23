@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/mnb-soap-client/src/main/java/hu/mnb/webservices/osgi/ExchangeRateService.java", "rackinspect:application/mnb-soap-client/pom.xml"]
 alternatives: [external-api-adapter-provider-pattern]
-fragment: "none: backend-only"
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

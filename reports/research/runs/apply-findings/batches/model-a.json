@@ -1,0 +1,262 @@
+{
+ "batch": "model-a",
+ "files": [
+  "catalog/agent-docs/model/judo-cli.md",
+  "catalog/agent-docs/model/model-development.md",
+  "catalog/agent-docs/model/ui-authoring-guide.md"
+ ],
+ "items": [
+  {
+   "id": "G001",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G001 `c01-05` R0 S01: The CLI doc says the judo-cli.jar is downloaded by ./judo.sh build. In this generated project, generate-root did not create target/judo-cli.jar. Running mvn -DgenerateRoot validate did.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. judo-cli.md line 15 says ./judo.sh build downloads the jar; the root pom has a generateRoot profile (dependency:copy at validate) that does it. Add: if target/judo-cli.jar is missing run `mvn -DgenerateRoot validate` (the project has no mvnw).\n- **Why:** The catalog describes the download as part of judo.sh build. The generated root pom has its own download-cli profile that runs on generateRoot, so the catalog is incomplete for the new-project case. **Workaround:** Ran mvn -B -DgenerateRoot validate, which copied target/judo-cli.jar.\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L32`, `session:L75`, `session:L76`, `session:L77`. Merged: c02-02, g-L2, g-R1-4"
+  },
+  {
+   "id": "G002",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G002 `c01-07` R0 S02, S03: Mapping a TransferObjectType to an entity made the CLI auto-create members, forms, tables and views. The builder's hand-added DataMembers then failed validate --strict with binding and uniqueness erro\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. judo-cli.md `create` says it cascades view/form/table pages, but not that a TransferObjectType with a mapping gets its mapped members too. Add: do not hand-add members for a mapped TO; they exist, duplicates give BindingIsNotMappedByOtherMappedAttribute and NamedElementIsUniqueInItsContainer.\n- **Why:** The catalog does not say that a mapped TransferObjectType creates its members and UI scaffolds, so the builder assumed it had to create them. **Workaround:** Discarded the unsaved edits and rebuilt the model without the hand-added MAPPED members.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L121`, `session:L122`, `session:L124`, `session:L125`. Merged: c03-47"
+  },
+  {
+   "id": "G003",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G003 `c01-42` R0 S01: validate --strict failed with ExposedTransferObjectTableHasColumns (no columns on the viewable table). The fix was the fill command, which the builder found by trial.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. `fill <toFqn>` is in the command table (line 79) but not tied to the validator error ExposedTransferObjectTableHasColumns. Add: run fill (or add DataColumns) to clear it. Note R6 GAPS: fill also adds unwanted label fields and menu items.\n- **Why:** The accesspoint doc states the rule, but the fill command is not in the judo-cli reference (openspec sweep item MO-172 lists it as missing). **Workaround:** fill webshop::ProductInfo --pages view,form,table.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L137`, `session:L138`, `session:L139`, `session:L140`. Merged: c03-06, g-L11"
+  },
+  {
+   "id": "G004",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G004 `c01-43` R0 S01, S03: Tried create -t MenuItemAccess, which the CLI rejects because MenuItemAccess is created automatically for an actor's access.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. accesspoint.md has the Access to MenuItemAccess pairing rule but judo-cli.md does not say create -t MenuItemAccess is refused; add: create MenuItemAccess via the Access/actor menu flow (verify exact command).\n- **Why:** Builder tried the create command on an auto-generated element. **Workaround:** Used create -t Access on the actor and let the CLI create the menu access.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L135`, `session:L136`"
+  },
+  {
+   "id": "G005",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G005 `c02-03` R1 S09: ./judo.sh generate runs a clean that deletes target/judo-cli.jar. Every model edit made through the CLI jar after a generate fails with 'Unable to access jarfile'.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not covered. Add: ./judo.sh generate cleans target and deletes judo-cli.jar; re-fetch it with `mvn -DgenerateRoot validate` before the next CLI call (or copy it outside target).\n- **Why:** Generate wipes the target folder, and the jar lives there. The required order (fetch jar, change model, save, then generate and build) is not documented as a single sequence. **Workaround:** Re-fetched the jar before each model change and ran generate and build after the model was saved.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L1479`, `session:L1480`, `session:L1554`, `session:L1555`"
+  },
+  {
+   "id": "G006",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G006 `c02-25` R2 S04: judo fill --pages table added unrequested DataColumns (description and priceLabel) and changed dataFeature on them. The builder had to delete the description column by hand.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog says fill \"creates and populates view/form/table from its members\" but not that it adds a DataColumn for every transfer object member. Add: run fill --dry-run first; fill adds a column per member, delete unwanted DataColumns afterwards.\n- **Why:** fill creates a column for every transfer object member, so the dry-run output had to be read before the real run. **Workaround:** Ran fill --dry-run first, then fill, then judo delete on the unwanted columns; the price column was removed on purpose.\n- **Validation:** confirmed; kind cli-tool; catalog partly-covered. Evidence: `session:L1310`, `session:L1311`, `session:L1312`, `session:L1313`"
+  },
+  {
+   "id": "G007",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G007 `c02-34` R3 S11: Model CLI element names and paths were guessed repeatedly: query ui MenuItem, Access, PageDefinition title, GraphQL menuItems and _type fields, and FQNs with the id: prefix all failed with 'does not e\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog has the UI FQN rules and query syntax but no list of working type and field names for menus, accesses and pages. Add a short table of valid query esm types/fields for Access, MenuItemAccess, ActorType and page definitions, and note that FQNs must not carry the id: prefix unless using id:<xmi:id> form.\n- **Why:** The CLI and GraphQL type and field names differ between query, create and graphql, and the catalog does not list the working names for the navigation and page elements. **Workaround:** Read the GraphQL schema with graphql queries, then used FQNs from the query output (e.g. webshop::Shop::Menu for the menu label, ProductInfo_Table label via webshop::ProductInfo::ProductInfo_Table).\n- **Validation:** partly; kind cli-tool; catalog partly-covered. Evidence: `session:L1302`, `session:L1303`, `session:L1306`, `session:L1308`. Merged: c06-04, c08-03, c09-10"
+  },
+  {
+   "id": "G008",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G008 `c02-39` R3 S11: judo move --dry-run printed the reordered element as 'changed ... description (in components)' rather than the element being moved, so the dry-run output was misread while reordering the form fields. \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not in catalog. Add: move --dry-run reports the sibling that shifted, not the moved element; check the order with a query and use discard --force to clear a wrong reorder.\n- **Why:** The dry-run summary names the sibling that shifts, not the moved element, and the status output lists unsaved reorders by sibling. **Workaround:** Used move --json and graphql to confirm the child order, then discard --force and re-applied the move.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L1527`, `session:L1528`, `session:L1529`, `session:L1530`"
+  },
+  {
+   "id": "G009",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G009 `c03-02` R6 F02: CLI query of TwoWayRelationMember failed: asking for field partner without a sub-selection returns SubselectionRequired.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog query section gives no select syntax for reference fields. Add: a reference field needs a sub-selection, e.g. --select \"partner{name}\"; one-line example.\n- **Why:** The query select syntax needs a nested selection for ref fields; builder did not know the syntax. **Workaround:** Builder queried fqn and primary only and used validate output instead.\n- **Validation:** confirmed; kind cli-tool; catalog missing. Evidence: `session:L1773`, `session:L1774`, `session:L2038`. Merged: c05-19"
+  },
+  {
+   "id": "G010",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G010 `c03-44` R7 F13: Renaming the username member to email with a new type left the mapped member on the actor info transfer object with the old type; validate warned the data type must match its binding.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. judo-cli.md covers rename keeping identity but not that a type change must also be applied to the mapped member on transfer objects. Add that line.\n- **Why:** A rename plus type change must be applied to the mapped member too; the builder changed only the entity side first. **Workaround:** Renamed the mapped member in the same script step.\n- **Validation:** confirmed; kind builder-mistake; catalog missing. Evidence: `session:L2059`, `session:L2060`"
+  },
+  {
+   "id": "G011",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G011 `c04-17` R8 : After generate or build, target/judo-cli.jar disappeared, so every CLI call failed with 'Unable to access jarfile' until generate-root was run again.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. judo-cli.md line 15 says ./judo.sh build downloads target/judo-cli.jar; GAPS S01-2 shows neither build nor generate-root created it first time, and the session shows it missing after generate/build until generate-root ran again. State: restore with ./judo.sh generate-root (or mvn -DgenerateRoot validate) and check the jar exists before CLI calls.\n- **Why:** generate and build do not recreate the CLI jar; only generate-root (or the validate goal) copies it. Known from earlier rounds (R7-7, S01). **Workaround:** Helper script .scratch/ensure-cli.sh runs generate-root when the jar is missing; used before every CLI step.\n- **Validation:** confirmed; kind catalog-gap; catalog wrong. Evidence: `session:L2483`, `session:L2484`, `session:L2491`, `gaps:R8-12`. Merged: c07-44, g-R7-7"
+  },
+  {
+   "id": "G012",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G012 `c04-07` R8 : The CLI query for DataColumn and DataFilter returned nothing until 'fill' had been run on the transfer object, so the builder first thought the table columns did not exist.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog says DataColumn/DataFilter have no name and fill creates them, but not that they do not exist before fill. Add: query DataColumn/DataFilter returns nothing until fill has run on the transfer object.\n- **Why:** Column and filter elements are created by fill, not by create; the query output gives no hint of that. **Workaround:** Ran fill on the transfer object, then queried again.\n- **Validation:** confirmed; kind cli-tool; catalog partly-covered. Evidence: `session:L2390`, `session:L2392`"
+  },
+  {
+   "id": "G013",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G013 `c04-12` R8 F21: postCallAccessNavigation cannot be cleared once set, and move --index had no effect on the position of the action group; move --after did reorder the menu entries.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not in catalog; evidence is session-only. Add as verify: postCallAccessNavigation cannot be unset once set; move --index is ignored for action groups, use --before/--after.\n- **Why:** CLI behaviour: unset is refused for this attribute and move with an index is ignored for these elements. **Workaround:** Left postCallAccessNavigation set (the clear attempt was refused, session:L2481); used move --after for menu order, since move --index had no effect.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L2481`, `session:L2544`, `session:L2547`, `session:L2572`"
+  },
+  {
+   "id": "G014",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G014 `c05-20` R9 F32: create -t Access also creates a MenuItemAccess named Menu_n labelled with the target type name (AdminOrderInfo), so duplicate menu entries and not-unique errors followed; deleting an access referenced\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not covered. Add: create -t Access also creates a MenuItemAccess named Menu_n labelled with the type name; rename or reuse it, and delete of an access referenced by a menu needs --cascade.\n- **Why:** Side effects of Access creation are not documented for the CLI. **Workaround:** Deleted the duplicate access and menu, re-created one access, relabelled the menu.\n- **Validation:** confirmed; kind cli-tool; catalog missing. Evidence: `session:L2816`, `session:L2818`, `session:L2819`, `session:L2820`. Merged: c07-41, c09-16"
+  },
+  {
+   "id": "G015",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G015 `c06-05` R11 F44: create -t MimeType with -n failed ('name' not defined for MimeTypeCreateInput), and the --brief 'valid' output printed Java object strings (MimeTypeImpl@hash) instead of names.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog notes name-less reference UI elements but not MimeType. Add MimeType (name derives from type/subType) to the no-name list; the MimeTypeImpl@hash print is a CLI bug.\n- **Why:** CLI create for MimeType takes no name; the list of valid values is not rendered. **Workaround:** Created the MimeType with --ns only and kept the default name.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L3389`, `session:L3390`, `session:L3391`. Merged: g-R10-16"
+  },
+  {
+   "id": "G016",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G016 `c06-08` R11 F44: Table operation names are not the short names the builder used (exportOrders vs exportOrdersTableOperation::exportOrders), and ui query has no TableOperation type, so updates failed with 'element not \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not in catalog. Add: table operations use FQN <table>::<opName>TableOperation::<opName> style names; query esm for them, since ui has no TableOperation type (verify).\n- **Why:** Operation element naming of table actions is not obvious from the CLI output. **Workaround:** Listed the table operations with query esm TableOperation and used the full names.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L3406`, `session:L3414`, `session:L3448`"
+  },
+  {
+   "id": "G017",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G017 `c06-09` R11 F44: validate --strict reported errors after a delete with --no-check, but the same command still ran save, so an invalid model was written to disk.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog rule 6 says never save blindly and --no-check needs validate at the end, but not that chaining with && continues after validate reports errors. Add: gate save on the validate exit code (1 or 2).\n- **Why:** save does not stop when validation fails in the same command chain; the builder chained them. **Workaround:** Re-ran delete --cascade and validation until clean.\n- **Validation:** partly; kind cli-tool; catalog partly-covered. Evidence: `session:L3445`, `session:L3446`"
+  },
+  {
+   "id": "G018",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G018 `c07-40` R12 F52, F53: judo-cli query esm with --where fqn=... returns nothing, and --select dataType{name} or dataType.name is rejected (scalar fields only), so the builder decompiled and grepped generated code to learn na\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog lists --where operators but not that fqn is not a filterable field, nor that --select takes scalars or Name{sub} only. Add: filter by name.contains, not fqn.\n- **Why:** CLI query selection rules are not what the builder expected; the catalog page on the CLI was not consulted for query syntax first. **Workaround:** Used name filters and grep over generated sources.\n- **Validation:** confirmed; kind cli-tool; catalog partly-covered. Evidence: `session:L3831`, `session:L3833`, `session:L3834`, `session:L3836`. Merged: c09-11"
+  },
+  {
+   "id": "G019",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G019 `c08-04` R13 F58, F60: judo query ui MenuItemAccess failed because MenuItemAccess is an esm type, not a ui type; the builder had to fall back to query esm for menu items.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Add: MenuItemAccess and Access are esm types; query esm, not query ui, to list menu items.\n- **Why:** Type names for query ui and query esm differ and the CLI error lists valid types without saying which lane holds menus. **Workaround:** Used query esm MenuItemAccess for the menu list.\n- **Validation:** confirmed; kind cli-tool; catalog missing. Evidence: `session:L4606`, `session:L4609`"
+  },
+  {
+   "id": "G020",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G020 `c09-27` R14 F68: Admin Exchange rates had no Create button: create -t Access without flags made the access not createable, while the companies access was. The F68 test then timed out waiting for the rate save.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. No mention that create -t Access defaults createable=false (grep found only the property list in ui-authoring-guide). Add: set createable, updateable, deleteable explicitly when creating an Access.\n- **Why:** Builder did not set createable, updateable and deleteable on the new access; the command default differs by access. **Workaround:** Set the three flags on Admin.exchangeRates by hand and rebuilt.\n- **Validation:** confirmed; kind builder-mistake; catalog missing. Evidence: `session:L5420`, `session:L5423`, `session:L5425`, `session:L5531`"
+  },
+  {
+   "id": "G021",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G021 `c09-12` R14 F62, F63, F67: update --add feature failed for actions containers that do not exist yet ('Container not found', 'element not found'); fill reported 'unchanged'; a row action on a relation table was refused ('refund \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Not documented. Add order: create the actions container first, then update --add feature; row actions on relation tables must be added to the relation table, not placed anywhere (verify).\n- **Why:** CLI order of creating the actions group and row actions is not documented; error text does not say what to run first. **Workaround:** Used the generated refund table operation that already exists on the lines table; the test then opens the action group menu to click it.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L5222`, `session:L5224`, `session:L5226`, `session:L5228`"
+  },
+  {
+   "id": "G022",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G022 `c10-18` R15 : judo query on StringType with --select textWidget fails ('not a field'); textWidget lives on DataField, and the error lists valid fields without saying which type owns the attribute.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Catalog ui-behaviour.md maps widgets but the CLI error does not name the owner type. Add a hint: textWidget lives on DataField, not on the data type.\n- **Why:** Attribute is on DataField, not on the data type; the CLI does not point to the owning type. **Workaround:** Queried DataField instead.\n- **Validation:** partly; kind cli-tool; catalog partly-covered. Evidence: `session:L5738`, `session:L5739`, `session:L5740`, `session:L5743`"
+  },
+  {
+   "id": "G023",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "#### G023 `c10-19` R15 : A batch of 178 judo update attribute changes produced 20 errors: 'element not found' for view fields that do not exist (email, ratingLabel, soldBy, remainingCreditLabel) and textWidget refused on a un\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/judo-cli.md`. Add: use update --schema or query the view DataFields before a bulk update; view members that are not on the TO (derived labels) do not exist.\n- **Why:** Builder guessed the view attribute names from the TO fields; the CLI gives no per-view attribute list. **Workaround:** Accepted the 158 ok changes and skipped the 20 bad ones.\n- **Validation:** partly; kind cli-tool; catalog missing. Evidence: `session:L5744`, `session:L5746`, `session:L5753`"
+  },
+  {
+   "id": "G024",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G024 `c02-41` R3 S11: The kb has no section that says where the generated order of form and view fields comes from. The builder had to read the esm2ui transformation jar to learn it.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. No section on field order. Add: generated form/view field order follows the order of the container components in the ESM; reorder with `move --index`, not by delete and re-add (that loses customImplementation and widgets, GAPS R3-6).\n- **Why:** Catalog gap: the order rule (position from the container components in the ESM model) is not in the kb; the 'move' section of judo-cli.md does not say it affects generated field order. **Workaround:** Read the tatami esm2ui ETL (esmToUi.etl) from the local jar.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L1573`, `session:L1575`, `session:L1596`, `session:L1597`"
+  },
+  {
+   "id": "G025",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G025 `c03-17` R6 F07, F02: Builder tried representationComponent link, autocomplete and tag on the category relation; the CLI accepted only table (then button after relationKind changed). The catalog lists table, button and tag\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Shape table (line 257) lists to-one options table, button, tag, which matches the builder's note; the CLI behaviour (options depend on relationKind, e.g. table before kind change) is not stated. Add a line on that.\n- **Why:** Allowed representationComponent values depend on relationKind as enforced by the CLI, which the catalog's shape table does not state clearly; the builder guessed values before reading the catalog. **Workaround:** Set relationKind to AGGREGATION on ProductInfo.category, then set representationComponent to table on Form and View_Edit.\n- **Validation:** partly; kind catalog-wrong; catalog partly-covered. Evidence: `session:L1919`, `session:L1920`, `session:L1921`, `session:L1923`"
+  },
+  {
+   "id": "G026",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G026 `c03-07` R6 F07: update --feature name failed on CategoryInfo and ProductInfo: name is not a placeable feature on the table or view element because the feature is on the nested relation.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Guide does not say a name feature on a nested relation table is added on the nested element, not the table/view. Add one CLI example of update --add feature on a relation table element (verify).\n- **Why:** Builder targeted the wrong element; the feature belongs to the nested category or products relation. **Workaround:** Targeted the nested element instead (CategoryInfo_View_Edit products column).\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L1793`"
+  },
+  {
+   "id": "G027",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G027 `c03-36` R7 F08: kb_search for eager or isEager and embedded tables on views returned generic embedded-table sections; the view-table example (TabularReferenceField with representationComponent=table) was only found b\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. kb has no isEager entry (grep only finds jsl eager note and sessionStorage). Add a view-table example with TabularReferenceField representationComponent=table and say whether an eager attribute exists (verify against esm.ecore).\n- **Why:** The orchestrator's term isEager is not a catalog concept; the catalog answer is the to-many TabularReferenceField on the view, which the search did not rank first. **Workaround:** Read the catalog by grep, then used a to-many TabularReferenceField with representationComponent table on the view.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L1961`, `session:L1963`, `session:L1966`, `session:L1967`"
+  },
+  {
+   "id": "G028",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G028 `c03-37` R7 F08: Builder noted that the CLI lists table, button, tag and card as valid representationComponent values for a to-many relation, while the catalog shape table lists table, card and tag only.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Shape table (line 257) lists table, card, tag for to-many; builder reports the CLI also accepts button. Verify with `create --schema` and align the table.\n- **Why:** Possible mismatch between the catalog shape table and the CLI schema for to-many relations.\n- **Validation:** partly; kind catalog-wrong; catalog partly-covered. Evidence: `session:L1972`, `session:L1966`, `session:L2297`"
+  },
+  {
+   "id": "G029",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G029 `c03-71` R7 F10, F16: Variants and addresses inside a product or profile view are saved only with the page Update button; the tests failed until they clicked Update.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. No statement found. Add: composed child rows edited in a view are saved only by the page Update button; tests must click it.\n- **Why:** Composed child rows belong to the parent view and are stored with the parent save; the catalog does not say so next to the inline table pattern. **Workaround:** Tests click Update (saveView, saveProfile) after adding the child rows.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2275`, `session:L2281`, `session:L2287`"
+  },
+  {
+   "id": "G030",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G030 `c04-11` R8 F17, F21: An OperationForm placed directly in a view fails UI validation (ActionContainerSameWithActionDefinition, NamedElementHaveToBeInApplication); the operation must sit in an ActionGroup, and the catalog s\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. ui-authoring-guide lines 131 and 190 say OperationForm can sit directly in a View/Form; the session shows the transformation rejects it and needs an ActionGroup. Already listed as open in judo-doc-problems (ActionGroup-wrapped OperationForms). Change the text: operation buttons go inside a ui:ActionGroup.\n- **Why:** The catalog section on operation wiring says OperationForm inside View or Form works; the transformation rejects it. The openspec sweep already lists ActionGroup-wrapped OperationForms as an open item (FR-033). Even inside an ActionGroup, the validator still reported action container errors after the wrap (session:L2494). **Workaround:** Moved both operations into an ActionGroup named actions, set label Actions and featuredActions=1; for checkout the action container errors cleared only after it became void with generateActionsHook=true (validation passed, session:L2522).\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L2445`, `session:L2447`, `session:L2457`, `session:L2493`"
+  },
+  {
+   "id": "G031",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G031 `c05-21` R9 F25, F27: create -t ActionGroup without a parent was refused (Cannot create ActionGroup in Model); the group must be created with --ns of the view, then operations are relocated into it.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. No CLI recipe for creating an ActionGroup (create -t ActionGroup needs --ns of the view; operations are then moved in). Add it next to the ActionGroup row at line 191.\n- **Why:** The ui-authoring-guide says an OperationForm inside a view works, but gives no CLI recipe for the ActionGroup. **Workaround:** create -t ActionGroup -n actions --ns <view>, then relocate each operation into it.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2839`, `session:L2840`, `session:L2841`. Merged: c08-05. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G032",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G032 `c05-54` R10 F36, F39: Invoice and coupon actions were placed directly into the view again (OperationForm outside an ActionGroup), giving ActionContainerSameWithActionDefinition and NamedElementHaveToBeInApplication errors.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Line 302 only says OperationForm inside ActionGroup is for grouping; no sentence says direct placement fails validation. Add the rule: operations must be inside an ActionGroup (error ActionContainerSameWithActionDefinition). Repeated mistake, so a catalog entry would have helped.\n- **Why:** Builder repeated the R8-7 mistake; the lesson was not applied. **Workaround:** Deleted the actions, moved them into an ActionGroup with relocate, validate passed.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L3072`, `session:L3074`, `session:L3076`, `session:L3077`"
+  },
+  {
+   "id": "G033",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G033 `c06-17` R11 : 'Ordered' is a custom field and the generator draws custom fields after the generated ones, so after the move it sits just above the buttons; field order in the order view is not fully controllable.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `agent-docs/model/ui-authoring-guide.md`. Custom field after generated ones is the same field-order problem as the esmToUi position lookup (other batch). Note in the guide that generated field order is not fully controllable, and that move only works partly.\n- **Why:** Custom fields are placed after generated fields; the field-order platform bug may apply. **Workaround:** Used the CLI move command to reorder the generated fields; left Ordered last.\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `session:L3417`, `session:L3420`, `session:L3742`"
+  },
+  {
+   "id": "G034",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G034 `c09-44` R14 F60, F63, F67: Relation tables inside a view show raw member names (TotalLabel, SellerName) unless every column of that table gets its own label and order; row actions sit behind the generated action group drop-down\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. Builder reports relation tables in a view need labels and order per column; no catalog text on this. Single observation, add with verify.\n- **Why:** Labels set on the target transfer object do not reach a relation table in a view; not documented as far as checked. **Workaround:** Each relation column labelled and moved to an index via a script (cols function).\n- **Validation:** partly; kind catalog-gap; catalog missing. Evidence: `session:L5417`, `session:L5418`, `session:L5531`"
+  },
+  {
+   "id": "G035",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "#### G035 `c10-13` R15 : No documented way to hide the generated 'Check out' dialog action on the cart page, so the old and new checkout both exist.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/ui-authoring-guide.md`. hiddenBy exists (ui-behaviour.md line 44, ui-authoring-guide line 275) but there is no recipe for hiding a generated action; add one: put a boolean on the owner transfer object and set hiddenBy on the action.\n- **Why:** Hiding a generated action needs a hiddenBy boolean in the model; the builder left the model change for the owner. **Workaround:** Left the generated checkout dialog in place; documented in GAPS R15-3.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L5867`, `session:L6092`"
+  },
+  {
+   "id": "G084",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/model-development.md",
+   "text": "#### G084 `c03-05` R6 F01, F02: judo create -t MenuItemAccess is refused: the menu item access is created automatically with the actor access.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/model-development.md`. Step 8 (line 56) says a MenuItemAccess must be added by hand. With the CLI, `create -t MenuItemAccess` is refused because the item is created with the actor access (and by fill). Say so; GAPS R12-12 notes a silent failure when naming collides.\n- **Why:** Menu item accesses are generated by the Designer cascade, not by a direct create command. **Workaround:** Used create -t Access on the actor and let the cascade create the menu item.\n- **Validation:** confirmed; kind catalog-gap; catalog wrong. Evidence: `session:L1788`, `session:L1789`, `session:L2104`"
+  },
+  {
+   "id": "G085",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/model-development.md",
+   "text": "#### G085 `c04-08` R8 F22, F21: Creating a transfer object with a mapping auto-creates the mapped members (lineTotal, total and so on), so hand-made derived members with the same names gave 'not unique' and binding errors on validat\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/model-development.md`. Nothing in the catalog says a transfer object with a mapping auto-creates the mapped members, so a hand-made derived member of the same name is \"not unique\" (repeat of R7-14). Add one sentence: reuse the generated member, name derived members differently.\n- **Why:** Behaviour of mapped transfer objects not described where the builder looked; the same lesson was learned in R7 (R7-14) and repeated. **Workaround:** Deleted the duplicated hand-made members and kept the auto-created ones; validation passed.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2384`, `session:L2385`, `session:L2408`, `session:L2410`. Merged: g-L10, g-R7-14. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G086",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/model-development.md",
+   "text": "#### G086 `c06-01` R11 F41: A derived flag written as a JQL negation on a boolean (filter with !n.read) failed to parse; the builder then used n.read == false.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/model-development.md`. Catalog line 506 shows the !isUndefined escape hatch but I found no JQL negation example for boolean filters. Add: use `n.read == false`, `!n.read` does not parse; the not keyword form (verify).\n- **Why:** Builder used a negation form without checking the kb first; the catalog documents the 'not' keyword in model-development.md. **Workaround:** Rewrote the expression as n.read == false.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L3382`, `session:L3383`"
+  },
+  {
+   "id": "G087",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/model/model-development.md",
+   "text": "#### G087 `c07-09` R12 F48: The top-N expression form is unclear: !sort(...)!heads(5) fails in asm2query with 'Missing variable name', and !heads(p \\| ..., 5) validates but returns only one row at runtime. The catalog lists !hea\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/model-development.md`. model-development line 332 lists !heads(n) with no top-N example; judo-doc-problems already notes heads is under-documented. Add a validated top-N form and its runtime result once checked (verify).\n- **Why:** The catalog documents heads and sort separately; the lambda form and its runtime behaviour are not shown. **Workaround:** Used filter then sort with DESC and let the table page show 5 rows.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3941`, `session:L3945`, `session:L3947`, `session:L3950`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "NG0084",
+   "src": "judo-ng-read:-runtime-judo-model-cli",
+   "target": "catalog/agent-docs/model/judo-cli.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-05-12-graphql-mutations-ordering/specs/graphql-mutations/spec.md:131\n- src: judo-ng-read | status: validated | evidence: runtime/judo-model-cli:openspec/changes/archive/2026-05-12-graphql-mutations-ordering/specs/graphql-mutations/spec.md:131\n- claim: The system SHALL expose moveUp(fqn: String!): MutationResult and moveDown(fqn: String!): MutationResult mutations.\n- fact: No moveUp/moveDown mutations exist; the mutation schema registers only create, update, delete, move, relocate, fill, split and place. A move\n"
+  },
+  {
+   "id": "NG0088",
+   "src": "judo-ng-read:-models-judo-meta-script",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "## [wrong-fact] openspec/specs/adapter-script-esm/spec.md:23\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-script:openspec/specs/adapter-script-esm/spec.md:23\n- claim: getOperation(NamespaceElement, String) SHALL use EsmUtils.getAllOperations() to search the class and all its supertypes\n- fact: getOperation returns Optional.empty() unless clazz is a TransferObjectType, so other NamespaceElement classes never resolve operations\n"
+  },
+  {
+   "id": "NG0154",
+   "src": "judo-ng-read:-documentation",
+   "target": "catalog/agent-docs/model/model-development.md",
+   "text": "## [wrong-fact] docs/modules/ROOT/pages/tutorial/06_authentication.adoc:106\n- src: judo-ng-read | status: validated | evidence: documentation:docs/modules/ROOT/pages/tutorial/06_authentication.adoc:106\n- claim: 'the authenticated objects are SalesPerson transfer objects and in the script we are instantiating entities.'\n- fact: The script at line 109 instantiates the transfer object CRM::Service::SalesPerson, and lines 117-121 pass those objects to entity relations \n\n"
+  }
+ ]
+}

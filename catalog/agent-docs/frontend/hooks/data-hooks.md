@@ -1,6 +1,9 @@
 ---
 title: Frontend Data Hooks
 description: usePrincipal and useViewData of the generated React frontend and how hooks receive page data.
+aliases: [current user in frontend, logged in user hook, page data in hooks, view data hook, refresh page data, principal context]
+keywords: [usePrincipal, useViewData, principal-context, getLatestViewData, getRouterPageData, setLatestViewData, storeDiff, refreshPrincipal, errorCode, ViewDataProvider]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Data Hooks
@@ -121,6 +124,10 @@ const entityViewHook: ServiceEntityViewEditActionsHook = (data, editMode, storeD
   };
 };
 ```
+
+### Generated relation service signatures
+
+For a non-access relation, the generated relation service methods `create(owner, target, queryCustomizer?)` and `getRange(owner, queryCustomizer?, headers?)` take a required `owner` parameter (the stored owner). Only access relations have no `owner`.
 
 ## Combining Data Hooks
 

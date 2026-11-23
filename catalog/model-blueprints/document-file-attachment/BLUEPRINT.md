@@ -10,8 +10,6 @@ status: established
 projects: [mlszksz-platform, rackinspect, reserve-app, alba, judo-demo-miniworkflow, doors-model, park-here]
 evidence: [mlszksz-platform:model/MLSZKSZPlatform.model, rackinspect:model/rackinspect.model, reserve-app:unrecorded, alba:unrecorded, judo-demo-miniworkflow:unrecorded, doors-model:unrecorded]
 alternatives: [binary-document-with-link-pattern]
-fragment: document-file-attachment
-diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

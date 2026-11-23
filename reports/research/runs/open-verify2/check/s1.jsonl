@@ -1,0 +1,10 @@
+{"id": "apply-findings::G034", "verdict": "ok", "note": "EsmUtils.java:4253 setLabel(getEffectiveLabel()) at creation; effective label is the member name, capitalized as the ledger states"}
+{"id": "apply-findings-webshop::WR19-1", "verdict": "ok", "note": "accessView.etl:31-32 creates OperationFormCallAction for every operation form of the target view; known-issue wording kept as a known issue"}
+{"id": "bp-check::B21@6", "verdict": "ok", "note": "EsmUtils.java:2165 isCreateSupported reads Access/relation flags; entity-level flags not read; Access createable false removes Create"}
+{"id": "apply-findings-webshop::WR16-1", "verdict": "fixed", "note": "Restored the dropped auth-difference sentence (two actors can differ in authentication) inside the two-actor bullet; kept the third-actor build break (UiPageHelper.java:154 HashSet)"}
+{"id": "apply-findings::G042", "verdict": "ok", "note": "container.tsx.hbs:79-85 autofocus timeout; config/general.ts.hbs:41 autoFocusRefDelay = 200; storeDiff cause kept as a known issue"}
+{"id": "bp-check::B36@3", "verdict": "ok", "note": "Link to model-screen-layout.md#generated-page-files resolves (heading at line 672); duplicated content removed, nothing lost"}
+{"id": "bp-check::G080@2", "verdict": "ok", "note": "placeholder.etl:1-12 transforms guarded Placeholder to Spacer, copies visual properties and flag; one-region scope stated"}
+{"id": "apply-findings-webshop::WR19-3", "verdict": "ok", "note": "NoClassDefFoundError case: judo-meta-rdbms osgi pom imports epsilon runtime packages as resolution:=optional; known-issue wording kept"}
+{"id": "apply-findings-webshop::WR18-7", "verdict": "ok", "note": "StringBuilderLogger (ui-validation) formats via String.format; UiJavaValidator.java:125 logs '{}: {}'; ReflectiveUiValidatorFactory.java:84 fallback message. Not re-run: the 'judo-cli validate' output format is not re-checked"}
+{"id": "ADJ-structure-verify", "verdict": "applied-now", "note": "structure.agent.md line 44 verify note replaced with settled JCL mutable fact and widget rule (B51@5 evidence: JclUnaryOperationTransformer.java:46-58; EsmRelationFeatureExtensions.java:122)"}

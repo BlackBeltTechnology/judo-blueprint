@@ -11,7 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/components/LinkifiedText.tsx"]
 alternatives: []
 related: [custom-component-directory, custom-visual-element-override]
-fragment: "none: frontend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

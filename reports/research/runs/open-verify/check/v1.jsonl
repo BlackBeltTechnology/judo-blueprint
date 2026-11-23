@@ -1,0 +1,11 @@
+{"id":"apply-findings::R1898","verdict":"ok","note":"Guice keycloak src/main has no getenv; JudoKeycloakModule binds from configuration (L144-147); OSGi mapper envPrefix is JUDO_PLATFORM_ (platform-config-templates)."}
+{"id":"apply-findings::R1899","verdict":"ok","note":"Config default keycloakServerUrl http://localhost:8080/auth (L17); provider @Inject default http://localhost:8080 (L23) applies only without binding."}
+{"id":"apply-findings::R1900","verdict":"ok","note":"Config keycloakAdminPassword default judo (L26); provider default admin (L38) only without binding."}
+{"id":"apply-findings::R2215","verdict":"ok","note":"JudoPostgresqlModuleConfiguration poolSize=10 is passed to builder but PostgresqlDataSourceProvider wraps pg in HikariDataSource with no setMaximumPoolSize; Hikari default applies."}
+{"id":"apply-findings::B54","verdict":"ok","note":"UpdateInstanceCall builds queryCustomizer from dispatcher and passes it to dao.update (L68-125); no post-write membership re-check in the call."}
+{"id":"bp-check::B36@2","verdict":"ok","note":"customization.ts, types.ts and config/layout.ts.hbs content matches description; new sub-heading only, no deletions."}
+{"id":"bp-check::B7@4","verdict":"ok","note":"CreateInstanceCall interceptors attached to dispatcher behaviours; dao-core src/main has no Interceptor reference."}
+{"id":"apply-findings::R0052","verdict":"ok","note":"Mojo templateParameters field; variablePrecedence default matches; ReactStoredVariableHelper.isDebugPrint reads debugPrint; pom sets templateParameters/debugPrint false."}
+{"id":"bp-check::B10@2","verdict":"ok","note":"JclDsl.xtext Statement rule has no throw/fault or service-reference form; statement list matches (create = 'new')."}
+{"id":"bp-check::B17@3","verdict":"fixed","note":"getByOrdinal(null) throws message 'Invalid ordinal: null', not 'Invalid ordinal: <n>'; DTO mapping only calls it for non-null ordinals. Reworded in place."}
+{"id":"apply-findings-webshop::WR19-8","verdict":"ok","note":"DefaultActorResolver runs authenticate hooks then authenticateByPrincipal (L90-103) before operation (DefaultDispatcher L625); AUTHENTICATED_ENTITY_NOT_FOUND thrown when no row (L202)."}

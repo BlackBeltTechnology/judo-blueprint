@@ -1,0 +1,19 @@
+{
+  "source": "tui",
+  "hidden": true,
+  "cwd": "/Users/bmiller/Projects/webshop-test",
+  "status": "ended",
+  "startedAt": 1794385287389,
+  "endedAt": 1794385291707.8857,
+  "tokensIn": 0,
+  "tokensOut": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "cost": 0,
+  "firstMessage": "Reply with the number of lines starting with '| F' in FUNCTIONS.md (use bash grep -c). Do nothing else.",
+  "cachedAt": 1794988575307,
+  "live": false,
+  "closedReason": "unknown",
+  "archived": true,
+  "archivedAt": 1794385291707.8857
+}

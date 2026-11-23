@@ -10,8 +10,6 @@ status: single-project
 projects: [sanctuary-backend]
 evidence: ["sanctuary-backend:unrecorded"]
 alternatives: [user-with-boolean-role-flags, user-with-role-permission-entity]
-fragment: user-with-role-and-rolegroup-entities
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

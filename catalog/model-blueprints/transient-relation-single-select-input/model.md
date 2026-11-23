@@ -24,7 +24,6 @@ The source project declared the relation 1..1 with a default expression selectin
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=transient-relation-single-select-input cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Region {
@@ -48,4 +47,3 @@ classDiagram
   Task --> "1" Region : region
   TaskInput o-- "1" RegionView : region
 ```
-<!-- /mermaid:generated -->

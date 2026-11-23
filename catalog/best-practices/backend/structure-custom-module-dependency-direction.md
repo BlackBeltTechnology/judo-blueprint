@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/common/pom.xml", "rackinspect:application/report/AGENTS.md", "rackinspect:application/keycloak-client/pom.xml", "rackinspect:application/scheduler/pom.xml"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

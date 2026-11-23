@@ -13,7 +13,6 @@ Generated UI pages follow from the entity: a View, Form and Table page for Quest
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=multiple-choice-question-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Category {
@@ -52,4 +51,3 @@ classDiagram
   Question ..> Choice : solution
   Question ..> QuestionStatus : status
 ```
-<!-- /mermaid:generated -->

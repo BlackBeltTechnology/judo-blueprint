@@ -1,0 +1,198 @@
+[
+ {
+  "id": "R1458",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/schema-evolution.md",
+  "text": "Incremental Liquibase diffs add a TableExists precondition to every table, because the previous-model check always returns true.",
+  "evidence": "runtime/judo-tatami-base:judo-tatami-base:judo-tatami-rdbms2liquibase/src/main/java/hu/blackbelt/judo/tatami/rdbms2liquibase/zeta/Rdbms2LiquibaseIncrementalZetaTransformation.java:1022"
+ },
+ {
+  "id": "R1459",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/schema-evolution.md",
+  "text": "The pre-check backup table name is the backup prefix, an underscore and the table SQL name, with no truncation or uppercasing.",
+  "evidence": "runtime/judo-tatami-base:judo-tatami-base:judo-tatami-rdbms2liquibase/src/main/java/hu/blackbelt/judo/tatami/rdbms2liquibase/zeta/Rdbms2LiquibaseIncrementalZetaTransformation.java:1071"
+ },
+ {
+  "id": "R1567",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/schema-evolution.md",
+  "text": "The generated model-version is set to the project version, not to a timestamp, commit and branch composite.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/deployment/schema-evolution.md.hbs:411"
+ },
+ {
+  "id": "R1581",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "Generated projects ship a fixed placeholder identifier signer secret in judo-karaf.env, which must be replaced per environment.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/judo-karaf.env.hbs:1"
+ },
+ {
+  "id": "R1596",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "A per-token upload MAX_FILE_SIZE applies only when it is larger than the server max size; smaller values are ignored.",
+  "evidence": "runtime/osgi-filestore:osgi-filestore:filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/UploadServlet.java:545"
+ },
+ {
+  "id": "R1898",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "The Guice Keycloak integration reads its settings from JudoKeycloakModuleConfiguration, not from KEYCLOAK_* environment variables.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-security-keycloak/agent-docs/README.md:187"
+ },
+ {
+  "id": "R1899",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "The Keycloak server URL default in JudoKeycloakModuleConfiguration is http://localhost:8080/auth, and the connector default differs.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-security-keycloak/agent-docs/README.md:189"
+ },
+ {
+  "id": "R1900",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "The Keycloak admin password default is 'judo' in JudoKeycloakModuleConfiguration and 'admin' in KeycloakConnectorProvider.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-security-keycloak/agent-docs/README.md:192"
+ },
+ {
+  "id": "R2046",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "The filestore directory is set by JUDO_PLATFORM_FILESTORE_DIRECTORY; JUDO_PLATFORM_FILESTORE_PATH is not read.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/deployment/application-config.md.hbs:244"
+ },
+ {
+  "id": "R0306",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "cxfJaxRsServerUrl is injected but never read by the CXF JAX-RS server provider; it has no effect.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/server/guice/providers/CxfJaxrsServerProvider.java:50"
+ },
+ {
+  "id": "R0307",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "cxfReturnRuntimeExceptions and cxfIncludeBusinessCause have no effect; the RuntimeExceptionMapperProvider is never bound.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/server/guice/JudoCxfModule.java:120"
+ },
+ {
+  "id": "R0308",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "CORS options (corsAllowOrigin and related) have no effect; the CORS filter provider returns an unconfigured filter.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/server/guice/providers/CrossOriginResourceSharingFilterProvider.java:74"
+ },
+ {
+  "id": "R0317",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "cxfLogException is injected but never read by the payload message body writer; it has no effect.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/server/guice/providers/PayloadMessageBodyWriterProvider.java:18"
+ },
+ {
+  "id": "R0405",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "HSQLDB port, databaseName and databasePath options are not applied; configureOptions() is never called by configure().",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-hsqldb/src/main/java/hu/blackbelt/judo/runtime/core/guice/dao/rdbms/hsqldb/JudoHsqldbModule.java:91"
+ },
+ {
+  "id": "R0409",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "Jetty thread pool options (maxThreads, minThreads, idleTimeout) are not passed to the Jetty container; only port and contextPath are.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-jetty/src/main/java/hu/blackbelt/judo/runtime/core/jetty/guice/JettyContainerProvider.java:23"
+ },
+ {
+  "id": "R0410",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+  "text": "Keycloak realm synchronizer settings are injected under @Named keys that the Keycloak module does not bind, so the settings do not reach the synchronizer.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-keycloak/src/main/java/hu/blackbelt/judo/runtime/core/security/keycloak/guice/providers/KeycloakRealmSynchronizerProvider.java:26"
+ },
+ {
+  "id": "R0411",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "The HSQLDB Dialect is always bound to a new HsqldbDialect instance; configured overrides and singleton scope do not apply.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-hsqldb/src/main/java/hu/blackbelt/judo/runtime/core/guice/dao/rdbms/hsqldb/JudoHsqldbModule.java:91"
+ },
+ {
+  "id": "R0416",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "Jetty idleTimeout is passed unchanged to QueuedThreadPool, which takes milliseconds, so the documented seconds value is read as milliseconds.",
+  "evidence": "runtime/judo-runtime-core:judo-runtime-core-guice-jetty/src/main/java/hu/blackbelt/judo/runtime/core/jetty/guice/JettyContainer.java:84"
+ },
+ {
+  "id": "R2215",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "poolSize is stored in the Guice PostgreSQL module configuration but is never applied to the HikariCP pool.",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice-postgresql/src/main/java/hu/blackbelt/judo/runtime/core/guice/dao/rdbms/postgresql/PostgresqlDataSourceProvider.java:70"
+ },
+ {
+  "id": "R2418",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "dispatcherMetricsReturned defaults to false in the Guice default module configuration.",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice/src/main/java/hu/blackbelt/judo/runtime/core/guice/JudoDefaultModule.java:92"
+ },
+ {
+  "id": "R2494",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/tooling-guide.md",
+  "text": "The schema merge relation re-sync guard never matches, because the merge descriptor feature is not a schema RelationFeature.",
+  "evidence": "judo-esm-schema-merge-maven-plugin:src/main/resources/script/merge.eol:211"
+ },
+ {
+  "id": "R2495",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/tooling-guide.md",
+  "text": "The schema merge throws 'Super type not defined in target' when the supertype is in the target, the reverse of its condition.",
+  "evidence": "judo-esm-schema-merge-maven-plugin:src/main/resources/script/merge.eol:125"
+ },
+ {
+  "id": "R2620",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/application-config.md",
+  "text": "rdbmsDaoMarkSelectedRangeItems is never bound in the module, so setting it has no effect.",
+  "evidence": "judo-runtime-core:judo-runtime-core-guice/src/main/java/hu/blackbelt/judo/runtime/core/guice/JudoDefaultModuleConfiguration.java:56"
+ },
+ {
+  "id": "R0976",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/osgi-runtime-services.md",
+  "text": "A Liquibase failure in the model datasource pre-hook is only logged; the datasource is still registered.",
+  "evidence": "runtime/judo-services:judo-services-persistence/src/main/java/hu/blackbelt/judo/services/persistence/LiquibaseModelDataSourcePrehook.java:188"
+ },
+ {
+  "id": "R1065",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/tooling-guide.md",
+  "text": "judo.sh prune prints [Y/n] but only an exact 'Y' continues; Enter and 'y' abort.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/judo.sh.hbs:377"
+ },
+ {
+  "id": "R1112",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/production.md",
+  "text": "In the HTTPS compose template the app container has no volume for the filestore directory; only postgres mounts one.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/docker/compose-postgresql-https/docker-compose.yml.hbs:62"
+ },
+ {
+  "id": "R1141",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/schema-evolution.md",
+  "text": "The backup-table precondition name is not abbreviated like the backup table, so the precondition can reference a missing table.",
+  "evidence": "runtime/judo-tatami-base:judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/liquibase/modules/dbCheckup.etl:32"
+ },
+ {
+  "id": "R1142",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/schema-evolution.md",
+  "text": "Unique constraints in the incremental changelog are built with empty table and column names and never added, so they are not applied.",
+  "evidence": "runtime/judo-tatami-base:judo-tatami-rdbms2liquibase/src/main/epsilon/transformations/liquibase/modules/afterIncremental.etl:52"
+ }
+]

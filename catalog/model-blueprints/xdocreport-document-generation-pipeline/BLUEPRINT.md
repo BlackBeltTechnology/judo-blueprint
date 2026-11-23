@@ -10,13 +10,14 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:unrecorded"]
 alternatives: [document-generation-pipeline]
-fragment: none: backend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---
 ## Intent
 
 Produce PDF and DOCX documents (offers, reports, certificates) from templates that business users maintain as Word files. The pipeline is backend code; the model only needs a place to keep the templates and the generated result.
+
+> **Legacy.** This DOCX/XDocReport pipeline is treated as legacy; Handlebars-based templates are preferred. Prefer [[document-generation-pipeline]] and [[handlebars-email-template]] for new work; keep this blueprint for existing DOCX-based applications.
 
 ### Templates are data, not code
 

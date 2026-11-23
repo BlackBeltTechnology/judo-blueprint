@@ -1,0 +1,19 @@
+{
+  "source": "tui",
+  "hidden": true,
+  "cwd": "/Users/bmiller/Projects/webshop-test",
+  "status": "ended",
+  "startedAt": 1794385525270,
+  "endedAt": 1794386698919.6072,
+  "tokensIn": 0,
+  "tokensOut": 0,
+  "cacheRead": 0,
+  "cacheWrite": 0,
+  "cost": 0,
+  "firstMessage": "Answer from your own context and the kb only; do not search the filesystem and do not edit files. 1) Which skills whose name starts with judo are listed in your system prompt? 2) Use kb_search (doc_ty",
+  "cachedAt": 1794988575306,
+  "live": false,
+  "closedReason": "unknown",
+  "archived": true,
+  "archivedAt": 1794386698919.6072
+}

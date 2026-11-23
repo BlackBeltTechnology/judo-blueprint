@@ -1,0 +1,8 @@
+{"id": "G108@2", "verdict": "ok", "note": "ColumnCustomizerHook = () => ColumnCustomizer; ColumnCustomizer = (original) => GridColDef (table.ts.hbs:67-68). Wording matches."}
+{"id": "R1665@5", "verdict": "fixed", "note": "Intent text now says a visible mask needs the custom element; the When-to-avoid bullet still said a model textMask is enough. Reworded to the evidenced fact (generated input emits only maxLength). Frontmatter description still says textMask is the first thing to try; frontmatter is append-only, so left and flagged."}
+{"id": "R1665@3", "verdict": "ok", "note": "textinput.hbs emits only maxLength (lines 48-49, 97-99); no mask/regexp handling. Sentence matches."}
+{"id": "B45@1", "verdict": "ok", "note": "Link to widgets.md textMask row (line 50, \"generated input does not apply it\") matches the change."}
+{"id": "G269@4", "verdict": "ok", "note": "LogoMain.tsx.hbs:10 renders img with maxHeight/maxWidth only, no width/height. Caveat matches. \"Renders wrongly\" is the observed symptom from the finding; kept."}
+{"id": "B32@4", "verdict": "applied-now", "note": "Added the customImplementation boolean on the UI visual element (ui.ecore:131, VisualElement) to the Structure paragraph."}
+{"id": "B32@7", "verdict": "applied-now", "note": "Registration bullet names the customImplementation boolean (ui.ecore:131)."}
+{"id": "KC11@3", "verdict": "applied-now", "note": "Platform facts line: mapped removed as an operation kind; built-in operations on a mapped type are intercepted (psm.ecore:636-660; agent-docs interceptors.md:35). agent-docs interceptors.md:3 has the old wording; flagged."}

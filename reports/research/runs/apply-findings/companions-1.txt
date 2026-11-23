@@ -1,0 +1,10 @@
+catalog/agent-docs/backend/custom-operations.agent.md
+catalog/agent-docs/backend/patterns-and-best-practices.agent.md
+catalog/agent-docs/deployment/build-process.agent.md
+catalog/agent-docs/e2e-testing/writing-tests.agent.md
+catalog/agent-docs/frontend/esm-to-ui-mappings/README.agent.md
+catalog/agent-docs/frontend/hooks/action-hooks.agent.md
+catalog/agent-docs/frontend/hooks/ui-hooks.agent.md
+catalog/agent-docs/frontend/theming.agent.md
+catalog/agent-docs/model/esm_metamodel/accesspoint.agent.md
+catalog/agent-docs/model/model-development.agent.md

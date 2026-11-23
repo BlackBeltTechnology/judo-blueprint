@@ -11,8 +11,6 @@ projects: [mjsz]
 evidence: ["mjsz:unrecorded"]
 alternatives: []
 related: [derived-attribute-flattening, null-safe-collection-aggregation, aggregated-stored-field]
-fragment: integer-boolean-for-aggregation
-diagram: { kinds: [entity], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -74,7 +72,6 @@ A Pairing has two scores and derived Integer flags `firstWin` and `draw`. A Part
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=integer-boolean-for-aggregation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Pairing {
@@ -91,4 +88,3 @@ classDiagram
   }
   Participant --> "*" Pairing : firstPairings
 ```
-<!-- /mermaid:generated -->

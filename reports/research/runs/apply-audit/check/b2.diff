@@ -1,0 +1,74 @@
+diff --git a/catalog/agent-docs/backend/data-access-guide.md b/catalog/agent-docs/backend/data-access-guide.md
+index 8942d2b..da2f4af 100644
+--- a/catalog/agent-docs/backend/data-access-guide.md
++++ b/catalog/agent-docs/backend/data-access-guide.md
+@@ -106,6 +106,8 @@ import hu.blackbelt.judo.sdk.query.StringFilter;
+ .filterByName(StringFilter.ilike("BUDAPEST"))
+ ```
+ 
++The SDK escapes double quotes only. A value that ends in a backslash (for example `C:\`) breaks the quoted filter value, so the query returns a wrong result or fails. Do not end a string filter value with a backslash.
++
+ #### NumberFilter
+ 
+ For filtering numeric fields (Integer, Long, BigDecimal).
+diff --git a/catalog/agent-docs/backend/debugging-and-monitoring-guide.md b/catalog/agent-docs/backend/debugging-and-monitoring-guide.md
+index cdf8af5..4866538 100644
+--- a/catalog/agent-docs/backend/debugging-and-monitoring-guide.md
++++ b/catalog/agent-docs/backend/debugging-and-monitoring-guide.md
+@@ -88,8 +88,10 @@ JUDO automatically enriches every log message with a request-specific context, w
+ | `operation` | The fully qualified name of the JUDO operation being executed. |
+ | `user` | The username from the OAuth 2.0 access token. |
+ 
++`RequestExchangeId` stays set on a worker thread after the request ends, so a later log line on a reused thread can carry an earlier request's id. Use the `X-Exchange-Id` response header to correlate requests.
++
+ ### Request Correlation with `X-Exchange-Id`
+-Two built-in CXF interceptors correlate a request across client and server logs. `ExchangeIdDecorator` (incoming, `Phase.RECEIVE`) assigns a UUID to the CXF exchange (key `exchangeId`) and publishes it in the SLF4J MDC as `RequestExchangeId`. `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header, and only when `ExchangeIdDecorator` has set an id on the exchange; its fault handler delegates to the normal handler, so error responses carry the header as well. Quote that header value when you search server logs for a failing request. It is the same id the CXF logging feature uses.
++Two built-in CXF interceptors correlate a request across client and server logs. `ExchangeIdDecorator` (incoming, `Phase.RECEIVE`) assigns a UUID to the CXF exchange (key `exchangeId`) and publishes it in the SLF4J MDC as `RequestExchangeId`. `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header, and only when `ExchangeIdDecorator` has set an id on the exchange; its fault handler delegates to the normal handler, so error responses carry the header as well. Quote that header value when you search server logs for a failing request. It is the same id the CXF logging feature uses. The decorator never removes the MDC entry, so on a pooled thread a log line can show an earlier request's id. For a failing request, match the `X-Exchange-Id` header, not the id on nearby log lines.
+ 
+ ### Log Messages Emitted by the Dispatcher
+ Only these dispatcher messages exist in the runtime: `Operation {} completed in {} ms` (`DefaultDispatcher`, per operation) and `Unable to rollback transaction` (`TransactionalOperationCall`). Do not search for other strings such as "Dispatching operation" or "Resolved actor"; they are not logged. To see operation names add your own interceptor that logs `AsmUtils.getOperationFQName(operation)` (see [Interceptors](interceptors.md)).
+diff --git a/catalog/agent-docs/backend/error-handling-guide.md b/catalog/agent-docs/backend/error-handling-guide.md
+index 571b684..e7d9fec 100644
+--- a/catalog/agent-docs/backend/error-handling-guide.md
++++ b/catalog/agent-docs/backend/error-handling-guide.md
+@@ -90,6 +90,8 @@ A `ValidationResult` has `code`, `level`, `location` (type `Object`) and a `deta
+ - The platform itself emits results without location (`AUTHENTICATION_REQUIRED`, `ACCESS_DENIED`, `INVALID_IDENTIFIER`) or with non-field locations such as `_mask` and `_identifier`.
+ - You may throw a `ValidationException` with only a code (the official documentation example uses `SHIPPED_TIME_MUST_AFTER_ORDER_TIME` with no location).
+ - With `ignoreInvalidValues` set, attribute validation is skipped for the attribute, including the required-attribute check.
++- Nested locations join container paths with `/` and add an attribute after `.`, with list indexes in brackets, for example `orders[0]/items[2].price`. Use the location string as returned; do not parse it as a plain attribute path.
++- If traversing the payload throws `IllegalArgumentException`, the validator logs it at debug level only and returns the results collected so far. A validation error can be missing from the response.
+ 
+ Do not assume every error can be rendered next to an input field, and do not assume a validation error maps to a model attribute.
+ 
+@@ -148,6 +150,7 @@ Notes:
+ - `ValidationException` has no `getViolations()` method. It is built from a collection of `ValidationResult` and exposes it as `getValidationResults()`.
+ - A `WebApplicationException` is mapped by its cause: a Jackson cause gives 400 with code `INVALID_JSON`; a missing or `RuntimeException` cause gives 500; any other cause gives 400.
+ - `PayloadMessageBodyWriter` swallows every response-serialisation error: nothing is logged and no error response is sent.
++- A request value that cannot be converted is logged at debug level only (`RequestConverter.convert`) and may not be reported as a validation error. Validate client input before sending it.
+ 
+ ## Example Project Helpers (Not Platform API)
+ 
+@@ -239,6 +242,8 @@ A `ValidationException` can carry many `ValidationResult`s. If a custom operatio
+ 
+ For required fields and relations declared in the model the runtime validator already reports `MISSING_REQUIRED_ATTRIBUTE` and `MISSING_REQUIRED_RELATION` (the latter with `__referenceId`); do not duplicate those checks in custom code.
+ 
++Setting validation off (`enableValidation` set to `false` in the `DefaultDispatcher` constructor) also clears every validator in the validator provider, including validators the application registered. Keep validation on when you rely on custom validators.
++
+ ---
+ 
+ ## Testing Error Handling
+diff --git a/catalog/agent-docs/backend/interceptors.md b/catalog/agent-docs/backend/interceptors.md
+index 56de7ad..6ef29a9 100644
+--- a/catalog/agent-docs/backend/interceptors.md
++++ b/catalog/agent-docs/backend/interceptors.md
+@@ -181,6 +181,10 @@ public interface OperationCallInterceptor {
+ | `async()` | `true` runs the interceptor on a different thread, outside the transaction and without context variables. Its exceptions are lost and it cannot change the payload. |
+ | `terminateOnException()` | Defaults to `true`: an exception terminates the call. Ignored for async interceptors. |
+ 
++With `async()` true the runtime calls `preCall`, not `postCall`, after the operation, on a background thread, so `postCall` never runs. Put post-operation logic in a synchronous interceptor (`async()` false).
++
++For validate-create and validate-update operations, an interceptor that skips the original call (`ignoreDecoratedCall()` returns `true`) makes the operation fail with a `NullPointerException`. Do not skip the original call for these operations.
++
+ Interceptors may throw only `InterceptorCallBusinessException` (see [Throwing a Business Error from an Interceptor](#throwing-a-business-error-from-an-interceptor)).
+ 
+ ### Which Operations Are Intercepted

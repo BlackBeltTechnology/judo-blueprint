@@ -13,14 +13,14 @@
     <description>Pattern catalog and knowledge base for JUDO projects</description>
 
     <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
-        <judo-model-cli-version>1.1.0.20261108_202643_d9769d90_develop</judo-model-cli-version>
+        <revision>2.0.0-SNAPSHOT</revision>
+        <judo-model-cli-version>1.1.0.20261119_155735_a64aa981_develop</judo-model-cli-version>
     </properties>
 
     <profiles>
         <!-- Downloads the pinned JUDO model CLI to target/judo-cli.jar (never tracked).
              Activates when target/judo-cli.jar is missing. Manual run: ./mvnw validate -P download-model-cli
-             To bump: change judo-model-cli-version, delete target/judo-cli.jar, re-run, then render all fragments. -->
+             To bump: change judo-model-cli-version, delete target/judo-cli.jar, re-run. -->
         <profile>
             <id>download-model-cli</id>
             <activation>

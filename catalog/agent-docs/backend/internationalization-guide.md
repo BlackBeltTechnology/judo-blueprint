@@ -1,6 +1,9 @@
 ---
 title: Backend Internationalization Guide
 description: Backend i18n service, localized validation messages and translation files.
+aliases: [backend translations, localized error messages java, inject i18n service, validation message language, messages properties file, translate validation errors]
+keywords: [ApplicationI18n, I18nService, LocaleProvider, defaultLocale, MessageInterpolator, getTemplate, ValidationException, ValidationResult, messages_en.properties, messages_hu.properties]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Backend Internationalization (i18n) Guide
@@ -11,7 +14,7 @@ This guide explains how to use JUDO's backend internationalization (i18n) featur
 
 The i18n service allows you to inject a type-safe interface into your custom operations, which resolves translated message strings at runtime based on the user's language preferences.
 
-**See also:**
+### See also
 - [Error Handling Guide](error-handling-guide.md) - For details on how to throw exceptions.
 - [Custom Operations](custom-operations.md) - For examples of using i18n in business logic.
 
@@ -23,7 +26,7 @@ The i18n service allows you to inject a type-safe interface into your custom ope
 
 The i18n service provides translated message strings that can be injected into your custom operations.
 
-**Key concepts:**
+#### Key concepts
 - **Generated i18n interface** - Auto-generated from your model's translation keys
 - **OSGi service** - Injected via `@Reference`
 - **Type-safe methods** - Each translation key becomes a method
@@ -33,7 +36,7 @@ The i18n service provides translated message strings that can be injected into y
 
 The i18n interface is typically defined in your common utilities and implements translation key methods.
 
-**Example interface structure:**
+#### Example interface structure
 ```java
 package [your.package].utils.services.i18n;
 
@@ -58,6 +61,17 @@ public interface ApplicationI18n {
     String field_exceeds_maximum_length(int maxLength);
 }
 ```
+
+### Message resolution order
+
+For an i18n interface method, the runtime resolves the message template in this order:
+
+1. The property named after the method. An existing property with that name wins, including over `@Message(value=...)`.
+2. `@Message(key=...)`: the key is looked up only if step 1 found nothing. If the key is set and its lookup returns nothing, the inline `@Message(value=...)` is discarded as well.
+3. `@Message(value=...)`, the inline template, when no key is set.
+4. An auto-generated template from the method name and its parameters.
+
+`@MessageByEnum` is only declared and has no processor; enum messages are resolved by `EnumI18nService` by constant name, not through this annotation. Enum constants with a class body are not matched to their enum's resolver, because the lookup uses the runtime class.
 
 ### Using I18n in Custom Operations
 
@@ -236,7 +250,7 @@ public class CreateExternalDataCustomImplementation implements CreateExternalDat
 
 ### I18n Message Organization
 
-**Recommended message categories:**
+#### Recommended message categories
 
 ```java
 public interface ApplicationI18n {
@@ -292,7 +306,7 @@ Bean validation in the runtime goes through a Hibernate Validator OSGi component
 2. Parameter tokens such as `{min}` and `{max}` are interpolated and EL expressions such as `${validatedValue}` are evaluated.
 3. Escaped literals `\{ \} \\ \$` are replaced by the literal characters.
 
-The locale comes from `LocaleProvider.getLocale()` when present, else the configured `defaultLocale`, else `Locale.getDefault()`. A malformed format falls back to the original message and logs a warning.
+The locale comes from `LocaleProvider.getLocale()` when present, else the configured `defaultLocale` (an empty value resolves to `Locale.ROOT`, not the JVM default), else `Locale.getDefault()`. A malformed format falls back to the original message and logs a warning.
 
 ## Localized Business Error Transfer Objects
 
@@ -310,6 +324,7 @@ When a modeled fault or error transfer object carries a `message` and a `locatio
 - Hardcode English strings directly in your Java code.
 - Include technical details (like stack traces) in user-facing messages.
 - Duplicate message definitions; reuse generic messages where possible.
+- Put `$` or a backslash in message arguments. Arguments are used as regex replacement text, so parameter substitution can throw `IllegalArgumentException` or `IndexOutOfBoundsException`.
 
 ---
 
@@ -317,7 +332,7 @@ When a modeled fault or error transfer object carries a `message` and a `locatio
 
 Translation files are typically java property files in your resources:
 
-**Example: messages_en.properties**
+### Example: messages_en.properties
 ```properties
 field_is_required:This field is required
 invalid_email_format:Please enter a valid email address
@@ -328,7 +343,7 @@ entity_not_ready_error:The item is not ready for this operation
 function_under_development:This feature is currently under development
 ```
 
-**Example: messages_hu.properties**
+### Example: messages_hu.properties
 ```properties
 field_is_required:Ez a mező kötelező
 invalid_email_format:Kérem adjon meg érvényes email címet

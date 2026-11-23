@@ -11,7 +11,6 @@ projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
 related: [session-storage-table-state, email-code-guest-authentication, dialog-based-navigation, error-code-mapping-pattern]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

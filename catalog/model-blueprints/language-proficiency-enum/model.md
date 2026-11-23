@@ -11,7 +11,6 @@ Generated UI pages follow from the entities: a view and table for the language r
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=language-proficiency-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Language {
@@ -37,4 +36,3 @@ classDiagram
   LanguageSkill ..> LanguageSkillLevel : level
   User *-- "*" LanguageSkill : languageSkills
 ```
-<!-- /mermaid:generated -->

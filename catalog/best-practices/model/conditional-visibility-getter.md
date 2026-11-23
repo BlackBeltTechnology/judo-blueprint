@@ -10,8 +10,6 @@ status: emerging
 projects: [trivia, park-here]
 evidence: ["trivia:unrecorded", "park-here:unrecorded"]
 alternatives: []
-fragment: conditional-visibility-getter
-diagram: { kinds: [entity, enum, transfer], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -50,7 +48,6 @@ Another seen variant switches between a guest's and an owner's data depending on
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=conditional-visibility-getter cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Choice {
@@ -86,4 +83,3 @@ classDiagram
   Questionnaire *-- "*" Question : questions
   Questionnaire ..> QuestionnaireStatus : status
 ```
-<!-- /mermaid:generated -->

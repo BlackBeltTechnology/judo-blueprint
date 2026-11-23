@@ -4,7 +4,7 @@
 Usage: entry-lint [paths...] [--json] [--profile entries|agent-docs|all]
 
 Without paths: the whole catalog/. Paths may be entry dirs, files or folders.
-`format: legacy` and `fragment: pending` are rejected (Pass B finished; task 6.3).
+`format: legacy` is rejected. `fragment:`/`diagram:` keys are retired (no fragment models).
 """
 import argparse
 import json
@@ -37,7 +37,7 @@ HARNESS = [(re.compile(r"\.claude/"), ".claude path"), (re.compile(r"SKILL\.md")
 PRIVACY = [(re.compile(r"/Users/[a-z]+|/home/[a-z]+"), "home path"),
            (re.compile(r"[\w.+-]+@[\w-]+\.(?:com|hu|io|org|net)\b"), "e-mail")]
 FENCE = re.compile(r"^```.*?^```", re.S | re.M)
-GEN = re.compile(r"<!-- mermaid:generated fragment=(\S+) cli=(\S+) -->(.*?)<!-- /mermaid:generated -->", re.S)
+MERMAID = re.compile(r"^```mermaid\s*$", re.M)
 HBS = re.compile(r"\{\{[^}]*\}\}")
 STATUS = {1: "single-project", 2: "emerging", 3: "emerging"}
 
@@ -100,7 +100,19 @@ def _project_names():
 PROJECT_NAMES = _project_names()
 
 
+# kb structure (reports/research/kb-structure-ab.md): a line that is only a bold label is a sub-heading,
+# so kb can chunk and fetch it; tested at 0.91 kb calls with equal answer quality.
+BOLD_LABEL = re.compile(r"^\*\*(?!\[)([^*]{3,80}?)\*\*:?\s*$", re.M)  # a bold link line is navigation, not a label
+
+
+def lint_bold_labels(text, errs):
+    hits = BOLD_LABEL.findall(strip_fences(text))
+    if hits:
+        errs.append(f"bold-only label line(s) {hits[:3]}{' …' if len(hits) > 3 else ''}: write a sub-heading one level below the enclosing heading")
+
+
 def lint_content(path, text, errs, profile):
+    lint_bold_labels(text, errs)
     body_nofence = strip_fences(text)
     for rx, name in CLI_PATTERNS:
         # judo-cli is allowed in agent-docs (the CLI doc itself lives there)
@@ -115,11 +127,10 @@ def lint_content(path, text, errs, profile):
     for rx, name in PRIVACY:
         if rx.search(text):
             errs.append(f"privacy: {name}")
-    if HBS.search(GEN.sub("", body_nofence)):
+    if HBS.search(body_nofence):
         errs.append("Handlebars outside code fences")
     # project names belong only in frontmatter (projects/evidence/tags)
     body = re.sub(r"\A---\n.*?\n---\n", "", text, flags=re.S)
-    body = GEN.sub("", body)
     for n in PROJECT_NAMES:
         if re.search(r"(?i)(?<![\w-])" + re.escape(n) + r"(?![\w])", body):
             errs.append(f"project name in body: {n}")
@@ -150,11 +161,10 @@ def lint_entry_fm(path, fm, err, errs, ids, legacy_ok):
         if alt not in ids:
             errs.append(f"alternatives: unknown id {alt}")
     legacy = fm.get("format", "").strip("\"'") == "legacy"
-    frag = fm.get("fragment", "").strip("\"'")
-    if not frag:
-        errs.append("frontmatter: missing fragment (id or 'none: <reason>')")
-    elif frag == "pending":
-        errs.append("fragment: pending is no longer allowed (build the fragment or use 'none: <reason>')")
+    for k in ("fragment", "diagram"):
+        if k in fm:
+            errs.append(f"frontmatter: {k} is retired (diagrams are plain Mermaid; no fragment models)")
+    frag = None
     if legacy:
         errs.append("format: legacy is no longer allowed (rewrite the entry)")
     return legacy, frag
@@ -185,13 +195,12 @@ def lint_blueprint(d, ids, legacy_ok):
             order = [secs.index(s) for s in BP_SECTIONS]
             if order != sorted(order):
                 errs.append("sections out of order")
-        if frag and not frag.startswith("none") and frag != "pending":
-            mt = (d / "model.md").read_text() if (d / "model.md").exists() else ""
-            if not GEN.search(mt):
-                errs.append("fragment declared but model.md has no generated block")
-            if not (ROOT / "fragments" / f"{frag}.model").exists():
-                errs.append(f"fragments/{frag}.model missing")
+        mt = (d / "model.md").read_text() if (d / "model.md").exists() else ""
+        if re.search(r"^## Structure diagram\s*$", mt, re.M) and not MERMAID.search(mt):
+            errs.append("model.md has a Structure diagram section without a mermaid block")
     lint_content(bp, text, errs, "entries")
+    if needs_companion(bp):
+        lint_companion_of(bp, errs)
     out.append((str(bp.relative_to(ROOT)), errs))
     for f in layers:
         e2 = []
@@ -199,6 +208,8 @@ def lint_blueprint(d, ids, legacy_ok):
         if t.startswith("---\n"):
             e2.append("layer files carry no frontmatter")
         lint_content(d / f, t, e2, "entries")
+        if needs_companion(d / f):
+            lint_companion_of(d / f, e2)
         out.append((str((d / f).relative_to(ROOT)), e2))
     return out
 
@@ -222,28 +233,75 @@ def lint_practice(f, ids, legacy_ok):
         missing = [s for s in PR_SECTIONS if s not in secs]
         if missing:
             errs.append(f"missing sections: {', '.join(missing)}")
-        if frag and not frag.startswith("none") and frag != "pending":
-            if not GEN.search(text):
-                errs.append("fragment declared but no generated block")
-            if not (ROOT / "fragments" / f"{frag}.model").exists():
-                errs.append(f"fragments/{frag}.model missing")
     lint_content(f, text, errs, "entries")
+    if needs_companion(f):
+        lint_companion_of(f, errs)
     return [(str(f.relative_to(ROOT)), errs)]
+
+
+# kb companion contract (kb dox lint): a markdown file over 300 lines or 15000 bytes needs <name>.agent.md
+COMPANION_LOC, COMPANION_BYTES = 300, 15000
+AD_DOMAINS = {"model", "backend", "frontend", "deployment", "testing"}
+AD_LAYERS = {"model", "backend", "frontend", "infrastructure", "test"}
+
+
+def needs_companion(f):
+    return f.read_text().count("\n") > COMPANION_LOC or f.stat().st_size > COMPANION_BYTES
+
+
+def lint_companion_of(f, errs):
+    """f is a catalog .md past kb's threshold: <name>.agent.md must exist and mirror its H2 headings."""
+    comp = f.with_name(f.stem + ".agent.md")
+    if not comp.exists():
+        errs.append(f"over kb threshold ({COMPANION_LOC} lines or {COMPANION_BYTES} bytes): missing companion {comp.name}")
+        return
+    ct = comp.read_text()
+    if ct.startswith("---\n"):
+        errs.append(f"{comp.name}: companions carry no frontmatter")
+    if ct.lstrip().split("\n", 1)[0].strip() != f"# {f.name} — index":
+        errs.append(f"{comp.name}: first line must be '# {f.name} — index'")
+    if f"Source: {f.relative_to(ROOT)}" not in ct:
+        errs.append(f"{comp.name}: missing 'Source: {f.relative_to(ROOT)}' line")
+    src_h2 = [h.strip() for h in re.findall(r"^## (.+)$", strip_fences(f.read_text()), re.M)]
+    comp_h2 = {h.strip() for h in re.findall(r"^## (.+)$", ct, re.M)}
+    missing = [h for h in src_h2 if h not in comp_h2
+               and re.sub(r"[`*_]", "", h).strip().lower() not in ("table of contents", "contents", "quick navigation")]
+    if missing:
+        errs.append(f"{comp.name}: does not cover H2 sections {missing[:4]}{' …' if len(missing) > 4 else ''}")
+    if ct.count("\n") > 250:
+        errs.append(f"{comp.name}: over 250 lines (a companion is a condensed map)")
 
 
 def lint_agent_doc(f):
     errs = []
     text = f.read_text()
+    if f.name.endswith(".agent.md"):
+        return []  # checked through its source document
     if f.name != "AGENTS.md":
-        fm, err, _ = parse_fm(text)
+        fm, err, body = parse_fm(text)
         if fm is None:
             errs.append("missing frontmatter")
         else:
             if err:
                 errs.append(f"frontmatter: {err}")
-            for k in ["title", "description"]:
+            for k in ["title", "description", "aliases", "keywords", "tags"]:
                 if not fm.get(k):
                     errs.append(f"frontmatter: missing {k}")
+            tags = flow_list(fm.get("tags"))
+            dom = [x.split(":", 1)[1] for x in tags if x.startswith("domain:")]
+            lay = [x.split(":", 1)[1] for x in tags if x.startswith("layer:")]
+            if not dom or any(d not in AD_DOMAINS for d in dom):
+                errs.append(f"tags: need domain:<{'|'.join(sorted(AD_DOMAINS))}>")
+            if not lay or any(x not in AD_LAYERS for x in lay):
+                errs.append(f"tags: need layer:<{'|'.join(sorted(AD_LAYERS))}>")
+            if "status:platform" not in tags:
+                errs.append("tags: agent-docs carry status:platform")
+            if any(x.startswith("project:") for x in tags):
+                errs.append("tags: agent-docs are platform facts, no project: tag")
+        lint_bold_labels(text, errs)
+        if needs_companion(f):
+            lint_companion_of(f, errs)
+
     for rx, name in HARNESS:
         if rx.search(text):
             errs.append(f"harness wording: {name}")
@@ -291,6 +349,8 @@ def main():
         if "agent-docs" in rel:
             if a.profile in ("agent-docs", "all"):
                 results.extend(lint_agent_doc(p))
+        elif p.name.endswith(".agent.md"):
+            return  # companions are checked through their source document
         elif "best-practices" in rel and p.name not in ("AGENTS.md", "README.md"):
             if a.profile in ("entries", "all"):
                 results.extend(lint_practice(p, ids, False))

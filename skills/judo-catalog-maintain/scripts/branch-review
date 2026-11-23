@@ -54,8 +54,8 @@ def kind(path, status):
         return "projects-row"
     if path.startswith("catalog/agent-docs/"):
         return "agent-docs"
-    if path.startswith("fragments/"):
-        return "fragment"
+    if path.endswith(".model"):
+        return "OUT OF SCOPE (no model files in the catalog)"
     if path.startswith("catalog/") and path.endswith("AGENTS.md"):
         return "index (generated)"
     if path.startswith("catalog/"):

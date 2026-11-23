@@ -25,3 +25,7 @@ The update dialog for a capability loads the current name and description before
 ### Toggle as a switch
 
 Show isActive as a switch in the administrator's table. The switch calls the toggle operation and refreshes the row.
+
+### Generated page files
+
+The React template generates these files per container: `customization.ts` declares the custom-implementation interface keys and component interfaces for the container's visual elements, plus the container action hook key and hook type. `types.ts` declares the page action definitions and imports the data types the container uses. `src/config/layout.ts` is application-wide (drawer and divider sizes, theme and menu enums, the customization props), not per entity.

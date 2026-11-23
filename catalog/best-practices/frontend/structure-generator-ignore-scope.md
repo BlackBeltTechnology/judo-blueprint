@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/.generator-ignore"]
 alternatives: []
 related: [generator-ignore-i18n-layout, generator-ignore-app-theme, custom-component-directory, hook-scaffold-default-pattern]
-fragment: "none: frontend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

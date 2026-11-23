@@ -204,7 +204,7 @@
 | `language-proficiency-enum/model.md` | language-proficiency-enum: model shape and generated structure diagram |
 | `language-proficiency-enum/backend.md` | language-proficiency-enum: backend guidance |
 | `language-proficiency-enum/` | language-proficiency-enum (1 files; index in `language-proficiency-enum/AGENTS.md`) |
-| `masked-input-integration/BLUEPRINT.md` | A frontend-only pattern that renders a group of text fields as a custom implementation element with react-imask masks, for structured identifiers such as VAT IDs; the model's own textMask is the first |
+| `masked-input-integration/BLUEPRINT.md` | A frontend-only pattern that renders a group of text fields as a custom implementation element with react-imask masks, for structured identifiers such as VAT IDs; the model's own textMask is stored bu |
 | `masked-input-integration/frontend.md` | masked-input-integration: frontend guidance |
 | `masked-input-integration/` | masked-input-integration (1 files; index in `masked-input-integration/AGENTS.md`) |
 | `multi-actor-role-based-projections/BLUEPRINT.md` | The same entities are exposed through a separate transfer object set per actor, so each role sees only the fields and operations it needs. |
@@ -358,6 +358,8 @@
 | `testkit-integration-foundation/BLUEPRINT.md` | An in-process integration-test foundation for JUDO applications on the guice testkit and HSQLDB, with eight support classes, activation flags, a Maven tier layout and an optional docker overlay for re |
 | `testkit-integration-foundation/model.md` | testkit-integration-foundation: model shape and generated structure diagram |
 | `testkit-integration-foundation/backend.md` | testkit-integration-foundation: backend guidance |
+| `testkit-integration-foundation/backend.agent.md` | testkit-integration-foundation: condensed map of `backend.md` |
+| `testkit-integration-foundation/model.agent.md` | testkit-integration-foundation: condensed map of `model.md` |
 | `testkit-integration-foundation/` | testkit-integration-foundation (1 files; index in `testkit-integration-foundation/AGENTS.md`) |
 | `timed-attempt-lifecycle-entity/BLUEPRINT.md` | An Attempt entity that records one participant's run through a timed activity, with a status enumeration from creation to completion, failure or exclusion and a timestamp per stage. |
 | `timed-attempt-lifecycle-entity/model.md` | timed-attempt-lifecycle-entity: model shape and generated structure diagram |

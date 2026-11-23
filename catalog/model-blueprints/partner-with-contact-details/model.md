@@ -13,7 +13,6 @@ Generated UI pages follow from the entities: View, Form and Table pages for Part
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=partner-with-contact-details cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Address {
@@ -87,4 +86,3 @@ classDiagram
   Partner --> "0..1" PhoneNumber : primaryPhone
   Rating ..> RatingResult : result
 ```
-<!-- /mermaid:generated -->

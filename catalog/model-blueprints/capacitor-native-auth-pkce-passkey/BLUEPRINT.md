@@ -10,7 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/auth/pkce-utils.ts", "mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/capacitor.config.ts"]
 alternatives: [keycloak-magic-link-passkey-authentication]
-fragment: none: frontend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

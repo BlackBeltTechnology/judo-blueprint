@@ -6,7 +6,6 @@ An entity (in the source project, an initiative) carries an attribute `riskLevel
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=risk-level-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class RiskLevel {
@@ -16,4 +15,3 @@ classDiagram
     HIGH
   }
 ```
-<!-- /mermaid:generated -->

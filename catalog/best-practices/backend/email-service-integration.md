@@ -11,7 +11,6 @@ projects: [trivia, rackinspect, alba, mlszksz-platform, ubives, park-here]
 evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/services/job_task_services/jobsheet/SendEmailCustomImplementation.java", "alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PlatformEmailServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded"]
 alternatives: []
 related: [two-phase-registration, filestore-mediated-file-transfer, document-generation-pipeline, handlebars-email-template]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

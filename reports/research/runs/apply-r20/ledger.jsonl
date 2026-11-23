@@ -1,0 +1,20 @@
+{"id": "R20-C1", "file": "reports/judo-ng-issues/CLI.md", "heading": "22. `operationType=INITIALIZER` is stored without `initializer=true`", "status": "applied", "note": "new CLI.md #22 + Summary row; also judo-cli.md gotcha, operation.md, judo-cli.agent.md"}
+{"id": "R20-F6", "file": "reports/judo-ng-issues/CLI.md", "heading": "22. `operationType=INITIALIZER` is stored without `initializer=true`", "status": "merged-into:R20-C1", "note": "entity accept(_this) cause = INITIALIZER literal; void run() with STATIC+initializer"}
+{"id": "R20-4", "file": "catalog/best-practices/model/initializer-operation.md", "heading": "What the platform defines", "status": "applied", "note": "CLI form and signatures; Verify dropped (settled by F6 evidence)"}
+{"id": "R20-C2", "file": "catalog/agent-docs/model/esm_metamodel/accesspoint.md", "heading": "Anonymous vs Authenticated Behaviour", "status": "applied", "note": "anonymous read-only with mapped principal; set at create; companion updated"}
+{"id": "R20-C3", "file": "catalog/agent-docs/model/judo-cli.md", "heading": "Known limitations and gotchas", "status": "applied", "note": "Zeta warning also on validate/transform; companion updated"}
+{"id": "R20-C4", "file": "reports/judo-ng-issues/CLI.md", "heading": "20. `query --select` error for reference fields does not name the fix", "status": "applied", "note": "rerun shows exit 0 with data:null; Also bullet added"}
+{"id": "R20-C5", "file": "catalog/agent-docs/model/judo-cli.md", "heading": "Version and jar pitfalls", "status": "applied", "note": "copy jar outside target/; companion updated"}
+{"id": "R20-5", "file": "catalog/agent-docs/model/esm_metamodel/accesspoint.md", "heading": "Anonymous vs Authenticated Behaviour", "status": "applied", "note": "stored true on mapped-principal actors; companion updated"}
+{"id": "R20-1", "file": "kb", "heading": "", "status": "skipped", "note": "target kb"}
+{"id": "R20-3", "file": "catalog/agent-docs/deployment/schema-evolution.md", "heading": "When No Manual Step Is Needed", "status": "applied", "note": "fresh DB runs only generated changelog; FRAMEWORK.md #12 addendum; companion updated"}
+{"id": "R20-6", "file": "catalog/agent-docs/deployment/local-development.md", "heading": "Runtime Issues", "status": "applied", "note": "no SMTP server started; companion updated"}
+{"id": "R20-7", "file": "catalog/agent-docs/backend/authentication-guide.md", "heading": "Discovery endpoints for custom frontends", "status": "applied", "note": "route corrected in place; provisioning sub-heading; companion updated"}
+{"id": "R20-9", "file": "catalog/agent-docs/deployment/local-development.md", "heading": "\"Port 8181 (or 8080) already in use\"", "status": "applied", "note": "port options, APP_URL; companion updated"}
+{"id": "R20-F1", "file": "reports/judo-ng-issues/FRAMEWORK.md", "heading": "7. Liquibase prehook logs ERROR on every start; health stays 503", "status": "applied", "note": "workaround corrected, Cause added, Summary sources"}
+{"id": "R20-2", "file": "catalog/agent-docs/deployment/schema-evolution.md", "heading": "When No Manual Step Is Needed", "status": "applied", "note": "extra-bundles fragment location added; companion updated"}
+{"id": "R20-F2", "file": "none", "heading": "", "status": "skipped", "note": "target none (FRAMEWORK.md #1 already tracked)"}
+{"id": "R20-F3", "file": "catalog/agent-docs/deployment/build-process.md", "heading": "`XMI ID COLLISION DETECTED` in the build log", "status": "applied", "note": "new sub-heading; FRAMEWORK.md #2 trigger corrected + Reproduction/Cause; companion updated"}
+{"id": "R20-8", "file": "catalog/agent-docs/deployment/build-process.md", "heading": "`XMI ID COLLISION DETECTED` in the build log", "status": "merged-into:R20-F3", "note": "same sub-heading"}
+{"id": "R20-F4", "file": "none", "heading": "", "status": "skipped", "note": "target none (already documented, FRAMEWORK.md #8)"}
+{"id": "R20-F5", "file": "catalog/agent-docs/deployment/build-process.md", "heading": "Stale `.default` skeleton after moving an operation", "status": "applied", "note": "generate deletes recorded stale files; no framework issue; companion updated"}

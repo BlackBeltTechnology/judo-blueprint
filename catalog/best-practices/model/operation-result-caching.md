@@ -11,8 +11,6 @@ projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
 alternatives: []
 related: [mapped-operation-delegation, derived-relation-navigation, operation-output-with-behaviors]
-fragment: operation-result-caching
-diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -65,7 +63,6 @@ A neutral Search entity has a `term`, a stored relation `results` to Product (0.
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=operation-result-caching cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Product {
@@ -80,4 +77,3 @@ classDiagram
   }
   Search --> "*" Product : results
 ```
-<!-- /mermaid:generated -->

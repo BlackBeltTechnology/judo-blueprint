@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/TableRowHighlightingHooks/ratingTableHighlightHook.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/TableRowHighlightingHooks/offerItemsTableHighlightHook.tsx"]
 alternatives: []
-fragment: "none: frontend-only"
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

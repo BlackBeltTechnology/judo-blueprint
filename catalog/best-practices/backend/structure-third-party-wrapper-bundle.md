@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/resteasy/pom.xml", "rackinspect:application/keycloak-client/pom.xml", "rackinspect:application/generator-overrides/karaf-features/src/main/feature/feature.xml.extra-bundles.fragment.hbs"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

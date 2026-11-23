@@ -13,7 +13,6 @@ Generated UI pages follow from the entities: Table and View pages for users, rol
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=user-with-role-permission-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Permission {
@@ -44,4 +43,3 @@ classDiagram
   User --> "*" Permission : permissions
   User --> "*" Role : roles
 ```
-<!-- /mermaid:generated -->

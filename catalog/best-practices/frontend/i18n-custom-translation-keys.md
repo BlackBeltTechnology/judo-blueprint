@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/custom-implementations/DimensionParametersViewComponent.tsx", "rackinspect:application/frontend-react/rackinspect__services__generic_user/public/i18n/application_hu-HU.json"]
 alternatives: [react-intl-flat-key-pattern]
 related: [i18n-generator-override-extra-fragment, react-intl-flat-key-pattern]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

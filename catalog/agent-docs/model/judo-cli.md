@@ -1,6 +1,9 @@
 ---
 title: JUDO Model CLI
 description: The JUDO Model CLI: mandatory rules, command reference, merge of parallel model copies, mermaid diagrams, session state and known pitfalls.
+aliases: [model cli, judo cli commands, change model without editing xml, merge model copies, mermaid model diagram, model daemon session, discard unsaved model edits]
+keywords: [judo-cli.jar, query, graphql, create, update, merge, validate, transform, save, discard, mermaid, trace.forward, judo-model-cli-version, dry-run, --base]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # JUDO Model CLI
@@ -47,7 +50,7 @@ These rules are **platform invariants**, not preferences. Violating them produce
 
 2. **Never edit the `.model` XML file directly.** Even tiny hand edits can break `xmi:id` references in distant parts of the file. Always go through CLI mutations.
 
-3. **Always paginate query results.** Use `limit`, `offset`, and `totalCount` together. Without explicit pagination, large result sets are silently truncated and the assistant operates on a partial view of the model.
+3. **Always paginate query results.** Use `limit`, `offset`, and `totalCount` together. `query` and `graphql` apply `limit` only when it is given, so without it every match is returned and nothing is truncated by the CLI. Helper scripts that pass a fixed `--limit` (for example `--limit 800`) do truncate silently, so check `totalCount` against the number of items returned.
 
 4. **One writer per model file.** A model file is changed by exactly one CLI session at a time. Never point two agents, two terminals or a CLI and the Designer at the same `.model` file: each holds its own in-memory copy and the last `save` silently overwrites the other's edits.
 
@@ -79,10 +82,10 @@ Invoke every command as `java -jar target/judo-cli.jar -m model/<app>.model <com
 | `fill <toFqn> [--pages view,form,table]` | Create and populate a transfer object's view/form/table from its members. |
 | `split <container> --layout VERTICAL\|HORIZONTAL` | Split a container into two groups (Designer "Split"). |
 | `merge <theirs.model> --base <base.model>` | Three-way merge of a model copy, see "Merging parallel model copies" below. |
-| `validate [--strict]` | ESM EVL, esm2ui/UI EVL and a transform dry run, all on the in-memory model. |
+| `validate [--strict]` | ESM EVL, esm2ui/UI EVL and a transform dry run, all on the in-memory model. `--strict` is deprecated (since `1.1.0.20261119_155735_a64aa981_develop` it prints a deprecation warning): validation errors always exit non-zero. See [Validation engine](#validation-engine). |
 | `transform [--load] [--skip steps] [--validate]` | Run the transformation pipeline on the in-memory model, see [transformation-pipeline.md](transformation-pipeline.md). |
 | `status [--json]` | State (`clean`/`dirty`), unsaved changes and their intent. |
-| `save` / `discard [--force] [--derived]` | Persist or drop the unsaved edits. `save` never runs git. |
+| `save` / `discard [--force] [--derived]` | Persist or drop the unsaved edits. `save` never runs git; it writes a temp file and atomically moves it over the model file. |
 | `mermaid model` / `mermaid from` | Draw the model as Mermaid class diagrams, see below. |
 | `server status` / `server stop [-f]` | Manage the per-model daemon. |
 
@@ -91,6 +94,10 @@ Invoke every command as `java -jar target/judo-cli.jar -m model/<app>.model <com
 Common mutation flags: `--dry-run` (create, report, undo), `--json`, `--brief` (only the FQN), `--no-check` (skip per-edit checks during bulk edits; run `validate` at the end), `--ns <fqn>` (parent namespace). `--set a,b` sets a list, `""` sets an empty string, `null` is rejected; `-s`/`--vars` values are kept verbatim (newlines, quotes and backslashes reach the model unchanged). Exit codes are 0 (ok), 1 (error) and 2 (rejected); `merge` also uses 4 for open conflicts.
 
 Read the model with `query esm ... --select --where`, `status --json` and `mermaid` rather than parsing the JSON of `graphql` output in scripts: the most frequent CLI failure is a script that crashes on a `null` in the graphql result.
+
+### Validation engine
+
+Since CLI `1.1.0.20261119_155735_a64aa981_develop`, `validate` and `transform` run the ESM to UI step through the build's `Esm2UiWork`, with the engine chosen by the `judo.transformation.mode` system property (`ZETA` or `ETL`; Zeta when unset, as in the ESM Maven workflow), so the UI check gives the Maven build's verdict. To validate with ETL, start the daemon with `-Djudo.transformation.mode=ETL`. Older versions ran their own UI check and could pass a model that the Maven UI validation rejects.
 
 ### Mermaid diagrams of the model
 
@@ -106,28 +113,64 @@ The CLI runs one daemon per model. Its session lives under `~/.judo/sessions/<ha
 
 ### Version and jar pitfalls
 
-- `--version` reports a stale `1.0.0` from a baked manifest; read the real version from the Maven properties `judo-model-cli-version` and `judo-meta-esm-version` in the root `pom.xml`.
+- `--version` prints the CLI version (for example `judo-model-cli 1.1.0.20261119_155735_a64aa981_develop`); the pinned version is the Maven property `judo-model-cli-version` (and `judo-meta-esm-version`) in the root `pom.xml`.
 - The jar is only downloaded when it is **missing**. After bumping the version properties, delete the old jar and run `./mvnw -f application/model/pom.xml -N validate`, otherwise the stale CLI keeps running.
 - The pinned jar may be newer than a local checkout of the CLI source; read its documentation at the pinned commit (`git show <sha>:docs/commands/<cmd>.md`).
 - Mutations stay in memory until an explicit `save`.
+- A new project may not have `target/judo-cli.jar` yet, and it can be missing after `./judo.sh generate` or `build` (those run `mvnd clean`). Restore it with `./judo.sh generate-root` or `mvn -DgenerateRoot validate` in the project root (the root `pom.xml` downloads it in the `download-cli-for-generate-root` profile). Check that the file exists before a CLI call; a missing jar shows as `Unable to access jarfile`.
+- To avoid the missing jar between builds, copy `target/judo-cli.jar` to a path outside `target/` (for example `/tmp/judo-cli.jar`) and call that copy; `mvnd clean` does not touch it. Refresh the copy after a CLI version bump.
 
 ### Known limitations and gotchas
 
+#### Creating, filling and changing elements
+
 - **Reference-derived UI elements have no `name` in their `CreateInput`.** `DataField`, `DataColumn`, `DataFilter`, `ReferenceField`/`TabularReferenceField`, `OperationForm` and the `Inherited*` references take their name and FQN from the binding (`dataFeature`, `relationFeature`, `operation`); passing `name` fails with `contains a field not in <Kind>CreateInput: name`. Place them with `update <container> --add feature ...` (or `create -t ... --set dataFeature=...`); a "no name field" error can really be an ambiguous FQN. `RowOperation` has no create type; if the CLI cannot express a UI change, edit that one XMI element by hand and verify with `validate` (see [model-development.md](model-development.md)).
-- **Duplicate FQNs.** `update` acts on the first element with a given FQN and there is no suffix to select the other; give the elements distinct names first.
+- **Do not hand-add members to a mapped transfer object.** `create -t TransferObjectType -s mapping=<entity>` already creates the mapped members and the view/form/table pages; since CLI `1.1.0.20261119_155735_a64aa981_develop`, creating a member with a name already used in the container is refused (`name '<n>' is already used in <container>`; also for rename and relocate); older versions create it and report `Named element ... is not unique in its container` and a mapped member without binding as `Mapped data member ... must have binding`.
+- **`create -t MenuItemAccess` is refused** (`MenuItemAccess is created automatically`). `create -t Access --ns <actor> --set target=<transferObject>` creates the `Access` and a `MenuItemAccess` named `Menu`, labelled with the target type name; rename or reuse it instead of creating a second one. `delete` of an `Access` that a menu item references needs `--cascade`, which also removes the menu item. A new `Access` has `createable`, `updateable` and `deleteable` all `false`: set them explicitly (`--set createable=true`).
+- **`fill` and columns.** `fill` adds a `DataColumn` and `DataField` for every member of the transfer object; run `fill <toFqn> --dry-run` first and delete unwanted columns afterwards. `fill` (or adding `DataColumn`s) clears the validation error `Columns are not defined for the viewable table of <TO>` (`ExposedTransferObjectTableHasColumns`). `DataColumn` and `DataFilter` do not exist before `fill` or an explicit `--add feature`, so `query esm DataColumn` returns nothing until then.
+- **Access with list cardinality needs a table column.** `create -t Access --ns <Actor> --set target=<TO>` also creates `<TO>::<TO>_Table`. Until that table has a column, validation reports `Columns are not defined for the viewable table of <TO>` and the ESM model is invalid (`error esm Invalid model`, transform skipped). Add one: `create -t DataColumn --ns <TO>::<TO>_Table --set dataFeature=<TO>.<attribute>`, or run `fill <TO>`.
+- **A type change must reach the mapped members.** Changing the `dataType` of an entity member leaves the mapped member of each transfer object on the old type; `validate` warns `Data type of data member ... must match the data type of its binding`. Update the mapped members too.
+- **Gate `save` on `validate`.** `validate` exits non-zero when it reports a validation error (`--strict` is deprecated and not needed for the exit code); chain `validate && save` (not `;`), otherwise an invalid model is written to disk. Trust the exit code, not the summary line: in `1.1.0.20261119_155735_a64aa981_develop` the line `Validation complete: 0 errors` can follow printed UI errors (exit 1).
+- **Duplicate FQNs.** Since CLI `1.1.0.20261119_155735_a64aa981_develop`, every write command refuses an FQN that matches several elements (an older model with duplicate names) and lists each element's `id:`; select one with `id:<xmi:id>`. Older versions act on the first element with that FQN; there, give the elements distinct names first.
+
+#### Types, parameters, relation kinds and scripts
+
+- **`MimeType`** has no `name` in its `CreateInput` either (the name derives from type and subType); `create -t MimeType -n ...` fails with `contains a field name ... not defined for input object type 'MimeTypeCreateInput'`. Working form: `create -t MimeType --ns <ns> -s type=application -s subType=json` (creates `application/json`). `BinaryType.mimeTypes` takes a comma-separated list (`-s mimeTypes=application/json,application/xml`) once each `MimeType` exists; a MIME type that does not exist yet fails with `'<type>' is not an allowed value`, so create the MIME types first.
 - **Operation parameters** are declared with `containment` + `target`, not type/direction.
-- **A failed script leaves its earlier edits in memory** (and in the overlay), so running it again duplicates elements: `discard --force` before retrying. `discard` reverts **all** unsaved edits, not only the last one.
+- **`operationType=INITIALIZER` does not create an initializer.** `create`/`update -s operationType=INITIALIZER` stores `operationType = INITIALIZER` with `initializer = false`; the Designer's translation to `STATIC` plus `initializer = true` is not applied. On an unmapped transfer object `validate` then fails with `Operation: <TO>.<op> must be static in unmapped transfer object type` (exit 1). On an entity it validates, but the operation is no initializer: it is an instance operation and the generated implementation interface is `accept(<Entity> _this)`. Set both fields: `-s operationType=STATIC -s initializer=true` (check with `update <fqn> --schema`); the generated interface is then `void run()` on an entity and on an unmapped transfer object alike, for an operation without input or output. See [Operation](esm_metamodel/operation.md).
+- **`managed` on an anonymous actor is refused.** `create -t ActorType ... -s anonymous=true -s managed=false` fails with `managed: does not apply to this ActorType (applies when not anonymous)`; leave `managed` out. The stored value then stays at its default (`true`), which has no effect for an anonymous actor without a principal (see [Anonymous vs Authenticated Behaviour](esm_metamodel/accesspoint.md)).
+- **`relationKind` per layer.** On an entity relation `create -t OneWayRelationMember ... -s relationKind=AGGREGATION` is refused (`valid ASSOCIATION · COMPOSITION`). On a transient relation of an unmapped transfer object `AGGREGATION` is accepted (and is the required kind); `ASSOCIATION` is still created there and only `validate` reports `must be aggregation if transient`, so run `validate` before `save`.
+- **A failed script leaves its earlier edits in memory** (and in the overlay), so running it again duplicates elements: `discard --force` before retrying. `discard` reverts **all** unsaved edits, not only the last one. Recipe: `save` before the script, run it, and on failure `discard --force`, fix the script and rerun; the saved file is the restore point (it also survives a daemon restart).
+#### Validation, history and action placement
+
 - **EVL checks that need a build.** Some checks (for example that a `MAPPED` member's `required` matches its binding) are only reliably exercised by the full build; after a build, re-run `validate` and check that the generated artifacts (ASM/SDK timestamps) contain the change before ticking a task as verified.
 - **Rename keeps identity.** `update <fqn> --set name=...` on a data member keeps its `xmi:id`, so the incremental Liquibase diff produces a `renameColumn` and the column data survives instead of a drop and create. `discard --force` any exploratory rename.
 - **`git checkout -- model/<app>.model` reverts every structural change**, not only UI changes (see rule 8).
 - **Merge output** may print `[WARN] Zeta transformation not yet implemented, falling back to ETL`; it is harmless.
+- **The same warning appears on `validate` and `transform`.** Every run prints `[WARN] Zeta transformation not yet implemented, falling back to ETL: Zeta ASM to Script ...` and `... Script to Operation ...`, also on a model without actors. They come from the tatami asm2script and script2operation steps, where ETL runs; the Zeta default described under [Validation engine](#validation-engine) applies to the ESM to UI step only. Ignore them; the exit code and the `passed <step>` lines are the result.
 - **Signed identifiers cannot be minted with the CLI**; the runtime only mints them while serving a REST response, see [Bound operations](../backend/README.md).
+- **`move` reports a changed element, not always the moved one.** Since CLI `1.1.0.20261119_155735_a64aa981_develop` the result names the moved element: `moved <fqn> index <from> -> <to>` (`--json`: `fromIndex`). In older versions the one-line result `changed <fqn> (in components)` names an element whose position changed, which can be the sibling that shifted. `move <fqn> --json` prints `reordered <fqn> in <list>` for the moved element, and `status` lists each unsaved move as `move <fqn> index=n` or `after=<fqn>`. Check the final order with a query (for example `graphql` on the container's `components`); `discard --force` drops a wrong reorder, together with all other unsaved edits.
+- **`postCallAccessNavigation` cannot be cleared.** It is an attribute of the `OperationForm` (ui element) only. `update <operationForm> --unset postCallAccessNavigation` is refused (`cannot be cleared on OperationForm <name>`), `--clear` fails (`not a list`) and `--set postCallAccessNavigation=` is not an allowed value. Set it only when the target is final; to remove it, delete the `OperationForm` and place it again with `update <container> --add feature --feature <operation>`. The allowed values are the accesses whose target type matches the operation's output; `--set` lists them on error.
+- **Place actions with `update <container> --add feature`.** The container must exist and be given by its exact FQN; `Container not found: <fqn>` means that FQN does not exist yet (create the `ActionGroup` first with `create -t ActionGroup --ns <viewFqn> -n <group>`). The operation must be a member of the container's transfer object: for a relation table (`<view>::<relation>`) it is an operation of the relation's target transfer object, otherwise the error is `'<op>' is not a feature of <TO> placeable here`, followed by the placeable features.
+  - Table actions: `update <viewFqn>::<relation> --add feature --feature <operation> --as rowAction|tableAction|bulkAction`. This creates a `TableOperation` with a nested `OperationForm`.
+  - A direct placement in an `ActionGroup`: `update <viewFqn>::<group> --add feature --feature <operation>` creates the `OperationForm` inside the group.
+  - On a view, `--as action` is not a role (`valid field`).
 
 ## Querying and UI FQNs
 
 `query <model> <Type>` builds GraphQL with `--select`, `--where`, `--limit`, `--offset`. Operators: `eq`, `contains`, `startsWith`, `endsWith`, `regex`, their case-insensitive forms (`icontains`, `istartsWith`, `iendsWith`, `iregex`), and `gt`, `gte`, `lt`, `lte`. Collection fields are pluralised and nested reference filters are AND-combined. `graphql` takes `--variables` and `-o`; `--schema` writes the SDL to `.judo-schema.graphql`.
 
+`--select` takes scalar fields only (`name`, `fqn`, `createable`, `_type`); `--select "target{name}"` and `target.name` are rejected with `not a field of <Type>`, and a reference field selected by itself fails with `SubselectionRequired`. To read a reference field, use `graphql`, for example `graphql '{esm{accesses{items{name target{name}}}}}'`. `-w "fqn.eq=<fqn>"` filters by FQN; for a looser match use `name.contains`.
+
+The GraphQL schema maps `Integer` and `Long` attributes to GraphQL `Int`; `Long` is narrowed to 32-bit, not `String`.
+
+`ui` has no `MenuItem`, `MenuItemAccess`, `Access`, `ActorType` or `TableOperation` type: `query ui MenuItemAccess` fails with `ui type 'MenuItemAccess' does not exist`. These are `esm` types; use `query esm MenuItemAccess`, `query esm Access`, `query esm TableOperation`. The error lists the valid type names. A field the CLI reports as `not a field` lists the valid fields of that type: for example `textWidget` belongs to `DataField`, not to `StringType`.
+
 For model type `ui`, FQNs are non-uniform: an Application is its simple name, a Theme is `<App>::Theme`, a Frame is `<containerFQN>::Frame`, a MimeType is `type/subType`, other named elements use `::` hierarchy, unnamed elements fall back to the XMI URI fragment.
+
+GraphQL string filters accept only `eq`, `contains`, `startsWith`, `endsWith`, `regex` and their case-insensitive forms (`icontains`, `istartsWith`, `iendsWith`, `iregex`). There is no `in` operator on `StringFilter`. To match several values, query the type with a limit and filter the returned items in code.
+
+The `ESM_DataFeature` interface in graphql does not define `memberType` or `getterExpression`. The concrete `ESM_DataMember` type (the `datamembers` list) has both, so read them from there: `graphql '{esm{datamembers(limit:3000){items{fqn memberType getterExpression}}}}'`, then match on `fqn`.
 
 ## Reach for the CLI when…
 

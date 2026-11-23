@@ -11,8 +11,6 @@ projects: [trivia, alba, skillmatrix-model, viterra_demo, park-here, reserve-app
 evidence: ["trivia:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "park-here:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [enum-state-machine, derived-access-filtering, soft-delete-active-flag]
-fragment: range-expression-filtering
-diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -62,7 +60,6 @@ A neutral Report entity has an association `client` to Client. The `ReportView` 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=range-expression-filtering cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Client {
@@ -88,4 +85,3 @@ classDiagram
   ReportView ..> Report : maps
   ReportView o-- "0..1" ClientRef : client
 ```
-<!-- /mermaid:generated -->

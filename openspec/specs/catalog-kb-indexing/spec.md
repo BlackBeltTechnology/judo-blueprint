@@ -6,18 +6,20 @@ Makes the catalog fully conformant with the pi-dashboard kb index format, so `kb
 ## Requirements
 
 ### Requirement: Single consumable catalog root
-All released knowledge SHALL live under one catalog root containing `best-practices/`, `model-blueprints/` and `agent-docs/`. Non-catalog content SHALL live outside that root and SHALL be excluded from indexing. Non-catalog content means `fragments/`, `skills/`, `tests/`, `openspec/` and `.pi/`.
+All released knowledge SHALL live under one catalog root containing `best-practices/`, `model-blueprints/` and `agent-docs/`. Non-catalog content SHALL live outside that root and SHALL be excluded from indexing. Non-catalog content means `skills/`, `tests/`, `openspec/` and `.pi/`.
 
 #### Scenario: Consumer indexes only the catalog
 - **WHEN** a consumer configures the kb git source with `subdir` set to the catalog root
-- **THEN** kb indexes no file from `fragments/`, `skills/`, `tests/` or `.pi/`
+- **THEN** kb indexes no file from `skills/`, `tests/` or `.pi/`
 
 ### Requirement: kb-parseable frontmatter
 Every catalog markdown file SHALL start with frontmatter that kb's parser accepts:
 - single-line scalars or flow/indented lists only, with no `|` or `>` block scalars;
 - `title` and `description` present;
 - `keywords` and `aliases` providing search terms;
-- `tags` providing facets of the form `domain:<d>`, `layer:<l>`, `project:<p>`, `status:<s>`.
+- `tags` providing facets of the form `domain:<d>`, `layer:<l>`, `project:<p>`, `status:<s>` (agent-docs: `status:platform` and no `project:`).
+
+Companions (`*.agent.md`) and generated `AGENTS.md` indexes carry no frontmatter.
 
 #### Scenario: Block scalar rejected
 - **WHEN** a file uses `description: >` followed by indented lines
@@ -33,6 +35,17 @@ Each catalog file SHALL use descriptive headings that name the entry, not generi
 #### Scenario: Oversized section
 - **WHEN** a section body exceeds 4000 characters with no sub-heading
 - **THEN** docs-lint fails and names the heading path
+
+### Requirement: Companions for large files
+Every catalog markdown file over 300 lines or 15000 bytes SHALL have a companion `<name>.agent.md` next to it, as kb's DOX contract requires: no frontmatter, first line `# <name>.md — index`, a `Source: <repo path>` line, one `##` per `##` of the source with identical heading text, at most 250 lines, and no fact that is not in the source. `entry-lint` checks presence, form and heading coverage; `check-all` fails on any `kb dox lint` finding except large-index advisories.
+
+#### Scenario: Missing companion
+- **WHEN** an agent-doc grows past 300 lines without a companion
+- **THEN** `entry-lint` and `kb dox lint` fail and name the missing `<name>.agent.md`
+
+#### Scenario: Stale companion
+- **WHEN** a source's `##` heading is renamed and its companion is not updated
+- **THEN** `entry-lint` fails and lists the uncovered section
 
 ### Requirement: Cross-entry links
 `Related` and `alternatives` references SHALL be `[[id]]` wikilinks or relative markdown links that resolve to an existing catalog file.

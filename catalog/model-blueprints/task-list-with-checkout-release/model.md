@@ -4,7 +4,6 @@ The shape has two views over the same records. The Token entity holds one workfl
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=task-list-with-checkout-release cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class LogEntry {
@@ -36,4 +35,3 @@ classDiagram
   TaskList ..> User : maps
   TaskList o-- "*" Task : myTasks
 ```
-<!-- /mermaid:generated -->

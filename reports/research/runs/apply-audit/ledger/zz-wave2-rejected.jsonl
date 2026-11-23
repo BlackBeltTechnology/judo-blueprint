@@ -1,0 +1,2 @@
+{"id": "R1076", "status": "rejected", "file": null, "evidence": "checker: ecore default enumWidget=COMBO (esm.ecore:702), unset never reaches the null guard", "change": "removed by checker", "wave": 2}
+{"id": "R1769", "status": "rejected", "file": null, "evidence": "checker: KeycloakSecurityActivator.getPIDs calls removeAll on an immutable key set; claim unsupported", "change": "removed by checker", "wave": 2}

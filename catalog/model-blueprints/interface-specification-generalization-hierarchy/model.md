@@ -11,7 +11,6 @@ The hierarchy is a polymorphic view. A read-only transfer object over the base e
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=interface-specification-generalization-hierarchy cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AsynchronCommunication {
@@ -53,4 +52,3 @@ classDiagram
   InterfaceSpecification <|-- Rest
   InterfaceSpecification <|-- Soap
 ```
-<!-- /mermaid:generated -->

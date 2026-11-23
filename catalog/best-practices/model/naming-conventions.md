@@ -11,8 +11,6 @@ projects: [trivia, rackinspect, itracker, actiongroup-test-react, alba, skillmat
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, transfer-object-multiplicity, unmapped-transfer-dto, attribute-renaming-in-transfer, standard-type-library, derived-attribute-flattening, dual-role-relation, toggle-operation-pattern, ui-control-transfer-fields]
-fragment: naming-conventions
-diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -95,7 +93,6 @@ An Order entity has an `OrderStatus` enum (`IN_PROGRESS`, `REVIEW_REQUESTED`, `A
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=naming-conventions cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AdminOrder {
@@ -136,4 +133,3 @@ classDiagram
   Order --> "1" Customer : customer
   Order ..> OrderStatus : status
 ```
-<!-- /mermaid:generated -->

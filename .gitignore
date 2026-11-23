@@ -2,3 +2,4 @@
 .claude/judo-cli.jar
 target/
 .pi/dashboard/kb/
+reports/research/webshop-run/*.jsonl

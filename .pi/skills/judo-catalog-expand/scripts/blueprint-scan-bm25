@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+"""blueprint-scan part 2: BM25 section matches (top 2, or top 5 at a lower threshold for confirmed findings). Usage: blueprint-scan-bm25 <threshold, e.g. 25>. Needs target/bp-check/confirmed.json (ids applied in a ledger or kept by triage)."""
+import json,re,math,collections,pathlib
+scan=json.load(open('target/bp-check/scan.json'))
+CONF=set(json.load(open('target/bp-check/confirmed.json')))
+STOP=set("the a an of to in is are and or for on with by be it as that this not no from at its into only when which than then was were has have can does do if use used uses using via per each all any one two also must should may will without".split())
+tok=lambda s:[w for w in re.findall(r"[a-z][a-z0-9_]{2,}",s.lower()) if w not in STOP]
+secs=[]
+for g in ('model-blueprints/**/*.md','best-practices/**/*.md'):
+    for p in pathlib.Path('catalog').glob(g):
+        if p.name.endswith(('AGENTS.md','.agent.md')): continue
+        t=p.read_text(); t=re.sub(r'^---.*?---','',t,flags=re.S)
+        parts=re.split(r'\n(?=## )',t)
+        for s in parts:
+            if len(s)>80: secs.append((str(p),s.split('\n',1)[0][:80],tok(s)))
+N=len(secs); avg=sum(len(s[2]) for s in secs)/N
+df=collections.Counter(w for s in secs for w in set(s[2]))
+tf=[collections.Counter(s[2]) for s in secs]
+inv=collections.defaultdict(list)
+for i,c in enumerate(tf):
+    for w in c: inv[w].append(i)
+idf={w:math.log(1+(N-n+.5)/(n+.5)) for w,n in df.items()}
+def score(q):
+    sc=collections.Counter()
+    for w in set(tok(q)):
+        if w not in idf: continue
+        for i in inv[w]:
+            f=tf[i][w]; L=len(secs[i][2])
+            sc[i]+=idf[w]*f*2.2/(f+1.2*(.25+.75*L/avg))
+    return sc.most_common(5)
+pairs=collections.Counter(); add=0
+for o in scan:
+    q=re.sub(r'\| at .*','',o['text'])
+    top=score(q); bm=[]; C=o['id'] in CONF
+    k,th,rel=(5,15.0,0.6) if C else (2,float(__import__('sys').argv[1]),0.8)
+    if top and top[0][1]>=th:
+        for i,s in top[:k]:
+            if s>=rel*top[0][1] and secs[i][0] not in o['candidates'] and secs[i][0] not in [b[0] for b in bm]: bm.append([secs[i][0],secs[i][1]])
+    o['confirmed']=C
+    o['bm25']=bm; add+=bool(bm)
+json.dump(scan,open('target/bp-check/scan.json','w'))
+c=collections.Counter(o['src'] for o in scan if o['candidates'] or o['bm25'])
+print('threshold',__import__('sys').argv[1],'findings with any candidate',sum(c.values()),dict(c))
+print('pairs',sum(len(o['candidates'])+len(o['bm25']) for o in scan),'files',len({f for o in scan for f in o['candidates']+[b[0] for b in o['bm25']]}))

@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:translations.xlsx", "rackinspect:scripts/i18n/ticketing-glossary.json", "rackinspect:openspec/specs/translation-dictionary/spec.md"]
 alternatives: []
-fragment: "none: infrastructure"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

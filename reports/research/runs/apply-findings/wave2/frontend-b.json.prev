@@ -1,0 +1,121 @@
+[
+ {
+  "id": "R1664",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "The speed-dial toggle of a FAB group shows the group icon or no icon, never a SpeedDialIcon element.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/fab-rendering/spec.md:63"
+ },
+ {
+  "id": "R1665",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "TextInput emits only maxLength; mask and regexp are not applied in the generated input.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:13"
+ },
+ {
+  "id": "R1666",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "TextArea sets rows only; minRows is not emitted.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:35"
+ },
+ {
+  "id": "R1667",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "A CharacterCounter renders only when countCharacters is set and the bound attribute has maxLength.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:35"
+ },
+ {
+  "id": "R1668",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "There is no PasswordInput element type; password fields are not produced by a separate template.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:50"
+ },
+ {
+  "id": "R1669",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "Numeric inputs use only the scale (decimalScale); precision has no effect.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:67"
+ },
+ {
+  "id": "R1670",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "No Switch element is handled and no switch template exists; boolean inputs are not rendered as MUI Switch.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:104"
+ },
+ {
+  "id": "R1671",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "baseUnit is not read; time inputs always show hours, minutes and seconds.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:138"
+ },
+ {
+  "id": "R1672",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "EnumerationCombo renders an MUI Autocomplete, not a Select with MenuItem options.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:160"
+ },
+ {
+  "id": "R1673",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "maxFileSize is not enforced client-side and binary uploads are not base64-encoded in the generated input.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:189"
+ },
+ {
+  "id": "R1674",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "Auto-focus goes to the first editable input that is not read-only, so a hidden input can receive focus.",
+  "evidence": "template/judo-ui-react-template:openspec/specs/input-widgets/spec.md:224"
+ },
+ {
+  "id": "R2202",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "A FAB button group with one button and featuredActions=0 renders nothing, because SpeedDial needs more than one button.",
+  "evidence": "judo-ui-react-template:judo-ui-react/src/main/resources/actor/src/containers/widget-fragments/fab-button-group.fragment.hbs:5"
+ },
+ {
+  "id": "R2203",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "hiddenBy is applied to featured FAB buttons but not to SpeedDial items in a FAB group.",
+  "evidence": "judo-ui-react-template:judo-ui-react/src/main/resources/actor/src/containers/widget-fragments/fab-button-group.fragment.hbs:22"
+ },
+ {
+  "id": "R2204",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "text": "Dialog FAB groups render after DialogContent and are positioned fixed, not inside the dialog body.",
+  "evidence": "judo-ui-react-template:judo-ui-react/src/main/resources/actor/src/containers/dialog.tsx.hbs:173"
+ },
+ {
+  "id": "R2456",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+  "text": "Container hooks refresh data through context.actions.refresh(); context.refresh() is not the documented API.",
+  "evidence": "judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/hooks/data-hooks.md.hbs:271"
+ },
+ {
+  "id": "R2536",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+  "text": "APPBAR_COMPONENTS_INTERFACE_KEY is not defined or imported by the generated template set.",
+  "evidence": "judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/agent-docs/frontend/hooks/ui-hooks.md.hbs:609"
+ },
+ {
+  "id": "R1324",
+  "kind": "triage",
+  "file": "catalog/agent-docs/frontend/hooks/validation-hooks.md",
+  "text": "The numeric input min check is skipped for the value 0, so 0 below a minimum is accepted.",
+  "evidence": "template/judo-ui-react-template:judo-ui-react/src/main/resources/actor/src/containers/widget-fragments/numericinput.hbs:60"
+ }
+]

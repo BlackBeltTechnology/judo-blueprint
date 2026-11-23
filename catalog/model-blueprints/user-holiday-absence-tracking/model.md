@@ -6,7 +6,6 @@ Generated UI pages: the holiday list and form sit on the user's own panel (compo
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=user-holiday-absence-tracking cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class DayType {
@@ -29,4 +28,3 @@ classDiagram
   Holiday --> "0..1" User : owner
   User *-- "*" Holiday : holidays
 ```
-<!-- /mermaid:generated -->

@@ -1,0 +1,105 @@
+{
+ "batch": "v3",
+ "files": [
+  "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "catalog/agent-docs/model/esm_metamodel/type.md",
+  "catalog/agent-docs/backend/architectural-patterns.md",
+  "catalog/best-practices/model/singleton-entity.md",
+  "catalog/best-practices/model/bidirectional-relation.md",
+  "catalog/agent-docs/e2e-testing/model-screen-layout.md",
+  "catalog/model-blueprints/accept-reject-operations/backend.md",
+  "catalog/agent-docs/deployment/schema-evolution.md"
+ ],
+ "items": [
+  {
+   "id": "apply-findings::B56",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "## Custom REST Endpoints and CXF",
+   "text": "The platform does not provide Server-Sent Events. No SSE classes or `text/event-stream` handling exist in the JUDO sources, and the Karaf features install only the upstream `cxf-jaxrs` feature (Apache CXF 3.6.8). An SSE endpoint needs a CXF SSE module that the platform does not install.",
+   "replaces": "",
+   "evidence": "runtime__judo-platform/judo-platform-karaf-features/src/main/feature/feature.xml:869,882,921; runtime__judo-platform/pom.xml:34"
+  },
+  {
+   "id": "apply-findings::KC10",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "### File-Store Servlet Checks",
+   "text": "- `DownloadServlet` has no size limit setting; only `UploadServlet` has `maxSize`.\n- Every file the generated frontend downloads comes through the app's `download` path (`/<app>/download`, served by `DownloadServlet`). An operation's `downloadToken` is redeemed on that path.",
+   "replaces": "- `DownloadServlet` has no size limit setting; only `UploadServlet` has `maxSize`.",
+   "evidence": "runtime__judo-platform/judo-platform-services/judo-services-dispatcher-osgi/src/main/java/hu/blackbelt/judo/services/dispatcher/osgi/DispatcherServiceActivator.java:59,261; template__judo-ui-typescript-rest-template/judo-ui-typescript-rest-axios/src/main/resources/data-axios/accessServiceImpl.ts.hbs:63-64; runtime__osgi-filestore/filestore-servlet/src/main/java/hu/blackbelt/osgi/filestore/servlet/DownloadServlet.java"
+  },
+  {
+   "id": "apply-findings-webshop::WR16-9",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "heading": "Optimistic Locking and `__version`",
+   "text": "- The generated TypeScript REST client copies `__version` only when its runtime type is `string`, but the generated `JudoStored` type declares it as `number`, so a UI built on that client drops the version on update. Send `__version` explicitly in the update payload until the generator copies numbers.",
+   "replaces": "",
+   "evidence": "target/judo-ng-read/wt/template__judo-ui-typescript-rest-template/judo-ui-typescript-rest-api/src/main/resources/common/utils.ts.hbs:15 (typeof string); common/JudoStored.ts.hbs:11 (__version?: number)"
+  },
+  {
+   "id": "apply-findings::B31",
+   "kind": "research",
+   "file": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "heading": "### Default Values on Type Creation",
+   "text": "The seeded string types in the platform test fixture models are `String` (`maxLength` 255), `Text` (250), `Phone` (20), `URL` (1024) and `Email` (255, with an email `regExp`). A new model may change them, so check its own types before relying on these limits.",
+   "replaces": "*Verify:* the seeded string and numeric types of a new model (names, `maxLength`, `regExp`) against the project template before documenting them.",
+   "evidence": "runtime__judo-tatami-tests/models/Sandbox/model/Sandbox.model:4,12-15; template__judo-psm-generator-jaxrs/judo-psm-generator-jaxrs-test/src/test/resources/model/*-psm.model (same Text/Phone/URL/Email limits)"
+  },
+  {
+   "id": "apply-findings::KC12",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/architectural-patterns.md",
+   "heading": "### Rules for `accesses[*].getterExpression`",
+   "text": "4. **`<Type>!getVariable(...)` returns a scalar `String` only.** The receiver must be a type name (for example `String!getVariable('ACTOR', 'email')`); a bare `!getVariable(...)` is not a valid form. The type must be a primitive, enumeration or custom type, otherwise the build fails with `Type is not valid for environment variable`.",
+   "replaces": "4. **`!getVariable(...)` returns a scalar `String` only.**",
+   "evidence": "models__judo-meta-expression/builder-jql/src/main/java/.../function/variable/GetVariableFunctionTransformer.java:45-146 (apply takes a TypeNameExpression receiver; type checks at the primitive branch and the error)"
+  },
+  {
+   "id": "bp-check::B3@5",
+   "kind": "research",
+   "file": "catalog/best-practices/model/singleton-entity.md",
+   "heading": "Attribute-less singleton: initializer and application container",
+   "text": "The platform calls every initializer operation (unbound, no parameters) at each start of the application, after the persistence, scripts, SDK operations and identity-manager services are ready. The startup code calls each one with an empty exchange map and sets no principal.",
+   "replaces": "The platform calls every initializer operation (unbound, no parameters) at each start of the application, once the scripts are ready.",
+   "evidence": "runtime__judo-platform/judo-platform-services/judo-services-job/src/main/java/hu/blackbelt/judo/services/job/InitScriptExecutor.java:50-65, 73-77, 90-94"
+  },
+  {
+   "id": "bp-check::G134@1",
+   "kind": "research",
+   "file": "catalog/best-practices/model/bidirectional-relation.md",
+   "heading": "Declare both ends and point them at each other",
+   "text": "named after the target type with a lower-case first letter (for example `customerAccount` for type `CustomerAccount`, `a` for type `A`)",
+   "replaces": "named after the target type in lower case (for example `a` for type `A`)",
+   "evidence": "models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmUtils.java:3528-3539 (partner created, setUpper(1), setPartner), 3058-3070 (unique name from target name, first letter lowercase). CLI run not needed."
+  },
+  {
+   "id": "apply-findings::R2299",
+   "kind": "research",
+   "file": "catalog/agent-docs/e2e-testing/model-screen-layout.md",
+   "heading": "Shape of the Generated Tree",
+   "text": "- A node with no children is emitted as a leaf that carries only `id` and `label` (binary inputs and filters get their extra keys). A container, table or tab element without children therefore has no `_id`, `_label` or `tab` entries.",
+   "replaces": "",
+   "evidence": "template__judo-ui-e2e-template/judo-ui-playwright-e2e-template/src/main/java/hu/blackbelt/judo/ui/generator/playwright/VisualElementHelper.java:281-286, 304-306"
+  },
+  {
+   "id": "bp-check::B10@5",
+   "kind": "research",
+   "file": "catalog/model-blueprints/accept-reject-operations/backend.md",
+   "heading": "Backend guidance",
+   "text": "A JCL script operation cannot raise a modeled fault and cannot call an OSGi service. The JCL grammar has no `throw` or fault statement and no service-reference form; its statements are declarations, calls, `return`, `unset`, `delete`, `new`, blocks, `if`, `for` and `while`. Put fault-raising logic and OSGi service calls in a Java custom implementation.",
+   "replaces": "",
+   "evidence": "models__judo-meta-jcl/model/src/main/java/hu/blackbelt/judo/meta/jcl/JclDsl.xtext:35-50, 83-91; runtime__judo-script-codegen/generator/src/main/java/hu/blackbelt/judo/script/codegen/generator/Script2JavaGenerator.xtend (no fault or service emission found)"
+  },
+  {
+   "id": "apply-findings-webshop::WR16-13",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "When No Manual Step Is Needed",
+   "text": "At startup, the database prehook logs `ERROR ... Could not find compatible schema model` when the database already holds a stored model version that the built model does not match, after its retry attempts. It is a startup log, not a build failure: run the schema upgrade for that database (see the migration rules below).",
+   "replaces": "",
+   "evidence": "target/judo-ng-read/wt/runtime__judo-platform/judo-platform-services/judo-services-persistence/src/main/java/hu/blackbelt/judo/services/persistence/LiquibaseModelDataSourcePrehook.java:200-228 (else branch: checkModelIsIdentical retry, log.error at 228)"
+  }
+ ]
+}

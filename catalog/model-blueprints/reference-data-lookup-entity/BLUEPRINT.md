@@ -10,8 +10,6 @@ status: established
 projects: [reserve-app, alba, trivia, itracker, viterra_demo, InterfaceRegister, doors-model, ams-model, skillmatrix-model, mlszksz-platform]
 evidence: ["reserve-app:unrecorded", "alba:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
-fragment: reference-data-lookup-entity
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---
@@ -31,14 +29,14 @@ A core entity references a lookup entry. It does not own it. Removing the refere
 
 One lookup entity, called `Category` in the neutral example, with a required `name` that is the identifier. Optionally it has a required boolean flag that defaults to true. The flag is named `active`, `isActive` or `isEnabled` depending on the project, or is absent in the simplest variants. A core entity, `Order` in the example, holds an association to the lookup: 0..1 or 1..1 for a single choice, 0..* for a multi-select. The association is one-way in most projects. Some add the reverse collection, for example the orders of a category.
 
-The lookup entity has all three CRUD flags (createable, updateable, deleteable) off. Writes go through transfer objects and access points that the project exposes to the administrator, or through seeding.
+The lookup entity has all three CRUD flags (createable, updateable, deleteable) off. The generator does not read entity-level flags, so these flags do not block writes by themselves; the access points and relation flags that the project exposes do. Writes go through transfer objects and access points that the project exposes to the administrator, or through seeding.
 
 ## Constraints
 
 - The lookup is an association target and never a composition part of the referencing entity.
 - The name is required. It is the identifier in most projects. Uniqueness of names is not a model rule; where it matters, a custom operation or service checks it (project practice).
 - The flag, where present, defaults to true and hides an option from new choices. It does not remove existing references. Choice lists filter on it; read paths that show existing values do not. See [[soft-delete-active-flag]].
-- The entity-level CRUD flags are all false, so the platform exposes no direct create, update or delete on the entity itself. Whether an actor may edit the list depends on the access and transfer object that the project defines for that actor. See [[entity-crud-at-service-layer]].
+- The entity-level CRUD flags are all false, but the generator does not read them, so they neither expose nor block writes on their own. Whether an actor may create, update or delete entries depends on the access points, relation flags and transfer object that the project defines for that actor. See [[entity-crud-at-service-layer]].
 - Partner or end-user views usually get a name-only transfer object. The administrator gets the full one with the flag.
 
 ## Variations

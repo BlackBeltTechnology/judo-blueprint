@@ -8,7 +8,6 @@ Generated UI pages: the enumeration attribute appears as a selection on the form
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=work-status-lifecycle-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class WorkItem {
@@ -25,4 +24,3 @@ classDiagram
   }
   WorkItem ..> WorkStatus : workStatus
 ```
-<!-- /mermaid:generated -->

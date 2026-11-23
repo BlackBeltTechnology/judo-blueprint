@@ -12,7 +12,6 @@ Make the registry the access root. Headers, lines and classifications are reache
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=registry-header-with-lines cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class LineClassification {
@@ -46,4 +45,3 @@ classDiagram
   RegistryHeader *-- "*" RegistryLine : lines
   RegistryLine *-- "*" LineClassification : classifications
 ```
-<!-- /mermaid:generated -->

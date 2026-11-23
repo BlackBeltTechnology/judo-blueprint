@@ -1,0 +1,15 @@
+{"id": "G004@1", "verdict": "ok", "note": "agent-docs model-development.md Part 2 step 8: create -t Access creates the MenuItemAccess; create -t MenuItemAccess refused. Checked the agent-docs text; the CLI was not re-run on a scratch model."}
+{"id": "G014@2", "verdict": "ok", "note": "Same statement as G004@1 (same sentence, same source)."}
+{"id": "G084@1", "verdict": "ok", "note": "Same statement as G004@1 (same sentence, same source)."}
+{"id": "G004@3", "verdict": "ok", "note": "Same CLI fact as G004@1 in self-access-point.md; the added \"do not add a second one\" matches agent-docs Part 2 step 8."}
+{"id": "R1891@1", "verdict": "ok", "note": "judo-esm-fullstack-project-template frontend-react/pom.xml.hbs:20 sets node-install-dir to ${maven.multiModuleProjectDirectory}/.nodejs; agent-docs build-and-deployment.md Module Properties now carries the same default."}
+{"id": "AU11@1", "verdict": "ok", "note": "Same node-install-dir correction as R1891@1; agent-docs source already corrected."}
+{"id": "R1894@4", "verdict": "ok", "note": "actor/pom.xml.properties-definition.fragment.hbs defines model-name, actor-name, override-dir, appScope, muiLicensePlan, appVersion; no actor property. Agent-docs Module Properties lists actor-name, no actor. Text now lists actor-name only."}
+{"id": "AU12@1", "verdict": "ok", "note": "Same actor-property correction as R1894@4; agent-docs source matches."}
+{"id": "R16-C3@1", "verdict": "fixed", "note": "Wrong rule: agent-docs accesspoint.md Anonymous vs Authenticated Behaviour say the anonymous flag decides when principal is null or unmapped, and a mapped principal is always authenticated. Replaced the \"flag alone does not matter\" sentence with that rule (the old sentence was also wrong on the flag)."}
+{"id": "KC11@5", "verdict": "ok", "note": "interceptors.md Which Operations Are Intercepted: custom (SDK) and script operations never intercepted; custom-operations.md: CRUD on a mapped transfer object is intercepted. Text matches."}
+{"id": "G269@3", "verdict": "fixed", "note": "theming.md Overview: logo rendered as a plain img limited by maxHeight/maxWidth, SVG needs explicit width and height. The applied wording \"or the generated img renders it wrongly\" overstated the source; reworded to the documented limit."}
+{"id": "B3@3", "verdict": "applied-now", "note": "Line 28 hedge replaced by the documented OSGi trigger (every start, empty exchange, own transaction; Spring Boot not verified)"}
+{"id": "R16-C7@3", "verdict": "applied-now", "note": "Same line 28: the trigger is documented for OSGi; Spring Boot caveat kept"}
+{"id": "B9@5", "verdict": "applied-now", "note": "Runtime enforces uniqueness of an identifier attribute; removed the \"enforce in app logic\" advice"}
+{"id": "B4@5", "verdict": "applied-now", "note": "Added: scheduler thread has no principal or ACTOR; call modeled operation via Dispatcher for platform transaction"}

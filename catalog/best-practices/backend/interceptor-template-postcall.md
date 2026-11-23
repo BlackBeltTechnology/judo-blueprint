@@ -11,7 +11,6 @@ projects: [trivia, park-here]
 evidence: ["trivia:unrecorded", "park-here:unrecorded"]
 alternatives: []
 related: [interceptor-global-logging, interceptor-security-filter-validation, interceptor-crud-lifecycle, mask-field-projection]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

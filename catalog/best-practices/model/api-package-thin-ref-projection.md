@@ -11,8 +11,6 @@ projects: [compsych-letter-demo]
 evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: []
 first_seen: 2026-05-13
-fragment: api-package-thin-ref-projection
-diagram: { kinds: [entity, transfer], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -32,7 +30,7 @@ For each entity reachable from a stable API input, declare in the API package a 
 The API input transfer object, which is unmapped, then holds a TRANSIENT relation to the reference transfer object. Rules that apply:
 
 - A relation target is always a transfer object, never an entity; the link to the entity lives only in the reference's mapping.
-- An unmapped transfer object may only have `AGGREGATION` relations, enforced by the validator ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), *Relation kinds per layer and the bidirectional rules*). The CLI cannot set `AGGREGATION`; it is the default on an unmapped transfer object's transient relation, or the modeling tool sets it.
+- An unmapped transfer object may only have `AGGREGATION` relations, enforced by the validator ([advanced modeling patterns](../../agent-docs/model/advanced-modeling-patterns.md), *Relation kinds per layer and the bidirectional rules*). `AGGREGATION` is the default for a transient relation on an unmapped transfer object; an `ASSOCIATION` transient relation is reported by validation (`must be aggregation if transient`). A transient relation to an unmapped target with a defined form renders as a nested inline form (inline create), not as a picker; a picker is used for a transient relation to a mapped reference transfer object.
 - The transient relation mechanism, its range and default expressions: see [[transient-relation-single-select-input]] and [[transient-relation-parameter]].
 
 Choose between the two shapes:
@@ -72,7 +70,6 @@ In the diagram, a template entity is mapped by a reference transfer object with 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=api-package-thin-ref-projection cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class StartGenerationInput {
@@ -92,4 +89,3 @@ classDiagram
   StartGenerationInput o-- "1" TemplateApiRef : template
   TemplateApiRef ..> Template : maps
 ```
-<!-- /mermaid:generated -->

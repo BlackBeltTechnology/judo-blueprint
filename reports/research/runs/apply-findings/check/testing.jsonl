@@ -1,0 +1,44 @@
+{"id": "G037", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G038", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G039", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G040", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G041", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G043", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G044", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G060", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G061", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G063", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G064", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G120", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G121", "verdict": "ok", "note": "applied text checked; platform-neutral, no deletions"}
+{"id": "G038", "verdict": "ok", "note": "DebouncedTextField debounce 200ms (config/general.ts.hbs:33) confirmed"}
+{"id": "G041", "verdict": "ok", "note": "BinaryInput title 'Upload file' confirmed"}
+{"id": "G120", "verdict": "ok", "note": "consistent with osgi page; note: getting-started.agent.md:40 and testkit blueprint still use -pl (outside batch)"}
+{"id": "G036", "verdict": "ok", "note": "wave2 applied; evidence confirmed (dialog.tsx.hbs:133/249, page.tsx.hbs:138 -button-group, error codes doc)"}
+{"id": "G045", "verdict": "ok", "note": "wave2 applied; evidence confirmed (dialog.tsx.hbs:133/249, page.tsx.hbs:138 -button-group, error codes doc)"}
+{"id": "G046", "verdict": "ok", "note": "wave2 applied; evidence confirmed (dialog.tsx.hbs:133/249, page.tsx.hbs:138 -button-group, error codes doc)"}
+{"id": "G065", "verdict": "ok", "note": "wave2 applied; evidence confirmed (dialog.tsx.hbs:133/249, page.tsx.hbs:138 -button-group, error codes doc)"}
+{"id": "U1199", "verdict": "ok", "note": "VisualElementHelper has no Flex handling, setTabElement; dialog-title only in e2e ids; consistent with G065 note"}
+{"id": "U1204", "verdict": "ok", "note": "VisualElementHelper has no Flex handling, setTabElement; dialog-title only in e2e ids; consistent with G065 note"}
+{"id": "U1212", "verdict": "ok", "note": "VisualElementHelper has no Flex handling, setTabElement; dialog-title only in e2e ids; consistent with G065 note"}
+{"id": "U1214", "verdict": "ok", "note": "VisualElementHelper has no Flex handling, setTabElement; dialog-title only in e2e ids; consistent with G065 note"}
+{"id": "U1200", "verdict": "ok", "note": "covered by Shape of the Generated Tree"}
+{"id": "U1201", "verdict": "ok", "note": "covered by Shape of the Generated Tree"}
+{"id": "U1202", "verdict": "ok", "note": "covered by Shape of the Generated Tree"}
+{"id": "U1210", "verdict": "ok", "note": "covered by Shape of the Generated Tree"}
+{"id": "U1211", "verdict": "ok", "note": "covered by Shape of the Generated Tree"}
+{"id": "U0148", "verdict": "ok", "note": "covered by Shape of the Generated Tree"}
+{"id": "G126", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "NG0005", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "NG0012", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "NG0013", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "NG0015", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "NG0040", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "NG0050", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "NG0099", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "NG0148", "verdict": "ok", "note": "already-correct accepted"}
+{"id": "G042", "verdict": "ok", "note": "spot-check: not confirmable in one lookup; left unapplied"}
+{"id": "G062", "verdict": "ok", "note": "spot-check: not confirmable in one lookup; left unapplied"}
+{"id": "G129", "verdict": "ok", "note": "spot-check: not confirmable in one lookup; left unapplied"}
+{"id": "R2301", "verdict": "ok", "note": "ApiHelper.ts.hbs:4 concatenates APP_URL into new RegExp without escaping. Verified."}
+{"id": "R2851", "verdict": "ok", "note": "JudoTestExtensionRouting.useCache returns shareInjector for class-level non-SINGLETON-scope cases; DefaultIsFreshRuntimePerMethodTest asserts default false. Note: judo-ng TEST-CONFIGURATION.md:300 still describes unconditional caching (stale); catalog runtime-fixture-and-test-scope.md agrees with the code."}

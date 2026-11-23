@@ -11,7 +11,6 @@ projects: [trivia, rackinspect, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [complete-frontend-replacement, glassmorphic-styled-components, application-customizer-hub]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

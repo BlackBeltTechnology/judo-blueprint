@@ -1,0 +1,35 @@
+{"id": "R1349", "verdict": "fixed", "note": "added CLOCK and case-insensitive match (regex)"}
+{"id": "R1346", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R0801", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R0779", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R0795", "verdict": "fixed", "note": "dropped wrong advice: download servlet uses same get(); hedged to driver-dependent"}
+{"id": "R0776", "verdict": "fixed", "note": "same as R0795"}
+{"id": "R0775", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R0796", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R0577", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R0574", "verdict": "ok", "note": "ok; fixed neighbouring sentence \"each uploaded file entry has id and token\" to successfully stored"}
+{"id": "R0578", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R1955", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2210", "verdict": "fixed", "note": "reworded: only relationTargetTypeDefinitionForCreateRequest is affected; removed unsupported RangeRequest advice"}
+{"id": "R2005", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R0191", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2330", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2731", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2333", "verdict": "fixed", "note": "regex is \\s,\\s: exactly one whitespace char; fixed contradiction with \"comma-separated\" in the bullet above"}
+{"id": "R2732", "verdict": "fixed", "note": "same as R2333"}
+{"id": "R2334", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2734", "verdict": "fixed", "note": "each handler has its own static SimpleDateFormat, not shared by both; removed vague advice"}
+{"id": "R2132", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2135", "verdict": "fixed", "note": "TODO only set for an actor with a realm"}
+{"id": "R2328", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2842", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2329", "verdict": "fixed", "note": "column is A+size, one past last attribute; added"}
+{"id": "R2844", "verdict": "fixed", "note": "same as R2329"}
+{"id": "R2326", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2840", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2843", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2327", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2841", "verdict": "ok", "note": "evidence read at judo-ng; sentence supported"}
+{"id": "R2845", "verdict": "fixed", "note": "removed unsupported cell-type consequence; stated what the code compares (Double.class/Float.class)"}
+{"id": "R1703", "verdict": "fixed", "note": "same as R2734"}
+{"id": "R0696", "verdict": "fixed", "note": "same as R2734"}

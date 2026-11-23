@@ -11,8 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: []
 related: [draft-done-status-enum, state-transition-history-entry]
-fragment: registry-header-with-lines
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-09-24
 last_updated: 2026-11-10
 ---

@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/access/WriteGuards.java", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/access/update/PriceModifierUpdateGuard.java"]
 alternatives: []
 related: [role-based-invitation-guard, guarded-delete-with-deactivate-fallback, interceptor-security-filter-validation, typed-exception-error-handling]
-fragment: "none: backend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

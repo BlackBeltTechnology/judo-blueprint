@@ -11,8 +11,6 @@ projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, derived-attribute-flattening, derived-relation-navigation, transfer-object-multiplicity]
-fragment: self-referencing-derived-relation
-diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -60,7 +58,6 @@ A neutral Event entity is mapped by two transfer objects, `EventView` and `Summa
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=self-referencing-derived-relation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Event {
@@ -79,4 +76,3 @@ classDiagram
   EventView o-- "0..1" SummaryView : summary
   SummaryView ..> Event : maps
 ```
-<!-- /mermaid:generated -->

@@ -1,0 +1,19 @@
+{"id": "G103", "verdict": "ok", "note": "createable confirmed in accesspoint.md"}
+{"id": "G104", "verdict": "ok", "note": "already-correct"}
+{"id": "G105", "verdict": "ok", "note": "judo.sh dump/import; claim marked verify"}
+{"id": "G106", "verdict": "ok", "note": "already-correct"}
+{"id": "G107", "verdict": "ok", "note": "already-correct"}
+{"id": "G109", "verdict": "ok", "note": "__extra placeholder and partial path confirmed in template"}
+{"id": "G112", "verdict": "ok", "note": "exporter keys id/realm/enabled/loginWithEmailAllowed confirmed"}
+{"id": "G113", "verdict": "ok", "note": "per-actor e2e project per docs"}
+{"id": "G115", "verdict": "ok", "note": "unverified, not written"}
+{"id": "G116", "verdict": "fixed", "note": "reworded 'project lead considers' to neutral legacy wording"}
+{"id": "G122", "verdict": "ok", "note": "hedged with verify"}
+{"id": "G125", "verdict": "ok", "note": "not-platform"}
+{"id": "G128", "verdict": "ok", "note": "derived from page rationale"}
+{"id": "G131", "verdict": "ok", "note": "hedged; see G112"}
+{"id": "G132", "verdict": "ok", "note": "unverified, not written"}
+{"id": "G134", "verdict": "ok", "note": "CLI evidence per ledger"}
+{"id": "G135", "verdict": "ok", "note": "COALESCE only for COUNT confirmed; verify marked"}
+{"id": "KC07", "verdict": "ok", "note": "createAll loops create confirmed in AbstractRdbmsDAO"}
+{"id": "KC23", "verdict": "fixed", "note": "same as G116"}

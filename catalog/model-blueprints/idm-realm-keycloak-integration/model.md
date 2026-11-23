@@ -15,7 +15,6 @@ Pages: the `Idm` and `Realm` tables are administrator-only. The `Application` ta
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=idm-realm-keycloak-integration cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class ApplicationEntity {
@@ -42,4 +41,3 @@ classDiagram
   OrganizationEntity *-- "0..1" RealmEntity : realm
   RealmEntity --> "0..1" IdmEntity : idm
 ```
-<!-- /mermaid:generated -->

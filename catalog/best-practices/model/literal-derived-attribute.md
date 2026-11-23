@@ -11,8 +11,6 @@ projects: [trivia, alba, park-here]
 evidence: ["trivia:unrecorded", "alba:unrecorded", "park-here:unrecorded"]
 alternatives: []
 related: [derived-attribute-flattening, ui-control-transfer-fields, singleton-entity]
-fragment: literal-derived-attribute
-diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -61,7 +59,6 @@ A ProductView transfer object maps a Product title and adds two derived attribut
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=literal-derived-attribute cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Product {
@@ -76,4 +73,3 @@ classDiagram
   }
   ProductView ..> Product : maps
 ```
-<!-- /mermaid:generated -->

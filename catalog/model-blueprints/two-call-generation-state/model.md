@@ -31,7 +31,6 @@ The fragment drawn below uses a neutral `SourceItem` and leaves out the binary a
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=two-call-generation-state cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Document {
@@ -60,4 +59,3 @@ classDiagram
   Handle ..> HandleState : state
   SourceItem --> "*" Document : documents
 ```
-<!-- /mermaid:generated -->

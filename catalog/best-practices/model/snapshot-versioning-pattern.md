@@ -10,8 +10,6 @@ status: established
 projects: [itracker, indamedia-adtrack, judo-partner, workflow-poc]
 evidence: ["itracker:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded"]
 alternatives: [self-referencing-versioning]
-fragment: snapshot-versioning-pattern
-diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -73,7 +71,6 @@ A Plan entity owns `lines` (PlanLine with an amount) and `snapshots` (PlanSnapsh
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=snapshot-versioning-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Plan {
@@ -98,4 +95,3 @@ classDiagram
   Plan *-- "*" PlanSnapshot : snapshots
   PlanSnapshot *-- "*" SnapshotLine : lines
 ```
-<!-- /mermaid:generated -->

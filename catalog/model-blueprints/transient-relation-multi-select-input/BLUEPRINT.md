@@ -10,8 +10,6 @@ status: emerging
 projects: [alba, actiongroup-test-react]
 evidence: ["alba:unrecorded", "actiongroup-test-react:unrecorded"]
 alternatives: [transient-relation-single-select-input]
-fragment: transient-relation-multi-select-input
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-05-13
 last_updated: 2026-11-10
 ---
@@ -29,7 +27,7 @@ This is the multi-pick variant. For one record see [[transient-relation-single-s
 
 ### What is project practice
 
-One project assigned the picked users with `mutable input.users` in the body, and another did the same for a list of signs. The agent-docs only describe `mutable` as a unary prefix operator and `input` as immutable unless declared mutable ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)); the link semantics for a transient collection are project experience, *verify* on your runtime version.
+One project assigned the picked users with `mutable input.users` in the body, and another did the same for a list of signs. The agent-docs describe `mutable` as a unary prefix operator, `input` as immutable unless declared mutable, and everything read from `input`, including a transient reference, as immutable ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)); the link semantics for a transient collection are project experience, *verify* on your runtime version.
 
 ## Structure
 

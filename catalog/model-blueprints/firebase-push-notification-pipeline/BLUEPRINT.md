@@ -10,7 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/firebase/src/main/java/hu/blackbelt/mlszksz/platform/firebase/FirebaseMessagingService.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PushNotificationServiceImpl.java", "mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/NotificationDeliveryJob.java"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

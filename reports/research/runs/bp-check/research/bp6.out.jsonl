@@ -1,0 +1,4 @@
+{"id": "B21@2", "status": "open", "evidence": "Need a trace of entity-level createable/updateable/deleteable (not relation-level) through esm2psm/psm2asm to generated pages and REST endpoints. Agent-docs document relation-level flags only; not settled in a quick check."}
+{"id": "B21@3", "status": "open", "evidence": "Same entity-level CRUD flag gap as B21@2; needs the same code trace."}
+{"id": "G080@2", "status": "open", "evidence": "Need how the React generator handles a ui:Placeholder with customImplementation (no scaffold, renders nothing?). One grep over judo-ui-react-template did not find the Placeholder path."}
+{"id": "G134@1", "status": "open", "evidence": "Needs running the model CLI (create -t TwoWayRelationMember on a scratch model) to see the partner name and cardinality defaults. Not run here."}

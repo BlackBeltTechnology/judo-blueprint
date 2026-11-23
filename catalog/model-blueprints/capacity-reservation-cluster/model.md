@@ -19,7 +19,6 @@
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=capacity-reservation-cluster cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Attachment {
@@ -147,4 +146,3 @@ classDiagram
   Project --> "*" Slot : slots
   Project --> "*" User : users
 ```
-<!-- /mermaid:generated -->

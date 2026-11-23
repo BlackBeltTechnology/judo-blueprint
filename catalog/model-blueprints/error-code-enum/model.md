@@ -19,7 +19,6 @@ The name of the code field varies (`code` or `errorCode`), and so does the error
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=error-code-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class BusinessError {
@@ -36,4 +35,3 @@ classDiagram
   }
   BusinessError ..> ErrorCode : code
 ```
-<!-- /mermaid:generated -->

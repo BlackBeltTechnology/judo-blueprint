@@ -11,8 +11,6 @@ projects: [itracker, actiongroup-test-react, alba, skillmatrix-model, mlszksz-pl
 evidence: ["itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "ams-model:unrecorded", "sanctuary-backend:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: category-enum-pattern
-diagram: { kinds: [entity, enum], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -32,6 +30,7 @@ Some entities need a classification from a small fixed vocabulary that is set at
 - Filter and group by it in access getters and derived members with the same literal form.
 - Practice note: category enumerations that drive branching in operations (for example which credential type is valid) are fine, but if the value changes through transitions it is a state, not a category: use [[enum-state-machine]].
 - Known generated-DAO issue (agent-docs backend data-access guide): the generated `query<Attribute>()` on an enumeration attribute can fail with a cast error because the runtime delivers the ordinal; read the value through the DTO or convert with `<Enum>.getByOrdinal(...)`.
+- `<Enum>.getByOrdinal(ordinal)` throws `IllegalArgumentException` with the message `Invalid ordinal: <n>` for an ordinal that matches no member, and with the message `Invalid ordinal: null` for `null`. The generated DTO mapping calls it when it converts a non-null ordinal to an enumeration value, so an out-of-range ordinal fails there.
 
 ### When the set must grow at runtime
 
@@ -61,7 +60,6 @@ A Ticket entity has a required Priority (low, medium, high; default medium) and 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=category-enum-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Channel {
@@ -84,4 +82,3 @@ classDiagram
   Ticket ..> Channel : channel
   Ticket ..> Priority : priority
 ```
-<!-- /mermaid:generated -->

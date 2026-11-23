@@ -1,0 +1,10 @@
+catalog/agent-docs/backend/interceptors.agent.md
+catalog/agent-docs/deployment/README.agent.md
+catalog/agent-docs/e2e-testing/model-screen-layout.agent.md
+catalog/agent-docs/frontend/advanced-patterns.agent.md
+catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.agent.md
+catalog/agent-docs/frontend/hooks/navigation-and-access.agent.md
+catalog/agent-docs/frontend/i18n.agent.md
+catalog/agent-docs/integration-testing/best-practices.agent.md
+catalog/agent-docs/model/esm_metamodel/ui.agent.md
+catalog/agent-docs/deployment/local-development.agent.md

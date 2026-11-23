@@ -1,6 +1,9 @@
 ---
 title: Integration Testing - OSGi DS Descriptor Contract Tests
 description: "Part of: Integration Testing Documentation(./README.md)"
+aliases: [test osgi wiring, osgi ds tests, reference target filter test, scr descriptor test, service property test, osgi component xml test]
+keywords: [@Reference, @Component, ReferenceCardinality, ReferencePolicy, OSGI-INF, maven-bundle-plugin, ReferenceInjector, JudoTest, target, cardinality, policy]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - OSGi DS Descriptor Contract Tests
 
@@ -72,7 +75,7 @@ application/app/target/<app><postfix>-app-<version>.jar
 
 The `application/integration-test` module already declares `…-application-app` as an upstream dependency (see `integration-test/pom.xml`). Because Maven builds `app` → `integration-test` in reactor order, the jar — and therefore every `OSGI-INF/*.xml` resource — is on the test classpath by the time `integration-test`'s `test` phase runs. A plain classpath lookup (`ClassLoader.getResourceAsStream("OSGI-INF/…xml")`) is all that is needed.
 
-> **Orphaned-from-reactor build.** The `application/integration-test` module is intentionally not listed in `application/pom.xml`'s module tree; it is built standalone via `mvn -pl application/integration-test …` (or from the module directory). This is the established JUDO pattern (see <app>'s `application/test/` for a richer example) and is what lets the tests consume the already-packaged upstream app jar without creating a reactor cycle with the `package`-phase bundle plugin.
+> **Orphaned-from-reactor build.** The `application/integration-test` module is intentionally not listed in `application/pom.xml`'s module tree; it is built standalone from the module directory (`cd application/integration-test && mvn …`); `mvn -pl application/integration-test` from the project root fails because the module is not in the reactor. This is the established JUDO pattern (see <app>'s `application/test/` for a richer example) and is what lets the tests consume the already-packaged upstream app jar without creating a reactor cycle with the `package`-phase bundle plugin.
 
 ## Complete Example
 

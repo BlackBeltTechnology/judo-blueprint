@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/md-document-converter/AGENTS.md", "rackinspect:application/keycloak-theme/Dockerfile", "rackinspect:application/rackinspect-pi-analyzer-plugin/pom.xml", "rackinspect:application/docker/AGENTS.md", "rackinspect:application/generator-overrides/pom.xml.extra-profiles.fragment.hbs"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

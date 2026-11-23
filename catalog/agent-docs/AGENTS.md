@@ -7,9 +7,9 @@
 | File | Purpose |
 |---|---|
 | `README.md` | This directory contains all technical documentation for the JUDO framework, organized by domain. |
-| `backend/` | Backend development guide for JUDO applications. (13 files; index in `backend/AGENTS.md`) |
-| `deployment/` | Deployment and build documentation for JUDO applications. (10 files; index in `deployment/AGENTS.md`) |
-| `e2e-testing/` | E2E testing guide for JUDO React frontends using Playwright. (7 files; index in `e2e-testing/AGENTS.md`) |
-| `frontend/` | Frontend development guide for JUDO React applications. (20 files; index in `frontend/AGENTS.md`) |
-| `integration-testing/` | Integration testing guide for JUDO backend. (10 files; index in `integration-testing/AGENTS.md`) |
-| `model/` | Model documentation for JUDO applications: ESM metamodel, JUDO Model CLI, JQL, modeling patterns, validation and transformation. (22 files; index in `model/AGENTS.md`) |
+| `backend/` | Backend development guide for JUDO applications. (22 files; index in `backend/AGENTS.md`) |
+| `deployment/` | Deployment and build documentation for JUDO applications. (18 files; index in `deployment/AGENTS.md`) |
+| `e2e-testing/` | E2E testing guide for JUDO React frontends using Playwright. (13 files; index in `e2e-testing/AGENTS.md`) |
+| `frontend/` | Frontend development guide for JUDO React applications. (36 files; index in `frontend/AGENTS.md`) |
+| `integration-testing/` | Integration testing guide for JUDO backend. (16 files; index in `integration-testing/AGENTS.md`) |
+| `model/` | Model documentation for JUDO applications: ESM metamodel, JUDO Model CLI, JQL, modeling patterns, validation and transformation. (30 files; index in `model/AGENTS.md`) |

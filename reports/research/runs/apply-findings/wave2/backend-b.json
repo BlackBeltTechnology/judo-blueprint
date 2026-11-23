@@ -1,0 +1,16 @@
+[
+ {
+  "id": "R0501",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+  "text": "The Jetty metrics bundle registers an InstrumentedHandler with no delegate, so it records no HTTP request metrics.",
+  "evidence": "runtime/jetty-metrics:AGENTS.md:12"
+ },
+ {
+  "id": "R0740",
+  "kind": "triage",
+  "file": "catalog/agent-docs/backend/internationalization-guide.md",
+  "text": "An empty defaultLocale resolves to Locale.ROOT and does not fall back to the JVM default locale.",
+  "evidence": "runtime/osgi-i18n:openspec/specs/i18n-resourcebundle/spec.md:35"
+ }
+]

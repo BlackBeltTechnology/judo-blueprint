@@ -11,7 +11,6 @@ Because of those flags the generated pages for Application and Vendor are read-o
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=application-vendor-integration-registry cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Application {
@@ -35,4 +34,3 @@ classDiagram
   Application --> "1" Vendor : vendor
   Application ..> ApplicationCategory : category
 ```
-<!-- /mermaid:generated -->

@@ -7,11 +7,10 @@ The shape has one Configuration entity. It is not createable and not deleteable.
 - A transfer object maps onto Configuration for reads. A separate input transfer object has all fields optional, so a partial update sends only the fields it changes. The input transfer object is not mapped to the entity.
 - Access: an administrator actor reads and updates the configuration. Other actors do not see the entity.
 
-Generated UI pages follow from the entity. Keep the View and Update pages for administrators. The createable and deleteable flags are false, so the generated UI shows no Create or Delete action for the entity. The update form should be pre-filled with current values; see [frontend.md](frontend.md).
+Generated UI pages follow from the entity. Keep the View and Update pages for administrators. The entity-level createable and deleteable flags are not read by the generator. The Create and Delete actions come from the flags on the administrator's access to Configuration: keep createable and deleteable false on that access, so the generated UI shows no Create or Delete action. The update form should be pre-filled with current values; see [frontend.md](frontend.md).
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=platform-configuration-singleton cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Configuration {
@@ -26,4 +25,3 @@ classDiagram
     +Text approvalEmailTemplate
   }
 ```
-<!-- /mermaid:generated -->

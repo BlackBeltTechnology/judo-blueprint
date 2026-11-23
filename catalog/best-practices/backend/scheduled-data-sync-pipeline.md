@@ -11,7 +11,6 @@ projects: [indamedia-adtrack]
 evidence: ["indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [quartz-scheduled-job, external-api-adapter-pattern, data-snapshot-versioning, upsert-create-or-update, safe-failure-pattern]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -11,7 +11,6 @@ projects: [reserve-app, rackinspect]
 evidence: ["reserve-app:unrecorded", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/containers/registerServicesItem_serviceItemItem_View_EditContainerActionsHook.ts"]
 alternatives: []
 related: [pandino-action-hook-override, hook-scaffold-default-pattern, application-customizer-hub, approval-workflow-conditional-visibility]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -24,7 +23,7 @@ A form field should be mandatory only when another field has a certain value (fo
 ### Platform base
 
 - The generator emits per-page and per-container hook points. A page hook has the key `<PAGE>_ACTIONS_HOOK_INTERFACE_KEY` and the type `<Container>ActionsHook`, both exported from the page's generated `customization` module (dialogs: `~/dialogs/<path>/customization`). Container hooks use `<CONTAINER>_CONTAINER_ACTIONS_HOOK_INTERFACE_KEY` from `~/containers/<path>/customization` ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
-- The hook is a function that receives the page data (`data`, `editMode`, `storeDiff`, depending on the page kind) and returns the handlers. The object you return must match the generated action type, so read the generated `customization.ts` and `types.ts` for the available handler names; the handler names in the docs are illustrative ([validation hooks](../../agent-docs/frontend/hooks/validation-hooks.md)).
+- The hook is a function that receives the page data (`data`, `editMode`, `storeDiff`, depending on the page kind) and returns the handlers. The object you return must match the generated action type, so read the generated `customization.ts` and `types.ts` for the available handler names; the handler names in the docs are illustrative ([validation hooks](../../agent-docs/frontend/hooks/validation-hooks.md)). The contents of the generated page files (`context.tsx`, `customization.ts`, `types.ts`, and the app-wide `src/config/layout.ts`) are described in [generated page files](../../agent-docs/frontend/model-screen-layout.md#generated-page-files); this page links to that description and does not repeat it.
 - Scaffolds are `.default` files under `src/custom/hooks/{pages,dialogs,containers}/`. Copy one to the name without `.default`, implement it and call its `register...Hook(context)` from `src/custom/application-customizer.tsx` ([using .default scaffolds](../../agent-docs/frontend/hooks/README.md)). The copy is not generated, so no `.generator-ignore` entry is needed.
 - Conditional requiredness is a model switch: with `generateVisualPropertiesHook` set, the generated container hook type has `is<Field>Hidden`, `is<Field>Disabled`, `is<Field>Readonly` and `is<Field>Required` handlers ([hook generation](../../agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md)). Requiredness can also be driven by the model's `requiredBy` attribute, static or set dynamically by a backend interceptor ([access control attributes](../../agent-docs/frontend/model-screen-layout.md)).
 - Validation hooks can express other conditional rules by looking at the form data ([conditional validation](../../agent-docs/frontend/hooks/validation-hooks.md)).
@@ -50,7 +49,7 @@ export function registerEntityAccessViewPageActionsHook(context: BundleContext) 
 
 const entityActionsHook: EntityActionsHook = () => ({
   // required only while the other field is set (handler name per generated type)
-  isFieldRequired: (data) => !!data.someOtherField,
+  isSomeFieldRequired: (data) => !!data.someOtherField,
 });
 ```
 

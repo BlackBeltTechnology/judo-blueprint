@@ -11,7 +11,6 @@ projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
 related: [interceptor-global-logging, interceptor-template-postcall, interceptor-range-override, interceptor-crud-lifecycle]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

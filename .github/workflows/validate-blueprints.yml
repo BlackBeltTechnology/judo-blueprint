@@ -9,16 +9,18 @@ on:
 
 jobs:
   lint:
-    name: Catalog lint (no CLI)
+    name: Catalog lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # content-guard compares with origin/develop
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: check-all without sandbox
-        run: skills/judo-catalog-maintain/scripts/check-all --no-sandbox
+      - name: check-all
+        run: skills/judo-catalog-maintain/scripts/check-all
 
   kb:
     name: kb compatibility (consumer index, dox, search quality)
@@ -43,40 +45,5 @@ jobs:
         run: |
           export KB_CLI="$RUNNER_TEMP/kb/node_modules/@blackbelt-technology/pi-dashboard-kb/dist/cli.js"
           node "$KB_CLI" --help | head -1
-          skills/judo-catalog-maintain/scripts/check-all --no-sandbox --require-kb --json | tee "$RUNNER_TEMP/check.txt"
+          skills/judo-catalog-maintain/scripts/check-all --require-kb --json | tee "$RUNNER_TEMP/check.txt"
           python3 -c "import json,sys; r=json.loads(open(sys.argv[1]).read().strip().splitlines()[-1]); bad=[k for k in ('kb-dox-lint','kb-index','kb-eval') if r.get(k)!='pass']; sys.exit('kb gates not passing: %s' % bad if bad else 0)" "$RUNNER_TEMP/check.txt"
-
-  sandbox:
-    name: Fragments (sandbox)
-    runs-on: judong
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'zulu'
-
-      - name: Setup maven settings.xml
-        uses: whelk-io/maven-settings-xml-action@v20
-        with:
-          servers: >
-            [
-                {
-                    "id": "judo-ng",
-                    "username": "${{ secrets.JUDONG_NEXUS_USERNAME }}",
-                    "password": "${{ secrets.JUDONG_NEXUS_PASSWORD }}"
-                }
-            ]
-
-      - name: Download pinned judo-cli to target/
-        run: ./mvnw validate -P download-model-cli --batch-mode --no-transfer-progress
-        env:
-          MAVEN_OPTS: "-Xmx512m"
-
-      - name: Fragments check (strict validate + diagram equals fresh render)
-        run: skills/judo-model-mermaid/scripts/check --all
-        env:
-          JAVA_TOOL_OPTIONS: "-Xmx512m -XX:+UseSerialGC"

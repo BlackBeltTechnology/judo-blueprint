@@ -1,0 +1,198 @@
+{
+ "batch": "testing",
+ "files": [
+  "catalog/agent-docs/e2e-testing/README.md",
+  "catalog/agent-docs/e2e-testing/helpers-reference.md",
+  "catalog/agent-docs/e2e-testing/language-independent-testing.md",
+  "catalog/agent-docs/e2e-testing/model-screen-layout.md",
+  "catalog/agent-docs/e2e-testing/testing-patterns.md",
+  "catalog/agent-docs/e2e-testing/troubleshooting.md",
+  "catalog/agent-docs/e2e-testing/writing-tests.md",
+  "catalog/agent-docs/integration-testing/README.md",
+  "catalog/agent-docs/integration-testing/access-and-derived-testing.md",
+  "catalog/agent-docs/integration-testing/advanced-patterns.md",
+  "catalog/agent-docs/integration-testing/best-practices.md",
+  "catalog/agent-docs/integration-testing/getting-started.md",
+  "catalog/agent-docs/integration-testing/interceptor-testing.md",
+  "catalog/agent-docs/integration-testing/osgi-ds-descriptor-tests.md",
+  "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+  "catalog/agent-docs/integration-testing/supplementary-patterns.md",
+  "catalog/agent-docs/integration-testing/type-safety.md"
+ ],
+ "items": [
+  {
+   "id": "G036",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G036 `c02-28` R2 S09: E2E selectors did not match the generated UI: getByLabel('Price') matched both the column menu button and the input, getByLabel('Name') matched more than one element, and 'Save' was used for the view \n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Session shows the guessed selectors failing. troubleshooting.md \"Element not found\" only shows getByLabel/dialog scoping and the \"Update after\" flag exists in writing-tests.md. Add: the generated pages have several elements with the same label (column menu button plus input), so use getByRole(\"textbox\",{name}) or the helper field names; the view save button is \"Update\".\n- **Why:** Builder guessed names; the catalog examples use icon-prefixed names and label-only lookups that are ambiguous on the list and form pages. **Workaround:** Changed the selectors to Update and to getByRole('textbox', { name }) with the helper names.\n- **Validation:** confirmed; kind test-design; catalog partly-covered. Evidence: `session:L1329`, `session:L1353`, `session:L1371`, `session:L1372`. Merged: c03-15, c03-65, c03-67, c03-70, c04-21, c04-22, c05-13, c06-20"
+  },
+  {
+   "id": "G037",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G037 `c03-20` R6 F01: Create-rename-delete test failed on a strict-mode violation: two grid cells named Temp Shoes from earlier failed runs.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. The E2E database and Keycloak users persist between runs, so failed or repeated runs leave rows that break counts, strict locators and paging. Add a \"Test data accumulates\" section: use unique stamped names, clean up leftovers in the seed or an afterAll, filter by own stamp, never assert absolute counts.\n- **Why:** The test used a fixed name and was not idempotent; leftovers from previous runs stayed in the database. **Workaround:** Made the name unique with Date.now() and added a cleanup of leftover Temp categories in the seed.\n- **Validation:** confirmed; kind test-design; catalog missing. Evidence: `session:L1943`, `session:L1946`. Merged: c03-22, c03-69, c03-78, c04-23, c05-12, c05-56, c07-47, c08-23. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G038",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G038 `g-R6-6` R6 F01, F02: Generated text fields (DebouncedTextField) store the value after a delay, so fill() or typing then clicking Create gives \"Missing required attribute\"; tests must type with key presses, blur and wait ~\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Session L1893 shows DebouncedTextField with onDebouncedChange in the generated code; no debounce text in e2e-testing docs (only unrelated hits in frontend/advanced-patterns.md), and writing-tests.md still shows glyph button names. Add: generated text inputs commit after a debounce; type with pressSequentially, blur, wait for the Update/Create button before clicking.\n- **Why:** writing-tests.md helpers (fillPrimitiveField) do not mention the debounce. **Workaround:** Real key presses, blur, wait 700 ms; regex button names.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L1893`, `gaps:R6-6`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G039",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G039 `g-R7-12` R7 F09: Admin product table has 8 columns; at 1440 px the last ones are off screen and the grid renders only visible columns, so tests reading them need a wider window.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Grep over e2e-testing finds nothing on column or row virtualization. Same root as R12-14. Add: DataGrid renders only visible columns and the first page of rows; set wide viewport or scroll the grid horizontally, and filter before looking for a row.\n- **Why:** MUI DataGrid column virtualization. **Workaround:** Tests use 1920 px window (later column widths in R8-3).\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `gaps:R7-12`. Merged: g-R12-14. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G040",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G040 `c05-15` R9 : Customer spec imported helpers from the admin Playwright package, which loaded a second copy of @playwright/test; Playwright then reported No tests found.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Session L2912 shows \"Requiring @playwright/test second time ... No tests found\" and GAPS R9-15 confirms. Add: do not import helpers across the generated Playwright projects (each has its own node_modules); copy or share via a single package.\n- **Why:** Shared helpers across actor packages are not documented as a supported pattern in the e2e docs. **Workaround:** Copied the needed helper functions into the customer spec.\n- **Validation:** confirmed; kind test-design; catalog missing. Evidence: `session:L2905`, `session:L2912`, `session:L2913`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G041",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G041 `c06-10` R11 F44: The generated file upload button in the admin import dialog has only a title ('Upload file') and wraps a hidden file input, so getByRole('button', name) cannot find it in Playwright; getByTitle works.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/e2e-testing/troubleshooting.md`. GAPS R11-7(d): the file field is a hidden input in an icon button with title only. Add: use getByTitle('Upload file') plus the file chooser event, not getByRole button name. Generator design, not a bug.\n- **Why:** Generated BinaryInput widget gives the upload control no accessible name. **Workaround:** Test uses getByTitle('Upload file') and the file chooser event.\n- **Validation:** confirmed; kind platform-bug; catalog missing. Evidence: `session:L3612`, `session:L3620`, `session:L3623`, `session:L3627`"
+  },
+  {
+   "id": "G042",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G042 `c06-11` R11 F44: In the generated export dialog, keys typed into the date range fields in one burst were lost, and typing into the second date field reset the first in form state (the request sent only toDate or only \n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/e2e-testing/troubleshooting.md`. Reproduced in GAPS R11-7(d) but root cause (frontend form state vs Playwright timing) not established. Add a short tip: type dates in segments and wait for the template request.\n- **Why:** Builder's diagnosis: generated date widget loses input when typed fast and the second field resets the first. **Workaround:** Test types the date in segments with a pause, waits for the template request, and waits 1.5 s before typing; the until filter was dropped from the test.\n- **Validation:** partly; kind platform-bug; catalog missing. Evidence: `session:L3661`, `session:L3662`, `session:L3664`, `session:L3688`"
+  },
+  {
+   "id": "G043",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G043 `c08-24` R13 F55, F56, F57, F58, F59: Full customer suite ran with parallel workers: customers shared one cart and one seeded stock, so stock reached zero and tests interfered. Builder reset stock with a direct SQL UPDATE.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Session L4980 and L5044 show parallel workers sharing one cart and seeded stock. troubleshooting.md \"Speed Up Tests\" recommends fullyParallel without this warning. Add: with shared seeded data run serial (workers 1) or give each test its own buyer and products; reset stock by SQL only as last resort.\n- **Why:** Test isolation: shared fixtures and parallel workers. Not a code bug. **Workaround:** Direct SQL reset of stock; new rule: run new spec with --grep @smoke, full suites once, serial.\n- **Validation:** confirmed; kind test-design; catalog missing. Evidence: `session:L4980`, `session:L4983`. Merged: c09-04, c09-31, c09-33, c09-36, c10-26. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G044",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G044 `c09-02` R13 F55, F56, F57, F58, F59, F60, F61: The full customer E2E suite took 10.6 minutes at 3 workers and the admin suite 2.8 minutes. The user stopped a run as too long and asked for about 5 minutes.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Suite took 10.6 min at 3 workers; user asked for ~5 min. \"Speed Up Tests\" exists but lacks the smoke-subset advice. Add: tag a small @smoke set, run new specs plus --grep @smoke per round, full suites once at the end. The time target is a user rule, so keep it as a suggestion.\n- **Why:** Every round ran both full suites; no smoke subset existed. **Workaround:** Tagged a small @smoke set; each round runs only its new spec plus --grep @smoke; full suites run once at the end of the build.\n- **Validation:** confirmed; kind test-design; catalog partly-covered. Evidence: `session:L5020`, `session:L5022`, `session:L5042`, `session:L5044`"
+  },
+  {
+   "id": "G045",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G045 `c08-21` R13 F59, F60: Generated action group shows the first three actions; Request a quote sits under the Actions menu in the cart, so the test must open the menu.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/e2e-testing/troubleshooting.md`. Generated action groups show three actions, the rest go under an Actions menu; tests must open the menu first.\n- **Why:** Platform behaviour of the generated action group (featured actions), not a bug. **Workaround:** Test opens Actions and clicks the menu item. Not hidden or patched.\n- **Validation:** confirmed; kind platform-limit; catalog missing. Evidence: `session:L4939`, `session:L4944`"
+  },
+  {
+   "id": "G046",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "text": "#### G046 `c10-16` R15 : A long single test (several minutes with 3-width screenshots) hit ACCESS_TOKEN_EXPIRED; the overhaul spec was split into two tests with a login each.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/troubleshooting.md`. Only error-handling-guide lists ACCESS_TOKEN_EXPIRED; no e2e guidance. Add: keep tests shorter than the token lifetime or log in per test.\n- **Why:** Access token lifetime is shorter than the test; kb search for token renewal in e2e found only error codes, no renewal guidance. **Workaround:** Split the spec into two short tests.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L5919`, `session:L5920`, `session:L5921`, `session:L5923`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G060",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/writing-tests.md",
+   "text": "#### G060 `c02-45` R3 S02, S03: Seeding the description through the UI with Playwright fill() did not store the value; the save response timed out. Switching to pressSequentially with a delay and a blur made the test pass.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Session and GAPS R3-6e confirm fill() did not mark the form changed so no Update button appeared; the textarea had also lost its TextArea widget in that round, so this may be tied to the builder's own model edit. If kept: for text areas type with pressSequentially then click another field to blur so the change registers.\n- **Why:** fill() sets the value in one step, which the React text area did not register as edits before save; the builder found it by trial. **Workaround:** a-seed-descriptions.spec.ts uses fill('') then pressSequentially(text) and clicks the Name field to blur.\n- **Validation:** partly; kind test-design; catalog missing. Evidence: `session:L1652`, `session:L1656`, `session:L1657`, `session:L1660`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G061",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/writing-tests.md",
+   "text": "#### G061 `c03-14` R6 F01, F03: Playwright fill() on the generated text field did not store the value; the create dialog stayed open and Create was never accepted. Stored data then failed with MISSING_REQUIRED_ATTRIBUTE on categorie\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Catalog uses .fill() in examples and never warns. Only the session shows the failure, and the cause (blur versus key events) is the miner's guess. Test first before adding a note.\n- **Why:** Generated inputs store the value on blur or on real key events, not on programmatic fill(). **Workaround:** Used pressSequentially with a blur after each field.\n- **Validation:** unverifiable; kind catalog-gap; catalog missing. Evidence: `session:L1871`, `session:L1875`, `session:L1878`, `session:L1882`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G062",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/writing-tests.md",
+   "text": "#### G062 `c03-16` R6 F01: Seed test looked for catalog-grid and then for a generic no-rows text; both locators were guessed, and the test failed on each before it matched the real markup.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Builder guessed locators; writing-tests.md exists but the builder skipped it. Add a short \"no rows / table container locators\" line if missing; mostly a kb-first lapse.\n- **Why:** The builder guessed selectors instead of reading the e2e locator conventions. **Workaround:** Replaced locators with or() alternatives and the table row locator.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L1823`, `session:L1825`, `session:L1866`, `session:L1870`"
+  },
+  {
+   "id": "G063",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/writing-tests.md",
+   "text": "#### G063 `c03-19` R6 F01, F02, F07: Seed helper passed the dialog as the locator for the Unit and Category pickers; their option popups render outside the dialog, so the option click timed out, and the relation waited on a range respons\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. grep for popup/portal/listbox in writing-tests.md found nothing. Add: picker option popups render outside the dialog, locate options on the page, not inside the dialog.\n- **Why:** The popup rendered outside the dialog scope; the builder scoped the locator to the dialog. **Workaround:** Opened the combobox in the dialog and clicked the option from the page scope; used pressSequentially for the category.\n- **Validation:** confirmed; kind builder-mistake; catalog missing. Evidence: `session:L1899`, `session:L1900`, `session:L1901`, `session:L1905`"
+  },
+  {
+   "id": "G064",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/writing-tests.md",
+   "text": "#### G064 `c03-62` R7 F09: Seed upload through the generated binary input: setInputFiles set the file name in the textbox, but the test looked for an img inside the dialog and timed out.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Session shows the generated binary input puts the file name in a textbox after setInputFiles and renders no img. Add: for BinaryType fields upload with setInputFiles on the file input and assert the textbox value (the file name), not an image.\n- **Why:** The generated BinaryTypeInput shows the file name in a text field, not an image; the test expectation was wrong for the generated widget. **Workaround:** Asserted the textbox value img-SKU.png after upload.\n- **Validation:** confirmed; kind test-design; catalog missing. Evidence: `session:L2236`, `session:L2239`, `session:L2240`, `session:L2241`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G065",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/writing-tests.md",
+   "text": "#### G065 `g-R7-11` R7 F10, F16: Embedded relation dialogs: submit button is \"Ok\" (later \"Submit\"), title and labels come from the transfer object form, composition children are saved with the page Update button, delete is hidden whi\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/writing-tests.md`. Session L2248 mentions the F10 submit button \"Ok\"; writing-tests.md \"Dialog Handling\" (line 502) shows Yes/No and acceptChangesOnDialogElement only, nothing on composition children saved via Update. Add a short \"relation dialogs\" subsection: Ok/Submit button, composition children persist on page Update.\n- **Why:** e2e docs only show confirm Yes/No and a generic acceptChangesOnDialogElement. **Workaround:** Test code adapted to the real names.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L2248`, `gaps:R7-11`"
+  },
+  {
+   "id": "G120",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/integration-testing/getting-started.md",
+   "text": "#### G120 `c07-33` R12 F53: The documented command 'mvn clean test -pl application/integration-test' fails from the project root with 'Could not find the selected project in the reactor', because the module is not in the root re\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/integration-testing/getting-started.md`. getting-started lines 574-610 and osgi-ds-descriptor-tests line 75 both give mvn -pl application/integration-test from the root; the session and GAPS R12-5 show this fails because the module is not in the reactor. Change to run mvn from the module directory.\n- **Why:** Catalog command does not match the reactor layout described on the osgi page. **Workaround:** Ran mvn test from the module directory (later the order-tests module).\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L4180`, `session:L4181`, `session:L4182`, `session:L4183`"
+  },
+  {
+   "id": "G121",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/integration-testing/best-practices.md",
+   "text": "#### G121 `c07-34` R12 F53: The testkit has no generated DAO module: the best-practices example uses a project AppDaoModules class that does not exist in the generated project, so the test failed with 'No implementation for Shop\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/integration-testing/best-practices.md`. best-practices.md line 310 uses AppDaoModules, a class that does not exist in a generated project. Show a small project module with one @Provides per DAO or mark the class as an example to write.\n- **Why:** Catalog example assumes a project DAO module; the generated project does not provide one and the page does not say how to make one. **Workaround:** Hand-written WebshopDaoModule over ReferenceInjector.\n- **Validation:** confirmed; kind catalog-gap; catalog wrong. Evidence: `session:L4207`, `session:L4208`, `session:L4209`, `session:L4212`"
+  },
+  {
+   "id": "G126",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/README.md",
+   "text": "#### G126 `c10-21` R15 : The Playwright e2e suite runs against the packaged app on port 8181, so the fast Vite loop does not cover it. Each e2e verification needed a full judo.sh build (about 4.5 min per run).\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/README.md`. e2e README line 24 already says tests run against the backend-served frontend, not the dev server. Add the cost: every e2e check needs a full judo.sh build (about 4.5 minutes).\n- **Why:** No documented way found to point the e2e suite at the dev server; the kb guidance covered only the dev server for manual checks. **Workaround:** Ran the full build script in the background (.scratch/r14-rebuild.sh) before each e2e run.\n- **Validation:** partly; kind catalog-gap; catalog covered. Evidence: `session:L5894`, `session:L5960`, `session:L5963`, `session:L6082`"
+  },
+  {
+   "id": "G129",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/e2e-testing/helpers-reference.md",
+   "text": "#### G129 `c05-57` R10 F36, F39: Test helper problems: the PDF text check failed because parentheses are escaped in the content stream; the generated date field is a group of spin-button segments, not a text box; a debug spec was use\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/e2e-testing/helpers-reference.md`. Session L3175 shows the PDF content stream escapes parentheses; GAPS confirms date fields render as spin-button segments. Add: date inputs are segmented (click the month segment and type digits); PDF text is in the content stream so escape parentheses in regexes. The debug-spec part is general practice.\n- **Why:** Test-level assumptions about PDF text and the generated date widget, not documented in writing-tests.md. **Workaround:** Regex escapes the parentheses; typeDate clicks the Month segment and types digits; debug spec removed after use.\n- **Validation:** confirmed; kind test-design; catalog missing. Evidence: `session:L3174`, `session:L3175`, `session:L3177`, `session:L3183`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "NG0005",
+   "src": "judo-ng-read:-models-judo-meta-jsl",
+   "target": "catalog/agent-docs/e2e-testing/model-screen-layout.md",
+   "text": "## [wrong-fact] docs/pages/07_transfer.adoc:294-299\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-jsl:docs/pages/07_transfer.adoc:294-299\n- claim: Example field 'field String firstName <= salesperson.firstName bind enabled;' and text saying bind:true makes the connection read-write.\n- fact: The bind keyword is not accepted after the expression. Read-write mapping is written with <=> (SSH terminal), and <= is read-only.\n"
+  },
+  {
+   "id": "NG0012",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-jsl",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "## [wrong-fact] AGENTS.md:53\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-jsl:AGENTS.md:53\n- claim: JudoDatasourceFixture uses HikariCP pooling (also AGENTS.md:182: 'HikariCP for pooling').\n- fact: JudoDatasourceFixture never creates a Hikari pool. It only imports HikariDataSource (line 24) and builds a plain JDBCDataSource (HSQLDB, lin\n"
+  },
+  {
+   "id": "NG0013",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-jsl",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "## [wrong-fact] judo-runtime-core-jsl-itest/common/src/main/java/hu/blackbelt/judo/runtime/core/jsl/fixture/AGENTS.md:8\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-jsl:judo-runtime-core-jsl-itest/common/src/main/java/hu/blackbelt/judo/runtime/core/jsl/fixture/AGENTS.md:8\n- claim: JudoDatasourceFixture configures datasources and containers across HSQLDB, PostgreSQL, and YugabyteDB dialects.\n- fact: Only hsqldb and postgresql are dialects; any other value throws IllegalStateException (line 151). YugabyteDB is a container option (CONTAINE\n"
+  },
+  {
+   "id": "NG0015",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-jsl",
+   "target": "catalog/agent-docs/integration-testing/runtime-fixture-and-test-scope.md",
+   "text": "## [wrong-fact] judo-runtime-core-jsl-itest/common/src/main/java/hu/blackbelt/judo/runtime/core/jsl/fixture/JudoDatasourceFixture.java\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-jsl:judo-runtime-core-jsl-itest/common/src/main/java/hu/blackbelt/judo/runtime/core/jsl/fixture/JudoDatasourceFixture.java\n- claim: disagrees: the row says the fixture covers HSQLDB, PostgreSQL and YugabyteDB dialects. Only the hsqldb and postgresql dialects exist (DIALEC\n\n"
+  },
+  {
+   "id": "NG0040",
+   "src": "judo-ng-read:-runtime-judo-tatami-client",
+   "target": "catalog/agent-docs/integration-testing/advanced-patterns.md",
+   "text": "## [wrong-fact] openspec/changes/archive/2026-03-11-add-dual-trace-tests/tasks.md:64\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami-client:openspec/changes/archive/2026-03-11-add-dual-trace-tests/tasks.md:64\n- claim: Parallel execution is NOT supported with RULE_BY_RULE + CLONE_CURRENT_STATE and throws IllegalStateException; the test verifies this constra\n- fact: Esm2UiConcurrencyTest.testParallelSilentlyIgnored asserts assertDoesNotThrow and documents that parallel(true) is silently overridden to fal\n"
+  },
+  {
+   "id": "NG0050",
+   "src": "judo-ng-read:-template-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/integration-testing/getting-started.md",
+   "text": "## [wrong-fact] judo-esm-fullstack-project-template-application/src/main/resources/README.adoc.hbs:98\n- src: judo-ng-read | status: validated | evidence: template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-application/src/main/resources/README.adoc.hbs:98\n- claim: -Dfrontend-version overrides the frontend version\n- fact: No template references a frontend-version property; only model-version is defined (as ${project.version})\n"
+  },
+  {
+   "id": "NG0099",
+   "src": "judo-ng-read:-eclipse-emf-genmodel-generator",
+   "target": "catalog/agent-docs/integration-testing/type-safety.md",
+   "text": "## [wrong-fact] openspec/specs/builder/spec.md:58\n- src: judo-ng-read | status: validated | evidence: eclipse/emf-genmodel-generator:openspec/specs/builder/spec.md:58\n- claim: build() SHALL validate mandatory features; calling build() without withName() throws an exception for a mandatory feature (requirement at li\n- fact: The mandatory check is guarded by m_nullCheck, which defaults to nullCheckByDefault = false, so build() does not check mandatory features un\n"
+  },
+  {
+   "id": "NG0148",
+   "src": "judo-ng-read:-documentation",
+   "target": "catalog/agent-docs/e2e-testing/model-screen-layout.md",
+   "text": "## [wrong-fact] docs/modules/ROOT/pages/user-guide/application_modeling/05_transfer_object_lifecycle.adoc:99\n- src: judo-ng-read | status: validated | evidence: documentation:docs/modules/ROOT/pages/user-guide/application_modeling/05_transfer_object_lifecycle.adoc:99\n- claim: Example JSON for new entities::Student(firstName = 'John', lastName = 'Smith', legacyId = 1) shows lastName 'John' and firstName 'Doe'.\n- fact: The script at line 89 sets firstName 'John' and lastName 'Smith'; the JSON swaps the names and changes lastName.\n"
+  }
+ ]
+}

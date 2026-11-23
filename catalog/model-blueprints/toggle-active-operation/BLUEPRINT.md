@@ -10,8 +10,6 @@ status: emerging
 projects: [rackinspect, mlszksz-platform]
 evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
-fragment: toggle-active-operation
-diagram: { kinds: [entity, operation], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

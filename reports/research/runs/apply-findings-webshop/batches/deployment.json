@@ -1,0 +1,102 @@
+{
+ "batch": "deployment",
+ "files": [
+  "catalog/agent-docs/deployment/application-config.md",
+  "catalog/agent-docs/deployment/build-process.md",
+  "catalog/agent-docs/deployment/generator-plugins.md",
+  "catalog/agent-docs/deployment/production.md",
+  "catalog/agent-docs/deployment/schema-evolution.md"
+ ],
+ "items": [
+  {
+   "id": "WR18-2",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "### RDBMS naming prefixes",
+   "text": "A non-derived `DataMember` with `identifier=true` gets one non-unique btree index (`IDX_<hash>`) on its column. The generator creates no index for foreign-key columns, and the model has no syntax to declare other indexes; add them with a hand-written schema changeset (see [schema evolution](schema-evolution.md)).",
+   "replaces": "",
+   "evidence": "target/judo-ng-read/wt/runtime__judo-tatami-base/judo-tatami-asm2rdbms/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/zeta/rules/AttributeRules.java:273-296 (eAttributeToIndex creates RdbmsIndex, sqlName IDX_<md5>, no unique flag); ReferenceRules.java has no index creation"
+  },
+  {
+   "id": "WR18-7",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "### Common Generator Parameters",
+   "text": "With `useCache=true` a failed UI validation can show only `{}: {}` and 'Verify UI model is presented', hiding the cause. To see the real error, build with `-DuseCache=false -DvalidateModels=true`.",
+   "replaces": "",
+   "evidence": "app: ~/Projects/webshop-test/judo.sh:846-847 (quick build passes -DvalidateModels=false -DuseCache=true); openspec finding 0004 (message is replaced by a success string when the EVL error list is empty)"
+  },
+  {
+   "id": "WR19-2",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "### Step 3: Manual Migration Scripts (Optional)",
+   "text": "Entity tables are named `T_<NAMESPACE>_<ENTITY>` and columns `C_<ATTRIBUTE>` (check the generated changelog for the exact names). To insert a hand-written changeset, run the plugin goals `judo-rdbms-schema:generate` and then `judo-rdbms-schema:execute`; `judo.sh schema-upgrade` does both in one step and cannot take a changeset in between.",
+   "replaces": "Entity tables are named `T_ENTITIES_<NAME>` and columns `C_<NAME>` (check the generated changelog for the exact names):",
+   "evidence": "app: ~/Projects/webshop-test database `\\d` showed t_webshop_<entity> / c_<attribute> tables; target/judo-ng-read/wt/runtime__judo-tatami-base/judo-tatami-asm2rdbms/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/zeta/Asm2RdbmsZetaTransformation.java:125 (T_ prefix); goals apply/execute/generate found with -Dgoal listing (app run, WR19-2). Other examples in the same file (lines 176-177, 506-515) still use T_ENTITIES_USER and should be aligned in the same edit"
+  },
+  {
+   "id": "WR19-5",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/production.md",
+   "heading": "### Docker Compose",
+   "text": "PostgreSQL's default `max_connections` (100) can run out after a few application restarts (`sorry, too many clients`). Raise it in the compose file, for example `command: [\"postgres\", \"-c\", \"max_connections=300\"]`.",
+   "replaces": "",
+   "evidence": "app: ~/Projects/webshop-test/deploy/docker-compose.yml:12 (max_connections=300, comment: the application keeps several connection pools)"
+  },
+  {
+   "id": "WR19-6",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "### RDBMS naming prefixes",
+   "text": "Foreign-key columns get no index from the generator. A derived member or query that joins or filters over them scans the referenced table, which becomes slow with many rows; add the indexes by hand in a schema changeset.",
+   "replaces": "",
+   "evidence": "target/judo-ng-read/wt/runtime__judo-tatami-base/judo-tatami-asm2rdbms/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/zeta/rules/ReferenceRules.java (no index rule); app: ~/Projects/webshop-test/scripts/dev-indexes.sql fixed checkout from 20 s to under 2 s (R19-6). Same fact as WR18-2; the performance note is the new part"
+  },
+  {
+   "id": "WR16U-11",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "### `judo.sh build` flag reference",
+   "text": "| `-f` | `--build-frontend-module` | Build the frontend React module only. The Karaf package is not rebuilt, so a running application keeps serving the old frontend: after a frontend change that a running application must show, run `./judo.sh build -i` (full build, with Karaf) and restart with `./judo.sh start`.",
+   "replaces": "| `-f` | `--build-frontend-module` | Build the frontend React module only. |",
+   "evidence": "webshop-test judo.sh:190 (-f sets buildKaraf=0, buildBackend=0) and judo.sh:622-623 (start unpacks the karaf-offline tarball); app report WR16U-11 (~9 min full build with restart)"
+  },
+  {
+   "id": "WR17-3",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "### 6. Email (SMTP)",
+   "text": "**Local testing with Mailpit:** run a mail catcher such as Mailpit locally; the app only knows an SMTP host and port, so for local runs point them at `localhost:1025` (no TLS) in `judo-karaf.env`. Also set `JUDO_PLATFORM_MAIL_SMTP_USER` and `JUDO_PLATFORM_MAIL_SMTP_PASSWORD` to any value, with `JUDO_PLATFORM_MAIL_SMTP_AUTH=false`: the mail service (`JavaMailSenderActivator`) is only created when the log SMTP server is on or user, password and host are all set, so host and port alone give no `EmailService`.",
+   "replaces": "**Local testing with Mailpit:** run a mail catcher such as Mailpit locally; the app only knows an SMTP host and port, so for local runs point them at `localhost:1025` (no authentication, no TLS) in `judo-karaf.env`.",
+   "evidence": "judo-ng-read/wt/runtime__judo-platform/judo-platform-config-templates/src/main/resources/judo-platform-config-templates/hu.blackbelt.email.impl.JavaMailSenderActivator.xml:24-28 (condition); webshop-test judo-karaf.env:3-11"
+  },
+  {
+   "id": "WR17-4",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/application-config.md",
+   "heading": "### 6. Email (SMTP)",
+   "text": "The local log SMTP server itself listens on `logSmtpServerPort`, which defaults to `10025` (host `logSmtpServerHost`, default `localhost`).",
+   "replaces": "The local log SMTP server itself listens on `logSmtpServerPort`, which defaults to `1025` (host `logSmtpServerHost`, default `localhost`).",
+   "evidence": "judo-ng-read/wt/runtime__judo-platform/judo-platform-config-templates/src/main/resources/judo-platform-config-templates/hu.blackbelt.email.impl.LogSmtpServer.template:2 (logSmtpServerPort = ${logSmtpServerPort ! \"10025\"}); judo-ng-read/wt/runtime__osgi-email/osgi-email-impl/src/main/java/hu/blackbelt/email/impl/LogSmtpServer.java:53 (default 10025)"
+  },
+  {
+   "id": "WR17-7",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "### `judo.sh build` flag reference",
+   "text": "| `-a` | `--build-app-module` | Build the `app/` (custom ops) module only \u2014 fast iteration on Java code. The running application does not load it: `start` unpacks the `karaf-offline` package, so after Java changes run `./judo.sh build -i -M -F` (backend and Karaf package) before `./judo.sh start`. |",
+   "replaces": "| `-a` | `--build-app-module` | Build the `app/` (custom ops) module only \u2014 fast iteration on Java code. |",
+   "evidence": "webshop-test judo.sh:618-623 (start: rm KARAF_DIR, tar xzf karaf-offline tarball); app report WR17-7 (build -a then start ran old code; build -i -M -F then start worked)"
+  },
+  {
+   "id": "WR17-9",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "### When No Manual Step Is Needed",
+   "text": "Adding a **stored** member (for example a new attribute) to an entity needs **no** manual migration or `schema-upgrade` run for a fresh database (empty or newly created, so Liquibase creates everything). For an existing database with rows, the new column is filled with NULL, not with the attribute's model default; for a value other than NULL, write a backfill changeset (see [migration backfill](../../best-practices/backend/migration-backfill-default-where-null.md)).",
+   "replaces": "Adding a **stored** member (for example a new attribute) to an entity needs **no** manual migration or `schema-upgrade` run for a fresh database (empty or newly created, so Liquibase creates everything).",
+   "evidence": "catalog best-practices/backend/migration-backfill-default-where-null.md ## Intent (new column left NULL on existing rows); app ShopConfig singleton row after R17 migration (mailFrom empty, carrierDeliveryHours=24) per gap report; not re-read in the app DB"
+  }
+ ]
+}

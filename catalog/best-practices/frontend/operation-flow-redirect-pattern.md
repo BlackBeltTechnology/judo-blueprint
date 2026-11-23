@@ -11,7 +11,6 @@ projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
 alternatives: []
 related: [post-operation-navigation-hook, handlebars-generator-template-override, application-customizer-hub, operation-return-type-navigation]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

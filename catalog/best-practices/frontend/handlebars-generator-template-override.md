@@ -11,7 +11,6 @@ projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
 alternatives: []
 related: [operation-flow-redirect-pattern, generator-override-extra-dependencies, generator-ignore-app-theme]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

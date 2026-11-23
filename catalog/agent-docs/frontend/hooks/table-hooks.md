@@ -1,6 +1,9 @@
 ---
 title: Frontend Table Hooks
 description: Table row highlighting, column customizer and sidekick components of the generated React frontend.
+aliases: [table row color, conditional row highlighting, custom table column, sidekick above table, hide table column, table customization]
+keywords: [TableRowHighlightingHook, ColumnCustomizerHook, TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY, TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY, SidekickComponentProps, CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY, registerService, backgroundColor, renderCell, sortable]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Table Hooks
@@ -16,6 +19,8 @@ Table hooks allow you to customize the behavior and appearance of data tables. T
 ### Purpose
 
 Apply conditional background colors to table rows based on data values. Useful for visually identifying important or problematic records.
+
+The generated highlighting always derives the background colours for the light theme: `getBackgroundColor`, `getHoverBackgroundColor`, `getSelectedBackgroundColor` and `getSelectedHoverBackgroundColor` receive the literal `'light'`, so background tints can look wrong in dark mode. `fontColor` is applied unchanged.
 
 ### Basic Implementation
 
@@ -170,6 +175,8 @@ Add custom columns to tables with custom rendering logic. Useful for computed va
 
 ### Basic Implementation
 
+`ColumnCustomizerHook<T>` is `() => ColumnCustomizer<T>` and `ColumnCustomizer<T>` is `(original: GridColDef<T>) => GridColDef<T>` (from `~/utilities`): the registered service is a function that returns the customizer, which receives the generated column definition and returns the one to use. The generated table consumes the service only for columns whose `DataColumn` has `customImplementation=true`, matched by the `component` and `column` service properties.
+
 ```typescript
 // src/custom/hooks/columnCustomizer.tsx
 import type { ColumnCustomizerHook } from '~/utilities';
@@ -177,7 +184,7 @@ import { GridRenderCellParams } from '@mui/x-data-grid';
 import { Chip } from '@mui/material';
 import type { ServiceLocationStored } from '~/services/data-api/model/ServiceLocation';
 
-export const locationStatusColumn: ColumnCustomizerHook<ServiceLocationStored> = (original) => ({
+export const locationStatusColumn: ColumnCustomizerHook<ServiceLocationStored> = () => (original) => ({
   ...original,
   field: 'qualityScore',
   headerName: 'Validation Status',
@@ -219,6 +226,8 @@ context.registerService<ColumnCustomizerHook<ServiceLocationStored>>(
 );
 ```
 
+The generated column customizer lookup uses a service filter string that is never closed (`(&(objectClass=…)(component=…)(column=…)` has one `)` too few), so the lookup can fail. Until this is fixed in the generator, use a custom column hook instead.
+
 ### Advanced Examples
 
 #### Action Button Column
@@ -227,7 +236,7 @@ context.registerService<ColumnCustomizerHook<ServiceLocationStored>>(
 import { Button } from '@mui/material';
 import { LocationOn } from '@mui/icons-material';
 
-export const mapViewColumn: ColumnCustomizerHook<ServiceLocationStored> = (original) => ({
+export const mapViewColumn: ColumnCustomizerHook<ServiceLocationStored> = () => (original) => ({
   field: 'mapView',
   headerName: 'Map',
   width: 100,
@@ -263,7 +272,7 @@ export const mapViewColumn: ColumnCustomizerHook<ServiceLocationStored> = (origi
 ```typescript
 import { Box, LinearProgress, Typography } from '@mui/material';
 
-export const entityProgressColumn: ColumnCustomizerHook<ServiceEntityStored> = (original) => ({
+export const entityProgressColumn: ColumnCustomizerHook<ServiceEntityStored> = () => (original) => ({
   field: 'progress',
   headerName: 'Progress',
   width: 150,
@@ -299,7 +308,7 @@ export const entityProgressColumn: ColumnCustomizerHook<ServiceEntityStored> = (
 ```typescript
 import { format } from 'date-fns';
 
-export const daysUntilColumn: ColumnCustomizerHook<ServiceItemStored> = (original) => ({
+export const daysUntilColumn: ColumnCustomizerHook<ServiceItemStored> = () => (original) => ({
   field: 'daysUntil',
   headerName: 'Days Until',
   width: 120,
@@ -532,7 +541,7 @@ export const EntityChartSidekick: FC<{ data: ServiceEntityStored[] }> = ({ data 
 ### Customize Column Width
 
 ```typescript
-export const wideTitleColumn: ColumnCustomizerHook<ServiceEntityStored> = (original) => ({
+export const wideTitleColumn: ColumnCustomizerHook<ServiceEntityStored> = () => (original) => ({
   ...original,
   width: 300, // Increase width
   flex: 1,    // Or use flex for responsive width
@@ -542,7 +551,7 @@ export const wideTitleColumn: ColumnCustomizerHook<ServiceEntityStored> = (origi
 ### Hide Columns
 
 ```typescript
-export const hideColumn: ColumnCustomizerHook<ServiceEntityStored> = (original) => ({
+export const hideColumn: ColumnCustomizerHook<ServiceEntityStored> = () => (original) => ({
   ...original,
   hide: true,
 });
@@ -551,7 +560,7 @@ export const hideColumn: ColumnCustomizerHook<ServiceEntityStored> = (original) 
 ### Make Column Non-Sortable
 
 ```typescript
-export const nonSortableColumn: ColumnCustomizerHook<ServiceEntityStored> = (original) => ({
+export const nonSortableColumn: ColumnCustomizerHook<ServiceEntityStored> = () => (original) => ({
   ...original,
   sortable: false,
   filterable: false,
@@ -663,7 +672,7 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ### "Highlighting not applying"
 
-**Check condition logic:**
+#### Check condition logic
 ```typescript
 condition: (params) => {
   console.log('Row data:', params.row);
@@ -671,14 +680,14 @@ condition: (params) => {
 }
 ```
 
-**Verify component name:**
+#### Verify component name
 ```bash
 grep -rn "component=" src/containers/components 2>/dev/null | head   # or check the generated table component name
 ```
 
 ### "Custom column not showing"
 
-**Check registration:**
+#### Check registration
 ```typescript
 context.registerService<ColumnCustomizerHook>(
   TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY,
@@ -689,7 +698,7 @@ context.registerService<ColumnCustomizerHook>(
 
 ### "Sidekick component not rendering"
 
-**Verify props:**
+#### Verify props
 ```typescript
 export const MySidekick: FC<{ data: any[] }> = ({ data }) => {
   console.log('Sidekick data:', data);

@@ -11,7 +11,6 @@ projects: [actiongroup-test-react, indamedia-adtrack]
 evidence: ["actiongroup-test-react:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: [dark-theme-override]
 related: [model-defined-color-palette, generator-ignore-app-theme, dark-theme-override]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-11
 ---

@@ -11,7 +11,6 @@ projects: [rackinspect, alba, mlszksz-platform, ubives, park-here, indamedia-adt
 evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/user/management/UserDeleteInterceptor.java", "alba:unrecorded", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PushNotificationServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [dao-fluent-query-filter, mutable-entity-update-pattern, entity-re-fetch-pattern, dirty-check-before-update]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -48,7 +47,7 @@ accountDao.getById(id, AccountMask.accountMask()
 // relation query
 accountDao.queryAddresses(account).maskedBy(AddressMask.addressMask().withIsBilling()).selectList();
 
-// partial update: only these fields are written
+// update writes the entity's payload; the mask shapes only the read-back
 account.setName(newName);
 accountDao.update(account, AccountMask.accountMask().withName());
 ```
@@ -56,7 +55,7 @@ accountDao.update(account, AccountMask.accountMask().withName());
 - Build one named helper for a deep mask used in several places (one example has a standard nested mask five levels deep) instead of repeating the chain.
 - Use the empty mask for toggle operations and batch deletes that need only the identifiers: `dao.update(entity, EntityMask.entityMask())` and loading ids before deleting in batches.
 - In authentication and per-request paths (user lookup by e-mail) use the smallest mask: the check runs on every login or call ([[keycloak-jit-user-provisioning]]).
-- On update, mask what you set. A wider mask than the changed fields rewrites values you loaded, which can overwrite concurrent changes; compare before writing ([[dirty-check-before-update]], [[mutable-entity-update-pattern]]).
+- On update, set only the fields you change. The update mask does not limit the write: every attribute the entity carries is written, so a wide load rewrites values you loaded, which can overwrite concurrent changes; compare before writing ([[dirty-check-before-update]], [[mutable-entity-update-pattern]]).
 - After a write, re-read with the mask the next step needs rather than reusing an object loaded with a smaller one ([[entity-re-fetch-pattern]]).
 - Masks are for the DAO. Which fields a REST client receives is decided by the transfer object in the model; to hide fields from a response see [[interceptor-template-postcall]].
 

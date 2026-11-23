@@ -1,0 +1,51 @@
+{"id": "G101", "verdict": "ok", "note": "TransactionalOperationCall verified"}
+{"id": "G102", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "G114", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "G119", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "AU9", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "KC08", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "KC11", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "KC15", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B1", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B7", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B17", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "BA-051", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "BA-077", "verdict": "fixed", "note": "removed doubled '- -' bullet marker; CxfContext keys verified"}
+{"id": "BA-103", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B24", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "G117", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B2", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B3", "verdict": "fixed", "note": "reworded 'judo-ng sources' to 'runtime sources'"}
+{"id": "B4", "verdict": "fixed", "note": "reworded 'judo-ng' to 'runtime'"}
+{"id": "B5", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B6", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B8", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "B11", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "U1081", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "U1082", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "U1157", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "U0135", "verdict": "ok", "note": "diff reviewed; consistent with ledger evidence"}
+{"id": "R1632", "verdict": "ok", "note": "string aggregate MIN/MAX only; default branch throws UnsupportedOperationException (StringAggregatedExpressionToFeatureConverter.java:67-76)"}
+{"id": "R1702", "verdict": "ok", "note": "OutputStreamWriter without charset in PayloadMessageBodyWriter.java:37; text matches"}
+{"id": "R1971", "verdict": "ok", "note": "emitted class is <Target>Query<Name>QueryCustomizerImpl (JavaApiHelper.staticQueryNavigationQueryCustomizerName + Impl); helper FQN differs as stated; bullet present once"}
+{"id": "R2006", "verdict": "ok", "note": "rest.service.impl.java.hbs:67-68 puts raw input name, variable is firstToLower"}
+{"id": "R0194", "verdict": "ok", "note": "serialization.ts.hbs:16 new Date(string); UTC midnight semantics"}
+{"id": "R0571", "verdict": "ok", "note": "config attribute \"Max request size (kB)\"; checkRequest compares getContentLength bytes against maxSize"}
+{"id": "R0572", "verdict": "fixed", "note": "reworded: UploadAction.doPost overrides and calls parsePostRequest(request,response,null); third arg is maxFileSize (Long), not a token validator; token check is skipped because doPost is overridden (UploadAction.java:184, UploadServlet.java:262-280)"}
+{"id": "R0573", "verdict": "ok", "note": "DefaultKeyProvider.java:46,98 always uses P521 EC spec; no ES256/ES384 branch"}
+{"id": "R0579", "verdict": "ok", "note": "UploadServlet.java:272 parses token whenever tokenValidator != null, tokenRequired not checked there"}
+{"id": "R2324", "verdict": "ok", "note": "AlwaysRollbackTransactionalBehaviourCall.java:69 sets ROLLBACK_KEY only when isNewTransaction(); ListCall extends it"}
+{"id": "R2469", "verdict": "fixed", "note": "double-dot setter name confirmed (dto.for.create.builder.java.hbs:60, collection branch); removed unverified consequence \"does not compile\""}
+{"id": "R2741", "verdict": "fixed", "note": "effectiveParams used in count() under {{# if self.hasParam }} and never declared in querycustomizer.implementation.java.hbs; reworded to conditional, removed unconditional \"does not compile\""}
+{"id": "R2831", "verdict": "fixed", "note": "Guice provider returns empty ArrayList and does not read Multibinder (confirmed); removed unsupported \"@Component property form applies to OSGi\" sentence"}
+{"id": "R2832", "verdict": "ok", "note": "JudoBaseServiceConfiguration.java:94-104 returns empty collection; @Bean interceptors not collected"}
+{"id": "R2838", "verdict": "ok", "note": "EnvironmentVariableProvider.java:28 implements Function<String,Object>"}
+{"id": "R2839", "verdict": "ok", "note": "DispatcherFunctionProvider.java:31-35 signatures match"}
+{"id": "R0797", "verdict": "ok", "note": "FileEntity.java:55 null filename -> fileId + \".\" + mimeType"}
+{"id": "R0798", "verdict": "ok", "note": "FileEntity.java:57 size from data.available()"}
+{"id": "R0974", "verdict": "ok", "note": "create-min-max.sql:74-78 max_uuid returns $1 on both branches"}
+{"id": "R1218", "verdict": "ok", "note": "duplicate of R1702; the doc holds one bullet, no duplicate written"}
+{"id": "R0569", "verdict": "ok", "note": "UploadAction.doPost passes items to executeAction (UploadAction.java:184); UploadServlet.doPost stores with put (UploadServlet.java:299); section consistent"}
+{"id": "R0787", "verdict": "ok", "note": "FilenameUtils.java:18-19: length>128 returns substring(0,127); filesystem/rdbms/s3 call makeValidFilename"}
+{"id": "R2141", "verdict": "ok", "note": "AccessListBehaviourRules.java:44 guard, :103 listOf+Name, LIST behaviour; no permission rule in file; heading placed under REST Wire Contract"}
+{"id": "R1591", "verdict": "ok", "note": "DownloadServlet.java has no maxSize; only UploadServlet.java:68 has maxSize"}

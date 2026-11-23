@@ -10,8 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:model/rackinspect.model"]
 alternatives: [contact-info-composition-cluster, partner-generalization-hierarchy]
-fragment: partner-with-contact-details
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

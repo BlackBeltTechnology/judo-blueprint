@@ -11,7 +11,6 @@ projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: [i18n-custom-translation-keys]
 related: [i18n-custom-translation-keys, hungarian-full-localization, complete-frontend-replacement]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

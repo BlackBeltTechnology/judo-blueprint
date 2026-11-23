@@ -1,6 +1,9 @@
 ---
 title: E2E test troubleshooting
 description: Common Playwright E2E failures and fixes.
+aliases: [e2e test failing, playwright test timeout, element not found in playwright, e2e failures in CI, filter not applied in test, relation selector empty, backend suite green but no tests ran]
+keywords: [getByRole, getByLabel, TableHelper, openAddAndApplyFilters, fillSingleRelationElement, triggerAndWaitWithRegex, playwright.config.ts, retries, APP_URL, storageState, operationNth, valueNth]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # E2E Test Troubleshooting
@@ -31,7 +34,7 @@ await apiHelper.triggerAndWaitWithRegex(
 
 **Cause**: Wrong regex pattern or API not called.
 
-**Solutions**:
+##### Solutions
 1. Check the network tab to see actual API endpoints
 2. Update regex pattern to match:
 ```typescript
@@ -68,7 +71,7 @@ projects: [
 
 **Cause**: Element not rendered, wrong selector, or element inside shadow DOM.
 
-**Solutions**:
+##### Solutions
 1. Use Playwright Inspector to find correct selector:
 ```bash
 npx playwright test --debug
@@ -103,6 +106,8 @@ page.getByLabel('Name');
 // Correct - scoped to dialog
 page.getByRole('dialog').getByLabel('Name');
 ```
+
+4. Watch for several elements with the same accessible name. Generated pages can contain, for example, a column menu button and the input of the same field, so `getByLabel('<Field>')` may match more than one element. Prefer the generated element ids: every generated visual element carries `data-testid` equal to its id (exported by the generated `VisualElementIds.ts`), and dropdown menu items use their id as `data-testid`. Otherwise narrow the lookup, for example `getByRole('textbox', { name })` or a scope inside `getByRole('dialog')`.
 
 ### Data Grid Issues
 
@@ -180,7 +185,7 @@ await applyFilters(page, apiHelper, 1, true);  // true = doWait
 
 **Cause**: Need to specify operationNth and valueNth for additional filters.
 
-**Solution**:
+##### Solution
 ```typescript
 await openAddAndApplyFilters(page, apiHelper, [
   { attributeName: 'Name', startOption: 'Like', option: 'Like', value: 'A', type: 'text' },
@@ -202,7 +207,7 @@ await openAddAndApplyFilters(page, apiHelper, [
 
 **Cause**: Field disabled, readonly, or covered by overlay.
 
-**Solutions**:
+##### Solutions
 1. Check field state:
 ```typescript
 await expect(page.getByLabel('Name')).toBeEnabled();
@@ -225,7 +230,7 @@ await page.locator('.MuiBackdrop-root').waitFor({ state: 'hidden' });
 
 **Cause**: Click target wrong or options not loaded.
 
-**Solution**:
+##### Solution
 ```typescript
 // Ensure clicking the right element
 await page.getByLabel('Status').click();
@@ -235,13 +240,49 @@ await page.waitForTimeout(200);  // Wait for dropdown animation
 await page.getByLabel('Status').click({ force: true });
 ```
 
+#### Text input value is lost or Create reports a missing required attribute
+
+**Cause**: Generated text fields (`DebouncedTextField`) hand the value to the form state after a debounce (200 ms by default). Clicking Create/Update right after `fill()` can submit before the value is stored.
+
+**Solution**: Type with real key presses, blur the field, and wait for the Create/Update button to be enabled before clicking:
+```typescript
+const field = page.getByRole('textbox', { name: 'Name' });
+await field.pressSequentially('Value', { delay: 20 });
+await field.blur();
+await expect(page.getByRole('button', { name: /Create|Update/ })).toBeEnabled();
+```
+
+#### File upload button not found by role
+
+The generated binary input is a text field showing the file name, plus an icon button with only a `title` (`Upload file`) that wraps a hidden file input. `getByRole('button', { name })` does not find it. Use the title and the file chooser event:
+```typescript
+const chooser = page.waitForEvent('filechooser');
+await page.getByTitle('Upload file').click();
+(await chooser).setFiles('path/to/file.png');
+```
+
+#### Typed date keys are lost, or keys typed into a second date field land in the first
+
+**Cause**: Generated date fields (`DatePicker`) call `storeDiff` on every change, with no debounce, unlike text fields. The form focuses its first input 200 ms after mount (`autoFocusRefDelay`). If a burst starts in a second date field before that timer fires, focus moves back to the first field and the keys go there.
+
+**Solution**: Wait for the first input to lose the autofocus, then type into the target field with real key presses and check the value:
+```typescript
+const target = page.getByRole('textbox', { name: '<SecondDateLabel>' });
+await page.waitForTimeout(300); // autofocus timer (200 ms) has fired
+await target.click();
+await target.pressSequentially('<date text>', { delay: 20 });
+await expect(target).not.toHaveValue('');
+```
+
+**Known issue**: The timer explains the focus move. Lost keys inside a burst after the timer has fired are not explained by the generated code; this has not been reproduced in a browser, so check the value after each date field.
+
 ### Relation Issues
 
 #### Autocomplete doesn't show options
 
 **Cause**: Range API not triggered or no matching results.
 
-**Solution**:
+##### Solution
 ```typescript
 // Use fillSingleRelationElement which handles API wait
 await fillSingleRelationElement(page, page, "Owner", "John");
@@ -297,7 +338,7 @@ await expect(page.getByRole('button', { name: '󰖕 Process' })).toBeEnabled();
 
 **Cause**: Wrong regex pattern for template endpoint.
 
-**Solution**:
+##### Solution
 ```typescript
 // Check pattern matches API
 await apiHelper.triggerAndWaitWithRegex(
@@ -307,16 +348,20 @@ await apiHelper.triggerAndWaitWithRegex(
 );
 ```
 
+### Action not visible in an action group
+
+An action group shows only its first `featuredActions` actions as buttons; the remaining actions are inside a dropdown button with `data-testid` `<XMIID>-button-group`. Open the dropdown first, then click the menu item (menu items carry their own id as `data-testid`). The featured count is a model property of the action group.
+
 ### Environment Issues
 
 #### Tests work locally but fail in CI
 
-**Causes**:
+##### Causes
 1. Different timing (CI is slower)
 2. Missing dependencies
 3. Different browser versions
 
-**Solutions**:
+##### Solutions
 1. Retries: the generated `playwright.config.ts` already sets `retries: 4` unconditionally (the template comment says "Retry on CI only", but the value is not conditional), so failing tests are retried 4 times locally as well. To retry only on CI, change it yourself:
 ```typescript
 // playwright.config.ts
@@ -338,6 +383,10 @@ projects: [
   }
 ]
 ```
+
+#### `ACCESS_TOKEN_EXPIRED` in a long test
+
+An expired Keycloak access token makes the backend answer HTTP 401 with code `ACCESS_TOKEN_EXPIRED`. The token lifetime is a Keycloak realm setting (access token lifespan), so a single long test (many steps, screenshots at several widths) can outlive it. Keep each test shorter than the lifespan or split it into tests that each log in.
 
 #### APP_URL not working
 
@@ -364,7 +413,7 @@ export default defineConfig({
 
 **Cause**: The JUDO backend/integration suite forks several JVMs, each with its own heap (configured in `test/pom.xml`). Memory builds up from class to class; when a JVM dies with `Java heap space`, every class still queued on it never runs, yet the aggregate result can still look green (for example "524 tests, 0 failures" while hundreds of classes were never executed).
 
-**Solutions**:
+##### Solutions
 1. Raise the per-JVM heap (for example to 4 GB) in `test/pom.xml`.
 2. Do not run scenarios in parallel on a local machine; run them one after another or class by class.
 3. Do not trust the aggregate pass count: confirm that all test classes actually ran (compare the number of executed classes with the number of test classes, and check the build exit code and logs for `OutOfMemoryError`).
@@ -425,6 +474,26 @@ test('Debug test', async ({ page }) => {
 npx playwright show-report
 ```
 
+### Test Data Accumulates Between Runs
+
+The E2E database and Keycloak users persist between runs. Failed or repeated runs leave rows that break counts, strict-mode locators and paging.
+
+- Use unique, stamped names (for example `` `Item ${Date.now()}` ``) and filter by your own stamp.
+- Clean up leftovers in the seed or an `afterAll`.
+- Never assert absolute row counts.
+
+### Shared Data and Parallel Workers
+
+Tests that share seeded data (one cart, one stock level, one user) interfere when run by parallel workers. Run such suites serially (`workers: 1`) or give each test its own user and its own records.
+
+### Hidden Columns and Rows in the Data Grid
+
+The generated table is an MUI DataGrid: it renders only the visible columns and the current page of rows. Use a wide viewport (or scroll the grid horizontally) before reading a late column, and filter before looking for a row that may be on another page.
+
+### Helpers Imported Across Generated Playwright Projects
+
+Each generated Playwright project (one per actor) has its own `node_modules`. Importing helpers from another actor's project loads a second copy of `@playwright/test`, and Playwright reports `Requiring @playwright/test second time` and `No tests found`. Copy the helpers, or share them from one package that is not part of either project.
+
 ## Performance Tips
 
 ### Speed Up Tests
@@ -463,6 +532,10 @@ test.beforeAll(async ({ browser }) => {
   await page.close();
 });
 ```
+
+### Run a Smoke Subset Per Change
+
+Suggestion: tag a small set of tests with `@smoke`, run the new spec plus `--grep @smoke` after each change, and run the full suites once at the end.
 
 ## Getting Help
 

@@ -11,7 +11,6 @@ projects: [rackinspect, mlszksz-platform, ubives]
 evidence: ["rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/unit/ToggleActiveCustomImplementation.java", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/city/ActivateToggleCustomImplementation.java", "ubives:unrecorded"]
 alternatives: []
 related: [entity-re-fetch-pattern, mutable-entity-update-pattern, mask-field-projection, service-delegation-pattern, custom-operation-osgi-component, toggle-active-operation]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

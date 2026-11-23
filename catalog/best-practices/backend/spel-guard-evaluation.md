@@ -11,7 +11,6 @@ projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
 alternatives: []
 related: [state-lifecycle-operation, safe-failure-pattern, correlation-based-event-chaining, token-based-workflow-execution]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

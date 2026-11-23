@@ -11,8 +11,6 @@ projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, viterra_demo,
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, custom-implementation-placeholder, toggle-operation-pattern, guard-clause-delete]
-fragment: mapped-operation-delegation
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -70,7 +68,6 @@ A Document entity has an instance operation `accept` with a Message input. The A
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=mapped-operation-delegation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AdminDocument {
@@ -89,4 +86,3 @@ classDiagram
   }
   AdminDocument ..> Document : maps
 ```
-<!-- /mermaid:generated -->

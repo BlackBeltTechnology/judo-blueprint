@@ -10,7 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/keycloak-extensions/src/main/java/hu/blackbelt/mlszksz/platform/keycloak/extensions/auth/token/MagicLinkActionTokenHandler.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/MagicLinkService.java"]
 alternatives: [capacitor-native-auth-pkce-passkey]
-fragment: none: backend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

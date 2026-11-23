@@ -10,7 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/notifications/usePushNotifications.ts"]
 alternatives: []
-fragment: none: frontend-only client code; the notification and device data live in the backend entries
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

@@ -1,0 +1,257 @@
+{
+ "batch": "model",
+ "files": [
+  "catalog/agent-docs/model/README.md",
+  "catalog/agent-docs/model/advanced-modeling-patterns.md",
+  "catalog/agent-docs/model/esm_metamodel/README.md",
+  "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+  "catalog/agent-docs/model/esm_metamodel/generator-reserved-names.md",
+  "catalog/agent-docs/model/esm_metamodel/namespace.md",
+  "catalog/agent-docs/model/esm_metamodel/operation.md",
+  "catalog/agent-docs/model/esm_metamodel/other.md",
+  "catalog/agent-docs/model/esm_metamodel/structure.md",
+  "catalog/agent-docs/model/esm_metamodel/type.md",
+  "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md",
+  "catalog/agent-docs/model/esm_metamodel/ui-visual-styleguide.md",
+  "catalog/agent-docs/model/esm_metamodel/ui.md",
+  "catalog/agent-docs/model/generalization-guide.md",
+  "catalog/agent-docs/model/jcl-operation-scripts.md",
+  "catalog/agent-docs/model/jsl-language-notes.md",
+  "catalog/agent-docs/model/judo-cli.md",
+  "catalog/agent-docs/model/model-development.md",
+  "catalog/agent-docs/model/model-validation-and-transformation.md",
+  "catalog/agent-docs/model/transformation-pipeline.md",
+  "catalog/agent-docs/model/ui-authoring-guide.md",
+  "catalog/agent-docs/model/xmi-id-traceability.md"
+ ],
+ "items": [
+  {
+   "id": "R0027",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/ui.md",
+   "text": "FACT TO ADD/CORRECT under 'Stretch': An unset table stretch is generated as BOTH in the current generator. Set stretch explicitly (NONE, HORIZONTAL, VERTICAL or BOTH) on <Entity> views to avoid relying on the default. | EVIDENCE: runtime/judo-tatami-client judo-tatami-client@c0d1a6a6e:judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/transformations/ui/TabularReferenceFieldButtonTransformations.java:92 | judo-ng finding: The comment says an unset stretch defaults to NONE, but the code is switch (source.getStretch()) with no null check and default: BOTH (line "
+  },
+  {
+   "id": "R0598",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "FACT TO ADD/CORRECT under '`type` Package Reference > Behaviour Rules > NumericType Attribute Rules': Same defect as R2207 in the jaxrs generator: non-integer measured types are emitted as java.lang.Object. Use a decimal attribute until fixed. | EVIDENCE: judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-api/src/main/java/hu/blackbelt/judo/psm/generator/jaxrs/api/JavaApiHelper.java:137 | judo-ng finding: In the MeasuredType branch the second test is `else if (dataType.isInteger())`, a duplicate of the test on line 135, so the `return \"java.ma"
+  },
+  {
+   "id": "R2207",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "FACT TO ADD/CORRECT under '`type` Package Reference > Behaviour Rules > NumericType Attribute Rules': Measured types whose values are not integers fall through a duplicated isInteger() branch in the generator and come out as java.lang.Object in the generated Java API. Until fixed, use a decimal attribute for values that need a Java numeric type. | EVIDENCE: judo-psm-generator-jaxrs@3883ae1:judo-psm-generator-jaxrs-api/src/main/java/hu/blackbelt/judo/psm/generator/jaxrs/api/JavaApiHelper.java:137 | judo-ng finding: In the MeasuredType branch the second test repeats 'dataType.isInteger()' from line 135, so the BigDecimal return is unreachable. A non-inte"
+  },
+  {
+   "id": "R0213",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "FACT TO ADD/CORRECT under '`type` Package Reference > Behaviour Rules > NumericType Attribute Rules': Same defect as R2207 in the restassured generator: non-integer measured types are emitted as java.lang.Object. Use a decimal attribute until fixed. | EVIDENCE: judo-psm-generator-restassured@ecff962:judo-psm-generator-restassured-api/src/main/java/hu/blackbelt/judo/psm/generator/restassured/api/JavaApiHelper.java:156-157 | judo-ng finding: MeasuredType branch repeats the isInteger() test (else if (dataType.isInteger())), so the decimal case at line 157 is unreachable and non-in"
+  },
+  {
+   "id": "R1399",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "FACT TO ADD/CORRECT under '`type` Package Reference > Behaviour Rules > NumericType Attribute Rules': Same defect as R2207 in the restassured generator: non-integer measured types are emitted as java.lang.Object. Use a decimal attribute until fixed. | EVIDENCE: judo-psm-generator-restassured@ecff962:judo-psm-generator-restassured-api/src/main/java/hu/blackbelt/judo/psm/generator/restassured/api/JavaApiHelper.java:156-157 | judo-ng finding: In the MeasuredType branch the second test repeats dataType.isInteger(), so the BigDecimal return on line 157 is unreachable for non-integer"
+  },
+  {
+   "id": "R0209",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "FACT TO ADD/CORRECT under '`type` Package Reference > Behaviour Rules > NumericType Attribute Rules': Non-integer measured types are emitted as java.lang.Object by the restassured generator, not as a decimal type. Use a decimal attribute until fixed. | EVIDENCE: judo-psm-generator-restassured@ecff962:openspec/specs/generator-api/spec.md:55 and JavaApiHelper.java:156-157 | judo-ng finding: primitiveDataTypeDefinition(Primitive) maps every PSM primitive type to a Java type."
+  },
+  {
+   "id": "R0514",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "FACT TO ADD/CORRECT under '`type` Package Reference > Behaviour Rules > NumericType Attribute Rules': Same defect as R2207 in the SDK core generator: non-integer measured types are emitted as java.lang.Object. Use a decimal attribute until fixed. | EVIDENCE: judo-psm-generator-sdk-core@7d2e251:judo-psm-generator-sdk-core-api/src/main/java/hu/blackbelt/judo/psm/generator/sdk/core/api/JavaApiHelper.java:293 | judo-ng finding: In the MeasuredType branch of primitiveDataTypeDefinition, the second condition is 'else if (dataType.isInteger())' again, so the java.math."
+  },
+  {
+   "id": "R0255",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+   "text": "FACT TO ADD/CORRECT under 'Primitive Types': A <Entity> attribute typed as PasswordType gets no data type in the generated ASM under the Zeta engine (no Zeta rule), and the ETL engine stops with \"not supported yet\". Check the generated ASM after adding a PasswordType attribute. | EVIDENCE: judo-tatami-base@14847b0 judo-tatami-psm2asm/src/main/java/hu/blackbelt/judo/tatami/psm2asm/zeta/rules/TypeRules.java:424; type.etl:109, :149 | judo-ng finding: There is no Zeta rule for PasswordType or XMLType. isCustomTypeGuard only excludes them, so their EDataType is silently never created. The E"
+  },
+  {
+   "id": "R1721",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md",
+   "text": "FACT TO ADD/CORRECT under 'OperationForm Confirmation': Closing the operation confirmation dialog by backdrop click or Escape never resolves the pending answer as 'no', so the calling flow can hang. Workaround: treat dismissal as cancel in custom code and do not wait on the dialog without a timeout. | EVIDENCE: template/judo-ui-react-template:judo-ui-react-template@af315252:judo-ui-react/src/main/resources/actor/src/components/dialog/ConfirmationDialog.tsx.hbs:44 | judo-ng finding: The Dialog onClose is handleClose, so backdrop click and Escape close the dialog without calling resolve(false). Together with DialogProvide"
+  },
+  {
+   "id": "R1076",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/esm_metamodel/ui-behaviour.md",
+   "text": "FACT TO ADD/CORRECT under 'Enumeration Type': When enumWidget is not set, the generator's combo and toggle-button-bar rules both accept the field, so the field can get two widgets. Workaround: set enumWidget explicitly (COMBO or TOGGLE_BUTTONBAR) on every enumeration attribute. | EVIDENCE: judo-tatami-client@c0d1a6a6e:judo-tatami-esm2ui/src/main/epsilon/transformations/ui/modules/ui/dataField.etl:145 | judo-ng finding: EnumerationTypeToggleButtonbar's guard is `enumWidget.isUndefined() or == TOGGLE_BUTTONBAR`, and EnumerationTypeCombo (line 122) has the sam"
+  },
+  {
+   "id": "R2496",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Reusing schema fragments': When a merged enumeration already has a member with the same name, the schema merge handles it incorrectly. Workaround: rename or remove duplicate enum members before merging and check the merged enum. | EVIDENCE: tools/judo-esm-schema-merge-maven-plugin:judo-esm-schema-merge-maven-plugin@dcc2c93:src/main/resources/script/merge.eol:101 | judo-ng finding: In the enumeration handling, when a member already exists in the target enumeration, the code calls `enumType.getTargetEnumMember(member.nam"
+  },
+  {
+   "id": "R0808",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Measures': Derived measures are built from base and derived terms. The expression validator sums base-measure exponents under the wrong key, so a derived measure can lose exponents (for example Volume = Area * Length can come out as Length^2 when the Length term is listed first). Until fixed, list derived-measure terms before base-measure terms in <app>'s measure definitions, or keep each derived measure to one base measure. | EVIDENCE: models/judo-meta-expression-esm:adapter-esm/src/main/java/hu/blackbelt/judo/meta/expression/adapters/esm/EsmMeasureProvider.java:107 (checked in wt copy at 70668b8; latest develop not re-checked) | judo-ng finding: getBaseMeasures reads the running exponent with base.getOrDefault(findMeasureOfUnit(term.getUnit()), 0) instead of the base measure m being "
+  },
+  {
+   "id": "R1412",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Measures': Derived measures are built from base and derived terms. The expression validator sums base-measure exponents under the wrong key, so a derived measure can lose exponents (for example Volume = Area * Length can come out as Length^2 when the Length term is listed first). Until fixed, list derived-measure terms before base-measure terms in <app>'s measure definitions, or keep each derived measure to one base measure. | EVIDENCE: models/judo-meta-expression-esm:adapter-esm/src/main/java/hu/blackbelt/judo/meta/expression/adapters/esm/EsmMeasureProvider.java:107 (checked in wt copy at 70668b8; latest develop not re-checked) | judo-ng finding: getBaseMeasures reads currentExponent with base.getOrDefault(findMeasureOfUnit(term.getUnit()), 0), i.e. keyed by the term's own measure, wh"
+  },
+  {
+   "id": "R2605",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami-esm-validation/src/main/java/hu/blackbelt/judo/tatami/esm/validation/ValidationMode.java | judo-ng finding: disagrees: the row says DUAL is 'both, results compared' and ZETA is 'Java engine only'. In code DUAL never compares results (EsmValidationW"
+  },
+  {
+   "id": "R2427",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': Actor metadata types (CreateMetadataType, CreateMetadataSecurityType) are generated even when generateActors is false; they are not guarded like the other actor rules. Expect the metadata types in the generated model regardless of that switch. | EVIDENCE: judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/actor/AGENTS.md:5 | judo-ng finding: every rule is guarded by generateActors."
+  },
+  {
+   "id": "R2431",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': Actor metadata types (CreateMetadataType, CreateMetadataSecurityType) are generated even when generateActors is false; they are not guarded like the other actor rules. Expect the metadata types in the generated model regardless of that switch. | EVIDENCE: judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/actor/actorType.etl | judo-ng finding: disagrees: the row says every rule is guarded by generateActors, but CreateMetadataType (actorType.etl:62) and CreateMetadataSecurityType (a"
+  },
+  {
+   "id": "R2426",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': Actor metadata types (CreateMetadataType, CreateMetadataSecurityType) are generated even when generateActors is false; they are not guarded like the other actor rules. Expect the metadata types in the generated model regardless of that switch. | EVIDENCE: judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/actor/actorType.etl.AGENTS.md:7 | judo-ng finding: Every rule here is guarded by the global generateActors."
+  },
+  {
+   "id": "R0156",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami-esm2psm/src/main/java/hu/blackbelt/judo/tatami/esm2psm/Esm2PsmWork.java.AGENTS.md:3 | judo-ng finding: Routing on transformationMode: ZETA is default; UnsupportedOperationException falls back to ETL. DUAL is not mentioned."
+  },
+  {
+   "id": "R1160",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami-expression-esm-validation/src/main/java/hu/blackbelt/judo/tatami/expression/esm/validation/AGENTS.md:7 | judo-ng finding: In DUAL mode ExpressionValidationOnEsmWork executes both engines and compares diagnostic results"
+  },
+  {
+   "id": "R1161",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami-expression-esm-validation/src/main/java/hu/blackbelt/judo/tatami/expression/esm/validation/AGENTS.md:9 | judo-ng finding: DUAL runs both engines with result comparison"
+  },
+  {
+   "id": "R1171",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami-expression-esm-validation/src/main/java/hu/blackbelt/judo/tatami/expression/esm/validation/ExpressionValidationOnEsmWork.java | judo-ng finding: disagrees: the row says that in DUAL mode both engines run and the diagnostics are compared. In the code DUAL runs Epsilon, then calls the Z"
+  },
+  {
+   "id": "R1172",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami-expression-esm-validation/src/main/java/hu/blackbelt/judo/tatami/expression/esm/validation/ValidationMode.java | judo-ng finding: disagrees: the row says DUAL runs both engines 'with result comparison'. The enum javadoc claims the same (line 39), but no comparison is im"
+  },
+  {
+   "id": "R0094",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami@13186706:judo-tatami-asm2script/src/main/java/hu/blackbelt/judo/tatami/asm2script/Asm2ScriptWork.java:142 | judo-ng finding: executeDual runs the Zeta transformation on the same ScriptModel that the ETL run has just populated (scriptModel is passed to both). The 'c"
+  },
+  {
+   "id": "R2604",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami@13186706:judo-tatami-esm-validation/src/main/java/hu/blackbelt/judo/tatami/esm/validation/EsmValidationWork.java:119 | judo-ng finding: In DUAL mode the Zeta validator is run and its outcome is discarded (only a TODO comment remains). No comparison with the Epsilon results ha"
+  },
+  {
+   "id": "R0623",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': Default transfer-object relations are always generated with lower bound 0, whatever the lower bound of the ESM relation. A required <Entity> relation therefore shows as optional in the generated default transfer object. | EVIDENCE: judo-tatami@13186706:judo-tatami-esm2psm/src/main/epsilon/transformations/psm/modules/service/transferObjectRelation.etl:89 | judo-ng finding: CreateDefaultTransferObjectRelation hard-codes t.cardinality.lower = 0 and ignores s.lower, while the sibling default-TOT cardinality rule ("
+  },
+  {
+   "id": "R0158",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami@13186706:judo-tatami-esm2psm/src/main/java/hu/blackbelt/judo/tatami/esm2psm/Esm2PsmWork.java:123 | judo-ng finding: TransformationMode.DUAL is routed to executeZeta in Esm2PsmWork."
+  },
+  {
+   "id": "R1518",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami@13186706:judo-tatami-esm2psm/src/main/java/hu/blackbelt/judo/tatami/esm2psm/Esm2PsmWork.java:123 | judo-ng finding: case DUAL: falls through into case ZETA: and runs only executeZeta(...). No ETL run and no comparison happens for DUAL."
+  },
+  {
+   "id": "R1821",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': DUAL mode does not compare results: it runs the ZETA engine only in the esm-to-psm path, and the validation DUAL path runs EPSILON then a ZETA stub that always fails. To check engine parity, build the same model once with ETL and once with ZETA and diff the generated output. | EVIDENCE: judo-tatami@13186706:judo-tatami-esm2psm/src/main/java/hu/blackbelt/judo/tatami/esm2psm/Esm2PsmWork.java:123 | judo-ng finding: case DUAL falls through to executeZeta, so mode DUAL runs Zeta only and performs no ETL run and no comparison."
+  },
+  {
+   "id": "R2378",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Annotations and RDBMS tailoring': The cascade value in the relation-shape rules spreadsheet is read from the model target, so the spreadsheet cascade column has no effect. Set the cascade behaviour on the ESM relation instead. | EVIDENCE: judo-tatami-base@14847b0 judo-tatami-asm2rdbms/src/main/epsilon/transformations/excelToRules.etl:42 | judo-ng finding: cascade is read from the target: t.cascade = t.cascade.asBoolean(); the spreadsheet value s.cascade is never used."
+  },
+  {
+   "id": "R2364",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/model-validation-and-transformation.md",
+   "text": "FACT TO ADD/CORRECT under 'Transformation Mode and Generation Switches': The two engines disagree on the NOT NULL flag of junction foreign keys. ZETA marks them NOT NULL when the relation lower bound is above 0; ETL only when lower and upper bounds are both 1. Compare the generated junction tables when you switch engines. | EVIDENCE: judo-tatami-base@14847b0 judo-tatami-asm2rdbms/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/zeta/Asm2RdbmsHelper.java:649; ReferenceRules.java:454, :526 | judo-ng finding: isMandatory(EReference) returns ref.getLowerBound() > 0. ReferenceRules uses it for junction FK mandatory flags (ReferenceRules.java:454, 52"
+  },
+  {
+   "id": "R1989",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/advanced-modeling-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Pattern: A MAPPED member's `required` flag must match its binding': A mixin relation matches an included relation only when both bindings are equal; a mixin relation with no binding matches any included relation (defect). Give every mixin relation an explicit binding. | EVIDENCE: models/judo-meta-expression-psm:adapter-psm/src/main/java/hu/blackbelt/judo/meta/expression/adapters/psm/PsmModelAdapter.java:302 (pinned SHA, not re-checked on develop) | judo-ng finding: isMixin relation check tests '(mr.getBinding() == null && mr.getBinding() == null)' so a null binding on the mixin side matches any included"
+  },
+  {
+   "id": "R1016",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/advanced-modeling-patterns.md",
+   "text": "FACT TO ADD/CORRECT under 'Pattern: A MAPPED member's `required` flag must match its binding': A mixin relation matches an included relation only when both bindings are equal; a mixin relation with no binding matches any included relation (defect). Give every mixin relation an explicit binding. | EVIDENCE: models/judo-meta-expression-psm:adapter-psm/src/main/java/hu/blackbelt/judo/meta/expression/adapters/psm/PsmModelAdapter.java:302 (pinned SHA, not re-checked on develop) | judo-ng finding: isMixin compares the relation binding with `mr.getBinding() == null && mr.getBinding() == null || EcoreUtil.equals(mr.getBinding(), ir.getBi"
+  },
+  {
+   "id": "R1805",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/jsl-language-notes.md",
+   "text": "FACT TO ADD/CORRECT under 'Constraints that fail the build': An identifier cannot be a numeric type. A numeric identifier without a scale makes validation fail with a NullPointerException instead of an error message; declare identifiers as a non-numeric type, for example String. | EVIDENCE: models/judo-meta-jsl:model/src/main/java/hu/blackbelt/judo/meta/jsl/validation/JslDslValidator.xtend:1690 (pinned SHA, not re-checked on develop) | judo-ng finding: For a numeric identifier, the code dereferences the scale modifier without a null check: ((field.referenceType as Modifiable).getModifier(sc"
+  },
+  {
+   "id": "R1827",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/jsl-language-notes.md",
+   "text": "FACT TO ADD/CORRECT under 'Constraints that fail the build': An identifier cannot be a numeric type. A numeric identifier without a scale makes validation fail with a NullPointerException instead of an error message; declare identifiers as a non-numeric type, for example String. | EVIDENCE: models/judo-meta-jsl:model/src/main/java/hu/blackbelt/judo/meta/jsl/validation/JslDslValidator.xtend:1690 (pinned SHA, not re-checked on develop) | judo-ng finding: checkEntityField casts getModifier(scaleModifier) to ScaleModifier and reads .value with no null check. An identifier of numeric primitive t"
+  },
+  {
+   "id": "R2791",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "text": "FACT TO ADD/CORRECT under 'Validation': A return statement in a script operation binding is checked against the bound operation: the output cardinality and output type must match. A mismatch is reported as \"don't match the output cardinality of operation '<Operation>'\" or \"... output type of operation '<Operation>'\". If the operation or one of its types cannot be resolved, the check passes without an error, so after you rename or retype an operation, run a full build and check the return statements of every script that calls it by hand. | EVIDENCE: models__judo-meta-script@5eb959b model/src/main/java/hu/blackbelt/judo/meta/script/validation/rules/OperationBindingValidations.java:304-306 (catch returns pass); binding.evl lines 4-20 (EVL messages) | judo-ng finding: scriptReturnTypeIsValid catches every Exception and returns ValidationResult.pass(). The guards operationUpperBoundIsOne/IsNotOne (catch at "
+  },
+  {
+   "id": "R2792",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "text": "FACT TO ADD/CORRECT under 'Validation': If the bound operation of a script operation binding cannot be found, the output-cardinality rule is skipped and reports nothing. After renaming an operation, check that every script binding still names an existing operation. | EVIDENCE: models__judo-meta-script@5eb959b model/src/main/java/hu/blackbelt/judo/meta/script/validation/rules/OperationBindingValidations.java:69-85 (guards return false when operation not found) | judo-ng finding: When the operation is not found, the cardinality guards return false, so the constraint is skipped and no error is produced. The EVL guard c"
+  },
+  {
+   "id": "R2764",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/jcl-operation-scripts.md",
+   "text": "FACT TO ADD/CORRECT under 'Operation Script Language (JCL)': A JCL string constant that contains the two characters star and slash (the end-of-comment marker) breaks the generated Java: the operation body is copied into a Java block comment without escaping, so the generated code does not compile. Write such text as two separate string parts, or avoid it in operation scripts. | EVIDENCE: judo-script-codegen@ad46d33:generator/src/main/java/hu/blackbelt/judo/script/codegen/generator/Script2JavaGenerator.xtend:262 | judo-ng finding: Each statement's toString is inserted into a Java block comment ('/* ' + statement + ' */') without escaping, so a string constant containin"
+  },
+  {
+   "id": "R1257",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'What enables sorting and filtering in the generated UI': The 'is empty' and 'is not empty' filter operators have no UI mapping, so a table filter using them gets no operator. Workaround: filter with the equals or contains operators, or add a custom query. | EVIDENCE: judo-tatami-client@c0d1a6a6e:judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/extensions/esm/EsmTabularExtensions.java:120 | judo-ng finding: asUiFilterOperationType has no case for IS_EMPTY or IS_NOT_EMPTY, so both fall through to default and return null. The call site in TabularT"
+  }
+ ]
+}

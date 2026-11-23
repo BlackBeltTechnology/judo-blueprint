@@ -10,7 +10,6 @@ status: single-project
 projects: [compsych-letter-demo]
 evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-05-12
 last_updated: 2026-11-10
 ---
@@ -23,7 +22,7 @@ Add a hand-written JAX-RS resource alongside the generated REST stack to stream 
 ### Platform base
 
 - Generated JAX-RS services are rooted at `/api/<Model>/...` and forward to the dispatcher ([platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md#rest-wire-contract)).
-- A custom endpoint is an OSGi DS component annotated `@Path`, bound into a `BasicApplication` of `cxf-jaxrs-application-manager` through a `jaxrs.resource.components` LDAP filter or a `jaxrs.resource.classes` list ([custom REST endpoints and CXF](../../agent-docs/backend/platform-behavior-reference.md#custom-rest-endpoints-and-cxf)). Custom `@Provider` classes need `X-JAXRS-Provider: true` in the bundle manifest.
+- A custom endpoint is an OSGi DS component annotated `@Path`, bound into a `BasicApplication` of `cxf-jaxrs-application-manager` through a `jaxrs.resource.components` LDAP filter or a `jaxrs.resource.classes` list (put a space before and after each comma; `a.A,b.B` is read as one unknown class name) ([custom REST endpoints and CXF](../../agent-docs/backend/platform-behavior-reference.md#custom-rest-endpoints-and-cxf)). Custom `@Provider` classes need `X-JAXRS-Provider: true` in the bundle manifest.
 - Extra Karaf bundles, extra Maven dependencies and OSGi configuration reach the generated modules through fragment overrides ([extending generated files](../../agent-docs/deployment/build-process.md#extending-generated-files-via-fragment-overrides)); see [[karaf-customization-via-fragments]].
 - A custom endpoint is outside the dispatcher: no interceptor, access rule or modeled-fault mapping applies to it. The resource handles authentication and error responses itself. (Inferred from the endpoint not going through the dispatcher; *verify*.)
 - The platform docs do not mention SSE, `cxf-rt-rs-sse` or the CXF version; everything below on those is observation from one application, *verify* against your platform version.
@@ -32,7 +31,7 @@ Add a hand-written JAX-RS resource alongside the generated REST stack to stream 
 
 Three coordinated pieces, all application code in one example (not platform API):
 
-1. A `javax.ws.rs.core.Application` `@Component` that declares the mount path with the `applicationPath` service property **and** the `@ApplicationPath` annotation, and returns the injected resource from `getSingletons()`.
+1. A `javax.ws.rs.core.Application` `@Component` that declares the mount path with the `@ApplicationPath` annotation and also sets the `applicationPath` service property **and** returns the injected resource from `getSingletons()`.
 2. A `@Path` resource `@Component` whose class-level path is only the segment below the application path.
 3. The `cxf-rt-rs-sse` bundle added to the Karaf feature, because the platform CXF JAX-RS feature (CXF 3.5.6 in the observed 2026.03 platform) carries the JAX-RS frontend but not the SSE provider.
 
@@ -62,7 +61,7 @@ public class AgentRestResource {
 ```
 
 - `service = Application.class` is what makes the Application visible to the platform's application tracker (observed).
-- Set both the service property and the annotation: with the property alone the example saw `No @ApplicationPath found on component` warnings, and the annotation made the path appear in the CXF service list.
+- The CXF server manager takes the mount path from the application's properties map (`CxfServerManager.java:185`), not from the service property, which only tracks the application. Set both the service property and the annotation: with the property alone the example saw `No @ApplicationPath found on component` warnings, and the annotation made the path appear in the CXF service list.
 - URL = CXF servlet root (`/api`) + application path (`/agent`) + class path (`/chat`) = `/api/agent/chat`. A class-level `@Path("/agent/chat")` produced `/api/agent/agent/chat`.
 - The SSE method takes `SseEventSink` and `Sse` as `@Context` arguments, returns `void`, and must be `@Produces(MediaType.SERVER_SENT_EVENTS)`.
 - Exposing the resource as its own OSGi service lets the Application `@Reference` it; DS resolves the resource's references before it joins the JAX-RS runtime.

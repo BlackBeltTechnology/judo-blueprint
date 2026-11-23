@@ -11,7 +11,6 @@ Pages come from the transfer objects and access points a project defines over th
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=capability-lookup-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Capability {
@@ -29,4 +28,3 @@ classDiagram
   Offer --> "*" Capability : capabilities
   Organization --> "*" Capability : capabilities
 ```
-<!-- /mermaid:generated -->

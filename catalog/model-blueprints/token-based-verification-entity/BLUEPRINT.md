@@ -11,8 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [email-code-guest-authentication]
 related: [email-code-guest-authentication, invitation-with-recipients, invitation-with-key-based-acceptance]
-fragment: token-based-verification-entity
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

@@ -1,6 +1,9 @@
 ---
 title: Backend Authentication Guide
 description: AuthenticationInterceptor, the principal operation, token attribute extraction and just-in-time user provisioning.
+aliases: [create user on first login, jwt claims to user, keycloak user sync, auto create user after login, login user not found, authentication interceptor example]
+keywords: [AuthenticationInterceptor, authenticate, isSuitableForOperation, "#_principal", DefaultActorResolver, getActorByClaims, AUTHENTICATED_ENTITY_NOT_FOUND, JUDO_PLATFORM_ACCEPTABLE_CLIENTS, azp, acceptableClients, getVariable, managed]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Authentication Guide
@@ -29,14 +32,23 @@ public interface AuthenticationInterceptor {
     String getName();
     boolean isSuitableForOperation(EOperation operation, String claim, String realm, String client, Map<String, Object> attributes);
     void authenticate(String operationFQName, Map<String, Object> exchange, String claim, String realm, String client, Map<String, Object> attributes);
+    void success(EOperation operation, SignedIdentifier signedIdentifier, Map<String, Object> exchange, String claim, String realm, String client, Map<String, Object> attributes);
 }
 ```
+
+The methods are called at two different points:
+
+- `authenticate(operationFQName, exchange, claim, realm, client, attributes)` runs at the start of **every** dispatcher operation call that has a principal, before the mapped principal is loaded. It is called on every registered interceptor; `isSuitableForOperation` is **not** consulted, so filter on `operationFQName`, `client` or `claim` inside the method.
+- `isSuitableForOperation(operation, claim, realm, client, attributes)` is only the filter for `success`.
+- `success(operation, signedIdentifier, exchange, claim, realm, client, attributes)` runs after the exposure and actor checks of the operation and before the CRUD authorizers and the operation body, so it can fire for an operation that later fails with `PERMISSION_DENIED`; it runs only on interceptors whose `isSuitableForOperation` returns `true`.
+
+`isSuitableForOperation`, `authenticate` and `success` default to no-ops (`isSuitableForOperation` defaults to `true`).
 
 ## The `#_principal` Operation
 
 The `#_principal` operation is a special, framework-level operation that is automatically invoked after a user successfully authenticates with an external identity provider. This is the primary point of interception for just-in-time provisioning.
 
-**Key Characteristics:**
+### Key Characteristics
 - **Triggered Automatically**: Called by the JUDO framework after a successful external login.
 - **Provides Token Claims**: The `attributes` map in the `authenticate` method contains all the claims from the user's JWT token.
 - **Ideal for User Creation**: It's the perfect place to check if a user exists in your local database and create them if they don't.
@@ -45,7 +57,7 @@ The `#_principal` operation is a special, framework-level operation that is auto
 
 When a user authenticates, their JWT token contains claims that are passed to the interceptor as the `attributes` map. You can extract standard and custom claims to populate your local user entity.
 
-**Standard Keycloak Token Attributes:**
+### Standard Keycloak Token Attributes
 - `email` - User's email address
 - `preferred_username` - Username from the identity provider
 - `given_name` - First name
@@ -57,8 +69,8 @@ When a user authenticates, their JWT token contains claims that are passed to th
 >
 > The same claims are reachable from JQL expressions (access filters, derived features, custom-op preconditions) via `!getVariable(category, 'claim_name')`. The correct category depends on the actor shape:
 >
-> - Actors with **`claimPrincipal: true`** → use **`USER.*`** (raw JWT).
-> - Unmapped principal TO, not `claimPrincipal` → use **`PRINCIPAL.*`**.
+> - Token-only actors (no `principal`; there is no `claimPrincipal` flag) → use **`USER.*`** (raw JWT).
+> - Unmapped principal TO (transient principal) → use **`PRINCIPAL.*`**.
 > - Mapped principal TO (persisted actor entity) → use **`ACTOR.*`** for persisted attributes, **`USER.*`** for raw claims.
 >
 > See [ACTOR vs PRINCIPAL vs USER](../model/advanced-modeling-patterns.md#actor-vs-principal-vs-user-context-variables) for the full decision matrix and the silent-failure pitfall.
@@ -76,7 +88,7 @@ When a user authenticates, their JWT token contains claims that are passed to th
 > -  Copying a non-standard JWT claim to a plain entity attribute (the `<claims>` element only covers `EMAIL` and `USERNAME`).
 > -  Initialising roles or permission flags from a `groups` / `realm_access.roles` claim.
 > -  Writing an audit row, emitting a domain event, or calling an external system on first login.
-> -  Coping with legacy actors that are **not** mapped + managed (e.g. an unmapped principal TO, or `claimPrincipal: true`), where the runtime does no persistence of its own.
+> -  Coping with legacy actors that are **not** mapped + managed (e.g. an unmapped principal TO, or a token-only actor with no `principal`), where the runtime does no persistence of its own.
 >
 > When both are in play, the interceptor runs **before** the framework's actor lookup on the same `#_principal` call (per the [AuthenticationInterceptor contract](./interceptors.md) — *"after the extraction of principal but before the load of the mapped principal load"*), so it can safely insert/update the row that the lookup is about to read.
 
@@ -223,19 +235,43 @@ For the canonical admin-surface shape and the custom-op delegation pattern that 
 
 It then runs `dao.search` on the actor type, so **the actor row is read from the database on every request that carries a principal**. Zero matches give `AccessDeniedException` `AUTHENTICATED_ENTITY_NOT_FOUND`; several matches give `SecurityException` ("Multiple actors found in database by token"). When the principal resolution is slow, profile this read (index the claim column) rather than the application's `#_principal` interceptor. `authenticateByPrincipal` runs only when the exchange has no actor yet and `checkMappedActors` is `true` (default `false`). Claims whose matching attribute is `transient` are copied onto the returned actor payload.
 
+Details of the lookup:
+
+- The lookup attribute is an actor attribute whose `claim` is `USERNAME` or `EMAIL`, or one whose name equals a token claim key **and** that maps to an entity identifier attribute. A mapped actor with no such attribute fails with `IllegalStateException` ("ID attribute in Entity type matching any access token claim not found").
+- `authenticateByPrincipal` builds the claims map from the string-valued token attributes only; non-string claims are ignored for the lookup.
+- The lookup value is coerced to the attribute type (string, numeric, date, time, timestamp, boolean, enumeration by literal); other types log a warning and run the search without a filter.
+- Transient actor attributes whose name equals a claim key receive the claim value on the actor payload.
+- **Timing.** The actor lookup runs after the `authenticate` hooks and before the operation body. A first call from a new user, with no actor row yet, fails with `AUTHENTICATED_ENTITY_NOT_FOUND` unless an `AuthenticationInterceptor.authenticate` hook has already created the row; a row created in `success` or in the operation body is too late for that request.
+
 ### Several Keycloak clients in one realm
 
-JUDO derives the actor from the token's `azp` claim: dashes become dots and the result must equal an actor FQN. A frontend client with another name cannot be resolved. Set the whitelist `JUDO_PLATFORM_ACCEPTABLE_CLIENTS` (OSGi/Guice key `acceptableClients`, default empty):
+JUDO derives the actor from the token's `azp` claim: dashes become dots and the result must equal an actor FQN. A frontend client with another name cannot be resolved. The `client` argument of `AuthenticationInterceptor.isSuitableForOperation` and `authenticate` is this resolved value (the `azp` claim with dashes turned into dots, then renamed through `clientToActorMap` if configured), not the raw Keycloak client id. When one realm serves several actors (for example an admin who also logs in through another actor's client), decide on the actor FQN this value holds and return early for actors the interceptor does not handle; do not assume the user belongs to one actor. Set the whitelist `JUDO_PLATFORM_ACCEPTABLE_CLIENTS` (OSGi/Guice key `acceptableClients`, default empty):
 
 ```
 ActorTypeFQN=client1,client2;OtherActor=client3
 ```
 
-Client ids are normalised (dash to dot) and an ambiguous client-to-actor mapping is rejected. The Keycloak login interceptor also accepts a `clientToActorMap` that renames `azp` values to actor names. See [OSGi Runtime Services](../deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration) for the realm side.
+Client ids are normalised (dash to dot) and an ambiguous client-to-actor mapping is rejected. A user who signs in through the client of an actor that has no matching row gets `AUTHENTICATED_ENTITY_NOT_FOUND`; the generated React client shows this as "User not found" and signs the user out, so an access-denied message needs a custom page. The Keycloak login interceptor also accepts a `clientToActorMap` that renames `azp` values to actor names. See [OSGi Runtime Services](../deployment/osgi-runtime-services.md#keycloak-connector-and-realm-synchronizer-configuration) for the realm side.
+
+Client resolution has no acceptable-clients fallback: an unknown client throws `IllegalStateException` ("Unsupported client"). Keycloak deployments are cached per realm only. On a cache hit the client name is ignored, so actors that share a realm reuse the first cached client. `KeycloakLoginInterceptor` verifies the token without an explicit issuer-to-realm check.
+
+### Actor path matching
+
+Actor lookup from the request path is a plain string prefix match with no segment boundary. An actor path that is a prefix of another actor's name also matches the requests of that longer name (for example `<Actor>` matches `<Actor>Admin`).
 
 ### Discovery endpoints for custom frontends
 
-Each actor exposes `GET /api/<Model>/Actor/<Actor>/~meta` and `GET .../~principal` (the authenticated principal with `__identifier` and `__signedIdentifier`). The `security` entry of `~meta` carries `tokenEndpoint`, `clientId` and `openIdConfigurationUrl`, which a custom frontend needs to obtain an access token for that actor. The generated React layout waits for `principal.__signedIdentifier` before rendering, maps `AUTHENTICATED_ENTITY_NOT_FOUND` to a "User not found" message, and logs out with `signoutRedirect` using the current URL without its hash as `post_logout_redirect_uri`.
+Each actor exposes `GET /api/<Model>/<Actor>/<Actor>/~meta` and `GET /api/<Model>/<Actor>/<Actor>/~principal` (the authenticated principal with `__identifier` and `__signedIdentifier`). The `security` entry of `~meta` carries `tokenEndpoint`, `clientId` and `openIdConfigurationUrl`, which a custom frontend needs to obtain an access token for that actor. The generated React layout waits for `principal.__signedIdentifier` before rendering, maps `AUTHENTICATED_ENTITY_NOT_FOUND` to a "User not found" message, and logs out with `signoutRedirect` using the current URL without its hash as `post_logout_redirect_uri`.
+
+#### Provisioning a new user from a script
+
+A user-written interceptor that filters on `#_principal` and creates the actor row runs only for that call. A data call (`.../~list`) with a new user's token answers 403 `AUTHENTICATED_ENTITY_NOT_FOUND` and creates no row. Call `GET /api/<Model>/<Actor>/<Actor>/~principal` with the bearer token once first (the generated frontend does this); the interceptor then creates the row and later calls succeed.
+
+## Operation Exposure, Public Access and Password Policy
+
+- An operation without an `exposedBy` annotation gets an empty expected-role list.
+- An access point without `@actor` counts as public. One public access point makes the whole operation public, so its expected-role list is empty.
+- `PasswordPolicy<ID>` extends `Function<Map<String, Object>, Optional<ID>>` and declares no `validatePassword()` method. A custom policy implements `apply()`.
 
 ## Testing and Best Practices
 

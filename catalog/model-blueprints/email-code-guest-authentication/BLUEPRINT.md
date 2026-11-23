@@ -10,8 +10,6 @@ status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: [token-based-verification-entity, keycloak-magic-link-passkey-authentication]
-fragment: email-code-guest-authentication
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---
@@ -39,6 +37,7 @@ Two unmapped transfer objects carry the flow. RegisterInput has an e-mail (requi
 - The active code is never shown to another user. Only the pending code is sent by e-mail.
 - Activation fails with one generic error for an unknown e-mail and for a wrong code. The two cases must not be distinguishable to the caller.
 - Interceptors run only on built-in operations. Register, activate and reset are custom operations, so each one checks its own rules and writes its own audit trail if needed.
+- The actor that calls register and activate must be public: `anonymous` set and no principal mapped. With a mapped principal it needs a token even when flagged anonymous ([access points](../../agent-docs/model/esm_metamodel/accesspoint.md)).
 - Static operations are the only kind an unmapped transfer object allows, which is why register and activate are static.
 - The generic activation fault is a modeled fault transfer object. Every operation that throws it must declare it in `faults`, or the generated interface has no matching `throws` clause.
 

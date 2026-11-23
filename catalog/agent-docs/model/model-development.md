@@ -1,6 +1,9 @@
 ---
 title: JUDO Model Development Guide
 description: Primary reference for JUDO model development: layers, workflow, patterns, the JQL expression language reference, pitfalls and best practices.
+aliases: [model development guide, how to model entities, JQL expression language, access getter rules, model design patterns, naming conventions for model elements, derived access filter]
+keywords: [getVariable, getterExpression, accessType, OperationCallInterceptor, TRANSIENT, Generalization, EntityType, TransferObjectType, MenuItemAccess, judo-model-cli, ReferenceBindingExpressionIsValid, xmi:id]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # JUDO Model Development Guide
@@ -53,13 +56,13 @@ This section provides a step-by-step guide to the fundamental process of creatin
 5.  **Generate the Default UI**: Right-click the entity and select **"Add features to representations"** to automatically create a `Table`, `Form`, and `View` for it.
 6.  **Define an Actor**: Drag the **Actor** tool to create a user role (e.g., `Manager`).
 7.  **Create an Access Link**: Use the **Access** tool to connect the `Actor` to the entity's `TransferObjectType`. This exposes the entity's CRUD services through the access point — it does **not** by itself add anything to the UI navigation.
-8.  **Add the Menu Item Entry**: Whenever an `Access` is created on an `ActorType` that is intended to be reachable from the UI, a matching `MenuItemAccess` **must** be added under that actor's `<menuItems>` (optionally nested in a `MenuItemGroup`) with its `access` reference pointing to the `Access` from step 7. Without this pairing the data is reachable only via the API, never from the menu. See [UI Authoring Guide](./ui-authoring-guide.md) and [accesspoint reference](./esm_metamodel/accesspoint.md).
+8.  **Add the Menu Item Entry**: Whenever an `Access` is created on an `ActorType` that is intended to be reachable from the UI, a matching `MenuItemAccess` **must** be added under that actor's `<menuItems>` (optionally nested in a `MenuItemGroup`) with its `access` reference pointing to the `Access` from step 7. Without this pairing the data is reachable only via the API, never from the menu. With the model CLI, `create -t Access --ns <actor> --set target=<transferObject>` creates the `MenuItemAccess` together with the `Access` (named `Menu`, labelled with the target type name); `create -t MenuItemAccess` is refused. A transfer object created with a `mapping` also gets its mapped members generated: reuse them, and give any additional derived member a different name (a same-named member is reported as not unique). See [UI Authoring Guide](./ui-authoring-guide.md) and [accesspoint reference](./esm_metamodel/accesspoint.md).
 
 ### Working-copy safety during multi-stage ESM changes
 
 The `.model` file is a single XMI document that accumulates every mutation from every stage of a change. Standard git commands treat it as one opaque blob, so it is very easy to lose hours of authoring work with a single rollback.
 
-**Rules of thumb when a change spans multiple stages (Stage A, B, C…):**
+#### Rules of thumb when a change spans multiple stages (Stage A, B, C…)
 
 1.  **Commit per stage, or at least per green checkpoint.** `git commit -m "Stage B: ..."` after each stage validates. This gives you an explicit rollback target and prevents accidental loss.
 2.  **Never run `git restore model/*.model` (or `git checkout -- model/*.model`) with uncommitted mutations unless you have a backup.** It silently reverts *every* ESM mutation made since the last commit — there is no partial undo. One wrong `git restore` has cost full stages of work.
@@ -133,7 +136,7 @@ This section is a "cookbook" of reusable design patterns for solving common mode
 
 JQL is the powerful expression language used in model scripts, such as `Getter expression`s and `Operation` bodies. It provides a rich set of features for data manipulation, navigation, and logic execution.
 
-**Key Concepts:**
+### Key Concepts
 -   **The `self` variable** to refer to the current object context.
 -   **Navigation** across relationships using the `.` operator.
 -   A library of **built-in functions** for strings, numbers, and collections, called with the `!` operator.
@@ -263,7 +266,7 @@ Represents a logical value: `true` or `false`. JQL uses a three-valued logic sys
 
 | Keyword | Meaning |
 | :--- | :--- |
-| `not` | Logical negation |
+| `not` | Logical negation (`!` is only the prefix of functions such as `!empty()`, not a negation operator: write `not n.read` or `n.read == false`, never `!n.read`) |
 | `and` | Logical AND |
 | `or` | Inclusive logical OR |
 | `xor` | Exclusive logical OR |
@@ -276,6 +279,8 @@ Represents a value from a predefined set of members. Members are referenced by `
 | :--- | :--- | :--- |
 | `==`, `!=` | Boolean | Equality comparison. |
 | `!asString()`| String | Returns the literal name of the member as a string. |
+
+An enumeration literal is written `<Model>::<EnumType>#<LITERAL>`, for example `defaultExpression = "<Model>::<EnumType>#<LITERAL>"` on a stored attribute. Use the fully qualified type name, as for other types (see 5.2); `<EnumType>#<LITERAL>` also passes `validate` in the CLI.
 
 ### Date & Timestamp
 -   **Date**: Represents a calendar date. Literals are delimited by backticks (e.g., `` `2024-01-01` ``).
@@ -316,6 +321,8 @@ Operate on a single object instance.
 | `!isUndefined()`| Boolean | Returns `true` if the object is `undefined`. |
 | `!memberOf(coll)`| Boolean | Returns `true` if the instance is a member of the specified collection `coll`. |
 
+`!container(Type)` also works as the getter of a derived relation on the contained entity, typed as the container with cardinality `0..1`: `self!container(<Parent>)`. The result can be narrowed with `!asType(<Sub>)`. `Type` must be a type that can contain `self` (a composition owner, including its supertypes or subtypes); otherwise the expression build fails with `<Type> type is not a container type of <Self type>`, also when `Type` is the type itself. A mapped transfer object relation can expose the derived relation by binding to it.
+
 ### Collection Functions
 Operate on a collection of object instances. The `i` in examples represents an iterator variable.
 
@@ -329,8 +336,8 @@ Operate on a collection of object instances. The `i` in examples represents an i
 | `!filter(i \| expr)` | Collection | Returns a new collection containing only items `i` for which the logical `expr` is true.<br>`self.items!filter(i \| i.price > 10)` |
 | `!forAll(i \| expr)` | Boolean | Returns `true` if the logical `expr` is true for all items `i`. |
 | `!anytrue(i \| expr)` / `!alltrue(...)` / `!anyfalse(...)` / `!allfalse(...)` | Boolean | Quantifiers over a boolean-valued selector. `!alltrue` is equivalent to `!forAll`; `!anyfalse` to `not !forAll`. |
-| `!head()` / `!heads(n)` | Instance / Collection | First item / first `n` items. Order is deterministic only after `!sort`. |
-| `!tail()` / `!tails(n)` | Instance / Collection | Last item / last `n` items. |
+| `!head()` / `!heads(i \| key)` | Instance / Collection | `!head()` without a key returns the first item; the order is deterministic only after `!sort`. `!head(i \| key)` returns one item with the smallest `key` (`DESC`: the largest). `!heads(i \| key)` returns **all** items that share that smallest (or, with `DESC`, largest) key, so it is the tie set, not the first `n` items. There is no top-N function: sort, then limit through paging (`rowsPerPage`, `limit`). |
+| `!tail()` / `!tails(i \| key)` | Instance / Collection | The mirror of `head` / `heads` (largest key first). |
 | `!sort(i \| sel [,...])`| Collection | Returns a new collection sorted by one or more selectors (`sel`). `ASC` (default) or `DESC` can be specified.<br>`self.items!sort(i \| i.price DESC, i.name)` |
 | `!join(i \| selector, separator)` | String | ⚠️ **Recognised by the JQL grammar and expression builder, but not implemented by the query engine** (the converter throws `Not supported yet`). The function name is registered in the parser (so expressions using it pass `transform` without an `Unknown function` error), but evaluation fails downstream — there is currently no built-in string-aggregation function. For concatenating a string attribute across a collection, use a **backend-computed `TRANSIENT` TO attribute** populated from an `OperationCallInterceptor` (see Pitfall 5.1 below and the backend Interceptors guide). Do **not** use `!collectAsString` or `!mkString` either — they do not exist at all. |
 | `!asCollection(type)`| Collection | Casts the collection to a collection of the specified `type`. |
@@ -339,6 +346,21 @@ Operate on a collection of object instances. The `i` in examples represents an i
 | `!sum(i \| selector)` | Numeric | Returns the sum of the `selector` across the collection (integer and decimal values only; other types fail with `Invalid expression for aggregation`). |
 | `!min(i \| selector)` | Numeric | Returns the minimum value of the `selector` across the collection. |
 | `!max(i \| selector)` | Numeric | Returns the maximum value of the `selector` across the collection. |
+
+#### Aggregates on empty collections and combining collections
+
+`!count()` of an empty or missing collection is `0` (the query wraps it in `COALESCE(..., 0)`). `!sum`, `!min` and `!max` are plain SQL aggregates without a default: on an empty collection the result is `undefined` (SQL `NULL`), not `0`; item values that are `undefined` are skipped by the aggregate. Use `!isDefined()` or a conditional to supply a default, for example `self.items!sum(i | i.points)!isDefined() ? self.items!sum(i | i.points) : 0` (derived from the generated SQL; the example expression is unverified).
+
+JQL has no union operator. To combine items reached directly with items reached through another relation, navigate through the multi-valued relations or filter the target type:
+
+```
+// items of the related groups only (navigation flattens collections)
+self.<groups>.<items>
+// direct items plus group items, each item once
+<Model>::<Item>!filter(i | self.<items>!contains(i) or self.<groups>.<items>!contains(i))
+```
+
+Use the second form as the getter of a derived `0..*` relation.
 
 #### Using `!any()` correctly
 

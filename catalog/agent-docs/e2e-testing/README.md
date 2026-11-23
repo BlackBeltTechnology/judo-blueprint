@@ -5,6 +5,9 @@ description: E2E testing guide for JUDO React frontends using Playwright. Covers
 disable-model-invocation: false
 user-invocable: false
 agent: general-purpose
+aliases: [playwright tests, e2e test setup, run playwright tests, record test videos, e2e environment, enable e2e generation]
+keywords: [generateE2eModule, APP_URL, playwright.config.ts, storageState, TEST_DATA_PREFIX, ApiHelper, TableHelper, video, retain-on-failure, pnpm]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # E2E Testing Guide
@@ -155,7 +158,7 @@ npx playwright show-report
 
 Playwright can record videos and capture screenshots for debugging failed tests.
 
-**Configuration in `playwright.config.ts`:**
+#### Configuration in `playwright.config.ts`
 
 ```typescript
 use: {
@@ -167,7 +170,7 @@ use: {
 },
 ```
 
-**Video Recording Options:**
+#### Video Recording Options
 
 | Option | Behavior |
 |--------|----------|
@@ -176,7 +179,7 @@ use: {
 | `"retain-on-failure"` | Record all, keep only failed tests (recommended) |
 | `"on-first-retry"` | Record only on retry attempts |
 
-**Screenshot Options:**
+#### Screenshot Options
 
 | Option | Behavior |
 |--------|----------|
@@ -184,7 +187,7 @@ use: {
 | `"on"` | Screenshot after each test |
 | `"only-on-failure"` | Screenshot only when test fails (recommended) |
 
-**Viewing Results:**
+#### Viewing Results
 
 Videos and screenshots are saved in `test-results/` folder and included in the HTML report:
 
@@ -193,7 +196,7 @@ Videos and screenshots are saved in `test-results/` folder and included in the H
 npx playwright show-report
 ```
 
-**How to Enable Video Recording:**
+#### How to Enable Video Recording
 
 1. **Edit `playwright.config.ts`** - set `video` option in the `use` section:
 
@@ -219,7 +222,7 @@ npx playwright show-report
 
 **Video files location:** `test-results/<test-name>/video.webm`
 
-**To switch back to retain-on-failure (recommended for CI):**
+#### To switch back to retain-on-failure (recommended for CI)
 
 ```typescript
 use: {

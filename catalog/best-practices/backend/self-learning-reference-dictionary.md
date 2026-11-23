@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/services/CityPostalCodeService.java"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-07-12
 last_updated: 2026-11-10
 ---
@@ -71,7 +70,7 @@ One `learn()` per pair costs about four round trips (find city, find postal code
 
 1. Parse the whole file into an in-memory map from parent key to a set of child keys (deduplicated); skip blank, `#` and malformed lines while parsing so a skipped line's children never persist.
 2. Preload existing rows into lookup maps with two bulk `selectList()` queries.
-3. `createAll(...)` the missing rows in batches instead of one `create()` each.
+3. Create the missing rows in one `createAll(...)` call per group of rows. `createAll` is a convenience, not a bulk insert: the runtime loops over the payloads and calls `create` for each, so it saves code, not round trips.
 4. One add-children call per parent, only for children not yet linked; freshly created parents skip the link-existence query.
 
 About six times fewer round trips, and the per-pair find storm disappears. Re-import stays idempotent.

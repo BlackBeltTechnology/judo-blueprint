@@ -12,7 +12,6 @@
   "exclude": [
     "**/node_modules/**",
     "**/archive/**",
-    "fragments/**",
     "skills/*/scripts/**",
     ".pi/skills/*/scripts/**",
     "tests/**",

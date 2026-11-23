@@ -1,6 +1,9 @@
 ---
 title: Backend Testing Guide
 description: Unit testing custom operations with mocks and running integration tests.
+aliases: [unit test custom operation, mock DAO in backend tests, JUnit 5 Mockito, run backend integration tests, backend test commands]
+keywords: [MockitoExtension, InjectMocks, EntityDao, VariableResolver, assertThrows, MinimumPermissionsViolatedException, mvn test, mvn clean install, skipTests, integration-test]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Backend Testing Guide
@@ -24,7 +27,7 @@ Unit tests for custom operations should be small, focused, and use mocks to isol
 
 The recommended stack is **JUnit 5** with **Mockito**.
 
-**Example: Unit Testing a Custom Operation**
+### Example: Unit Testing a Custom Operation
 
 ```java
 @ExtendWith(MockitoExtension.class)

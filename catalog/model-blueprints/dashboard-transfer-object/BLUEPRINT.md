@@ -10,8 +10,6 @@ status: emerging
 projects: [mlszksz-platform, InterfaceRegister]
 evidence: [mlszksz-platform:model/MLSZKSZPlatform.model, InterfaceRegister:unrecorded]
 alternatives: [panel-dashboard-transfer]
-fragment: dashboard-transfer-object
-diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

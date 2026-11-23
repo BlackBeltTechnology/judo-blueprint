@@ -1,0 +1,379 @@
+{"id": "R2093", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2105", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2109", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2110", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2111", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2112", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2113", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2114", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2115", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2116", "verdict": "keep", "reason": "Required-string empty check has no default; doc claims ACCEPT_NON_EMPTY default"}
+{"id": "R2117", "verdict": "keep", "reason": "Custom validators cannot read a rootPayload context key"}
+{"id": "R2118", "verdict": "not-platform", "reason": "Claim matches VALIDATOR location code (uses '/' between containers)"}
+{"id": "R2119", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2120", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2121", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2122", "verdict": "not-platform", "reason": "Internal exception handling in payload validator"}
+{"id": "R2123", "verdict": "keep", "reason": "ignoreInvalidValues also skips required checks"}
+{"id": "R2124", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2125", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2128", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2129", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2130", "verdict": "not-platform", "reason": "Dispatcher AGENTS.md internals"}
+{"id": "R2131", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2132", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2133", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2134", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2135", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2136", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2137", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2138", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2139", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2146", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2147", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2148", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2159", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2160", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2161", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2162", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2163", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2164", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2177", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2178", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2179", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2180", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2181", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2182", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2183", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2184", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2185", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2186", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2187", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2190", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2191", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2192", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2193", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2195", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2196", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2197", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2198", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2199", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2200", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2201", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2202", "verdict": "keep", "reason": "Single-button FAB group renders nothing"}
+{"id": "R2203", "verdict": "keep", "reason": "hiddenBy ignored for SpeedDial FAB items"}
+{"id": "R2204", "verdict": "keep", "reason": "Dialog FAB placement differs from documented overlay"}
+{"id": "R2205", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2206", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2207", "verdict": "not-platform", "reason": "Generator type-branch internals"}
+{"id": "R2208", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2209", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2210", "verdict": "not-platform", "reason": "Generator request-type branch internals"}
+{"id": "R2211", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2212", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2215", "verdict": "keep", "reason": "poolSize setting has no effect on pool"}
+{"id": "R2216", "verdict": "not-platform", "reason": "Guice builder sample; runtime module internals"}
+{"id": "R2217", "verdict": "duplicate", "reason": "Same fact as kept R2215"}
+{"id": "R2218", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2219", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2226", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2227", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2228", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2229", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2230", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2231", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2244", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2245", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2246", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2247", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2252", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2253", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2254", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2255", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2256", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2258", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2259", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2260", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2261", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2262", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2263", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2264", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2265", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2271", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2279", "verdict": "keep", "reason": "Script string '>' generates invalid Java"}
+{"id": "R2280", "verdict": "keep", "reason": "Script string '<=' generates invalid Java"}
+{"id": "R2281", "verdict": "keep", "reason": "For-all script expression generated as exists"}
+{"id": "R2293", "verdict": "keep", "reason": "Generated Playwright retries apply on every run"}
+{"id": "R2294", "verdict": "keep", "reason": "clearPrimitiveField backCheck parameter has no effect"}
+{"id": "R2295", "verdict": "keep", "reason": "Generated single-relation helper misses await"}
+{"id": "R2296", "verdict": "keep", "reason": "Generated collection helper misses await"}
+{"id": "R2297", "verdict": "keep", "reason": "Dialog accept helper uses different Ok label"}
+{"id": "R2298", "verdict": "keep", "reason": "Generated locator labels not fully escaped"}
+{"id": "R2299", "verdict": "keep", "reason": "Childless containers emitted as leaves"}
+{"id": "R2300", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2301", "verdict": "keep", "reason": "APP_URL used unescaped in RegExp"}
+{"id": "R2306", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2307", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2308", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2309", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2310", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2311", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2312", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2313", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2314", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2315", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2316", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2317", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2318", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2319", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2320", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2322", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2323", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2324", "verdict": "keep", "reason": "Read rollback applies only to new transactions"}
+{"id": "R2325", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2326", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2327", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2328", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2329", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2330", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2331", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2332", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2333", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2334", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2335", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2336", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2337", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2338", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2341", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2342", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2343", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2344", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2345", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2346", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2347", "verdict": "duplicate", "reason": "Same fact as kept R2348"}
+{"id": "R2348", "verdict": "keep", "reason": "Doc says success follows access checks; code differs"}
+{"id": "R2349", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2350", "verdict": "duplicate", "reason": "Same fact as kept R2348"}
+{"id": "R2351", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2352", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2357", "verdict": "not-platform", "reason": "judo-ng tooling, not application-facing"}
+{"id": "R2358", "verdict": "not-platform", "reason": "judo-ng tooling, not application-facing"}
+{"id": "R2364", "verdict": "not-platform", "reason": "Schema transformation internals"}
+{"id": "R2365", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2372", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2373", "verdict": "not-platform", "reason": "JQL grammar tokenisation internals"}
+{"id": "R2378", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2379", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2381", "verdict": "not-platform", "reason": "judo-ng tooling, not application-facing"}
+{"id": "R2390", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2391", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2392", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2399", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2400", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2401", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2402", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2403", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2406", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2410", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2411", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2413", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2414", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2415", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2416", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2417", "verdict": "not-platform", "reason": "Module index file for judo-ng internals"}
+{"id": "R2418", "verdict": "keep", "reason": "dispatcherMetricsReturned default is false"}
+{"id": "R2419", "verdict": "not-platform", "reason": "Guice builder sample; runtime module internals"}
+{"id": "R2420", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2421", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2429", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2430", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2452", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2453", "verdict": "not-platform", "reason": "Broken anchor link in generated doc, not platform behaviour"}
+{"id": "R2454", "verdict": "not-platform", "reason": "Broken anchor link in generated doc, not platform behaviour"}
+{"id": "R2455", "verdict": "not-platform", "reason": "Conflicting hook import path; not verified against code"}
+{"id": "R2456", "verdict": "keep", "reason": "Refresh API name conflicts between hook docs"}
+{"id": "R2457", "verdict": "keep", "reason": "Debounced autocomplete returns stale or undefined results"}
+{"id": "R2461", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2462", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2463", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2464", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2467", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2468", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2469", "verdict": "keep", "reason": "Embedded relation builder setter name malformed"}
+{"id": "R2470", "verdict": "duplicate", "reason": "Same fact as kept R2469"}
+{"id": "R2471", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2472", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2473", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2474", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2475", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2476", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2477", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2478", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2479", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2481", "verdict": "keep", "reason": "Generated relation remove posts unserialized payload"}
+{"id": "R2482", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2488", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2491", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2492", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2493", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2494", "verdict": "keep", "reason": "Schema merge relation re-sync guard never matches"}
+{"id": "R2495", "verdict": "keep", "reason": "Schema merge supertype check is inverted"}
+{"id": "R2496", "verdict": "not-platform", "reason": "Enum merge fact not verifiable from line text"}
+{"id": "R2498", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2499", "verdict": "duplicate", "reason": "Same fact as kept R2494"}
+{"id": "R2501", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2502", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2503", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2504", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2517", "verdict": "keep", "reason": "Generated FeedbackLevel literal has trailing space"}
+{"id": "R2518", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2519", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2531", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2533", "verdict": "keep", "reason": "Generated translation files are regenerated, not editable"}
+{"id": "R2534", "verdict": "keep", "reason": "Translation keys are flat dot-notation"}
+{"id": "R2535", "verdict": "keep", "reason": "Async validation example destructures wrong shape"}
+{"id": "R2536", "verdict": "keep", "reason": "AppBar interface key used but never defined"}
+{"id": "R2537", "verdict": "keep", "reason": "Generated field translation key convention"}
+{"id": "R2538", "verdict": "not-platform", "reason": "Example logic bug in doc sample, not platform behaviour"}
+{"id": "R2539", "verdict": "not-platform", "reason": "Example logic bug in doc sample, not platform behaviour"}
+{"id": "R2540", "verdict": "duplicate", "reason": "Same fact as kept R2457"}
+{"id": "R2541", "verdict": "keep", "reason": "Framework menu array is mutated by sort"}
+{"id": "R2542", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2543", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2544", "verdict": "not-platform", "reason": "Packaging of judo-ng bundles, not application-facing"}
+{"id": "R2559", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2560", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2561", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2562", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2563", "verdict": "keep", "reason": "judo.sh dumps list is not sorted"}
+{"id": "R2580", "verdict": "not-platform", "reason": "JSL grammar internals; fact not verifiable from line"}
+{"id": "R2585", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2600", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2601", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2604", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2618", "verdict": "keep", "reason": "Unbound signer secret does not mean unsigned identifiers"}
+{"id": "R2619", "verdict": "not-platform", "reason": "Module index file for judo-ng internals"}
+{"id": "R2620", "verdict": "keep", "reason": "Config option rdbmsDaoMarkSelectedRangeItems has no effect"}
+{"id": "R2621", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2622", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2623", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2624", "verdict": "duplicate", "reason": "Same fact as kept R2620"}
+{"id": "R2625", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2626", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2631", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2641", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2642", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2645", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2651", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2652", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2653", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2654", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2655", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2656", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2667", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2668", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2669", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2670", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2671", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2672", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2673", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2674", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2675", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2676", "verdict": "not-platform", "reason": "judo-ng tooling, not application-facing"}
+{"id": "R2691", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2692", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2693", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2694", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2695", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2696", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2697", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2698", "verdict": "not-platform", "reason": "judo-ng tooling, not application-facing"}
+{"id": "R2699", "verdict": "not-platform", "reason": "judo-ng tooling, not application-facing"}
+{"id": "R2708", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2709", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2710", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2711", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2712", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2713", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2716", "verdict": "not-platform", "reason": "Transformation internals for table set selector actions"}
+{"id": "R2717", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2718", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2719", "verdict": "keep", "reason": "Optimistic lock check condition on __version presence"}
+{"id": "R2720", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2731", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2732", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2733", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2734", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2735", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2738", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2739", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2741", "verdict": "keep", "reason": "Generated count() with parameters fails to compile"}
+{"id": "R2742", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2743", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2744", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2745", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2746", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2747", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2749", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2750", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2751", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2760", "verdict": "duplicate", "reason": "Same fact as kept R2279"}
+{"id": "R2761", "verdict": "duplicate", "reason": "Same fact as kept R2280"}
+{"id": "R2762", "verdict": "duplicate", "reason": "Same fact as kept R2281"}
+{"id": "R2763", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2764", "verdict": "not-platform", "reason": "Codegen comment escaping edge case"}
+{"id": "R2772", "verdict": "duplicate", "reason": "Same fact as kept R2299"}
+{"id": "R2773", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}
+{"id": "R2775", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2788", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2789", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2790", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2791", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2792", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2797", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2798", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2799", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2800", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2801", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2802", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2803", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2804", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2805", "verdict": "not-platform", "reason": "Eclipse/EMF plumbing, not application-facing"}
+{"id": "R2819", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2820", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2821", "verdict": "not-platform", "reason": "Metamodel framework internals"}
+{"id": "R2827", "verdict": "not-platform", "reason": "judo-ng plugin internals, no app-facing contract"}
+{"id": "R2828", "verdict": "keep", "reason": "scanDependencies default differs between code and parameter"}
+{"id": "R2829", "verdict": "not-platform", "reason": "judo-ng plugin internals, no app-facing contract"}
+{"id": "R2830", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2831", "verdict": "keep", "reason": "Guice Multibinder registration does not add interceptors"}
+{"id": "R2832", "verdict": "keep", "reason": "Spring @Bean interceptor registration does not run"}
+{"id": "R2833", "verdict": "keep", "reason": "OperationNotFoundException does not exist"}
+{"id": "R2834", "verdict": "keep", "reason": "ValidationException getViolations does not exist"}
+{"id": "R2835", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2836", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2837", "verdict": "keep", "reason": "alwaysRollback test setting does not exist"}
+{"id": "R2838", "verdict": "keep", "reason": "EnvironmentVariableProvider is a class with apply"}
+{"id": "R2839", "verdict": "keep", "reason": "DispatcherFunctionProvider method names differ"}
+{"id": "R2840", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2841", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2842", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2843", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2844", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2845", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2846", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2847", "verdict": "keep", "reason": "@JudoTest default modelName is example"}
+{"id": "R2848", "verdict": "keep", "reason": "resolveDialect is not public"}
+{"id": "R2849", "verdict": "keep", "reason": "tearDown does not close injector or datasource"}
+{"id": "R2850", "verdict": "keep", "reason": "Testkit injection is not annotation driven"}
+{"id": "R2851", "verdict": "keep", "reason": "Artifact caching only with shareInjector"}
+{"id": "R2853", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2854", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2855", "verdict": "not-platform", "reason": "Runtime module internals, no app-facing contract"}
+{"id": "R2857", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2858", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2859", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2860", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2861", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2862", "verdict": "not-platform", "reason": "openspec change or archive record, contributor doc"}
+{"id": "R2863", "verdict": "not-platform", "reason": "Generator internals, no documented app-facing contract"}

@@ -10,7 +10,6 @@ UI: the generated Table of entries on the parent's View page stays read-only. No
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=state-transition-history-entry cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Order {
@@ -41,4 +40,3 @@ classDiagram
   OrderHistoryEntry ..> Status : fromState
   OrderHistoryEntry ..> Status : toState
 ```
-<!-- /mermaid:generated -->

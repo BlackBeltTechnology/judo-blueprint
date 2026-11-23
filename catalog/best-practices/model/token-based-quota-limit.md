@@ -10,8 +10,6 @@ status: single-project
 projects: [park-here]
 evidence: ["park-here:unrecorded"]
 alternatives: []
-fragment: token-based-quota-limit
-diagram: { kinds: [entity, enum, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -73,7 +71,6 @@ A Member entity has two required integer attributes, `maxNormalBookings` (defaul
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=token-based-quota-limit cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Booking {
@@ -102,4 +99,3 @@ classDiagram
   Booking ..> BookingType : type
   Member *-- "*" Booking : bookings
 ```
-<!-- /mermaid:generated -->

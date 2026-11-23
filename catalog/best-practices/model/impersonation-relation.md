@@ -11,8 +11,6 @@ projects: [alba]
 evidence: ["alba:unrecorded"]
 alternatives: []
 related: [actor-context-variable-lookup, actor-based-transfer-projection, audit-event-entity]
-fragment: impersonation-relation
-diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -61,7 +59,6 @@ A Product has `author` and `impersonatingAuthor`, both pointing to Person. Admin
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=impersonation-relation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AdminProduct {
@@ -93,4 +90,3 @@ classDiagram
   Product --> "0..1" Person : author
   Product --> "0..1" Person : impersonatingAuthor
 ```
-<!-- /mermaid:generated -->

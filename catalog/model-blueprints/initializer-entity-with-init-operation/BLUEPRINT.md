@@ -10,14 +10,12 @@ status: established
 projects: [mlszksz-platform, rackinspect, park-here, ubives, workflow-poc, judo-demo-miniworkflow, trivia, itracker, viterra_demo, InterfaceRegister, mjsz, doors-model, ams-model]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "rackinspect:model/rackinspect.model", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "judo-demo-miniworkflow:unrecorded", "trivia:unrecorded", "itracker:unrecorded", "viterra_demo:unrecorded", "InterfaceRegister:unrecorded", "mjsz:unrecorded", "doors-model:unrecorded", "ams-model:unrecorded"]
 alternatives: [platform-configuration-singleton]
-fragment: initializer-entity-with-init-operation
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---
 ## Intent
 
-Give the application one well-known place where reference data is seeded. A static operation named `init` on a dedicated entity is called once per deployment (by the application's startup or deployment routine) and fills the tables that the rest of the model depends on. The entity itself holds no business data and is not edited through the generated actions.
+Give the application one well-known place where reference data is seeded. A static operation named `init` on a dedicated entity is run by the platform on every start of the model bundle in the OSGi runtime, so it must be safe to repeat, and fills the tables that the rest of the model depends on. The entity itself holds no business data and is not edited through the generated actions.
 
 ### Initializer is non-CRUD
 
@@ -34,8 +32,8 @@ The Initializer entity has a marker attribute and a single static operation. The
 ## Constraints
 
 - The entity is non-CRUD: createable, updateable and deleteable are all false in the common form.
-- The init operation is static and marked as an initializer, and it is stateful because it writes data. The platform rule is that an initializer operation is static and takes no input. The platform defines the operation kind; calling it at startup is a project convention.
-- The init operation must not depend on a request user. The project calls it from a startup or deployment routine, not from a signed-in actor, so do not rely on actor or principal variables.
+- The init operation is static and marked as an initializer, and it is stateful because it writes data. The platform rule is that an initializer operation is static and takes no input. The platform defines the operation kind and, in the OSGi runtime, runs every initializer itself when the model component activates, so no project routine has to call it ([platform behavior reference](../../agent-docs/backend/platform-behavior-reference.md#initializer-operations)).
+- The init operation must not depend on a request user. The platform calls it with an empty exchange, not from a signed-in actor, so do not rely on actor or principal variables.
 - A seeding operation that runs on every start must check for existing data first, or it creates duplicates.
 - Built-in operations and interceptors do not wrap `init`, because `init` is a custom operation. Any audit or logging around the seed has to be written inside `init`.
 
@@ -52,7 +50,7 @@ The Initializer entity has a marker attribute and a single static operation. The
 ## When to use
 
 - The application needs reference data (codes, default configuration, an admin account) before users can use it.
-- The seed must run once per deployment, not once per request.
+- The seed must take effect once per deployment, not once per request. The platform reruns an initializer on every start, so the existence guard is what keeps the seed to one effect.
 - Reference data changes over time and needs ordered, repeatable migration steps.
 
 ## When to avoid

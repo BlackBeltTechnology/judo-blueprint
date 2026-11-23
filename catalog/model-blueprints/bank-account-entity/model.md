@@ -12,7 +12,6 @@ Entities have no UI of their own. Pages appear only for the transfer objects and
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=bank-account-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Bank {
@@ -31,4 +30,3 @@ classDiagram
   Partner *-- "*" BankAccount : bankAccounts
   Partner --> "0..1" BankAccount : mainBankAccount
 ```
-<!-- /mermaid:generated -->

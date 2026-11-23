@@ -18,7 +18,6 @@ Transfer objects mirror the hierarchy: each actor sees the subtypes it manages t
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=partner-generalization-hierarchy cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Address {
@@ -82,4 +81,3 @@ classDiagram
   Partner <|-- IndividualPartner
   Partner <|-- OtherPartner
 ```
-<!-- /mermaid:generated -->

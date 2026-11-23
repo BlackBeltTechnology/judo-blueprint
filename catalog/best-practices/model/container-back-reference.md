@@ -10,7 +10,6 @@ status: established
 projects: [rackinspect, skillmatrix-model, mjsz, ams-model, park-here, judo-partner]
 evidence: ["rackinspect:model/rackinspect.model", "skillmatrix-model:unrecorded", "mjsz:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-fragment: container-back-reference
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -49,7 +48,6 @@ Seen in six projects, often for display of parent context on child rows and for 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=container-back-reference cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Order {
@@ -64,4 +62,3 @@ classDiagram
   Order *-- "*" OrderLine : lines
   OrderLine --> "0..1" Order : order
 ```
-<!-- /mermaid:generated -->

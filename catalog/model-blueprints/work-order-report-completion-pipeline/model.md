@@ -29,7 +29,6 @@ Make the offer the access root. Work orders, items, reports and documents are re
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=work-order-report-completion-pipeline cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Attachment {
@@ -110,4 +109,3 @@ classDiagram
   WorkReport ..> WorkReportKind : kind
   WorkReport ..> WorkStatus : workStatus
 ```
-<!-- /mermaid:generated -->

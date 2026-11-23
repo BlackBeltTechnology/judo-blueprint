@@ -11,8 +11,6 @@ projects: [InterfaceRegister]
 evidence: ["InterfaceRegister:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: binary-document-with-link-pattern
-diagram: { kinds: [entity], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -60,7 +58,6 @@ A Specification entity has an optional `document` (a binary type allowing PDF, w
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=binary-document-with-link-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class ApiSpecification {
@@ -75,4 +72,3 @@ classDiagram
   }
   Specification <|-- ApiSpecification
 ```
-<!-- /mermaid:generated -->

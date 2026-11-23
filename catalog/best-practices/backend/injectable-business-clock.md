@@ -2,8 +2,8 @@
 id: injectable-business-clock
 title: Injectable Business Clock with Shared Working-Day Helpers
 description: One injectable clock that every custom operation and interceptor uses for the current time, with a configuration or environment override for tests and demos, and one date service for working-day logic.
-aliases: [fake now, business clock, date service, working day service]
-keywords: [clock, now, time, fake now, override, working day, closed day, date service, deterministic, test]
+aliases: [fake now, business clock, date service, working day service, time zone of now, business clock time zone, testable current time]
+keywords: [clock, now, time, fake now, override, working day, closed day, date service, deterministic, test, defaultZoneId, ZoneId, time zone, systemDefaultZone]
 tags: ["domain:backend", "layer:backend", "project:park-here", "status:single-project"]
 category: operation
 status: single-project
@@ -11,7 +11,6 @@ projects: [park-here]
 evidence: ["park-here:application/common/src/main/java/hu/blackbelt/park/here/common/utils/ParkHereClock.java", "park-here:application/common/src/main/java/hu/blackbelt/park/here/common/impl/DateServiceImpl.java"]
 alternatives: []
 related: [interceptor-derived-statistics-calculation, data-snapshot-versioning]
-fragment: "none: backend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---
@@ -31,14 +30,14 @@ Business rules depend on "now": the next working day, a time window, an expiry. 
 The classes below are example code, not platform API.
 
 1. A clock holder: a final class with static accessors (`today()`, `now()`, `nowUtc()`, `instant()`, `get()` and a UTC variant). It has no OSGi dependency, so common services, custom operations and interceptors all use it the same way. An injected `java.time.Clock` field is the alternative when the caller is a component that tests can construct.
-2. Production: no override, so it is `Clock.systemDefaultZone()`.
+2. Production: no override, in the zone of the platform parameter `defaultZoneId` (default `UTC`), not `Clock.systemDefaultZone()`. Model `Timestamp!now()` uses that zone, so a JVM-zone clock is offset from model expressions whenever the two zones differ.
 3. Test or demo: a system property or an environment variable holds an ISO local date-time (a bare date means start of day). It is read once at class load.
 4. The overridden clock is an offset clock: it starts at the chosen instant and keeps advancing, so timers and audit ordering still work. It does not freeze time.
 5. A value that cannot be parsed logs a warning and falls back to real time. It never throws at class load.
 6. Log a warning whenever the override is active and keep it out of production configuration.
 
 ```java
-Clock system = Clock.systemDefaultZone();
+Clock system = Clock.system(platformZone);   // platformZone = defaultZoneId, not the JVM zone
 Duration offset = Duration.between(Instant.now(), fake.atZone(system.getZone()).toInstant());
 Clock business = Clock.offset(system, offset);   // advancing, not frozen
 LocalDate today = LocalDate.now(business);

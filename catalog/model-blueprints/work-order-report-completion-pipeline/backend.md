@@ -2,7 +2,7 @@
 
 Four operations need backend code: generating the work order, the report's `toDone`, the item's `toDone` and the item's `toWontFix`. They are custom, so the platform runs no interceptor for them. Every guard in this pipeline therefore lives inside the operation body, in the same transaction as the write it protects.
 
-Platform facts: an `OperationCallInterceptor` fires only for built-in operations such as create, update, delete and list. Custom, mapped and script operations are never intercepted (see [agent-docs interceptors](../../agent-docs/backend/interceptors.md)).
+Platform facts: an `OperationCallInterceptor` fires only for built-in operations such as create, update, delete and list. Custom and script operations are never intercepted (see [agent-docs interceptors](../../agent-docs/backend/interceptors.md)).
 
 ## Generating the work order
 

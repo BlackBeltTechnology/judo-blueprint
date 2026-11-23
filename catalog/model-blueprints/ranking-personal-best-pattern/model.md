@@ -20,7 +20,6 @@ The generated ranking view and its table of rows are enough for a plain list. Th
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=ranking-personal-best-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Attempt {
@@ -56,4 +55,3 @@ classDiagram
   Ranking ..> Event : maps
   Ranking o-- "*" PersonalBest : personalBests
 ```
-<!-- /mermaid:generated -->

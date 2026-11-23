@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""content-guard: catalog text is add-or-correct only. Fail on lost headings and pure deletions.
+
+Usage: content-guard [<base-ref>] [--paths catalog/agent-docs] [--json]
+
+Compares the working tree with <base-ref> (default: merge-base of HEAD and origin/develop;
+skipped when that ref is missing). For every changed .md under --paths (companions and
+AGENTS.md excluded, they are regenerated):
+  - FAIL  a `##`/`###` heading of the base is gone (renamed or removed);
+  - FAIL  a diff hunk only deletes lines (no replacement written in the same place);
+  - info  replaced lines (in-place corrections) are listed for the reviewer.
+A deliberate removal of wrong text is a correction: write the corrected sentence in its place.
+Allow a reviewed pure deletion with a line `<path>:<first deleted line number>` in
+tests/content-guard.allow.
+"""
+import json
+import pathlib
+import re
+import subprocess
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[3]
+
+
+def git(*a):
+    return subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True)
+
+
+def main(a):
+    js = "--json" in a
+    paths = a[a.index("--paths") + 1] if "--paths" in a else "catalog/agent-docs"
+    pos = [x for i, x in enumerate(a) if not x.startswith("--") and (i == 0 or a[i - 1] != "--paths")]
+    base = pos[0] if pos else None
+    if not base:
+        if git("rev-parse", "--verify", "-q", "origin/develop").returncode:
+            print("skip: origin/develop not available")
+            return 0
+        base = git("merge-base", "HEAD", "origin/develop").stdout.strip()
+    allow = set()
+    af = ROOT / "tests/content-guard.allow"
+    if af.exists():
+        allow = {l.strip() for l in af.read_text().splitlines() if l.strip() and not l.startswith("#")}
+    files = [f for f in git("diff", "--name-only", base, "--", paths).stdout.split()
+             if f.endswith(".md") and not f.endswith((".agent.md", "AGENTS.md"))]
+    fails, info = [], []
+    for f in files:
+        old = git("show", f"{base}:{f}").stdout
+        if not old:
+            continue  # new file
+        new = (ROOT / f).read_text() if (ROOT / f).exists() else ""
+        if not new:
+            fails.append(f"{f}: file deleted")
+            continue
+        nh = set(re.findall(r"^#{2,3} .+$", new, re.M))
+        for h in re.findall(r"^#{2,3} .+$", old, re.M):
+            if h not in nh:
+                fails.append(f"{f}: heading lost: {h}")
+        d = git("diff", "-U0", base, "--", f).stdout
+        for hunk in re.split(r"^(?=@@ )", d, flags=re.M)[1:]:
+            m = re.match(r"@@ -(\d+)(?:,(\d+))? \+\d+(?:,(\d+))? @@", hunk)
+            dele, add = int(m.group(2) or 1) if m.group(2) != "0" else 0, int(m.group(3) or 1) if m.group(3) != "0" else 0
+            gone = [l[1:] for l in hunk.splitlines()[1:] if l.startswith("-")]
+            if dele and not add:
+                if any(l.strip() for l in gone) and f"{f}:{m.group(1)}" not in allow:
+                    fails.append(f"{f}:{m.group(1)}: pure deletion of {dele} line(s): {gone[0][:90]!r}")
+            elif dele:
+                info.append(f"{f}:{m.group(1)}: {dele} line(s) replaced")
+    if js:
+        print(json.dumps({"base": base, "fail": fails, "replaced": info}))
+    else:
+        for x in info:
+            print("info ", x)
+        for x in fails:
+            print("FAIL ", x)
+        print(f"{len(files)} changed docs vs {base[:10]}: {len(fails)} violations, {len(info)} in-place corrections")
+    return 1 if fails else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

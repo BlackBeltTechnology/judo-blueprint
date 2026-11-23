@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/initializer/ExcelDataImporter.java", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/initializer/InitCustomImplementation.java"]
 alternatives: [init-data-seeding]
 related: [custom-operation-osgi-component, service-delegation-pattern, bulk-json-import-export, init-data-seeding]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

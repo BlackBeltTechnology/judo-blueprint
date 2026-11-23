@@ -1,0 +1,26 @@
+{"id": "R1834", "verdict": "ok", "note": "evidence confirms sentence"}
+{"id": "R1946", "verdict": "ok", "note": "evidence confirms sentence (deps [queue, progress], in-place mutation)"}
+{"id": "R1179", "verdict": "ok", "note": "SubThemeWrapper filter lacks closing paren"}
+{"id": "R0150", "verdict": "ok", "note": "scaleXs in sm-md..up-xl lineHeight confirmed"}
+{"id": "R1606", "verdict": "ok", "note": "setReadable in OWNER_WRITE branch confirmed"}
+{"id": "R1072", "verdict": "ok", "note": "helper result not returned, confirmed"}
+{"id": "R1228", "verdict": "ok", "note": "branch unreachable, confirmed"}
+{"id": "R1224", "verdict": "ok", "note": "&&/|| precedence confirmed"}
+{"id": "R1231", "verdict": "ok", "note": "same fact as R1224"}
+{"id": "R1688", "verdict": "ok", "note": "calculateTableAutocompleteRows returns 10"}
+{"id": "R1720", "verdict": "ok", "note": "label === null vs undefined initial state"}
+{"id": "R1719", "verdict": "ok", "note": "alignItems=\"vertical\" confirmed"}
+{"id": "R1836", "verdict": "ok", "note": "selector-only hook, rowCount=rowsPerPage confirmed"}
+{"id": "R1838", "verdict": "ok", "note": "rowCount=rowsPerPage confirmed"}
+{"id": "R1841", "verdict": "ok", "note": "uploadCallback! confirmed"}
+{"id": "R0908", "verdict": "ok", "note": "onValueChange(values, [], [option]) confirmed"}
+{"id": "R0913", "verdict": "applied-now", "note": "Sentence was not in the doc (R1843 bullet covers SingleRelationInput); added TextWithTypeAhead empty-deps fact from TextWithTypeAhead.tsx.hbs:74-80"}
+{"id": "R0910", "verdict": "ok", "note": "effective options memo deps confirmed"}
+{"id": "R1631", "verdict": "fixed", "note": "removed unconfirmed consequence (\"unsaved values saved\") and workaround; kept owner.current fact"}
+{"id": "R1154", "verdict": "ok", "note": "data.<relationName> read vs storeDiff(dataElement.name) confirmed"}
+{"id": "R1180", "verdict": "ok", "note": "owner cloned from render-time data confirmed"}
+{"id": "R0610", "verdict": "ok", "note": "deps [handleResult] confirmed"}
+{"id": "R0611", "verdict": "ok", "note": "data[0] without empty check confirmed"}
+{"id": "R1784", "verdict": "ok", "note": "startsWith(pageNamePrefix) confirmed"}
+{"id": "R2716", "verdict": "fixed", "note": "removed inferred effect and unconfirmed workaround; kept: setTargetPageDefinition never called"}
+{"id": "R2206", "verdict": "ok", "note": "nested ButtonGroup scan confirmed"}

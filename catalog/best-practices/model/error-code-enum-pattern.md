@@ -12,8 +12,6 @@ evidence: ["trivia:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrec
 alternatives: []
 related: [unmapped-transfer-dto, enum-state-machine]
 first_seen: 2026-03-04
-fragment: error-code-enum-pattern
-diagram: { kinds: [entity, enum, transfer, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -62,7 +60,6 @@ The enumeration is model data; adding a reason needs a model change and a regene
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=error-code-enum-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class BusinessError {
@@ -84,4 +81,3 @@ classDiagram
   }
   BusinessError ..> ErrorCode : code
 ```
-<!-- /mermaid:generated -->

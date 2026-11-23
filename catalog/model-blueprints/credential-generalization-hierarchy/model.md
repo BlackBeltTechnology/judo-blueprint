@@ -16,7 +16,6 @@ Generated UI pages follow from the entities. Keep the View and Table pages for e
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=credential-generalization-hierarchy cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Account {
@@ -47,4 +46,3 @@ classDiagram
   Credential <|-- GoogleCredential
   Credential <|-- MetaCredential
 ```
-<!-- /mermaid:generated -->

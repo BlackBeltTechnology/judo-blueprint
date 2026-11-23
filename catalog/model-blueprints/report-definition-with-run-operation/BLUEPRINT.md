@@ -10,8 +10,6 @@ status: single-project
 projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
 alternatives: []
-fragment: report-definition-with-run-operation
-diagram: { kinds: [entity, enum, operation], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

@@ -1,0 +1,359 @@
+{"id": "R1961", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R1962", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R1963", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R1964", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R1965", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R1966", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R1967", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R1973", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1974", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1975", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1976", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1977", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1978", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1979", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1980", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1982", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1983", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1984", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1985", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1986", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1987", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R1997", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R1998", "verdict": "not-platform", "reason": "Generator annotation detail, not app-facing"}
+{"id": "R1999", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2000", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2001", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2007", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2008", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2009", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2010", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2011", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2012", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2013", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2014", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2015", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2016", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2017", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2018", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2022", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2023", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2024", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2028", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2050", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2051", "verdict": "not-platform", "reason": "Swagger servlet ETag internals, not app-facing"}
+{"id": "R2062", "verdict": "not-platform", "reason": "Maven plugin internals, not app-facing"}
+{"id": "R2065", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R2066", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R2068", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R2092", "verdict": "not-platform", "reason": "Repo file-type description, not behaviour"}
+{"id": "R2094", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2095", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2096", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2097", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2098", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2099", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2100", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2101", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2102", "verdict": "not-platform", "reason": "Workflow plumbing detail, not app-facing"}
+{"id": "R2103", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2106", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2107", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2126", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2127", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2140", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2141", "verdict": "keep", "reason": "Generated listOf operations per access, app-visible"}
+{"id": "R2142", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2143", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2144", "verdict": "not-platform", "reason": "Judo-ng build Java version, not platform"}
+{"id": "R2145", "verdict": "not-platform", "reason": "Judo-ng build Java version, not platform"}
+{"id": "R2149", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2150", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2151", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2152", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2153", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2154", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2155", "verdict": "not-platform", "reason": "Test fixture dialect detail, not platform"}
+{"id": "R2156", "verdict": "not-platform", "reason": "Test fixture dialect detail, not platform"}
+{"id": "R2157", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2158", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2165", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2175", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2189", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2194", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2213", "verdict": "not-platform", "reason": "Starter repo CI count, not platform"}
+{"id": "R2214", "verdict": "not-platform", "reason": "Starter repo CI count, not platform"}
+{"id": "R2220", "verdict": "not-platform", "reason": "Eclipse EMF plumbing, not platform"}
+{"id": "R2221", "verdict": "not-platform", "reason": "Eclipse EMF plumbing, not platform"}
+{"id": "R2222", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2223", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2224", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2225", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2232", "verdict": "not-platform", "reason": "Expression validator internals"}
+{"id": "R2233", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2234", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2235", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2236", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2237", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2238", "verdict": "not-platform", "reason": "Expression validator internals"}
+{"id": "R2239", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2240", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2241", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2242", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2243", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2248", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2249", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2250", "verdict": "not-platform", "reason": "Model build script detail, not platform"}
+{"id": "R2251", "verdict": "not-platform", "reason": "Model build script detail, not platform"}
+{"id": "R2257", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2266", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2267", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2268", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2269", "verdict": "not-platform", "reason": "Template repo doc count, not behaviour"}
+{"id": "R2270", "verdict": "not-platform", "reason": "Template repo doc line count"}
+{"id": "R2273", "verdict": "not-platform", "reason": "Codegen spec count, not app-facing"}
+{"id": "R2274", "verdict": "not-platform", "reason": "Codegen internal signature"}
+{"id": "R2275", "verdict": "not-platform", "reason": "Codegen helper call detail, not app-facing"}
+{"id": "R2290", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2291", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2292", "verdict": "not-platform", "reason": "Generated README wording nit, not behaviour"}
+{"id": "R2302", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2303", "verdict": "not-platform", "reason": "Generated README wording nit, not behaviour"}
+{"id": "R2304", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2321", "verdict": "keep", "reason": "Schema CLI credential handling, operator-facing"}
+{"id": "R2339", "verdict": "not-platform", "reason": "OSGi startup wiring internals"}
+{"id": "R2340", "verdict": "not-platform", "reason": "OSGi bus creation internals"}
+{"id": "R2353", "verdict": "keep", "reason": "Flutter build property name for generated frontends"}
+{"id": "R2354", "verdict": "keep", "reason": "Flutter build property name for generated frontends"}
+{"id": "R2356", "verdict": "not-platform", "reason": "Maven plugin internals, not app-facing"}
+{"id": "R2359", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2360", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2361", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2362", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2363", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2366", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2367", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2368", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2369", "verdict": "not-platform", "reason": "JQL IDE file registration, not app-facing"}
+{"id": "R2374", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2375", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2376", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2377", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2380", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2382", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2383", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2384", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2385", "verdict": "not-platform", "reason": "Eclipse plugin manifest detail"}
+{"id": "R2386", "verdict": "not-platform", "reason": "Eclipse Tycho build detail"}
+{"id": "R2387", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2388", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2389", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2393", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2394", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2395", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2396", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2397", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2398", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2404", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2405", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2407", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2408", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2409", "verdict": "not-platform", "reason": "Dead ETL file; no app-visible behaviour"}
+{"id": "R2412", "verdict": "not-platform", "reason": "Index row for dead actorBehaviour.etl file"}
+{"id": "R2422", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2423", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2424", "verdict": "keep", "reason": "Modeller-visible validation severity"}
+{"id": "R2425", "verdict": "keep", "reason": "Modeller-visible condition validation rules"}
+{"id": "R2426", "verdict": "not-platform", "reason": "Transformation guard detail, not app-facing"}
+{"id": "R2427", "verdict": "not-platform", "reason": "Transformation guard detail, not app-facing"}
+{"id": "R2431", "verdict": "not-platform", "reason": "Transformation guard detail, not app-facing"}
+{"id": "R2433", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2434", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2435", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2436", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2437", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2438", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2439", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2440", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2441", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2442", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2443", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2444", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2445", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R2449", "verdict": "keep", "reason": "JSL expression function signature, modeller-facing"}
+{"id": "R2451", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2458", "verdict": "not-platform", "reason": "Repackaged OSGi bundles, not platform"}
+{"id": "R2459", "verdict": "not-platform", "reason": "Repackaged OSGi bundles, not platform"}
+{"id": "R2460", "verdict": "not-platform", "reason": "Repackaged OSGi bundles, not platform"}
+{"id": "R2465", "verdict": "not-platform", "reason": "Repackaged OSGi bundles, not platform"}
+{"id": "R2466", "verdict": "not-platform", "reason": "Archived proposal narrative, not app-facing"}
+{"id": "R2480", "verdict": "keep", "reason": "CLI GraphQL scalar types, app-visible"}
+{"id": "R2483", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2484", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2485", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2486", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2487", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2489", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2490", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2497", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2500", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2505", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2506", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2507", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2508", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2509", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2511", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2512", "verdict": "not-platform", "reason": "Template README nit on TS client file"}
+{"id": "R2514", "verdict": "not-platform", "reason": "Template README nit on generated headers"}
+{"id": "R2520", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2521", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2522", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2523", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2525", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2526", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2527", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2528", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2530", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2532", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2545", "verdict": "not-platform", "reason": "Template repo doc count, not behaviour"}
+{"id": "R2546", "verdict": "not-platform", "reason": "Template repo doc count, not behaviour"}
+{"id": "R2547", "verdict": "not-platform", "reason": "Template repo doc count, not behaviour"}
+{"id": "R2548", "verdict": "not-platform", "reason": "Template repo doc line count"}
+{"id": "R2549", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2550", "verdict": "not-platform", "reason": "Repo doc link error, not behaviour"}
+{"id": "R2551", "verdict": "not-platform", "reason": "Repo doc link error, not behaviour"}
+{"id": "R2552", "verdict": "not-platform", "reason": "Template helper naming detail"}
+{"id": "R2554", "verdict": "not-platform", "reason": "Planning doc in template repo"}
+{"id": "R2555", "verdict": "not-platform", "reason": "Planning doc in template repo"}
+{"id": "R2556", "verdict": "not-platform", "reason": "Planning doc in template repo"}
+{"id": "R2557", "verdict": "not-platform", "reason": "Planning doc in template repo"}
+{"id": "R2558", "verdict": "not-platform", "reason": "Planning doc in template repo"}
+{"id": "R2564", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R2565", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R2566", "verdict": "not-platform", "reason": "Docs site or contributor docs, not platform"}
+{"id": "R2573", "verdict": "keep", "reason": "JSL relation modifiers, modeller-facing"}
+{"id": "R2581", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2582", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2583", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2586", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2587", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2588", "verdict": "not-platform", "reason": "Maintainer build script, not platform"}
+{"id": "R2589", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2590", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2591", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2592", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2593", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2594", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2595", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2596", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2597", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2598", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2602", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2603", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2605", "verdict": "not-platform", "reason": "Validation-engine enum detail, internal"}
+{"id": "R2606", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2607", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2608", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2609", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2610", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2611", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2613", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2614", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2615", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2616", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2617", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2628", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2629", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2630", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2632", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2633", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2634", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2635", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2636", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2637", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2638", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2639", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2640", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2643", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2644", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2657", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2658", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2659", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2660", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2661", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2662", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2663", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2664", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2665", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2666", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2677", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2678", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2679", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2680", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2681", "verdict": "not-platform", "reason": "Eclipse update site packaging"}
+{"id": "R2682", "verdict": "not-platform", "reason": "Maintainer build profile, not platform"}
+{"id": "R2683", "verdict": "not-platform", "reason": "JQL IDE file registration, not app-facing"}
+{"id": "R2684", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2685", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2686", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2687", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2689", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2690", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2700", "verdict": "not-platform", "reason": "Maven plugin internals, not app-facing"}
+{"id": "R2701", "verdict": "not-platform", "reason": "Workflow plugin param detail, not app-facing"}
+{"id": "R2702", "verdict": "not-platform", "reason": "Workflow plugin param detail, not app-facing"}
+{"id": "R2704", "verdict": "not-platform", "reason": "Workflow plugin docs, not app-facing"}
+{"id": "R2705", "verdict": "not-platform", "reason": "Workflow plugin docs, not app-facing"}
+{"id": "R2706", "verdict": "not-platform", "reason": "Workflow plugin docs, not app-facing"}
+{"id": "R2707", "verdict": "not-platform", "reason": "Workflow plugin docs, not app-facing"}
+{"id": "R2715", "verdict": "not-platform", "reason": "Workflow plugin internals"}
+{"id": "R2721", "verdict": "not-platform", "reason": "OSGi wiring internals, not app-facing"}
+{"id": "R2722", "verdict": "not-platform", "reason": "OSGi reference wiring, not app-facing"}
+{"id": "R2723", "verdict": "keep", "reason": "OSGi deployment config for REST application path"}
+{"id": "R2724", "verdict": "not-platform", "reason": "OSGi reference wiring, not app-facing"}
+{"id": "R2725", "verdict": "duplicate", "reason": "Same fact as R2723: path read from properties"}
+{"id": "R2726", "verdict": "not-platform", "reason": "OSGi shutdown internals, not app-facing"}
+{"id": "R2727", "verdict": "keep", "reason": "Serialization config key names, app-visible"}
+{"id": "R2729", "verdict": "not-platform", "reason": "OSGi JSON module wiring, not app-facing"}
+{"id": "R2730", "verdict": "not-platform", "reason": "OSGi provider tracking internals"}
+{"id": "R2736", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2737", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2740", "verdict": "not-platform", "reason": "Repo script usage note, not platform"}
+{"id": "R2752", "verdict": "not-platform", "reason": "Test-only assertion detail in codegen repo"}
+{"id": "R2753", "verdict": "not-platform", "reason": "Test-only assertion detail in codegen repo"}
+{"id": "R2754", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2755", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2756", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2758", "verdict": "not-platform", "reason": "Codegen call path detail, not verified app-visible"}
+{"id": "R2770", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2774", "verdict": "not-platform", "reason": "Template repo docs or tooling"}
+{"id": "R2776", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2777", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2778", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2780", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2781", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2782", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2783", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2784", "verdict": "not-platform", "reason": "Archived or proposed change text, not platform"}
+{"id": "R2785", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2786", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2787", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2793", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2795", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2796", "verdict": "not-platform", "reason": "Eclipse plugin or IDE plumbing, not platform"}
+{"id": "R2806", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2807", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2808", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2809", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2810", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2811", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2812", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2813", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2814", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2815", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2816", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2817", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2818", "verdict": "not-platform", "reason": "Metamodel module internals, not app-facing"}
+{"id": "R2826", "verdict": "not-platform", "reason": "Spring starter repo build or docs"}
+{"id": "R2852", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}
+{"id": "R2856", "verdict": "not-platform", "reason": "Framework internals, not app-facing"}

@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, itracker, alba, mlszksz-platform, viterra_demo, bhs-global-operation, mjsz, judo-demo-miniworkflow, ubives, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:application/karaf-features/src/main/feature/feature.xml", "itracker:unrecorded", "alba:unrecorded", "mlszksz-platform:application/karaf-features/src/main/feature/feature.xml", "viterra_demo:unrecorded", "bhs-global-operation:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -38,7 +37,7 @@ The baseline layout (model, sdk, internal, app, interceptors, rest, schema, dock
 - Integration-client bundles that isolate third-party libraries: SOAP, XSD-generated JAXB clients, Google Ads, email provider wrappers ([[external-api-adapter-pattern]]).
 - Keycloak bundles: admin client, magic-link authenticator, login theme ([[multi-tenant-keycloak-realm]], [[magic-link-authentication]]).
 - An `integration-test` module, and `generator-overrides` for pom and feature fragments.
-- Extra third-party bundles (Tika, PDFBox, CXF, Handlebars, JODConverter) are added to the Karaf feature.
+- Extra third-party bundles (CXF, JODConverter) are added to the Karaf feature. Tika and PDFBox already come with the generated feature, and Handlebars with the e-mail feature, so reuse them ([runtime libraries](../../agent-docs/deployment/osgi-runtime-services.md#libraries-already-in-the-runtime)).
 - When a bundle injects services from another custom bundle (for example interceptors using an app-level service), start order and package exports must allow it.
 
 ## Rationale

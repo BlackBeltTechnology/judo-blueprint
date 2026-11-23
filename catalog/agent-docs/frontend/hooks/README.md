@@ -1,6 +1,9 @@
 ---
 title: Frontend Hook System Overview
 description: Pandino-based hook system of the generated React frontend: hook categories, .default scaffolds, registration patterns and .generator-ignore guidance.
+aliases: [frontend customization, hook registration, custom hooks, pandino services, generator ignore file, customize react frontend]
+keywords: [TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY, registerService, application-customizer.tsx, .generator-ignore, .default, usePrincipal, useViewData, generateActionsHook, TableRowHighlightingHook, ColumnCustomizerHook]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Hook System Overview
@@ -24,14 +27,14 @@ Hooks are **customization points** in the generated code where you can inject yo
 
 ### Why Hooks?
 
-**Benefits:**
+#### Benefits
 - ✅ **No generated code edits** - All customizations in `src/custom/`
 - ✅ **Upgrade-safe** - Regeneration doesn't break customizations
 - ✅ **Type-safe** - Full TypeScript support
 - ✅ **Modular** - Each hook handles specific functionality
 - ✅ **Maintainable** - Clear separation of concerns
 
-**Alternative (Not Recommended):**
+#### Alternative (Not Recommended)
 - ❌ Edit generated files → Build fails on checksum mismatch
 - ❌ Add a `.default` stub or a brand-new file to `.generator-ignore` → Lose generator updates / pointless noise. See One Rule below.
 - ❌ Template overrides → Complex to maintain
@@ -65,22 +68,22 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ### Key Components
 
-**Interface Keys:**
+#### Interface Keys
 - String identifiers for each customizable feature
 - Example: `TABLE_ROW_HIGHLIGHTING_HOOK_INTERFACE_KEY`
 - Exported from the module that owns the hook (for example `~/theme/table-row-highlighting`, `~/layout/Footer`) or from the generated `~/containers/<path>/customization` module for container hooks; there is no `~/generated` barrel
 
-**Service Properties:**
+#### Service Properties
 - Configuration objects: `{ component, column, page }`
 - Filter which components the hook applies to
 - Example: `{ component: 'ServiceActivityForm', column: 'name' }`
 
-**Hook Implementation:**
+#### Hook Implementation
 - Must be React hooks for DI support
 - Follow TypeScript interfaces
 - Return functions or configuration objects
 
-**Precedence:**
+#### Precedence
 - Page-level hooks override container-level hooks
 - More specific hooks override general hooks
 
@@ -314,11 +317,11 @@ Adding purely-custom files to `.generator-ignore` is noise; remove such entries.
 
 ### When to Use
 
-**Add to .generator-ignore:**
+#### Add to .generator-ignore
 - ✅ Generated files outside `src/custom/` that you **edited directly** (not preferred): theme files such as `src/theme/palette.ts`, generated containers
 - ✅ Custom files you add outside `src/custom/` that collide with generated paths
 
-**Don't add to .generator-ignore:**
+#### Don't add to .generator-ignore
 - ❌ Your own files under `src/custom/` (not generated; only `application-customizer.tsx`, `index.tsx`, `custom-element-types.ts` and `interfaces.ts` there are generated)
 - ❌ `.default` scaffolds and generated files you have not modified
 
@@ -373,6 +376,8 @@ cp src/custom/hooks/pages/registerFooPageActionsHook.ts.default src/custom/hooks
 # ❌ Do not edit the .default file in place
 ```
 
+A copied scaffold is never removed by `generate`. When the model element behind it disappears, the `.default` file is dropped but your copy stays and still imports keys that no longer exist, so the frontend build fails (for example `TS2305: Module has no exported member`). Delete or update the copy when you remove the element.
+
 ### 3. Organize Custom Code
 
 ```
@@ -380,7 +385,7 @@ src/custom/
 ├── application-customizer.tsx
 ├── hooks/
 │   ├── tableRowHighlighting.tsx
-│   ├── usePrincipal.tsx
+│   ├── useCustomState.tsx
 │   └── validation.tsx
 ├── components/
 │   ├── ActivityChart.tsx
@@ -416,7 +421,7 @@ pnpm run dev
 
 ### "Hook not executing"
 
-**Check registration:**
+#### Check registration
 ```typescript
 // Verify in application-customizer.tsx
 console.log('Registering hook');
@@ -427,7 +432,7 @@ context.registerService<TableRowHighlightingHook>(
 );
 ```
 
-**Verify component name:**
+#### Verify component name
 ```bash
 # Find correct component name in generated code
 grep -rn "component=" src/containers | head   # component names used in hook service filters
@@ -435,7 +440,7 @@ grep -rn "component=" src/containers | head   # component names used in hook ser
 
 ### "File overwritten after build"
 
-**Diagnose first — do NOT blindly add to `.generator-ignore`:**
+#### Diagnose first — do NOT blindly add to `.generator-ignore`
 - If `src/custom/hooks/myHook.tsx` is a brand-new file you wrote and the generator never emits at that path → case 3, no entry needed. The "overwrite" suggests something else (build output, formatter, git). Investigate.
 - If the generator DOES emit a stub at that path and you hand-edited it → case 1:
   ```bash
@@ -445,7 +450,7 @@ grep -rn "component=" src/containers | head   # component names used in hook ser
 
 ### "Type errors with hook interface"
 
-**Import correct types:**
+#### Import correct types
 ```typescript
 // ✅ Correct: import from the module that defines the hook
 import type { TableRowHighlightingHook } from '~/theme/table-row-highlighting';

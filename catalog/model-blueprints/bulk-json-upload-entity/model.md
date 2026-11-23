@@ -12,7 +12,6 @@ Pages come from the transfer objects and access points a project defines over th
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=bulk-json-upload-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Category {
@@ -33,4 +32,3 @@ classDiagram
   Question --> "0..1" Upload : upload
   Upload --> "*" Question : questions
 ```
-<!-- /mermaid:generated -->

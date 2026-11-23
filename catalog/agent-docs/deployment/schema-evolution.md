@@ -1,6 +1,9 @@
 ---
 title: Database Schema Evolution
 description: Incremental schema migration with judo-rdbms-schema: generate, review scripts, execute, Docker migration, rollback and production strategy.
+aliases: [database migration, schema migration, liquibase migration, migrate database, rollback migration, docker schema migration]
+keywords: [judo-rdbms-schema, Liquibase, judo.properties, app_name, migration, Docker, rollback]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Database Schema Evolution Guide
@@ -76,20 +79,30 @@ Schema evolution manages these database changes safely and incrementally.
 
 ### When No Manual Step Is Needed
 
-Adding a **stored** member (for example a new attribute) to an entity needs **no** manual migration or `schema-upgrade` run for a fresh or development database: the generated Liquibase changelog (`application/model/target/generated-resources/model/<app>-liquibase_postgresql.changelog.xml`) already contains the new column. A manual schema-upgrade step is only relevant for a persistent database that already holds data, and for genuinely non-additive or backward-incompatible changes (renames, type changes, removals). For a local persistent PostgreSQL database `./judo.sh schema-upgrade` generates the difference against the running database and applies it.
+Adding a **stored** member (for example a new attribute) to an entity needs **no** manual migration or `schema-upgrade` run for a fresh database (empty or newly created, so Liquibase creates everything): the generated Liquibase changelog (`application/model/target/generated-resources/model/<app>-liquibase_postgresql.changelog.xml`) already contains the new column. For an existing database with rows, the generated column has no default, so existing rows get NULL, not the attribute's model default; for any other value, write a backfill changeset (see [migration backfill](../../best-practices/backend/migration-backfill-default-where-null.md)). **An existing database is not migrated automatically:** if the model changed since the data was created, startup logs `There are RDBMS model changes which have not been applied to database` and the services that wait for the schema do not start, so a persistent development database (for example a kept PostgreSQL volume) needs the migration too. Run it, or discard the database and volume. Never skip the version check (`ignoreVersionCheck`) to get past this. A manual schema-upgrade step is relevant for a persistent database that already holds data, and for genuinely non-additive or backward-incompatible changes (renames, type changes, removals). For a local persistent PostgreSQL database `./judo.sh schema-upgrade` generates the difference against the running database and applies it. `judo.sh` takes the schema module path from `schema_dir` (default: the model directory, `model_dir`), so when the schema module is not directly under that directory set `schema_dir=<dir>` in `judo.properties` or the environment, for example `schema_dir=application ./judo.sh schema-upgrade`.
 
-**⚠️ IMPORTANT: When Schema Migration is Required**
+The line `DATABASE HAVE TO BE UPDATED!` that `generate` logs at error level lists pending database operations from the model compatibility check. It is a notice, not a build failure: the build still ends with `BUILD SUCCESS`, and a migration is needed before the new model runs against that database.
+
+At startup, when the database already holds a stored model version that the built model does not match, the database prehook retries the check and then logs `ERROR ... Could not find compatible schema model`, with `There are RDBMS model changes which have not been applied to database` as the cause. The schema is then not marked ready, so services that wait for it do not start. It is a startup log, not a build failure: run the schema upgrade for that database (see the migration rules below). If the check itself cannot run, the log shows the same error with a `NoClassDefFoundError` for `hu.blackbelt.epsilon.runtime.execution.contexts.EolExecutionContext`, and a schema upgrade does not help. Known issue: the RDBMS model bundle imports the Epsilon runtime packages as optional, and the `judo-meta-rdbms` feature does not install the `epsilon-runtime` feature, so the compatibility check fails when the database already holds a model version. Workaround: add the `epsilon-runtime` feature to the application's Karaf boot features, restart, and check that the `Could not find compatible schema model` line is gone. Where to add it: in a generated project create `application/generator-overrides/karaf-features/src/main/feature/feature.xml.extra-bundles.fragment.hbs` containing `<feature>epsilon-runtime</feature>`, run `./judo.sh generate`, and rebuild the Karaf package. The generated `application/karaf-features/src/main/feature/feature.xml` then lists the feature at the `extra-bundles` slot; the feature repository is already reachable through the platform SDK feature repository the generated feature file imports. The fragment is a generator override, so it survives regeneration (see [Karaf customization via fragments](../../best-practices/backend/karaf-customization-via-fragments.md)). An empty database does not reach this check: the prehook creates the model store and the schema on start.
+
+#### Fresh databases run only the model changelog
+
+A fresh database runs only the generated model changelog: hand-written changesets in the migration version folder (including `updateDataAfterIncremental`) run only when an existing database is upgraded, and there is no hook that runs a changeset on creation. Objects the model cannot express (for example indexes on foreign-key columns, which the generator never creates) therefore have to be applied to every new database by a script outside the model, run after the first start created the tables (for example `psql -f <script>.sql`).
+
+#### Which Model Changes Need a Migration
+
+##### ⚠️ IMPORTANT: When Schema Migration is Required
 
 Schema migration is **ONLY necessary when entity types change** in the model. The JUDO platform generates SQL schema from entity type definitions.
 
-**Schema migration IS required when:**
+##### Schema migration IS required when
 - ✅ Adding/removing/modifying entity types (mapped entities)
 - ✅ Adding/removing attributes on entity types
 - ✅ Changing attribute types (String → Integer, etc.)
 - ✅ Adding/removing relationships between entities
 - ✅ Modifying entity inheritance hierarchy
 
-**Schema migration is NOT required when:**
+##### Schema migration is NOT required when
 - ❌ Changing transfer object types (view models, DTOs)
 - ❌ Modifying actors or access points
 - ❌ Changing UI layouts or forms
@@ -104,7 +117,7 @@ Schema migration is **ONLY necessary when entity types change** in the model. Th
 
 **Purpose**: CLI tool and Docker image for database migrations
 
-**Key Features**:
+#### Key Features
 - **Automatic migration script generation** from model versions
 - **Incremental migrations** - migrate from any version to any version
 - **Manual migration support** - custom SQL when needed
@@ -164,7 +177,7 @@ Sometimes automatic generation cannot handle complex migrations:
 - Splitting/merging columns
 - Custom data fixes
 
-**Write the data-migration changesets** (`updateDataBeforeIncremental` / `updateDataAfterIncremental`) in the generated version folder under `application/schema/migration/`. Entity tables are named `T_ENTITIES_<NAME>` and columns `C_<NAME>` (check the generated changelog for the exact names):
+**Write the data-migration changesets** (`updateDataBeforeIncremental` / `updateDataAfterIncremental`) in the generated version folder under `application/schema/migration/`. Entity tables are named `T_<PACKAGE>_<ENTITY>` and columns `C_<ATTRIBUTE>` (check the generated changelog for the exact names; `T_ENTITIES_<NAME>` in the examples means entities in package `entities`). To insert a hand-written changeset, run the plugin goals `judo-rdbms-schema:generate` and then `judo-rdbms-schema:execute`; `judo.sh schema-upgrade` runs both in one step and cannot take a changeset in between:
 
 ```sql
 -- Custom data migration
@@ -186,12 +199,18 @@ The schema generator classifies model changes as **identical**, **applyable** (c
 - `ignoreReview` defaults to `false` for `generate` and to `true` for the Maven `execute` / `apply` goals; `./update.sh ... --ignoreReview`-style pipelines set it explicitly.
 - Several accumulated per-snapshot migration folders (for example `130051 -> 175110` plus hand-written steps) can be consolidated: regenerate one continuous folder from the two model files (oldest base model -> current model), move the hand-written steps into it and delete the intermediate folder, so production goes through one continuous step. An exit with `DATABASE HAVE TO BE UPDATED` during this generate step is part of the normal flow.
 - A project can keep many steps (for example 18 steps with changesets `00`..`08`); only the non-empty data-migration changesets carry developer knowledge.
+- Incremental migrations name each primary key constraint `PK_<column>` without the table name. When an incremental migration adds a primary key column, two entities whose key columns have the same SQL name get the same constraint name, which can make the migration fail; give such columns distinct names in the model and regenerate.
+- A unique constraint over several fields is generated as one single-column unique constraint per field (all with the constraint's name), so the database does not enforce the combined uniqueness. Add the combined unique index in a manual migration script.
+- A unique constraint over several fields produces one `DropUniqueConstraint` per field, all with the same name, so the changelog repeats the drop statement.
+- The incremental DbCheckup step emits a `TableExists` precondition for every table, including tables the same migration creates. Review the precondition list before applying the changelog.
+- Known issue: backup table names are not built the same way in every incremental step. The post-check and backup-delete steps truncate the table SQL name to the table name limit minus the backup prefix and underscore, with a plain substring rather than the abbreviation the full path uses (`Rdbms2LiquibaseHelper.java:72`). The pre-check step does not truncate. For table names longer than that limit, the pre-check looks for a backup name that the other steps never create. Workaround: before running the changelog, check the `BACKUP_` names in the script for long table names.
+- The incremental Zeta path's "previous model contains" and "new model contains" checks are placeholders that return true for any element that has a container, and the previous-model wrapper returns the current model. The changelog is therefore not strictly limited to real differences; review it for drops and for missing constraints on new elements.
 
 In managed pipelines the same flow is exposed as a script, for example `./update.sh --version <v> --schema generate|execute --ignoreReview`, where the runner snapshots a database backup (such as a Neon backup branch `backup-<ts>`) before `execute` and rollback is `--schema restore --branch backup-<ts>`.
 
 ### Step 4: Test Migration
 
-**Always test migrations before production!**
+#### Always test migrations before production!
 
 ```bash
 # 1. Start with old version database
@@ -251,6 +270,8 @@ git checkout v1.1.0
 ## Migration Commands
 
 ### Maven-Based Migrations
+
+When `dbUser` or `dbPassword` is missing for PostgreSQL, the `judo-rdbms-schema` CLI prints `user is mandatory for postgresql` or `password is mandatory for postgresql`, and the Maven goals log the same text as an error. Neither stops; both continue with the missing value as the credential.
 
 #### Apply Fresh Schema
 
@@ -449,7 +470,7 @@ In `application/schema/pom.xml`:
 
 **Problem**: Cannot find model version in Maven repository
 
-**Solution**:
+#### Solution
 ```bash
 # Ensure model is built and installed
 cd application/model
@@ -463,7 +484,7 @@ mvn dependency:tree | grep <app>-model
 
 **Problem**: `migration/` directory is empty after generate
 
-**Solution**:
+#### Solution
 - Check both models are valid and different (`Update model is not defined` means `updateModel` is missing)
 - Verify model artifacts exist in local Maven repo (`~/.m2/repository`)
 - Check for errors in Maven output
@@ -476,7 +497,7 @@ mvn dependency:tree | grep <app>-model
 
 **Problem**: Migration executed partially, database is in inconsistent state
 
-**Solution**:
+#### Solution
 ```bash
 # Check Liquibase changelog lock
 SELECT * FROM databasechangeloglock;
@@ -491,7 +512,7 @@ UPDATE databasechangeloglock SET locked = false;
 
 **Problem**: Migration tries to change column type incompatibly
 
-**Solution**:
+#### Solution
 - Create manual migration script
 - Convert data explicitly:
   ```sql
@@ -512,7 +533,7 @@ UPDATE databasechangeloglock SET locked = false;
 
 **Problem**: `connection refused` or `unknown host`
 
-**Solution**:
+#### Solution
 - Use `host.docker.internal` instead of `localhost` (Docker Desktop)
 - Use `--network host` for Docker run
 - Ensure database is accessible from container network

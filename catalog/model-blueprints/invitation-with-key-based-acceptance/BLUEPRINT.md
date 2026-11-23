@@ -10,8 +10,6 @@ status: emerging
 projects: [ubives, mlszksz-platform]
 evidence: ["ubives:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [invitation-with-recipients]
-fragment: invitation-with-key-based-acceptance
-diagram: { kinds: [entity, enum, transfer, operation], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---
@@ -38,6 +36,7 @@ The Invitation entity is non-CRUD (not createable, updateable or deleteable thro
 - The password and its confirmation are transient parameters, not stored attributes.
 - The key must be random and unguessable. A short or sequential key lets anyone accept invitations.
 - Accept and cancel are custom operations. The platform runs interceptors only for built-in operations (create, update, delete, list, refresh and the like), never for custom, MAPPED or script operations, so any audit, permission check or side effect must be written inside the operation. Hiding a button protects nothing.
+- The actor is public only when `anonymous` is set and no principal is mapped; an actor with a mapped principal needs a token even when flagged anonymous ([access points](../../agent-docs/model/esm_metamodel/accesspoint.md)).
 - The anonymous actor reaches the invitation only through the link transfer object. The key and expiration checks are the only protection, and they run in the operation, not in the platform.
 - The invitation has an expiration. An expired invitation must be refused at accept time.
 
@@ -46,6 +45,7 @@ The Invitation entity is non-CRUD (not createable, updateable or deleteable thro
 - **Accept for a new user.** The invitation type is USER. Acceptance creates a user with the password from the accept parameter.
 - **Accept for an existing account.** The invitation type is ACCOUNT. Acceptance adds the existing account to the organization and needs no new password.
 - **Re-invite supersedes a pending invitation.** Inviting an address that already has a pending invitation deletes the old one and creates the new one, so the old key stops working. An invitation the invitee already verified is not superseded; the new invite is refused. See the backend guidance.
+- **Invitee must be a Keycloak user.** The generated realm leaves self sign-up off (see `multi-tenant-keycloak-realm`), so an anonymous actor cannot accept the key without an account. The model has no setting for self sign-up, so enable it on the realm through the Keycloak admin console or admin API. Then let the invitee register first, then accept the key as the signed-in actor.
 - **Cancel.** The inviter or an administrator cancels a pending invitation. Cancel deletes it.
 
 ## When to use

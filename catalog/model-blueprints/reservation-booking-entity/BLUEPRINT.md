@@ -10,8 +10,6 @@ status: emerging
 projects: [park-here, reserve-app]
 evidence: ["park-here:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: reservation-booking-entity
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

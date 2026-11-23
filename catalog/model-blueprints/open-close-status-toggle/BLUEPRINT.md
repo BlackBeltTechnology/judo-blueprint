@@ -10,8 +10,6 @@ status: emerging
 projects: [trivia, ams-model, skillmatrix-model]
 evidence: ["trivia:unrecorded", "ams-model:unrecorded", "skillmatrix-model:unrecorded"]
 alternatives: []
-fragment: open-close-status-toggle
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

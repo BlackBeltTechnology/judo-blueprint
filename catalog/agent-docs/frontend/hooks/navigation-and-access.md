@@ -1,6 +1,9 @@
 ---
 title: Frontend Navigation and Access Hooks
 description: Redirect service, access filter, hotkeys, navigation interceptor and navigation helpers of the generated React frontend.
+aliases: [redirect deep link, access denied screen, keyboard shortcuts, navigation interceptor, sticky query parameters, route helpers, hide menu item, unsaved changes warning]
+keywords: [REDIRECT_HOOK_INTERFACE_KEY, RedirectServiceHook, ACCESS_FILTER_COMPONENT_INTERFACE_KEY, AccessFilterComponentProps, NAVIGATION_INTERCEPTOR_INTERFACE_KEY, NavigationInterceptorHook, decorateNavigation, useJudoNavigation, useNavigationConfirmation, registerGlobalHotkeys, hiddenBy, enabledBy]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Navigation and Access Control Hooks
@@ -78,6 +81,18 @@ Access control applies to:
 <!-- Field widget controlled -->
 <attributes name="salary" hiddenBy="not self.canViewSalary" enabledBy="self.canEditSalary"/>
 ```
+
+### Profile and Bottom Menu Entries
+
+The generated profile and bottom-menu entries are inconsistent:
+
+- The Profile item is generated whenever `application.authentication` is set, but it is wired only to `openProfilePage`, which is passed only when `application.profilePage` is also set. Configure a profile page.
+- The logout button exists only inside the `application.profilePage` block of the drawer profile. Applications with authentication but no profile page get no logout button there.
+- `doLogout` is defined in the mobile profile popover but never rendered, so the popover offers no logout.
+- When the profile page is not opened in a dialog, the drawer profile action calls `routeTo<Page>()`, but only `calculateNavigationRoute` is imported from `~/routes`.
+- The "Other" popover opens with items from index 3 (`handleOtherPopupOpen`), but `itemOther()` starts at index 4, so the two splits disagree.
+
+Workaround: configure a profile page and customise the bottom menu or drawer where needed.
 
 ## RedirectServiceHook
 
@@ -443,6 +458,8 @@ Use generated navigation helpers for type-safe routing.
 
 `useJudoNavigation()` is exported from `~/components`. It returns `{ navigate, clearNavigate, externalNavigate, navigateBackTo, back, isBackDisabled, setTitle }`. `navigate(to)` takes a react-router `To` (a path string or `{ pathname, search }`) and applies the registered navigation interceptor; the generated route helpers from `~/routes` (for example `routeToServiceEntityView(...)`) build the paths.
 
+`useJudoNavigation()` keeps a breadcrumb stack, not the browser history. `navigate(to)` pushes the current page onto the stack, `back()` pops it, `navigateBackTo(item)` truncates the stack to an item, `clearNavigate(to)` empties the stack and goes to `to`, and `externalNavigate(url)` sets `window.location`. `isBackDisabled` is true when the stack is empty, and `setTitle(title)` sets the label of the current page (a missing title logs a warning). With an empty stack, `back()` goes to the dashboard.
+
 ```typescript
 import { useJudoNavigation } from '~/components';
 
@@ -552,7 +569,7 @@ export class DefaultApplicationCustomizer implements ApplicationCustomizer {
 
 ### "Hotkeys not working"
 
-**Check event listener:**
+#### Check event listener
 ```typescript
 useEffect(() => {
   const handler = (e: KeyboardEvent) => {
@@ -565,7 +582,7 @@ useEffect(() => {
 
 ### "Access filter not showing"
 
-**Verify registration:**
+#### Verify registration
 ```typescript
 context.registerService<FC<AccessFilterComponentProps>>(
   ACCESS_FILTER_COMPONENT_INTERFACE_KEY,
@@ -576,7 +593,7 @@ context.registerService<FC<AccessFilterComponentProps>>(
 
 ### "Navigation not redirecting"
 
-**Check navigate call:**
+#### Check navigate call
 ```typescript
 const navigate = useNavigate();
 console.log('Navigating to:', path);

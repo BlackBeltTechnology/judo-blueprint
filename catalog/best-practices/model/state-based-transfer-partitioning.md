@@ -10,8 +10,6 @@ status: single-project
 projects: [viterra_demo]
 evidence: ["viterra_demo:unrecorded"]
 alternatives: []
-fragment: state-based-transfer-partitioning
-diagram: { kinds: [entity, transfer, actor, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -62,7 +60,6 @@ A Report entity has a `status` (Pending, Submitted), a title and owned stock lin
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=state-based-transfer-partitioning cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class ClosedReport {
@@ -92,4 +89,3 @@ classDiagram
   OpenReport ..> Report : maps
   Report *-- "*" Stock : stocks
 ```
-<!-- /mermaid:generated -->

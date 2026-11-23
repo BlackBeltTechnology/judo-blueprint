@@ -1,0 +1,10 @@
+{"id":"apply-findings::B56","verdict":"ok","note":"feature.xml cxf-jaxrs only, no SSE in sources; cxf-version 3.6.8 in pom.xml:34"}
+{"id":"apply-findings::KC10","verdict":"ok","note":"DownloadServlet has no maxSize (UploadServlet has); dispatcher maps download to /<app>/download; frontend getFilePath('download') with X-Token"}
+{"id":"apply-findings-webshop::WR16-9","verdict":"ok","note":"utils.ts.hbs:15 typeof string; JudoStored.ts.hbs __version?: number"}
+{"id":"apply-findings::B31","verdict":"ok","note":"Sandbox.model seeds String 255, Text 250, Phone 20, URL 1024, Email 255 with regExp; placeholder replaced"}
+{"id":"apply-findings::KC12","verdict":"ok","note":"GetVariableFunctionTransformer: result by type (string, enum, custom, date...), receiver TypeNameExpression, 'Type is not valid for environment variable' at line 144; the proposal's String-only claim was wrong and is not in the file"}
+{"id":"bp-check::B3@5","verdict":"ok","note":"InitScriptExecutor GREEDY refs to persistence, scripts, SDK ops, identity manager; empty TreeMap exchange; no principal set in the class"}
+{"id":"bp-check::G134@1","verdict":"fixed","note":"Partner end is named after the source type (the type declaring the member), not the target; createTwoWayRelation sets relBack.target=source. Reworded, example neutralised to b/a"}
+{"id":"apply-findings::R2299","verdict":"ok","note":"VisualElementHelper: childless node is a leaf with id/label (plus binary/filter keys); container/table/tab uses _id/_label/tab only when it has children"}
+{"id":"bp-check::B10@5","verdict":"ok","note":"JclDsl.xtext statement rules have no throw/fault/service form; generator emits no faults or service calls"}
+{"id":"apply-findings-webshop::WR16-13","verdict":"fixed","note":"Logged cause is 'There are RDBMS model changes...' from the retried checkModelIsIdentical; schema not marked ready. Added the cause and the not-ready effect; also corrected the older 'startup fails' sentence in the same section"}

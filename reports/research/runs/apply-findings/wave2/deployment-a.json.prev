@@ -1,0 +1,86 @@
+[
+ {
+  "id": "R1603",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/generator-plugins.md",
+  "text": "resetChecksums builds the checksum removers but never runs them, so it resets nothing.",
+  "evidence": "runtime/judo-generator-commons:judo-generator-commons:src/main/java/hu/blackbelt/judo/generator/commons/ModelGenerator.java:958"
+ },
+ {
+  "id": "R1604",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/generator-plugins.md",
+  "text": "cleanGeneratedFromChecksum builds the checksum removers but never runs them, so it removes no generated files.",
+  "evidence": "runtime/judo-generator-commons:judo-generator-commons:src/main/java/hu/blackbelt/judo/generator/commons/ModelGenerator.java:987"
+ },
+ {
+  "id": "R1605",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/generator-plugins.md",
+  "text": "synchronizeGitignore calls the checksum remover instead of the gitignore synchronizer, so the managed .gitignore block is not updated.",
+  "evidence": "runtime/judo-generator-commons:judo-generator-commons:src/main/java/hu/blackbelt/judo/generator/commons/ModelGenerator.java:1016"
+ },
+ {
+  "id": "R1607",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/generator-plugins.md",
+  "text": "A .gitignore START marker without an END marker drops every following line of the file.",
+  "evidence": "runtime/judo-generator-commons:judo-generator-commons:src/main/java/hu/blackbelt/judo/generator/commons/GitIgnoreSynchronizer.java:108"
+ },
+ {
+  "id": "R1726",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "import_postgres sorts the dump list through a pipeline assignment that changes nothing, so dumps are not sorted before import.",
+  "evidence": "template/judo-jsl-fullstack-karaf-project-template:judo-jsl-fullstack-karaf-project-template:judo-jsl-fullstack-karaf-project-template-root/src/main/resources/judo.sh.hbs:332"
+ },
+ {
+  "id": "R2031",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "The start command accepts only -w and --skip-watch-bundles; the documented -W flag is not parsed.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/judo.sh.hbs:210"
+ },
+ {
+  "id": "R2032",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "The java_compiler start option is documented but judo.sh never reads it.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/judo.sh.hbs:59"
+ },
+ {
+  "id": "R2036",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "install_maven_wrapper is defined but never called, so maven-wrapper.properties keeps the judo-ng Nexus URL.",
+  "evidence": "template/judo-esm-fullstack-project-template:judo-esm-fullstack-project-template:judo-esm-fullstack-project-template-root/src/main/resources/judo.sh.hbs:363"
+ },
+ {
+  "id": "R2089",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/generator-plugins.md",
+  "text": "The systemVariables parameter of the JSL generator Maven plugin reads environment variables instead of system properties.",
+  "evidence": "models/judo-meta-jsl:judo-meta-jsl:generator-maven-plugin/src/main/java/hu/blackbelt/judo/meta/jsl/generator/maven/plugin/JslDslProjectGenerateMojo.java:162"
+ },
+ {
+  "id": "R0170",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "judo.sh import_postgres: the dumps variable assignment emits no output, so the piped xargs/sort step receives no dump list.",
+  "evidence": "runtime/judo-tatami-tests:models/RelationTest/judo.sh:332"
+ },
+ {
+  "id": "R0481",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "judo.sh install_bundles pipes newline-delimited find output into xargs -0, so frontend POM paths are not found.",
+  "evidence": "runtime/judo-tatami-tests:models/ApplicationSelectionTest/judo.sh:674"
+ },
+ {
+  "id": "R2828",
+  "kind": "triage",
+  "file": "catalog/agent-docs/deployment/build-process.md",
+  "text": "scanDependencies is initialised to false in code while its Maven @Parameter default is true.",
+  "evidence": "judo-spring-maven-plugin:judo-spring-maven-plugin/src/main/java/hu/blackbelt/judo/spring/maven/plugin/TransformerWorkflowMojo.java:98"
+ }
+]

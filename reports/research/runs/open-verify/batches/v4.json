@@ -1,0 +1,105 @@
+{
+ "batch": "v4",
+ "files": [
+  "catalog/agent-docs/backend/patterns-and-best-practices.md",
+  "catalog/agent-docs/model/ui-authoring-guide.md",
+  "catalog/model-blueprints/contact-info-composition-cluster/BLUEPRINT.md",
+  "catalog/model-blueprints/invitation-with-key-based-acceptance/frontend.md",
+  "catalog/agent-docs/deployment/generator-plugins.md",
+  "catalog/agent-docs/integration-testing/getting-started.md",
+  "catalog/model-blueprints/capacity-reservation-cluster/backend.md",
+  "catalog/agent-docs/deployment/build-process.md"
+ ],
+ "items": [
+  {
+   "id": "apply-findings::AU8",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "heading": "## 5. Pattern: Implementing a Custom Data Type",
+   "text": "The `AsmModel` service carries `name=<model name>` instead, so its `@Reference` target is `(name=<app>)`. The code sample below must use `(name=YourApplicationName)` for the `AsmModel` reference.",
+   "replaces": "(the same property the `AsmModel` service carries).",
+   "evidence": "runtime__judo-platform/judo-platform-services/judo-services-core-osgi/src/main/java/hu/blackbelt/judo/services/core/osgi/TrackerBasedComponentActivator.java:70-71,208-209; runtime__judo-platform/judo-platform-services/judo-services-datatypemanager-osgi/src/main/java/hu/blackbelt/judo/services/datatypemanager/osgi/DataTypeManagerActivator.java:80; runtime__judo-platform/judo-platform-services/judo-services-job/src/main/java/hu/blackbelt/judo/services/job/JobActivator.java:83"
+  },
+  {
+   "id": "apply-findings::B15",
+   "kind": "research",
+   "file": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+   "heading": "#### Accessing the Logged-in User in Java",
+   "text": "1.  Inject the `hu.blackbelt.judo.dispatcher.api.VariableResolver` service using `@Reference`. The service is registered once per model with `judo.model.name=<model name>`; add `target = \"(judo.model.name=<app>)\"` to the `@Reference` when the runtime hosts more than one model.",
+   "replaces": "1.  Inject the `hu.blackbelt.judo.dispatcher.api.VariableResolver` service using `@Reference`.",
+   "evidence": "runtime__judo-platform/judo-platform-services/judo-services-dispatcher-osgi/src/main/java/hu/blackbelt/judo/services/dispatcher/osgi/DispatcherServiceActivator.java:71-82,145; runtime__judo-platform/judo-platform-services/judo-services-dispatcher-osgi/src/main/java/hu/blackbelt/judo/services/dispatcher/osgi/component/DefaultVariableResolverComponent.java:32-55"
+  },
+  {
+   "id": "apply-findings::G030",
+   "kind": "research",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "### Decision cheat sheet",
+   "text": "An `OperationForm` may sit directly in a view. The validation rule `ActionContainerSameWithActionDefinition` requires the view to be the page container of the operation's owning transfer object (or of its action definition); it does not require an `ActionGroup`.",
+   "replaces": "",
+   "evidence": "models__judo-meta-ui/model/src/main/epsilon/validations/action.evl:3-9; models__judo-meta-ui/model/src/main/java/hu/blackbelt/judo/meta/ui/validation/rules/ActionValidations.java"
+  },
+  {
+   "id": "apply-findings::G033",
+   "kind": "research",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "## 10. Operations wiring",
+   "text": "A UI child that has no position in its ESM container's `components` list stops the generator with `Missing position parameter(s)`. Place every widget in the ESM with `move <fqn> --index n` before generation, so the widget takes its position in the sorted children.",
+   "replaces": "",
+   "evidence": "runtime__judo-tatami-client/judo-tatami-esm2ui-etl/src/main/epsilon/transformations/ui/esmToUi.etl:74-82,100-117"
+  },
+  {
+   "id": "bp-check::B30@1",
+   "kind": "research",
+   "file": "catalog/model-blueprints/contact-info-composition-cluster/BLUEPRINT.md",
+   "heading": "Constraints",
+   "text": "The primary link is an association and cascades nothing: deleting the primary contact clears the parent's primary link and leaves the parent in place. The link is optional (0..1) and has no reverse cascade delete, so the contact delete is not refused.",
+   "replaces": "The primary link is an association and cascades nothing.",
+   "evidence": "runtime__judo-runtime-core/judo-runtime-core-dao-core/src/main/java/hu/blackbelt/judo/runtime/core/dao/core/processors/DeletePayloadDaoProcessor.java:206-213, 248"
+  },
+  {
+   "id": "bp-check::B41@4",
+   "kind": "research",
+   "file": "catalog/model-blueprints/invitation-with-key-based-acceptance/frontend.md",
+   "heading": "Frontend guidance",
+   "text": "A list call returns only a count when the request sends a non-blank `X-Judo-CountRecords` header. A row action is hidden per row with the button's hidden condition; the generated table evaluates it for each row.",
+   "replaces": "",
+   "evidence": "template__judo-psm-generator-jaxrs/judo-psm-generator-jaxrs-api/src/main/resources/rest/api/rest.service.operation.fragment.hbs:68-69, template__judo-psm-generator-jaxrs/judo-psm-generator-jaxrs-impl/src/main/resources/rest/impl/rest.service.impl.java.hbs:27-28, template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/components/table/index.tsx.hbs:259. Not settled: the boolean combo's 'unknown' state (trinarylogiccombo.hbs shows no unknown option) and route params."
+  },
+  {
+   "id": "apply-findings::NG0071",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/generator-plugins.md",
+   "heading": "RDBMS naming prefixes",
+   "text": "each can be overridden. An empty value removes the prefix; any other value, including `-`, is used as written.",
+   "replaces": "each can be overridden, and `-` suppresses the prefix.",
+   "evidence": "runtime__judo-tatami-base/judo-tatami-asm2rdbms-etl/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/etl/Asm2Rdbms.java:114-126 (defaults), runtime__judo-tatami-base/judo-tatami-asm2rdbms-etl/src/main/epsilon/operations/asm/class.eol:12, runtime__judo-tatami-base/judo-tatami-asm2rdbms-etl/src/main/epsilon/operations/asm/reference.eol:23-56 (prefix concatenated as written), runtime__judo-tatami-base/judo-tatami-asm2rdbms/src/main/java/hu/blackbelt/judo/tatami/asm2rdbms/zeta/Asm2RdbmsHelper.java:277; no '-' handling found in asm2rdbms sources"
+  },
+  {
+   "id": "apply-findings::R2849",
+   "kind": "research",
+   "file": "catalog/agent-docs/integration-testing/getting-started.md",
+   "heading": "Pattern 3: Manual Transaction Control",
+   "text": "`JudoRuntimeFixture.tearDown()` only rolls back a transaction that is still open. It does not close the injector or the datasource, so close the datasource yourself (for example in `@AfterEach`) when a test manages its own datasource.",
+   "replaces": "",
+   "evidence": "runtime__judo-runtime-core/judo-runtime-core-guice-testkit/src/main/java/hu/blackbelt/judo/runtime/core/guice/testkit/fixture/JudoRuntimeFixture.java:359-364; catalog/agent-docs/integration-testing/interceptor-testing.md:96 (consistent)"
+  },
+  {
+   "id": "bp-check::B15@2",
+   "kind": "research",
+   "file": "catalog/model-blueprints/capacity-reservation-cluster/backend.md",
+   "heading": "Variant seen in practice",
+   "text": "binds the interceptor to the correct model. The `VariableResolver` `@Reference` also carries `target = \"(judo.model.name=App)\"`, so it binds the resolver registered for this model.",
+   "replaces": "binds the interceptor to the correct model.",
+   "evidence": "template__judo-psm-generator-jaxrs/judo-psm-generator-jaxrs-osgi/src/main/resources/rest/osgi/rest.service.osgi.java.hbs:47 (per-model target pattern); runtime__judo-platform/judo-platform-services/judo-services-dispatcher-osgi/src/main/java/hu/blackbelt/judo/services/dispatcher/osgi/component/DefaultVariableResolverComponent.java:49-56"
+  },
+  {
+   "id": "apply-findings-webshop::WR16-5",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "`judo.sh build` flag reference",
+   "text": "`-KA` (skip Karaf) does not rebuild the `karaf-offline` package. `./judo.sh start` re-extracts that package on every start, so `build -F -KA` after Java changes leaves the running backend on the old custom operations. Drop `-KA` (or run `build -M -F`) before `start`.",
+   "replaces": "",
+   "evidence": "target/judo-ng-read/wt/template__judo-esm-fullstack-project-template/judo-esm-fullstack-project-template-root/src/main/resources/judo.sh.hbs:67 (help example), :619-623 (start re-extracts karaf-offline tar.gz into .karaf); agent-docs/deployment/build-process.md:229,231"
+  }
+ ]
+}

@@ -1,6 +1,9 @@
 ---
 title: Debugging and Monitoring Guide
 description: Hot deployment, logging, X-Exchange-Id correlation, remote debugging and health checks.
+aliases: [debug backend, hot deploy, application logs, remote debug karaf, health check endpoint, slow operation timing]
+keywords: [KARAF_DEBUG, JAVA_DEBUG_PORT, X-Exchange-Id, RequestExchangeId, ExchangeIdDecorator, MetricsCollector, log:set, JaxRsApplicationsReady, MODEL_CHANGED, @Slf4j]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Debugging, Monitoring, and Performance Guide
@@ -85,8 +88,10 @@ JUDO automatically enriches every log message with a request-specific context, w
 | `operation` | The fully qualified name of the JUDO operation being executed. |
 | `user` | The username from the OAuth 2.0 access token. |
 
+`RequestExchangeId` stays set on a worker thread after the request ends, so a later log line on a reused thread can carry an earlier request's id. Use the `X-Exchange-Id` response header to correlate requests.
+
 ### Request Correlation with `X-Exchange-Id`
-Two built-in CXF interceptors correlate a request across client and server logs. `ExchangeIdDecorator` (incoming, `Phase.RECEIVE`) assigns a UUID to the CXF exchange (key `exchangeId`) and publishes it in the SLF4J MDC as `RequestExchangeId`. `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header; its fault handler delegates to the normal handler, so error responses carry the header as well. Quote that header value when you search server logs for a failing request. It is the same id the CXF logging feature uses.
+Two built-in CXF interceptors correlate a request across client and server logs. `ExchangeIdDecorator` (incoming, `Phase.RECEIVE`) assigns a UUID to the CXF exchange (key `exchangeId`) and publishes it in the SLF4J MDC as `RequestExchangeId`. `ExchangeIdResponseWriter` (outgoing, `Phase.POST_LOGICAL`) echoes it as the `X-Exchange-Id` response header, and only when `ExchangeIdDecorator` has set an id on the exchange; its fault handler delegates to the normal handler, so error responses carry the header as well. Quote that header value when you search server logs for a failing request. It is the same id the CXF logging feature uses. The decorator never removes the MDC entry, so on a pooled thread a log line can show an earlier request's id. For a failing request, match the `X-Exchange-Id` header, not the id on nearby log lines.
 
 ### Log Messages Emitted by the Dispatcher
 Only these dispatcher messages exist in the runtime: `Operation {} completed in {} ms` (`DefaultDispatcher`, per operation) and `Unable to rollback transaction` (`TransactionalOperationCall`). Do not search for other strings such as "Dispatching operation" or "Resolved actor"; they are not logged. To see operation names add your own interceptor that logs `AsmUtils.getOperationFQName(operation)` (see [Interceptors](interceptors.md)).
@@ -165,7 +170,7 @@ JUDO platform health checks (`Components`, `Bundles`, the per-model `<modelname>
 - **Auth**: HTTP Basic, `karaf` / `karaf`.
 - **Drill-down**: `…/components/<component.name>.json` returns the component's bundle, configuration policy, and every `Reference …` line — each `unsatisfied (reference)` row points at exactly the service the SCR is waiting on.
 
-**Component states to recognise:**
+##### Component states to recognise
 
 | State | Meaning | Action |
 |---|---|---|
@@ -208,7 +213,7 @@ curl -s -u karaf:karaf "http://localhost:8181/system/console/components.json" \
 
 Many JUDO "missing component" failures are wiring failures along a 3-tier chain JUDO uses to instantiate platform services *per model*. Understanding the chain is the difference between a 30-second diagnosis and an hour of grepping.
 
-**Tier 1 — Model deployers publish model services and fire events.**
+##### Tier 1 — Model deployers publish model services and fire events.
 
 - Bundles: `judo-services-karaf-model-deployer`, `judo-services-model-bundle-deployer`, `judo-services-application-index`.
 - Discover `*-internal` model bundles, register `EsmModel` / `PsmModel` / `AsmModel` OSGi services with property `name=<modelName>`, post `EventAdmin` event on topic `hu/blackbelt/judo/Event/MODEL_CHANGED` with `eventType=DEPLOY|UNDEPLOY`, `modelName=<modelName>`.
@@ -293,7 +298,7 @@ When a per-model health check reports `Missing platform components: [X]`:
 
 6. **Verify Tier 1**: are `judo-services-karaf-model-deployer` and `judo-services-model-bundle-deployer` bundles `Active`? Is the `<app>-internal` bundle active? Without these, no model services exist and no `MODEL_CHANGED` events are posted.
 
-**Endpoints used in the checklist:**
+##### Endpoints used in the checklist
 
 | Endpoint | Purpose |
 |---|---|
@@ -348,6 +353,10 @@ For live drill-down (single component, current state), keep using the `*.json` e
 ## Performance Monitoring
 
 JUDO uses **Apache Karaf Decanter** to collect and store application metrics, which can be visualized with **Grafana**.
+
+The SELECT and COUNT executors emit scoped metrics `select-prepare`, `select-processing`, `select-query`, `count-prepare` and `count-query`.
+
+The Jetty metrics bundle registers an `InstrumentedHandler` with no delegate handler, so it records no HTTP request metrics.
 
 ### Pattern: Measuring Code Performance
 You can measure the execution time of specific blocks of your custom code to identify performance bottlenecks.

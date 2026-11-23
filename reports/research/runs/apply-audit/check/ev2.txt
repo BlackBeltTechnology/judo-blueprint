@@ -1,0 +1,156 @@
+./judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/DefaultDispatcher.java
+==RC
+    public Optional<Payload> convert(final Map<String, Object> input, final Map<String, Object> validationContext) throws ValidationException {
+        if (input == null) {
+            return Optional.empty();
+        }
+
+        final Map<String, Object> rootContext = new TreeMap<>(validationContext);
+
+        rootContext.put(GLOBAL_VALIDATION_CONTEXT, new HashMap<String, Object>());
+
+        final List<ValidationResult> validationResults = new ArrayList<>(validateIdentifier(transferObjectType, input, rootContext));
+        final Payload payload = Payload.asPayload(input);
+
+        try {
+            PayloadTraverser.builder()
+                    .predicate((reference) -> (Boolean) validationContext.getOrDefault(VALIDATE_FOR_CREATE_OR_UPDATE_KEY, VALIDATE_FOR_CREATE_OR_UPDATE_DEFAULT)
+                            ? asmUtils.getMappedReference(reference).map(e -> !e.isDerived()).orElse(false)
+                            : !(Boolean) validationContext.getOrDefault(NO_TRAVERSE_KEY, NO_TRAVERSE_DEFAULT))
+                    .processor((instance, ctx) -> processPayload(instance, ctx, validationResults, validationContext, rootContext))
+                    .build()
+                    .traverse(payload, transferObjectType);
+        } catch (IllegalArgumentException ex) {
+            log.debug("Invalid payload", ex);
+        }
+
+        if (throwValidationException && !validationResults.isEmpty()) {
+            throw new ValidationException("Validation failed", Collections.unmodifiableCollection(validationResults));
+        } else {
+            validationContext.put(VALIDATION_RESULT_KEY, validationResults);
+        }
+
+        return Optional.of(payload);
+    }
+
+    private void processPayload(Payload instance, PayloadTraverser.PayloadTraverserContext ctx, Collection<ValidationResult> validationResults, Map<String, Object> validationContext, Map<String, Object> feedbackContext) {
+        final String containerLocation = (String) validationContext.getOrDefault(LOCATION_KEY, "");
+        final Map<String, Object> currentContext = new TreeMap<>(validationContext);
+==VAL
+            boolean isTransient = asmUtils.getMappedReference(referenceItem.getReference()).map(e -> e.isTransient()).orElse(false);
+            boolean isAggregation = referenceItem.getReference().isContainment();
+            boolean isIdentifierPresented = referenceItem.getValue().containsKey(identifierProvider.getName());
+            return !isDerived && (isTransient || isContainment || isAggregation || !isIdentifierPresented);
+        });
+
+        try {
+            PayloadTraverser.builder()
+                            .predicate(checkReferenceTraversable)
+                            .referenceItemTravesePredicate(referenceItemPredicate)
+                            .processor((instance, ctx) -> processPayload(instance, ctx, validationResults, validationContext))
+                            .build()
+                            .traverse(payload, transferObjectType);
+        } catch (IllegalArgumentException ex) {
+            log.debug("Invalid payload", ex);
+        }
+
+        if (throwValidationException && !validationResults.isEmpty()) {
+            throw new ValidationException("Validation failed", Collections.unmodifiableCollection(validationResults));
+        } else {
+            validationContext.put(VALIDATION_RESULT_KEY, validationResults);
+8:        final String containerLocation = (String) validationContext.getOrDefault(LOCATION_KEY, "");
+10:        currentContext.put(LOCATION_KEY, (containerLocation.isEmpty() ? "" : containerLocation + "/") + ctx.getPathAsString());
+40:        final String containerLocation = (String) validationContext.getOrDefault(LOCATION_KEY, "");
+42:        attributeValidationContext.put(LOCATION_KEY, containerLocation + (containerLocation.isEmpty() || containerLocation.endsWith("/") ? "" : ".") + attribute.getName());
+53:        final String containerLocation = (String) validationContext.getOrDefault(LOCATION_KEY, "");
+55:        currentContext.put(LOCATION_KEY, containerLocation + (containerLocation.isEmpty() || containerLocation.endsWith("/") ? "" : ".") + reference.getName());
+97:                    currentItemContext.put(LOCATION_KEY, currentContext.get(LOCATION_KEY) + "[" + idx + "]");
+==VC
+                        inputParameter.getOwner().getEReferenceType(),
+                        inputParameter.getInput(), queryCustomizer);
+            } else {
+                checkArgument(bound, "Operation must be bound");
+                result = serviceContext.getDao().createNavigationInstanceAt(
+                        (Serializable) inputParameter.getInstance().get(serviceContext.getIdentifierProvider().getName()),
+                        inputParameter.getOwner(),
+                        inputParameter.getInput(), queryCustomizer);
+            }
+        }
+
+        markedIdRemover.process(result);
+        return callInterceptorUtil.postCallInterceptors(inputParameter, result);
+    }
+
+    @Builder
+    @Getter
+    public static class ValidateCreateCallPayload {
+        @NonNull
+        EReference owner;
+
+                callInterceptorUtil.preCallInterceptors(
+                        ValidateUpdateCallPayload.builder()
+                                .owner(owner)
+                                .instance(Payload.asPayload(exchange))
+                                .input(payload)
+                                .build());
+
+        Payload result = null;
+        if (callInterceptorUtil.shouldCallOriginal()) {
+            result =  serviceContext.getDao().update(
+                    inputParameter.getOwner(),
+                    inputParameter.getInput(), queryCustomizer);
+        }
+
+        markedIdRemover.process(result);
+        return callInterceptorUtil.postCallInterceptors(inputParameter, result);
+    }
+
+
+    @Builder
+    @Getter
+import java.util.Map;
+
+@RequiredArgsConstructor
+public class MarkedIdRemover {
+
+    @NonNull
+    private final String key;
+
+    public void process(final Payload payload) {
+        processAndCollect(payload, null, false);
+    }
+
+    public void unmark(final Payload payload) {
+        processAndCollect(payload, null, true);
+    }
+
+    public void processAndCollect(final Payload payload, Collection<Serializable> collected) {
+        processAndCollect(payload, collected, false);
+    }
+
+    private void processAndCollect(final Payload payload, Collection<Serializable> collected, boolean markerOnly) {
+        if (payload.containsKey("__$created")) {
+            payload.remove("__$created");
+
+            if (!markerOnly) {
+                @SuppressWarnings("unchecked")
+==SF
+
+    public static StringFilter like(String value) {
+        return new StringFilter(StringOperation.LIKE, value);
+    }
+
+    public static StringFilter ilike(String value) {
+        return new StringFilter(StringOperation.ILIKE, value);
+    }
+
+    @Override
+    public StringOperation getOperation() {
+        return operation;
+    }
+
+    @Override
+    public String getValueAsString() {
+        return '"' + value.replace("\"", "\\\"") + '"';
+    }
+}

@@ -1,6 +1,9 @@
 ---
 title: ESM to UI Mapping: Tables & Navigation
 description: ESM to UI Mapping: Tables & Navigation: ESM to UI model mapping reference for the generated React frontend.
+aliases: [table columns mapping, table filters, row operations, menu items mapping, navigation menu model, relation column table, esm annotations frontend]
+keywords: [ui:DataColumn, ui:DataFilter, ui:TableOperation, ui:RelationColumn, ui:MenuItemAccess, ui:MenuItemOperation, ui:MenuItemGroup, filterOperationType, confirmationType, generateActionsHook, generateVisualPropertiesHook, TabularReferenceField]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # ESM to UI Mapping: Tables & Navigation
@@ -35,10 +38,10 @@ A column within a table displaying a single attribute for each row.
 | `ui:DataColumn` | `hidden` | Hidden state | Column not displayed |
 | `ui:DataColumn` | `align` | Text alignment | `LEFT`/`CENTER`/`RIGHT` |
 | `ui:DataColumn` | `isPinnable` | Allow pinning | Pin column to left/right |
-| `ui:DataColumn` | `formatValue` | Apply formatting | Format numeric values |
+| `ui:DataColumn` | `formatValue` | Apply formatting | Format numeric values: with `true` the generated column uses `new Intl.NumberFormat(<locale>).format(value)` (locale grouping and decimal separators, default fraction digits); with `false` the raw value is shown. The attribute `scale` and currencies are not applied, so `89.9` stays `89.9`. For fixed decimals or a currency use a derived string attribute or a `customImplementation` column |
 | `ui:DataColumn` | `customImplementation` | Custom column | Extension point for custom rendering |
 
-**Default Sort Values:**
+#### Default Sort Values
 
 | Value | Frontend Effect |
 |-------|-----------------|
@@ -46,7 +49,7 @@ A column within a table displaying a single attribute for each row.
 | `DESC` | Descending sort on initial load |
 | `NONE` | No initial sort (default) |
 
-**Example:**
+#### Example
 ```xml
 <columns xsi:type="ui:DataColumn"
   xmi:id="_GHI789"
@@ -77,7 +80,7 @@ Filter control for a table, allowing users to search or narrow down results.
 | `ui:DataFilter` | `hidden` | Hidden state | Filter not displayed |
 | `ui:DataFilter` | `col` | Grid column | Filter width in grid |
 
-**Filter Operation Types:**
+#### Filter Operation Types
 
 | Type | Frontend Effect |
 |------|-----------------|
@@ -93,7 +96,7 @@ Filter control for a table, allowing users to search or narrow down results.
 | `ENUMERATION` | Dropdown selection |
 | `BOOLEAN` | Checkbox/toggle |
 
-**Example:**
+#### Example
 ```xml
 <filters xsi:type="ui:DataFilter"
   xmi:id="_JKL012"
@@ -103,6 +106,15 @@ Filter control for a table, allowing users to search or narrow down results.
   filterOperationType="ENUMERATION"
   col="4"/>
 ```
+
+Known defects in the generated filter UI and helpers:
+
+- Operator labels in the filter dialog use the keys `judo.modal.filter.<operator>` with default `Operation`; add the operator keys to i18n, or every untranslated operator shows `Operation`.
+- A boolean filter stores `!!event.target.value`. A checkbox's value is `on` even when unchecked, so unchecking does not switch the filter off. Verify boolean filters after unchecking.
+- The single-value filter component uses `enumValues` in its `useCallback` body but not in its dependency list, so changed enumeration values are not picked up. It also pushes into `filters?.filter(...)`, which is `undefined` when `filters` is `undefined`, so it throws when the filter has a value; initialise the filter array in a custom hook.
+- In-memory filtering (`applyInMemoryFilters`) passes the original `data` to every filter instead of the accumulated result, so only the last filter applies. Verify each filter result in the generated table.
+- The enumeration operator lookups (`getOperationEnumValue`, `getOperation`) cast to `keyof typeof _BooleanOperation`. Both operation enums define the same four keys, so this is a type-level mistake with no runtime effect today.
+- The default operation lookup passes the enum value `equal` and then reads the enum by key, so it resolves to `undefined`.
 
 ### TableOperation (ui:TableOperation)
 
@@ -125,11 +137,17 @@ An action that can be performed on table rows (row-level operations) or as bulk 
 | `ui:TableOperation` | `confirmationMessage` | Confirmation text | Message in confirmation dialog |
 | `ui:TableOperation` | `confirmationCondition` | Confirmation condition | Boolean DataFeature |
 
+**Label of a row action.** The row action button shows the label of the button element nested in the operation's form element, not the label of the `TableOperation` itself. With the CLI the element is named `<ns>::<Entity>_Table::<op>TableOperation::<op>`:
+
+```bash
+java -jar target/judo-cli.jar -m <model> update '<ns>::<Entity>_Table::<op>TableOperation::<op>' -s "label=<Text>"
+```
+
 **Context:** TableOperations are placed in either `rowOperations` or `tableOperations` container:
 - `rowOperations` - Appears in row action menu, operates on single row
 - `tableOperations` - Appears in table toolbar, can be bulk operations
 
-**Example:**
+#### Example
 ```xml
 <rowOperations xsi:type="ui:TableOperation"
   xmi:id="_MNO345"
@@ -169,7 +187,7 @@ A column within a table displaying a relation (link to related entity).
 | `ui:RelationColumn` | `attributePath` | Display path | Attribute to show from related entity |
 | `ui:RelationColumn` | `customImplementation` | Custom column | Extension point |
 
-**Example:**
+#### Example
 ```xml
 <columns xsi:type="ui:RelationColumn"
   xmi:id="_REL123"
@@ -186,6 +204,15 @@ A column within a table displaying a relation (link to related entity).
 2. **Prefer a plain `DataColumn`** bound to a mapped `DataMember` (either a bound string attribute or a `DERIVED` attribute whose `getterExpression` flattens the related value, e.g. `self.owner.fullName`) when you only need to *display* a label from the related entity in the list.
 
 Reserve `RelationColumn` for embedded relation tables inside detail screens where relation-navigation semantics are explicitly expected. See also [UI Authoring Guide — Pitfalls](../../model/ui-authoring-guide.md#14-pitfalls-and-validation-rules).
+
+### Row Click and Default Labels
+
+- **Row click.** When a table's row actions include an open-page action, the generated table passes it as `onRowClick`, so clicking a row opens that page (the view page for a mapped table); such an action is not rendered as a row button. Other row operations (`rowOperations`) appear as buttons in the action column.
+- **Default labels.** An element without a `label` gets a default derived from the transfer object name, for example `<Entity>Info Table` for the table page and `<Entity>Info View / Edit` for the view page. Page titles, menu entries and the phone bottom bar show the label, so set `label` on the table, view and menu item (or provide i18n keys) to show user-facing text:
+
+```bash
+java -jar target/judo-cli.jar -m <model> update '<ns>::<Entity>Info_Table' -s "label=<Text>"
+```
 
 ---
 
@@ -222,7 +249,7 @@ Menu item that navigates to an Access (data table/view).
 | `ui:MenuItemAccess` | `hidden` | Hidden state | Not displayed |
 | `ui:MenuItemAccess` | `order` | Sort order | Menu position |
 
-**Example:**
+#### Example
 ```xml
 <menuItems xsi:type="ui:MenuItemAccess"
   xmi:id="_PQR678"
@@ -248,7 +275,7 @@ Menu item that triggers a static operation.
 | `ui:MenuItemOperation` | `hidden` | Hidden state | Not displayed |
 | `ui:MenuItemOperation` | `order` | Sort order | Menu position |
 
-**Example:**
+#### Example
 ```xml
 <menuItems xsi:type="ui:MenuItemOperation"
   xmi:id="_OPR678"
@@ -276,7 +303,7 @@ A container for creating sub-menus within the main navigation.
 | `ui:MenuItemGroup` | `collapsed` | Initial state | Collapsed by default |
 | `ui:MenuItemGroup` | `orientation` | Menu direction | `HORIZONTAL`/`VERTICAL` |
 
-**Example:**
+#### Example
 ```xml
 <menuItems xsi:type="ui:MenuItemGroup"
   xmi:id="_STU901"

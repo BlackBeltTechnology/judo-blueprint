@@ -10,8 +10,6 @@ status: single-project
 projects: [itracker]
 evidence: ["itracker:unrecorded"]
 alternatives: [transient-relation-multi-select-input]
-fragment: transient-relation-single-select-input
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-05-13
 last_updated: 2026-11-10
 ---
@@ -29,7 +27,7 @@ This is the single-pick variant. For collections see [[transient-relation-multi-
 
 ### What is project practice
 
-The source project linked the picked record in the operation body with `mutable input.<relation>`. The platform docs only say that `mutable` is a unary prefix operator and that `input` is immutable unless declared mutable ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). They do not describe the link semantics of a transient reference, so treat the claim that a missing `mutable` silently drops the link as project experience and *verify* it on your runtime version.
+The source project linked the picked record in the operation body with `mutable input.<relation>`. The platform docs say that `mutable` is a unary prefix operator, that `input` is immutable unless declared mutable, and that everything read from `input`, including a transient reference, stays immutable ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)). They do not describe the link semantics of a transient reference assigned to a stored relation, so treat the claim that a missing `mutable` silently drops the link as project experience and *verify* it on your runtime version.
 
 ## Structure
 

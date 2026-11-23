@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/pom.xml", "rackinspect:application/frontend-react/README.adoc", "rackinspect:application/frontend-react/rackinspect__services__ai_service__ai_service/.generator-ignore"]
 alternatives: []
 related: [dual-actor-frontend-architecture, structure-cross-actor-shared-overrides, custom-component-directory]
-fragment: "none: frontend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---
@@ -24,7 +23,7 @@ Make the `application/frontend-react/` folder readable at a glance: what is shar
 ### Platform base
 
 - The platform generates one frontend module per modeled actor, named `<app>__<actor path>`, under `application/frontend-react/` ([[dual-actor-frontend-architecture]]).
-- Each actor module's pom defines `actor`, `actor-name`, `node-install-dir` (default `${project.parent.basedir}/.nodejs`) and `override-dir` (default `${project.parent.basedir}/generator-overrides`), so Node.js and the override folder are shared by all actors unless an actor overrides the property ([module properties](../../agent-docs/frontend/build-and-deployment.md)).
+- Each actor module's pom defines `actor-name` and inherits `node-install-dir` (default `${maven.multiModuleProjectDirectory}/.nodejs`, set in the parent pom) and `override-dir` (default `${project.parent.basedir}/generator-overrides`), so Node.js and the override folder are shared by all actors unless an actor overrides the property ([module properties](../../agent-docs/frontend/build-and-deployment.md)).
 - Generated actor files are tracked by checksum in a file in the actor module root ([checksum protection](../../agent-docs/frontend/README.md)).
 
 ### Practice notes: four kinds of children, nothing else

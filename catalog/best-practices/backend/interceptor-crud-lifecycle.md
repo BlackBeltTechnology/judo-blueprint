@@ -11,7 +11,6 @@ projects: [rackinspect, alba, park-here, judo-partner, reserve-app]
 evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/companydata/companyemail/CompanyEmailCreateInterceptor.java", "alba:unrecorded", "park-here:unrecorded", "judo-partner:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [interceptor-global-logging, interceptor-access-control-flags, interceptor-range-override, form-field-flattening, interceptor-call-replacement, interceptor-aggregation-postcall]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

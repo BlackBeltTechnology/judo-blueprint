@@ -10,7 +10,6 @@ status: emerging
 projects: [mlszksz-platform, park-here]
 evidence: ["mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/admindashboard/ExportAuditLogCustomImplementation.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AuditLogServiceImpl.java", "park-here:application/app/src/main/java/hu/blackbelt/park/here/parkhere/custom/parkhere/services/travelpanel/ImportReservationsCustomImplementation.java"]
 alternatives: [bulk-json-import-export]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

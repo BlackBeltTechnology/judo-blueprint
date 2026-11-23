@@ -1,0 +1,104 @@
+{
+ "batch": "v2",
+ "files": [
+  "catalog/agent-docs/frontend/extension-points.md",
+  "catalog/model-blueprints/event-log-entity/backend.md",
+  "catalog/model-blueprints/organization-discovery-search-component/frontend.md",
+  "catalog/best-practices/backend/mutable-entity-update-pattern.md",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "catalog/best-practices/backend/state-lifecycle-operation.md",
+  "catalog/best-practices/backend/karaf-customization-via-fragments.md"
+ ],
+ "items": [
+  {
+   "id": "apply-findings::B47",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "## Guest Page",
+   "text": "With `supportGuestAccess` enabled on the application, an unauthenticated user is not redirected to `signinRedirect`. The auth gate renders a guest page instead. If no `GuestPage` service is registered, the gate shows the application name and a `Login / Register` button that calls `signinRedirect()`.",
+   "replaces": "With `supportGuestAccess` enabled on the application, an unauthenticated user is not redirected to `signinRedirect`. The auth gate renders a guest page instead.",
+   "evidence": "template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/auth/Auth.tsx.hbs:7-75"
+  },
+  {
+   "id": "apply-findings-webshop::WR16U-15",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Cards Configuration Hook",
+   "text": "The cards container also renders no row operation buttons. Its generated template passes row actions only as row-click handlers (`onRowClick`) and never builds the `tableRowActions` that the table container uses, so table operations such as approve or reject must be added in a custom `CardElement`.",
+   "replaces": "",
+   "evidence": "target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/components/cards/index.tsx.hbs:188-190 (rowActionDefinitions only for onRowClick), :201; containers/components/table/index.tsx.hbs:242-243,296 (tableRowActions)"
+  },
+  {
+   "id": "apply-findings-webshop::WR16U-2",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "Cards Configuration Hook",
+   "text": "A cards container on a relation needs a refresh action on that relation table. The generated cards container calls `fetch` unconditionally when it loads, and the generated page passes `fetch` only when the table has a refresh action, so without one the load fails with `fetch is not a function`.",
+   "replaces": "",
+   "evidence": "target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/components/widgets/CardsContainer.tsx.hbs:139 (fetch! call); containers/components/cards/index.tsx.hbs:193-196 (fetch only inside getRefreshActionDefinitionForTable block); LazyTable.tsx.hbs:98 (guarded in the table path)"
+  },
+  {
+   "id": "bp-check::B24@2",
+   "kind": "research",
+   "file": "catalog/model-blueprints/event-log-entity/backend.md",
+   "heading": "Keep the event immutable",
+   "text": "The `immutable` flag is defined only on transfer operations, not on entities, so the model cannot mark the entity itself as immutable. Keep the event immutable by leaving update and delete operations out of the entity's operations.",
+   "replaces": "",
+   "evidence": "models__judo-meta-psm/model/model/psm.ecore:625"
+  },
+  {
+   "id": "bp-check::B1@7",
+   "kind": "research",
+   "file": "catalog/model-blueprints/event-log-entity/backend.md",
+   "heading": "Backend guidance",
+   "text": "A custom operation runs in one transaction. Its DAO writes commit together; if the operation throws, all of them roll back, including writes made before the throw.",
+   "replaces": "",
+   "evidence": "runtime__judo-runtime-core/judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/TransactionalOperationCall.java:58-88"
+  },
+  {
+   "id": "bp-check::B38@4",
+   "kind": "research",
+   "file": "catalog/model-blueprints/organization-discovery-search-component/frontend.md",
+   "heading": "Implementation Pattern",
+   "text": "A generated container's layout is replaced only through its custom implementation element: the frontend registers a component for the element's key, and the generated page renders it through a component proxy. The generated `data-name` attributes (for example `PageHeaderContainer`) identify the element in the DOM; they are not a replacement hook.",
+   "replaces": "",
+   "evidence": "template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/components/PageHeader.tsx.hbs:73, template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/page.tsx.hbs:42-44, template__judo-ui-react-template/judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiPandinoHelper.java:55-58"
+  },
+  {
+   "id": "bp-check::B8@4",
+   "kind": "research",
+   "file": "catalog/best-practices/backend/mutable-entity-update-pattern.md",
+   "heading": "Platform: the DAO update call",
+   "text": "An update without a mask writes only the attributes the object carries: a field that was not loaded is absent from the payload and is left unchanged. For an entity loaded with a narrow mask, pass an update mask naming only the changed fields to keep the write explicit.",
+   "replaces": "The docs do not say what an unmasked update does with them, so for an entity loaded with a narrow mask pass an update mask naming only the changed fields.",
+   "evidence": "runtime__judo-runtime-core/judo-runtime-core-dao-core/src/main/java/hu/blackbelt/judo/runtime/core/dao/core/processors/UpdatePayloadDaoProcessor.java:172-181 (attributes filtered by updatePayload.containsKey); template__judo-psm-generator-sdk-core/judo-psm-generator-sdk-core-api/src/main/resources/dao/api/dto.java.hbs:137-145 (toMap over loaded keys); template__judo-psm-generator-sdk-core/judo-psm-generator-sdk-core-impl/src/main/resources/dao/impl/dao.implementation.java.hbs:327-331"
+  },
+  {
+   "id": "apply-findings::R1674",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "heading": "Widget Components",
+   "text": "In a form container the first input whose attribute is not read-only receives focus after `autoFocusRefDelay` (200 ms). The selection checks only the attribute's read-only flag, not visibility, so a hidden input that comes first can receive focus.",
+   "replaces": "",
+   "evidence": "template__judo-ui-react-template/judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiWidgetHelper.java:117-140; template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/container.tsx.hbs:78-88; template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/config/general.ts.hbs:41"
+  },
+  {
+   "id": "bp-check::B10@4",
+   "kind": "research",
+   "file": "catalog/best-practices/backend/state-lifecycle-operation.md",
+   "heading": "Practice",
+   "text": "A JCL script operation cannot raise a modeled fault and cannot call an OSGi service. The JCL grammar has no `throw` or fault statement and no service-reference form; its statements are declarations, calls, `return`, `unset`, `delete`, `new`, blocks, `if`, `for` and `while`. Put fault-raising logic and OSGi service calls in a Java custom implementation.",
+   "replaces": "",
+   "evidence": "models__judo-meta-jcl/model/src/main/java/hu/blackbelt/judo/meta/jcl/JclDsl.xtext:35-50, 83-91; runtime__judo-script-codegen/generator/src/main/java/hu/blackbelt/judo/script/codegen/generator/Script2JavaGenerator.xtend (no fault or service emission found)"
+  },
+  {
+   "id": "bp-check::R2039@1",
+   "kind": "research",
+   "file": "catalog/best-practices/backend/karaf-customization-via-fragments.md",
+   "heading": "Platform base",
+   "text": "Documented slots: root `pom.xml` (project-definition, properties-definition, model-properties-definition, judo-properties-definition, extra-plugin-management, extra-plugins, extra-profiles, release-profiles, distribution-management, repository-definition); application `pom.xml` (extra-modules, extra-dependency-management);",
+   "replaces": "Documented slots: root `pom.xml` (project-definition, properties-definition, model-properties-definition, judo-properties-definition, extra-dependency-management, extra-plugin-management, extra-plugins, extra-modules, extra-profiles, release-profiles, distribution-management, repository-definition);",
+   "evidence": "target/judo-ng-read/wt/template__judo-esm-fullstack-project-template/judo-esm-fullstack-project-template-root/src/main/resources/pom.xml.hbs:72,360,667,669,671 (no extra-modules / extra-dependency-management include); .../judo-esm-fullstack-project-template-application/src/main/resources/pom.xml.hbs:296,422 (both present)"
+  }
+ ]
+}

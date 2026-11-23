@@ -11,8 +11,6 @@ projects: [skillmatrix-model, judo-demo-miniworkflow, ams-model, park-here, inda
 evidence: ["skillmatrix-model:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, default-value-patterns, derived-access-filtering, generalization-base-entity, enum-state-machine]
-fragment: multi-role-single-entity
-diagram: { kinds: [entity, actor, transfer], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -72,7 +70,6 @@ A User entity has a unique e-mail, the flags `isAdmin` and `isApprover` (default
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=multi-role-single-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AdminActor {
@@ -107,4 +104,3 @@ classDiagram
   ApproverActor ..> ApproverPrincipal : principal
   ApproverPrincipal ..> User : maps
 ```
-<!-- /mermaid:generated -->

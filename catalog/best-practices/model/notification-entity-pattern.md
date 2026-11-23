@@ -11,8 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 related: [enum-state-machine, category-enum-pattern, bidirectional-relation, audit-event-entity, soft-delete-active-flag]
-fragment: notification-entity-pattern
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -74,7 +72,6 @@ A Notification (type, title, message, status, reference id, retry count, created
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=notification-entity-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Device {
@@ -121,4 +118,3 @@ classDiagram
   Notification ..> NotificationStatus : status
   Notification ..> NotificationType : type
 ```
-<!-- /mermaid:generated -->

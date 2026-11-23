@@ -14,10 +14,7 @@ Generated UI pages follow from the entities; the product lists are replaced by c
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=product-with-approval-workflow -->
-<!-- /mermaid:generated -->
 
-<!-- mermaid:generated fragment=product-with-approval-workflow cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Event {
@@ -80,4 +77,3 @@ classDiagram
   Task --> "1" User : createdBy
   Task ..> TaskState : state
 ```
-<!-- /mermaid:generated -->

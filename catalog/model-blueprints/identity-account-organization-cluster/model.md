@@ -16,7 +16,6 @@ Instance operations in one project, such as `createOrganization`, `inviteUser`, 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=identity-account-organization-cluster cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AccountEntity {
@@ -83,4 +82,3 @@ classDiagram
   OrganizationEntity --> "*" OrganizationAccessEntity : organizationAccesses
   UserEntity --> "1" IdentityEntity : identity
 ```
-<!-- /mermaid:generated -->

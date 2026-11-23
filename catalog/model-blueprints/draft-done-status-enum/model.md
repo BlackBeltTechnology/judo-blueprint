@@ -6,7 +6,6 @@ The owning entity is not drawn in the diagram, which shows only the enumeration.
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=draft-done-status-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Status {
@@ -15,4 +14,3 @@ classDiagram
     DONE
   }
 ```
-<!-- /mermaid:generated -->

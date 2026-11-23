@@ -12,8 +12,6 @@ evidence: ["indamedia-adtrack:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [initializer-operation, unmapped-transfer-dto, category-enum-pattern]
 first_seen: 2026-03-04
-fragment: external-system-staging-entity
-diagram: { kinds: [entity, transfer, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -61,7 +59,6 @@ Data received from an external system should not go straight into domain entitie
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=external-system-staging-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class ImportInput {
@@ -85,4 +82,3 @@ classDiagram
   }
   Order --> "0..1" StagedRecord : source
 ```
-<!-- /mermaid:generated -->

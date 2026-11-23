@@ -11,7 +11,6 @@ projects: [rackinspect, workflow-poc, reserve-app, park-here, indamedia-adtrack]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx", "workflow-poc:unrecorded", "reserve-app:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, hook-scaffold-default-pattern, generator-ignore-app-theme]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-11
 ---

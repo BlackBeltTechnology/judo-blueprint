@@ -4,7 +4,7 @@ Implements a multi-module service layer where custom operations delegate to shar
 
 ## Implementation Pattern
 
-**Module structure:**
+### Module structure
 ```
 application/
   common/          -- service interfaces + implementations for core business logic
@@ -16,26 +16,26 @@ application/
   interceptors/    -- interceptors that @Reference service interfaces
 ```
 
-**Interface definition (common module):**
+### Interface definition (common module)
 - Service interfaces are plain Java interfaces in the `common` module (e.g., `PushNotificationService`, `KeycloakUserService`, `PlatformEmailService`, `FeedService`, `AuditLogService`, `ValidationService`)
 - No OSGi annotations on the interface -- only the implementation carries `@Component(service=...)`
 - Methods are coarse-grained business operations, not CRUD (e.g., `sendPostPublishedNotification()`, not `createNotification()`)
 
-**Implementation (various modules):**
+### Implementation (various modules)
 - `@Component(immediate=true, service=<Interface>.class)` with `@Reference` to DAOs, other services, and external clients
 - Implementation location follows the "closest concern" principle: `PushNotificationServiceImpl` in common (uses Firebase + DAOs), `KeycloakUserServiceImpl` in keycloak-client (uses RealmManager), `FirebaseMessagingService` in firebase (wraps Firebase SDK)
 
-**Custom operation consumption:**
+### Custom operation consumption
 - Custom operation classes `@Reference` the service interface (never the implementation)
 - Operations become thin controllers: validate input, call service, map result. Interceptors do not run for custom operations (platform), so write rules and permission checks in the service or operation
 - Multiple operations across different actors can share the same service (e.g., both admin and company-admin publish operations call `FeedService.createFeedEntry()`)
 
-**Service layering:**
+### Service layering
 - Services can reference other services: `FeedServiceImpl` references `PlatformEmailService` and `PushNotificationService`
 - Services reference DAOs from the generated SDK: `@Reference UserDao`, `@Reference NotificationDao`
 - External integration services (Keycloak, Firebase) are behind stable interfaces, making them swappable for testing
 
-**i18n sub-pattern:**
+### i18n sub-pattern
 - A method-per-message interface (e.g., `<Project>I18n`) registered via `I18nService` with a `ThreadLocalLocaleSupplier` for request-scoped locale
 - Services `@Reference` the i18n interface to produce localized messages for modeled faults and validation errors (the fault exception class is generated per project; helpers such as `ExceptionUtils` are example project code, not platform API)
 - An activator component (`@Component(immediate=true)`) calls `i18nService.register(I18nInterface.class, localeSupplier)` on activation and `unregister()` on deactivation

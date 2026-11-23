@@ -12,7 +12,6 @@ evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
 related: [derived-attribute-flattening, category-enum-pattern, default-value-patterns]
 first_seen: 2026-03-04
-fragment: feed-denormalization-entity
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -58,7 +57,6 @@ A derived member of a transfer object can flatten values from related entities o
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=feed-denormalization-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class EntryType {
@@ -89,4 +87,3 @@ classDiagram
   FeedEntry --> "0..1" Post : post
   FeedEntry ..> EntryType : entryType
 ```
-<!-- /mermaid:generated -->

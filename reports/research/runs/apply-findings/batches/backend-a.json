@@ -1,0 +1,263 @@
+{
+ "batch": "backend-a",
+ "files": [
+  "catalog/agent-docs/backend/custom-operations.md",
+  "catalog/agent-docs/backend/data-access-guide.md",
+  "catalog/agent-docs/backend/interceptors.md",
+  "catalog/agent-docs/backend/platform-behavior-reference.md"
+ ],
+ "items": [
+  {
+   "id": "G101",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "#### G101 `c04-25` R8 F23: No catalog text found by the builder on whether a custom operation rolls back on error; the builder proved it with a test instead (stock of the first line restored when the second line throws a ShopFa\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/custom-operations.md`. custom-operations.md only has test transaction modes (AUTO_ROLLBACK); no runtime rule. Builder proved by test that an exception in a custom operation rolls back all its writes. Add that line (mark verify against the dispatcher).\n- **Why:** The backend docs cover rollback for interceptors and for integration test modes (AUTO_ROLLBACK) but not the runtime rule for custom operations; the builder's kb search for the rule found nothing. **Workaround:** Integration-style Playwright test proves the rollback of stock, cart and order.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L2380`, `session:L2381`, `session:L2537`, `session:L2539`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G102",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "#### G102 `c06-12` R11 F44: The CSV export custom operation threw a NullPointerException on input.getFromDate().orElse(...) when the user left the date empty, because the optional input getter returned null, not Optional.empty.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/custom-operations.md`. custom-operations.md does not say that optional input getters can return null instead of Optional.empty (sweep item BA-042). Add: null-check optional input getters (verify).\n- **Why:** Custom operation input getters for optional attributes can return null; the agent-docs custom-operations page does not say this where the builder looked, and the sweep inventory (BA-042) already flagged it. **Workaround:** Null-guarded the getters and the status filter in ExportOrdersCustomImplementation.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3646`, `session:L3647`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G114",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/backend/data-access-guide.md",
+   "text": "#### G114 `c05-04` R9 F29: A 0..1 relation query returns Optional<Product>, while a 1..1 relation query returns the entity; the first build failed with a type mismatch because the builder assumed Optional.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/data-access-guide.md`. data-access-guide (lines 289-304) says single-valued relation queries return the entity directly; the generated SDK returns Optional<T> for 0..1 (SalesOrderLineDao shows Optional types). Split the rule: 0..1 returns Optional, 1..1 returns the entity.\n- **Why:** The kb says single-valued relation queries return the entity but does not separate optional (0..1) from mandatory (1..1) relations. **Workaround:** Used the entity directly for the 1..1 cart line product relation (RemoveProductCustomImplementation.java).\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L2788`, `session:L2870`, `session:L2871`, `session:L2883`"
+  },
+  {
+   "id": "G117",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "#### G117 `c06-15` R11 : The 'Ordered' text and history times differed by two hours: the model-built string orderedAtLabel used the platform zone (UTC), while the generated history column rendered in the browser zone (CET).\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/platform-behavior-reference.md`. Time and Time Zones section (line 94) already says model expressions follow defaultZoneId, not the JVM. Add the contrast: generated UI columns render in the browser zone, so model-built strings differ by the zone offset.\n- **Why:** Model expressions follow the platform defaultZoneId, the UI follows the browser; the catalog says so but gives no model-side way to show the browser zone. Container is UTC, host CET; default zone already UTC so storage needed no change. **Workaround:** Removed the derived string; see c06-16.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L3236`, `session:L3238`, `session:L3320`, `session:L3321`"
+  },
+  {
+   "id": "G119",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/backend/interceptors.md",
+   "text": "#### G119 `c07-29` R12 F50: The builder could not find how to read old and new values in the update interceptor and decompiled the dispatcher jar with javap to learn UpdateInstanceCallPayload, without a kb search.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/interceptors.md`. interceptors.md already shows UpdateInstanceCallPayload (getInstance, getInput) but no example of reading old versus new values. Builder skipped kb search first. Add a short old/new comparison example (verify what the payload exposes).\n- **Why:** Interceptor payload access is not clear from the interceptor page as the builder read it (unverified); the kb was not searched first. **Workaround:** Used getInput() and getInstance() from the decompiled class.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L3889`, `session:L3892`, `session:L3893`"
+  },
+  {
+   "id": "AU9",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "| 9 | `backend/custom-operations.md:623` | \"ReferenceInjector - Automatically injects `@Reference` dependencies\" | still wrong; `integration-testing/interceptor-testing.md:96` says by-type, which is correct | `runtime__judo-runtime-core/judo-runtime-core-guice-testkit/.../util/ReferenceInjector.java:16,128` (`@Reference` has CLASS retention; injects all non-static, non-final fields by type) | rows 279, 285 (guice-testkit `agent-docs/interceptor-testing.md:331`, `troubleshooting.md:366`) |"
+  },
+  {
+   "id": "KC08",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/backend/data-access-guide.md",
+   "text": "| **K55.C1 FALSE / R5:** no mask returns everything, derived members included; an empty mask returns the identifier only | `backend/data-access-guide.md` covers the empty mask only; the no-mask rule is absent | **No** (not added) |"
+  },
+  {
+   "id": "KC11",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/backend/interceptors.md",
+   "text": "| U7 / K23: \"mapped\" is the wrong word, since CRUD on a mapped TO is intercepted | `backend/interceptors.md:3,190` still says \"never custom, **mapped** or script operations\" | **No** (*verify* whether \"MAPPED\" means the operation kind) |"
+  },
+  {
+   "id": "KC15",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/backend/data-access-guide.md",
+   "text": "| R6: required \u2260 non-null when masked out | Absent | **No** |"
+  },
+  {
+   "id": "NG0011",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-jsl",
+   "target": "catalog/agent-docs/backend/data-access-guide.md",
+   "text": "## [wrong-fact] openspec/specs/test-infrastructure/spec.md:39\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-jsl:openspec/specs/test-infrastructure/spec.md:39\n- claim: teardownDatasource() closes the datasource and stops any running container.\n- fact: teardownDatasource() only stops the container when it is running. It does not close the DataSource.\n"
+  },
+  {
+   "id": "NG0062",
+   "src": "judo-ng-read:-runtime-judo-script-codegen",
+   "target": "catalog/agent-docs/backend/data-access-guide.md",
+   "text": "## [wrong-fact] openspec/specs/generator-test/spec.md:49\n- src: judo-ng-read | status: validated | evidence: runtime/judo-script-codegen:openspec/specs/generator-test/spec.md:49\n- claim: Temporal literals produce LocalDate, LocalTime or LocalDateTime constructors.\n- fact: Generator emits X.parse(\"...\") static factory calls for TimestampConstant, TimeConstant and DateConstant, not constructors.\n"
+  },
+  {
+   "id": "NG0083",
+   "src": "judo-ng-read:-tools-judo-version-updater-maven-plugin",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] openspec/specs/version-resolution/spec.md:76\n- src: judo-ng-read | status: validated | evidence: tools/judo-version-updater-maven-plugin:openspec/specs/version-resolution/spec.md:76\n- claim: With -Dversion-groupId/-Dversion-artifactId the plugin SHALL query com.example:custom-versions.\n- fact: The version lookup (GetLatestJudoVersionsArtifactVersion.getLatestJudoVersion) hardcodes hu.blackbelt.judo:judo-versions; versionsGroupId/ve\n"
+  },
+  {
+   "id": "NG0101",
+   "src": "judo-ng-read:-runtime-judo-generator-commons",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] AGENTS.md:942\n- src: judo-ng-read | status: validated | evidence: runtime/judo-generator-commons:AGENTS.md:942\n- claim: The checksum mismatch symptom is 'IllegalStateException: Generated file modified'. The same wording appears at AGENTS.md:440 and 736.\n- fact: The thrown message is 'There are manual changes in the generated files.' followed by the list of paths and advice to discard, delete or add \n"
+  },
+  {
+   "id": "NG0111",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] openspec/changes/implement-esm2psm-zeta-rules/tasks.md:433\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:openspec/changes/implement-esm2psm-zeta-rules/tasks.md:433\n- claim: Integrate with Esm2Psm.executeZetaTransformation(): remove fallback to ETL [checked]. (proposal.md:12 also states the fallback is to be remo\n- fact: Esm2PsmWork still catches UnsupportedOperationException and falls back to ETL with the warning 'Zeta transformation not yet implemented, fal\n"
+  },
+  {
+   "id": "NG0121",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] judo-tatami-workflow-maven-plugin-docs/pages/index.adoc:43\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:judo-tatami-workflow-maven-plugin-docs/pages/index.adoc:43\n- claim: <modelName>test</modelName> is a configuration parameter of default-workflow.\n- fact: modelName is not a @Parameter; it is a local variable derived from the ESM or PSM root model name.\n"
+  },
+  {
+   "id": "NG0127",
+   "src": "judo-ng-read:-judo-runtime-core",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] Other judo-ng doc conflicts: runtime-core troubleshooting error texts\n- src: session:jb-019.json | status: reported-unvalidated | evidence: judo-runtime-core troubleshooting.md:123,147,366 via session 2026-11-06T08:26:34\n- claim: troubleshooting.md:123 'java.lang.IllegalArgumentException: Could not load model from classpath: myModel'; :147 'IllegalStateException: Transaction already active' from beginTransaction(); :366 checklist 'Dependencies use @Reference or @Inject annotation'\n- fact: Actual message is \"Could not load model '<name>'. Filesystem error: ... Classpath error: ...\"; transaction error is 'Previous transaction was not completed'; ReferenceInjector injects by type into non-static, non-final fields (no annotation check). Interceptor init() wraps NoSuchMethodException in RuntimeException.\n"
+  },
+  {
+   "id": "NG0128",
+   "src": "judo-ng-read:-runtime-judo-services",
+   "target": "catalog/agent-docs/backend/interceptors.md",
+   "text": "## [wrong-fact] openspec/specs/transaction-spring/spec.md:20\n- src: judo-ng-read | status: validated | evidence: runtime/judo-services:openspec/specs/transaction-spring/spec.md:20\n- claim: The service has the property .__createdBy=ManagedDAODataSourceToPlatformTransactionManagerTracker (simple class name).\n- fact: CREATED_BY is set to this.getClass().getName(), which is the fully qualified name hu.blackbelt.judo.services.transaction.spring.ManagedDAODa\n"
+  },
+  {
+   "id": "NG0133",
+   "src": "judo-ng-read:-runtime-judo-runtime-core-esm-itest",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] README.md:40\n- src: judo-ng-read | status: validated | evidence: runtime/judo-runtime-core-esm-itest:README.md:40\n- claim: JudoRuntimeFixture exposes getDAO(entityType) returning DAO.\n- fact: The accessor is getDao(); there is no getDAO method on JudoRuntimeFixture.\n"
+  },
+  {
+   "id": "NG0136",
+   "src": "judo-ng-read:-runtime-judo-runtime-core",
+   "target": "catalog/agent-docs/backend/interceptors.md",
+   "text": "## [wrong-fact] Interceptors do not run for SDK/script operations\n- src: session:jb-031.json | status: validated | evidence: session 2026-11-06T10-49-13-527Z part 31, subagent explore, runtime__judo-runtime-core/judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/DefaultDispatcher.java:716-778\n- claim: OperationCallInterceptor Javadoc (:11-17, :26-28): supports behaviour calls, script operations and SDK implementations; empty getOperations means all operation calls are intercepted.\n- fact: Interceptors run only for default behaviour operations (Create, Update, Delete, List, Set/Add/Remove/UnsetReference, Refresh, GetTemplate, GetPrincipal, GetUploadToken, Export, ValidateCreate/Update/OperationInput, GetInputRange/GetReferenceRange, GetMetadata). They are called from behaviours/*Call.java via CallInterceptorUtil (20 call sites). Custom (SDK) and script operations are only wrapped in TransactionalOperationCall (DefaultDispatcher.java:716-737, 776-778) and are never intercepted. The Javadoc is wrong and should be fixed.\n"
+  },
+  {
+   "id": "NG0138",
+   "src": "judo-ng-read:-judo-dao-api",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "## [wrong-fact] PayloadImpl hashCode includes __$ keys\n- src: session:jb-009.json | status: reported-unvalidated | evidence: session 12:07, subagent C072\n- claim: PayloadImpl row and root AGENTS.md:54 say __$ keys excluded from both equals() and hashCode()\n- fact: Only equals() excludes them (PayloadImpl.java 141-160); hashCode() at 163-164 returns internal.hashCode(), so equal payloads can have different hash codes. Also put()/putAll() do not wrap nested maps as Payload (getAsPayload() throws on them); only the constructor wraps. dao-api spec covers transient fields for equals only. DAO row omits batch, static-data, default-value, navigation method families.\n"
+  },
+  {
+   "id": "NG0139",
+   "src": "judo-ng-read:-tools-epsilon-runtime",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] openspec/specs/utils/spec.md:22\n- src: judo-ng-read | status: validated | evidence: tools/epsilon-runtime:openspec/specs/utils/spec.md:22\n- claim: UUIDUtils.uuid3(\"ns\", \"test\") generates a deterministic UUID from the namespace \"ns\".\n- fact: uuid3 calls UUID.fromString(namespace), which requires a valid UUID-formatted namespace string and throws IllegalArgumentException for \"ns\";\n\n"
+  },
+  {
+   "id": "NG0146",
+   "src": "judo-ng-read:-runtime-judo-dao-api",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "## [wrong-fact] src/main/java/hu/blackbelt/judo/dao/api/PayloadImpl.java\n- src: judo-ng-read | status: validated | evidence: runtime/judo-dao-api:src/main/java/hu/blackbelt/judo/dao/api/PayloadImpl.java\n- claim: disagrees: the row (and root AGENTS.md line 54) says __$ keys are excluded from equals() and hashCode(). Only equals() excludes them (Payloa\n\n"
+  },
+  {
+   "id": "NG0151",
+   "src": "judo-ng-read:-documentation",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] docs/modules/ROOT/pages/developer-guide/backend/00_developing_custom_operations.adoc:82\n- src: judo-ng-read | status: validated | evidence: documentation:docs/modules/ROOT/pages/developer-guide/backend/00_developing_custom_operations.adoc:82\n- claim: Operation interface is nested in sdk.<modelName>.<package>.<entitytypename>.<OperationName>, e.g. sdk.demo.entities.Product.InstanceAction.\n- fact: The same document's examples implement operation.demo.ProductInfo.StaticAction (line 102) and inject sdk.demo._default_transferobjecttypes.P\n"
+  },
+  {
+   "id": "NG0153",
+   "src": "judo-ng-read:-documentation",
+   "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+   "text": "## [wrong-fact] docs/modules/ROOT/pages/developer-guide/backend/09_define_custom_application_parameters.adoc:71\n- src: judo-ng-read | status: validated | evidence: documentation:docs/modules/ROOT/pages/developer-guide/backend/09_define_custom_application_parameters.adoc:71\n- claim: appEnv can be defined as MY_APPLICATION_CONFIG_APP_ENV (or -DappEnv).\n- fact: The configset in the same document sets envPrefix=MY_APP_ (line 32), so the environment variable is MY_APP_APP_ENV; the text at lines 46 als\n"
+  },
+  {
+   "id": "NG0155",
+   "src": "judo-ng-read:-models-judo-meta-expression",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] DOX rows for string.evl/temporal.evl overstate validations\n- src: session:jb-009.json | status: validated | evidence: session 10:54, subagent C033\n- claim: dox rows claim validations for string.evl and temporal.evl\n- fact: They are unconditional 'check: true' stubs or absent. Also getSecondUnitFraction/getDayUnitFraction belong to nested DurationType enum, not ModelAdapter; ExpressionUtils.getValue with missing getter throws a wrapped RuntimeException, not IllegalArgumentException (verified with PropertyDescriptor in jshell).\n"
+  },
+  {
+   "id": "NG0156",
+   "src": "judo-ng-read:-models-judo-meta-expression",
+   "target": "catalog/agent-docs/backend/custom-operations.md",
+   "text": "## [wrong-fact] builder-jql/src/main/java/hu/blackbelt/judo/meta/expression/builder/jql/expression/JqlNavigationFeatureTransformer.java\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-expression:builder-jql/src/main/java/hu/blackbelt/judo/meta/expression/builder/jql/expression/JqlNavigationFeatureTransformer.java\n- claim: disagrees: the row says a non-ObjectExpression base throws IllegalArgumentException, but it throws IllegalStateException (lines 74-76 and 88\n"
+  },
+  {
+   "id": "B1",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B1 | **Custom operation transaction scope** | Whether a custom operation's DAO writes share one transaction, whether they roll back when it throws, partial commits, and what a swallowed DAO error does to the transaction. Only `@JudoTest` transaction modes and interceptor transactions are documented. | bp01, bp02, bp05, bp08, bp12, pb06, pb07 (most-reported gap) |"
+  },
+  {
+   "id": "B2",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B2 | **FileStore Java API** | `FileStoreService` put/get, the generated `FileType` (id, fileName, mimeType) from Java, and `JUDO_PLATFORM_FILESTORE=rdbms`. Only the upload-token REST flow is documented. | bp01, bp05, bp10, pb01, pb03, pb07 |"
+  },
+  {
+   "id": "B3",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B3 | **INITIALIZER operation lifecycle** | Who calls an initializer operation, when (startup or deploy), under which security context, and with which transaction. Docs only say \"static, no input\". | bp07, pm04, pm06, pb02, pb03 |"
+  },
+  {
+   "id": "B4",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B4 | **Scheduled jobs** | Quartz / OSGi scheduler. What transaction, principal and `ACTOR` variable context a scheduler thread gets. | bp06, bp10, pb05, pb06 |"
+  },
+  {
+   "id": "B5",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B5 | **Email service** | `EmailService` / `EmailMessage` / `BinaryAttachment` API, Handlebars templates, and how the app's mail path uses the SMTP variables. | bp10, pb02, pb03 |"
+  },
+  {
+   "id": "B6",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B6 | **DAO API surface** | Paged `selectList(offset, limit)` / slices, `TimeFilter`, `findAllById` vs `getById`, signatures of the per-relation `create<Rel>` / `add<Rel>` methods, and actor-level DAO packages. | pb01, pb02, pb05, pb06, bp07, bp12 |"
+  },
+  {
+   "id": "B7",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B7 | **DAO and interceptors** | Whether a DAO call from Java service code (for example creating a child) triggers built-in-operation interceptors. | pb05, pb07 |"
+  },
+  {
+   "id": "B8",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B8 | **Unmasked update** | What `update` without a mask does with fields that were not loaded. | pb05 |"
+  },
+  {
+   "id": "B9",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B9 | **Identifier uniqueness** | Whether the `identifier` flag is enforced as unique, for one or several attributes. Docs only say \"natural key\". Uniqueness appears only as a hand-written validation pattern. | bp01, pm02, pm06, pb07 |"
+  },
+  {
+   "id": "B10",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B10 | **Faults from JCL / script operations** | Whether a script operation can raise a modeled fault or call an OSGi service. | pm04, pb06 |"
+  },
+  {
+   "id": "B11",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B11 | **List-call interceptor payload** | `ListCall.ListCallPayload` and `getQueryCustomizer().getFilter()`. The range payload is partly covered in `interceptors.md`, but there is no worked `_getRangeReference` example that keeps the filter and orderBy and adds constraints. | pb04, bp15 |"
+  },
+  {
+   "id": "B12",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B12 | **Unauthenticated operations** | How to expose an operation without login. The model-level `anonymous` actor flag is documented only in e2e-testing. | bp08, pb05, pb07 |"
+  },
+  {
+   "id": "B13",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B13 | **`isActiveExpression`** | How the runtime evaluates it, and how it interacts with actor resolution by `azp`. There is no sample with a boolean role flag as the guard. | bp14, pm04 |"
+  },
+  {
+   "id": "B50",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B50 | **Actor realm vs schema name** | cciu says `ActorType.realm` must equal the `judo.properties` `schema_name`, otherwise the local-dev Keycloak SSL script times out. Only the `realm` default `DEFAULT` is confirmed (esm.ecore); the script is not in judo-ng. | cciu merge CM-055 |"
+  },
+  {
+   "id": "B51",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B51 | **Transient relations on unmapped TOs** | What `mutable input.<rel>` means for a transient relation; whether an unmapped transient target renders a nested form instead of a picker; that such a relation must be `AGGREGATION` (`ASSOCIATION` fails strict validation; the CLI sets aggregation by default and rejects `aggregation=true` as read-only). | mg1, mg2 |"
+  },
+  {
+   "id": "B52",
+   "src": "passb2-doc-gaps",
+   "target": "catalog/agent-docs/backend/",
+   "text": "| B52 | **Access with list cardinality needs a table column** | `validate --strict` fails until the access target's table has a column (`create -t DataColumn --ns <TO>::<TO>_Table --set dataFeature=...`). Not documented. | mg2, also D5 |"
+  }
+ ]
+}

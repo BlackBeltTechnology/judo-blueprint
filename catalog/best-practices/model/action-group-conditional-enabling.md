@@ -11,8 +11,6 @@ projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: []
 related: [derived-attribute-flattening, ui-control-transfer-fields]
-fragment: action-group-conditional-enabling
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -32,7 +30,7 @@ The UI model's ActionGroup holds a list of operation buttons (OperationForm elem
 
 ### Split featured and secondary actions
 
-`featuredActions` is the number of leading actions shown as standalone buttons. The remaining actions of the group go into a pop-up menu button. Order the actions so the most common ones come first.
+`featuredActions` is the number of leading actions shown as standalone buttons. The remaining actions of the group go into a pop-up menu button. Order the actions so the most common ones come first. In the React template a pop-up item applies its own `enabledBy` but not its `hiddenBy`, so a secondary action with a `hiddenBy` still shows. Use `enabledBy` for a secondary action that must follow a flag, or make it a featured action.
 
 ### Keep the operation itself safe
 
@@ -62,7 +60,6 @@ An Item entity has a derived boolean `available` and two operations (`start`, `a
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=action-group-conditional-enabling cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Item {
@@ -79,4 +76,3 @@ classDiagram
   }
   ItemView ..> Item : maps
 ```
-<!-- /mermaid:generated -->

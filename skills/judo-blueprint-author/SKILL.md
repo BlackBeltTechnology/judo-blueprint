@@ -1,22 +1,21 @@
 ---
 name: judo-blueprint-author
-description: Write or update ONE judo-blueprint catalog entry (model blueprint or best practice) in the kb format, including its CLI-built fragment and generated Mermaid diagram. Use when creating a new entry or rewriting a legacy one.
+description: Write or update ONE judo-blueprint catalog entry (model blueprint or best practice) in the kb format, including its Mermaid structure diagram. Use when creating a new entry or rewriting a legacy one.
 ---
 
 # judo-blueprint-author
 
-One job: produce one catalog entry that passes `entry-lint` and, for model
-shapes, `judo-model-mermaid/scripts/check`.
+One job: produce one catalog entry that passes `entry-lint` and `spec-check`.
 
 Paths below are relative to the judo-blueprint repository root (the folder
-holding `catalog/`, `skills/`, `fragments/`).
+holding `catalog/` and `skills/`).
 
 ## Read first
 
 - [references/format.md](references/format.md): the exact entry shape (frontmatter,
   sections, forbidden content).
-- [../judo-model-mermaid/references/fragments.md](../judo-model-mermaid/references/fragments.md):
-  how to build a fragment with the CLI.
+- [../judo-model-mermaid/SKILL.md](../judo-model-mermaid/SKILL.md):
+  how to draw the structure diagram from a real model.
 - Layer guidance: [references/model.md](references/model.md),
   [references/backend.md](references/backend.md), [references/frontend.md](references/frontend.md).
 
@@ -34,20 +33,19 @@ holding `catalog/`, `skills/`, `fragments/`).
    Never copy a platform claim the docs mark as wrong.
 3. **Write the text** in the format: abstract sections, layer files, neutral
    wording, wikilinks in `## Related`.
-4. **Fragment** (model shapes only): scratch dir, copy
-   `tests/fixtures/Sandbox.model`, build `Sandbox::bp::<pkg>` with CLI
-   commands, `validate --strict`, `save`, copy to `fragments/<id>.model`,
-   then stop the CLI server for that model
-   (`java -jar target/judo-cli.jar -m <scratch>/Sandbox.model server stop`).
-5. **Render and check:** `skills/judo-model-mermaid/scripts/render <id>` then
-   `skills/judo-model-mermaid/scripts/check <id>`.
-6. **Lint:** `skills/judo-blueprint-author/scripts/entry-lint <entry path>`.
-   `entry-lint` rejects `format: legacy` and `fragment: pending`; every entry must pass all rules.
+4. **Structure diagram** (model shapes only): render the pattern's scope from
+   the real project model with `skills/judo-model-mermaid/scripts/render --model <path> --scope <fqn>`
+   (or write it by hand), paste it as a plain ```mermaid block under
+   `## Structure diagram`, and generalise the names.
+5. **Lint:** `skills/judo-blueprint-author/scripts/entry-lint <entry path>` and
+   `skills/judo-blueprint-author/scripts/spec-check <entry path>`.
+   `entry-lint` rejects `format: legacy` and the retired `fragment:`/`diagram:` keys.
 
 ## Rules
 
-- Never edit a `.model` file or a generated Mermaid block by hand.
+- Never commit model files (`.model`) to this repo.
 - Never put CLI commands, GraphQL or `judo.sh` commands in `catalog/`.
-- Neutral element names in fragments. Project names only in `projects:`,
+- Labels are sub-headings, not bold lines: `#### Usage`, never a line with only `**Usage:**` ([format.md](references/format.md); `entry-lint` enforces it). Other format changes for kb need a won A/B test first.
+- Neutral element names in diagrams. Project names only in `projects:`,
   `evidence:` and `project:` tags.
 - Do not run git commands that change history (commit, reset, checkout).

@@ -1,6 +1,9 @@
 ---
 title: Backend Patterns and Best Practices
 description: OSGi patterns, request context, custom data types, validation and query patterns.
+aliases: [custom backend code patterns, get logged in user in Java, idempotent operation, custom data type in Java, custom validation in Java, null safe type conversion, uniqueness check with DAO, load only some fields]
+keywords: [Component, Reference, Activate, VariableResolver, DataTypeManager, registerCustomType, ValidationException, ValidationResult, Validator, AsmModel, StringFilter, maskedBy]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Backend Patterns and Best Practices
@@ -68,13 +71,13 @@ private List<Plugin> plugins;
 
 ### Field vs. Method Injection
 
-**Field injection (recommended for most cases):**
+#### Field injection (recommended for most cases)
 ```java
 @Reference
 private EntityDao entityDao;
 ```
 
-**Method injection (useful for the delegation pattern):**
+#### Method injection (useful for the delegation pattern)
 ```java
 @Reference
 public void setEntityDao(EntityDao entityDao) {
@@ -118,7 +121,7 @@ This pattern is the Java implementation for creating one of several possible con
 #### Accessing the Logged-in User in Java
 *   **Use Case**: You need to get the email or other claims of the user who initiated an operation to perform security checks or set ownership.
 *   **Implementation**:
-    1.  Inject the `hu.blackbelt.judo.dispatcher.api.VariableResolver` service using `@Reference`.
+    1.  Inject the `hu.blackbelt.judo.dispatcher.api.VariableResolver` service using `@Reference`. The service is registered once per model with `judo.model.name=<model name>`; set `target = "(judo.model.name=<app>)"` on the `@Reference` to bind the resolver of that model.
     2.  Call `variableResolver.resolve(String.class, "ACTOR", "email")` to get the value.
 *   **Key Insight**: This is the direct Java equivalent of the JQL `!getVariable("ACTOR", "email")` function and is the standard way to securely access the current user's identity.
 
@@ -162,6 +165,10 @@ public void someOperation() {
     3.  **Converter**: Create a Java class that implements the `Converter<String, YourType>` interface. This class formally tells the JUDO runtime how to perform the conversion.
     4.  **Registration**: Create an OSGi component that activates on startup, gets a reference to the `DataTypeManager` service, and calls `registerCustomType`. This links the `CustomType` from your model to your Java class and its converter.
 
+*   **Coercer**: the runtime converts values through one `ExtendableCoercer` per model (`hu.blackbelt.mapper.api`): `coerce(sourceValue, Class<T>)` or `coerce(sourceValue, String className)`. A `Converter` has `getSourceType()`, `getTargetType()` and `apply(Object)`. `DataTypeManager.registerCustomType(...)` adds the converters you pass to that coercer, so `coerce("...", YourType.class)` works afterwards. In OSGi, `ExtendableCoercerService` also picks up every `Converter` registered as an OSGi service.
+*   **Service and properties**: `DataTypeManager` is one OSGi service per model. It is registered with the property `judo.model.name=<model name>`, which is why the `@Reference` target is `(judo.model.name=<app>)`. The `AsmModel` service carries `name=<model name>` instead, so its `@Reference` target is `(name=<app>)`. The code sample below must use `(name=YourApplicationName)` for the `AsmModel` reference. Register each custom type once: a second `registerCustomType` for the same `EDataType` throws `IllegalStateException("Custom type already registered")`, so call `unregisterCustomType(modelType)` in `@Deactivate`.
+*   **Formatter overload**: `registerCustomType(modelType, javaClassName, converters, formatter)` takes a `Formatter<T>` (`getType()`, `convertValueToString`, `parseString`) and adds both `T -> String` and `String -> T` converters from it, so no hand-written `Converter` is needed.
+
 *   **Example Registration Component (using modern OSGi annotations)**:
     ```java
     @Component
@@ -170,7 +177,7 @@ public void someOperation() {
         @Reference(target = "(judo.model.name=YourApplicationName)")
         private DataTypeManager dataTypeManager;
 
-        @Reference(target = "(judo.model.name=YourApplicationName)")
+        @Reference(target = "(name=YourApplicationName)")
         private AsmModel asmModel;
 
         @Activate
@@ -218,6 +225,7 @@ The platform's own checks report codes such as `MISSING_REQUIRED_ATTRIBUTE`, `MI
     2.  **Validator Class**: Create a component that implements `hu.blackbelt.judo.runtime.core.validator.Validator` (module `judo-runtime-core-validator`).
     3.  **`isApplicable(EStructuralFeature feature)` method**: In this method, you write logic to tell the platform which model elements your validator should run against (e.g., "all attributes of type `FutureTime`").
     4.  **`validateValue(Payload payload, EStructuralFeature feature, Object value, Map<String, Object> context)` method**: This method contains the actual validation logic. If the validation fails, it should return a collection of `ValidationResult` objects.
+-   **Context keys**: The `context` argument holds the global validation context plus the location and root-flag keys. It has no `rootPayload` key.
 -   **Result**: The JUDO platform will automatically find and execute your validator for all applicable attributes in every incoming request, providing a powerful, DRY (Don't Repeat Yourself) way to enforce common constraints.
 
 ---
@@ -228,7 +236,7 @@ The platform's own checks report codes such as `MISSING_REQUIRED_ATTRIBUTE`, `MI
 
 **Purpose**: To centralize and reuse validation logic across multiple custom operations, ensuring consistency and reducing code duplication.
 
-**Why it's important**:
+#### Why it's important
 - **Consistency**: Ensures that the same validation rules (e.g., for an email or a date range) are applied everywhere.
 - **Maintainability**: When a validation rule changes, you only need to update it in one place.
 - **Readability**: Keeps your custom operation logic clean and focused on the business process, not on low-level validation details.
@@ -285,7 +293,7 @@ public final class ValidationUtils {
 }
 ```
 
-**Usage:**
+#### Usage
 ```java
 ValidationUtils.validateRequired(input.getUserName(), "Username");
 ValidationUtils.validateEmail(input.getEmail());
@@ -296,7 +304,7 @@ ValidationUtils.validateDateRange(input.getStartDate(), input.getEndDate());
 
 **Purpose**: To provide a null-safe way to convert between JUDO's service-layer `MapHolder` types and the backend entity-layer types.
 
-**Why it's important**:
+#### Why it's important
 - **Null Safety**: Prevents `NullPointerException` errors when dealing with optional relationships or fields. The generated `.from()` methods are not null-safe.
 - **Cleaner Code**: Simplifies conversion logic in your custom operations, making it more readable and less error-prone.
 
@@ -320,7 +328,7 @@ public final class TypeConverter {
 }
 ```
 
-**Usage:**
+#### Usage
 ```java
 Settlement entitySettlement = TypeConverter.convert(input.getSettlement(), Settlement.class);
 ```
@@ -545,13 +553,13 @@ Optional<Event> latestEvent = eventDao.query()
 
 Masks (projections) are critical for performance when working with entities that have many fields or relationships.
 
-**Empty mask for existence checks:**
+#### Empty mask for existence checks
 ```java
 // Only loads identifier - fastest way to check existence
 boolean exists = dao.getById(id, EntityMask.entityMask()).isPresent();
 ```
 
-**Load specific fields only:**
+#### Load specific fields only
 ```java
 // Load only required fields
 User user = userDao.getById(
@@ -563,7 +571,7 @@ User user = userDao.getById(
 ).orElseThrow();
 ```
 
-**Masks in queries:**
+#### Masks in queries
 ```java
 // Query with mask to control memory usage
 List<Address> addresses = addressDao.query()
@@ -576,7 +584,7 @@ List<Address> addresses = addressDao.query()
     .selectList();
 ```
 
-**Nested masks for relationships:**
+#### Nested masks for relationships
 ```java
 // Load entity with related entities (controlled depth)
 Address address = addressDao.getById(
@@ -592,7 +600,7 @@ Address address = addressDao.getById(
 ).orElseThrow();
 ```
 
-**Partial updates with masks:**
+#### Partial updates with masks
 ```java
 Entity entity = entityDao.getById(id).orElseThrow();
 entity.setStatus(newStatus);
@@ -604,7 +612,7 @@ entityDao.update(
 );
 ```
 
-**Performance benefits:**
+#### Performance benefits
 - 90% less memory usage for large collections
 - 10x faster queries with proper masks
 - Prevents N+1 query problems

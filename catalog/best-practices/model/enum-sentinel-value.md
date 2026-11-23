@@ -12,7 +12,6 @@ evidence: ["trivia:unrecorded", "InterfaceRegister:unrecorded"]
 alternatives: []
 related: [conditional-visibility-getter, enum-state-machine, default-value-patterns]
 first_seen: 2026-03-04
-fragment: enum-sentinel-value
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -60,7 +59,6 @@ The sentinel is a real member. Switches, counts and drop-downs include it unless
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=enum-sentinel-value cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Choice {
@@ -78,4 +76,3 @@ classDiagram
   }
   Prompt ..> Choice : answer
 ```
-<!-- /mermaid:generated -->

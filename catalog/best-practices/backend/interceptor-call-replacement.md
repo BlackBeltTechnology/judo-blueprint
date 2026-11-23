@@ -11,7 +11,6 @@ projects: [alba]
 evidence: ["alba:unrecorded"]
 alternatives: []
 related: [interceptor-crud-lifecycle, interceptor-global-logging, custom-operation-osgi-component]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -26,7 +25,7 @@ The generated create (or update) of a transfer object is not what the applicatio
 
 - `ignoreDecoratedCall()` defaults to `false`. When it returns `true`, the platform's own DAO call is skipped; the decorated call runs only if no interceptor registered for that operation returns `true` ([interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)).
 - With the decorated call skipped, `preCall` must return a payload of the decorated call's **return type**, because that value becomes the operation result. The input payload is not the right return value ([contract table](../../agent-docs/backend/interceptors.md#the-interceptor-contract)). Any other type fails with `IllegalArgumentException`.
-- Only built-in behaviour operations can be replaced (create, update, delete, list, refresh, reference operations and so on). Custom, mapped and script operations never reach interceptors ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
+- Only built-in behaviour operations can be replaced (create, update, delete, list, refresh, reference operations and so on). Custom and script operations never reach interceptors; built-in operations on a mapped type do ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)).
 - The interceptor runs inside the operation's transaction; an exception from it rolls the write back. Refuse with `InterceptorCallBusinessException` only ([business error](../../agent-docs/backend/interceptors.md#throwing-a-business-error-from-an-interceptor)).
 - The platform documents this as the "decoupled service creation" pattern: create the resource in another bounded context in `preCall` and suppress the original ([decoupled service creation](../../agent-docs/backend/interceptors.md#decoupled-service-creation-cqrs-like-pattern)).
 
@@ -74,7 +73,7 @@ An admin form creates an admin profile. The generated create would store an admi
 
 - When the behaviour can be a normal custom operation with its own name: a replaced built-in call surprises readers and the generated UI still shows the original entity's labels.
 - When you only add behaviour around the call; use `preCall` or `postCall` without `ignoreDecoratedCall` ([[interceptor-crud-lifecycle]]).
-- When the operation is custom, mapped or a script operation: interceptors never fire for those, so implement the change in the operation itself.
+- When the operation is custom or a script operation: interceptors never fire for those, so implement the change in the operation itself.
 
 ## Related
 

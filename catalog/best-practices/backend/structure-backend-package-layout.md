@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/interceptors/src/main/java", "rackinspect:application/common/src/main/java", "rackinspect:application/keycloak-client/src/main/java", "rackinspect:application/INTERCEPTORS.md", "rackinspect:application/CUSTOM-OPERATIONS.md"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

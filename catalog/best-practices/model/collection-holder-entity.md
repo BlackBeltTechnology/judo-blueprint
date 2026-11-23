@@ -11,8 +11,6 @@ projects: [alba]
 evidence: ["alba:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: collection-holder-entity
-diagram: { kinds: [entity], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -59,7 +57,6 @@ A Product has a required `holder` to a VersionHolder. VersionHolder has an `item
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=collection-holder-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Product {
@@ -77,4 +74,3 @@ classDiagram
   Product --> "0..1" Version : current
   VersionHolder *-- "*" Version : items
 ```
-<!-- /mermaid:generated -->

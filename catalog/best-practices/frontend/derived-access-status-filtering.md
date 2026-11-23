@@ -11,7 +11,6 @@ projects: [doors-model]
 evidence: ["doors-model:unrecorded"]
 alternatives: []
 related: [approval-workflow-conditional-visibility, dual-actor-frontend-architecture, admin-default-generated-ui]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

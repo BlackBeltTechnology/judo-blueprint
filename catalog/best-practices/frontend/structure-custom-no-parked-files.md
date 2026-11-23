@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks"]
 alternatives: []
 related: [hook-scaffold-default-pattern, custom-component-directory, application-customizer-hub, structure-generator-ignore-scope]
-fragment: "none: frontend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

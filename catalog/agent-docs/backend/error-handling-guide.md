@@ -1,6 +1,9 @@
 ---
 title: Backend Error Handling Guide
 description: "Backend errors: ValidationException with field location (400), modeled business faults declared on the operation (422), platform exceptions (403, 404), what interceptors may throw, and HTTP mapping."
+aliases: [backend error handling, validation error 400, business fault 422, exception to http status, interceptor exception, error response structure]
+keywords: [ValidationException, InterceptorCallBusinessException, AccessDeniedException, NotFoundException, InternalServerException, X-Fault, ClientException]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Backend Error Handling Guide
@@ -86,6 +89,9 @@ A `ValidationResult` has `code`, `level`, `location` (type `Object`) and a `deta
 - Field errors carry the attribute or relation name as `location`.
 - The platform itself emits results without location (`AUTHENTICATION_REQUIRED`, `ACCESS_DENIED`, `INVALID_IDENTIFIER`) or with non-field locations such as `_mask` and `_identifier`.
 - You may throw a `ValidationException` with only a code (the official documentation example uses `SHIPPED_TIME_MUST_AFTER_ORDER_TIME` with no location).
+- With `ignoreInvalidValues` set, attribute validation is skipped for the attribute, including the required-attribute check.
+- Nested locations join container paths with `/` and add an attribute after `.`, with list indexes in brackets, for example `orders[0]/items[2].price`. Use the location string as returned; do not parse it as a plain attribute path.
+- If traversing the payload throws `IllegalArgumentException`, the validator logs it at debug level only and continues with the results collected so far (they are thrown as a `ValidationException` or stored as the result, as configured). A validation error can be missing from the response.
 
 Do not assume every error can be rendered next to an input field, and do not assume a validation error maps to a model attribute.
 
@@ -139,8 +145,13 @@ Notes:
 - `BusinessException` (module `judo-dispatcher-api`) extends `RuntimeException`, **not** `ClientException`. Fields: `type`, `errorCode`, `details`, `throwable`, `locale`.
 - Exceptions are not unwrapped recursively: a `ClientException` or `BusinessException` buried in a cause chain surfaces as a generic 500.
 - The CXF `FaultInterceptor` only handles exceptions that escape the mapper and sets just the HTTP status.
+- Known issue: a `ClientException` subclass whose `getStatusCode()` returns `null` gets status 400 from the JAX-RS `ClientExceptionMapper`. If the exception reaches the CXF fault path instead, `FaultInterceptor` unboxes the `Integer` into an `int` without a null check and fails with a `NullPointerException` (`FaultInterceptor.java:89`). Workaround: always return a status code from `getStatusCode()`.
 - Exposed operations validate their input in a transaction that is rolled back; no interceptors run during that validation.
 - There is no `FeedbackItem` class; the equivalent structure is `ValidationResult`.
+- `ValidationException` has no `getViolations()` method. It is built from a collection of `ValidationResult` and exposes it as `getValidationResults()`.
+- A `WebApplicationException` is mapped by its cause: a Jackson cause gives 400 with code `INVALID_JSON`; a missing or `RuntimeException` cause gives 500; any other cause gives 400.
+- `PayloadMessageBodyWriter` swallows every response-serialisation error: nothing is logged and no error response is sent.
+- `RequestConverter.convert` catches `IllegalArgumentException` from the payload traversal and logs it at debug level only. An attribute value that fails conversion is normally reported as a validation error, but where validation does not run for the payload the conversion exception is rethrown inside the traversal, so an `IllegalArgumentException` (for example an invalid enumeration literal) can be swallowed and not reported as a validation error.
 
 ## Example Project Helpers (Not Platform API)
 
@@ -231,6 +242,8 @@ if (!errors.isEmpty()) {
 A `ValidationException` can carry many `ValidationResult`s. If a custom operation catches it and throws a single fault instead, the per-row result list is lost. Keep the multi-result shape when the client needs a list of row-level problems.
 
 For required fields and relations declared in the model the runtime validator already reports `MISSING_REQUIRED_ATTRIBUTE` and `MISSING_REQUIRED_RELATION` (the latter with `__referenceId`); do not duplicate those checks in custom code.
+
+Setting validation off (`enableValidation` set to `false` in the `DefaultDispatcher` constructor) also clears every validator in the validator provider, including validators the application registered. Keep validation on when you rely on custom validators.
 
 ---
 

@@ -1,0 +1,86 @@
+{"id": "c13-18", "status": "not-platform", "report": null, "note": "dropped: not verified. The cited session lines do not show the null value, and the Sandbox fixture has no transfer-object table; needs reproduction with a UI model that has one"}
+{"id": "c18-11", "status": "not-platform", "report": null, "note": "dropped: unverified. The template builds the module list from actorTypes (fullstack-project.yaml:486-490; pom.xml.hbs:92-96), so the observed no-change likely comes from an ignore rule or checksum; needs reproduction"}
+{"id": "c19-12", "status": "not-platform", "report": null, "note": "dropped: unverified. The checksum check is on by default (validateChecksum = true, EsmGeneratorParameter.java:61); whether the file had a saved entry is not shown; needs reproduction"}
+{"id": "c11-21", "status": "not-platform", "report": null, "note": "dropped: documented feature gap, not a defect (catalog multi-tenant-keycloak-realm.md:28 states it)"}
+{"id": "c11-22", "status": "upstream", "report": "FRAMEWORK.md#6", "note": "new: osgiI18nApiVersion undefined in integration-test pom (pom.xml.hbs:226)"}
+{"id": "c11-23", "status": "upstream", "report": "FRAMEWORK.md#5", "note": "new: Playwright config retries 4 unconditionally (playwright.config.ts.hbs:11,15,17)"}
+{"id": "c12-15", "status": "duplicate", "report": "FRAMEWORK.md#1", "note": "merged into #1 (session L6619); same root"}
+{"id": "c12-17", "status": "upstream", "report": "FRAMEWORK.md#7", "note": "new: Liquibase prehook logs ERROR and health stays 503 (LiquibaseModelDataSourcePrehook.java:228)"}
+{"id": "c13-01", "status": "duplicate", "report": "FRAMEWORK.md#1", "note": "same as c12-15; merged into #1 (gaps R16-1, R16-4)"}
+{"id": "c13-04", "status": "upstream", "report": "FRAMEWORK.md#8", "note": "new: REST client drops numeric __version (utils.ts.hbs:15)"}
+{"id": "c13-13", "status": "duplicate", "report": "FRAMEWORK.md#9", "note": "same symptom and cause as c14-08; the zero DOM rows; the wrong DB column was a builder mistake; merged into #9"}
+{"id": "c13-14", "status": "not-platform", "report": null, "note": "dropped: the default toolbar is a placeholder; the configuration hook is the documented route; at most a catalog wording change"}
+{"id": "c14-06", "status": "not-platform", "report": null, "note": "dropped: unverified visual claim (low confidence, not measured); the spaceRequired workaround is documented"}
+{"id": "c14-08", "status": "upstream", "report": "FRAMEWORK.md#9", "note": "new: cards container in a view fed a refresh action the page does not provide (CardsContainer.tsx.hbs has no RefreshAction)"}
+{"id": "c14-10", "status": "not-platform", "report": null, "note": "dropped: documented feature gap (advanced-patterns.md:1539 states the absence of a refresh counter)"}
+{"id": "c14-19", "status": "upstream", "report": "FRAMEWORK.md#10", "note": "new: derived product fields computed for every row of the company price join (session L8150-L8182; code path not re-read)"}
+{"id": "c15-14", "status": "duplicate", "report": "FRAMEWORK.md#9", "note": "same as c14-08; the refresh-counter part (c14-10) is a documented feature gap and dropped"}
+{"id": "c15-16", "status": "not-platform", "report": null, "note": "dropped: documented per-field route for custom visual elements; a feature gap, not a defect"}
+{"id": "c15-17", "status": "duplicate", "report": "FRAMEWORK.md#10", "note": "same as c14-19; merged into #10 (session L8620, L9004)"}
+{"id": "c15-27", "status": "duplicate", "report": "FRAMEWORK.md#7", "note": "merged into #7 (session L8946, L9047); the process part (filtered lines) is a builder mistake"}
+{"id": "c15-32", "status": "duplicate", "report": "FRAMEWORK.md#2", "note": "merged into #2 (session L8990)"}
+{"id": "c16-39", "status": "duplicate", "report": "CLI.md#13", "note": "merged into #13 as evidence (session L9557-L9583)"}
+{"id": "c16-41", "status": "duplicate", "report": "FRAMEWORK.md#2", "note": "merged into #2 (session L9547-L9551)"}
+{"id": "c17-11", "status": "duplicate", "report": "FRAMEWORK.md#12", "note": "index part is the same as c17-46; the cold first call (1204 ms) is a warm-up effect of the test, not a platform defect"}
+{"id": "c17-39", "status": "upstream", "report": "FRAMEWORK.md#11", "note": "new: rdbms apply on an empty PostgreSQL database (session L10063-L10079)"}
+{"id": "c17-46", "status": "upstream", "report": "FRAMEWORK.md#12", "note": "new: foreign-key columns get no index (AttributeRules.java:283-287; session L10126-L10145)"}
+{"id": "c17-48", "status": "duplicate", "report": "FRAMEWORK.md#7", "note": "merged into #7 (session L10124)"}
+{"id": "c19-07", "status": "upstream", "report": "FRAMEWORK.md#14", "note": "new: Zeta and EVL validators disagree; mismatch names no element (ExpressionZetaValidator.java:263; session L10598-L10605)"}
+{"id": "c11-24", "status": "duplicate", "report": "FRAMEWORK.md#5", "note": "same template defect; merged into #5 (fullyParallel and retries); shared-data part already covered in the catalog"}
+{"id": "c17-29", "status": "upstream", "report": "FRAMEWORK.md#13", "note": "new: integration-test pom has no dependency hook (session L10023-L10028)"}
+{"id": "c11-06", "status": "duplicate", "report": "KB.md#2", "note": "section not found reported as missing file; merged into #2"}
+{"id": "c11-08", "status": "duplicate", "report": "KB.md#2", "note": "section not found reported as missing file; merged into #2"}
+{"id": "c11-10", "status": "duplicate", "report": "KB.md#1", "note": "sibling heading reported as parent; merged into #1"}
+{"id": "c11-12", "status": "upstream", "report": "KB.md#4", "note": "new: read-discipline guard fires on build, log and test work (session L6112)"}
+{"id": "c12-01", "status": "upstream", "report": "KB.md#6", "note": "new: index-refresh warning on every search; not reproduced 2026-11-19"}
+{"id": "c12-04", "status": "duplicate", "report": "KB.md#2", "note": "section not found reported as missing file; merged into #2"}
+{"id": "c12-06", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c12-08", "status": "duplicate", "report": "FRAMEWORK.md#1", "note": "kb search miss for a known framework issue; the catalog now carries it; the defect is #1"}
+{"id": "c12-22", "status": "not-platform", "report": null, "note": "dropped: documented naming rule (tables-navigation.md:131-134); printing the created FQN is a usability wish, not a defect"}
+{"id": "c13-09", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c13-11", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c13-16", "status": "not-platform", "report": null, "note": "dropped: no in operator on string filters is by design; the error already lists the valid operators; at most a catalog wording change"}
+{"id": "c15-13", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c15-23", "status": "upstream", "report": "KB.md#5", "note": "new: kb_search ranking misses agent-docs sections (email query; re-run reproduced)"}
+{"id": "c15-35", "status": "upstream", "report": "CLI.md#18", "note": "new: allowed-value error prints MIME types as object identities; the claim that --add keeps only one MIME type was not reproduced"}
+{"id": "c15-37", "status": "upstream", "report": "CLI.md#19", "note": "new: validate --strict orphan FormCall after fill (session L8758-L8782; not reproduced in this pass)"}
+{"id": "c16-02", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c16-12", "status": "duplicate", "report": "KB.md#4", "note": "same guard defect; merged into #4"}
+{"id": "c16-45", "status": "duplicate", "report": "KB.md#4", "note": "same guard defect; merged into #4"}
+{"id": "c17-22", "status": "upstream", "report": "CLI.md#17", "note": "new: three-level element FQN fails; stored value does not follow (session L9797-L9806; not reproduced in this pass)"}
+{"id": "c17-26", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c18-04", "status": "duplicate", "report": "FRAMEWORK.md#1", "note": "merged into #1 (session L10287, L10473); catalog known-issue entry already exists"}
+{"id": "c18-07", "status": "duplicate", "report": "CLI.md#3", "note": "merged into #3 as evidence (session L10240, L10256)"}
+{"id": "c18-09", "status": "not-platform", "report": null, "note": "dropped: help-text wish; the filter and connection shape is documented in ui-authoring-guide.md:479-533"}
+{"id": "c18-14", "status": "duplicate", "report": "KB.md#1", "note": "sibling heading reported as parent; merged into #1"}
+{"id": "c11-03", "status": "duplicate", "report": "KB.md#2", "note": "section not found reported as missing file; merged into #2; R16 transient case not re-run"}
+{"id": "c11-05", "status": "duplicate", "report": "KB.md#2", "note": "section not found reported as missing file; merged into #2"}
+{"id": "c11-07", "status": "duplicate", "report": "KB.md#2", "note": "section not found reported as missing file; merged into #2"}
+{"id": "c11-09", "status": "duplicate", "report": "KB.md#1", "note": "sibling heading reported as parent; merged into #1; also wrong-section (#2)"}
+{"id": "c11-11", "status": "duplicate", "report": "KB.md#2", "note": "section not found reported as missing file; merged into #2"}
+{"id": "c11-14", "status": "upstream", "report": "CLI.md#20", "note": "new: query --select reference-field error does not name the fix; scalar-only rule is documented (judo-cli.md:156)"}
+{"id": "c12-03", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c12-05", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c12-07", "status": "duplicate", "report": "KB.md#4", "note": "same guard defect; merged into #4"}
+{"id": "c12-19", "status": "duplicate", "report": "CLI.md#20", "note": "same as c11-14; merged into #20"}
+{"id": "c13-03", "status": "not-platform", "report": null, "note": "dropped: expected behaviour. -a builds the app module only and -KA skips the Karaf package by design (judo.sh.hbs:189-195); WR16-5 is already applied in the catalog"}
+{"id": "c13-10", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c13-12", "status": "duplicate", "report": "KB.md#4", "note": "same guard defect; merged into #4"}
+{"id": "c13-17", "status": "upstream", "report": "FRAMEWORK.md#15", "note": "new: judo-cli.jar disappears after generate or build; cause not located (session L7321, L7339)"}
+{"id": "c14-02", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3; bare path without catalog/ also not found (see #2)"}
+{"id": "c15-11", "status": "duplicate", "report": "KB.md#4", "note": "same guard defect; merged into #4"}
+{"id": "c15-22", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c15-36", "status": "duplicate", "report": "CLI.md#11", "note": "merged into #11 as evidence (session L8803)"}
+{"id": "c15-40", "status": "duplicate", "report": "FRAMEWORK.md#15", "note": "same as c13-17; merged into #15 (session L8817-L8820)"}
+{"id": "c16-09", "status": "duplicate", "report": "CLI.md#12", "note": "merged into #12 as evidence (session L9250); the missing-MimeType message gap added"}
+{"id": "c16-28", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get hides body sections; merged into #3"}
+{"id": "c16-36", "status": "duplicate", "report": "CLI.md#10", "note": "merged into #10 as evidence (session L9509-L9510)"}
+{"id": "c17-12", "status": "upstream", "report": "KB.md#5", "note": "new: ranking miss for the database-index query (re-run reproduced)"}
+{"id": "c17-23", "status": "duplicate", "report": "CLI.md#20", "note": "same as c11-14; merged into #20"}
+{"id": "c17-25", "status": "duplicate", "report": "KB.md#3", "note": "path-only kb_get returns a short fragment (#3); unqualified path not found (#2); merged into #3"}
+{"id": "c17-37", "status": "upstream", "report": "FRAMEWORK.md#16", "note": "new: judo.sh build -d removes Karaf directory before Karaf stopped (judo.sh.hbs:555-566, 839-840)"}
+{"id": "c18-06", "status": "duplicate", "report": "CLI.md#13", "note": "merged into #13 as evidence (session L10381-L10390)"}
+{"id": "c18-08", "status": "duplicate", "report": "CLI.md#20", "note": "same as c11-14 for the --select part; the --where fqn~ part is a builder mistake (not a platform defect)"}
+{"id": "c18-10", "status": "duplicate", "report": "FRAMEWORK.md#15", "note": "same as c13-17; merged into #15 (session L10344-L10405)"}
+{"id": "c18-15", "status": "upstream", "report": "KB.md#5", "note": "new: ranking miss for the root-URL query (re-run reproduced); the catalog cross-reference part is a catalog change, not in this report"}
+{"id": "c18-17", "status": "duplicate", "report": "KB.md#4", "note": "same guard defect; merged into #4"}

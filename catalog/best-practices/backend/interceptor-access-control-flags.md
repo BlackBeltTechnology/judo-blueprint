@@ -10,7 +10,6 @@ status: emerging
 projects: [rackinspect, judo-partner]
 evidence: ["rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/jobsheet/jobsheetitem/JobSheetInputItemListInterceptor.java", "judo-partner:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -12,7 +12,6 @@ Pages come from the transfer objects and access points a project defines over th
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=ongoing-finished-deleted-status-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Activity {
@@ -34,4 +33,3 @@ classDiagram
   Activity ..> ActivityStatus : status
   TrackedActivity ..> ActivityStatus : status
 ```
-<!-- /mermaid:generated -->

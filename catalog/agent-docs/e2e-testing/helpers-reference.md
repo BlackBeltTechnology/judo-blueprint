@@ -1,6 +1,9 @@
 ---
 title: E2E helpers reference
 description: API reference for the generated Playwright helpers (TableHelper, ApiHelper, VisualElementIds).
+aliases: [playwright helper functions, table helper methods, api wait helper, e2e utility functions, visual element ids, filter helpers]
+keywords: [ApiHelper, TableHelper, gotoWithWait, triggerAndWaitWithRegex, getRow, getCell, TEST_DATA_PREFIX, formatNumber, openAddAndApplyFilters, VisualElementIds]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # Helper Utilities Reference
@@ -21,7 +24,7 @@ Handles API request synchronization to ensure tests wait for backend responses.
 const apiHelper = new ApiHelper();
 ```
 
-The ApiHelper automatically constructs the base API regex from `APP_URL` environment variable.
+The ApiHelper automatically constructs the base API regex from `APP_URL` environment variable. `APP_URL` is inserted into the regex without escaping, so regex metacharacters in the URL change what is matched.
 
 ### Methods
 

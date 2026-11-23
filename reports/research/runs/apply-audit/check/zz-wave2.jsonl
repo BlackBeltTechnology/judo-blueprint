@@ -1,0 +1,10 @@
+{"id": "R1229", "verdict": "ok", "note": "getAttributeType() unguarded, callers confirmed"}
+{"id": "R0603", "verdict": "ok", "note": "cast keyof typeof _BooleanOperation confirmed"}
+{"id": "R0693", "verdict": "ok", "note": "FaultInterceptor:89 unboxing vs mapper null-safe"}
+{"id": "R1705", "verdict": "ok", "note": "same fact as R0693, single bullet"}
+{"id": "R2088", "verdict": "ok", "note": "JslDslGenerator :197 vs :226 confirmed"}
+{"id": "R2379", "verdict": "ok", "note": "<= 0 (etl:96) vs < 0 (eol:69) confirmed; junction-table outcome follows from field1-only assignment"}
+{"id": "R0151", "verdict": "ok", "note": "breakpoint keys beside root confirmed in fragment"}
+{"id": "R1175", "verdict": "ok", "note": "truncating post-check/delete vs untruncated pre-check confirmed"}
+{"id": "R1843", "verdict": "ok", "note": "memo deps [ownerData, allowFetch] confirmed; residual defect correctly stated"}
+{"id": "R1181", "verdict": "fixed", "note": "template context holds only `page`, `container` is a PageDefinition feature: bare container.table never true, set-selector always takes data.<relation> branch; replaced the unconfirmed sentence"}

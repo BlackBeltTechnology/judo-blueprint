@@ -1,6 +1,9 @@
 ---
 title: Production Deployment
 description: Production builds, Docker and Compose deployment, environment configuration, monitoring and deployment checklist.
+aliases: [deploy to production, production docker image, docker compose deployment, production environment variables, production health check, deployment checklist]
+keywords: [skipDocker, JUDO_PLATFORM_RDBMS_DIALECT, JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL, JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET, DOCKER_IMAGE_TAGS, compose-postgresql-https, /system/health, bundle:list, judo-runtime.cfg, VITE_API_DEFAULT_BASE_URL]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Production Deployment
@@ -80,7 +83,7 @@ The build process creates Docker image tars when Docker building is requested:
 
 Image details (jib, base image, tags, agents, ports) are in [Build Process](./build-process.md#docker-image-build).
 
-**Output:**
+#### Output
 - Docker context: `/application/docker/target/docker/`
 - Docker image: Tagged with project version
 
@@ -94,7 +97,7 @@ The Docker image includes:
 
 ### Running Docker Container
 
-**Basic deployment:**
+#### Basic deployment
 ```bash
 docker run -d \
   --name <app>-app \
@@ -132,6 +135,10 @@ The project template ships two Compose profiles under `application/docker/`:
 | `compose-postgresql-https` | Production-like: TLS on 80/443, Keycloak on PostgreSQL, the app on PostgreSQL with a filesystem filestore (`JUDO_PLATFORM_FILESTORE_DIRECTORY=/filestore`), a helper container that downloads the traefik.me certificate |
 
 `compose-postgresql-https` declares its network and volumes as **external**: create them before `docker compose up`. Select a profile with the `compose_env` start option.
+
+**Known issue:** in `compose-postgresql-https` only the `postgres` service mounts the filestore volume (at `/filestore`). The `app` service sets `JUDO_PLATFORM_FILESTORE_DIRECTORY=/filestore` but has no volume for it, so files it writes are not stored in that volume.
+
+**Known issue:** the `app` router in `compose-postgresql-https` gets the auth service certificate domains (`auth.traefik.me`, `auth-*.traefik.me`), not the app hostname (`app.traefik.me`), so the app certificate does not match the app hostname. Open the app through the hostname the certificate covers, or use `compose-develop` (plain HTTP) for local work.
 
 ### Persisting container state
 
@@ -190,7 +197,7 @@ VITE_FILE_DEFAULT_BASE_URL=https://api.yourdomain.com
 Production Karaf configurations are located in:
 - `application/karaf-offline/target/assembly/etc/`
 
-**Important files:**
+#### Important files
 - `org.ops4j.datasource-<app>.cfg` - Database configuration (passwords may be stored as `ENC(...)`, see [Encrypted Values](./application-config.md#encrypted-values-jasypt))
 - `org.ops4j.pax.web.cfg` - Web server configuration
 - `judo-runtime.cfg` - Application runtime configuration
@@ -199,11 +206,11 @@ Production Karaf configurations are located in:
 
 ### Logs
 
-**Locations:**
+#### Locations
 - Karaf: `application/.karaf/data/log/karaf.log`
 - Docker: `docker logs <app>-app`
 
-**Tail logs:**
+#### Tail logs
 ```bash
 # Local Karaf
 tail -f application/.karaf/data/log/karaf.log
@@ -217,7 +224,7 @@ docker logs <app>-app | grep ERROR
 
 ### Karaf Console
 
-**Connect to Karaf console:**
+#### Connect to Karaf console
 
 ```bash
 # Local (8101 / karaf:karaf are Apache Karaf defaults; change them outside local development)
@@ -227,7 +234,7 @@ ssh -p 8101 karaf@localhost
 docker exec -it <app>-app /opt/karaf/bin/client
 ```
 
-**Production monitoring commands:**
+#### Production monitoring commands
 
 ```bash
 # Check bundle status
@@ -251,7 +258,7 @@ bundle:diag > diagnostics.txt
 
 ### Health Checks
 
-**Verify application health:**
+#### Verify application health
 
 The health endpoint is `/system/health` (there is no `/health` route). Use the model name as tag:
 
@@ -272,21 +279,21 @@ ssh -p 8101 karaf@localhost "jdbc:datasources"
 
 #### "Could not resolve dependencies"
 
-**Solution:**
+##### Solution
 - Check Maven settings: `~/.m2/settings.xml`
 - Verify repository credentials
 - Check network connectivity to artifact repository
 
 #### "Database connection failed"
 
-**Solution:**
+##### Solution
 - Verify database is running and accessible
 - Check database credentials in configuration
 - Test connection: `psql -h $JUDO_PLATFORM_RDBMS_DB_HOST -U $JUDO_PLATFORM_RDBMS_DB_USER -d $JUDO_PLATFORM_RDBMS_DB_DATABASE`
 
 #### "Port already in use"
 
-**Solution:**
+##### Solution
 - Check running processes: `lsof -i :8181` (Karaf) / `lsof -i :8080` (Keycloak)
 - Stop conflicting service or change port
 - For Docker: Check for orphaned containers: `docker ps -a`
@@ -295,14 +302,14 @@ ssh -p 8101 karaf@localhost "jdbc:datasources"
 
 #### "Bundle not starting"
 
-**Solution:**
+##### Solution
 - Check dependencies: `bundle:diag [bundle-id]`
 - View detailed errors: `log:tail` or check log files
 - Verify all required bundles are installed: `bundle:list`
 
 #### "Out of memory"
 
-**Solution:**
+##### Solution
 - Increase JVM memory in Karaf startup script
 - Check for memory leaks: `shell:jvm`
 - Review and optimize application code

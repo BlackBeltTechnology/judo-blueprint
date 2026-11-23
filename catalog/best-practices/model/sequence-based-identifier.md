@@ -10,8 +10,6 @@ status: established
 projects: [trivia, itracker, mjsz, InterfaceRegister, workflow-poc]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "mjsz:unrecorded", "InterfaceRegister:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-fragment: sequence-based-identifier
-diagram: { kinds: [entity], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -70,7 +68,6 @@ A Ticket entity has a required `number` (Integer, identifier attribute, default 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=sequence-based-identifier cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Ticket {
@@ -80,4 +77,3 @@ classDiagram
     +String reference
   }
 ```
-<!-- /mermaid:generated -->

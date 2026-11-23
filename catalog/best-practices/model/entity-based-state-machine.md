@@ -12,8 +12,6 @@ evidence: ["workflow-poc:unrecorded"]
 alternatives: [enum-state-machine]
 related: [enum-state-machine, generalization-base-entity, composition-ownership, custom-implementation-placeholder]
 first_seen: 2026-03-04
-fragment: entity-based-state-machine
-diagram: { kinds: [entity, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -62,7 +60,6 @@ The model holds data only. Moving a token, evaluating a guard and calling an act
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=entity-based-state-machine cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Action {
@@ -102,4 +99,3 @@ classDiagram
   Transition --> "1" State : nextState
   Workflow *-- "*" State : states
 ```
-<!-- /mermaid:generated -->

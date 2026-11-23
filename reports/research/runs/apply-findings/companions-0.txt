@@ -1,0 +1,10 @@
+catalog/agent-docs/backend/authentication-guide.agent.md
+catalog/agent-docs/backend/internationalization-guide.agent.md
+catalog/agent-docs/deployment/application-config.agent.md
+catalog/agent-docs/e2e-testing/troubleshooting.agent.md
+catalog/agent-docs/frontend/development-workflow.agent.md
+catalog/agent-docs/frontend/hooks/README.agent.md
+catalog/agent-docs/frontend/hooks/table-hooks.agent.md
+catalog/agent-docs/frontend/model-screen-layout.agent.md
+catalog/agent-docs/integration-testing/getting-started.agent.md
+catalog/agent-docs/model/judo-cli.agent.md

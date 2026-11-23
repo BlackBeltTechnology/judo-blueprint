@@ -11,7 +11,6 @@ projects: [indamedia-adtrack]
 evidence: ["indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [service-delegation-pattern, filestore-mediated-file-transfer, facade-service-pattern]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

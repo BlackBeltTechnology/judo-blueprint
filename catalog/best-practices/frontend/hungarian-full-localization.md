@@ -11,7 +11,6 @@ projects: [rackinspect, doors-model]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/public/i18n/application_hu-HU.json", "doors-model:unrecorded"]
 alternatives: []
 related: [generator-ignore-i18n-layout, i18n-custom-translation-keys, i18n-generator-override-extra-fragment]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -25,7 +24,7 @@ Deliver the whole UI in Hungarian: entity labels, menus and enumerations (applic
 
 - Translations are flat files in `public/i18n/`: `application_<locale>.json` (generated from the model) and `system_<locale>.json` (platform UI), plus `*_default.json` fallbacks. Keys are flat dot-notation under a `translation` root ([directory structure](../../agent-docs/frontend/i18n.md)).
 - Generated key patterns: `entities.<Entity>.<Component>.<field>`, `enumerations.<Type>.<VALUE>` and `enumerations.<Type>._null`, `menuTree.<label>`, `services.<service>...`, `faults.<prefix>.<object>.<attribute>`, `extra.localization.operation.<name>` ([key conventions](../../agent-docs/frontend/i18n.md)).
-- Every `application_<locale>.json`, including `application_hu-HU.json`, is generated from the model. A hand-edited one is overwritten (or fails the checksum check) unless it is in `.generator-ignore`; once ignored it no longer follows the model ([best practices](../../agent-docs/frontend/i18n.md), see [[generator-ignore-i18n-layout]]).
+- The generator writes `application_default.json` from the model. The generated `sync-translations.py` merges it into `application_<defaultLanguage>.json`: it adds new model keys, keeps existing values, and drops keys no longer in the source. Other locale files, such as a script-written `application_hu-HU.json`, are not written by the generator and survive regeneration; `.generator-ignore` protects any file the generator does write, and once ignored it no longer follows the model ([best practices](../../agent-docs/frontend/i18n.md), see [[generator-ignore-i18n-layout]]).
 - Adding a language: copy the default files, translate, update the language selector. Users switch language at runtime through i18n `changeLanguage` and a registered language dropdown ([adding languages](../../agent-docs/frontend/i18n.md)).
 - Labels set on the UI model elements become the generated translation keys, so Hungarian can also be provided in the model.
 
@@ -40,7 +39,7 @@ public/i18n/
   update-localization.py    # merge newly generated keys with manual ones
 ```
 
-The scripts are custom tools, not platform features. This setup keeps `application_hu-HU.json` and `system_hu-HU.json` in `.generator-ignore` and runs them after model changes.
+The scripts are custom tools, not platform features. This setup lists `application_hu-HU.json` and `system_hu-HU.json` in `.generator-ignore` and runs the scripts after model changes. The ignore entries are optional: the generator does not write these locale files, so they survive regeneration either way (see Platform base above).
 
 - Translate enumerations including `_null`, menu labels and every entity field.
 - Diff the key set against `application_default.json` to find untranslated keys after each model change.

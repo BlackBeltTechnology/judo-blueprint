@@ -1,0 +1,138 @@
+[
+ {
+  "id": "BA-110",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": null, \"heading\": \"\", \"note\": \"mapper Coercer not added\"}"
+ },
+ {
+  "id": "BA-178",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/backend/patterns-and-best-practices.md",
+  "owner": "backend-b",
+  "first_pass": "sweep-unverified; not confirmable in budget, no write",
+  "text": "{\"action\": \"unverified\", \"file\": \"catalog/agent-docs/backend/patterns-and-best-practices.md\", \"heading\": \"Custom data type registration\", \"note\": \"service properties of DataTypeManager not verified; left unchanged\"}"
+ },
+ {
+  "id": "G117",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/backend/platform-behavior-reference.md",
+  "owner": "backend-a",
+  "first_pass": "Browser-zone rendering of generated UI columns not confirmable in backend sources quickly; not written",
+  "text": "#### G117 `c06-15` R11 : The 'Ordered' text and history times differed by two hours: the model-built string orderedAtLabel used the platform zone (UTC), while the generated history column rendered in the browser zone (CET).\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/backend/platform-behavior-reference.md`. Time and Time Zones section (line 94) already says model expressions follow defaultZoneId, not the JVM. Add the contrast: generated UI columns render in the browser zone, so model-built strings differ by the zone offset.\n- **Why:** Model expressions follow the platform defaultZoneId, the UI follows the browser; the catalog says so but gives no model-side way to show the browser zone. Container is UTC, host CET; default zone already UTC so storage needed no change. **Workaround:** Removed the derived string; see c06-16.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L3236`, `session:L3238`, `session:L3320`, `session:L3321`"
+ },
+ {
+  "id": "B2",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B2 | **FileStore Java API** | `FileStoreService` put/get, the generated `FileType` (id, fileName, mimeType) from Java, and `JUDO_PLATFORM_FILESTORE=rdbms`. Only the upload-token REST flow is documented. | bp01, bp05, bp10, pb01, pb03, pb07 |"
+ },
+ {
+  "id": "B3",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B3 | **INITIALIZER operation lifecycle** | Who calls an initializer operation, when (startup or deploy), under which security context, and with which transaction. Docs only say \"static, no input\". | bp07, pm04, pm06, pb02, pb03 |"
+ },
+ {
+  "id": "B4",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B4 | **Scheduled jobs** | Quartz / OSGi scheduler. What transaction, principal and `ACTOR` variable context a scheduler thread gets. | bp06, bp10, pb05, pb06 |"
+ },
+ {
+  "id": "B5",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B5 | **Email service** | `EmailService` / `EmailMessage` / `BinaryAttachment` API, Handlebars templates, and how the app's mail path uses the SMTP variables. | bp10, pb02, pb03 |"
+ },
+ {
+  "id": "B6",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B6 | **DAO API surface** | Paged `selectList(offset, limit)` / slices, `TimeFilter`, `findAllById` vs `getById`, signatures of the per-relation `create<Rel>` / `add<Rel>` methods, and actor-level DAO packages. | pb01, pb02, pb05, pb06, bp07, bp12 |"
+ },
+ {
+  "id": "B8",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B8 | **Unmasked update** | What `update` without a mask does with fields that were not loaded. | pb05 |"
+ },
+ {
+  "id": "B9",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B9 | **Identifier uniqueness** | Whether the `identifier` flag is enforced as unique, for one or several attributes. Docs only say \"natural key\". Uniqueness appears only as a hand-written validation pattern. | bp01, pm02, pm06, pb07 |"
+ },
+ {
+  "id": "B10",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B10 | **Faults from JCL / script operations** | Whether a script operation can raise a modeled fault or call an OSGi service. | pm04, pb06 |"
+ },
+ {
+  "id": "B11",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B11 | **List-call interceptor payload** | `ListCall.ListCallPayload` and `getQueryCustomizer().getFilter()`. The range payload is partly covered in `interceptors.md`, but there is no worked `_getRangeReference` example that keeps the filter and orderBy and adds constraints. | pb04, bp15 |"
+ },
+ {
+  "id": "B12",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B12 | **Unauthenticated operations** | How to expose an operation without login. The model-level `anonymous` actor flag is documented only in e2e-testing. | bp08, pb05, pb07 |"
+ },
+ {
+  "id": "B13",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B13 | **`isActiveExpression`** | How the runtime evaluates it, and how it interacts with actor resolution by `azp`. There is no sample with a boolean role flag as the guard. | bp14, pm04 |"
+ },
+ {
+  "id": "B50",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B50 | **Actor realm vs schema name** | cciu says `ActorType.realm` must equal the `judo.properties` `schema_name`, otherwise the local-dev Keycloak SSL script times out. Only the `realm` default `DEFAULT` is confirmed (esm.ecore); the script is not in judo-ng. | cciu merge CM-055 |"
+ },
+ {
+  "id": "B51",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B51 | **Transient relations on unmapped TOs** | What `mutable input.<rel>` means for a transient relation; whether an unmapped transient target renders a nested form instead of a picker; that such a relation must be `AGGREGATION` (`ASSOCIATION` fails strict validation; the CLI sets aggregation by default and rejects `aggregation=true` as read-only). | mg1, mg2 |"
+ },
+ {
+  "id": "B52",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/backend/",
+  "owner": "backend-a",
+  "first_pass": "Needs larger research than the quick check allows; not written",
+  "text": "| B52 | **Access with list cardinality needs a table column** | `validate --strict` fails until the access target's table has a column (`create -t DataColumn --ns <TO>::<TO>_Table --set dataFeature=...`). Not documented. | mg2, also D5 |"
+ }
+]

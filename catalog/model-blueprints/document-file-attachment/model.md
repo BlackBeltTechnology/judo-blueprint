@@ -16,7 +16,6 @@ Generated UI pages follow from the entities. The document is non-CRUD, so keep t
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=document-file-attachment cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Document {
@@ -31,4 +30,3 @@ classDiagram
   Document --> "0..1" Parent : parent
   Parent *-- "*" Document : documents
 ```
-<!-- /mermaid:generated -->

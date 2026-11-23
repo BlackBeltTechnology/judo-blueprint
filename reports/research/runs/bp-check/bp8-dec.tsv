@@ -1,0 +1,296 @@
+R0277@4	already-correct	agent-docs/integration-testing/interceptor-testing.md#Interceptor Execution Order	BLUEPRINT Structure line 29 already says postCall runs in registration order and is not reversed
+R1949@1	not-relevant	-	no update-channel content in file
+R2324@1	not-relevant	-	no rollback-behaviour content in file
+R2348@6	not-relevant	-	no success-callback content in file
+R2650@2	not-relevant	-	no RDBMS naming parameter in file
+R2831@4	not-relevant	-	file does not describe Guice registration
+R2832@3	not-relevant	-	file does not describe Spring registration
+R0277@5	already-correct	agent-docs/backend/interceptors.md#Ordering and Combining Several Interceptors	backend Implementation Pattern line 23 already says postCall is not reversed
+R0430@2	not-relevant	-	build/manifest content not in file
+R0679@3	not-relevant	-	Javadoc content not in file
+R0719@2	not-relevant	-	error message content not in file
+R1093@1	not-relevant	-	Eclipse manifest content not in file
+R1126@1	not-relevant	-	LSP server start content not in file
+R1342@1	unverified	-	example asmUtils/getIdOf import claim not settled by a quick check
+R1491@1	not-relevant	-	manifest content not in file
+R1493@2	not-relevant	-	validation parallelism not in file
+R1541@4	not-relevant	-	DSL row-link syntax not in file
+R1568@4	not-relevant	-	table naming not in file
+R1883@2	not-relevant	-	feature version content not in file
+R1926@2	not-relevant	-	pom dependency content not in file
+R2052@1	not-relevant	-	service property content not in file
+R2553@1	not-relevant	-	plugin groupId not in file
+R2570@2	not-relevant	-	DSL initialize syntax not in file
+R2632@1	not-relevant	-	validator location not in file
+R2636@1	not-relevant	-	validator package not in file
+R2638@1	not-relevant	-	test package not in file
+R2650@4	not-relevant	-	RDBMS parameter not in file
+R2674@1	not-relevant	-	build.properties content not in file
+R2785@2	not-relevant	-	EMF version content not in file
+R2832@5	not-relevant	-	file does not describe Spring registration
+AU8@1	not-relevant	-	DataTypeManager reference not in file
+R0054@1	already-correct	catalog/best-practices/frontend/table-row-actions-utility.md:26 | agent-docs/frontend/hooks/table-hooks.md#Registration	file already names TABLE_COLUMN_CUSTOMIZER_HOOK_INTERFACE_KEY, not the row-highlighting key
+R1535@1	not-relevant	-	view text member not in file
+R1541@2	not-relevant	-	row link syntax not in file
+R1549@1	not-relevant	-	view action modifiers not in file
+R1550@2	not-relevant	-	row field syntax not in file
+R1554@3	not-relevant	-	actor link syntax not in file
+R1555@2	not-relevant	-	actor table syntax not in file
+R1664@3	not-relevant	-	FAB group rendering not in file
+R1678@4	not-relevant	-	spacer rendering not in file
+R2289@2	not-relevant	-	table column wrapper naming not in file
+G006@4	not-relevant	-	fill command behaviour not in file
+G012@3	not-relevant	-	CLI query behaviour not in file
+G016@5	not-relevant	-	operation naming not in file
+G021@1	not-relevant	-	add-feature behaviour not in file
+G034@1	not-relevant	-	relation table labels not in file
+G036@1	not-relevant	-	E2E selectors not in file
+G039@2	not-relevant	-	table width not in file
+G056@2	not-relevant	-	AppBar slot not in file
+G058@1	not-relevant	-	AppBar layout not in file
+G071@1	not-relevant	-	number formatting not in file
+G072@1	not-relevant	-	row click behaviour not in file
+G073@4	not-relevant	-	titles and menu labels not in file
+G074@2	not-relevant	-	numeric column formatting not in file
+G075@2	not-relevant	-	row action label placement not in file
+G081@2	not-relevant	-	relation widget choice not in file
+G083@2	not-relevant	-	textWidget TEXT labels not in file
+G108@1	not-relevant	-	file does not state the customizer signature
+B52@5	not-relevant	-	list cardinality access not in file
+KC18@4	not-relevant	-	widget pagination text not in file
+R0194@4	not-relevant	-	date parsing not in file
+R0463@1	not-relevant	-	validation rule not in file
+R0486@3	not-relevant	-	logger in code not in file
+R0742@4	not-relevant	-	i18n templating not in file
+R0924@1	not-relevant	-	acceptableClients fallback not in file
+R0981@5	not-relevant	-	Keycloak default password not in file
+R0991@2	not-relevant	-	PasswordPolicy not in file
+R0999@4	not-relevant	-	actor path matching not in file
+R1540@2	not-relevant	-	row syntax not in file
+R1599@4	not-relevant	-	model save behaviour not in file
+R1898@4	not-relevant	-	Keycloak env vars not in file
+R1901@4	not-relevant	-	token issuer check not in file
+R1950@5	not-relevant	-	Maven property not in file
+R2306@3	not-relevant	-	logger line not in file
+R2348@7	not-relevant	-	success callback not in file
+R2425@3	not-relevant	-	validation rules not in file
+R2480@1	not-relevant	-	GraphQL type mapping not in file
+R2577@1	not-relevant	-	bind syntax not in file
+R2838@3	not-relevant	-	EnvironmentVariableProvider not in file
+G099@5	unverified	-	client argument versus azp claim needs a code check not done here
+B16@7	not-relevant	-	mapped-claim rule is consistent with file lines 29-30
+R16-C3@5	not-relevant	-	anonymous actor behaviour not in file
+R0052@5	not-relevant	-	debug-print setting not in file
+R0288@1	not-relevant	-	removeInterceptor sketch not in file
+R1000@2	not-relevant	-	client-name parsing not in file
+R2425@5	not-relevant	-	validation rules not in file
+R2448@4	not-relevant	-	Long sequence getVariable not in file
+B18@2	not-relevant	-	generated exception not explained as a gap in file; no wrong claim
+B24@4	not-relevant	-	immutable attribute not in file
+KC11@2	applied	catalog/model-blueprints/work-order-report-completion-pipeline/backend.md:5 | agent-docs/backend/interceptors.md#Which Operations Are Intercepted	removed mapped from the never-intercepted list; only built-in operations are intercepted and custom and script operations never are
+R0577@1	not-relevant	-	download servlet not in file
+R1162@3	not-relevant	-	test class not in file
+R1857@3	not-relevant	-	FAILED branch not in file
+R1545@4	not-relevant	-	text view member not in file
+R1674@5	not-relevant	-	auto-focus behaviour not in file
+G045@4	not-relevant	-	action menu placement not in file
+G008@4	not-relevant	-	dry-run output not in file
+G013@3	not-relevant	-	action group behaviour not in file
+G059@5	not-relevant	-	menu group type not in file
+R0463@3	not-relevant	-	claim validation rule not in file
+R0698@2	not-relevant	-	access-point role logic not in file
+R0924@2	not-relevant	-	acceptableClients fallback not in file
+R1000@4	not-relevant	-	client-name parsing not in file
+R1214@1	not-relevant	-	expected roles logic not in file
+R1216@4	not-relevant	-	exposedBy role logic not in file
+R1540@4	not-relevant	-	row syntax not in file
+R1556@4	not-relevant	-	actor group syntax not in file
+R1589@4	not-relevant	-	file download parameter not in file
+R2272@3	not-relevant	-	script codegen not in file
+R2448@2	not-relevant	-	Long sequence getVariable not in file; file uses String and Email typed calls
+R2688@3	not-relevant	-	operator precedence not in file
+G088@2	not-relevant	-	auto-created claims not contradicted by file line 42
+G100@3	not-relevant	-	back-office URL behaviour not in file
+B16@5	not-relevant	-	mapped-claim rule consistent with file line 42
+KC12@1	already-correct	catalog/best-practices/model/actor-context-variable-lookup.md:24 | agent-docs/model/advanced-modeling-patterns.md#ACTOR vs. PRINCIPAL vs. USER Context Variables	file already shows the typed String!getVariable form and links the agent-docs
+R0109@1	not-relevant	-	factory methods not in file
+R0288@2	not-relevant	-	removeInterceptor sketch not in file
+R0744@1	not-relevant	-	message priority not in file
+R1260@4	not-relevant	-	YAML model keys not in file
+R1500@1	not-relevant	-	Karaf feature coordinate not in file
+R1501@1	not-relevant	-	Karaf feature coordinate not in file
+R1708@1	not-relevant	-	logback levels not in file
+R2104@1	not-relevant	-	Karaf feature coordinate not in file
+R2824@1	not-relevant	-	Spring plugin artifact not in file
+R2833@2	not-relevant	-	OperationNotFound behaviour not in file
+R0288@3	not-relevant	-	removeInterceptor sketch not in file
+R1000@3	not-relevant	-	client-name parsing not in file
+R2833@3	not-relevant	-	OperationNotFound behaviour not in file
+B12@1	not-relevant	-	anonymous flag not described in file; file only says anonymous users call operations
+R1013@2	not-relevant	-	psm feature not in file
+R1455@2	not-relevant	-	AGENTS.md dependency row not in file
+R1456@2	not-relevant	-	AGENTS.md dependency row not in file
+R1800@5	not-relevant	-	database dialect bundles not in file
+R2041@5	not-relevant	-	HTTP port not in file
+R2832@4	not-relevant	-	Spring registration not in file
+G048@1	not-relevant	-	app URL not in file
+G133@1	applied	catalog/best-practices/backend/osgi-karaf-bundle-architecture.md:40 | agent-docs/deployment/osgi-runtime-services.md#libraries-already-in-the-runtime	Tika, PDFBox and Handlebars already ship in the generated feature; only CXF and JODConverter are listed as added
+AU2@4	not-relevant	-	build-process clean command not in file
+AU3@1	not-relevant	-	frontend base URL not in file
+KC06@5	not-relevant	-	Postman collections not in file
+KC14@3	not-relevant	-	measures note not in file
+DE-023@1	not-relevant	-	OSGi DS test note not in file
+R1260@5	not-relevant	-	YAML model keys not in file
+R1670@1	not-relevant	-	Switch element not in file
+R1679@1	already-correct	catalog/best-practices/frontend/hungarian-full-localization.md:25 | agent-docs/frontend/i18n.md#Directory Structure	file already states flat files in public/i18n/ with no locale subfolder
+R1682@1	already-correct	catalog/best-practices/frontend/hungarian-full-localization.md:26 | agent-docs/frontend/i18n.md#Key Naming Conventions	file already gives the enumerations key pattern and does not claim the raw type name
+R1683@3	already-correct	catalog/best-practices/frontend/hungarian-full-localization.md:26 | agent-docs/frontend/i18n.md#Key Naming Conventions	file already gives the menuTree label key pattern
+R2533@1	not-relevant	-	the safe-to-edit wording is not in this file
+R2534@4	not-relevant	-	t() call examples not in file
+G076@3	not-relevant	-	Other menu default not in file
+G077@1	not-relevant	-	one-language generator output not claimed in file; line 27 already says hu-HU is not generated
+G078@2	not-relevant	-	locale map code not in file
+G079@1	not-relevant	-	model label language not claimed in file
+R16-C5@1	already-correct	catalog/best-practices/frontend/hungarian-full-localization.md:27 | agent-docs/frontend/i18n.md#Directory Structure	file already says script-written hu-HU files are not generated and survive regeneration
+R0194@1	not-relevant	-	date parsing not in file
+R0274@2	not-relevant	-	template system properties not in file
+R0979@1	not-relevant	-	property precedence not in file
+R1505@2	not-relevant	-	LocalDateTime serialization not in file
+R2277@3	not-relevant	-	script codegen not in file
+R2449@3	not-relevant	-	Date.of example not in file
+R2757@1	not-relevant	-	temporal literal codegen not in file
+G117@1	not-relevant	-	gap record; file lines 25 and 33 already cover the zone split
+AU13@1	not-relevant	-	build profile flag not in file
+R16-C9@1	already-correct	catalog/best-practices/backend/injectable-business-clock.md:33 | agent-docs/backend/platform-behavior-reference.md#Time and Time Zones	file already uses defaultZoneId for the production clock and says the JVM-zone clock does not fix model expressions
+R2456@3	not-relevant	-	context refresh call not in file; file uses the refresh parameter
+G056@4	not-relevant	-	AppBar slot not in file
+G065@4	not-relevant	-	dialog buttons not in file
+G080@5	not-relevant	-	placeholder scaffold not in file
+G094@4	not-relevant	-	cart summary refresh not in file
+G095@2	not-relevant	-	per-page registration consistent with file line 37; no contradiction
+G096@5	not-relevant	-	menu refresh not in file
+G108@4	not-relevant	-	column customizer signature not in file
+G110@5	not-relevant	-	scaffold regeneration not in file
+B34@2	not-relevant	-	page hook inventory not in file
+R0784@1	not-relevant	-	factory type support not in file
+R1340@2	not-relevant	-	join function registry not in file
+R1559@2	not-relevant	-	view width rule not in file
+R2288@1	not-relevant	-	Playwright workers not in file
+R2480@4	not-relevant	-	GraphQL type mapping not in file
+R2688@1	not-relevant	-	operator precedence not in file
+G086@4	not-relevant	-	negated boolean filter not in file
+G135@2	not-relevant	-	!avg on empty collection not in file
+B29@2	not-relevant	-	!sum on empty collections not stated in file; no wrong claim
+R0784@2	not-relevant	-	factory type support not in file
+R1632@1	not-relevant	-	string aggregator handling not in file
+R2288@2	not-relevant	-	Playwright workers not in file
+R2450@2	not-relevant	-	Time.of range not in file
+G086@5	not-relevant	-	negated boolean filter not in file
+G087@4	not-relevant	-	top-N form not in file
+G135@1	already-correct	catalog/best-practices/model/null-safe-collection-aggregation.md:35 | agent-docs/model/model-development.md#Aggregates on empty collections and combining collections	file already says !avg on an empty collection gives no value without error, with a verify note
+B29@1	already-correct	catalog/best-practices/model/null-safe-collection-aggregation.md:35 | agent-docs/model/model-development.md#Aggregates on empty collections and combining collections	file already states the empty-collection result of !sum (undefined, no error)
+R0449@2	not-relevant	-	generator error message not in file
+R0485@3	not-relevant	-	Keycloak theme zip not in file
+G068@3	not-relevant	-	renaming gap not in file
+G098@5	not-relevant	-	src/custom appearance timing not stated in file
+G110@2	not-relevant	-	scaffold regeneration not in file
+G111@4	not-relevant	-	dashboard proxy not in file
+AU7@4	not-relevant	-	generated page path not in file
+R1340@5	not-relevant	-	join function registry not in file
+R1775@4	not-relevant	-	workflow mojo default not in file
+R2006@1	not-relevant	-	template null check not in file
+R2850@4	not-relevant	-	injector annotations not in file
+G028@4	not-relevant	-	representation components not in file
+B51@4	not-relevant	-	transient picker rendering not in file; file line 37 is consistent
+B25@5	not-relevant	-	mutable transient gap; file line 37 is consistent
+R1529@3	not-relevant	-	view field syntax not in file
+R1530@2	not-relevant	-	view field syntax not in file
+R1546@2	not-relevant	-	view input syntax not in file
+R1547@3	not-relevant	-	view link modifiers not in file
+R1549@5	not-relevant	-	view action modifiers not in file
+R2573@1	not-relevant	-	transfer relation modifiers not in file
+R2834@5	not-relevant	-	ValidationException API not in file
+G103@1	already-correct	catalog/best-practices/backend/relation-based-entity-creation.md:24 | agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO	file already says the create method exists only when the relation sets createable=true
+G104@1	not-relevant	-	two-way relation create failure not in file; line 45 already says to use the child DAO for non-containment
+G114@3	applied	catalog/best-practices/backend/relation-based-entity-creation.md:26 | agent-docs/backend/data-access-guide.md#Relationship Navigation Queries	single-valued query result split: entity for 1..1, Optional<T> for 0..1
+B6@3	not-relevant	-	DAO API surface detail not in file
+B7@2	not-relevant	-	file line 27 already says DAO-triggered interceptors are not documented
+R0056@4	already-correct	catalog/model-blueprints/address-field-auto-composition/frontend.md:18 | agent-docs/frontend/hooks/README.md#Pandino Service Registration	file already says hook keys are per page or container and must not be copied
+R2116@4	not-relevant	-	string validator default not in file
+G060@1	not-relevant	-	Playwright fill behaviour not in file
+G061@5	not-relevant	-	Playwright fill behaviour not in file
+B35@5	not-relevant	-	hook naming not in file
+G031@5	not-relevant	-	ActionGroup creation not in file
+G119@3	not-relevant	-	update interceptor payload not in file
+B6@2	not-relevant	-	DAO API surface not in file
+B7@1	not-relevant	-	file line 26 already states the DAO call fires no operation interceptor; no wrong claim
+KC07@1	already-correct	catalog/best-practices/backend/self-learning-reference-dictionary.md:73 | agent-docs/backend/data-access-guide.md#Which Types Get a Full DAO	file already says createAll loops over create per payload and saves code, not round trips
+R0501@1	not-relevant	-	Jetty instrumentation not in file
+B5@3	not-relevant	-	email API detail not in file
+KC05@1	not-relevant	-	platform mail default not stated in file; line 47 mailpit port is a tool fact
+KC23@3	not-relevant	-	XDocReport decision not in file
+R1695@3	not-relevant	-	client error JSON wrapper not in file text
+R1709@1	not-relevant	-	loader exception not in file
+R1710@1	not-relevant	-	loader exception not in file
+R2833@6	not-relevant	-	OperationNotFound behaviour not in file
+R0046@1	not-relevant	-	activator init catch blocks not in file
+R2765@5	not-relevant	-	Flex layout filter not in file
+B4@4	not-relevant	-	scheduler context gap; file line 25 already states jobs run without request context
+R0405@3	not-relevant	-	HSQLDB port not in file
+R2448@1	already-correct	catalog/best-practices/model/sequence-based-identifier.md:25 | agent-docs/model/jsl-language-notes.md#Syntax limits	file already uses the typed <Type>!getVariable form; Long is a judo::types type, so the Integer or Long attribute type is consistent
+R2618@4	not-relevant	-	identifier signer secret not in file
+R0698@4	not-relevant	-	access-point role logic not in file
+G122@1	not-relevant	-	direct-address case already covered by file line 36
+R16-C2@1	already-correct	catalog/best-practices/model/derived-access-filtering.md:40 | agent-docs/backend/interceptors.md#Overview	file line 40 already limits the no-outside-rows claim to list and query reads and line 36 flags direct reads
+R1141@1	not-relevant	-	backup table naming not in file
+R1803@1	not-relevant	-	max-file-size unit not in file
+R2766@1	not-relevant	-	Flex node output not in file
+R1672@2	not-relevant	-	EnumerationCombo widget not in file
+G122@3	not-relevant	-	direct-address case not in file
+B11@3	not-relevant	-	list-call payload not in file
+R2457@1	not-relevant	-	debounce wrapper not in file
+B55@1	not-relevant	-	typeahead getter names not in file
+KC07@3	not-relevant	-	createAll not in file
+R0344@2	not-relevant	-	Person attributes not in file
+R0683@2	not-relevant	-	example JSON not in file
+R2569@3	not-relevant	-	bind syntax not in file
+B27@1	not-relevant	-	file line 45 already names the group-roles union as an option; no wrong claim
+B27@2	not-relevant	-	file line 45 already covers the group-roles union; no wrong claim
+KC23@4	not-relevant	-	XDocReport decision not in file
+R1438@1	not-relevant	-	guard method check not in file
+R2215@3	not-relevant	-	pool size setting not in file
+R1894@2	not-relevant	-	POM actor property not in file
+B9@3	not-relevant	-	identifier uniqueness not in file
+R2575@5	not-relevant	-	error definitions not in file
+R1340@1	not-relevant	-	join registry not in file
+R2116@1	not-relevant	-	string validator default not in file
+R2620@2	not-relevant	-	builder options not in file
+R1340@3	not-relevant	-	join registry not in file
+R1533@3	not-relevant	-	link syntax not in file
+R2765@4	not-relevant	-	Flex filter not in file
+R2688@4	not-relevant	-	operator precedence not in file
+R0277@3	not-relevant	-	file does not state postCall order
+R2348@5	not-relevant	-	success callback not in file
+R1064@1	not-relevant	-	validation result shape not in file
+G021@3	not-relevant	-	action container gap not in file
+R0187@2	not-relevant	-	create signature not in file
+R2618@5	not-relevant	-	identifier signer not in file
+R1802@3	not-relevant	-	scale rule not in file
+R0321@2	not-relevant	-	version parameter not in file
+B22@5	not-relevant	-	default syntax not stated in file; no wrong claim
+R1551@2	not-relevant	-	row link syntax not in file
+R16-C8@2	not-relevant	-	field order gap not in file
+R1924@1	not-relevant	-	validate call not in file
+B13@5	not-relevant	-	isActiveExpression gap not in file
+G017@3	not-relevant	-	validate --strict behaviour not in file
+B10@3	not-relevant	-	script fault gap not in file
+B19@1	not-relevant	-	file line 24 already shows the relation getter form; gap only
+R16-C8@4	not-relevant	-	field order not in file
+R0769@1	not-relevant	-	endpoint scheme check not in file
+R1956@2	not-relevant	-	encryption password fallback not in file
+R1066@2	not-relevant	-	inline dialog component not in file
+R1671@4	not-relevant	-	baseUnit not in file
+R2618@1	not-relevant	-	identifier signer not in file
+G100@1	not-relevant	-	back-office access message not in file
+B17@1	not-relevant	-	enum ordinal runtime rejection not stated; no wrong claim
+KC08@4	already-correct	catalog/best-practices/backend/dirty-check-before-update.md:30 | agent-docs/backend/data-access-guide.md#Using Masks (Projections)	file already says that without a mask the call loads and writes everything

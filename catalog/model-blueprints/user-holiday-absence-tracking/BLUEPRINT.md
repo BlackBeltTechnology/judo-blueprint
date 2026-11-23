@@ -11,8 +11,6 @@ projects: [park-here]
 evidence: ["park-here:unrecorded"]
 alternatives: [contact-info-composition-cluster]
 related: [contact-info-composition-cluster, reservation-booking-entity]
-fragment: user-holiday-absence-tracking
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

@@ -11,7 +11,6 @@ projects: [alba, mlszksz-platform, ubives, park-here, indamedia-adtrack]
 evidence: ["alba:unrecorded", "mlszksz-platform:application/interceptors/src/main/java/hu/blackbelt/mlszksz/platform/interceptors/LogAuthenticationInterceptor.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: [two-phase-registration]
 related: [two-phase-registration, actor-resolution-variable-resolver, dao-fluent-query-filter, mask-field-projection, interceptor-global-logging, safe-failure-pattern, magic-link-authentication]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -25,6 +24,7 @@ A user who logs in through Keycloak must have an application user row (the actor
 ### Platform: the hook and what the runtime does itself
 
 - `AuthenticationInterceptor` (not `OperationCallInterceptor`) has `getName`, `isSuitableForOperation(operation, claim, realm, client, attributes)` and `authenticate(operationFQName, exchange, claim, realm, client, attributes)`. The `attributes` map holds the claims of the JWT (`email`, `preferred_username`, `given_name`, `family_name`, `sub`) ([interface](../../agent-docs/backend/authentication-guide.md#authenticationinterceptor-interface), [token attributes](../../agent-docs/backend/authentication-guide.md#token-attribute-extraction)).
+- The `client` argument is the token's `azp` claim resolved to an actor FQN (dashes become dots, then `clientToActorMap` may rename it), not the raw Keycloak client id. Decide on that value and return early for actors the interceptor does not handle; do not assume the user belongs to one actor ([multi-client mapping](../../agent-docs/backend/authentication-guide.md#principal-to-actor-resolution-and-multi-client-mapping)).
 - It is called on the framework-level `#_principal` operation after a successful external login, after the principal is extracted and **before** the framework loads the mapped actor, so the row it inserts is the one the lookup then reads ([the #_principal operation](../../agent-docs/backend/authentication-guide.md#the-_principal-operation)).
 - The actor row is read from the database on every request that carries a principal. No row gives `AccessDeniedException` with `AUTHENTICATED_ENTITY_NOT_FOUND`; the generated frontend shows "User not found" ([principal-to-actor resolution](../../agent-docs/backend/authentication-guide.md#principal-to-actor-resolution-and-multi-client-mapping)).
 - The platform guide records that a mapped, managed actor with `<claims>` is meant to be inserted by the runtime, but the verified runtime versions do **not** insert it, so this interceptor is required even for that shape. If a later runtime does insert, the existence check turns the interceptor into a no-op; keep it ([provisioning example and warning](../../agent-docs/backend/authentication-guide.md#example-just-in-time-user-provisioning)).

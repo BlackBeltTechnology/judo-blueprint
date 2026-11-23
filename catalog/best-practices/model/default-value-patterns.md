@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, itracker, alba, skillmatrix-model, mlszksz-platform, viterra_demo, mjsz, judo-demo-miniworkflow, ams-model, park-here, indamedia-adtrack, InterfaceRegister, judo-partner, workflow-poc, reserve-app]
 evidence: ["trivia:unrecorded", "rackinspect:model/rackinspect.model", "itracker:unrecorded", "alba:unrecorded", "skillmatrix-model:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
-fragment: default-value-patterns
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -60,7 +59,6 @@ Seen in 16 projects.
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=default-value-patterns cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Status {
@@ -79,4 +77,3 @@ classDiagram
   }
   Task ..> Status : status
 ```
-<!-- /mermaid:generated -->

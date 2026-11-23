@@ -11,7 +11,6 @@ projects: [itracker, viterra_demo, judo-demo-miniworkflow, reserve-app, doors-mo
 evidence: ["itracker:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "reserve-app:unrecorded", "doors-model:unrecorded"]
 alternatives: [custom-operation-osgi-component]
 related: [custom-operation-osgi-component, state-lifecycle-operation, init-data-seeding, interceptor-crud-lifecycle]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

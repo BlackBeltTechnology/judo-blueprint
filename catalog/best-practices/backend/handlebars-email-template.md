@@ -10,7 +10,6 @@ status: emerging
 projects: [park-here, workflow-poc]
 evidence: ["park-here:unrecorded", "workflow-poc:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -27,20 +26,16 @@ The agent-docs cover only the surroundings: SMTP is configured through `JUDO_PLA
 ### Compile from a stored or inline template
 
 - Load the template text from the FileStore by id (seeded at start-up, see [[init-data-seeding]]) or keep it inline in code.
-- Compile it at runtime and apply a context object (a map or a small POJO).
-- Hand the rendered text to the mail service, with images attached as inline content, or use the text for any other output.
+- Pass the template text and a context object (a map or a small POJO) to the mail service; the platform renders the template with the model, with images attached as inline content.
+- For other output, compile it at runtime and apply the context object yourself.
 
 ```java
 // Example code (Handlebars Java library; EmailService is an application-level API)
-Handlebars handlebars = new Handlebars();
 String templateContent = convertStreamToString(fileStoreService.get(templateId));
-Template template = handlebars.compileInline(templateContent);
-
-String htmlBody = template.apply(Context.newContext(contextObject));
 
 emailService.sendMessage(EmailService.EmailMessage.emailBuilder()
     .from(senderEmail).to(recipientEmail).subject(subject)
-    .htmlTemplate(htmlBody)
+    .htmlTemplate(templateContent).model(contextObject)
     .inputStreamInlinedContent(imageId, binaryAttachment)
     .build());
 ```

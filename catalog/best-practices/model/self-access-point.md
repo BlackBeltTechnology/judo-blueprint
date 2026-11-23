@@ -11,8 +11,6 @@ projects: [alba, skillmatrix-model, judo-partner]
 evidence: ["alba:unrecorded", "skillmatrix-model:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
 related: [derived-access-filtering, actor-based-transfer-projection, transfer-generalization, panel-dashboard-transfer]
-fragment: self-access-point
-diagram: { kinds: [entity, transfer, actor], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -38,7 +36,7 @@ The access targets a transfer object mapped to the same entity as the principal 
 
 ### Several self accesses, one per purpose
 
-Different accesses may each resolve to the same row with a different target: a profile editor, an approval overview, a bulk-action dashboard ([[panel-dashboard-transfer]]). Each access needs a matching menu item to be reachable in the UI ([accesspoint reference, pairing rule](../../agent-docs/model/esm_metamodel/accesspoint.md)).
+Different accesses may each resolve to the same row with a different target: a profile editor, an approval overview, a bulk-action dashboard ([[panel-dashboard-transfer]]). Each access needs a matching menu item to be reachable in the UI ([accesspoint reference, pairing rule](../../agent-docs/model/esm_metamodel/accesspoint.md)). Model tooling may create this `MenuItemAccess` together with the access; check for it and do not add a second one ([model development guide](../../agent-docs/model/model-development.md), Part 2).
 
 ## Rationale
 
@@ -65,7 +63,6 @@ A neutral Member entity has a required, identifying `email` and owns Skills. The
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=self-access-point cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Member {
@@ -95,4 +92,3 @@ classDiagram
   MyProfile ..> Member : maps
   User ..> MemberPrincipal : principal
 ```
-<!-- /mermaid:generated -->

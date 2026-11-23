@@ -11,8 +11,6 @@ projects: [compsych-letter-demo]
 evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: []
 first_seen: 2026-05-13
-fragment: identifier-attribute-vs-relation
-diagram: { kinds: [entity, enum, transfer], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -69,7 +67,6 @@ Observed in one project:
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=identifier-attribute-vs-relation cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AuditEvent {
@@ -101,4 +98,3 @@ classDiagram
   StartInput o-- "1" TemplateRef : template
   TemplateRef ..> Template : maps
 ```
-<!-- /mermaid:generated -->

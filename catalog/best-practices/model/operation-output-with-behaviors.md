@@ -11,8 +11,6 @@ projects: [actiongroup-test-react]
 evidence: ["actiongroup-test-react:unrecorded"]
 alternatives: []
 related: [unmapped-transfer-dto, mapped-operation-delegation, operation-return-type-navigation]
-fragment: operation-output-with-behaviors
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -62,7 +60,6 @@ A neutral Order entity has an instance operation `ship`. It returns a `ShipmentV
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=operation-output-with-behaviors cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Order {
@@ -80,4 +77,3 @@ classDiagram
   }
   ShipmentView ..> Shipment : maps
 ```
-<!-- /mermaid:generated -->

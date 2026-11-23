@@ -12,7 +12,6 @@ evidence: ["trivia:unrecorded", "itracker:unrecorded", "actiongroup-test-react:u
 alternatives: [generalization-base-entity]
 related: [enum-state-machine, actor-based-transfer-projection, generalization-base-entity]
 first_seen: 2026-03-04
-fragment: flat-entity-model
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -57,7 +56,6 @@ Generalization is a platform feature between entity types. An abstract entity ca
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=flat-entity-model cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Account {
@@ -82,4 +80,3 @@ classDiagram
   Order *-- "*" OrderLine : lines
   Order --> "1" Account : owner
 ```
-<!-- /mermaid:generated -->

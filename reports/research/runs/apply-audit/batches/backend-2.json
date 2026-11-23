@@ -1,0 +1,102 @@
+{
+ "batch": "backend-2",
+ "files": [
+  "catalog/agent-docs/backend/data-access-guide.md",
+  "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+  "catalog/agent-docs/backend/error-handling-guide.md",
+  "catalog/agent-docs/backend/interceptors.md",
+  "catalog/agent-docs/backend/type-system-guide.md"
+ ],
+ "items": [
+  {
+   "id": "R2519",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/type-system-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'The Two Layers': Generated package and REST paths keep a transfer-skip segment, so generated paths can differ from the documented layout. Workaround: import and call the paths the generator emits. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-api/src/main/java/hu/blackbelt/judo/ui/generator/typescript/rest/api/UiGeneralHelper.java:56 | judo-ng finding: getClassTypes has its TRANSFER_SKIP_SEGMENT filter commented out, so the constant declared at line 43 is unused in this module, while UiAxio"
+  },
+  {
+   "id": "R0567",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/type-system-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'The Two Layers': Generated package and REST paths keep a transfer-skip segment, so generated paths can differ from the documented layout. Workaround: import and call the paths the generator emits. | EVIDENCE: template/judo-ui-typescript-rest-template:judo-ui-typescript-rest-template@3c06fe9:judo-ui-typescript-rest-axios/src/main/java/hu/blackbelt/judo/ui/generator/typescript/rest/axios/UiAxiosHelper.java:58 | judo-ng finding: relationRestPath does not filter TRANSFER_SKIP_SEGMENT from the owner package tokens or owner simple name. restPath, classTypeRestPath and o"
+  },
+  {
+   "id": "R2338",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'Request Correlation with `X-Exchange-Id`': The request id is put into the logging context on receive and never removed, so a reused worker thread can log an earlier request's id. To find a failing request, match the X-Exchange-Id response header, not the id shown on nearby log lines. | EVIDENCE: cxf-jaxrs-application-manager@9d3737e:src/main/java/hu/blackbelt/jaxrs/interceptors/ExchangeIdDecorator.java:53 | judo-ng finding: The RequestExchangeId MDC value is set on RECEIVE and this file never removes it, so pooled worker threads keep the previous request's ID fo"
+  },
+  {
+   "id": "R0697",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'Mapped Diagnostic Context (MDC)': RequestExchangeId can stay in a worker thread's logging context after the request ends, so later log lines may carry an old id. Use the X-Exchange-Id response header to correlate requests. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/ExchangeIdDecorator.java:49 | judo-ng finding: MDC.put(RequestExchangeId) is called on every request, but no MDC.remove or MDC.clear exists in the interceptors. On pooled worker threads t"
+  },
+  {
+   "id": "R1220",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/debugging-and-monitoring-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'Mapped Diagnostic Context (MDC)': RequestExchangeId can stay in a worker thread's logging context after the request ends, so later log lines may carry an old id. Use the X-Exchange-Id response header to correlate requests. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/ExchangeIdDecorator.java:49 | judo-ng finding: The RequestExchangeId MDC entry is put on every request and never removed; no class in this interceptors package calls MDC.remove."
+  },
+  {
+   "id": "R2118",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/error-handling-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'Validation Results and Locations': Nested field errors join container paths with '/' and add the attribute after '.', for example orders[0]/items[2].price. Use the location string as returned; do not parse it as a plain attribute path. | EVIDENCE: judo-runtime-core-validator/src/main/resources/claude/plugins/judo-validator/skills/validation-rules/SKILL.md:147 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: Location format: orders[0]/items[2].price"
+  },
+  {
+   "id": "R1470",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/error-handling-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'Validation Strategy': Setting validation off also removes every validator, including validators the app registered. Keep validation on when you rely on custom validators. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/DefaultDispatcher.java:244 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: When enableValidation is false, the constructor calls validatorProvider.getValidators().clear() on the constructor parameter. That parameter"
+  },
+  {
+   "id": "R1473",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/error-handling-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'How the Runtime Maps Exceptions to HTTP': A request value that cannot be converted is logged at debug level only and may not be reported as a validation error. Validate client input before sending it. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/RequestConverter.java:160 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: convert() catches IllegalArgumentException from the PayloadTraverser and only logs it at debug level. processAttribute rethrows conversion e"
+  },
+  {
+   "id": "R0693",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/error-handling-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'How the Runtime Maps Exceptions to HTTP': A ClientException subclass that returns a null status code makes the fault handler fail with NullPointerException. Always return a status code. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/FaultInterceptor.java:89 | judo-ng finding: Assigns ClientException.getStatusCode() (declared as Integer) to an int local. If a subclass returns null, auto-unboxing throws NullPointerE"
+  },
+  {
+   "id": "R1705",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/error-handling-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'How the Runtime Maps Exceptions to HTTP': A ClientException subclass that returns a null status code makes the fault handler fail with NullPointerException. Always return a status code. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/FaultInterceptor.java:89 | judo-ng finding: statusCode = ((ClientException) exception).getStatusCode(); unboxes an Integer with no null check, so a ClientException with null status thr"
+  },
+  {
+   "id": "R2122",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/error-handling-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'Validation Results and Locations': If a payload makes the validator throw IllegalArgumentException, the error is logged at debug only and the results collected so far are returned. A validation error may be missing from the response. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-validator/src/main/java/hu/blackbelt/judo/runtime/core/validator/DefaultPayloadValidator.java:153 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: validatePayload catches IllegalArgumentException from traversal and only logs it at DEBUG, then returns whatever results were collected (pos"
+  },
+  {
+   "id": "R0290",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/interceptors.md",
+   "text": "FACT TO ADD/CORRECT under 'The Interceptor Contract': For an interceptor with async() true, the runtime calls preCall, not postCall, after the operation on a background thread, so its postCall never runs. Put post-operation logic in a synchronous interceptor (async() false) until this is fixed. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/CallInterceptorUtil.java:81 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: In postCallInterceptors, the async branch (async() == true) calls interceptor.preCall(operation, finalInputParameter) inside CompletableFutu"
+  },
+  {
+   "id": "R2133",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/interceptors.md",
+   "text": "FACT TO ADD/CORRECT under 'The Interceptor Contract': If a validate-create interceptor skips the original call, the validate operation fails with NullPointerException. Do not skip the original call in validate-create interceptors. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/behaviours/ValidateCreateCall.java:106 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: markedIdRemover.process(result) is called even when the interceptor chain skipped the original call (shouldCallOriginal false), so result is"
+  },
+  {
+   "id": "R2134",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/interceptors.md",
+   "text": "FACT TO ADD/CORRECT under 'The Interceptor Contract': If a validate-update interceptor skips the original call, the validate operation fails with NullPointerException. Do not skip the original call in validate-update interceptors. | EVIDENCE: judo-runtime-core@b34d8ea1:judo-runtime-core-dispatcher/src/main/java/hu/blackbelt/judo/runtime/core/dispatcher/behaviours/ValidateUpdateCall.java:119 ; re-checked on latest wt runtime__judo-runtime-core@92e192c4 | judo-ng finding: markedIdRemover.process(result) is called without a null check. result stays null when shouldCallOriginal is false, so the call throws NullP"
+  },
+  {
+   "id": "R0680",
+   "src": "audit-not-platform",
+   "target": "catalog/agent-docs/backend/data-access-guide.md",
+   "text": "FACT TO ADD/CORRECT under 'SDK Query Filters Reference': The SDK string filter escapes double quotes only. A value that ends in a backslash breaks the quoted filter value, so filters on such values (for example a path such as C:\\) return a wrong or failed query. Avoid trailing backslashes in <Entity> filter values, or pass the value through a field that does not need quoting. | EVIDENCE: judo-sdk-common@8596a8e:src/main/java/hu/blackbelt/judo/sdk/query/StringFilter.java:76 | judo-ng finding: getValueAsString escapes only double quotes. A value ending in a backslash (e.g. C:\\) yields \"C:\\\" where the closing quote is escaped, produ"
+  }
+ ]
+}

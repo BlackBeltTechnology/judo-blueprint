@@ -1,0 +1,2504 @@
+[
+{
+"id": "c01-50",
+"type": "built",
+"round": "R0",
+"functions": [
+"S01"
+],
+"what": "Project scaffolded from the ESM fullstack template, CLI jar obtained, shop frame model built, app built and started, login to the shop home page verified in the browser.",
+"why": "Level 0 frame.",
+"kind": "none",
+"workaround": "Manual Keycloak user and ShopUser row (c01-11).",
+"catalog_paths": [
+"catalog/agent-docs/deployment/build-process.md",
+"catalog/agent-docs/deployment/local-development.md",
+"catalog/agent-docs/model/judo-cli.md",
+"catalog/agent-docs/deployment/generator-plugins.md",
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/agent-docs/model/advanced-modeling-patterns.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L141",
+"session:L154",
+"session:L158",
+"session:L193",
+"session:L214"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c01-51",
+"type": "built",
+"round": "R0",
+"functions": [
+"S02"
+],
+"what": "Product entity with name (String), description (LongText) and price (Price, NumericType scale 2). Product form shows Price, Name and Description.",
+"why": "S02 acceptance.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/type.md",
+"catalog/agent-docs/model/judo-cli.md",
+"catalog/agent-docs/model/ui-authoring-guide.md"
+],
+"gaps_ref": "R0-9",
+"evidence": [
+"session:L119",
+"session:L120",
+"session:L221",
+"session:L231"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c01-52",
+"type": "built",
+"round": "R0",
+"functions": [
+"S03"
+],
+"what": "ProductInfo transfer object on the Shop access (createable, updateable). Create and update checked by REST: Running shoe 89.90 changed to 79.90, plus Trail backpack and Wool socks. Browser create not reliable.",
+"why": "S03 acceptance.",
+"kind": "none",
+"workaround": "curl instead of UI (c01-23).",
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/best-practices/model/entity-crud-at-service-layer.md",
+"catalog/agent-docs/model/advanced-modeling-patterns.md"
+],
+"gaps_ref": "R0-14",
+"evidence": [
+"session:L99",
+"session:L121",
+"session:L315",
+"session:L316",
+"session:L484",
+"session:L493"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c01-53",
+"type": "built",
+"round": "R0",
+"functions": [
+"S04"
+],
+"what": "Product list (table) shows name and price. Price column shows two decimals after the generated table was patched and rebuilt.",
+"why": "S04 acceptance.",
+"kind": "none",
+"workaround": "Patched generated table component (c01-21).",
+"catalog_paths": [
+"catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+"catalog/agent-docs/frontend/hooks/table-hooks.md"
+],
+"gaps_ref": "R0-12",
+"evidence": [
+"session:L390",
+"session:L429",
+"session:L433",
+"session:L460",
+"session:L442"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c01-54",
+"type": "built",
+"round": "R0",
+"functions": [
+"S05"
+],
+"what": "Product view and edit page shows name, price and multi-line description. Back verified only after in-app navigation (list, row, view, Back).",
+"why": "S05 acceptance. The builder's first Back check was invalid (page opened by URL).",
+"kind": "none",
+"workaround": "DOM eval clicks and hash navigation (c01-22, c01-41).",
+"catalog_paths": [
+"catalog/best-practices/frontend/breadcrumb-navigation-context.md",
+"catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+"catalog/agent-docs/e2e-testing/writing-tests.md"
+],
+"gaps_ref": "R0-15b",
+"evidence": [
+"session:L462",
+"session:L466",
+"session:L714",
+"session:L892",
+"session:L896",
+"session:L900"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c01-55",
+"type": "built",
+"round": "R0",
+"functions": [
+"S06"
+],
+"what": "Data persisted across ./judo.sh stop and start: products still listed after restart (Running shoe 79.9, Wool socks, Trail backpack).",
+"why": "S06 acceptance.",
+"kind": "none",
+"workaround": "Needed manual process kill and rm -rf application/.karaf (c01-33, c01-34).",
+"catalog_paths": [
+"catalog/agent-docs/deployment/local-development.md",
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L500",
+"session:L541",
+"session:L542"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-56",
+"type": "built",
+"round": "R1",
+"functions": [
+"S04",
+"S09"
+],
+"what": "Reverted the S04 patch (generated table component and .gitignore/.generator-ignore restored from b1c6f91) and regenerated through the frontend build.",
+"why": "Round 1 instruction: remove the patched generated file and regenerate.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L927",
+"session:L929",
+"session:L931",
+"session:L932"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c02-57",
+"type": "built",
+"round": "R1",
+"functions": [
+"S09"
+],
+"what": "Shared price component src/custom/components/Price.tsx (formatPrice to 2 decimals plus EUR, read-only Price, editable PriceField); form and view price fields on customImplementation with registered custom implementations. Table column skipped (logged R1-1).",
+"why": "Round 1: one shared price component; no hook could place it in the table column.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/advanced-patterns.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md",
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": "R1-1",
+"evidence": [
+"session:L990",
+"session:L993",
+"session:L994",
+"session:L1206"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c02-58",
+"type": "built",
+"round": "R2",
+"functions": [
+"S04",
+"S09"
+],
+"what": "Table price column shows 'NN.NN EUR' through a derived String attribute priceLabel on ProductInfo (getter self.price!round(2)!asString() + ' EUR'); the plain price column was removed from the table.",
+"why": "Round 2 asked for a documented non-generated route for the table currency; the derived attribute is one.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/literal-derived-attribute.md",
+"catalog/agent-docs/model/model-development.md"
+],
+"gaps_ref": "R2-5",
+"evidence": [
+"session:L1307",
+"session:L1313",
+"session:L1315",
+"session:L1318",
+"session:L1385"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-59",
+"type": "built",
+"round": "R2",
+"functions": [
+"S04",
+"S09"
+],
+"what": "E2E module enabled (generateE2eModule=true) and Playwright suite tests/price-display.spec.ts (list, details, edit with restore, create form with Back), run with playwright.local.config.ts on installed Google Chrome. Screenshots at 375, 768, 1440 in checks/S04 and checks/S09.",
+"why": "Round 2: real-user checks as Playwright E2E tests.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing/README.md",
+"catalog/agent-docs/e2e-testing/writing-tests.md",
+"catalog/agent-docs/e2e-testing/helpers-reference.md"
+],
+"gaps_ref": "R2-1",
+"evidence": [
+"session:L1222",
+"session:L1231",
+"session:L1329",
+"session:L1385",
+"session:L1397"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c02-60",
+"type": "built",
+"round": "R3",
+"functions": [
+"S07"
+],
+"what": "Trail Shop look set in the model: ActorType Shop applicationTitle 'Trail Shop', applicationLogo trail-shop-logo.svg (SVG in public/), seven colour attributes; small icon for the collapsed drawer through a CustomLogoPropsHook in src/custom/hooks/registerShopLogoHook.ts.",
+"why": "Round 3: shop name, logo and palette through model and hooks, not patched files.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/theming.md",
+"catalog/agent-docs/frontend/hooks/ui-hooks.md",
+"catalog/best-practices/frontend/custom-public-assets.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1467",
+"session:L1477",
+"session:L1649",
+"session:L1651",
+"session:L1666"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-61",
+"type": "built",
+"round": "R3",
+"functions": [
+"S11"
+],
+"what": "Labels: menu item Products, list page Products, details and create Product, ShopUserInfo table Profile (model labels), and the phone bottom bar 'More' through the i18n key menuTree.other in an extra fragment override.",
+"why": "Round 3: no ProductInfo wording visible to users.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/i18n.md",
+"catalog/best-practices/frontend/i18n-generator-override-extra-fragment.md",
+"catalog/agent-docs/model/judo-cli.md"
+],
+"gaps_ref": "R3-7",
+"evidence": [
+"session:L1467",
+"session:L1473",
+"session:L1477",
+"session:L1505"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-62",
+"type": "built",
+"round": "R3",
+"functions": [
+"S02",
+"S03"
+],
+"what": "Real 2 to 3 line descriptions for the 3 products entered through the UI in a Playwright seed test (a-seed-descriptions.spec.ts), no SQL.",
+"why": "Round 3 orchestrator finding: placeholder 'a / b' descriptions.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing/writing-tests.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1656",
+"session:L1660",
+"session:L1661"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-63",
+"type": "built",
+"round": "R5",
+"functions": [
+"S08"
+],
+"what": "Catalog card grid as the shop home (CatalogHome): image placeholder, name, shared Price, first line of the description; 1/2/3-4 columns at 375/768/1440; loading, empty and error states; data from generated ShopServiceForProductsImpl.list; card click navigates with routeToShopProductsAccessViewPage. Registered on the generated DashboardPage seam.",
+"why": "Round 5: replace the bare Hello! home with a product card grid.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/extension-points.md",
+"catalog/agent-docs/frontend/hooks/data-hooks.md",
+"catalog/agent-docs/frontend/hooks/navigation-and-access.md"
+],
+"gaps_ref": "R5-1",
+"evidence": [
+"session:L1706",
+"session:L1719",
+"session:L1720",
+"session:L1742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-64",
+"type": "built",
+"round": "R5",
+"functions": [
+"S10",
+"S11"
+],
+"what": "Product details layout (ProductDetailsLayout): large name, price badge via shared PriceField, full description, in that order; edit still works through storeDiff. Tests: catalog-home.spec.ts (grid, card to details, Back, column counts, S10 order and edit round trip); field-order create-form test marked test.fail().",
+"why": "Round 5: custom layout that also fixes visible field order on the details page.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/advanced-patterns.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": "R3-1",
+"evidence": [
+"session:L1719",
+"session:L1725",
+"session:L1735",
+"session:L1737",
+"session:L1741",
+"session:L1742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-26",
+"type": "built",
+"round": "R6",
+"functions": [
+"F01"
+],
+"what": "Category entity, CategoryInfo transfer object, categories access (create, update, delete), Categories menu, generated table, form and view; commit 836c3d6.",
+"why": "Level 1 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/structure.md",
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/agent-docs/model/judo-cli.md",
+"catalog/agent-docs/e2e-testing/writing-tests.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1955",
+"session:L1957"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c03-27",
+"type": "built",
+"round": "R6",
+"functions": [
+"F02"
+],
+"what": "sku (SKU type with regExp and maxLength 20), unit (Unit enumeration PIECE/KG/LITRE), and a category relation on Product; shown in product form, view and table; commit 836c3d6.",
+"why": "Level 1 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/type.md",
+"catalog/agent-docs/model/ui-authoring-guide.md",
+"catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1773",
+"session:L1957"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c03-28",
+"type": "built",
+"round": "R6",
+"functions": [
+"F03"
+],
+"what": "name and sku and unit required (required=true); save without SKU shows Missing required attribute.",
+"why": "Level 1 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/structure.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1779",
+"session:L1957"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c03-29",
+"type": "built",
+"round": "R6",
+"functions": [
+"F04"
+],
+"what": "sku as identifier attribute on Product; duplicate SKU rejected in create dialog, dialog stays open with error.",
+"why": "Level 1 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/structure.md",
+"best-practices/model/AGENTS.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1773",
+"session:L1957"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-30",
+"type": "built",
+"round": "R6",
+"functions": [
+"F05"
+],
+"what": "SKU type regExp ^[A-Z]{2}-[0-9]{4}$ and maxLength 20; ab1234 rejected.",
+"why": "Level 1 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/type.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1760",
+"session:L1772",
+"session:L1957"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c03-31",
+"type": "built",
+"round": "R6",
+"functions": [
+"F06"
+],
+"what": "Unit enumeration with PIECE, KG, LITRE; form dropdown shows 3 options.",
+"why": "Level 1 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/type.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1772",
+"session:L1957"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c03-32",
+"type": "built",
+"round": "R6",
+"functions": [
+"F07"
+],
+"what": "Product table with Name, SKU, Unit, Price and Price (number) columns, filters Name, SKU, Unit, Price (number), numeric sort and paging tests.",
+"why": "Level 1 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+"catalog/agent-docs/model/ui-authoring-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1790",
+"session:L1939",
+"session:L1957"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c03-33",
+"type": "built",
+"round": "R6",
+"functions": [
+"F08"
+],
+"what": "Product.category and Category.products as a two-way relation (ASSOCIATION both ends); category view lists its products, product links back to category.",
+"why": "Level 1 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/bidirectional-relation.md",
+"catalog/agent-docs/model/esm_metamodel/structure.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1773",
+"session:L1777",
+"session:L1957"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c03-82",
+"type": "built",
+"round": "R7",
+"functions": [
+"F09"
+],
+"what": "Product image: ProductImage BinaryType (PNG, JPEG, 2 MB) on Product.image; seed uploads a PNG per product; customer grid and details show it; admin shows the file name; commit 30914f0.",
+"why": "Level 2 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/type.md",
+"catalog/best-practices/backend/filestore-mediated-file-transfer.md",
+"catalog/best-practices/frontend/binary-blob-url-hook.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2051",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-83",
+"type": "built",
+"round": "R7",
+"functions": [
+"F10"
+],
+"what": "Variant composed in Product (label, SKU, stock), inline table on the admin product view, stored with Update; customer front hides the variants table; commit 30914f0.",
+"why": "Level 2 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/composition-ownership.md",
+"catalog/agent-docs/model/ui-authoring-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2107",
+"session:L2287",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-84",
+"type": "built",
+"round": "R7",
+"functions": [
+"F11"
+],
+"what": "stockStatus DERIVED string (Out of stock, Low, In stock) from stock; shown in admin table and both details pages; nothing stored; commit 30914f0.",
+"why": "Level 2 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/model-development.md",
+"catalog/best-practices/model/conditional-visibility-getter.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2081",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-85",
+"type": "built",
+"round": "R7",
+"functions": [
+"F12"
+],
+"what": "ProductInfo.categoryName DERIVED from self.category.name; labelled Category; column and filter in the admin table; test.fail() removed; commit 30914f0.",
+"why": "Level 2 batch and F07 follow-up.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/derived-attribute-flattening.md"
+],
+"gaps_ref": "R7-2",
+"evidence": [
+"session:L2083",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-86",
+"type": "built",
+"round": "R7",
+"functions": [
+"F13"
+],
+"what": "Customer sign-up through Keycloak registration page, CustomerProvisioningInterceptor creates the CustomerAccount on first customer login, seed script for keycloak users and realm sign-up; commit 30914f0.",
+"why": "Level 2 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+"catalog/agent-docs/backend/authentication-guide.md",
+"catalog/best-practices/backend/managed-actor-admin-pattern.md"
+],
+"gaps_ref": "R7-3",
+"evidence": [
+"session:L2131",
+"session:L2203",
+"session:L2341",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-87",
+"type": "built",
+"round": "R7",
+"functions": [
+"F14"
+],
+"what": "Two actors: Admin (back office, /webshop/Admin) and Customer (shop front, /webshop/Customer) with their own principals, claims, accesses, menus and generated modules; commit 30914f0.",
+"why": "Level 2 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/multi-actor-role-based-projections/BLUEPRINT.md",
+"catalog/best-practices/frontend/dual-actor-frontend-architecture.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2099",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-88",
+"type": "built",
+"round": "R7",
+"functions": [
+"F15"
+],
+"what": "Customer products access filtered to active products (Product!filter(p | p.active)); admin access unfiltered; commit 30914f0.",
+"why": "Level 2 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/derived-access-filtering.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2102",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-89",
+"type": "built",
+"round": "R7",
+"functions": [
+"F16"
+],
+"what": "Customer profile singleton by email from token; own addresses via container back-reference getter; customer 1 and 2 never see each other's addresses; commit 30914f0.",
+"why": "Level 2 batch.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/container-back-reference.md",
+"catalog/best-practices/model/derived-access-filtering.md"
+],
+"gaps_ref": "R7-9",
+"evidence": [
+"session:L2315",
+"session:L2320",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-90",
+"type": "built",
+"round": "R7",
+"functions": [
+"F08"
+],
+"what": "Footwear category page lists its products in an inline table (representationComponent table on CategoryInfo View_Edit), no Products button; commit 30914f0.",
+"why": "Round 7 follow-up.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/ui-authoring-guide.md"
+],
+"gaps_ref": "R7-1",
+"evidence": [
+"session:L1969",
+"session:L1973",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c04-28",
+"type": "built",
+"round": "R8",
+"functions": [
+"F17"
+],
+"what": "Add to cart on product cards and details page, via bound custom operation addToCart (Java, customer found by ACTOR email, DAO access); button disabled when out of stock.",
+"why": "Level 3 spec: cart belongs to the Customer; add goes on card or details.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/custom-operations.md",
+"catalog/agent-docs/backend/data-access-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2350",
+"session:L2412",
+"session:L2434"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-29",
+"type": "built",
+"round": "R8",
+"functions": [
+"F18"
+],
+"what": "Adding the same product again increases the quantity of the existing cart line; the operation re-fetches the entity.",
+"why": "Level 3 spec: one line with quantity 2.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/entity-re-fetch-pattern.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2383",
+"session:L2434"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-30",
+"type": "built",
+"round": "R8",
+"functions": [
+"F19"
+],
+"what": "Cart line total (quantity times price), cart total and line count derived in the model; empty cart shows 0.00 EUR; cart page in the Customer menu uses the shared Price component.",
+"why": "Level 3 spec: derived numeric with aggregation over a collection.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/null-safe-collection-aggregation.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2382",
+"session:L2383",
+"session:L2388",
+"session:L2414",
+"session:L2527"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-31",
+"type": "built",
+"round": "R8",
+"functions": [
+"F20"
+],
+"what": "Quantity above stock throws the modeled ShopFault from addToCart; the UI shows a readable snackbar with the stock count and what is already in the cart; nothing is added.",
+"why": "Level 3 spec: business fault to readable UI error.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/error-handling-guide.md",
+"catalog/agent-docs/frontend/error-handling.md"
+],
+"gaps_ref": "R8-6",
+"evidence": [
+"session:L2369",
+"session:L2407",
+"session:L2555",
+"session:L2560"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-32",
+"type": "built",
+"round": "R8",
+"functions": [
+"F21"
+],
+"what": "Checkout asks for a shipping address (CheckoutInput transfer object), creates the order from the cart, empties the cart and opens the new order via the dialog actions hook; the operation itself is void.",
+"why": "Level 3 spec: operation with input transfer object; the output form was blocked by the generator bug.",
+"kind": "none",
+"workaround": "See c04-13 and c04-14.",
+"catalog_paths": [
+"catalog/best-practices/model/operation-output-with-behaviors.md",
+"catalog/best-practices/model/operation-return-type-navigation.md",
+"catalog/agent-docs/frontend/hooks/action-hooks.md"
+],
+"gaps_ref": "R8-5",
+"evidence": [
+"session:L2407",
+"session:L2505",
+"session:L2507",
+"session:L2521",
+"session:L2537"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-33",
+"type": "built",
+"round": "R8",
+"functions": [
+"F22"
+],
+"what": "Order lines copy product name and unit price at order time (snapshot fields on SalesOrderLine and OrderLineInfo); later price changes do not affect the order line.",
+"why": "Level 3 spec: snapshot attributes written by the operation.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/quote-lines-with-price-modifiers"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2403",
+"session:L2407",
+"session:L2537"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c04-34",
+"type": "built",
+"round": "R8",
+"functions": [
+"F23"
+],
+"what": "Checkout decrements stock per line inside the one operation transaction; a test proves the rollback (stock restored, cart kept, no order) when a later line fails with a ShopFault.",
+"why": "Level 3 spec: prove the rollback with a test.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/platform-behavior-reference.md",
+"catalog/agent-docs/backend/custom-operations.md"
+],
+"gaps_ref": "R8-10",
+"evidence": [
+"session:L2380",
+"session:L2537",
+"session:L2539"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-35",
+"type": "built",
+"round": "R8",
+"functions": [
+"F24"
+],
+"what": "Order numbers WS-year-six digits from the SalesOrder platform sequence (VariableResolver SEQUENCE); test checks consecutive numbers. Admin gets a read-only Orders list (no create, update or delete).",
+"why": "Level 3 spec: order numbers and admin read only orders.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/sequence-based-identifier.md",
+"catalog/agent-docs/backend/platform-behavior-reference.md"
+],
+"gaps_ref": "R8-9",
+"evidence": [
+"session:L2379",
+"session:L2381",
+"session:L2412",
+"session:L2537"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-31",
+"type": "built",
+"round": "R9",
+"functions": [
+"F25"
+],
+"what": "F25 order status NEW to PAID to SHIPPED to DELIVERED or CANCELLED: OrderStatus enum and one custom operation per transition on AdminOrderInfo (Pay, Ship, Deliver, Cancel).",
+"why": "Enumeration state machine pattern.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/enum-state-machine.md",
+"catalog/agent-docs/backend/custom-operations.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2876",
+"session:L2878",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-32",
+"type": "built",
+"round": "R9",
+"functions": [
+"F26"
+],
+"what": "F26 only valid transitions are offered: derived hide booleans feed hiddenBy on each action; invalid moves refused with INVALID_TRANSITION fault.",
+"why": "Operation enabled and hidden derivation from the enum state machine pattern.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/enum-state-machine.md",
+"catalog/agent-docs/model/esm_metamodel/operation.md"
+],
+"gaps_ref": "R9-7",
+"evidence": [
+"session:L2878",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-33",
+"type": "built",
+"round": "R9",
+"functions": [
+"F27"
+],
+"what": "F27 customer cancels an own NEW order; ownership and state checked in Java; cancelling returns the stock. Admin can also cancel PAID orders.",
+"why": "Role-guarded write plus state guard inside the custom operation.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/role-guarded-write.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2877",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-34",
+"type": "built",
+"round": "R9",
+"functions": [
+"F28"
+],
+"what": "F28 product active switch (toggleActive operation); deactivated products are hidden from the shop.",
+"why": "Toggle operation on an active flag.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/toggle-active-operation/BLUEPRINT.md",
+"catalog/best-practices/model/soft-delete-active-flag.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2877",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-35",
+"type": "built",
+"round": "R9",
+"functions": [
+"F29"
+],
+"what": "F29 delete of a product with orders deactivates it and shows a message; without orders it is deleted; generic delete switched off; cart lines of a deleted product removed in Java.",
+"why": "Guarded delete with deactivate fallback, following FUNCTIONS.md.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/guarded-delete-with-deactivate-fallback.md"
+],
+"gaps_ref": "R9-9",
+"evidence": [
+"session:L2816",
+"session:L2953",
+"session:L2970",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-36",
+"type": "built",
+"round": "R9",
+"functions": [
+"F30"
+],
+"what": "F30 tracking number is required only in the ship dialog and checked again in Java; it is shown on the order only for SHIPPED and DELIVERED.",
+"why": "Model route (required input plus hiddenBy) instead of a frontend hook.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/conditional-field-validation-hook.md"
+],
+"gaps_ref": "R9-6",
+"evidence": [
+"session:L2878",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-37",
+"type": "built",
+"round": "R9",
+"functions": [
+"F31"
+],
+"what": "F31 order status history: each transition writes a history row (who, what, when) in the same transaction; admin order view lists the rows.",
+"why": "Audit history written by the operation, since interceptors skip custom operations.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/history-audit-trail-entity/BLUEPRINT.md",
+"catalog/agent-docs/backend/interceptors.md"
+],
+"gaps_ref": "R9-4",
+"evidence": [
+"session:L2876",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-38",
+"type": "built",
+"round": "R9",
+"functions": [
+"F32"
+],
+"what": "F32 Orders (30 days) is a derived access (orderedAt later than now minus 30 days); All orders keeps older orders reachable. Cut-off itself untested.",
+"why": "Derived access filtering instead of a range interceptor.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/derived-access-filtering.md",
+"catalog/agent-docs/model/model-development.md"
+],
+"gaps_ref": "R9-5",
+"evidence": [
+"session:L2820",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-39",
+"type": "built",
+"round": "R9",
+"functions": [],
+"what": "Round 9 fixes: drawer profile name (CustomHeroPropsHook), menu order by title (MenuItemsCustomizerHook), and DAO docs read before the Java.",
+"why": "Documented hooks; kb read of data-access-guide.md and related blueprints.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/ui-hooks.md",
+"catalog/agent-docs/backend/data-access-guide.md"
+],
+"gaps_ref": "R9-1",
+"evidence": [
+"session:L2684",
+"session:L2709",
+"session:L2714",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-69",
+"type": "built",
+"round": "R10",
+"functions": [
+"F31"
+],
+"what": "F31 history sorted oldest first and Ordered shown read-only as derived text (orderedAtLabel) on both order views.",
+"why": "DataColumn sort ASC and derived string replace the date picker.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+"catalog/agent-docs/model/esm_metamodel/ui.md"
+],
+"gaps_ref": "R10-1",
+"evidence": [
+"session:L3163",
+"session:L3199",
+"session:L3203"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-70",
+"type": "built",
+"round": "R10",
+"functions": [
+"F33"
+],
+"what": "F33 shop configuration singleton (ShopConfig): shop name, free-shipping threshold, shipping fee, low-stock threshold, default VAT; admin menu Shop settings.",
+"why": "Singleton entity edited from one menu item.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/platform-configuration-singleton/BLUEPRINT.md",
+"catalog/best-practices/model/singleton-entity.md"
+],
+"gaps_ref": "R10-4",
+"evidence": [
+"session:L3159",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-71",
+"type": "built",
+"round": "R10",
+"functions": [
+"F34"
+],
+"what": "F34 VAT rate per category; cart and order show goods, discount, net, VAT, shipping and total; order keeps per-line VAT.",
+"why": "Derived arithmetic across relations with stored order amounts.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/aggregated-stored-field.md",
+"catalog/best-practices/model/null-safe-collection-aggregation.md"
+],
+"gaps_ref": "R10-5",
+"evidence": [
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-72",
+"type": "built",
+"round": "R10",
+"functions": [
+"F35"
+],
+"what": "F35 flat shipping fee below the free-shipping threshold read from the singleton in a derived expression; free at or above it.",
+"why": "Derived value reading the singleton.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/platform-configuration-singleton/BLUEPRINT.md"
+],
+"gaps_ref": "R10-6",
+"evidence": [
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-73",
+"type": "built",
+"round": "R10",
+"functions": [
+"F36"
+],
+"what": "F36 coupons: admin Coupons menu; customer applies or removes a code in the cart; five distinct refusal messages; re-checked and counted at checkout.",
+"why": "Entity plus custom validation in the operation with an injectable clock.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/injectable-business-clock.md",
+"catalog/agent-docs/backend/error-handling-guide.md"
+],
+"gaps_ref": "R10-7",
+"evidence": [
+"session:L3091",
+"session:L3197",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-74",
+"type": "built",
+"round": "R10",
+"functions": [
+"F37"
+],
+"what": "F37 sale price with a date window on the product; cards show sale price, struck-through regular price and a Sale chip; cart and order use the sale price only inside the window.",
+"why": "Derived member using the current date.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/injectable-business-clock.md",
+"catalog/agent-docs/model/model-development.md"
+],
+"gaps_ref": "R10-8",
+"evidence": [
+"session:L3129",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-75",
+"type": "built",
+"round": "R10",
+"functions": [
+"F38"
+],
+"what": "F38 low-stock list for the admin: derived access filtered by stock below the settings threshold; changing the threshold changes the list.",
+"why": "Filtered derived access reading the singleton.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/derived-access-filtering.md"
+],
+"gaps_ref": "R10-9",
+"evidence": [
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-76",
+"type": "built",
+"round": "R10",
+"functions": [
+"F39"
+],
+"what": "F39 invoice PDF on paid, shipped and delivered orders for customer and admin; PDF opens inline in a dialog; test checks the PDF content.",
+"why": "Handlebars Markdown template plus PDFBox renderer, FileStore, inline download.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/handlebars-email-template.md",
+"catalog/best-practices/backend/filestore-mediated-file-transfer.md",
+"catalog/best-practices/frontend/pdf-preview-inline-display.md"
+],
+"gaps_ref": "R10-10",
+"evidence": [
+"session:L3093",
+"session:L3096",
+"session:L3175",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-77",
+"type": "built",
+"round": "R10",
+"functions": [
+"F40"
+],
+"what": "F40 English and Hungarian switch in the header of both actors; shared Price component formats with Intl (79,90 EUR in Hungarian); menus, buttons and cart labels translated.",
+"why": "i18n language switch registered as one AppBar extra; Intl formatting follows i18n language.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/i18n.md",
+"catalog/agent-docs/frontend/hooks/ui-hooks.md"
+],
+"gaps_ref": "R10-12",
+"evidence": [
+"session:L3120",
+"session:L3122",
+"session:L3136",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c06-31",
+"type": "built",
+"round": "R11",
+"functions": [
+"F41"
+],
+"what": "Wishlist: many-to-many Customer.wishlist and Product.wishedBy, add from product page, My wishlist with Move to cart and Remove.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/bidirectional-relation.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L3381",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c06-32",
+"type": "built",
+"round": "R11",
+"functions": [
+"F42"
+],
+"what": "Review entity owned by Product; write action hidden for non-buyers and after the first review; operation rechecks buyer and 1-5 range.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/role-guarded-write.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L3362",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c06-33",
+"type": "built",
+"round": "R11",
+"functions": [
+"F43"
+],
+"what": "Derived averageRating, reviewCount and ratingLabel on Product, shown on product page, shop cards and admin table; no reviews shows nothing.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/null-safe-collection-aggregation.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L3307",
+"session:L3376",
+"session:L3529",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c06-34",
+"type": "built",
+"round": "R11",
+"functions": [
+"F44"
+],
+"what": "Orders CSV export (filters status and ordered from/until) and products CSV import (all rows checked first), each as a custom operation with a file.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/bulk-csv-import-export.md",
+"catalog/best-practices/backend/filestore-mediated-file-transfer.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L3253",
+"session:L3647",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c06-35",
+"type": "built",
+"round": "R11",
+"functions": [
+"F46"
+],
+"what": "Notification entity, written inside Ship order; header bell with unread count; inbox sorted newest first; markRead custom operation marks read.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/notification-entity-pattern.md",
+"catalog/best-practices/backend/read-tracking-postcall-interceptor.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L3254",
+"session:L3526",
+"session:L3684",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c06-36",
+"type": "built",
+"round": "R11",
+"functions": [
+"F47"
+],
+"what": "Admins page with Invite admin; e-mail trimmed, lower-cased and validated; duplicate invite answers already an admin.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/managed-actor-admin-pattern.md",
+"catalog/best-practices/backend/email-normalization-at-invite.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L3258",
+"session:L3259",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-04",
+"type": "built",
+"round": "R12",
+"functions": [
+"F52"
+],
+"what": "Migration with data: weight (backfilled 500) and ShopConfig.returnWindowDays (backfilled 14) in migration 1, then a second migration adding stored soldUnits with an SQL backfill. Fixture test compares pre-migration products with the table.",
+"why": "Built per the user's F52 request.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/schema-evolution.md",
+"catalog/best-practices/backend/migration-backfill-default-where-null.md"
+],
+"gaps_ref": "R12-1",
+"evidence": [
+"session:L4021",
+"session:L4027",
+"session:L4031",
+"session:L4407",
+"session:L4408"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-05",
+"type": "built",
+"round": "R12",
+"functions": [
+"F45"
+],
+"what": "Bulk price change: a Change prices row action on each category (instance operation with a percent input), one transaction, 2-decimal rounding, rejects 0, -100 or less, +1000 or more, changes list price only, hand-written audit rows, success snackbar.",
+"why": "Built per the F45 row.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/custom-operations.md",
+"catalog/model-blueprints/audit-log-entity/backend.md",
+"catalog/agent-docs/frontend/hooks/action-hooks.md"
+],
+"gaps_ref": "R12-9",
+"evidence": [
+"session:L4142",
+"session:L4262",
+"session:L4274",
+"session:L4296",
+"session:L4343"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-07",
+"type": "built",
+"round": "R12",
+"functions": [
+"F48"
+],
+"what": "Admin dashboard: DashboardInfo over the settings row with orders today, revenue today (cancelled excluded, shared price format), and top 5 best sellers by stored soldUnits with rowsPerPage 5.",
+"why": "Built per the F48 row.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/aggregated-stored-field.md",
+"catalog/agent-docs/frontend/model-screen-layout.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": "R12-10",
+"evidence": [
+"session:L4331",
+"session:L4332",
+"session:L4363",
+"session:L4403",
+"session:L4445",
+"session:L4447",
+"session:L4105"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-11",
+"type": "built",
+"round": "R12",
+"functions": [
+"F49"
+],
+"what": "Returns: ReturnRequest owned by the order line (REQUESTED to APPROVED or REJECTED), window from delivery plus ShopConfig.returnWindowDays (default 14), approval restores stock and writes a history row with the refund, pages Return an item, My returns and Returns to review.",
+"why": "Built per the F49 row.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/enum-state-machine.md",
+"catalog/best-practices/model/composition-ownership.md",
+"catalog/best-practices/backend/role-guarded-write.md"
+],
+"gaps_ref": "R12-11",
+"evidence": [
+"session:L3997",
+"session:L3999",
+"session:L4005",
+"session:L4216",
+"session:L4224",
+"session:L4225",
+"session:L4452",
+"session:L4456"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-19",
+"type": "built",
+"round": "R12",
+"functions": [
+"F41"
+],
+"what": "Wishlist page uses the shared Price component ('12,00 EUR' in Hungarian), with loading, empty and error states, Move to cart and Remove through the generated service.",
+"why": "Round 12 UI fix for the wishlist price.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": "R12-3",
+"evidence": [
+"session:L4101",
+"session:L4103",
+"session:L4110",
+"session:L4116"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-20",
+"type": "built",
+"round": "R12",
+"functions": [
+"F40",
+"F46"
+],
+"what": "Notifications header: the bell navigates with clearNavigate so the breadcrumb reads Home, and AppBarExtras wraps the language switch and the bell in one flex row with no stray background.",
+"why": "Round 12 UI fixes requested by the user (Home breadcrumb, tidy header).",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/breadcrumb-navigation-context.md",
+"catalog/agent-docs/frontend/hooks/ui-hooks.md"
+],
+"gaps_ref": "R12-2",
+"evidence": [
+"session:L3745",
+"session:L3796",
+"session:L3802",
+"session:L3804",
+"session:L4322"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-28",
+"type": "built",
+"round": "R12",
+"functions": [
+"F50"
+],
+"what": "Audit log: one row per changed product field (who, what, old and new value), read-only audit page; unchanged fields create no row; bulk price change rows appear too.",
+"why": "Built per the F50 row.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/audit-log-entity/backend.md",
+"catalog/agent-docs/backend/interceptors.md"
+],
+"gaps_ref": "R12-7",
+"evidence": [
+"session:L4009",
+"session:L4142",
+"session:L4245",
+"session:L4341",
+"session:L4342"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-30",
+"type": "built",
+"round": "R12",
+"functions": [
+"F53"
+],
+"what": "Order lifecycle integration tests in a hand-written module application/order-tests: 8 tests (new to paid to shipped to delivered with history, refused steps change nothing, return once, stock back, cancel own orders). They found three bugs in ReturnService.",
+"why": "Built per the F53 row, in a module outside the generated test kit.",
+"kind": "none",
+"workaround": "Hand-written module, see decision.",
+"catalog_paths": [
+"catalog/agent-docs/integration-testing/getting-started.md",
+"catalog/agent-docs/integration-testing/advanced-patterns.md",
+"catalog/model-blueprints/testkit-integration-foundation/backend.md",
+"catalog/agent-docs/integration-testing/best-practices.md"
+],
+"gaps_ref": "R12-5",
+"evidence": [
+"session:L4205",
+"session:L4215",
+"session:L4216",
+"session:L4219",
+"session:L4224",
+"session:L4225",
+"session:L4424"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-37",
+"type": "built",
+"round": "R12",
+"functions": [
+"F54"
+],
+"what": "Checkout E2E test (two products, address required, order shows cart total) in CI mode: playwright.ci.config.ts with retries and workers from the catalog, headless, waits on responses and on screen only. Passes with CI=true, no retry used.",
+"why": "Built per the F54 row.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing/troubleshooting.md",
+"catalog/agent-docs/e2e-testing/README.md"
+],
+"gaps_ref": "R12-6",
+"evidence": [
+"session:L4127",
+"session:L4128",
+"session:L4132",
+"session:L4133",
+"session:L4154",
+"session:L4424",
+"session:L4425"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c08-31",
+"type": "built",
+"round": "R13",
+"functions": [
+"F55"
+],
+"what": "Companies, members, invitations with key, join by key, company admin invite and role change; the level 7 test for F55 passed.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/organization-entity/BLUEPRINT.md",
+"catalog/model-blueprints/user-with-organization-and-role/BLUEPRINT.md",
+"catalog/model-blueprints/invitation-with-key-based-acceptance/BLUEPRINT.md"
+],
+"gaps_ref": "R13-1",
+"evidence": [
+"session:L4896",
+"session:L4736"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c08-32",
+"type": "built",
+"round": "R13",
+"functions": [
+"F56"
+],
+"what": "Company price list with Product.companyPrices; the shared Price component shows the company price, a company without a list sees the list price; the level 7 test passed.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/derived-access-filtering.md",
+"catalog/model-blueprints/price-margin-calculation-utilities/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L4756",
+"session:L4914"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c08-33",
+"type": "built",
+"round": "R13",
+"functions": [
+"F57"
+],
+"what": "Quantity price tiers (Product.tiers, PriceTierInfo) with unit price switching at 10 and 50; the level 7 test passed.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/quote-lines-with-price-modifiers/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L4914",
+"session:L4913"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c08-34",
+"type": "built",
+"round": "R13",
+"functions": [
+"F58"
+],
+"what": "Checkout branches to PENDING_APPROVAL when the order exceeds the remaining credit; the test passed in the level 7 run with six passing.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/approval-workflow-pattern.md",
+"catalog/best-practices/model/null-safe-collection-aggregation.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L4742",
+"session:L4939"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c08-35",
+"type": "built",
+"round": "R13",
+"functions": [
+"F59"
+],
+"what": "Approve and reject operations via ApprovalService; negative test (buyer cannot approve own order) passed in the level 7 run.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/approval-workflow-pattern.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L4916",
+"session:L4939",
+"session:L4472"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c08-36",
+"type": "built",
+"round": "R13",
+"functions": [
+"F60"
+],
+"what": "Quote and QuoteLine with request a quote from the cart, admin discount and offer, convert to order; the quote test passed after many test fixes.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/quote-lines-with-price-modifiers/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L4973",
+"session:L4954"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c08-37",
+"type": "built",
+"round": "R13",
+"functions": [
+"F61"
+],
+"what": "Purchase order number on SalesOrder and checkout input, required when the company sets poRequired; column added by migration. No separate test result seen in the chunk.",
+"why": null,
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/schema-evolution.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L4742",
+"session:L4782"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "low"
+},
+{
+"id": "c09-46",
+"type": "built",
+"round": "R13",
+"functions": [
+"F55"
+],
+"what": "Companies and members inside the Customer actor, invitation with a key shown in the open-invitations table (no mail server); Level 7 spec passes.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/user-with-organization-and-role",
+"catalog/model-blueprints/organization-entity",
+"catalog/model-blueprints/multi-actor-role-based-projections/BLUEPRINT.md",
+"catalog/best-practices/model/multi-role-single-entity.md"
+],
+"gaps_ref": "R13-1, R13-3",
+"evidence": [
+"session:L5082",
+"session:L5083"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-47",
+"type": "built",
+"round": "R13",
+"functions": [
+"F56",
+"F57"
+],
+"what": "Company prices and quantity tiers shown through the shared Price component in cards, cart and order; Level 7 spec passes.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/quote-lines-with-price-modifiers",
+"catalog/model-blueprints/price-margin-calculation-utilities/BLUEPRINT.md"
+],
+"gaps_ref": "R13-4",
+"evidence": [
+"session:L5083"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-48",
+"type": "built",
+"round": "R13",
+"functions": [
+"F58",
+"F59"
+],
+"what": "Credit limit and approval workflow: over-limit orders await approval; buyer has no Approve button; approver cannot approve own order.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/approval-workflow-pattern.md",
+"catalog/best-practices/backend/role-guarded-write.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5083",
+"session:L5577"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-49",
+"type": "built",
+"round": "R13",
+"functions": [
+"F60"
+],
+"what": "Quotes: buyer requests, admin discounts and offers, buyer converts once at quoted prices. Requested and Order made read-only in round 14 (see issue c09-09).",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/quote-lines-with-price-modifiers",
+"catalog/best-practices/model/enum-state-machine.md"
+],
+"gaps_ref": "R13-7",
+"evidence": [
+"session:L5083",
+"session:L5215"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-50",
+"type": "built",
+"round": "R13",
+"functions": [
+"F61"
+],
+"what": "Purchase-order number on company orders; the rule is enforced in the checkout operation (PO required blocks checkout).",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/sequence-based-identifier.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5083"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-51",
+"type": "built",
+"round": "R13",
+"functions": [
+"F49"
+],
+"what": "F49 test fixed: admin order lookup by number filter instead of first page (test only, no product change).",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R13-6",
+"evidence": [
+"session:L5071",
+"session:L5074"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c09-52",
+"type": "built",
+"round": "R14",
+"functions": [
+"F62"
+],
+"what": "Seller role: apply, admin approve or reject, seller products with publish and unpublish, ownership guard; F62 test passes after the assertion change.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/multi-actor-role-based-projections/BLUEPRINT.md",
+"catalog/best-practices/model/derived-access-filtering.md",
+"catalog/agent-docs/backend/interceptors.md"
+],
+"gaps_ref": "R14-1, R14-7",
+"evidence": [
+"session:L5394",
+"session:L5500",
+"session:L5654"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-53",
+"type": "built",
+"round": "R14",
+"functions": [
+"F63",
+"F64",
+"F66"
+],
+"what": "One checkout from three sellers creates one order and three sub-orders in one transaction; order status derived from sub-orders; seller ledger entries. Five integration tests pass (MarketplaceIntegrationTest 5/5, OrderLifecycle 8/8 after fixes); browser test passes in the last run.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/composition-ownership.md",
+"catalog/model-blueprints/registry-header-with-lines/BLUEPRINT.md",
+"catalog/best-practices/model/enum-state-machine.md",
+"catalog/model-blueprints/event-log-entity/BLUEPRINT.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5372",
+"session:L5654"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-54",
+"type": "built",
+"round": "R14",
+"functions": [
+"F65"
+],
+"what": "Commission per category (CategoryInfo.commissionPercent), per-line commission rounded half up in the Money helper; seller payout equals sub-order total minus commission.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/price-margin-calculation-utilities/BLUEPRINT.md",
+"catalog/agent-docs/backend/type-system-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5295",
+"session:L5373",
+"session:L5654"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-55",
+"type": "built",
+"round": "R14",
+"functions": [
+"F67"
+],
+"what": "Partial refund of one sub-order line: stock returned, REFUND ledger entry and proportional commission reversal; browser test passes in the last run.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/custom-operations.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5400",
+"session:L5654"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "low"
+},
+{
+"id": "c09-56",
+"type": "built",
+"round": "R14",
+"functions": [
+"F68"
+],
+"what": "Currency switch (EUR, USD, HUF) in the header; prices converted by the shared Price component from the newest rate; missing rate shows a notice. Admin can enter rates. Browser test passes.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/exchange-rate-entity/BLUEPRINT.md"
+],
+"gaps_ref": "R14-8",
+"evidence": [
+"session:L5593",
+"session:L5654"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-57",
+"type": "built",
+"round": "R14",
+"functions": [
+"F69"
+],
+"what": "Gift cards bought by the customer, code shown once, partial redemption over two orders, balance never below zero; buyGiftCard is a void operation. Browser test passes alone and in the last run.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/platform-behavior-reference.md"
+],
+"gaps_ref": "R14-5, R14-10",
+"evidence": [
+"session:L5600",
+"session:L5654"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-58",
+"type": "built",
+"round": "R14",
+"functions": [
+"F70"
+],
+"what": "Loyalty points earned on DELIVERED (400 points per 1000 EUR), spent at checkout (10 points equal 1.00 EUR); browser test FAILS at the end of the chunk (amount due after points). Not finished.",
+"why": "n/a",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/osgi-scheduled-background-jobs/BLUEPRINT.md"
+],
+"gaps_ref": "R14-9",
+"evidence": [
+"session:L5606",
+"session:L5656"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c10-33",
+"type": "built",
+"round": "R15",
+"functions": [
+"F40"
+],
+"what": "Language switch kept in the header through the AppBarExtras wrapper (EN/HU).",
+"why": "Shared AppBarExtraComponents slot.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/ui-hooks.md",
+"catalog/agent-docs/frontend/i18n.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5720",
+"session:L5793",
+"session:L5796"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-34",
+"type": "built",
+"round": "R15",
+"functions": [
+"F46"
+],
+"what": "Notification bell kept in the header with the unread count from the profile.",
+"why": "Shared AppBarExtraComponents slot.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/ui-hooks.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5791",
+"session:L5720"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-35",
+"type": "built",
+"round": "R15",
+"functions": [],
+"what": "Storefront overhaul: top bar with cart counter and search box, grouped menu, home hero and category chips with sort, card grid, category filter, four-step checkout with confirmation page, account group. Admin untouched.",
+"why": "Round 15 UI brief.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/agent-docs/frontend/hooks/ui-hooks.md",
+"catalog/agent-docs/frontend/extension-points.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5795",
+"session:L5839",
+"session:L5877",
+"session:L6082",
+"session:L6089",
+"session:L6092"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-36",
+"type": "built",
+"round": "R15",
+"functions": [
+"F62",
+"F63",
+"F64",
+"F65",
+"F66"
+],
+"what": "Level 8 marketplace spec F62 and F63-F66 pass (6 tests in level8 pass after helper and fixture fixes).",
+"why": "Finish Level 8 after the UI overhaul.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L6042",
+"session:L6088"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-37",
+"type": "built",
+"round": "R15",
+"functions": [
+"F69",
+"F70"
+],
+"what": "Level 8 gift card (F69) and loyalty points (F70) tests pass on run-local products.",
+"why": "Finish Level 8.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L6033",
+"session:L6042",
+"session:L6088"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-38",
+"type": "built",
+"round": "R15",
+"functions": [
+"F21",
+"F22",
+"F24",
+"F59"
+],
+"what": "Smoke suite (--grep @smoke) passes 7 of 7 after helper and fixture fixes (showAllRows, F59 orders 30 units).",
+"why": "Regression after menu grouping and paging changes.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L6081",
+"session:L6082"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+}
+]

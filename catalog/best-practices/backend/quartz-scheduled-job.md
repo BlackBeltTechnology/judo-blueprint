@@ -1,7 +1,7 @@
 ---
 id: quartz-scheduled-job
 title: Quartz Scheduled Job with OSGi Configuration
-description: Practice for background jobs on a Karaf scheduler service (Quartz underneath) configured by an OSGi activator, with cron triggers from configuration and an explicit transaction inside each job because jobs run outside any request.
+description: Practice for background jobs on an application-bundled Quartz scheduler configured by an OSGi activator, with cron triggers from configuration and an explicit transaction inside each job because jobs run outside any request.
 aliases: [Quartz job, cron job, scheduler activator, background job]
 keywords: [quartz, scheduled, job, osgi, configuration, cron, scheduler, UserTransaction, RAMJobStore, clustering]
 tags: ["domain:backend", "layer:backend", "project:rackinspect", "project:mlszksz-platform", "project:park-here", "project:indamedia-adtrack", "status:established"]
@@ -10,7 +10,6 @@ status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack]
 evidence: ["rackinspect:application/scheduler/src/main/java/hu/blackbelt/rackinspect/scheduler/RdbmsBasedSchedulerActivator.java", "rackinspect:application/scheduler/src/main/java/hu/blackbelt/rackinspect/scheduler/UpdateExchangeRatesJobFirst.java", "mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/SingleInstanceSchedulerActivator.java", "mlszksz-platform:application/scheduler/src/main/java/hu/blackbelt/mlszksz/platform/scheduler/PostExpirationJob.java", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -25,6 +24,8 @@ Run periodic work (rate refresh, expiry, cleanup, reminders, external sync) from
 - A job is an ordinary OSGi component, so the Declarative Services rules apply ([OSGi component registration](../../agent-docs/backend/custom-operations.md#osgi-component-registration-pattern)); the scheduler runs in its own bundle ([[osgi-karaf-bundle-architecture]]).
 - Request-scoped context is absent. Code on other threads runs outside the operation's transaction and without context variables ([interceptor contract](../../agent-docs/backend/interceptors.md#the-interceptor-contract)), so a job cannot use the `ACTOR` variable of a logged-in user. The docs do not describe the transaction and variable context of a plain scheduler thread; the practice below manages the transaction itself.
 - Interceptors fire only for the built-in behaviour operations, and custom operations never hit them ([which operations are intercepted](../../agent-docs/backend/interceptors.md#which-operations-are-intercepted)). The docs do not mention scheduler threads; a job writes through DAOs, so treat denormalization or validation interceptors as not applying and repeat that logic in the job's service if needed.
+
+- The Karaf runtime has no Quartz feature, so the application has to supply Quartz itself. The platform has no scheduler (see [scheduled work](../../agent-docs/backend/platform-behavior-reference.md#scheduled-work)).
 
 ### Practice notes: scheduler activator, jobs, own transactions
 

@@ -1,6 +1,9 @@
 ---
 title: Application Configuration
 description: JUDO_PLATFORM environment variables for database, Keycloak, filestore, mail and identifier signing, per-environment setup and encrypted values.
+aliases: [environment variables config, judo-karaf.env settings, database connection settings, keycloak url config, signed identifier secret, mail smtp settings, configuration not applied]
+keywords: [JUDO_PLATFORM_RDBMS_DIALECT, JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL, JUDO_PLATFORM_FILESTORE, JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET, judo-karaf.env, judo.sh, JUDO_PLATFORM_MAIL_SMTP_HOST, JUDO_PLATFORM_SWAGGER_UI, bannerEnabled, enableJMX, ENC]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Configuration Guide
@@ -52,9 +55,9 @@ These are the variables the shipped `judo.sh` and the Docker Compose stacks of t
 
 **Location:** `/judo-karaf.env`
 
-The generated file contains only a few defaults (identifier signer secret, Keycloak password policy, `JUDO_PLATFORM_LOG_SMTP_SERVER`, `JUDO_PLATFORM_FILESTORE=rdbms`). Add or change variables there, then restart: `./judo.sh stop && ./judo.sh start`.
+The generated file contains only a few defaults (identifier signer secret, Keycloak password policy, `JUDO_PLATFORM_LOG_SMTP_SERVER`, `JUDO_PLATFORM_FILESTORE=rdbms`). The generated signer secret is a fixed placeholder; replace it per environment. Add or change variables there, then restart: `./judo.sh stop && ./judo.sh start`.
 
-**Format:**
+#### Format
 ```bash
 JUDO_PLATFORM_PARAMETER_NAME=value
 ```
@@ -65,7 +68,7 @@ JUDO_PLATFORM_PARAMETER_NAME=value
 
 ### Alternative Methods (Not Recommended)
 
-**Java System Properties:**
+#### Java System Properties
 ```bash
 export JAVA_EXTRA_OPTS="-Djudo.platform.parameterName=value"
 ```
@@ -86,6 +89,11 @@ export JAVA_EXTRA_OPTS="-Djudo.platform.parameterName=value"
 - No prefix needed
 - Format: `camelCase`
 - Example: `rdbmsDialect`
+- System properties in config templates keep their dots: `${system.java_home}` resolves the JVM property `java.home`; dots are not replaced by underscores.
+
+### Custom application parameters
+
+Custom parameter names are case-sensitive. A template line such as `myprop=${ mypropDev ! "My DEV Prop"}` reads the parameter `mypropDev` (lowercase `p`), so the environment-variable and `-D` forms must use that exact name. In a conditional template the `dev` branch falls back to `"My DEV Prop"` and the `qa` branch to `"My QA Prop"` when the parameter is not set.
 
 ### Conversion Rule
 ```
@@ -100,11 +108,11 @@ JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL    → keycloakAuthPublicUrl
 
 **For database schema migration and evolution**, see [Schema Evolution](./schema-evolution.md).
 
-**JUDO_PLATFORM_RDBMS_DIALECT**
+#### JUDO_PLATFORM_RDBMS_DIALECT
 - **Description**: Database dialect for SQL generation
 - **Options**: `postgresql`, `hsqldb` (JUDO ships only these two dialect bundles)
 
-**JUDO_PLATFORM_RDBMS_DB_HOST / _PORT / _DATABASE / _USER / _PASSWORD**
+#### JUDO_PLATFORM_RDBMS_DB_HOST / _PORT / _DATABASE / _USER / _PASSWORD
 - **Description**: Connection settings of the application database. `judo.sh` exports them for a local PostgreSQL container; the Compose stacks set them to the `postgres` service (`DB_DATABASE`, `DB_USER` and `DB_PASSWORD` default to the lower-case model name).
 - **Note**: There is no `JUDO_PLATFORM_DATASOURCE_URL` / `_USERNAME` / `_PASSWORD` variable in the template. The JDBC URL is built by the platform from these parts.
 
@@ -114,43 +122,54 @@ JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL    → keycloakAuthPublicUrl
 - `JUDO_PLATFORM_NARAYANA_DEFAULT_TIMEOUT` (milliseconds, e.g. `120000`)
 - `JUDO_PLATFORM_CASE_INSENSITIVE_LIKE` (`true` for case-insensitive `like` on PostgreSQL)
 
+**Pool and datasource factory parameters:** the connection pool is selected by `rdbmsDbPool` (env `JUDO_PLATFORM_RDBMS_DB_POOL`; options `none`, `hikari`, `dbcp2`, `transx`; default `hikari`). There is no `rdbmsDbPoolType` or `dbPoolType`. `managedDatasourceFactory` (options `none`, `transx`) defaults to `none`, meaning transactions are handled by the JDBC datasource; `transx` wraps the datasource in the Transx JTA transaction manager.
+
+**Guice PostgreSQL pool size:** the Guice PostgreSQL module stores a `poolSize` setting (default `10`) but does not apply it: `PostgresqlDataSourceProvider` wraps the driver in a `HikariDataSource` without setting a maximum pool size, so HikariCP's own default applies.
+
 For running JUDO on Spring Boot (`spring.datasource.*`), see [Spring Boot Runtime](./spring-boot-runtime.md). For runtime datasource behaviour (pax-jdbc keys, version checks) see [OSGi Runtime Services](./osgi-runtime-services.md).
 
 ### 2. Keycloak (Security)
 
-**JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL**
+#### JUDO_PLATFORM_KEYCLOAK_AUTH_SERVER_URL
 - **Description**: Keycloak URL used by the backend (inside the Compose network, e.g. `http://auth:8080`)
 - **Required**: Yes
 
-**JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL**
+#### JUDO_PLATFORM_KEYCLOAK_AUTH_PUBLIC_URL
 - **Description**: Keycloak URL as reachable by browsers (e.g. `https://auth-<ip>.traefik.me`). The parameter is `keycloakAuthPublicUrl`, not `keycloakPublicUrl`.
 
-**JUDO_PLATFORM_KEYCLOAK_REALM / JUDO_PLATFORM_KEYCLOAK_CLIENT_ID**
+#### JUDO_PLATFORM_KEYCLOAK_REALM / JUDO_PLATFORM_KEYCLOAK_CLIENT_ID
 - **Description**: Realm and client id (used in real-world deployments).
 
-**JUDO_PLATFORM_KEYCLOAK_DEFAULT_PASSWORD_POLICY**
+#### JUDO_PLATFORM_KEYCLOAK_DEFAULT_PASSWORD_POLICY
 - **Description**: Password policy for users created by the platform. The shipped `judo-karaf.env` sets `SAME_EMAIL`; the Compose stack sets `SAME_USERNAME`.
 
 **JUDO_PLATFORM_KEYCLOAK_MANAGEMENT_ENABLED / JUDO_PLATFORM_USER_MANAGER_ENABLED / JUDO_PLATFORM_KEYCLOAK_USER / JUDO_PLATFORM_KEYCLOAK_PASSWORD**
-- **Description**: Enable the built-in Keycloak user management and the Keycloak admin credentials the backend uses for it (seen in production Compose files of real applications).
+- **Description**: Enable the built-in Keycloak user management and the Keycloak admin credentials the backend uses for it (seen in production Compose files of real applications). When unset, the admin user is `admin` and the admin password is `judo`.
+- The `JUDO_PLATFORM_*` variables in this section are read by the OSGi configuration mapper. The Guice runtime does not read Keycloak settings from environment variables: `JudoKeycloakModule` binds them from the `JudoKeycloakModuleConfiguration` object.
+- In the Guice runtime, `JudoKeycloakModule` binds the Keycloak server URL from `JudoKeycloakModuleConfiguration` (default `http://localhost:8080/auth`). The `KeycloakConnectorProvider` field default (`http://localhost:8080`) applies only when no server URL binding exists.
+- In the Guice runtime, the Keycloak admin password comes from `JudoKeycloakModuleConfiguration` (default `judo`). The `KeycloakConnectorProvider` field default (`admin`) applies only when no admin password binding exists.
 
 ### 3. REST API
 
-**JUDO_PLATFORM_SWAGGER_UI / JUDO_PLATFORM_SWAGGER_UI_PATH**
+#### JUDO_PLATFORM_SWAGGER_UI / JUDO_PLATFORM_SWAGGER_UI_PATH
 - **Description**: Switch on the Swagger UI (default path `/swagger-ui`). Consider disabling it in production.
 
-**JUDO_PLATFORM_CORS_ALLOW_ORIGIN**
-- **Description**: Allowed CORS origin(s) (used by real deployments; do not leave it open in production).
+#### JUDO_PLATFORM_CORS_ALLOW_ORIGIN
+- **Description**: Allowed CORS origin(s) (used by real deployments; do not leave it open in production). In the Guice CXF JAX-RS runtime this variable has no effect: `CrossOriginResourceSharingFilterProvider` returns an unconfigured filter.
 
 ### 4. File Storage
 
-**JUDO_PLATFORM_FILESTORE**
+#### JUDO_PLATFORM_FILESTORE
 - **Options**: `rdbms` (files in the database; the shipped `judo-karaf.env` and the `compose-develop` stack use it), `filesystem` (the `compose-postgresql-https` stack), `s3`.
 
-**JUDO_PLATFORM_FILESTORE_DIRECTORY**
+#### JUDO_PLATFORM_FILESTORE_DIRECTORY
 - **Description**: Directory for the `filesystem` store (Compose stack: `/filestore`). The old name `JUDO_PLATFORM_FILESTORE_PATH` does not exist.
 
 **S3 settings**: `JUDO_PLATFORM_S3_BUCKET`, `JUDO_PLATFORM_S3_REGION`, `JUDO_PLATFORM_S3_ENDPOINT`, `JUDO_PLATFORM_S3_ACCESS_KEY`, `JUDO_PLATFORM_S3_SECRET_KEY`, plus `JUDO_PLATFORM_FILESTORE_TOKEN_EXPIRY`.
+
+An `http://` S3 endpoint is accepted: activation logs a WARN that the endpoint is cleartext (signed requests and file bytes travel unencrypted), but it is not an error and does not stop activation. Use `https://` outside local tests.
+
+The upload token audience is prefixed with the `audiencePrefix` property of the file-store token service config; the validator expects the same prefix.
 
 #### Using a Google Cloud Storage bucket
 
@@ -158,7 +177,7 @@ Google Cloud Storage exposes an S3-compatible XML API, so the platform's S3 file
 
 ### 5. Identifier Signing
 
-**JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET**
+#### JUDO_PLATFORM_IDENTIFIER_SIGNER_SECRET
 - **Description**: Base64-encoded HMAC secret used to sign the entity identifiers sent to clients (`__signedIdentifier`).
 - **Important**: If the secret is not configured, the runtime generates a **new random 1024-bit key on every start**. Signed identifiers then become invalid after a restart and are not valid across cluster nodes. Always set the same secret on every node and keep it stable between restarts; treat it as a secret in production.
 
@@ -175,7 +194,9 @@ Google Cloud Storage exposes an S3-compatible XML API, so the platform's S3 file
 | `JUDO_PLATFORM_MAIL_SMTP_SSL_TRUST` | Trusted SSL hosts |
 | `JUDO_PLATFORM_LOG_SMTP_SERVER` | Log SMTP interactions (`true` in the shipped files) |
 
-**Local testing with Mailpit:** run a mail catcher such as Mailpit locally; the app only knows an SMTP host and port, so for local runs point them at `localhost:1025` (no authentication, no TLS) in `judo-karaf.env`. Test/demo/production read the `JUDO_PLATFORM_MAIL_SMTP_*` variables from the deployment environment (for example `environments/<env>/app-compose/docker-compose.yml`). Nothing in the app depends on Mailpit; new-user and activation emails go through the same SMTP configuration, so Mailpit captures them too.
+**Mail defaults:** without configuration the SMTP port is `25`; with `logSmtpServer=true` (`JUDO_PLATFORM_LOG_SMTP_SERVER`) the default of `mailSmtpPort` becomes `10025` instead. The local log SMTP server itself listens on `logSmtpServerPort`, which defaults to `10025` (host `logSmtpServerHost`, default `localhost`).
+
+**Local testing with Mailpit:** run a mail catcher such as Mailpit locally; the app only knows an SMTP host and port, so for local runs point them at `localhost:1025` (no TLS) in `judo-karaf.env`. Set `JUDO_PLATFORM_LOG_SMTP_SERVER=false` (`true` in the shipped files, which sends mail to the log server instead), and set `JUDO_PLATFORM_MAIL_SMTP_USER` and `JUDO_PLATFORM_MAIL_SMTP_PASSWORD` to any value with `JUDO_PLATFORM_MAIL_SMTP_AUTH=false`: the mail service (`JavaMailSenderActivator`) is only created when the log SMTP server is on or user, password and host are all set, so with the log server off, host and port alone give no `EmailService`. Test/demo/production read the `JUDO_PLATFORM_MAIL_SMTP_*` variables from the deployment environment (for example `environments/<env>/app-compose/docker-compose.yml`). Nothing in the app depends on Mailpit; new-user and activation emails go through the same SMTP configuration, so Mailpit captures them too.
 
 ### 7. Other platform switches
 
@@ -197,7 +218,7 @@ Environment variables (`JUDO_PLATFORM_*`) are the recommended source. Edits of `
 
 ### Development (Local)
 
-**judo-karaf.env** / start options: `./judo.sh start` runs Karaf on port **8181**, Keycloak on 8080 and PostgreSQL (or HSQLDB with `-o dbtype=hsqldb`).
+**judo-karaf.env** / start options: `./judo.sh start` runs Karaf on port **8181**, Keycloak on 8080 (under `/auth`) and the database chosen by `dbtype` (`hsqldb` in the generated `judo.properties`; PostgreSQL with `-o dbtype=postgresql`).
 
 ```bash
 JUDO_PLATFORM_RDBMS_DIALECT=hsqldb
@@ -236,6 +257,8 @@ JUDO_PLATFORM_SWAGGER_UI=false
 ## Encrypted Values (Jasypt)
 
 Configuration files can embed secrets as `password=ENC(<encrypted>)`. The `org.jasypt.encryption.StringEncryptor` OSGi service (from the `karaf-jasypt-support` / `osgi-encryption` features) decrypts them when the configuration is read. Passwords can be encrypted with a Karaf command and replaced in the PAX-JDBC / DBCP2 configuration files.
+
+The password source is read in this order: `encryption_password`, then `encryption_passwordFile`, then the environment variable named by `encryption_passwordEnvName`. `encryption_passwordEnvName` has no default and there is no fallback: if none of the three is set, no password source is read, and the environment variable is used only when that property names it. (The `encrypt`/`decrypt` shell commands, without an explicit password, read the `ENCRYPTION_PASSWORD` environment variable.)
 
 ## Applying Configuration Changes
 

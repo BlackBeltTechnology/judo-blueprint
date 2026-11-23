@@ -1,6 +1,9 @@
 ---
 title: Frontend Development Workflow
 description: Dev server, build, testing and debugging workflow for the generated React frontend, including .default scaffolds and destructive prune warnings.
+aliases: [frontend dev server, pnpm dev setup, frontend build steps, customize generated React, prune deletes custom files, frontend lint and type check]
+keywords: [pnpm run dev, pnpm run build, VITE_API_DEFAULT_BASE_URL, vite.config.ts, src/custom, .default, .generator-ignore, prune, git clean, mvn clean install, git stash -u, Pandino]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Development Workflow
@@ -9,7 +12,7 @@ description: Dev server, build, testing and debugging workflow for the generated
 
 Generated files outside `src/custom/` are overwritten on every build, and the checksum check fails the build when you edited one.
 
-**Rules for Generated Code:**
+### Rules for Generated Code
 - ❌ **DO NOT** edit any files in `.generated-files/` directories
 - ❌ **DO NOT** edit the `.default` scaffold in place; it is regenerated on every build and your edit is lost
 - ❌ **DO NOT** modify generated React components directly
@@ -17,7 +20,7 @@ Generated files outside `src/custom/` are overwritten on every build, and the ch
 - ✅ **DO** create custom components that wrap generated ones
 - ✅ **DO** use the documented extension points (see [Hooks](./hooks/README.md))
 
-**What `.default` files are:**
+### What `.default` files are
 - Hook registration scaffolds under `src/custom/hooks/...` (for example `src/custom/hooks/pages/register<Page>ActionsHook.ts.default`), generated only when the matching hook flag is set in the model
 - To use one, **copy it to the same name without `.default`** and implement it; the copy lives in the gitignored `src/custom/` folder and is not touched by regeneration (no `.generator-ignore` entry needed)
 - `src/custom/application-customizer.tsx` is a plain generated file (no `.default`), and so are the theme files in `src/theme/`
@@ -30,7 +33,7 @@ Generated files outside `src/custom/` are overwritten on every build, and the ch
 
 This is the exact directory where your custom code lives: Pandino hooks, theme overrides, custom components, and i18n overrides (e.g. under `frontend-react/<app>/src/custom/**`, `.../theme/**`, `.../i18n/**`). If any of those files are new and not yet committed, `prune -f` will erase them.
 
-**Before running `./judo.sh prune -f` (or `prune -y`):**
+### Before running `./judo.sh prune -f` (or `prune -y`)
 
 1. `git status` — verify every custom hook/theme/i18n/component file is either committed or staged, or deliberately disposable.
 2. `git stash -u` to snapshot untracked work you want to keep.
@@ -47,12 +50,12 @@ See [Prune (Destructive)](../deployment/build-process.md) for the full reference
 
 This is the exact directory where your custom code lives: Pandino hooks, theme overrides, custom components, and i18n overrides (e.g. under `frontend-react/<app>/src/custom/**`, `.../theme/**`, `.../i18n/**`). If any of those files are new and not yet committed, `prune -f` will erase them.
 
-**Before running `./judo.sh prune -f` (or `prune -y`):**
+### Before running `./judo.sh prune -f` (or `prune -y`)
 
 1. `git status` — verify every custom hook/theme/i18n/component file is either committed or staged, or deliberately disposable.
 2. `git stash -u` to snapshot untracked work you want to keep.
 3. Never run `./judo.sh prune -y` (auto-confirm) in an agent workflow without a verified clean working tree — treat it as equivalent to `rm -rf` on customer code.
-4. If you only need to clear generator caches, use `./judo.sh clean` instead — `clean` does not delete untracked source files.
+4. Do not use `./judo.sh clean` as a gentler alternative: it stops and removes the postgres and keycloak Docker instances, removes the postgres data and DB volumes and deletes the Karaf runtime directory. To discard generated frontend output without touching your data, regenerate with `./judo.sh build -i` (ignore checksums).
 
 See Prune (Destructive) (see `judo-deployment-docs` skill) for the full reference.
 
@@ -84,13 +87,13 @@ cd application/frontend-react/<app>__[actor_fqn]
 pnpm install
 
 # 4. Set API endpoint
-export VITE_API_DEFAULT_BASE_URL=http://localhost:8080
+export VITE_API_DEFAULT_BASE_URL=http://localhost:8181
 
 # 5. Start development server
 pnpm run dev
 
 # Frontend available at: http://localhost:3000
-# Backend API at: http://localhost:8080
+# Backend API at: http://localhost:8181
 ```
 
 ### Hot Module Replacement (HMR)
@@ -101,13 +104,13 @@ Vite provides instant hot module replacement:
 - No rebuild needed
 - React state is preserved when possible
 
-**What triggers HMR:**
+#### What triggers HMR
 - Changes to `.tsx` and `.ts` files
 - CSS/style changes
 - Custom hook modifications
 - Component updates
 
-**What requires full reload:**
+#### What requires full reload
 - Changes to `vite.config.ts`
 - Changes to environment variables
 - Package.json modifications
@@ -138,6 +141,8 @@ mvn clean install
 # Auto-deploys to Karaf if server running
 ```
 
+`./judo.sh generate` does not regenerate frontend sources. Frontend files (including a generated component restored by reverting a `.generator-ignore` entry or an edit) are regenerated by the frontend build: `./judo.sh build -f -i` (`-f` builds the frontend, `-i` ignores checksum errors and updates checksums).
+
 ### Production Build
 
 ```bash
@@ -154,12 +159,12 @@ pnpm run build
 
 ### Build Output
 
-**Frontend JAR Location:**
+#### Frontend JAR Location
 ```
 application/frontend-react/<app>__[actor_fqn]/target/<app>__[actor_fqn]-*.jar
 ```
 
-**What's included in JAR:**
+#### What's included in JAR
 - Compiled React bundles
 - Static assets (images, fonts)
 - Internationalization files
@@ -249,19 +254,19 @@ pnpm run build
 
 ### Browser DevTools
 
-**React Developer Tools:**
+#### React Developer Tools
 - Install React DevTools browser extension
 - Inspect component hierarchy
 - View props and state
 - Profile component performance
 
-**Network Tab:**
+#### Network Tab
 - Monitor API calls
 - Check request/response payloads
 - Verify headers and status codes
 - Debug authentication issues
 
-**Console:**
+#### Console
 - View error messages
 - Check log output
 - Debug JavaScript issues
@@ -287,7 +292,7 @@ Development builds include source maps:
 - Set breakpoints in original code
 - Step through TypeScript line by line
 
-**Enable in DevTools:**
+#### Enable in DevTools
 1. Open DevTools
 2. Go to Sources tab
 3. Navigate to `webpack://` or `vite://`
@@ -295,7 +300,7 @@ Development builds include source maps:
 
 ### Common Debugging Scenarios
 
-**Hook not firing:**
+#### Hook not firing
 ```typescript
 // Add console logs to verify execution
 export const myHook: TableRowHighlightingHook = () => {
@@ -308,14 +313,14 @@ export const myHook: TableRowHighlightingHook = () => {
 };
 ```
 
-**API call failing:**
+#### API call failing
 ```typescript
 // Check network tab
 // Verify VITE_API_DEFAULT_BASE_URL is set
 console.log('API URL:', import.meta.env.VITE_API_DEFAULT_BASE_URL);
 ```
 
-**Component not rendering:**
+#### Component not rendering
 ```typescript
 // Add logging to component lifecycle
 export const MyComponent: FC = () => {
@@ -333,34 +338,34 @@ export const MyComponent: FC = () => {
 
 ### Environment Variables
 
-**Available Variables:**
+#### Available Variables
 - `VITE_API_DEFAULT_BASE_URL` - Backend API URL (required)
 - Custom variables must start with `VITE_`
 
-**Setting Variables:**
+#### Setting Variables
 
-**Development (Linux/Mac):**
+#### Development (Linux/Mac)
 ```bash
-export VITE_API_DEFAULT_BASE_URL=http://localhost:8080
+export VITE_API_DEFAULT_BASE_URL=http://localhost:8181
 pnpm run dev
 ```
 
-**Development (Windows):**
+#### Development (Windows)
 ```cmd
-set VITE_API_DEFAULT_BASE_URL=http://localhost:8080
+set VITE_API_DEFAULT_BASE_URL=http://localhost:8181
 pnpm run dev
 ```
 
-**Using .env file:**
+#### Using .env file
 ```bash
 # Create .env.local (not committed to git)
-echo "VITE_API_DEFAULT_BASE_URL=http://localhost:8080" > .env.local
+echo "VITE_API_DEFAULT_BASE_URL=http://localhost:8181" > .env.local
 
 # Start dev server (reads .env.local automatically)
 pnpm run dev
 ```
 
-**Accessing in Code:**
+#### Accessing in Code
 ```typescript
 const apiUrl = import.meta.env.VITE_API_DEFAULT_BASE_URL;
 console.log('API URL:', apiUrl);
@@ -376,7 +381,7 @@ Common customizations:
 - Proxy settings
 - Plugin configuration
 
-**Example Proxy Setup:**
+#### Example Proxy Setup
 ```typescript
 // vite.config.ts
 export default defineConfig({
@@ -384,7 +389,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8181',
         changeOrigin: true,
       }
     }
@@ -464,13 +469,13 @@ pnpm run dev
 
 ### "Vite dev server won't start"
 
-**Check API URL:**
+#### Check API URL
 ```bash
 echo $VITE_API_DEFAULT_BASE_URL
-# Should output: http://localhost:8080
+# Should output: http://localhost:8181
 ```
 
-**Verify port availability:**
+#### Verify port availability
 ```bash
 # Check if port 3000 is in use
 lsof -i :3000
@@ -479,7 +484,7 @@ lsof -i :3000
 kill -9 <PID>
 ```
 
-**Delete node_modules and reinstall:**
+#### Delete node_modules and reinstall
 ```bash
 cd application/frontend-react/<app>__[actor_fqn]
 rm -rf node_modules pnpm-lock.yaml
@@ -488,24 +493,24 @@ pnpm install
 
 ### "Changes not deploying to Karaf"
 
-**Check JAR built successfully:**
+#### Check JAR built successfully
 ```bash
 ls -lh target/*.jar
 # Should show recent JAR file
 ```
 
-**Verify Karaf is running:**
+#### Verify Karaf is running
 ```bash
 ./judo.sh status
 ```
 
-**Check Karaf logs:**
+#### Check Karaf logs
 ```bash
 tail -f application/.karaf/data/log/karaf.log
 # Look for deployment messages
 ```
 
-**Force redeploy:**
+#### Force redeploy
 ```bash
 # Stop Karaf
 ./judo.sh stop
@@ -519,19 +524,19 @@ mvn clean install
 
 ### "Type errors after regeneration"
 
-**Update type definitions:**
+#### Update type definitions
 ```bash
 cd application/frontend-react/<app>__[actor_fqn]
 pnpm install
 ```
 
-**Check for breaking changes:**
+#### Check for breaking changes
 ```bash
 # Review generated type definitions
 grep -r "export interface" src/services/data-api/model/
 ```
 
-**Clear TypeScript cache:**
+#### Clear TypeScript cache
 ```bash
 # Delete TypeScript build info
 rm -rf node_modules/.cache
@@ -546,12 +551,12 @@ See [README](./README.md) for detailed checksum error handling.
 
 ### Development Server
 
-**Optimize HMR:**
+#### Optimize HMR
 - Keep `src/custom/` files small and focused
 - Avoid circular dependencies
 - Use lazy loading for large components
 
-**Reduce bundle size:**
+#### Reduce bundle size
 - Import only what you need from Material-UI
   ```typescript
   // Good
@@ -563,7 +568,7 @@ See [README](./README.md) for detailed checksum error handling.
 
 ### Production Build
 
-**Analyze bundle size:**
+#### Analyze bundle size
 ```bash
 # Build with bundle analyzer
 pnpm run build -- --analyze
@@ -571,7 +576,7 @@ pnpm run build -- --analyze
 # Opens visualization of bundle contents
 ```
 
-**Optimization strategies:**
+#### Optimization strategies
 - Code splitting (automatic with Vite)
 - Tree shaking (remove unused code)
 - Lazy loading routes

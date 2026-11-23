@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/application-customizer.tsx"]
 alternatives: [dual-actor-frontend-architecture, zero-customization-generated-frontend]
 related: [dual-actor-frontend-architecture, application-customizer-hub, pandino-action-hook-override, zero-customization-generated-frontend, complete-frontend-replacement]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -23,7 +22,7 @@ Get a tailored UX in an enterprise CRUD application without editing generated pa
 
 ### Platform base
 
-- Hooks register as Pandino services from `src/custom/application-customizer.tsx`, normally by copying the generated `.default` scaffolds under `src/custom/hooks/` to names without `.default` and calling their `register...(context)` functions ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md)).
+- Hooks register as Pandino services from `src/custom/application-customizer.tsx`, normally by copying the generated `.default` scaffolds under `src/custom/hooks/` to names without `.default` and calling their `register...(context)` functions ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md)). A copied scaffold is never removed by `generate`: when the model element behind it goes, delete your copy too, or the frontend build fails on the missing imports.
 - Hook code you add in `src/custom/` is not generated and survives regeneration without `.generator-ignore` entries; the generated `application-customizer.tsx` needs an entry once you edit it ([frontend guide](../../agent-docs/frontend/README.md)).
 - Model elements that the generator exposes as extension points can be replaced by custom visual element implementations registered under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` ([custom component replacement](../../agent-docs/frontend/advanced-patterns.md)). Container, page and dialog hooks have generated, per-container names; always take the names from the generated scaffolds ([action hooks](../../agent-docs/frontend/hooks/action-hooks.md)).
 

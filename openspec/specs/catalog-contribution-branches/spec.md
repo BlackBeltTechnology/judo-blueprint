@@ -35,7 +35,7 @@ The contribution guide (`judo-blueprint/references/contribute.md`) SHALL tell co
 - **THEN** the branch adds the method under `## Variations` or as a new entry with mutual `alternatives:`, and the existing method stays
 
 ### Requirement: Published merge criteria
-`judo-catalog-maintain/references/merge-criteria.md` SHALL list the hard gates (check-all on branch plus develop, catalog-only scope, platform evidence or *verify*, generic wording, real evidence paths, CLI-built fragments, no loss of other projects' citations) and the principles for new entries, added evidence, differing methods, corrections, conflicting branches and status. Contributors and the maintainer use the same document.
+`judo-catalog-maintain/references/merge-criteria.md` SHALL list the hard gates (check-all on branch plus develop, catalog-only scope, platform evidence or *verify*, generic wording, real evidence paths, no model files, no loss of other projects' citations) and the principles for new entries, added evidence, differing methods, corrections, conflicting branches and status. Contributors and the maintainer use the same document.
 
 #### Scenario: Out-of-scope change
 - **WHEN** a project branch changes `skills/`, `.pi/`, `tests/` or CI

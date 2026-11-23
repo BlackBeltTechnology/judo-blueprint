@@ -1,6 +1,9 @@
 ---
 title: UI Visual Style Guide
 description: Visual style indicators and styling rules for ESM model elements and UI components.
+aliases: [icon indicators model, button variants, typography styles, table visual settings, filter visual settings, visibility indicators, ui style attributes]
+keywords: [iconName, buttonStyle, frame, checkboxSelection, countRows, crudOperationsDisplayed, enabledBy, hiddenBy, requiredBy, memberType, TabularReferenceField, TransferObjectTable, ActionButton]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # UI Visual Style Guide
@@ -33,7 +36,7 @@ This document defines the visual style indicators and styling rules used through
 | `AGGREGATION` | Empty diamond at source |
 | `ASSOCIATION` | Simple line (no diamond) |
 
-**Additional Relation Style Rules:**
+#### Additional Relation Style Rules
 
 | Condition | Visual Effect |
 |-----------|---------------|
@@ -90,7 +93,7 @@ Controls the visual style of buttons.
 
 | Value | Visual Effect |
 |-------|---------------|
-| `frame = true` | Render with border/card styling |
+| `frame = true` | Render with border/card styling. A Flex becomes a card only through its `card` flag, not through `frame`. The Card has no elevation or radius props, and no `isInCard` flag reaches children. |
 | `frame = false` | No border (flat appearance) |
 
 **Available on:** `TransferObjectView`, `TransferObjectForm`, `Group`
@@ -99,8 +102,8 @@ Controls the visual style of buttons.
 
 | Attribute | Values | Visual Effect |
 |-----------|--------|---------------|
-| `col` | 1-12 | Grid column span width |
-| `row` | 1+ | Row height span |
+| `col` | 1-12 | Grid column span width. Inside a Flex parent whose `col` is not 12, the child width is `(12 / parent col) × col` in 12-column units, not a percentage. A Spacer uses `col` only. |
+| `row` | 1+ | Row height span. A Spacer ignores it (fixed divider height). |
 | `dialogSize` | `XS`, `SM`, `MD`, `LG`, `XL` | Dialog/modal dimensions |
 
 ---

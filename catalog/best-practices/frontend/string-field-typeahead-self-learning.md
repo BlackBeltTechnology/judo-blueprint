@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/utils/cityPostalCodeTypeahead.ts", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/containers/registerServicesPartner_servicePartnerPartner_FormContainerActionsHook.ts"]
 alternatives: []
-fragment: "none: frontend-only"
 first_seen: 2026-07-12
 last_updated: 2026-11-10
 ---

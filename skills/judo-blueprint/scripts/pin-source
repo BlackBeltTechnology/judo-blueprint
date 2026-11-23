@@ -24,7 +24,7 @@ DEFAULT_URL = "git@github.com:BlackBeltTechnology/judo-blueprint.git"
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("pin", nargs="?", help="release tag (e.g. v1.0.0) or commit SHA")
+    ap.add_argument("pin", nargs="?", help="release tag (e.g. v2.0.0) or commit SHA")
     ap.add_argument("--branch", help="contribution branch project/<project-id> instead of a tag")
     ap.add_argument("--project", default=".", help="consuming project root (default: cwd)")
     ap.add_argument("--url", default=DEFAULT_URL)

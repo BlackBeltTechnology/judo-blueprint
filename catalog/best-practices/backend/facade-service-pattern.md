@@ -10,7 +10,6 @@ status: emerging
 projects: [mlszksz-platform, park-here, indamedia-adtrack]
 evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/PostServiceImpl.java", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: [service-delegation-pattern]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

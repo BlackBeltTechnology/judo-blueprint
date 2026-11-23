@@ -1,0 +1,96 @@
+{
+ "batch": "fe-model",
+ "files": [
+  "catalog/agent-docs/frontend/README.md",
+  "catalog/agent-docs/frontend/extension-points.md",
+  "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+  "catalog/agent-docs/model/esm_metamodel/operation.md",
+  "catalog/agent-docs/model/judo-cli.md",
+  "catalog/best-practices/backend/handlebars-email-template.md",
+  "catalog/best-practices/frontend/i18n-generator-override-extra-fragment.md",
+  "catalog/model-blueprints/cards-container-configuration-hook/frontend.md"
+ ],
+ "items": [
+  {
+   "id": "WR16-2",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/README.md",
+   "heading": "### \"Build fails with checksum mismatch error\"",
+   "text": "With this layout every `./judo.sh build` formats the generated frontend code after writing it (`pnpm run format`, Biome), so the generated files never match their checksums. Use `./judo.sh build -i` for every build; without `-i` each generated file of `src/` is reported as manually changed. `-i` leaves `.generated-files` of the frontend module empty, so the checksum protection cannot be turned on later without regenerating `src/`.",
+   "replaces": "",
+   "evidence": "judo-ng target/judo-ng-read/wt/template__judo-ui-react-template/openspec/specs/integration-testing/spec.md:17 (generate-sources runs pnpm install and pnpm run format); app: webshop-test build without -i reported every file of src/ (build log), .generated-files 0 bytes after build -i"
+  },
+  {
+   "id": "WR16-3",
+   "kind": "research",
+   "file": "catalog/agent-docs/model/esm_metamodel/operation.md",
+   "heading": "#### In TransferObjectType (unmapped)",
+   "text": "An actor reaches a static operation on an unmapped transfer object through a derived access on the actor whose target is a mapped transfer object: map a transfer object to a row of the model (for example a settings entity with no members), declare the STATIC operation on that transfer object, and add a DERIVED 0..1 access on the actor to that row (for example `<Entity>!any()`). The access target must be mapped; the row must exist at runtime, otherwise the access is empty. The REST route is `POST /api/<app>/<Actor>/<TransferObject>/<operation>` with the input as the JSON body; a fault returns 422 with `X-Fault`. A void static operation is possible.",
+   "replaces": "*Verify:* how an actor reaches the operation (access or menu item) was not settled in source",
+   "evidence": "app: webshop-test model (PaymentGatewayInfo STATIC operation, derived access on the actor to ShopConfig; line not recorded); validator message 'Access target have to be mapped' from the same build; REST route checked by call. judo-ng not consulted for this route."
+  },
+  {
+   "id": "WR16-11",
+   "kind": "research",
+   "file": "catalog/best-practices/frontend/i18n-generator-override-extra-fragment.md",
+   "heading": "### Practice notes: a fragment for `application_default.json`",
+   "text": "The fragment is included at the top of the generated `application_default.json`. A key that the generator writes later in the same object (for example `enumerations.<Enum>.<MEMBER>`) overrides a duplicate key from the fragment, so an override of a generated key has no effect. An enumeration member has no label in the model, so a readable label needs a key that the generator does not write, or the model name is shown.",
+   "replaces": "",
+   "evidence": "judo-ng target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/public/i18n/application_default.json.hbs:7 (fragment included first, generated keys after); app: webshop-test generator-overrides/ui-react/actor/public/i18n/application_default_extra.fragment.hbs (line not recorded)."
+  },
+  {
+   "id": "WR16U-3",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "## Cards Configuration Hook",
+   "text": "The proxy of a custom relation element receives `ownerData`, `isOwnerLoading`, `actions` and `editMode`, but no refresh counter. A custom list learns about a page refresh only through a change of the identity of `ownerData`; the generated table gets a refresh counter, the proxy does not.",
+   "replaces": "",
+   "evidence": "judo-ng target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/custom/interfaces.ts.hbs:23-30 (TableProxyProps has no refreshCounter); LazyTable.tsx.hbs:98 (table side has refresh handling)."
+  },
+  {
+   "id": "WR16U-4",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/extension-points.md",
+   "heading": "## Cards Configuration Hook",
+   "text": "The `ActionbarElement` of the cards hook is the only place for a cards container's create button, table operation buttons (for example an export), progress bar and empty state. The cards do not render these; a list without `ActionbarElement` shows none of them.",
+   "replaces": "",
+   "evidence": "judo-ng target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/components/widgets/CardsContainer.tsx.hbs (ActionbarElement and LinearProgress references); extension-points.md:60 lists ActionbarElement. App ListBars.tsx is generated in the app, not in judo-ng."
+  },
+  {
+   "id": "WR16U-5",
+   "kind": "research",
+   "file": "catalog/model-blueprints/cards-container-configuration-hook/frontend.md",
+   "heading": "### The card receives the row",
+   "text": "<Grid size={{ xs: 12, md: 6, lg: 4 }}>",
+   "replaces": "<Grid item xs={12} md={6} lg={4}>",
+   "evidence": "catalog agent-docs/frontend/extension-points.md (MUI 7 uses the size prop); judo-ng target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react-itest/ActionGroupTest/action_group_test__god/src/test/resources/snapshots/frontend-react/src/containers/Planet/View/PlanetView.tsx.snapshot (generated output uses Grid size={{ ... }})."
+  },
+  {
+   "id": "WR16U-6",
+   "kind": "research",
+   "file": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "heading": "### Placement",
+   "text": "In the horizontal top bar the navigation takes `8 - spaceRequired` of the 12 grid columns and the right side takes `2 + spaceRequired`; the default `spaceRequired` is 1. The scroll arrows of the menu reserve space too. A top bar with five or more menu groups plus search, switches, cart and profile needs a larger `spaceRequired` and a compact extra component (for example no wrapping, narrow profile name, icon-only search); at 1280px the last menu group can sit behind a scroll arrow.",
+   "replaces": "",
+   "evidence": "judo-ng target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/layout/Header/HeaderContent/index.tsx.hbs:21 (spaceRequired default 1), :32 (claim), :44 (nav 8 - claim), :49 (right 2 + claim); app layout measured at 1280px and 1440px (screenshots, not in judo-ng)."
+  },
+  {
+   "id": "WR17-2",
+   "kind": "research",
+   "file": "catalog/agent-docs/model/judo-cli.md",
+   "heading": "#### Creating, filling and changing elements",
+   "text": "- **`MimeType`** has no `name` in its `CreateInput` either (the name derives from type and subType); `create -t MimeType -n ...` fails. Working form: `create -t MimeType --ns <ns> -s type=application -s subType=json` (creates `application/json`). `BinaryType.mimeTypes` takes one value on `create`: `-s mimeTypes=a,b` is rejected (`'b' is not an allowed value`), and the error lists the valid values as object hashes; the multi-value form was not found.",
+   "replaces": "- **`MimeType`** has no `name` in its `CreateInput` either (the name derives from type and subType); `create -t MimeType -n ...` fails.",
+   "evidence": "cli:java -jar target/judo-cli.jar -m <scratch>/webshop.model create -t MimeType --ns webshop -s type=application -s subType=json --dry-run --brief -> 'application/json'; cli: create -t BinaryType ... -s mimeTypes=application/json,application/xml --dry-run -> 'application/xml is not an allowed value'; cli: ... mimeTypes=application/json -> 'webshop::Bx' (scratch copy)"
+  },
+  {
+   "id": "WR17-5",
+   "kind": "research",
+   "file": "catalog/best-practices/backend/handlebars-email-template.md",
+   "heading": "### Compile from a stored or inline template",
+   "text": "// The platform renders htmlTemplate/plaintTemplate with model; pass the template text and the context, not a rendered body\nemailService.sendMessage(EmailService.EmailMessage.emailBuilder()\n    .from(senderEmail).to(recipientEmail).subject(subject)\n    .htmlTemplate(templateContent).model(contextObject)",
+   "replaces": "Template template = handlebars.compileInline(templateContent);\n\nString htmlBody = template.apply(Context.newContext(contextObject));\n\nemailService.sendMessage(EmailService.EmailMessage.emailBuilder()\n    .from(senderEmail).to(recipientEmail).subject(subject)\n    .htmlTemplate(htmlBody)",
+   "evidence": "judo-ng-read/wt/runtime__osgi-email/osgi-email-api/src/main/java/hu/blackbelt/email/api/EmailService.java:59-61 (plaintTemplate, htmlTemplate, model fields); app application/app/src/main/java/com/example/webshop/webshop/custom/webshop/MailService.java:166-167 (.htmlTemplate(body).model(Map.of()))"
+  }
+ ]
+}

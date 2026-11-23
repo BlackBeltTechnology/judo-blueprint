@@ -11,8 +11,6 @@ projects: [skillmatrix-model]
 evidence: ["skillmatrix-model:unrecorded"]
 alternatives: []
 first_seen: 2026-03-04
-fragment: approval-workflow-pattern
-diagram: { kinds: [entity, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -64,7 +62,6 @@ A Skill belongs to an Employee, has `requestedLevel` and `approvedLevel` relatio
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=approval-workflow-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Employee {
@@ -86,4 +83,3 @@ classDiagram
   Skill --> "0..1" Level : approvedLevel
   Skill --> "0..1" Level : requestedLevel
 ```
-<!-- /mermaid:generated -->

@@ -1,0 +1,8 @@
+{"id": "WR18-2", "verdict": "fixed", "note": "Removed unsupported word 'btree' from the Indexes paragraph: AttributeRules:285 creates RdbmsIndex with no index type; non-unique confirmed (CreateIndex, no unique flag)."}
+{"id": "WR19-2", "verdict": "ok", "note": "Table/column names T_<PKG>_<ENTITY>, C_<ATTR> (Asm2RdbmsHelper.classSqlName, Zeta:125-126); generate/execute/apply mojos exist (GenerationMojo, ExecutionMojo, AutoExecutionMojo)."}
+{"id": "WR19-6", "verdict": "ok", "note": "No FK index rule in ReferenceRules; text corrected to the table holding the FK column."}
+{"id": "WR16U-11", "verdict": "ok", "note": "-f sets buildKaraf=0, buildBackend=0 (judo.sh.hbs:190); start unpacks karaf-offline (judo.sh.hbs:618-623)."}
+{"id": "WR17-3", "verdict": "ok", "note": "JavaMailSenderActivator.xml:24-28 condition and LogSmtpServer.xml default logSmtpServer=true confirmed; AUTH env var exists in template."}
+{"id": "WR17-4", "verdict": "ok", "note": "LogSmtpServer.template:2 and LogSmtpServer.java:53 default port 10025 confirmed."}
+{"id": "WR17-7", "verdict": "ok", "note": "-a sets buildAppModule only (judo.sh.hbs:189); start unpacks karaf-offline (judo.sh.hbs:619-623)."}
+{"id": "WR17-9", "verdict": "ok", "note": "incremental.etl AddColumnDef sets no defaultValue, so existing rows get NULL; backfill link resolves."}

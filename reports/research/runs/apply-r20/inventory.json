@@ -1,0 +1,122 @@
+[
+ {
+  "id": "R20-1",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-1. **Every `kb_search` and `kb_get` of the round printed `(index refresh still running \u2014 results may be stale)`** (a few dozen calls over hours; the hits were\npresent and the `kb_get` section list worked, so no result was wrong). The marker never went away, so it cannot tell a fresh index from a stale one."
+ },
+ {
+  "id": "R20-2",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-2. **`schema-evolution.md` \"When No Manual Step Is Needed\" names the Epsilon workaround but not the place.** \"Add the `epsilon-runtime` feature to the\napplication's Karaf boot features\" does not say how in a generated JUDO project (the `karaf-offline` assembly is not regenerated, the `feature.xml` is). Searched\n\"epsilon-runtime feature Karaf boot features\", \"JUDO_STARTUP_FEATURE\" (that variable only overrides the startup feature name), \"feature.xml extra-bundles\nfragment\": the answer is in `best-practices/backend/karaf-customization-via-fragments.md` (slot `feature.xml.extra-bundles.fragment.hbs`, `<feature>` lines are\nallowed), a best practice with status `emerging` and no link from the known-issue paragraph. Worked: the fragment; after it `karaf.log` has no\n`EolExecutionContext` line (before: one block per start) and no ERROR line."
+ },
+ {
+  "id": "R20-3",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-3. **No route for the foreign-key indexes on a database that is created fresh.** `generator-plugins.md` \"Indexes\" now says: no index on foreign keys, no\nmodel syntax, \"add them with a hand-written schema changeset (see schema evolution)\". `schema-evolution.md` puts hand-written changesets into the generated version\nfolder of a migration, which only an upgrade of an existing database runs; a fresh database is created from the model's Liquibase changelog and runs none\nof them (an empty PostgreSQL got its 43 tables from the model's changelog in the round 20 compose test; I did not list its indexes, the generator creates none for foreign keys). The indexes of this project (`scripts/dev-indexes.sql`, GAPS R19-6:\na checkout took 20 s with 1 800 accounts) therefore still have to be applied by hand to every fresh database. Missing: whether a changeset outside a migration\nfolder (for example `updateDataAfterIncremental` of the first model version) runs on creation, or another hook."
+ },
+ {
+  "id": "R20-4",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-4. **`INITIALIZER`: the metamodel page and the CLI disagree, and the signatures are not given.** `operation.md` \"INITIALIZER Special Handling\" says the\nselection is stored as `STATIC` plus `initializer=true`, and \"In TransferObjectType (unmapped)\" lists `INITIALIZER` as available; `create ... -s operationType=INITIALIZER`\n(CLI C1) stores `INITIALIZER` with `initializer=false` and the validator then says \"must be static in unmapped transfer object type\". Missing in `initializer-operation.md`:\nthe working form (`operationType=STATIC` + `initializer=true`), that an initializer hosted by an **entity** is generated as `accept(<Entity> _this)` (instance style, useless for\nseeding that entity) while on an unmapped transfer object it is `void run()`, and that the `.java.default` skeleton of a new operation appears after `./judo.sh build`, not after `generate`.\n`singleton-entity.md` / `initializer-operation.md` now answer the trigger (called at each start, empty exchange, own transaction): verified, the log shows\n`Initializer script webshop.ShopJobs#seedShopConfig completed successfully` on both a restart of the dev stack and the first start of an empty database (R10-4 closed)."
+ },
+ {
+  "id": "R20-5",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-5. **The default value of `ActorType.anonymous` is not stated.** New actors made with `create -t ActorType` have `anonymous = true`, also actors that get a mapped\nprincipal (`Customer`, `Admin`; CLI C2: it cannot be cleared). `accesspoint.md` explains that a mapped principal makes the flag irrelevant, but not that a project\nthat never touched the flag stores `true` everywhere (the round 16 review took it for a risk)."
+ },
+ {
+  "id": "R20-6",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-6. **Nothing about the local mail catcher.** `application-config.md` \"6. Email (SMTP)\" lists the variables; `local-development.md` and the e2e docs do not say that\n`./judo.sh start` starts no SMTP server, so specs that read mails need one on `localhost:1025` / `:8025` (here Mailpit, made by hand in round 17; a `docker system prune`\nin round 20 deleted the stopped container and F76 + F77 failed with `ECONNREFUSED ::1:8025` until `scripts/dev-mail.sh` recreated it)."
+ },
+ {
+  "id": "R20-7",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-7. **How does a script or API client trigger the JIT provisioning?** `authentication-guide.md` and `keycloak-jit-user-provisioning.md` say the\n`AuthenticationInterceptor` runs on the framework-level `#_principal` operation. A direct data call with a fresh user's token (`POST /api/webshop/Customer/Customer/products/~list`\nwith a password-grant token of `webshop-Customer`) answers 403 every time and creates no row (round 20: two calls, 0 rows); the browser frontend works because it asks for the\nprincipal first. The REST route of the principal call is not given, so API tests cannot do what the frontend does. (This corrects R19-8: I wrote that the first call fails and the\nsecond works; neither works.)"
+ },
+ {
+  "id": "R20-8",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-8. **The `XMI ID COLLISION DETECTED` ERROR lines of every multi-actor build** are not explained anywhere in the catalog (FRAMEWORK-ISSUES-R20 F3). A reader cannot tell if the build is healthy."
+ },
+ {
+  "id": "R20-9",
+  "src": "GAPS.md",
+  "kind": "gap",
+  "text": "R20-9. **Port conflict answer is right, with one unstated condition.** `local-development.md` \"Port 8181 (or 8080) already in use\" gives `./judo.sh start -o karaf_port=<port>`. Another project's container held 8181 this round; the start on 18181 worked and the browser login too, because the generated Keycloak clients have `redirectUris ['*']` and `webOrigins ['*']`. Not said: that this is why a different port works, and that the Playwright config needs `APP_URL` for it (`playwright.local.config.ts` reads `APP_URL`).\n### Round 20: closed by the catalog (earlier gaps that the 2.0.0 pages now answer; verified on the project)"
+ },
+ {
+  "id": "R20-C1",
+  "src": "CLI-ISSUES-R20.md",
+  "kind": "cli",
+  "text": "#: C1\ncommand: `create -t Operation -n seedShopConfig --ns webshop::ShopJobs -s operationType=INITIALIZER -s customImplementation=true -s stateful=true`\nexpected: `agent-docs/model/esm_metamodel/operation.md` \"INITIALIZER Special Handling\": the selection `INITIALIZER` is stored as `operationType = STATIC` with `initializer = true`, and the table \"In TransferObjectType (unmapped)\" lists `INITIALIZER` as available\nactual: The element is stored with `operationType = INITIALIZER` and `initializer = false` (`update <op> --schema` shows both). `validate` (and `validate --strict`) then fails with `Operation: ShopJobs.seedShopConfig must be static in unmapped transfer object type`, exit 1. The same create on an entity (`webshop::ShopConfig`) validates, but the generator then writes an instance-style skeleton `accept(ShopConfig _this)` that cannot seed an empty table\nworkaround: `update webshop::ShopJobs.seedShopConfig -s operationType=STATIC -s initializer=true`; `validate` passes (exit 0), the generated interface is `void run()` and the platform logged `Initializer script webshop.ShopJobs#seedShopConfig completed successfully` at start"
+ },
+ {
+  "id": "R20-C2",
+  "src": "CLI-ISSUES-R20.md",
+  "kind": "cli",
+  "text": "#: C2\ncommand: `update webshop::Customer -s anonymous=false` (also `-u anonymous`, `--clear anonymous`)\nexpected: The review of round 16 (R16-R3) asked for `anonymous=false` on both mapped actors, so a later removal of the principal cannot make them public\nactual: Refused: `anonymous: does not apply to this ActorType (applies when effectively anonymous)`; `--clear` says `not a list; use --unset anonymous`, and `-u anonymous` is refused with the same \"does not apply\" error. The stored value stays `true` on `Customer` and `Admin`\nworkaround: None needed for behaviour: `accesspoint.md` says a mapped principal is never effectively anonymous (401 without a token, checked in round 16). The flag cannot be cleaned up with the CLI"
+ },
+ {
+  "id": "R20-C3",
+  "src": "CLI-ISSUES-R20.md",
+  "kind": "cli",
+  "text": "#: C3\ncommand: `validate` on a model with an actor\nexpected: Silent for engines that are not finished, or a message that matches the documented default (`judo-cli.md` \"Validation engine\": \"Zeta when unset\")\nactual: Every `validate` prints `[WARN] Zeta transformation not yet implemented, falling back to ETL: Zeta ASM to Script transformation not yet implemented. Waiting for judo-zeta dependencies to be available.` (and the same for \"Script to Operation\"). The verdict is correct (exit 0, `passed transform`)\nworkaround: Ignore the two lines; the exit code is the result"
+ },
+ {
+  "id": "R20-C4",
+  "src": "CLI-ISSUES-R20.md",
+  "kind": "cli",
+  "text": "#: C4\ncommand: `query esm Access -w \"fqn=...\" -s target,...` (and `-s attributes`, `-s input`, `-s principal`, `-s mapping`)\nexpected: A scalar-looking select field returns the reference's FQN\nactual: `Subselection required for type 'ESM_Class' of field 'target'` (a GraphQL error, not a CLI hint); `--select input{name}` is rejected with `not a field of Operation` although it is the GraphQL form\nworkaround: Use `graphql '{ esm { accesses(where:{...}) { items { target { fqn } } } } }'`; filter syntax `where:{name:{eq:\"x\"}}`, lists need `items { ... }`. Not in `judo-cli.md` \"Querying and UI FQNs\" as a gotcha"
+ },
+ {
+  "id": "R20-C5",
+  "src": "CLI-ISSUES-R20.md",
+  "kind": "cli",
+  "text": "#: C5\ncommand: `./judo.sh generate`, `./judo.sh build`\nexpected: `target/judo-cli.jar` stays\nactual: The jar is deleted by `mvnd clean` on every generate and build (documented in `judo-cli.md` \"Version and jar pitfalls\"), so the next CLI call prints `Error: Unable to access jarfile target/judo-cli.jar`\nworkaround: Copy the jar to `/tmp/judo-cli.jar` once and call that copy, or `./judo.sh generate-root` after each build. Documented, listed here because it cost a failed call four times in round 20"
+ },
+ {
+  "id": "R20-F1",
+  "src": "FRAMEWORK-ISSUES-R20.md",
+  "kind": "framework",
+  "text": "#: F1\nwhere: Runtime, Karaf features: `judo-meta-rdbms`\nwhat happens: The RDBMS model bundle imports the Epsilon runtime packages as optional and the feature does not install `epsilon-runtime`. On every start with a database that already holds a model version the schema compatibility check fails: `ERROR ... LiquibaseModelDataSourcePrehook ... Could not find compatible schema model` with `NoClassDefFoundError: hu/blackbelt/epsilon/runtime/execution/contexts/EolExecutionContext` (`karaf.log`, seen in every dev start of rounds 18 to 19, line ~1483)\nevidence: `karaf.log` before: 3 matching lines per start; after the fix: 0 matching lines and no ERROR line at all (stack started 2026-11-23 12:56 on port 18181)\nworkaround used: `<feature>epsilon-runtime</feature>` in `application/generator-overrides/karaf-features/src/main/feature/feature.xml.extra-bundles.fragment.hbs` (survives regeneration, no ignore entry)\ncatalog: `agent-docs/deployment/schema-evolution.md` \"When No Manual Step Is Needed\" names the issue and the workaround (\"add the epsilon-runtime feature to the application's Karaf boot features\") but not where; the slot is in `best-practices/backend/karaf-customization-via-fragments.md` (see GAPS R20-3)"
+ },
+ {
+  "id": "R20-F2",
+  "src": "FRAMEWORK-ISSUES-R20.md",
+  "kind": "framework",
+  "text": "#: F2\nwhere: Generator, UI (React): adding an actor that is not first in the model\nwhat happens: `pnpm run format` fails in `webshop__admin` with `Declarations inside of a import declaration may not have duplicates` (`import type { ShopMessage, ShopMessage, ... }`); the cause named by the catalog is the page helper's `HashSet<ClassType>` that deduplicates by identity after the ESM to UI step rebinds actions to the later actor's class copy\nevidence: Round 19: 48 files with duplicates with `Guest` last, none with `Guest` created at `--index 0`; the round 20 builds (three actors, `Guest` first) are clean\nworkaround used: Create the new actor at the first position: `create -t ActorType -n Guest ... --index 0`\ncatalog: `agent-docs/deployment/build-process.md` \"Duplicate type imports with a third actor (known issue)\" and `best-practices/frontend/dual-actor-frontend-architecture.md`"
+ },
+ {
+  "id": "R20-F3",
+  "src": "FRAMEWORK-ISSUES-R20.md",
+  "kind": "framework",
+  "text": "#: F3\nwhere: Generator, UI model: build log of every build with three actors\nwhat happens: `[ERROR] XMI ID COLLISION DETECTED: ID 'Admin/(esm/_pZV6kt38EfGv69E9vigv_A)/TabularReferenceFieldLinkCreateAction' is being reassigned from Action (obj@..) to Action (obj@..). This will cause type mismatch in findByXmiId()!` (five ids: `...LinkCreateAction`, `...LinkAutocompleteSetAction`, `...LinkSetSelectorOpenPageAction`, `...LinkAutocompleteRangeAction`, `...LinkUnsetAction`), logged by `webshop-application-frontend-react-model` and `webshop-application-e2e-model`; the build still ends `BUILD SUCCESS` and the UI works\nevidence: `.scratch/build-r20a.log` lines 237 to 244 (and the same in every build since the second actor); no functional effect seen in the Playwright runs\nworkaround used: None; the lines are ignored\ncatalog: Not in the catalog (GAPS R20-9)"
+ },
+ {
+  "id": "R20-F4",
+  "src": "FRAMEWORK-ISSUES-R20.md",
+  "kind": "framework",
+  "text": "#: F4\nwhere: Runtime, generated TypeScript client\nwhat happens: `__version` is not echoed back by the generated client when its runtime type is a number (catalog: \"copies `__version` only when its runtime type is `string`\"). The custom code of this project that updates products sends the version itself (`StockService.write`)\nevidence: Documented in `platform-behavior-reference.md` \"Optimistic Locking and `__version`\"; not re-tested in round 20\nworkaround used: Send `__version` explicitly in custom update payloads\ncatalog: documented"
+ },
+ {
+  "id": "R20-F5",
+  "src": "FRAMEWORK-ISSUES-R20.md",
+  "kind": "framework",
+  "text": "#: F5\nwhere: Generator, Karaf: `generate` does not clean a stale generated skeleton\nwhat happens: After the initializer was moved from `webshop::ShopConfig` to `webshop::ShopJobs`, `application/app/src/main/java/.../_default_transferobjecttypes/shopconfig/SeedShopConfigCustomImplementation.java.default` of the old location stayed on disk (generated file, never removed by `generate` or `build`)\nevidence: Found with `find application/app/src -name \"SeedShopConfig*\"` after the move\nworkaround used: Deleted by hand (it is only a `.default` scaffold)\ncatalog: Not in the catalog (GAPS R20-8)"
+ },
+ {
+  "id": "R20-F6",
+  "src": "FRAMEWORK-ISSUES-R20.md",
+  "kind": "framework",
+  "text": "#: F6\nwhere: Generator: `INITIALIZER` on an entity\nwhat happens: The generated implementation interface for an `INITIALIZER` operation hosted by an entity is `accept(<Entity> _this)` (instance style, a row is needed), so an initializer that must create the first row of that entity cannot be written there. On an unmapped transfer object (`ShopJobs`) it is `void run()`\nevidence: `application/internal/target/generated-sources/.../shopconfig/SeedShopConfigExchangeFunctions.java` (first attempt) versus `.../operation/webshop/shopjobs/SeedShopConfig` (second)\nworkaround used: Host the initializer on an unmapped transfer object\ncatalog: `initializer-operation.md` says \"It may sit on an entity or a transfer object, mapped or unmapped\" and does not give the signatures"
+ }
+]

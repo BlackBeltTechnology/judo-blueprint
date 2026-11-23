@@ -10,8 +10,6 @@ status: single-project
 projects: [indamedia-adtrack]
 evidence: ["indamedia-adtrack:unrecorded"]
 alternatives: [history-audit-trail-entity]
-fragment: entity-change-history-snapshot
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

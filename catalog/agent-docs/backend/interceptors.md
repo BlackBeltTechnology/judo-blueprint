@@ -1,6 +1,9 @@
 ---
 title: Operation Call Interceptors Guide
-description: "OperationCallInterceptor contract: which operations interceptors run around (built-in CRUD only, never custom, mapped or script operations), preCall and postCall ordering, throwing business errors from interceptors, and examples."
+description: "OperationCallInterceptor contract: which operations interceptors run around (built-in behaviour operations only, never custom (SDK) or script operations), preCall and postCall ordering, throwing business errors from interceptors, and examples."
+aliases: [interceptor order, preCall postCall, operation hooks, business error from interceptor, intercept create update, interceptor not running on custom operation]
+keywords: [OperationCallInterceptor, preCall, postCall, getOperations, ignoreDecoratedCall, terminateOnException, InterceptorCallBusinessException, AsmUtils, resolveOperation, getOperationFQName, judo.model.name, AuthenticationInterceptor]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Operation Call Interceptors Guide
@@ -69,7 +72,7 @@ The JUDO framework provides two types of interceptors, `OperationCallInterceptor
 
 This pattern uses an `OperationCallInterceptor` to denormalize and aggregate data, which is a common technique to optimize read performance. By pre-calculating and storing aggregated values, the application can avoid complex and potentially slow queries when retrieving data for display.
 
-**Example**
+#### Example
 
 An interceptor like `MyEntityUpdateInterceptor` can be used to listen for updates on `MyEntity`. In the `postCall` hook, it can query for related `Tag` entities, aggregate their names into a comma-separated string, and save that string to a `tagsAggregated` field on `MyEntity`.
 
@@ -99,7 +102,7 @@ public Object postCall(EOperation operation, Object parameterPayload, Object ret
 
 This pattern uses an `OperationCallInterceptor` to trigger the creation of a resource in a different service or bounded context when an operation is performed. This promotes loose coupling between services.
 
-**Example**
+#### Example
 
 An interceptor like `UserProfileCreateInterceptor` can intercept the creation of a `UserProfile`. In the `preCall` hook, it can take the profile data, transform it, and create a `WelcomeJourney` object using a different DAO. By returning `true` from `ignoreDecoratedCall()`, it prevents the original `UserProfile` from being created directly, effectively replacing the operation.
 
@@ -130,7 +133,7 @@ public boolean ignoreDecoratedCall() {
 
 This pattern uses a pair of `OperationCallInterceptor` instances to manage derived data based on a single "source of truth" field (e.g., an enumeration). One interceptor (`_refresh`) calculates derived fields on read, and the other (`_update`) enforces data consistency on write.
 
-**Example**
+#### Example
 
 - **Refresh Interceptor:** On a `_refresh` operation for a `LocatedItem` entity, the `postCall` hook inspects if a `country`, `state`, or `city` relationship exists. Based on this, it sets a `LocationScope` enum and derived boolean flags like `isCountryScope`. This simplifies UI logic.
 
@@ -178,13 +181,17 @@ public interface OperationCallInterceptor {
 | `async()` | `true` runs the interceptor on a different thread, outside the transaction and without context variables. Its exceptions are lost and it cannot change the payload. |
 | `terminateOnException()` | Defaults to `true`: an exception terminates the call. Ignored for async interceptors. |
 
+With `async()` true the runtime calls `preCall`, not `postCall`, after the operation, on a background thread, so `postCall` never runs. Put post-operation logic in a synchronous interceptor (`async()` false).
+
+For validate-create and validate-update operations, an interceptor that skips the original call (`ignoreDecoratedCall()` returns `true`) makes the operation fail with a `NullPointerException`. Do not skip the original call for these operations.
+
 Interceptors may throw only `InterceptorCallBusinessException` (see [Throwing a Business Error from an Interceptor](#throwing-a-business-error-from-an-interceptor)).
 
 ### Which Operations Are Intercepted
 
 Interceptors fire **only for the built-in behaviour operations**: create, update, delete, list/query, refresh, set/unset/add/remove reference, reference range, input range, getTemplate, getMetadata, getPrincipal, upload token, export and the validate calls. These are the operations that the runtime implements itself (the `*Call` classes in `judo-runtime-core-dispatcher`'s `behaviours` package).
 
-**Custom (SDK-implemented), MAPPED and script operations never hit interceptors**, even if `getOperations` lists them or returns an empty collection. The Javadoc claim that an empty list intercepts "all operation calls" means all built-in calls only.
+**Custom (SDK-implemented) and script operations never hit interceptors**, even if `getOperations` lists them or returns an empty collection. The Javadoc claim that an empty list intercepts "all operation calls" means all built-in calls only.
 
 Consequences:
 
@@ -192,6 +199,7 @@ Consequences:
 - Hiding a UI button does not protect an operation either.
 - Range interceptors fire only on the `_getRangeReference*` (reference range) operations, not on plain list or query operations such as `~list`. A range interceptor is the security boundary for relations with a range type that exposes every instance (`rangeType=ANY`) because read-only attributes do not stop enumeration. Model `min`/`max` bounds are UI-only and are not enforced on the server.
 - Input validation of exposed operations runs without interceptors.
+- Interceptors are called from the dispatcher's behaviour calls (`CallInterceptorUtil` in the `*Call` classes), not from the DAO. A DAO call from Java service code (for example creating a child entity) does not trigger interceptors.
 
 ### Ordering and Combining Several Interceptors
 
@@ -201,7 +209,7 @@ All synchronous interceptors run inside the transaction of the operation. An exc
 
 ## Interceptor Component Registration
 
-**Required annotation properties:**
+### Required annotation properties
 
 ```java
 @Component(property = { "judo.model.name=<app>" })
@@ -210,10 +218,16 @@ public class MyInterceptor implements OperationCallInterceptor {
 }
 ```
 
-**Why `property = { "judo.model.name=<app>" }`?**
+### Why `property = { "judo.model.name=<app>" }`?
 - Binds interceptor to specific JUDO model
 - Runtime uses this to match interceptors to operations
 - Multiple models can coexist with different interceptors
+
+An interceptor may also live in the application's `app` module when it must share a bundle with custom operations. Add `judo-runtime-core-dispatcher` (which provides `OperationCallInterceptor`) as a `provided` dependency to the app `pom.xml`; the built-in interceptors stay in the generated `interceptors` module.
+
+### Guice and Spring Registration
+
+The default `OperationCallInterceptorProvider` returns an empty list unless interceptors are configured explicitly: it does not read a Guice `Multibinder` set of `OperationCallInterceptor`. In Spring, a `@Bean` that returns an `OperationCallInterceptor` is not collected; the default Spring configuration returns an empty interceptor list.
 
 ## Example 1: Simple Logging Interceptor
 
@@ -244,7 +258,7 @@ public class LogOperationCallInterceptor implements OperationCallInterceptor {
 }
 ```
 
-**Key patterns:**
+### Key patterns
 - `@Component(property = { "judo.model.name=<app>" })` - Required for operation interceptors
 - No `getOperations()` implementation = intercept ALL built-in operations (custom and script operations are never intercepted)
 - `AsmUtils.getOperationFQName()` - Get fully qualified operation name
@@ -411,6 +425,7 @@ public class AccessRoleUpdateInterceptor implements OperationCallInterceptor {
 - **Payload type check**: `instanceof UpdateInstanceCallPayload`
 - **Batch processing**: Query and process all related entities
 - **Cascading updates**: Propagate changes to dependent entities
+- **Old versus new values**: `UpdateInstanceCallPayload.getInput()` holds the values sent by the client (the new values); `getInstance()` identifies the instance (`__identifier`) and does not carry its stored values. To compare, read the stored entity with the DAO in `preCall` (before the write) using the identifier from `getInstance()`, then compare it with `getInput()`.
 
 ## Example 4: Pre-Call Payload Manipulation
 
@@ -613,6 +628,36 @@ public class AccessRoleSetAndRemoveAndDeleteInterceptor implements OperationCall
 - **Business rule enforcement**: Validate after changes; an `InterceptorCallBusinessException` rolls back the whole operation
 - **Derived query methods**: Use model-generated validation queries
 
+### Narrowing a Range with a Pre-Call Interceptor
+
+The pre-call payload of a reference range operation (`_getRangeReference*`) is `GetReferenceRangeCall.GetReferenceRangeCallPayload`: `owner` (`EReference`), `ownerPayload` (`Payload`), `queryCustomizer` (`DAO.QueryCustomizer`) and `recordCount` (settable). A list operation gets `ListCall.ListCallPayload` with `owner`, `instance`, `queryCustomizer` and `recordCount`. A `QueryCustomizer` is immutable (a Lombok `@Builder` without `toBuilder`): `filter` is a JQL string with `this` as the target (conditions of the request are joined with ` and `), `orderByList`, `seek`, `mask`, `parameters`, `instanceIds`, `withoutFeatures`. To add a constraint, build a new customizer that copies the other fields, and return a new payload from `preCall`:
+
+```java
+@Override
+public Object preCall(EOperation operation, Object payload) {
+    if (!(payload instanceof GetReferenceRangeCall.GetReferenceRangeCallPayload)) {
+        return payload;
+    }
+    var p = (GetReferenceRangeCall.GetReferenceRangeCallPayload) payload;
+    var old = p.getQueryCustomizer();
+    var oldFilter = old != null ? old.getFilter() : null;
+    var extra = "this.<flag>";                       // JQL on the range target type
+    var qc = DAO.QueryCustomizer.builder()
+            .filter(oldFilter == null || oldFilter.isBlank() ? extra : "(" + oldFilter + ") and " + extra)
+            .orderByList(old != null ? old.getOrderByList() : List.of())
+            .seek(old != null ? old.getSeek() : null)
+            .mask(old != null ? old.getMask() : null)
+            .parameters(old != null ? old.getParameters() : null)
+            .instanceIds(old != null ? old.getInstanceIds() : null)
+            .withoutFeatures(old != null && old.isWithoutFeatures())
+            .build();
+    return GetReferenceRangeCall.GetReferenceRangeCallPayload.builder()
+            .owner(p.getOwner()).ownerPayload(p.getOwnerPayload()).queryCustomizer(qc).build();
+}
+```
+
+`getOperations` must name the range operation(s); the returned object must be of the same payload type.
+
 ## Example 6: Handling Both Create and Update
 
 **Pattern**: Single interceptor for create and update with pattern matching
@@ -770,7 +815,7 @@ Operation Fully Qualified Names follow specific patterns:
 | Set Reference | `[model_name].[entity_package].[Entity]#_setReference[RelationshipName]` | `<app>.access_management.AccessRole#_setReferenceAccessPermissions` |
 | Custom Operation | `[model_name].[entity_package].[Entity]#[operationName]` | `<app>.entity_management.Entity#toggleStatus` |
 
-**Finding Operation FQNs:**
+### Finding Operation FQNs
 
 ```bash
 # Search in ASM model for operation definitions
@@ -809,7 +854,7 @@ cd application/interceptors
 mvn install
 ```
 
-**Important Notes**:
+#### Important Notes
 - Do NOT edit `.java.default` files directly - they are regenerated on each build
 - Do NOT add `.java` files to `.generator-ignore` - the generator only creates `.default` files, your `.java` implementations are never overwritten
 - Do NOT add `.java.default` files to `.generator-ignore` either — keep them regenerating as a read-only reference. See [`.generator-ignore` — One Rule](README.md#generator-ignore--one-rule).

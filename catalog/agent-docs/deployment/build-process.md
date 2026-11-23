@@ -1,6 +1,9 @@
 ---
 title: Build Process
 description: judo.sh command reference, Maven profiles, build workflows, project template generation, Docker image build and build troubleshooting.
+aliases: [build the project, judo.sh build flags, maven build profiles, skip docker build, build failure, prune untracked files]
+keywords: [judo.sh, generator-parameter.properties, generator-overrides, DOCKER_IMAGE_TAGS, skipDocker, skipFrontendReact, rdbmsCreateSimpleName, reckless, prune, MAVEN_OPTS, jib-maven-plugin]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Build Process
@@ -39,7 +42,7 @@ This file controls how the project structure is generated from templates.
 
 **Location:** `/generator-parameter.properties`
 
-**Key Parameters:**
+#### Key Parameters
 
 ```properties
 # Model Generation
@@ -67,12 +70,12 @@ generateKarafModule=true
 
 **⚠️ IMPORTANT**: Before manually editing generated files (like `pom.xml`), check if the template supports a parameter.
 
-**Why?**
+#### Why?
 - Manual edits may be overwritten on regeneration
 - Template parameters are the proper way to configure generation
 - Ensures consistency across regenerations
 
-**Process:**
+#### Process
 
 1. **Identify the generated file** you want to modify (e.g., `application/model/pom.xml`)
 
@@ -93,7 +96,7 @@ generateKarafModule=true
 
 5. **Regenerate** if needed, or apply manually for existing projects
 
-**Example: Adding rdbmsCreateSimpleName**
+#### Example: Adding rdbmsCreateSimpleName
 
 Instead of manually editing `application/model/pom.xml`:
 ```xml
@@ -124,7 +127,7 @@ By default the fragment resolves to an empty stub from the template jar. You ove
 
 #### Worked Example: Adding a Dependency
 
-**Worked example — add a runtime dependency to `application/app/pom.xml`:**
+##### Worked example — add a runtime dependency to `application/app/pom.xml`
 
 1. Locate the marker in `application/app/pom.xml`:
    ```xml
@@ -141,11 +144,15 @@ By default the fragment resolves to an empty stub from the template jar. You ove
    ```
 3. Run `./judo.sh generate` (or `./judo.sh build`). The dependency now appears in the regenerated `application/app/pom.xml`, and its checksum in `.generated-files` stays stable because the content is produced by the template, not by a manual edit.
 
+Platform-provided libraries (for example PDF, template-engine or file-store service APIs) are available at runtime, but the app module still needs a compile-time dependency in its pom (via this fragment) before their imports resolve.
+
 Fragments are Handlebars templates, so you can use expression syntax and generator parameters (for example `\<app>`) inside them.
 
 #### Available Fragment Extension Points
 
 Every generated module (application root, app, interceptors, karaf-features, schema, e2e, web-root) has these empty stubs; a file with exactly that name in the override directory survives regeneration and needs no `.generator-ignore` entry.
+
+The generated project-root `pom.xml` template does not include the `extra-dependency-management` and `extra-modules` fragments (the application-root `pom.xml` does), so root-level files with those names are silently ignored even though the table below lists them. Until the template wires them in, declare the extra dependency with an explicit version in the `app/pom.xml.extra-dependencies.fragment.hbs` fragment.
 
 **Available fragment extension points (from `judo-esm-fullstack-project-template`):**
 
@@ -171,6 +178,17 @@ Every generated module (application root, app, interceptors, karaf-features, sch
 | `e2e/pom.xml`, `e2e/actor/pom.xml`, `e2e/model/pom.xml` | `e2e/**/pom.xml.{project-definition,properties-definition,extra-plugin-management,extra-plugins,extra-dependencies}.fragment.hbs` | Same pattern for the E2E test modules |
 | `frontend-react/pom.xml`, `frontend-react/actor/pom.xml`, `frontend-react/model/pom.xml` | `frontend-react/**/pom.xml.{project-definition,properties-definition}.fragment.hbs` | Override coordinates / properties for React frontend modules |
 
+##### Frontend (React) fragment extension points
+
+Frontend (React) fragments, all placed in the override directory under `actor/`:
+
+- `actor/package.json.dependencies.extra.fragment.hbs`, `actor/package.json.dev-dependencies.extra.fragment.hbs` and `actor/package.json.scripts.extra.fragment.hbs` add entries to the matching `package.json` section.
+- `actor/public/i18n/application_default_extra.fragment.hbs` adds translation keys to the default language file. The stub is `"__extra": "Placeholder for additional translations",`, so write JSON key-value lines with a trailing comma.
+- `actor/src/fragments/operations/operation-primary-output-handler.fragment.hbs` is included after each operation call, with `operation` and `action` in context. The stub is an empty comment. Use it to handle the operation result.
+- Theme fragments are covered in [Theming](../frontend/theming.md).
+
+In templates, `elementHasAnnotation(element, "<name>")` is true when the model element has an annotation with exactly that name, and `operation.output.target` is the output's target class type. To keep a literal Handlebars expression in the generated file, escape it with a backslash: `\{{name}}` renders as `{{name}}` (the generated i18n files use this for i18next placeholders).
+
 > **Prefer fragment overrides over `.generator-ignore`.** A fragment keeps the file under the generator's control so future template improvements still flow in; adding the file to `.generator-ignore` freezes the generated output and will drift from the template over time.
 
 ### Common Generator Parameters
@@ -194,7 +212,9 @@ Main orchestration script that simplifies common operations.
 
 **Location:** `/judo.sh`
 
-**Capabilities:**
+**Known issue:** the frontend module list in `install_bundles` pipes newline-separated `find` output into `xargs -0`, which reads it as one entry, so several frontend `pom.xml` files can collapse into one module entry. Until `judo.sh` is fixed, build each frontend module by its path.
+
+### Capabilities
 - Environment setup (SDKMAN, tools)
 - Model transformation
 - Build orchestration
@@ -212,15 +232,19 @@ Main orchestration script that simplifies common operations.
 | `-F` | `--skip-frontend` | Skip frontend React generation/build. |
 | `-KA` | `--skip-karaf` | Skip Karaf assembly. |
 | `-S` | `--skip-schema` | Skip schema-migration image. |
-| `-a` | `--build-app-module` | Build the `app/` (custom ops) module only — fast iteration on Java code. |
-| `-f` | `--build-frontend-module` | Build the frontend React module only. |
+| `-a` | `--build-app-module` | Build the `app/` (custom ops) module only — fast iteration on Java code. The running application does not load it: `start` unpacks the `karaf-offline` package again, so after Java changes run `./judo.sh build -M -F` (backend and Karaf package, skipping model and frontend) before `./judo.sh start`. |
+| `-f` | `--build-frontend-module` | Build the frontend React module only. The Karaf package is not rebuilt, so a running application keeps serving the old frontend: after a frontend change that a running application must show, run `./judo.sh build` (no flags, rebuilds Karaf) and restart with `./judo.sh start`. |
 | `-sc` | `--build-schema-cli` | Build the standalone schema CLI JAR. |
 | `-d` | `--docker` | Build Docker images. |
 | `-p` | `--build-parallel` | Maven parallel build (noisier logs). |
 | `-q` | `--quick` | Quick mode — use cache, skip validations. |
 | `-i` | `--ignore-checksum` | Ignore generator checksum errors and refresh checksums. |
 
+`-KA` (skip Karaf) does not rebuild the `karaf-offline` package. `./judo.sh start` re-extracts that package on every start, so `build -F -KA` after Java changes leaves the running backend on the old custom operations. Drop `-KA` before `start`.
+
 **Model-only changes need a full `./judo.sh build` (no flags) — not `-M`.** The `asm2keycloak` transformation (which emits the Keycloak realm from your `ActorType`s) only runs when model build is enabled. With `-M` the previous build's Keycloak realm artifact sticks and a new actor / claim / realm-name change never reaches Keycloak; the local stack starts but the React app shows blank and `/system/health` reports `JaxRsApplicationsReady` missing because the Keycloak adapter cannot find a realm matching `schema_name`.
+
+`./judo.sh build -M -B` is not a frontend-only build: it stops a running Karaf and deletes its directory before Maven runs, then builds only the frontend module, so the application stays down until a full build. Use `./judo.sh build -f` for a frontend-only build. A full build that fails in a later module leaves Karaf stopped the same way; run `./judo.sh build` again, then `./judo.sh start`.
 
 ### Local-dev Keycloak realm dependency
 
@@ -280,16 +304,18 @@ The app realm's name is `ActorType.realm` emitted verbatim by `asm2keycloak` as 
 | `generate-root` (`-i`) | Regenerate the application root structure (`-DgenerateRoot`) |
 | `dump` | Dump PostgreSQL data before clearing and starting |
 | `import` (`-dn <name>`) | Import a dump; without a name the last one is loaded |
-| `schema-upgrade` | Persistent PostgreSQL only: generates the difference against the running database and applies it |
+| `schema-upgrade` | Persistent PostgreSQL only: generates the difference against the running database and applies it. The schema module path is set with `schema_dir` (default `model_dir`) in `judo.properties` or the environment. See [schema evolution](schema-evolution.md#when-no-manual-step-is-needed). |
 | `build` | Build the project (options below) |
 | `reckless` | Build and run as fast as possible (skips validation and Docker) |
 | `start` | Run the application with PostgreSQL and Keycloak |
 | `stop` | Stop application, PostgreSQL and Keycloak |
 | `status` | Print the status of the containers |
 
+> **`schema-upgrade` is one step.** It generates the difference and applies it immediately, so a hand-written backfill changeset cannot be inserted between generation and execution. Do not use `schema-upgrade` when a backfill is needed.
+
 **`build` options:** `-v <version>` (model and application version), `-p` (parallel), `-a` (app module only), `-f` (frontend module only), `-sc` (build the schema CLI standalone JAR), `-d` / `--docker` (build Docker images), `-M` (skip model), `-B` (skip backend), `-F` (skip frontend), `-KA` (skip Karaf), `-S` (skip schema migration image), `-ma <arg>` (extra Maven argument), `-q` (quick: cache, no validation), `-i` (ignore checksum errors, regenerate and update checksums).
 
-**`start` options:** `-W` (do not watch bundle changes), `-K` (skip Keycloak), `-o "<name>=<value>,..."` with:
+**`start` options:** `-w` (do not watch bundle changes; long form `--skip-watch-bundles`; `-W` is not parsed), `-K` (skip Keycloak), `-o "<name>=<value>,..."` with:
 
 | Option | Values |
 |--------|--------|
@@ -300,7 +326,7 @@ The app realm's name is `ActorType.realm` emitted verbatim by `asm2keycloak` as 
 | `karaf_port`, `postgres_port`, `keycloak_port` | port overrides (Karaf HTTP default **8181**) |
 | `compose_access_ip` | alternate IP used to access the app |
 | `karaf_enable_admin_user` | `1` enables the Karaf admin user |
-| `java_compiler` | `ejc` (default) \| `javac` |
+| `java_compiler` | `ejc` \| `javac`; not read by `judo.sh` (the help text lists it), so it has no effect |
 
 Defaults for the options can be placed in `judo.properties` (or the properties file chosen with `env`).
 
@@ -316,30 +342,36 @@ Defaults for the options can be placed in `judo.properties` (or the properties f
 | `./judo.sh prune -f` | All untracked files inside `application/frontend-react/` |
 | `./judo.sh prune -y` | Same as above but skips the `[Y/n]` confirmation |
 
-**What gets wiped that you likely care about:**
+Without `-y`, the `[Y/n]` prompt continues only for an exact `Y`; Enter, `y` and any other input abort (`Aborting prune.`, exit 13).
+
+#### What gets wiped that you likely care about
 
 - Custom frontend code that has not yet been committed (Pandino hooks, theme overrides, custom components, i18n overrides under `frontend-react/<app>/src/custom/**`, `.../theme/**`, `.../i18n/**`).
 - Any scratch files, notes, screenshots, or locally generated artifacts in the working tree (for the bare `prune` variant).
 - `node_modules/`, generator caches, and other untracked build output — this is the *intended* use case.
 
-**Mandatory safety checklist before running `prune` / `prune -f`:**
+#### Mandatory safety checklist before running `prune` / `prune -f`
 
 1. `git status` — confirm every custom file you want to keep is either tracked or intentionally disposable.
 2. `git stash -u` (or `git add` + commit) any untracked customizations you want to preserve.
 3. Prefer `./judo.sh prune` (interactive) over `./judo.sh prune -y`. Never chain `-y` in an automated agent workflow unless the working tree is verified clean first.
 4. For agents: treat `prune -y` as equivalent to `rm -rf` on customer code. Require explicit human confirmation.
 
-**When `prune -f` is actually the right tool:**
+#### When `prune -f` is actually the right tool
 
 - The JUDO designer freezes on opening the model project (stale generated frontend state).
 - After major model refactors where generator output layout changed (e.g. actor renamed) and stale per-actor dirs need to disappear.
 - As the first step of a fully clean rebuild: `./judo.sh prune -f && ./judo.sh build -i`.
 
-If you only need to clear generator caches without touching untracked files, use `./judo.sh clean` instead — `clean` is non-destructive to untracked source files.
+`./judo.sh clean` does not delete untracked files, but it is not a generator-cache clear either: it stops the PostgreSQL container and clears its data (see the command table).
 
 ## Frontend Build Recovery
 
 When `./judo.sh build -i` fails in the frontend reactor (typically after model or OpenSpec-driven changes, for example `TS2307 Cannot find module ~/services/data-axios/...`), delete the generated folders of the `frontend-react` module - `src/pages/`, `src/dialog/`, `src/containers/` and `src/services/` - and run `./judo.sh build -i` again; the generator recreates them. Re-running the build alone is not enough in this case.
+
+After renaming a transfer object, container or page, the generated names derived from it change: customization component names and interface keys (`<ContainerComponentName>...Component`, upper-snake `..._INTERFACE_KEY`), page and dialog folders. Rename the matching custom files and constants by hand, delete the stale generated `src/pages/`, `src/dialog/`, `src/containers/` and `src/services/` folders, then run `./judo.sh build -i`.
+
+**Known issue: UI validation errors print as `{}: {}`.** The UI validation step logs through `StringBuilderLogger`, which formats messages with `String.format`. Slf4j-style `{}` placeholders are not replaced, so each failing UI constraint is logged as the bare line `{}: {}` with no constraint name or message. The Java validator path (`UiJavaValidator`) logs this way; the build reaches it when the Epsilon UI executor cannot be loaded, and then logs `Validator class ... not found. Using fallback.` Workaround: run `judo-cli -m <model-path> validate`, which prints each UI finding as `error ui <constraint> <element>: <message>`, and fix the reported constraints. Platform fix: format the placeholders in `StringBuilderLogger` the way slf4j does.
 
 ## Stale Artifacts and Multi-Module Build Order
 
@@ -356,10 +388,12 @@ A runtime change can span several repositories (`judo-runtime-core`, `judo-platf
 
 The template (`judo-esm-fullstack-project-template`) has the modules `-root`, `-application`, `-common` and `-test`. The root module's resources contain `pom.xml.hbs`, `judo.sh.hbs`, `generator-parameter.properties.hbs`, `AGENTS.md.hbs`, `README.adoc.hbs` and the `pom.xml.*.fragment.hbs` files. To start a project:
 
-1. Place the model at `model/<app>.model` and generate the project with the `create-judo-project` goal of `judo-version-updater-maven-plugin` (parameters `-DmodelName`, `-DprojectGroupId`, `-DprojectArtifactId`, `-DprojectVersion`, `-Dversion`).
-2. The root POM has a `generate-root` execution with `synchronizeGitignore` (`esm=${basedir}/model/<app>.model`, ignored files `pom.xml`, `**/pom.xml`, `judo.sh`, `.mvn/jvm.config`).
+1. Place the model at `model/<app>.model` and generate the project with the `create-judo-project` goal of `judo-version-updater-maven-plugin` (parameters `-DmodelName`, `-DprojectGroupId`, `-DprojectArtifactId`, `-DprojectVersion`, `-Dversion`). The plugin's groupId is `hu.blackbelt.judo`; its version selects the template version, so take the plugin version and `-Dversion` from the target JUDO versions rather than from whatever is cached in `~/.m2`.
+2. The root POM has a `generate-root` execution with `synchronizeGitignore` (`esm=${basedir}/model/<app>.model`, ignored files `pom.xml`, `**/pom.xml`, `judo.sh`, `.mvn/jvm.config`). When adopting generated output into a repository that already has its own `.gitignore`, copy only the generated files and keep the managed `# JUDO GENERATOR BLOCK` in `.gitignore`; overwriting the tracked file wholesale makes `generate-root` stop with a manual-changes error.
 3. Add a `<server>` with the id `<app>-distribution` to `~/.m2/settings.xml` if you deploy artifacts.
 4. Run `./judo.sh build`; Docker must be installed (the local database and Keycloak run in containers).
+
+The version updater goals read the update channel from `-Djudo-version-update-channel=<channel>` (default `develop`); `-DupdateChannel` does not bind. The repository server id comes from `-Djudo-version-rules-serverId=<id>` (default `serverId`); `-DserverId` does not bind.
 
 ## Toolchain Bootstrap and Versions
 
@@ -378,6 +412,8 @@ The template ships Eclipse m2e launchers: `BuildApplication.launch` (clean insta
 The generated agent-docs are Handlebars templates in the project template. They use only `docLink`/`localHubLink` helpers (defined in `EsmProjectHelper`, `judo-esm-fullstack-project-template-common`), a lower-case model-name expression and a model-name expression; literal double braces are escaped with a backslash. `docLink` becomes `[text](path)` and `localHubLink` becomes `[text](./README.md)`. Code constructs like `#if`/`#each` inside docs are examples only.
 
 ## Maven Commands
+
+The `parseHutn` goal catches every exception and only logs it, so the build can succeed when a HUTN file fails to parse. Check the build log for `Could parse HUTN` errors, or add a step that fails on them.
 
 ### Essential Maven Commands
 
@@ -434,7 +470,7 @@ mvn clean install -DskipDocker
 ./judo.sh build
 ```
 
-**Steps Executed:**
+#### Steps Executed
 1. **Environment Check** - Verify Docker, Java, Maven
 2. **Model Transformation**
    - Load `/model/<app>.model`
@@ -463,7 +499,7 @@ mvn clean install -DskipDocker
    - Build container image
    - Include Karaf distribution
 
-**Duration:**
+#### Duration
 - First build: 10-15 minutes
 - Incremental: 3-5 minutes
 - With cache: 1-2 minutes
@@ -493,18 +529,18 @@ Fastest build for rapid iteration:
 ./judo.sh reckless
 ```
 
-**What it does:**
+#### What it does
 - Enables Maven caching
 - Disables validation
 - Skips non-essential checks
 - Uses incremental compilation
 
-**Use for:**
+#### Use for
 - Rapid prototyping
 - Frequent small changes
 - Development iterations
 
-**Don't use for:**
+#### Don't use for
 - Production builds
 - Breaking changes
 - Final testing
@@ -529,7 +565,7 @@ Fastest build for rapid iteration:
 
 ### Memory Configuration
 
-**Increase Maven memory for large builds:**
+#### Increase Maven memory for large builds
 
 ```bash
 export MAVEN_OPTS="-Xmx4g"
@@ -541,27 +577,39 @@ export MAVEN_OPTS="-Xmx4g"
 
 #### "Model validation failed"
 
-**Solution:**
+##### Solution
 - Check model file: `/model/<app>.model`
 - Run: `mvn clean install -X` for detailed errors
 
 #### "Could not resolve dependencies"
 
-**Solution:**
+##### Solution
 - Check Maven settings: `~/.m2/settings.xml`
 - Verify repository credentials
 - Clear cache: `rm -rf ~/.m2/repository/hu/blackbelt`
 
 #### "Frontend build failed"
 
-**Solution:**
+##### Solution
 - Check Node.js version: `node --version` (should be 18+)
 - Clear node_modules: `rm -rf node_modules && pnpm install`
 
 #### "Out of memory"
 
-**Solution:**
+##### Solution
 - Increase Maven memory: `export MAVEN_OPTS="-Xmx4g"`
+
+### Duplicate type imports with a third actor (known issue)
+
+The generated frontend can fail in `pnpm run format` (biome) with `Declarations inside of a import declaration may not have duplicates` (for example `import type { <Type>, <Type>, ... }`). Cause: the ESM to UI transformation (Zeta) runs once per actor in model file order, and its `fixCallOperationActionDefinitions` pass rebinds call-operation actions of all actors in the shared UI model to the current actor's copy of a same-named class and operation (`runtime__judo-tatami-client/judo-tatami-esm2ui/.../zeta/Esm2UiZetaTransformation.java:835-907`, loop `:1720-1723`). A page of an earlier actor then holds two `ClassType` objects for one class (its own and the later actor's), and `getApiImportsForPage` collects them in a `HashSet<ClassType>` that deduplicates by object identity (`UiPageHelper.java:154`), so the import is emitted twice. Seen when a third actor was added last; a shared output type with two actors alone did not reproduce it. Workaround (verified on one model: 48 files with duplicates with the new actor last, none with it first): create the new actor at the first position (`create -t ActorType ... --index 0`), then check the generated sources for duplicate imports after `generate`. A build right after a model switch (for example after leaving a branch with another actor set) can show the same error from a stale, mixed model; run `./judo.sh generate` and `./judo.sh build -i` again before investigating.
+
+### `XMI ID COLLISION DETECTED` in the build log
+
+The model steps of the frontend and e2e modules, and the CLI `validate`/`transform`, can log `[ERROR] XMI ID COLLISION DETECTED: ID '<Actor>/(esm/<id>)/TabularReferenceFieldLink...Action' is being reassigned from Action ... to Action ...` for five `TabularReferenceFieldLink*Action` ids (Create, AutocompleteSet, SetSelectorOpenPage, AutocompleteRange, Unset). Known framework issue, not a model error: it appears when one actor has two accesses to the same transfer object whose view has a tabular reference field. The line is logged at error level, but the build still ends `BUILD SUCCESS` and the CLI `validate` exits 0. It is not a sign of an unhealthy build; no workaround is needed. To check whether other collisions exist, compare the ids in the log with these five names.
+
+### Stale `.default` skeleton after moving an operation
+
+`generate` deletes generated files that are listed in the target directory's `.generated-files` record and no longer produced, unless a `.generator-ignore` entry matches. A `<Operation>CustomImplementation.java.default` skeleton at the old location of a moved operation is normally removed this way. If one is left (for example after the record was reset), delete it by hand; it is only a scaffold. The implementation `.java` file you created from a skeleton is your code and is never removed.
 
 ## Best Practices
 

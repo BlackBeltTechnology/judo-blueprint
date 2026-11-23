@@ -1,0 +1,6 @@
+{"id": "WR16-13", "verdict": "fixed", "note": "Logged cause is 'There are RDBMS model changes...' from the retried checkModelIsIdentical; schema not marked ready. Added the cause and the not-ready effect; also corrected the older 'startup fails' sentence in the same section"}
+{"id": "WR16-5", "verdict": "fixed", "note": "-KA help and start re-extracts karaf-offline confirmed; removed '-M -F' alternative, which contradicts the next paragraph"}
+{"id": "WR16-9", "verdict": "ok", "note": "utils.ts.hbs:15 typeof string; JudoStored.ts.hbs __version?: number"}
+{"id": "WR16U-15", "verdict": "ok", "note": "cards/index.tsx.hbs row actions only feed onRowClick (open-page actions); no tableRowActions in cards template; table uses tableRowActions."}
+{"id": "WR16U-2", "verdict": "ok", "note": "CardsContainer.tsx.hbs:139 calls fetch! unconditionally; cards index passes fetch only inside the refresh-action block."}
+{"id": "WR19-8", "verdict": "ok", "note": "DefaultActorResolver runs authenticate hooks then authenticateByPrincipal (L90-103) before operation (DefaultDispatcher L625); AUTHENTICATED_ENTITY_NOT_FOUND thrown when no row (L202)."}

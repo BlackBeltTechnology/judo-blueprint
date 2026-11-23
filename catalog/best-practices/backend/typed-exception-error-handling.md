@@ -11,7 +11,6 @@ projects: [trivia, rackinspect, mlszksz-platform, ubives, park-here, indamedia-a
 evidence: ["trivia:unrecorded", "rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/EntityLifecycleServiceImpl.java", "rackinspect:application/interceptors/src/main/java/hu/blackbelt/rackinspect/interceptors/faultregistry/elementfault/ElementFaultUpdateInterceptor.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/utils/ExceptionUtils.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/post/impl/PostLifecycleServiceImpl.java", "ubives:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "workflow-poc:unrecorded"]
 alternatives: [validation-exception-hierarchy]
 related: [state-lifecycle-operation, validation-exception-hierarchy, error-code-enum, safe-failure-pattern, interceptor-security-filter-validation, accept-reject-operations]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

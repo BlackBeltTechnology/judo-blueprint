@@ -1,51 +1,51 @@
 [
  {
   "q": "which operations do interceptors run around",
-  "expect": "catalog/agent-docs/backend/interceptors.md"
+  "expect": "catalog/agent-docs/backend/interceptors"
  },
  {
   "q": "preCall postCall order of interceptors",
-  "expect": "catalog/agent-docs/backend/interceptors.md"
+  "expect": "catalog/agent-docs/backend/interceptors"
  },
  {
   "q": "throw business error from custom operation 422 fault",
-  "expect": "catalog/agent-docs/backend/error-handling-guide.md"
+  "expect": "catalog/agent-docs/backend/error-handling-guide"
  },
  {
   "q": "ValidationException location field error 400",
-  "expect": "catalog/agent-docs/backend/error-handling-guide.md"
+  "expect": "catalog/agent-docs/backend/error-handling-guide"
  },
  {
   "q": "DAO selectList query customizer filter orderBy",
-  "expect": "catalog/agent-docs/backend/data-access-guide.md"
+  "expect": "catalog/agent-docs/backend/data-access-guide"
  },
  {
   "q": "single-valued relation query returns entity directly",
-  "expect": "catalog/agent-docs/backend/data-access-guide.md"
+  "expect": "catalog/agent-docs/backend/data-access-guide"
  },
  {
   "q": "implement a custom operation in Java OSGi component",
-  "expect": "catalog/agent-docs/backend/custom-operations.md"
+  "expect": "catalog/agent-docs/backend/custom-operations"
  },
  {
   "q": "JudoTest transaction AUTO_ROLLBACK integration test",
-  "expect": "catalog/agent-docs/backend/custom-operations.md"
+  "expect": "catalog/agent-docs/backend/custom-operations"
  },
  {
   "q": "upload token flow for binary attribute",
-  "expect": "catalog/agent-docs/backend/platform-behavior-reference.md"
+  "expect": "catalog/agent-docs/backend/platform-behavior-reference"
  },
  {
   "q": "optimistic locking __version conflict",
-  "expect": "catalog/agent-docs/backend/platform-behavior-reference.md"
+  "expect": "catalog/agent-docs/backend/platform-behavior-reference"
  },
  {
   "q": "signed identifier in REST url",
-  "expect": "catalog/agent-docs/backend/platform-behavior-reference.md"
+  "expect": "catalog/agent-docs/backend/platform-behavior-reference"
  },
  {
   "q": "keycloak realm client generated from model azp",
-  "expect": "catalog/agent-docs/backend/authentication-guide.md"
+  "expect": "catalog/agent-docs/backend/authentication-guide"
  },
  {
   "q": "actor access getter has no self",
@@ -57,28 +57,28 @@
  },
  {
   "q": "JQL collection functions empty count any",
-  "expect": "catalog/agent-docs/model/model-development.md"
+  "expect": "catalog/agent-docs/model/model-development"
  },
  {
   "q": "relationKind COMPOSITION ASSOCIATION cascade delete",
-  "expect": "catalog/agent-docs/model/esm_metamodel/structure.md"
+  "expect": "catalog/agent-docs/model/esm_metamodel/structure"
  },
  {
   "q": "bidirectional relation cannot be composition aggregation owner end",
-  "expect": "catalog/agent-docs/model/advanced-modeling-patterns.md"
+  "expect": "catalog/agent-docs/model/advanced-modeling-patterns"
  },
  {
   "q": "view model panel transfer object derived relations dashboard",
-  "expect": "catalog/agent-docs/model/advanced-modeling-patterns.md"
+  "expect": "catalog/agent-docs/model/advanced-modeling-patterns"
  },
  {
   "q": "abstract entity generalization polymorphic create",
-  "expect": "catalog/agent-docs/model/advanced-modeling-patterns.md",
+  "expect": "catalog/agent-docs/model/advanced-modeling-patterns",
   "why": "generalization-guide.md is about doc placeholders, not entity generalization (golden-set error)"
  },
  {
   "q": "hiddenBy enabledBy boolean on same transfer object",
-  "expect": "catalog/agent-docs/model/ui-authoring-guide.md"
+  "expect": "catalog/agent-docs/model/ui-authoring-guide"
  },
  {
   "q": "JSL built-in types precision Long Integer",
@@ -86,7 +86,7 @@
  },
  {
   "q": "judo-cli validate strict save model",
-  "expect": "catalog/agent-docs/model/judo-cli.md"
+  "expect": "catalog/agent-docs/model/judo-cli"
  },
  {
   "q": "frontend hook registration application customizer pandino",
@@ -94,15 +94,15 @@
  },
  {
   "q": "post refresh action hook page",
-  "expect": "catalog/agent-docs/frontend/advanced-patterns.md"
+  "expect": "catalog/agent-docs/frontend/advanced-patterns"
  },
  {
   "q": "actor palette colors theme override",
-  "expect": "catalog/agent-docs/frontend/theming.md"
+  "expect": "catalog/agent-docs/frontend/theming"
  },
  {
   "q": "generator-ignore checksum .default scaffold files",
-  "expect": "catalog/agent-docs/frontend/README.md"
+  "expect": "catalog/agent-docs/frontend/README"
  },
  {
   "q": "422 error handling dialog frontend",
@@ -110,19 +110,19 @@
  },
  {
   "q": "translations i18n frontend json keys",
-  "expect": "catalog/agent-docs/frontend/i18n.md"
+  "expect": "catalog/agent-docs/frontend/i18n"
  },
  {
   "q": "build process generator fragments pom.xml",
-  "expect": "catalog/agent-docs/deployment/build-process.md"
+  "expect": "catalog/agent-docs/deployment/build-process"
  },
  {
   "q": "JUDO_PLATFORM environment variables configuration",
-  "expect": "catalog/agent-docs/deployment/application-config.md"
+  "expect": "catalog/agent-docs/deployment/application-config"
  },
  {
   "q": "liquibase schema evolution migration",
-  "expect": "catalog/agent-docs/deployment/schema-evolution.md"
+  "expect": "catalog/agent-docs/deployment/schema-evolution"
  },
  {
   "q": "playwright e2e test data-testid helpers",

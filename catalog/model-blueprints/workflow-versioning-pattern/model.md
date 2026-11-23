@@ -14,7 +14,6 @@ Generated UI pages: keep the admin Definition table and view, keep the version t
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=workflow-versioning-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Definition {
@@ -45,4 +44,3 @@ classDiagram
   Definition --> "0..1" DefinitionVersion : published
   DefinitionVersion *-- "*" Step : steps
 ```
-<!-- /mermaid:generated -->

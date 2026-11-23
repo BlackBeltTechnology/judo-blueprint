@@ -10,8 +10,6 @@ status: single-project
 projects: [indamedia-adtrack]
 evidence: ["indamedia-adtrack:unrecorded"]
 alternatives: [external-api-adapter-provider-pattern]
-fragment: multi-platform-external-account-cluster
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

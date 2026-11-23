@@ -1,6 +1,9 @@
 ---
 title: ESM to UI Mapping: Overview
 description: ESM to UI Mapping: Overview: ESM to UI model mapping reference for the generated React frontend.
+aliases: [esm to ui mapping, model to ui mapping, crud flags visibility, ui form definition, ui table definition, transfer object view, data type mapping]
+keywords: [DataMember, TwoWayRelationMember, OneWayRelationMember, ui:form, ui:view, ui:table, TransferObjectView, TransferObjectTable, TransferObjectForm]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # ESM to UI Mapping: Overview
@@ -103,7 +106,7 @@ The ESM model contains UI definitions directly under entity types. These are not
 | `structure:DataMember` | `defaultExpression` | Default value | Pre-populated value |
 | `structure:DataMember` | `getterExpression` | Derived calc | Computed field |
 
-**Example:**
+#### Example
 ```xml
 <attributes xsi:type="structure:DataMember"
   xmi:id="_ZeK4oLK0EfCC_efogf7jJg"
@@ -128,7 +131,7 @@ The ESM model contains UI definitions directly under entity types. These are not
 | `TwoWayRelationMember` | `target` (ref) | `target` | Related entity type |
 | `TwoWayRelationMember` | `partner` (ref) | Inverse relation | Bidirectional binding |
 
-**Example:**
+#### Example
 ```xml
 <relations xsi:type="structure:TwoWayRelationMember"
   xmi:id="_nNhSoLK2EfCC_efogf7jJg"
@@ -151,7 +154,7 @@ The `createable`, `updateable`, and `deleteable` attributes on relations directl
 | **U** (Update) | `updateable="true"` | `isUpdatable` | Fields editable, Attach/Detach buttons visible |
 | **D** (Delete) | `deleteable="true"` | `isDeletable` | Delete button visible on rows |
 
-**UI Components by CRUD Configuration:**
+#### UI Components by CRUD Configuration
 
 | Configuration | Visible UI Elements |
 |--------------|---------------------|
@@ -161,21 +164,21 @@ The `createable`, `updateable`, and `deleteable` attributes on relations directl
 | `C=false, U=false, D=true` | Delete button on rows |
 | `C=true, U=true, D=true` | Full CRUD: all buttons visible |
 
-**Example - Read-Only Relation (no C, U, D):**
+#### Example - Read-Only Relation (no C, U, D)
 ```xml
 <relations name="publicSpaceTypes"
   createable="false" updateable="false" deleteable="false"/>
 ```
 Generated UI: Table with Filter/Refresh only, no Create/Delete buttons.
 
-**Example - Full CRUD Relation:**
+#### Example - Full CRUD Relation
 ```xml
 <relations name="addresses"
   createable="true" updateable="true" deleteable="true"/>
 ```
 Generated UI: Table with Create button, editable fields, Delete button on rows.
 
-**Association Attach/Detach (Update Flag):**
+#### Association Attach/Detach (Update Flag)
 
 When `updateable="true"` on an ASSOCIATION relation, the UI includes:
 - **Attach button**: Link existing entities to this relation
@@ -195,7 +198,7 @@ When navigating from a grid row, tag, or single relation link to a child element
 | `deleteable=true` | Delete button visible on navigated element |
 | `deleteable=false` | No delete option on navigated element |
 
-**Example:**
+##### Example
 ```xml
 <!-- Parent relation with updateable=false, deleteable=false -->
 <relations name="addresses"
@@ -208,7 +211,7 @@ Even if the `Address` entity has `updateable="true"` and `deleteable="true"`, wh
 - User **cannot delete** the Address
 - User **cannot** attach/detach related entities on Address
 
-**Navigation Sources Affected:**
+##### Navigation Sources Affected
 - Grid/Table row click or view button
 - Tag component click
 - Single relation link click
@@ -225,7 +228,7 @@ Even when the model's relation flags are `true`, the backend can disable operati
 | `__updateable: false` | Disables edit capability for this specific record |
 | `__deleteable: false` | Hides delete button for this specific record |
 
-**Example API Response:**
+##### Example API Response
 ```json
 {
   "id": "123",
@@ -238,7 +241,7 @@ Even when the model's relation flags are `true`, the backend can disable operati
 
 This allows the backend to dynamically control permissions per-record based on business logic (e.g., user roles, record status, ownership).
 
-**Precedence:**
+##### Precedence
 1. If model relation flag is `false` → operation disabled (cannot be overridden)
 2. If model relation flag is `true` AND `__updateable`/`__deleteable` is `false` → operation disabled for that record
 3. If model relation flag is `true` AND `__updateable`/`__deleteable` is `true` or not present → operation enabled
@@ -258,6 +261,8 @@ This allows the backend to dynamically control permissions per-record based on b
 | `type:TimeType` | - | `TimeType` | TimePicker |
 | `type:BinaryType` | `mimeTypes` | `BinaryType` | BinaryInput (file) |
 | `type:EnumerationType` | `members` | `EnumerationType` | Autocomplete/Radio |
+
+The generated `BinaryInput` is an upload control: in a view or form it shows the file name, not a preview. For an image preview use a custom visual element on the field (see [binary-blob-url-hook.md](../../../best-practices/frontend/binary-blob-url-hook.md)).
 
 ### Enumeration Members
 
@@ -301,7 +306,7 @@ This allows the backend to dynamically control permissions per-record based on b
 | `<table>` | `generateActionsHook` | Hook generation | Custom actions |
 | `<table>` | `generateVisualPropertiesHook` | Hook generation | Visual customization |
 
-**Example:**
+#### Example
 ```xml
 <table xmi:id="_HQs5ELKoEfCC_efogf7jJg"
   name="Address_Table"
@@ -338,7 +343,7 @@ Container for detail/edit screens showing a single object.
 | `ui:TransferObjectView` | `generateActionsHook` | Hook generation | Custom actions hook |
 | `ui:TransferObjectView` | `generateVisualPropertiesHook` | Hook generation | Visual properties hook |
 
-**Conditional Behaviour (from ui-behaviour.md):**
+#### Conditional Behaviour (from ui-behaviour.md)
 - `dialogSize` is only effective when `openInDialog=true`
 - `titleAttribute` is only effective when `titleFrom=ATTRIBUTE`
 

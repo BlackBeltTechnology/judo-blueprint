@@ -11,8 +11,6 @@ projects: [compsych-letter-demo]
 evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: []
 first_seen: 2026-05-11
-fragment: relation-driven-crud-with-custom-input
-diagram: { kinds: [entity, transfer, operation], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -115,7 +113,6 @@ Anti-patterns seen:
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=relation-driven-crud-with-custom-input cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Entry {
@@ -150,4 +147,3 @@ classDiagram
   FolderView ..> Folder : maps
   FolderView o-- "*" EntryView : entries
 ```
-<!-- /mermaid:generated -->

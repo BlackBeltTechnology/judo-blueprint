@@ -1,6 +1,9 @@
 ---
 title: Transformation Pipeline
 description: The JUDO transformation pipeline from ESM to PSM, ASM, RDBMS and Liquibase, server versus client regeneration, in-memory CLI state and the git-restore hazard.
+aliases: [transform model, save or discard model changes, git restore model hazard, derived models generation, transformation layers, regenerate frontend model]
+keywords: [transform, transform --load, save, discard --force, discard --derived, git restore, git stash, cli-generated, judo.sh build, PersistenceThread, .dirty]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # Transformation Pipeline

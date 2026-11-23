@@ -1,6 +1,9 @@
 ---
 title: Other Packages Reference
 description: Reference of the ESM measure, expression and script packages.
+aliases: [measured types, units of measure, derived attribute expression, operation script body, logical expression, unit conversion]
+keywords: [Measure, Unit, MeasuredType, DurationUnit, LogicalExpression, DataExpression, ReferenceExpression, Script, getterExpression, defaultExpression, InvariantConstraint]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # Other Packages Reference
@@ -12,6 +15,8 @@ This document covers the supporting packages in the ESM metamodel: `measure`, `e
 ---
 
 ## `measure` Package
+> Measures (the `measure` package, measured types, units) are not in use. Do not introduce them in new models.
+
 This package is used for models that require the handling of physical units and measurements. It allows the model to understand concepts like currency, weight, and distance, and associate them with numeric types.
 
 | Element | Description | Key Attributes / References |

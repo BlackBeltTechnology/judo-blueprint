@@ -11,8 +11,6 @@ projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: [work-status-lifecycle-enum, ongoing-finished-deleted-status-enum]
 related: [ranking-personal-best-pattern, accept-reject-operations, work-status-lifecycle-enum, ongoing-finished-deleted-status-enum]
-fragment: timed-attempt-lifecycle-entity
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

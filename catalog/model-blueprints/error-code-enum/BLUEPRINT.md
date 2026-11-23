@@ -10,8 +10,6 @@ status: established
 projects: [indamedia-adtrack, park-here, ubives, workflow-poc, trivia, mlszksz-platform]
 evidence: ["indamedia-adtrack:unrecorded", "park-here:unrecorded", "ubives:unrecorded", "workflow-poc:unrecorded", "trivia:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: [validation-exception-hierarchy, typed-exception-error-handling]
-fragment: error-code-enum
-diagram: { kinds: [entity, enum, transfer], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

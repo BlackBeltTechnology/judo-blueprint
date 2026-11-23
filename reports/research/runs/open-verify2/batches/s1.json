@@ -1,0 +1,106 @@
+{
+ "batch": "s1",
+ "files": [
+  "catalog/agent-docs/model/ui-authoring-guide.md",
+  "catalog/model-blueprints/platform-configuration-singleton/model.md",
+  "catalog/best-practices/frontend/dual-actor-frontend-architecture.md",
+  "catalog/agent-docs/e2e-testing/troubleshooting.md",
+  "catalog/best-practices/frontend/conditional-field-validation-hook.md",
+  "catalog/best-practices/frontend/custom-visual-element-override.md",
+  "catalog/agent-docs/deployment/schema-evolution.md",
+  "catalog/agent-docs/deployment/build-process.md",
+  "catalog/agent-docs/model/esm_metamodel/structure.agent.md"
+ ],
+ "items": [
+  {
+   "id": "apply-findings::G034",
+   "kind": "research",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "### Placing a feature into a relation table",
+   "text": "Known issue: a DataField, DataColumn or RelationColumn that `fill` or `update <table> --add feature` creates gets an explicit `label` at creation. The label is the member name with only its first letter capitalized (for example `TotalLabel`, not `Total Label`), and the generated table shows that value as the column header. The generator splits words only when `label` is unset, so the raw member name reaches the UI. Workaround: set a readable header on every such column with `update <column-fqn> --set label=<Header text>` (for example `<TO>::<TO>_Table::<member>`), including columns added after `fill`, and check it with `query esm DataColumn --select label`.",
+   "replaces": "",
+   "evidence": "models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmUtils.java:4253 and :4275 and :4296 (addDataField, addDataColumn, addRelationColumn call setLabel(getEffectiveLabel())) | models__judo-meta-esm/model/model/esm.genmodel:1055 (getEffectiveLabel = name with first letter uppercased when label is empty) | runtime__judo-tatami-client/judo-tatami-esm2ui-etl/src/main/epsilon/operations/esm/ui/visualElement.eol:2-15 (getUiLabel splits words only when label is undefined) | runtime__judo-tatami-client/judo-tatami-esm2ui-etl/src/main/epsilon/transformations/ui/modules/ui/column.etl:10 (t.label = s.getUiLabel()) | template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/components/table/index.tsx.hbs:198 (header = column.label as defaultValue, no member-name fallback) | cli:fill Sandbox::OrderTO gives DataField/DataColumn label \"TotalLabel\"; update OrderTO_Table --add feature SellerName gives label \"SellerName\"; update --set label=\"Seller Name\" gives \"Seller Name\""
+  },
+  {
+   "id": "apply-findings-webshop::WR19-1",
+   "kind": "research",
+   "file": "catalog/agent-docs/model/ui-authoring-guide.md",
+   "heading": "## 14. Pitfalls and validation rules",
+   "text": "| Operation forms placed in the view of a derived singleton access (`Access` with `accessType=DERIVED`) | The Maven UI validation fails with `ActionContainerSameWithActionDefinition` and `NamedElementHaveToBeInApplication` on the access page's `OperationFormCallAction` and on the `::Open::Operation::Form` / `::ViewOperation` definitions, while `validate` may pass (known issue) | Remove the generated operation forms from that view and call the operations through a custom component or the generated service |",
+   "replaces": "",
+   "evidence": "Duplicate of WR18-6, same root cause: runtime__judo-tatami-client/judo-tatami-esm2ui-etl/src/main/epsilon/transformations/ui/modules/accesspoint/accessView.etl:31-32 | app:.scratch/build-r18-d.log:457-458 (second derived access, PrivacyInfo, same two rules) | cli:validate on a minimal model printed 'passed ui'"
+  },
+  {
+   "id": "bp-check::B21@6",
+   "kind": "research",
+   "file": "catalog/model-blueprints/platform-configuration-singleton/model.md",
+   "heading": "Model shape",
+   "text": "Generated UI pages follow from the entity and its access. Keep the View and Update pages for administrators. The entity-level createable and deleteable flags are not read by the generator. The Create and Delete actions come from the flags on the administrator's access to Configuration: keep createable and deleteable false on that access, so the generated UI shows no Create or Delete action. The update form should be pre-filled with current values; see [frontend.md](frontend.md).",
+   "replaces": "Generated UI pages follow from the entity. Keep the View and Update pages for administrators. The createable and deleteable flags are false, so the generated UI shows no Create or Delete action for the entity. The update form should be pre-filled with current values; see [frontend.md](frontend.md).",
+   "evidence": "repo:target/judo-ng-read/wt/models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmUtils.java:2165 (isCreateSupported reads Access/relation flags) | repo:target/judo-ng-read/wt/runtime__judo-tatami-client/judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/extensions/esm/EsmRelationFeatureExtensions.java:281-284 (UI create uses Access.isCreateAllowed) | repo:target/judo-ng-read/wt/models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmFieldRules.java:396 (entity flag only an editor rule) | cli:judo-cli.md:124 (new Access has all three flags false)"
+  },
+  {
+   "id": "apply-findings-webshop::WR16-1",
+   "kind": "research",
+   "file": "catalog/best-practices/frontend/dual-actor-frontend-architecture.md",
+   "heading": "Practice > Practice notes: pick a customization level per actor",
+   "text": "- Two actors are the tested shape. A third actor breaks the generated admin frontend build (known issue): `./judo.sh build` stops at `pnpm run format` (biome) with `Declarations inside of a import declaration may not have duplicates`, for example `import type { CsvFile, CsvFile, CsvFileStored, CsvFileStored }`, when an operation has an input and an output of the same type. The template emits one import per entry of `getApiImportsForPage`, and that list is built from a `HashSet<ClassType>` that deduplicates by object identity, so two ClassType objects for one class produce duplicate lines. Present with any third actor (human or system, anonymous or not, with or without an access) and gone when the third actor is removed. Workaround: keep the frontend to two actors and route the extra operation through an existing actor (for example a technical admin call); do not add a third actor to a module that has such operations.",
+   "replaces": "- The pattern extends to three or more actors; some can be dashboard-only placeholders. Actors can differ in authentication (for example an anonymous public actor next to authenticated staff actors).",
+   "evidence": "repo:target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/dialogs/types.ts.hbs:5-6 | repo:target/judo-ng-read/wt/template__judo-ui-react-template/judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiPageHelper.java:153-154 (HashSet<ClassType>, dedup by identity) | app:~/Projects/webshop-test/GAPS.md:236 (R16-1 bisect: build -f -i, present with any third actor, gone without it) | app:~/Projects/webshop-test/GAPS.md:239 (R16-4 workaround: no third actor, call routed through Admin)"
+  },
+  {
+   "id": "apply-findings::G042",
+   "kind": "research",
+   "file": "catalog/agent-docs/e2e-testing/troubleshooting.md",
+   "heading": "Form Issues",
+   "text": "#### Typed date keys are lost, or keys typed into a second date field land in the first\n\n**Cause**: Generated date fields (`DatePicker`) call `storeDiff` on every change, with no debounce, unlike text fields. The form focuses its first input 200 ms after mount (`autoFocusRefDelay`). If a burst starts in a second date field before that timer fires, focus moves back to the first field and the keys go there.\n\n**Solution**: Wait for the first input to lose the autofocus, then type into the target field with real key presses and check the value:\n```typescript\nconst target = page.getByRole('textbox', { name: '<SecondDateLabel>' });\nawait page.waitForTimeout(300); // autofocus timer (200 ms) has fired\nawait target.click();\nawait target.pressSequentially('<date text>', { delay: 20 });\nawait expect(target).not.toHaveValue('');\n```\n\n**Known issue**: The timer explains the focus move. Lost keys inside a burst after the timer has fired are not explained by the generated code; this has not been reproduced in a browser, so check the value after each date field.",
+   "replaces": "",
+   "evidence": "template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/container.tsx.hbs:79-85 ; template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/widget-fragments/dateinput.hbs:22,90-91 ; template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/fragments/page/store-diff-body.hbs:1-4 ; template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/config/general.ts.hbs:41 ; app:application/frontend-react/webshop__admin/src/containers/OrderExportInput/OrderExportInput_Form/OrderExportInputOrderExportInput_Form.tsx:146-153,176-178,232-233,293-294"
+  },
+  {
+   "id": "bp-check::B36@3",
+   "kind": "research",
+   "file": "catalog/best-practices/frontend/conditional-field-validation-hook.md",
+   "heading": "Practice > Platform base",
+   "text": "The object you return must match the generated action type, so read the generated `customization.ts` and `types.ts` for the available handler names; the handler names in the docs are illustrative ([validation hooks](../../agent-docs/frontend/hooks/validation-hooks.md)). The contents of the generated page files (`context.tsx`, `customization.ts`, `types.ts`, and the app-wide `src/config/layout.ts`) are described in [generated page files](../../agent-docs/frontend/model-screen-layout.md#generated-page-files); this page links to that description and does not repeat it.",
+   "replaces": "The object you return must match the generated action type, so read the generated `customization.ts` and `types.ts` for the available handler names; the handler names in the docs are illustrative ([validation hooks](../../agent-docs/frontend/hooks/validation-hooks.md)).",
+   "evidence": "template__judo-ui-react-template:judo-ui-react/src/main/resources/actor/src/pages/context.tsx.hbs:1-18 | template__judo-ui-react-template:judo-ui-react/src/main/resources/actor/src/pages/customization.ts.hbs:13-27 | template__judo-ui-react-template:judo-ui-react/src/main/resources/actor/src/pages/types.ts.hbs:16-25 | template__judo-ui-react-template:judo-ui-react/src/main/resources/actor/src/config/layout.ts.hbs:3-10 | catalog/agent-docs/frontend/model-screen-layout.md:672-681 already states the file contents | app:~/Projects/webshop-test/application/frontend-react/webshop__admin/src/pages/AdminSubOrderInfo/Lines/RelationViewPage/context.tsx:9-18"
+  },
+  {
+   "id": "bp-check::G080@2",
+   "kind": "research",
+   "file": "catalog/best-practices/frontend/custom-visual-element-override.md",
+   "heading": "Platform base",
+   "text": "- A `Placeholder` element of the UI model can also be marked as a custom implementation. The generator turns it into a spacer that keeps its grid position and copies the flag, so the scaffold `register<Interface>CustomImplementation` is generated for it and the page renders the component in a `ComponentProxy` at that position, with the generated empty spacer as fallback. Use it for one region of a page. A placeholder cannot replace a whole view; for that, mark a container (see the custom view notes in the model blueprints).",
+   "replaces": "",
+   "evidence": "runtime__judo-tatami-client/judo-tatami-esm2ui-etl/src/main/epsilon/transformations/ui/modules/ui/placeholder.etl:1-12 (PlaceholderVisualElement: Placeholder -> UI Spacer, setVisualProperties); runtime__judo-tatami-client/judo-tatami-esm2ui/src/main/java/hu/blackbelt/judo/tatami/esm2ui/zeta/extensions/ui/UiVisualElementExtensions.java:76 (setCustomImplementation(component.isCustomImplementation())); models__judo-meta-esm/model/model/esm.ecore:928 (VisualElement.customImplementation), :956 (FormElement), :990 (Placeholder extends Widget); template__judo-ui-react-template/judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiWidgetHelper.java:261-277 (collect walks container children); template__judo-ui-react-template/judo-ui-react/src/main/java/hu/blackbelt/judo/ui/generator/react/UiPandinoHelper.java:55-58 (scaffold list); template__judo-ui-react-template/judo-ui-react/src/main/resources/actor/src/containers/widget-fragments/spacer.hbs:6-19 (ComponentProxy around the spacer grid when child.customImplementation)"
+  },
+  {
+   "id": "apply-findings-webshop::WR19-3",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/schema-evolution.md",
+   "heading": "When No Manual Step Is Needed",
+   "text": "It is a startup log, not a build failure: run the schema upgrade for that database (see the migration rules below). If the check itself cannot run, the log shows the same error with a `NoClassDefFoundError` for `hu.blackbelt.epsilon.runtime.execution.contexts.EolExecutionContext`, and a schema upgrade does not help. Known issue: the RDBMS model bundle imports the Epsilon runtime packages as optional, and the `judo-meta-rdbms` feature does not install the `epsilon-runtime` feature, so the compatibility check fails when the database already holds a model version. Workaround: add the `epsilon-runtime` feature to the application's Karaf boot features, restart, and check that the `Could not find compatible schema model` line is gone. An empty database does not reach this check: the prehook creates the model store and the schema on start.",
+   "replaces": "It is a startup log, not a build failure: run the schema upgrade for that database (see the migration rules below).",
+   "evidence": "runtime__judo-platform/judo-platform-services/judo-services-persistence/src/main/java/hu/blackbelt/judo/services/persistence/LiquibaseModelDataSourcePrehook.java:176-219 (empty version -> executeModel, addVersion, schemaIsReady) and :222-230 (existing version -> checkModelIsIdentical, log 'Could not find compatible schema model'); models__judo-meta-rdbms/osgi/pom.xml:29-32 (epsilon imports resolution:=optional); app:~/Projects/webshop-test/deploy/karaf/system/hu/blackbelt/judo/platform/judo-platform-karaf-features/2.0.1.20261109_213306_9b0daff7_develop/judo-platform-karaf-features-2.0.1.20261109_213306_9b0daff7_develop-features.xml:122-128 (feature judo-meta-rdbms has no epsilon-runtime) and :956 (feature epsilon-runtime, install=false); app:~/Projects/webshop-test/.scratch/start-r19-c.log:1791-1853 (Processing postgresql-model-store and init changelog on start; 'Could not find compatible schema model' with NoClassDefFoundError at CheckRdbmsModelCompatibility.getIncremental); app:~/Projects/webshop-test/.scratch/start-r19-a.log:10:22:15 (prehook runs on every start). Not reproduced: the empty-database start and the 200-without-tables state (no DB state available); R19-3's 'application does not create the schema on start' is refuted by LiquibaseModelDataSourcePrehook.java:200-218"
+  },
+  {
+   "id": "apply-findings-webshop::WR18-7",
+   "kind": "research",
+   "file": "catalog/agent-docs/deployment/build-process.md",
+   "heading": "## Frontend Build Recovery",
+   "text": "**Known issue: UI validation errors print as `{}: {}`.** The UI validation step logs through `StringBuilderLogger`, which formats messages with `String.format`. Slf4j-style `{}` placeholders are not replaced, so each failing UI constraint is logged as the bare line `{}: {}` with no constraint name or message. The Java validator path (`UiJavaValidator`) logs this way; the build reaches it when the Epsilon UI executor cannot be loaded, and then logs `Validator class ... not found. Using fallback.` Workaround: run `judo-cli -m <model-path> validate`, which prints each UI finding as `error ui <constraint> <element>: <message>`, and fix the reported constraints. Platform fix: format the placeholders in `StringBuilderLogger` the way slf4j does.",
+   "replaces": "",
+   "evidence": "runtime__judo-tatami-client/judo-tatami-ui-validation/src/main/java/hu/blackbelt/judo/tatami/ui/validation/StringBuilderLogger.java:449-453 (error(format,arg1,arg2) uses String.format); runtime__judo-tatami-client/judo-tatami-ui-validation/src/main/java/hu/blackbelt/judo/tatami/ui/validation/UiValidationWork.java:43-44; models__judo-meta-ui/model/src/main/java/hu/blackbelt/judo/meta/ui/validation/UiJavaValidator.java:125 (log.error(\"{}: {}\", name, message)); models__judo-meta-ui/model/src/main/java/hu/blackbelt/judo/meta/ui/runtime/ReflectiveUiValidatorFactory.java:62-69 (fallback on ClassNotFound); models__judo-meta-ui/model/src/main/java/hu/blackbelt/judo/meta/ui/runtime/UiEpsilonValidatorExecutor.java:71-74 (Epsilon path throws names via UiValidator.format, never logs {}); runtime__judo-model-cli/src/main/java/hu/blackbelt/judo/cli/commands/ValidateCommand.java:195-203 (workaround output); cli:cd /tmp/ov6 && javac -cp target/judo-cli.jar Repro.java && java -cp target/judo-cli.jar:cls Repro -> BUFFER lines '{}: {}' (args dropped); app:~/Projects/webshop-test/judo.sh:846-847 (quick build passes -DvalidateModels=false -DuseCache=true)"
+  },
+  {
+   "id": "ADJ-structure-verify",
+   "kind": "adjacent",
+   "file": "catalog/agent-docs/model/esm_metamodel/structure.agent.md",
+   "heading": "line 44",
+   "text": "Line 44 has a *verify* note that the B21 CRUD-flag findings settle; replace the verify note with the settled fact, aligned with structure.md.",
+   "replaces": "",
+   "evidence": "repo:target/judo-ng-read/wt/models__judo-meta-esm/model/src/main/java/hu/blackbelt/judo/meta/esm/runtime/EsmUtils.java:2165 (isCreateSupported: Access or relation flags, mapped TO) and :2210 (isUpdateSupported) | repo:target/judo-ng-read/wt/models__judo-meta-esm/model/model/esm.genmodel:198 (isCreateAllowed = own flag) | repo:target/judo-ng-read/wt/tools__judo-esm-schema-merge-maven-plugin/src/main/resources/script/merge.eol:65 (entity flags only copied) | cli:query esm EntityType showed flags; transform of Sandbox test model: no create/update/delete ops for Item (flags true) or Lookup (flags "
+  }
+ ]
+}

@@ -1,0 +1,72 @@
+{"id": "G001", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G002", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G003", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G004", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G005", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G006", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G007", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G008", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G009", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G010", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G011", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G012", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G013", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G014", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G015", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G016", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G017", "verdict": "fixed", "note": "reworded exit-code claim to validation errors"}
+{"id": "G018", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G019", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G020", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G021", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G022", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G023", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G024", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G025", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G026", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G027", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G028", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G029", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G030", "verdict": "ok", "note": "left unverified"}
+{"id": "G031", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G032", "verdict": "ok", "note": "left unverified"}
+{"id": "G033", "verdict": "ok", "note": "left unverified"}
+{"id": "G034", "verdict": "ok", "note": "left unverified"}
+{"id": "G035", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G084", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G085", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G086", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "G087", "verdict": "fixed", "note": "restored `!head()` no-key semantics (deleted text)"}
+{"id": "NG0084", "verdict": "ok", "note": "left already-correct"}
+{"id": "NG0088", "verdict": "ok", "note": "left not-platform"}
+{"id": "NG0154", "verdict": "ok", "note": "left not-platform"}
+{"id": "B19", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "B22", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "B27", "verdict": "fixed", "note": "neutralized role/group example names"}
+{"id": "B29", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "B42", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "B43", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "B52", "verdict": "ok", "note": "evidence/CLI consistent"}
+{"id": "U0347", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0348", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0349", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0350", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0351", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0352", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0353", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0354", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0355", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0356", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0357", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0358", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0359", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0360", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0367", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0368", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0369", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0370", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0363", "verdict": "ok", "note": "rejection kept: JSL grammar belongs outside batch files"}
+{"id": "U0640", "verdict": "fixed", "note": "reworded exit-code claim to validation errors"}
+{"id":"R2563","verdict":"ok","note":"not-platform, generated helper script; no edit"}
+{"id": "R2480", "verdict": "ok", "note": "CrossModelSchema.java:2056-2062 Integer/EInt and Long/ELong -> GraphQLInt (comment: GraphQL has no Long); filter mapping also Int"}
+{"id": "R1599", "verdict": "ok", "note": "SaveCommand.java:70-72 createTempFile, write, Files.move ATOMIC_MOVE over model; serialize phase first (line 25-27)"}

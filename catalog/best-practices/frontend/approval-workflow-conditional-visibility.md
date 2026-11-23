@@ -11,7 +11,6 @@ projects: [itracker, doors-model]
 evidence: ["itracker:unrecorded", "doors-model:unrecorded"]
 alternatives: []
 related: [zero-customization-generated-frontend, model-defined-color-palette, ui-control-transfer-fields, action-group-conditional-enabling]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

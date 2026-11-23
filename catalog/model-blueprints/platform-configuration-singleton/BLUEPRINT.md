@@ -10,8 +10,6 @@ status: emerging
 projects: [mlszksz-platform, rackinspect, park-here]
 evidence: ["mlszksz-platform:model/MLSZKSZPlatform.model", "rackinspect:model/rackinspect.model", "park-here:unrecorded"]
 alternatives: []
-fragment: platform-configuration-singleton
-diagram: { kinds: [entity, enum], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

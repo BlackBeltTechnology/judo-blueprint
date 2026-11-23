@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/.generator-ignore", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/config/layout.ts"]
 alternatives: []
 related: [generator-ignore-app-theme, i18n-custom-translation-keys, application-customizer-hub]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

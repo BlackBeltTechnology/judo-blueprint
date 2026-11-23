@@ -1,6 +1,9 @@
 ---
 title: Integration Testing - Best Practices and Anti-Patterns
 description: "Part of: Integration Testing Documentation(./README.md)"
+aliases: [integration test best practices, backend test anti patterns, transaction mode for tests, test data fixtures, custom operation test pitfalls, optional field null in tests, test isolation]
+keywords: [JudoTest, TransactionHandling, AUTO_ROLLBACK, AUTO_COMMIT, truncateTables, adaptTo, getById, AddressMask, ReferenceInjector, JudoRuntimeFixture, BaseIntegrationTest, isPresent, logback-test.xml]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - Best Practices and Anti-Patterns
 
@@ -32,7 +35,7 @@ This guide covers best practices for writing maintainable, efficient integration
 
 ### 1. Test Organization
 
-**Organize tests by functionality:**
+#### Organize tests by functionality
 
 ```
 src/test/java/[your/package]/[yourmodel]/integration/
@@ -73,7 +76,7 @@ void testMultiStepWorkflow(JudoRuntimeFixture fixture) {
 
 ### 3. Test Data Management
 
-**Use test fixtures for reusable test data:**
+#### Use test fixtures for reusable test data
 
 ```java
 public class AddressTestFixtures {
@@ -96,7 +99,7 @@ public class AddressTestFixtures {
 }
 ```
 
-**Use in tests:**
+#### Use in tests
 
 ```java
 @Test
@@ -115,7 +118,7 @@ void testCreatePollingStation(JudoRuntimeFixture fixture) {
 
 ### 4. Assertion Strategies
 
-**Test the right things:**
+#### Test the right things
 
 ```java
 @Test
@@ -142,7 +145,7 @@ void testCreateAddress(JudoRuntimeFixture fixture) {
 
 ### 5. Logging and Debugging
 
-**Configure appropriate logging in `logback-test.xml`:**
+#### Configure appropriate logging in `logback-test.xml`
 
 ```xml
 <configuration>
@@ -170,7 +173,7 @@ void testCreateAddress(JudoRuntimeFixture fixture) {
 
 ### 6. Test Isolation
 
-**Ensure tests don't interfere with each other:**
+#### Ensure tests don't interfere with each other
 
 ```java
 // ✅ Use truncateTables = true (default; effective for AUTO_COMMIT / MANUAL,
@@ -189,7 +192,7 @@ void testWithSharedData(JudoRuntimeFixture fixture) {
 
 ### 7. Performance Considerations
 
-**Use masks for partial entity loading:**
+#### Use masks for partial entity loading
 
 ```java
 // ❌ Slow - loads all fields and relationships
@@ -207,7 +210,7 @@ boolean exists = addressDao.getById(addressId, AddressMask.addressMask()).isPres
 
 ### 8. Helper Method Reuse
 
-**Create base test classes for common patterns:**
+#### Create base test classes for common patterns
 
 ```java
 public abstract class BaseIntegrationTest {
@@ -326,7 +329,19 @@ class FaultRegistryBasicTest extends BaseIntegrationTest {
 }
 ```
 
-**Benefits of this pattern:**
+`AppDaoModules` is a class you write in the test module; the generated project and the testkit do not provide it. Bind each DAO the tests use with one `@Provides` method that creates the generated `*DaoImpl` through `ReferenceInjector`:
+
+```java
+public class AppDaoModules extends AbstractModule {
+    @Provides @Singleton
+    <Entity>Dao provide<Entity>Dao(Injector injector) {
+        return ReferenceInjector.createAndInject(<Entity>DaoImpl.class, injector);
+    }
+    // one @Provides method per DAO used in the tests
+}
+```
+
+##### Benefits of this pattern
 - ✅ **Cleaner test code** - Hides complexity of prerequisite creation
 - ✅ **Consistency** - Same test data across all tests
 - ✅ **Maintainability** - Update helper methods instead of every test
@@ -756,7 +771,7 @@ void testCreateAddress(JudoRuntimeFixture fixture) {
 
 ### Test Coverage Guidelines
 
-**What to test:**
+#### What to test
 
 ✅ **Happy path** - Operations succeed with valid data
 ✅ **Validation** - Operations reject invalid data
@@ -764,7 +779,7 @@ void testCreateAddress(JudoRuntimeFixture fixture) {
 ✅ **Edge cases** - Operations handle boundary conditions
 ✅ **Error handling** - Operations fail gracefully
 
-**What not to test:**
+#### What not to test
 
 ❌ **Framework behavior** - JUDO framework is already tested
 ❌ **Generated code** - DAOs and entities are generated correctly
@@ -813,7 +828,7 @@ void testCreateAddress(JudoRuntimeFixture fixture) {
 
 **If you're done here**, return to the [Main Hub](./README.md)
 
-**If you need help with**:
+### If you need help with
 - [Getting started with tests](./getting-started.md)
 - [Type safety and adaptTo()](./type-safety.md)
 - [Advanced patterns and workarounds](./advanced-patterns.md)

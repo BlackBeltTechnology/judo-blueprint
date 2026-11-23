@@ -11,7 +11,6 @@ projects: [rackinspect, workflow-poc, park-here]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/custom-implementations/registerServicesPartner_servicePartnerPartner_View_EditCustomImplementations.tsx", "workflow-poc:unrecorded"]
 alternatives: []
 related: [pandino-action-hook-override, application-customizer-hub]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -27,6 +26,7 @@ Part of a page needs UI the generator cannot produce (charts, masked inputs, ric
 - You register a function component as a Pandino service under `CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY` (exported from `~/custom`) with the service property `component` set to the per-element key generated in the container's `customization.ts`. There is no generic `CUSTOM_COMPONENT_HOOK_INTERFACE_KEY`.
 - For containers that have such elements the generator creates the scaffold `src/custom/hooks/custom-implementations/register<Container>CustomImplementations.tsx.default` with one `register<Interface>CustomImplementation(context)` function per element and the right props type (`GenericProxyProps`, `TableProxyProps`, `LinkProxyProps` from `~/custom`). Copy it without `.default`, implement the component and call the register function from `application-customizer.tsx` ([hooks: using .default scaffolds](../../agent-docs/frontend/hooks/README.md)).
 - The same service key also carries other custom elements, such as table sidekicks and the AppBar extra component ([table hooks](../../agent-docs/frontend/hooks/table-hooks.md), [UI hooks](../../agent-docs/frontend/hooks/ui-hooks.md)).
+- A `Placeholder` element of the UI model can also be marked as a custom implementation. The generator turns it into a spacer that keeps its grid position and copies the flag, so the scaffold `register<Interface>CustomImplementation` is generated for it and the page renders the component in a `ComponentProxy` at that position, with the generated empty spacer as fallback. Use it for one region of a page. A placeholder cannot replace a whole view; for that, mark a container (see the custom view notes in the model blueprints).
 
 ```typescript
 // from the scaffold (names generated per element)

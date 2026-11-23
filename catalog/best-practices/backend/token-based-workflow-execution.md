@@ -11,7 +11,6 @@ projects: [workflow-poc]
 evidence: ["workflow-poc:unrecorded"]
 alternatives: []
 related: [state-lifecycle-operation, correlation-based-event-chaining, spel-guard-evaluation, audit-event-trail, dao-fluent-query-filter, token-based-verification-entity]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -11,7 +11,6 @@ projects: [rackinspect, mlszksz-platform]
 evidence: ["rackinspect:application/test/src/test/java/hu/blackbelt/rackinspect/testsupport/wiring/RackInspectServicesTestModule.java", "mlszksz-platform:application/integration-test/src/test/java/hu/blackbelt/mlszksz/platform/integration/ReferenceInjector.java", "mlszksz-platform:application/integration-test/src/test/java/hu/blackbelt/mlszksz/platform/integration/AuditLogServiceTest.java"]
 alternatives: []
 related: [service-delegation-pattern, custom-operation-osgi-component, integration-test-reflection-injection]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

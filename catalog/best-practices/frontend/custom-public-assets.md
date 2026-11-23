@@ -11,7 +11,6 @@ projects: [trivia, itracker, workflow-poc, indamedia-adtrack]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "workflow-poc:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [pwa-manifest-customization, generator-ignore-app-theme]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-11
 ---

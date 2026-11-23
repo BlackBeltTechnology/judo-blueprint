@@ -24,7 +24,6 @@ If the relation target is unmapped, the source projects saw nested input sub-for
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=transient-relation-multi-select-input cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Approver {
@@ -48,4 +47,3 @@ classDiagram
   Task --> "*" Approver : approvers
   TaskInput o-- "*" ApproverView : approvers
 ```
-<!-- /mermaid:generated -->

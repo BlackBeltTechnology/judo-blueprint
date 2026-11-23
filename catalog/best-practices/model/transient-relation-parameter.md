@@ -11,8 +11,6 @@ projects: [trivia, itracker, actiongroup-test-react, alba]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "actiongroup-test-react:unrecorded", "alba:unrecorded"]
 alternatives: []
 related: [unmapped-transfer-dto, factory-operation-with-prepopulation]
-fragment: transient-relation-parameter
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -62,7 +60,6 @@ An Order view has an operation `addProducts`. Its input is the unmapped transfer
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=transient-relation-parameter cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Order {
@@ -90,4 +87,3 @@ classDiagram
   ProductSelection o-- "1" ProductView : focus
   ProductView ..> Product : maps
 ```
-<!-- /mermaid:generated -->

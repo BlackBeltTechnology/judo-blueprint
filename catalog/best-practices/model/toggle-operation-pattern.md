@@ -10,8 +10,6 @@ status: emerging
 projects: [rackinspect, mlszksz-platform]
 evidence: ["rackinspect:model/rackinspect.model", "mlszksz-platform:model/MLSZKSZPlatform.model"]
 alternatives: []
-fragment: toggle-operation-pattern
-diagram: { kinds: [entity, transfer, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -65,7 +63,6 @@ An Address entity has `street`, a required `active` (default true) and a require
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=toggle-operation-pattern cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Address {
@@ -86,4 +83,3 @@ classDiagram
   }
   AddressView ..> Address : maps
 ```
-<!-- /mermaid:generated -->

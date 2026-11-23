@@ -1,0 +1,1991 @@
+[
+{
+"id": "c01-03",
+"type": "decision",
+"round": "R0",
+"functions": [
+"S01"
+],
+"what": "Ran create-judo-project in /tmp/gen and copied the output into ~/Projects/webshop-test.",
+"why": "The target folder already held FUNCTIONS.md and git history. The catalog does not say whether create-judo-project may run in a non-empty repo or which folder to use.",
+"kind": "catalog-gap",
+"workaround": "cp -a of /tmp/gen into the repo, then merged .gitignore by hand.",
+"catalog_paths": [
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L42",
+"session:L44",
+"session:L60"
+],
+"proposed": "modify-catalog",
+"proposed_target": "catalog/agent-docs/deployment/build-process.md",
+"confidence": "medium"
+},
+{
+"id": "c01-21",
+"type": "decision",
+"round": "R0",
+"functions": [
+"S04"
+],
+"what": "Patched one generated table component to use min and max fraction digits of 2, and listed the file in the frontend module .generator-ignore.",
+"why": "No model-level or documented hook produced 2 decimals, and the builder judged a one-file patch the quickest path to S04.",
+"kind": "builder-mistake",
+"workaround": "Interim one-off fix; later orchestrator reverted it in Round 1.",
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/table-hooks.md"
+],
+"gaps_ref": "R0-12",
+"evidence": [
+"session:L419",
+"session:L421",
+"session:L423",
+"session:L429"
+],
+"proposed": "one-off",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c01-45",
+"type": "decision",
+"round": "R0",
+"functions": [
+"S03"
+],
+"what": "Modelled the shop login as EntityType ShopUser (username is identifier), a ShopUserInfo transfer object mapped to it, and ActorType Shop with principal ShopUserInfo and managed=false.",
+"why": "Managed auto-insert is not implemented in this runtime (advanced-modeling-patterns), so the principal row must come from elsewhere.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/advanced-modeling-patterns.md",
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md"
+],
+"gaps_ref": "R0-8",
+"evidence": [
+"session:L127",
+"session:L133",
+"session:L135"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c01-46",
+"type": "decision",
+"round": "R0",
+"functions": [
+"S02"
+],
+"what": "Price is a NumericType with precision 12 and scale 2. LongText is a StringType with maxLength 4000. Product has name, description and price members.",
+"why": "Price needs two decimals; the predefined Text type is too short for a description.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/type.md"
+],
+"gaps_ref": "R0-9",
+"evidence": [
+"session:L102",
+"session:L119",
+"session:L120"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c01-47",
+"type": "decision",
+"round": "R0",
+"functions": [
+"S01"
+],
+"what": "Set dbtype=postgresql and keycloak_port=8280 in judo.properties, and committed them.",
+"why": "Local-development says the default is PostgreSQL in Docker, and port 8080 was taken.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/local-development.md"
+],
+"gaps_ref": "R0-5",
+"evidence": [
+"session:L147",
+"session:L151",
+"session:L193"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c01-48",
+"type": "decision",
+"round": "R0",
+"functions": [
+"S01"
+],
+"what": "Wrote scripts/seed-dev-user.sh (idempotent Keycloak user shop/shop plus the ShopUser row) instead of building a JIT AuthenticationInterceptor, because the interceptor adds backend code beyond Level 0.",
+"why": "Level 0 scope. The JIT best practice explains the interceptor, but the builder judged it out of scope.",
+"kind": "catalog-gap",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/keycloak-jit-user-provisioning.md"
+],
+"gaps_ref": "R0-15a",
+"evidence": [
+"session:L901",
+"session:L902",
+"session:L903"
+],
+"proposed": "one-off",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c01-49",
+"type": "decision",
+"round": "R0",
+"functions": [
+"S03"
+],
+"what": "Checked S03 create and update with curl REST calls rather than the browser form.",
+"why": "Browser form did not commit numeric input (see c01-23). The later user rule asked for checks only at the end.",
+"kind": "test-design",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing/writing-tests.md"
+],
+"gaps_ref": "R0-15",
+"evidence": [
+"session:L316",
+"session:L484",
+"session:L493",
+"session:L719"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-05",
+"type": "decision",
+"round": "R1",
+"functions": [
+"S09"
+],
+"what": "For the shared price component the only registration point the kb documents is the generated src/custom/application-customizer.tsx. The builder asked the user before editing that generated file and adding it to .generator-ignore, which the quality bar forbids without asking. The user approved.",
+"why": "The quality bar forbids editing generated files; the kb documents no other registration place for custom visual elements.",
+"kind": "catalog-gap",
+"workaround": "User approved the exception; to be logged in GAPS.md.",
+"catalog_paths": [
+"catalog/best-practices/frontend/custom-component-directory.md",
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L984",
+"session:L985",
+"session:L986",
+"session:L987"
+],
+"proposed": "modify-catalog",
+"proposed_target": "catalog/agent-docs/frontend/extension-points.md",
+"confidence": "medium"
+},
+{
+"id": "c02-13",
+"type": "decision",
+"round": "R1",
+"functions": [
+"S09"
+],
+"what": "Built a shared price component in src/custom/components/Price.tsx (formatPrice gives two decimals plus EUR, e.g. 79.90 EUR). Registered it for the form and the view through application-customizer.tsx, which was added to .generator-ignore. The table column was skipped, logged in GAPS R1-1, and kept on customImplementation=false.",
+"why": "Table column hook could not be used (generator bug, see c02-04 and c02-09). Form and view could use the model flag plus CUSTOM_VISUAL_ELEMENT_INTERFACE_KEY.",
+"kind": "catalog-gap",
+"workaround": "Generated application-customizer.tsx edited (approved exception) and listed in .generator-ignore; table left on generated price format.",
+"catalog_paths": [
+"catalog/agent-docs/frontend/advanced-patterns.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md",
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": "R1-1",
+"evidence": [
+"session:L990",
+"session:L993",
+"session:L994",
+"session:L995"
+],
+"proposed": "modify-catalog",
+"proposed_target": "catalog/agent-docs/frontend/extension-points.md",
+"confidence": "medium"
+},
+{
+"id": "c02-22",
+"type": "decision",
+"round": "R2",
+"functions": [
+"S04",
+"S09"
+],
+"what": "Orchestrator directed that every browser check be a Playwright E2E test (login, menu, list, details, edit, back), with screenshots at 375, 768 and 1440 px. Table currency stays a logged gap unless a documented non-generated route appears.",
+"why": "Browser tool click delivery failed; E2E is the JUDO check method in agent-docs/e2e-testing.",
+"kind": "orchestrator-process",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing/README.md",
+"catalog/agent-docs/e2e-testing/writing-tests.md",
+"catalog/agent-docs/e2e-testing/helpers-reference.md",
+"catalog/agent-docs/e2e-testing/language-independent-testing.md",
+"catalog/agent-docs/e2e-testing/troubleshooting.md"
+],
+"gaps_ref": "R2-T",
+"evidence": [
+"session:L1209",
+"session:L1210"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c02-24",
+"type": "decision",
+"round": "R2",
+"functions": [
+"S04"
+],
+"what": "For the table price column, the builder chose a derived String attribute priceLabel on ProductInfo, getter self.price!round(2)!asString() + ' EUR', added as a DataColumn with fill --pages table, and removed the plain price column from the table. This puts the currency into the list without patching a generated file.",
+"why": "Column hook could not be used (c02-04). Kb search for a non-generated route led to derived attributes (literal-derived-attribute.md and the JQL function list in model-development.md).",
+"kind": "none",
+"workaround": "Model change saved, generate and build run; see later items for build results.",
+"catalog_paths": [
+"catalog/best-practices/model/literal-derived-attribute.md",
+"catalog/agent-docs/model/model-development.md",
+"catalog/agent-docs/model/judo-cli.md"
+],
+"gaps_ref": "R2-5",
+"evidence": [
+"session:L1282",
+"session:L1283",
+"session:L1285",
+"session:L1287",
+"session:L1307",
+"session:L1313",
+"session:L1315",
+"session:L1318"
+],
+"proposed": "modify-catalog",
+"proposed_target": "catalog/agent-docs/model/model-development.md",
+"confidence": "medium"
+},
+{
+"id": "c02-37",
+"type": "decision",
+"round": "R3",
+"functions": [
+"S07",
+"S11"
+],
+"what": "Shop look is set in the model, not in patched files: ActorType Shop gets applicationTitle 'Trail Shop', applicationLogo trail-shop-logo.svg (SVG placed in public/) and the seven colour attributes (primaryColor, secondaryColor, backgroundColor and others). Labels are set on the model elements: menu item Products, page containers Products and Product, Profile for ShopUserInfo.",
+"why": "kb says ActorType colour attributes and applicationLogo are the model route for brand palette and logo (theming.md, custom-public-assets.md), and the generated palette and logo follow from them.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/theming.md",
+"catalog/best-practices/frontend/custom-public-assets.md",
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/agent-docs/frontend/hooks/ui-hooks.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1409",
+"session:L1414",
+"session:L1417",
+"session:L1418",
+"session:L1420",
+"session:L1467",
+"session:L1473",
+"session:L1477"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-44",
+"type": "decision",
+"round": "R3",
+"functions": [
+"S07"
+],
+"what": "Small logo for the collapsed drawer is a CustomLogoPropsHook registered in src/custom/hooks/registerShopLogoHook.ts through application-customizer.tsx (already generator-ignored). The wide logo and title come from the model (applicationLogo, applicationTitle).",
+"why": "ui-hooks.md documents the logo customization hook; the generated useLogoProps.ts does not expose the icon otherwise.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/ui-hooks.md",
+"catalog/best-practices/frontend/custom-public-assets.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1649",
+"session:L1650",
+"session:L1651",
+"session:L1666"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-47",
+"type": "decision",
+"round": "R5",
+"functions": [
+"S11"
+],
+"what": "Orchestrator decided the two field-order tests stay in the suite but are marked test.fail() with a comment naming the platform bug, so the suite is green with a known failure. Wrapper groups from Round 4 are removed again.",
+"why": "Field order cannot be fixed by the model until the platform bug is fixed; the tests should document the gap, not block the suite.",
+"kind": "orchestrator-process",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R3-1",
+"evidence": [
+"session:L1685"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c02-51",
+"type": "decision",
+"round": "R5",
+"functions": [
+"S10",
+"S11"
+],
+"what": "Builder marked only the create-form field-order test with test.fail(), not both as the orchestrator asked, because the details order test passed once the custom layout was in place. test.fail() on a passing test would have turned the suite red.",
+"why": "Deviation from the round text, justified by the test result; disclosed in the report.",
+"kind": "orchestrator-process",
+"workaround": "Reported as a deviation in the Round 5 report.",
+"catalog_paths": [],
+"gaps_ref": "R3-1",
+"evidence": [
+"session:L1725",
+"session:L1726",
+"session:L1742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c02-55",
+"type": "decision",
+"round": "R5",
+"functions": [
+"S08",
+"S10"
+],
+"what": "Home is a card grid (CatalogHome) registered on the DashboardPage seam. It feeds ShopServiceForProductsImpl.list with the generated query customizer and navigates through routeToShopProductsAccessViewPage. The details layout (ProductDetailsLayout) uses the shared PriceField and a multi-line description, through a custom implementation on the name field.",
+"why": "No documented hook for a whole view or a home replacement; generated services and navigation are the documented way to fetch data and move between pages.",
+"kind": "catalog-gap",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/extension-points.md",
+"catalog/agent-docs/frontend/advanced-patterns.md",
+"catalog/agent-docs/frontend/hooks/data-hooks.md",
+"catalog/agent-docs/frontend/hooks/navigation-and-access.md"
+],
+"gaps_ref": "R5-1",
+"evidence": [
+"session:L1706",
+"session:L1707",
+"session:L1708",
+"session:L1717",
+"session:L1719",
+"session:L1720",
+"session:L1742"
+],
+"proposed": "modify-catalog",
+"proposed_target": "catalog/agent-docs/frontend/advanced-patterns.md",
+"confidence": "medium"
+},
+{
+"id": "c03-10",
+"type": "decision",
+"round": "R6",
+"functions": [
+"F07"
+],
+"what": "Category shown on the catalog card through a nested mask {name,price,description,sku,category{name}} in the list call, with a Chip for the category and a caption for the SKU.",
+"why": "A nested mask returns the related category name in one list call; no extra request per card.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/data-access-guide.md",
+"catalog/best-practices/backend/mask-field-projection.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1802",
+"session:L1806",
+"session:L1807"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-11",
+"type": "decision",
+"round": "R6",
+"functions": [
+"F01",
+"F02"
+],
+"what": "Seed data built through the UI helpers (fillEnumCombobox, fillSingleRelationElement) in helpers-shop.ts: 3 categories and 8 products via real user actions.",
+"why": "Checks and seeding must use real user actions only; the e2e helpers encode the Playwright patterns.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing/writing-tests.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1808",
+"session:L1809",
+"session:L1811",
+"session:L1815"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-25",
+"type": "decision",
+"round": "R6",
+"functions": [
+"F07"
+],
+"what": "Two price columns in the admin table: Price (numeric) and a formatted Price label, so the tests can tell them apart.",
+"why": "Numeric sort and labelled price need different columns; the test selects the numeric one by its label.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1940",
+"session:L1944"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "low"
+},
+{
+"id": "c03-40",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F08"
+],
+"what": "Category Products shown as an inline to-many table on CategoryInfo View_Edit (representationComponent=table, with name, sku, priceLabel, unit columns) instead of the Products button, as the Round 7 correction asks.",
+"why": "FUNCTIONS.md asks for an embedded table; a to-many relation on a view renders as an embedded table in the catalog pattern.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/ui-authoring-guide.md",
+"catalog/agent-docs/model/esm_metamodel/ui-behaviour.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1969",
+"session:L1971",
+"session:L1973",
+"session:L2061"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c03-41",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F09"
+],
+"what": "Product image modelled as a BinaryType ProductImage (mime types image/png and image/jpeg, max 2 MB) on a STORED Product.image member.",
+"why": "Binary types need a MIME list and a size limit; the attachment blueprint says a binary field on a create-capable transfer gets a generated upload operation.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/type.md",
+"catalog/best-practices/backend/filestore-mediated-file-transfer.md",
+"catalog/model-blueprints/document-file-attachment/model.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2011",
+"session:L2012",
+"session:L2040",
+"session:L2051",
+"session:L2052"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-42",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F13",
+"F14"
+],
+"what": "Rename the actor Shop to Customer and the entity ShopUser to CustomerAccount with email as the claim attribute, keeping the mapped principal transfer object; the Admin actor is the second actor.",
+"why": "Actor split needs distinct actors with their own principals and accesses; rename keeps the existing wiring.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/multi-actor-role-based-projections/BLUEPRINT.md",
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/agent-docs/backend/authentication-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L1984",
+"session:L1988",
+"session:L1993",
+"session:L2057",
+"session:L2059"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-46",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F11",
+"F12"
+],
+"what": "Stock status is a DERIVED string with a ternary getter (stock <= 0 gives Out of stock, below 5 gives Low, else In stock); category name is a DERIVED flattening self.category.name.",
+"why": "Derived attributes compute from the model without storing; ternary getters are typed switch expressions in JQL.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/model-development.md",
+"catalog/best-practices/model/conditional-visibility-getter.md",
+"catalog/best-practices/model/derived-attribute-flattening.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2056",
+"session:L2081",
+"session:L2083",
+"session:L2093",
+"session:L2095"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-48",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F14"
+],
+"what": "Admin actor added as a second actor with its own principal AdminAccountInfo (managed=false), branding copied from the shop, an EMAIL claim, products and categories accesses, and two menu entries.",
+"why": "Each actor needs its own principal, claim and accesses; the Admin keeps the back office and the Customer keeps the shop.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/agent-docs/backend/authentication-guide.md",
+"catalog/best-practices/frontend/dual-actor-frontend-architecture.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2099",
+"session:L2101",
+"session:L2102",
+"session:L2105",
+"session:L2106"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-50",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F15"
+],
+"what": "Email is shown read-only for customers by making the email field enabledBy a derived Boolean that is always false.",
+"why": "The model has no direct read-only flag for one field in one view; enabledBy on a derived Boolean is the documented visibility or enablement rule.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/ui-behaviour.md",
+"catalog/agent-docs/model/model-development.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2111",
+"session:L2112"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "low"
+},
+{
+"id": "c03-55",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F13"
+],
+"what": "Customer account created on first login by a custom AuthenticationInterceptor (CustomerProvisioningInterceptor) in the interceptors module; admin accounts are seeded on purpose, not created on login.",
+"why": "Runtime does not auto-insert the managed principal row, so a first-login interceptor is the documented route; interceptors module is custom code, not a generated file.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/keycloak-jit-user-provisioning.md",
+"catalog/agent-docs/backend/authentication-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2003",
+"session:L2131",
+"session:L2132"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-59",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F13",
+"F14"
+],
+"what": "Seed script creates Keycloak users admin, customer1 and customer2, switches realm self sign-up on through the admin API, and seeds one AdminAccount row; customer rows are left to the first-login interceptor.",
+"why": "Keycloak users and database rows are two stores; sign-up needs a realm setting the model cannot express.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/platform-behavior-reference.md",
+"catalog/best-practices/backend/keycloak-jit-user-provisioning.md"
+],
+"gaps_ref": "R7-3",
+"evidence": [
+"session:L2203",
+"session:L2217"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-60",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F14",
+"F15"
+],
+"what": "Level 0 webshop__shop frontend and e2e modules were removed from git and disk; their code was split into webshop__customer (shop front) and webshop__admin (back office) modules, with duplicated Price, CatalogHome and hook files.",
+"why": "The Customer actor takes over the shop front, the Admin takes the CRUD screens, and each actor has its own generated module.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/dual-actor-frontend-architecture.md",
+"catalog/best-practices/frontend/single-actor-heavy-customization.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2184",
+"session:L2186",
+"session:L2197",
+"session:L2208",
+"session:L2235"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-68",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F09"
+],
+"what": "Product images: the seed uploads a generated PNG per product through the file chooser; the customer card grid and details page show the real image (placeholder only without one); the admin view shows the file name.",
+"why": "Binary upload through the generated create dialog is the documented route; display in the customer front needs the token download.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/filestore-mediated-file-transfer.md",
+"catalog/best-practices/frontend/binary-blob-url-hook.md",
+"catalog/model-blueprints/document-file-attachment/model.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2220",
+"session:L2277",
+"session:L2283",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-72",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F10"
+],
+"what": "Variants table hidden on the customer product view by registering a custom implementation for the variants component; the admin keeps the inline table.",
+"why": "Customers should not see variant management; the customer details layout is custom code.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/dual-actor-frontend-architecture.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2287",
+"session:L2293",
+"session:L2294"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "low"
+},
+{
+"id": "c03-74",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F16"
+],
+"what": "Customer profile is a singleton CustomerAccount found by its email from the login token; addresses are a composition of CustomerAccount, listed by a container back-reference getter, so one customer sees only their own rows.",
+"why": "Ownership must be enforced in the model; the back-reference pattern avoids a stored foreign key.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/container-back-reference.md",
+"catalog/best-practices/model/derived-access-filtering.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2315",
+"session:L2318",
+"session:L2320",
+"session:L2345"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c03-77",
+"type": "decision",
+"round": "R7",
+"functions": [
+"F15"
+],
+"what": "Customer products access filtered with Product!filter(p | p.active) so inactive products are missing from the shop; the admin access stays unfiltered.",
+"why": "Visibility must be enforced in the access getter, not in the frontend.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/derived-access-filtering.md",
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L2102",
+"session:L2347"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c04-14",
+"type": "decision",
+"round": "R8",
+"functions": [
+"F21"
+],
+"what": "Checkout is a void operation. The new order opens through the generated dialog actions hook (postCheckoutForCartInfoAction, generateActionsHook=true), which lists the newest order and navigates to it.",
+"why": "Only route left after the duplicate-import generator bug (c04-13); it costs one extra list call and deviates from FUNCTIONS F21 (operation returns the created order).",
+"kind": "platform-bug",
+"workaround": "Java checkout is void; the hook navigates to the newest order.",
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/action-hooks.md"
+],
+"gaps_ref": "R8-5",
+"evidence": [
+"session:L2505",
+"session:L2507",
+"session:L2519",
+"session:L2521",
+"session:L2523",
+"gaps:R8-5"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-16",
+"type": "decision",
+"round": "R8",
+"functions": [
+"F20"
+],
+"what": "Stock overflow is a modeled fault (ShopFault with message) declared on addToCart; the UI reads the message through a custom error interceptor and shows it as a snackbar.",
+"why": "Modeled faults are the documented business-error route (error-handling-guide); the generated dialog cannot show the message (c04-15).",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/error-handling-guide.md",
+"catalog/agent-docs/frontend/error-handling.md"
+],
+"gaps_ref": "R8-6",
+"evidence": [
+"session:L2369",
+"session:L2370",
+"session:L2407",
+"session:L2433",
+"session:L2560",
+"session:L2555"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-26",
+"type": "decision",
+"round": "R8",
+"functions": [
+"F24"
+],
+"what": "Order numbers come from the platform SEQUENCE variable (WS-year-six digits), not from the gap-free document-registry-sequence blueprint; a refused checkout does not use a number, but a number can gap after a rollback or crash.",
+"why": "The blueprint needs a lock and a registry entity; the platform sequence is simpler and the builder accepted gaps as documented in platform-behavior-reference.",
+"kind": "platform-limit",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/document-registry-sequence/BLUEPRINT.md",
+"catalog/best-practices/model/sequence-based-identifier.md",
+"catalog/agent-docs/backend/platform-behavior-reference.md"
+],
+"gaps_ref": "R8-9",
+"evidence": [
+"session:L2377",
+"session:L2379",
+"session:L2381",
+"session:L2537",
+"gaps:R8-9"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c04-27",
+"type": "decision",
+"round": "R8",
+"functions": [
+"F19"
+],
+"what": "The cart page is a custom component (Cart.tsx) that replaces the generated lines table and shows unit price, line total and total with the shared Price component; values come from the model's derived members (CartLine.lineTotal, CartInfo.total).",
+"why": "The generated lines table shows raw numbers (R1-1), and the Price component is the frontend quality bar from FUNCTIONS.md.",
+"kind": "platform-limit",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/null-safe-collection-aggregation.md"
+],
+"gaps_ref": "R8-11",
+"evidence": [
+"session:L2412",
+"session:L2414",
+"session:L2527",
+"gaps:R8-11"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-26",
+"type": "decision",
+"round": "R9",
+"functions": [
+"F31"
+],
+"what": "History rows are written by OrderLifecycle.transition (actor = ACTOR e-mail, what = status change, when = now) in the same transaction; a refused transition writes nothing; checkout writes Order placed.",
+"why": "Custom operations never reach interceptors, and the audit blueprint says the operation itself must write the row.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/history-audit-trail-entity/BLUEPRINT.md",
+"catalog/agent-docs/backend/interceptors.md"
+],
+"gaps_ref": "R9-4",
+"evidence": [
+"session:L2876",
+"session:L2878",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-27",
+"type": "decision",
+"round": "R9",
+"functions": [
+"F26",
+"F30"
+],
+"what": "Transition buttons are hidden with hiddenBy on derived booleans on the order (payHidden, shipHidden and so on); the tracking number is an input of the ship operation and is hidden on the order unless SHIPPED or DELIVERED; the server also refuses invalid moves.",
+"why": "Derived booleans give valid buttons without a frontend hook; the server check protects against stale UI.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/enum-state-machine.md",
+"catalog/best-practices/frontend/conditional-field-validation-hook.md"
+],
+"gaps_ref": "R9-6",
+"evidence": [
+"session:L2878",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-28",
+"type": "decision",
+"round": "R9",
+"functions": [
+"F25",
+"F27"
+],
+"what": "Two order transfer objects: AdminOrderInfo (all transitions, tracking, history, customer e-mail) for the admin and OrderInfo (cancel on NEW only) for the customer.",
+"why": "Customer must never see admin buttons; same idea as the product split in R8.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/actor-based-transfer-projection.md"
+],
+"gaps_ref": "R9-8",
+"evidence": [
+"session:L2813",
+"session:L2834",
+"session:L2990"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-63",
+"type": "decision",
+"round": "R10",
+"functions": [
+"F36"
+],
+"what": "Coupon codes are stored on the cart as code plus percent (no relation), revalidated at checkout (clock, usage, minimum), and a use is counted in the checkout transaction; five distinct refusal codes.",
+"why": "Checkout must not accept a coupon that expired or was used up after it was applied; no relation keeps the cart simple.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/injectable-business-clock.md",
+"catalog/agent-docs/backend/error-handling-guide.md"
+],
+"gaps_ref": "R10-7",
+"evidence": [
+"session:L3091",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c05-64",
+"type": "decision",
+"round": "R10",
+"functions": [
+"F36",
+"F37"
+],
+"what": "BusinessClock class reads WEBSHOP_BUSINESS_DATE (env or system property) once at class load; checkout, order date and history use it; model expressions keep the platform clock.",
+"why": "Catalog pattern for one clock in Java; browser tests cannot change it, so tests use real dates.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/injectable-business-clock.md"
+],
+"gaps_ref": "R10-7",
+"evidence": [
+"session:L3089",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-65",
+"type": "decision",
+"round": "R10",
+"functions": [
+"F39"
+],
+"what": "Least-bad invoice route: Handlebars Markdown template, own Markdown-to-PDF renderer on PDFBox, FileStoreService put, FileType output, inline PDF dialog; DOCX pipeline not used.",
+"why": "Project lead says DOCX/XDocReport is deprecated; kb has no runnable Markdown to PDF recipe.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/handlebars-email-template.md",
+"catalog/best-practices/frontend/pdf-preview-inline-display.md"
+],
+"gaps_ref": "R10-10",
+"evidence": [
+"session:L2991",
+"session:L3093",
+"session:L3096",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-66",
+"type": "decision",
+"round": "R10",
+"functions": [
+"F40"
+],
+"what": "Hungarian application file is built by scripts/make-hu-translations.py as a new file (not a generated file), so no .generator-ignore entry; the script keeps every generated key and falls back to English.",
+"why": "Generator emits only en-US for this model; a new file with a new name needs no ignore entry.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/i18n.md"
+],
+"gaps_ref": "R10-12",
+"evidence": [
+"session:L3138",
+"session:L3139",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-67",
+"type": "decision",
+"round": "R10",
+"functions": [
+"F34"
+],
+"what": "Product prices are gross (VAT included): VAT = gross x rate / (100 + rate), net = goods minus discount minus VAT; VAT rate per category with a default.",
+"why": "Shop prices shown to customers include VAT; net and VAT are derived from gross.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/aggregated-stored-field.md",
+"catalog/best-practices/model/null-safe-collection-aggregation.md"
+],
+"gaps_ref": "R10-5",
+"evidence": [
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c05-68",
+"type": "decision",
+"round": "R10",
+"functions": [
+"F33"
+],
+"what": "Shop settings are one ShopConfig row entered through the admin UI by a seed test (no startup initializer), with create and update but no delete.",
+"why": "No documented startup trigger for an initializer (see c05-60).",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/platform-configuration-singleton/BLUEPRINT.md"
+],
+"gaps_ref": "R10-4",
+"evidence": [
+"session:L3159",
+"session:L3226"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c06-14",
+"type": "decision",
+"round": "R11",
+"functions": [
+"F46"
+],
+"what": "Notification read state is set by a custom operation markRead on NotificationInfo, called from the documented post-refresh page hook; the interceptor was removed.",
+"why": "Interceptor write was not persisted (c06-13); custom operations are not intercepted, so the operation is explicit.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/read-tracking-postcall-interceptor.md",
+"catalog/agent-docs/frontend/hooks/action-hooks.md"
+],
+"gaps_ref": "R11-8",
+"evidence": [
+"session:L3678",
+"session:L3679",
+"session:L3680",
+"session:L3684"
+],
+"proposed": "modify-catalog",
+"proposed_target": "catalog/best-practices/backend/read-tracking-postcall-interceptor.md",
+"confidence": "medium"
+},
+{
+"id": "c06-16",
+"type": "decision",
+"round": "R11",
+"functions": [],
+"what": "'Ordered' is the real timestamp shown by a read-only custom LocalTimestamp component in the browser zone (customer and admin), formatted without 12-hour clock; the test checks it equals the 'Order placed' history row.",
+"why": "Browser zone display matches the generated history column; no model change needed.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/platform-behavior-reference.md"
+],
+"gaps_ref": "R10-2",
+"evidence": [
+"session:L3522",
+"session:L3544",
+"session:L3544",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c06-24",
+"type": "decision",
+"round": "R11",
+"functions": [
+"F44"
+],
+"what": "CSV export and import are custom operations that exchange the file through the file store; a small Csv helper quotes fields on write and parses on read; import checks all rows before creating any.",
+"why": "Matches the catalog bulk-csv pattern (file store, rows validated first).",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/bulk-csv-import-export.md",
+"catalog/best-practices/backend/filestore-mediated-file-transfer.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L3253",
+"session:L3495",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c06-25",
+"type": "decision",
+"round": "R11",
+"functions": [
+"F47"
+],
+"what": "Invite admin is a custom operation that normalizes the e-mail (trim and lower case) and writes through the principal TO's DAO, so the managed realm sync applies; the TO keeps its own admin projection.",
+"why": "Managed-actor pattern: the sync is bound to the principal TO's DAO, not to the entity.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/backend/managed-actor-admin-pattern.md",
+"catalog/best-practices/backend/email-normalization-at-invite.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L3258",
+"session:L3259",
+"session:L3485",
+"session:L3742"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c07-03",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F52"
+],
+"what": "F52 migration without a wipe: copy the pre-change RDBMS model and pg_dump first, generate the migration with the old model as base, hand-write the weight and returnWindowDays backfill in changeset 06, then execute. Products, settings and orders survived.",
+"why": "schema-upgrade cannot host the backfill, and the user asked for a documented route with no wipe.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/schema-evolution.md",
+"catalog/best-practices/backend/migration-backfill-default-where-null.md"
+],
+"gaps_ref": "R12-1",
+"evidence": [
+"session:L3778",
+"session:L4017",
+"session:L4021",
+"session:L4025",
+"session:L4027",
+"session:L4398"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-06",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F45"
+],
+"what": "Bulk price change is an instance row action on the category table, not a static collection operation.",
+"why": "Static collection operations on shared tables hit a generator bug seen in R11 (R11-7c).",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/custom-operations.md"
+],
+"gaps_ref": "R12-9",
+"evidence": [
+"session:L4142",
+"session:L4255",
+"gaps:R12-9"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c07-10",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F48"
+],
+"what": "soldUnits is a STORED aggregate kept by checkout, cancel and return approval, instead of a derived sum, so the dashboard can sort it.",
+"why": "Derived aggregates cannot be sorted (see platform-bug on F48 SQL). The catalog recommends stored aggregates.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/model/aggregated-stored-field.md"
+],
+"gaps_ref": "R12-10",
+"evidence": [
+"session:L4399",
+"session:L4401",
+"session:L4403",
+"session:L4405",
+"session:L4407"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-12",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F49"
+],
+"what": "The Request return button exists only inside the window because a row action cannot be hidden per row (CLI rejects hiddenBy), so returnable lines get their own page.",
+"why": "The row action visibility property is not settable from the CLI (see cli-tool item on hiddenBy).",
+"kind": "none",
+"workaround": "Separate Return an item page that lists only returnable lines; the operation re-checks the flag as its guard.",
+"catalog_paths": [
+"catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+"catalog/best-practices/model/composition-ownership.md"
+],
+"gaps_ref": "R12-11",
+"evidence": [
+"session:L3959",
+"session:L3964",
+"gaps:R12-11"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c07-18",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F41"
+],
+"what": "Wishlist is a view page of a new TransferObjectType WishlistInfo (access Customer.myWishlist, 0..1) whose items element is a custom implementation, following the cart pattern. The generated wishlist access is kept for move and remove.",
+"why": "Column hooks and column customImplementation do not work (see the two platform-bug items).",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/best-practices/frontend/custom-visual-element-override.md"
+],
+"gaps_ref": "R12-3",
+"evidence": [
+"session:L4083",
+"session:L4084",
+"session:L4096",
+"session:L4100",
+"session:L4101",
+"session:L4103"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-23",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F51"
+],
+"what": "Shop branding (logo, title, primary colour) stays in the model. It is not read from the configuration singleton. A test checks logo and colour on five pages per app.",
+"why": "Theme colours are ActorType attributes and the logo and title are model elements, all applied at build time; editing palette.ts would need a .generator-ignore entry, which is forbidden.",
+"kind": "none",
+"workaround": "Documented the decision and checked it in tests.",
+"catalog_paths": [
+"catalog/agent-docs/frontend/theming.md",
+"catalog/best-practices/frontend/zero-customization-generated-frontend.md"
+],
+"gaps_ref": "R12-8",
+"evidence": [
+"session:L3896",
+"session:L3898",
+"session:L3899",
+"session:L3900",
+"gaps:R12-8"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-27",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F50",
+"F45"
+],
+"what": "Admin product edits are audited by a post-call interceptor on the built-in update, one AuditEntry per changed field in the same transaction; the bulk price change writes its own rows through an AuditLog service.",
+"why": "Built-in update is intercepted and custom operations are not, as the catalog says.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/interceptors.md",
+"catalog/model-blueprints/audit-log-entity/backend.md"
+],
+"gaps_ref": "R12-7",
+"evidence": [
+"session:L3872",
+"session:L3883",
+"session:L3889",
+"session:L4009"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-31",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F53"
+],
+"what": "Use a hand-written module (application/order-tests) with the generated pom copied and its i18n-api version filled in, instead of the generated integration-test module.",
+"why": "The generated module cannot be read by Maven (empty i18n-api version), and the root fragment override did not win.",
+"kind": "none",
+"workaround": "Removed the root fragment after one try; moved the sources to order-tests.",
+"catalog_paths": [
+"catalog/agent-docs/integration-testing/getting-started.md"
+],
+"gaps_ref": "R12-5",
+"evidence": [
+"session:L4196",
+"session:L4197",
+"session:L4198",
+"session:L4199"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-42",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F46",
+"F49"
+],
+"what": "Menu order of both apps is set by the documented menu customizer hook (customer registerShellHooks MENU_ORDER, admin registerMenuOrder by title), not by model order.",
+"why": "Model creation order put Returns to review first and Dashboard last; the hook is the documented route.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/ui-hooks.md"
+],
+"gaps_ref": "R12-12",
+"evidence": [
+"session:L4103",
+"session:L4277",
+"session:L4278"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c07-52",
+"type": "decision",
+"round": "R12",
+"functions": [
+"F45",
+"F44"
+],
+"what": "Add-to-message snackbar for operation replies: a documented post-operation hook shows output.message in the snackbar and then calls onSubmit, instead of the generated second dialog.",
+"why": "Operations answer with a short ShopMessage; the generated flow opens a second dialog showing it.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/action-hooks.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L4292",
+"session:L4293",
+"session:L4296"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c08-13",
+"type": "decision",
+"round": "R13",
+"functions": [
+"F55"
+],
+"what": "Company members are CustomerAccount rows inside the existing Customer actor (company relation, companyRole BUYER or APPROVER, companyAdmin flag). No third actor.",
+"why": "One user has one organization and a small fixed role set, which is the user-with-organization-and-role case. A third actor would add a Keycloak client and a frontend module. B2C must keep working.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/user-with-organization-and-role/BLUEPRINT.md",
+"catalog/model-blueprints/organization-entity/BLUEPRINT.md",
+"catalog/model-blueprints/multi-actor-role-based-projections/BLUEPRINT.md",
+"catalog/best-practices/model/multi-role-single-entity.md"
+],
+"gaps_ref": "R13-1",
+"evidence": [
+"session:L4931",
+"session:L4472"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c08-14",
+"type": "decision",
+"round": "R13",
+"functions": [
+"F52",
+"F55",
+"F61"
+],
+"what": "Model changes went through the F52 migration route: pg_dump before the step, a base model from before the round, a generated migration, a hand-written backfill setting companyAdmin false on existing customers, then execute. No database wipe; 251 customer rows kept.",
+"why": "Orchestrator rule for every model change after round 12; a required new flag needs a backfill.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/schema-evolution.md",
+"catalog/best-practices/backend/migration-backfill-default-where-null.md"
+],
+"gaps_ref": "R13-2",
+"evidence": [
+"session:L4472",
+"session:L4528",
+"session:L4785",
+"session:L4786"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c08-30",
+"type": "decision",
+"round": "R13",
+"functions": [
+"F56",
+"F58",
+"F60"
+],
+"what": "Money in admin tables and forms (company credit values, quote lines, quote total) uses derived ...Label strings such as '5.00 EUR' instead of the Price component. The numeric fields stay for sums.",
+"why": "Same own pattern as round 12 (R12). The orchestrator standing rule asks for the shared Price component in cart, order and card grid, which the builder did use.",
+"kind": "catalog-gap",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R13-4",
+"evidence": [
+"session:L4946",
+"session:L4948",
+"session:L4977",
+"session:L4756"
+],
+"proposed": "add-catalog",
+"proposed_target": null,
+"confidence": "low"
+},
+{
+"id": "c09-03",
+"type": "decision",
+"round": "R13",
+"functions": [],
+"what": "User rule for all later rounds: a round runs its new spec plus --grep @smoke, serially, under about 10 minutes; both full suites run once at the very end.",
+"why": "Full-suite runs per round were too slow for the build loop.",
+"kind": "orchestrator-process",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": "R13-8",
+"evidence": [
+"session:L5020",
+"session:L5022"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c09-37",
+"type": "decision",
+"round": "R14",
+"functions": [
+"F62"
+],
+"what": "A seller is a role of the existing customer account (one actor, one login, one cart), not a third actor. An optional Seller row holds status PENDING, APPROVED or REJECTED; the admin approves. This deviates from the FUNCTIONS row, which asks for a third actor.",
+"why": "Catalog: multi-actor blueprint 'When to use' (a self-service actor sees only its own records) and 'When to avoid' (a difference that is only permission needs no copy per role); a real third actor costs a Keycloak client, acceptableClients entry, frontend module, e2e project and sign-up flow (authentication-guide).",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/multi-actor-role-based-projections/BLUEPRINT.md",
+"catalog/agent-docs/backend/authentication-guide.md",
+"catalog/best-practices/model/multi-role-single-entity.md",
+"catalog/best-practices/model/derived-access-filtering.md"
+],
+"gaps_ref": "R14-1",
+"evidence": [
+"session:L5122",
+"session:L5125",
+"session:L5129",
+"session:L5510",
+"session:L5531"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-38",
+"type": "decision",
+"round": "R14",
+"functions": [
+"F62"
+],
+"what": "Ownership is enforced by SellerOwnershipInterceptor on refresh and update of the exposed transfer objects, plus ownership checks inside the custom operations.",
+"why": "Documented route: interceptors see refresh and update; InterceptorCallBusinessException refuses the call. Access filters alone do not stop a direct identifier.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/interceptors.md",
+"catalog/agent-docs/backend/platform-behavior-reference.md"
+],
+"gaps_ref": "R14-7",
+"evidence": [
+"session:L5459",
+"session:L5479",
+"session:L5531"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c09-39",
+"type": "decision",
+"round": "R14",
+"functions": [
+"F65"
+],
+"what": "All money arithmetic goes through one Money helper: BigDecimal.valueOf of the stored double, scale 2, HALF_UP per line. Commission and payout are computed per line; hand calculations to the cent are written in the spec.",
+"why": "Price is stored as a decimal with scale 2; the generated SDK exposes money as Double, so rounding must be explicit.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/price-margin-calculation-utilities/BLUEPRINT.md",
+"catalog/agent-docs/backend/type-system-guide.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5295",
+"session:L5381",
+"session:L5159"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-40",
+"type": "decision",
+"round": "R14",
+"functions": [
+"F68"
+],
+"what": "Base currency stays EUR everywhere; USD and HUF are display conversions from the exchange rate table (newest valid rate on or before today), with a notice when no rate exists. HUF is not stored, which deviates from the FUNCTIONS row.",
+"why": "Storing HUF would change every price, label and invoice; ExchangeRate rows are units per 1 EUR.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/model-blueprints/exchange-rate-entity/BLUEPRINT.md"
+],
+"gaps_ref": "R14-8",
+"evidence": [
+"session:L5323",
+"session:L5132",
+"session:L5531"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c09-41",
+"type": "decision",
+"round": "R14",
+"functions": [
+"F62",
+"F63",
+"F64",
+"F65",
+"F66",
+"F67",
+"F68",
+"F69",
+"F70"
+],
+"what": "Level 8 model change without a wipe: old model and pg_dump kept, schema generated with judo-rdbms-schema:generate against the base model, backfill for new required attributes written by hand in changeset 06 (Category.commissionPercent 10, line commission 0, refunded 0, gift card and points amount 0). Existing rows kept (10, 242 and 225 rows checked).",
+"why": "schema-upgrade (apply) gives no moment to write the backfill; generator adds new columns as nullable, so existing rows need explicit defaults.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/deployment/schema-evolution.md",
+"catalog/best-practices/backend/migration-backfill-default-where-null.md"
+],
+"gaps_ref": "R14-2, R12-1",
+"evidence": [
+"session:L5335",
+"session:L5341",
+"session:L5343",
+"session:L5344",
+"session:L5531"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c09-43",
+"type": "decision",
+"round": "R14",
+"functions": [
+"F69"
+],
+"what": "Gift card balance update carries the version of the row read, so two concurrent redemptions cannot both pass; the integration test shows a stale writer is refused.",
+"why": "Platform optimistic locking checks __version only when present in the payload.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/backend/platform-behavior-reference.md"
+],
+"gaps_ref": "R14-10",
+"evidence": [
+"session:L5188",
+"session:L5531"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c10-01",
+"type": "decision",
+"round": "R15",
+"functions": [],
+"what": "Round 15 starts by committing the uncommitted Level 8 work as 'R14 WIP: paused for UI overhaul' (2cadb05) and does not continue F62-F70 until the UI work is done.",
+"why": "Orchestrator instruction to stop feature work and make the UI overhaul the only goal.",
+"kind": "orchestrator-process",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L5658",
+"session:L5659",
+"session:L5660"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-02",
+"type": "decision",
+"round": "R15",
+"functions": [],
+"what": "Admin stays the JUDO default. Customer look changes go through view changes of the transfer objects (UI model) and src/custom hooks; no admin tidying except the Quote fix.",
+"why": "Owner decision given mid-round ('admin can stay judo default use view changes to the view model of TOs').",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [],
+"gaps_ref": null,
+"evidence": [
+"session:L5714",
+"session:L5715"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-03",
+"type": "decision",
+"round": "R15",
+"functions": [],
+"what": "Live iteration loop: Vite dev server on port 5173 against the running Karaf backend on 8181 (VITE_API_DEFAULT_BASE_URL), edit src/custom with HMR, and batch UI-model changes into one generate-root plus 'build -f -i' (about 38 s) instead of full root builds.",
+"why": "Round brief requires fast iteration; the kb docs on the dev server, env variables and reckless/frontend-only builds were read first.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/development-workflow.md",
+"catalog/agent-docs/deployment/local-development.md",
+"catalog/agent-docs/deployment/build-process.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5659",
+"session:L5665",
+"session:L5670",
+"session:L5678",
+"session:L5715",
+"session:L5764"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-04",
+"type": "decision",
+"round": "R15",
+"functions": [],
+"what": "Customer layout becomes a top bar by setting menuOrientation=HORIZONTAL on webshop::Customer in the model (CLI update), not by a template override.",
+"why": "accesspoint.md documents menuOrientation on the actor (VERTICAL or HORIZONTAL); this is the documented model route.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+"catalog/agent-docs/model/esm_metamodel/ui.md"
+],
+"gaps_ref": "R15-2",
+"evidence": [
+"session:L5725",
+"session:L5731",
+"session:L5750",
+"session:L5763"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-05",
+"type": "decision",
+"round": "R15",
+"functions": [],
+"what": "Header extras (search box, language switch, currency switch, cart counter, notification bell, drawer expander) share the one AppBarExtraComponents slot through a single wrapper component AppBarExtras, with spaceRequired tuned to 4.",
+"why": "The generated header accepts exactly one AppBarExtra component (ui-hooks.md 'AppBar Extra Components').",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/ui-hooks.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5706",
+"session:L5720",
+"session:L5772",
+"session:L5816",
+"session:L5821"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-06",
+"type": "decision",
+"round": "R15",
+"functions": [],
+"what": "Storefront menu is regrouped by a MenuItemsCustomizerHook in registerShellHooks.ts (sorted by title, fixed order) so the drawer shows Products, Cart, My account, Company and Sell groups.",
+"why": "ui-hooks.md 'Menu Manipulation' documents the customizer hook; generated item ids are model ids so titles are used for ordering.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/hooks/ui-hooks.md",
+"catalog/agent-docs/frontend/hooks/navigation-and-access.md"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L5708",
+"session:L5716"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-07",
+"type": "decision",
+"round": "R15",
+"functions": [],
+"what": "Checkout becomes a four-step flow (address, delivery, payment, review) plus a confirmation page, built as a custom component (CheckoutFlow.tsx) on the cart page instead of a model Stepper; the new order is opened after the generated checkout operation succeeds.",
+"why": "Stepper in the UI mapping docs is described for forms; the operation flow is a custom implementation (custom-visual-element-override.md). registerCheckoutHook navigates to the newest order.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+"catalog/best-practices/frontend/custom-visual-element-override.md",
+"catalog/agent-docs/frontend/hooks/action-hooks.md"
+],
+"gaps_ref": "R15-3",
+"evidence": [
+"session:L5860",
+"session:L5867",
+"session:L5870",
+"session:L5874"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "medium"
+},
+{
+"id": "c10-08",
+"type": "decision",
+"round": "R15",
+"functions": [],
+"what": "No .generator-ignore entry and no extra route for a /checkout URL; the checkout flow is reached from the cart page only.",
+"why": "Standing rule forbids .generator-ignore entries; extension-points.md documents extra routes only through src/extra-routes.tsx, which needs an ignore entry to survive regeneration.",
+"kind": "none",
+"workaround": null,
+"catalog_paths": [
+"catalog/agent-docs/frontend/extension-points.md"
+],
+"gaps_ref": "R15-3",
+"evidence": [
+"session:L5862",
+"session:L6092"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+},
+{
+"id": "c10-09",
+"type": "decision",
+"round": "R15",
+"functions": [
+"F62",
+"F63",
+"F69",
+"F70"
+],
+"what": "Level 8 specs buy a product created in the same run (shops[0].product) instead of the shared seed products Trail shoe and Trail mix, so repeated runs do not depend on seed stock.",
+"why": "Repeated runs had used up the seed stock; the old tests depended on it.",
+"kind": "test-design",
+"workaround": "Tests use run-local products; admin restock was tried and dropped.",
+"catalog_paths": [
+"catalog/agent-docs/e2e-testing"
+],
+"gaps_ref": null,
+"evidence": [
+"session:L6006",
+"session:L6011",
+"session:L6020",
+"session:L6031"
+],
+"proposed": "none",
+"proposed_target": null,
+"confidence": "high"
+}
+]

@@ -11,7 +11,6 @@ projects: [trivia, indamedia-adtrack]
 evidence: ["trivia:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
 related: [custom-operation-osgi-component, identifier-adaptation-pattern]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-11
 ---

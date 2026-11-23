@@ -4,6 +4,8 @@
 
 Interceptors run only for the platform's built-in operations (create, update, delete, list and so on). Custom operations get no interceptor, so each operation that changes state writes its own event. Put the write last, after the business change, inside the operation's transaction.
 
+An operation call runs in one transaction. If the operation throws, all its writes roll back, including writes made before the throw. A stateful operation commits its writes when it returns without a fault. A non-stateful operation, or one that returns a modeled fault, rolls them back.
+
 - Inject one event data-access object (DAO) with a reference, and call its create method from each operation.
 - Build the event with the type, the message, the current time and the two associations (affected entity and acting user).
 - Resolve the acting user from the security context once, in a shared helper, not in each operation.
@@ -11,6 +13,8 @@ Interceptors run only for the platform's built-in operations (create, update, de
 ### Keep the event immutable
 
 The entity has no generated update or delete. Correct a wrong event by writing a new one, not by editing it.
+
+The `immutable` flag is defined only on transfer operations, not on entities, so the model cannot mark the entity itself as immutable. Keep the event immutable by leaving update and delete operations out of the entity's operations.
 
 ### Do not swallow a failed event write
 

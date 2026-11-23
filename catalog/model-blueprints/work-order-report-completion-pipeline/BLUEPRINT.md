@@ -11,8 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:model/rackinspect.model", "rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/impl/JobTaskServiceImpl.java"]
 alternatives: []
 related: [work-status-lifecycle-enum, generalization-base-entity]
-fragment: work-order-report-completion-pipeline
-diagram: { kinds: [entity, enum, operation], members: types }
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

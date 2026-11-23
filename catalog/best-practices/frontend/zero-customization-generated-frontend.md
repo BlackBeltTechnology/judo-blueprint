@@ -11,7 +11,6 @@ projects: [itracker, reserve-app]
 evidence: ["itracker:unrecorded", "reserve-app:unrecorded"]
 alternatives: [single-actor-heavy-customization, complete-frontend-replacement]
 related: [admin-default-generated-ui, model-defined-color-palette, hook-scaffold-default-pattern, single-actor-heavy-customization, complete-frontend-replacement]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -34,7 +33,7 @@ This layer is practice:
 - Keep `.generator-ignore` to its default content (itself and `.gitignore`); no theme, layout or i18n files are overridden.
 - Do not activate any hook scaffold; the generated `src/custom/application-customizer.tsx` stays unmodified.
 - Get the richer behaviour from the model: a split column layout for a view, button visibility from derived booleans on the transfer object, explicit column widths and sort orders, a fixed page size for long tables, opening sub-resource views in a dialog with auto close on save, and brand colours as actor properties.
-- Static branding such as a logo in `public/` is the only accepted addition.
+- Static branding such as a logo in `public/` is the only accepted addition. The generated `<img>` is limited by `maxHeight` and `maxWidth`, so give an SVG logo explicit `width` and `height` attributes ([theming](../../agent-docs/frontend/theming.md)).
 - Flutter frontends follow the same rule; the observed Flutter apps add only Handlebars template overrides for cross-cutting features such as download or upload buttons and theme palette, with no hand-written Dart ([template override process](../../agent-docs/frontend/README.md)).
 
 ```

@@ -11,7 +11,6 @@ All associations are ASSOCIATION kind, so deleting a source or an organization d
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=feed-entry-denormalization cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class EntryType {
@@ -46,4 +45,3 @@ classDiagram
   FeedEntry --> "1" Organization : ownerOrganization
   FeedEntry ..> EntryType : entryType
 ```
-<!-- /mermaid:generated -->

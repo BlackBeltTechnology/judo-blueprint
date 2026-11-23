@@ -11,8 +11,6 @@ projects: [compsych-letter-demo]
 evidence: ["compsych-letter-demo:unrecorded"]
 alternatives: []
 first_seen: 2026-05-11
-fragment: derived-relation-membership-invariant
-diagram: { kinds: [entity, transfer], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -74,7 +72,6 @@ The same applies to a user's drafts access filtered by status equal to draft: se
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=derived-relation-membership-invariant cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Container {
@@ -96,4 +93,3 @@ classDiagram
   ContainerView o-- "*" ItemView : redItems
   ItemView ..> Item : maps
 ```
-<!-- /mermaid:generated -->

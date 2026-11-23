@@ -11,7 +11,6 @@ projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/utils/EmailUtils.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/UserServiceImpl.java"]
 alternatives: [duplicate-detection-normalization]
 related: [duplicate-detection-normalization, invitation-with-key-based-acceptance]
-fragment: "none: backend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---

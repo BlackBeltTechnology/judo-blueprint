@@ -11,7 +11,7 @@ Implements a multi-stage push notification delivery pipeline using Firebase Clou
 - `sendMessage()` builds platform-specific configs: Android uses data-only messages (no notification payload) for Capacitor deep link compatibility; APNs uses alert with badge
 - Supports collapse keys for notification coalescing and silent mode for do-not-disturb
 
-**2. PushNotificationService (common module, application code):**
+### 2. PushNotificationService (common module, application code)
 - `@Component(immediate=true, service=PushNotificationService.class)` with `@Reference` to `FirebaseMessagingService`, the generated DAOs, `PlatformEmailService`, and `AppI18n`
 - **Creation phase:** `sendPostPublishedNotification()` / `sendAnnouncementNotification()` query eligible users respecting opt-in preferences, create PENDING `Notification` records with fast-path batch deduplication
 - **Delivery phase:** `deliverPendingNotifications()` (called by scheduler) queries PENDING + retriable FAILED notifications, builds user/device caches to avoid N+1, sends FCM per device, sends email if user opted in

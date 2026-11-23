@@ -10,7 +10,6 @@ status: established
 projects: [trivia, rackinspect, alba, mlszksz-platform, viterra_demo, park-here, indamedia-adtrack, judo-partner, workflow-poc, doors-model]
 evidence: ["trivia:unrecorded", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/_default_transferobjecttypes/entities/initializer/ExcelDataImporter.java", "rackinspect:application/app/src/main/java/hu/blackbelt/rackinspect/rackinspect/custom/rackinspect/services/fault_registry_services/document/GeneratePdfCustomImplementation.java", "alba:unrecorded", "mlszksz-platform:application/app/src/main/java/hu/blackbelt/mlszksz/platform/mlszkszplatform/custom/mlszkszplatform/services/admin/admindashboard/ExportAuditLogCustomImplementation.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/impl/AdminInvitationServiceImpl.java", "viterra_demo:unrecorded", "park-here:unrecorded", "indamedia-adtrack:unrecorded", "judo-partner:unrecorded", "workflow-poc:unrecorded", "doors-model:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

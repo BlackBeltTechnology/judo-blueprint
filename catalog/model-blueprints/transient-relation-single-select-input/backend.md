@@ -14,7 +14,7 @@ operation createInitiative(input: InitiativeInput): Initiative {
 }
 ```
 
-This sketch is the old project's form. Check it against the [JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md) reference before use: JCL bodies refer to the instance as `this` (not `self`), `input` is immutable unless declared mutable, and `mutable` is a unary prefix operator. The agent-docs do not say what a transient reference means when assigned to a stored relation, so the claims below are project experience, *verify* them.
+This sketch is the old project's form. Check it against the [JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md) reference before use: JCL bodies refer to the instance as `this` (not `self`), `input` is immutable unless declared mutable, and `mutable` is a unary prefix operator. The agent-docs say that everything read from `input`, including a transient reference, is immutable and that changing a collection through an immutable object fails ([JCL operation scripts](../../agent-docs/model/jcl-operation-scripts.md)), but they do not say what a `mutable` prefix on that reference does when assigned to a stored relation, so the claims below are project experience, *verify* them.
 
 - `input.region` is a transient reference to an instance of the mapped transfer object.
 - `mutable input.region` turned it into the reference to the stored entity, usable as the value of the stored relation on the new entity.

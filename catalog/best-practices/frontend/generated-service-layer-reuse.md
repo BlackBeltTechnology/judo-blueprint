@@ -11,7 +11,6 @@ projects: [trivia, actiongroup-test-react]
 evidence: ["trivia:unrecorded", "actiongroup-test-react:unrecorded"]
 alternatives: []
 related: [complete-frontend-replacement, error-code-mapping-pattern]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

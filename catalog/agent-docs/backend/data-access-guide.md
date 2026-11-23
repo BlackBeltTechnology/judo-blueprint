@@ -1,6 +1,9 @@
 ---
 title: Data Access Guide
 description: DAO queries, filters, masks, generated DAO behaviour and known issues.
+aliases: [query entities in java, filter by string dao, use masks for projection, DAO getById, unset relation nullpointer, null vs optional fields, native sql from service]
+keywords: [StringFilter, NumberFilter, DateFilter, BooleanFilter, EnumerationFilter, filterBy, QueryCustomizer, Payload, getById, unset, selectList, EntityMask]
+tags: [domain:backend, layer:backend, status:platform]
 ---
 
 # Data Access Guide
@@ -102,6 +105,8 @@ import hu.blackbelt.judo.sdk.query.StringFilter;
 // Case-insensitive matching
 .filterByName(StringFilter.ilike("BUDAPEST"))
 ```
+
+The SDK escapes double quotes only. A value that ends in a backslash (for example `C:\`) breaks the quoted filter value, so the query returns a wrong result or fails. Do not end a string filter value with a backslash.
 
 #### NumberFilter
 
@@ -242,7 +247,7 @@ List<User> users = userDao.query()
     .selectList();
 ```
 
-**JQL (JUDO Query Language) Expression Syntax:**
+#### JQL (JUDO Query Language) Expression Syntax
 
 | Element | Example | Description |
 |---------|---------|-------------|
@@ -257,7 +262,7 @@ List<User> users = userDao.query()
 | Grouping | `(expr1 or expr2)` | Parentheses for precedence |
 | String literals | `'value'` | Single quotes for strings |
 
-**IMPORTANT - What Does NOT Work:**
+#### IMPORTANT - What Does NOT Work
 - Navigation: `this.relation.field` is NOT supported in filterBy
 - Single equals: `this.field = value` - use `==` instead
 - SQL-style LIKE: `this.field like 'pattern'` - use `(this.field)!like('pattern')` instead
@@ -301,7 +306,7 @@ List<Settlement> settlements = countyDao.querySettlements(county)
     .selectList();
 ```
 
-**Important**: Single-valued (Many-to-One) relationship queries return the entity directly. Multi-valued (One-to-Many) relationship queries return a query customizer that supports filtering, masking, and `selectList()`.
+**Important**: A `1..1` (required) single-valued relationship query returns the entity directly; a `0..1` (optional) one returns `Optional<T>` (`Optional<Entity> county = settlementDao.queryCounty(settlement);`). Check the generated DAO signature for the relation. Multi-valued (One-to-Many) relationship queries return a query customizer that supports filtering, masking, and `selectList()`.
 
 **Note**: Relation query customizers do NOT support ordering methods like `orderByCode()`. If ordering is needed, sort the results in Java after fetching:
 ```java
@@ -370,12 +375,12 @@ entityDao.delete(entity);
 
 ### Why Use Masks?
 
-**Without masks:**
+#### Without masks
 - ❌ Loads ALL fields and relationships, leading to N+1 query problems.
 - ❌ Slower database queries and higher memory usage.
 - ❌ Unnecessary data transfer between the application and the database.
 
-**With masks:**
+#### With masks
 - ✅ Loads only the fields you explicitly need.
 - ✅ Results in significantly faster queries and lower memory consumption.
 - ✅ Gives you explicit control over your data fetching strategy.
@@ -386,6 +391,8 @@ Every entity has a generated `[Entity]Mask` class with a fluent builder API:
 - **Static factory method**: `[Entity]Mask.[entityName]Mask()`
 - **Builder methods**: `.withFieldName()` for each attribute.
 - **Nested masks**: `.withRelationship([RelatedEntity]Mask.relatedEntityMask())` to control the data loaded for related entities.
+
+**No mask versus empty mask**: a call without a mask returns every attribute, derived members included; an empty mask returns the identifier only.
 
 ### Common Mask Patterns
 
@@ -427,14 +434,16 @@ Address address = addressDao.getById(
 ```
 
 #### Pattern 4: Partial Updates
-When updating an entity, use a mask to ensure you only modify the fields that have changed.
+`update(entity)` and `update(entity, mask)` write only the attributes and relations that are **present in the entity's payload**. A field that was not loaded and not set is absent, so it is left unchanged in the database; the platform does not null it. The `mask` only selects what the returned entity contains (it is used for the read-back after the write), it does not limit what is written. `update` requires the identifier; defaults are applied only to payloads without one, so an update does not reset fields to model defaults.
+
+To send only the changed fields, set just those fields on an entity that was not loaded in full:
 
 ```java
-// Load the entity, modify specific fields...
+// Entity carrying its identifier and only the fields to change...
 entity.setStatus(newStatus);
 entity.setLastModified(LocalDateTime.now());
 
-// Update only those fields in the database
+// The mask shapes the returned entity (read-back), not what is written
 entityDao.update(
     entity,
     EntityMask.entityMask()
@@ -442,6 +451,10 @@ entityDao.update(
         .withLastModified()
 );
 ```
+
+To send a partial update that keeps the optimistic-lock check, put the identifier, the entity type, the version and the changed attributes into the payload with the generated builder: `<Entity>Builder.from(Map.of("__identifier", <identifier>, "__entityType", "<Entity>", "__version", <version>, "<attribute>", <value>)).build()`. A `__version` in the payload makes the check apply; the mask only shapes the returned entity.
+
+On the stale-update error (the stored row has a newer version than the payload), read the entity again, set the changed attributes on the fresh copy and repeat the update. The business rule that decides whether the change still applies belongs in the code around the retry. See [optimistic locking](platform-behavior-reference.md#optimistic-locking-and-__version).
 
 ### Performance Comparison
 
@@ -463,14 +476,14 @@ List<Address> addresses = addressDao.query()
 
 ### Mask Best Practices
 
-**✅ DO:**
+#### ✅ DO
 1.  **Always use masks for queries** to prevent loading unnecessary data.
 2.  Use **empty masks** for the fastest existence checks.
 3.  Use **minimal masks in loops** to reduce memory overhead.
 4.  **Chain masks** for nested relationships to control loading depth.
 5.  Use **masks in updates** to perform efficient partial updates.
 
-**❌ DON'T:**
+#### ❌ DON'T
 1.  Don't perform full entity loads when you only need a few fields.
 2.  Don't forget masks in queries, as this can lead to N+1 problems.
 3.  Don't load large collections without a mask.
@@ -497,6 +510,7 @@ JUDO distinguishes a missing key, a `null` value and an empty value. Generated g
 
 - `required = true`: plain getter (`Boolean getMinimumOfferPriceEnabled()`). A `null` means the caller omitted the field; read it directly instead of adding Java-side null workarounds.
 - `required = false`: `Optional<T>` getter (`Optional<FileType> getReviewReportMarkdownTemplate()`).
+- A `required = true` attribute can still be `null` when it was masked out of the query: required is not non-null unless the mask loads it.
 - DTO getters check `containsKey`, so "key missing" and "key present with null" differ.
 
 ### Clearing a Relation: `unset`, Not `set(null)`
@@ -517,15 +531,33 @@ Alternatively count all rows minus `isTrue` minus `isFalse`.
 
 - **`query<Attribute>()` on an enumeration attribute** can fail with a `ClassCastException` (`Integer` cannot be cast to the enum): the runtime delivers the ordinal. Workaround: read the value through the DTO or convert with `<Enum>.getByOrdinal(...)`. The same can happen when a navigation returns an enumeration value; check the result cast after adding an enum attribute to a relation.
 - **Derived attribute navigating through an inherited member** can produce a query that is missing a JOIN.  No generator-side workaround is known; check the generated SQL when a derived value comes back empty.
+- **String aggregates support only `min` and `max`.** Other string aggregate operators, including `concatenate`, throw `UnsupportedOperationException`.
+- **Static query navigation `QueryCustomizer` class name does not match the emitted class.** The `staticQueryNavigationQueryCustomizerImplFqName` helper names the class `<impl package>.<name>QueryCustomizerImpl`, but the generated class is `<TargetTransferObject>Query<Name>QueryCustomizerImpl`. Reference the emitted class, not the helper name.
+- **Setter names for embedded mapped relations contain a double dot** (`relation..name`) in the collection branch of the generated create builder (template bug).
+- **`count()` with query parameters references an undeclared variable.** The generated `count()` passes `effectiveParams.toMap()` when `self.hasParam` is set, but the class never declares `effectiveParams`, so the emitted code fails to compile in that case.
+- **PostgreSQL `max_uuid` helper returns its first argument.** The helper always returns the first argument, so `max` aggregates over UUID values return the wrong value.
+- **A single-valued reference loaded through a sub-select runs one statement per parent row.** When the sub-select is not joined directly to the root query, or has a limit, the runtime loads the reference with one SQL statement per parent row, so the time grows with the number of parent rows. Derived members in the reference's mask (their getter expressions) are evaluated inside each of those statements. Workaround: map the referenced entity with a smaller transfer object that leaves out the derived members the page does not show, or compute the value on the referenced entity once. The per-row loop is the code path behind this growth.
 - Generated DAO code lives under `target/` and is not in git; when debugging a stack trace, open the generated `<Entity>DaoImpl` there.
 
 ### Pagination
 
 A list call without an explicit seek returns **all** matching rows; pagination is opt-in. A full pull is fine for small per-user data sets.
 
+Generated query customizers (`dao.query()...`, per-relation `query<Rel>(...)`) page like this:
+
+- `selectList()`, `selectList(Integer limit)`, `selectList(Integer limit, Integer offset)` (**limit first**).
+- Keyset paging: `selectList(Integer limit, <Entity> lastItem)` and `selectList(Integer limit, <Entity> lastItem, Boolean reverse)`.
+- `selectOne()` and `selectOne(Integer offset)`, both returning an `Optional`.
+
+The DAO also has `getAll()`, `countAll()`, `existsById(id)`, `getById(id[, mask])` (an `Optional`) and `findAllById(Iterable<id>[, mask])` (a `List`; use it for a bulk fetch instead of looping `getById`). `TimeFilter` (`hu.blackbelt.judo.sdk.query`) filters a time-of-day attribute with `lessThan`, `lessOrEqualThan`, `greaterThan`, `greaterOrEqualThan`, `equalTo`, `notEqualTo` on a `LocalTime`; it is not an interval-overlap filter, so express overlap as two filters on a start and an end attribute.
+
+Per multi-valued relation the DAO generates `count<Rel>(owner)`, `create<Rel>(owner, relatedObject|relatedObjects[, mask])` (returns the created target; only when create is allowed), `add<Rel>(owner, related|relatedList)` and `remove<Rel>(owner, related|relatedList)` (only when add / remove is allowed), and `getRangeOf<Rel>` / `countRangeOf<Rel>` for relations with a range. Single-valued relations generate `query<Rel>(id | identifier | owner[, mask])`. Which of these exist depends on the relation's kind and access flags.
+
 ### Low-Level DAO and `QueryCustomizer`
 
 For calls the fluent SDK cannot express, the generic `DAO` accepts a `QueryCustomizer` (Lombok `@Builder`) with `filter` (a JQL expression string), `orderBy` entries (`OrderBy.attribute` is `@NonNull`), `seek`, `withoutFeatures`, `mask`, `parameters` and `instanceIds`.
+
+The generated update call passes the access `QueryCustomizer` that the dispatcher builds for the caller into the DAO update. The runtime does not re-check derived-path membership after the write. Custom operations and direct DAO writes that do not pass such a customizer are not limited by the caller's membership filter, so enforce membership in the operation itself.
 
 ### The `Payload` Type
 
@@ -533,7 +565,7 @@ For calls the fluent SDK cannot express, the generic `DAO` accepts a `QueryCusto
 
 ### Native SQL from a Custom Service
 
-There is no DAO method for native SQL. A query that JQL and `QueryCustomizer` cannot express (for example a join-table lookup) needs a JDBC `DataSource` injected into your own component with `@Reference`, and the test kit must bind it as well; no platform precedent exists, so keep such code isolated in one service.
+There is no DAO method for native SQL. A query that JQL and `QueryCustomizer` cannot express (for example a join-table lookup) needs a JDBC `DataSource` injected into your own component with `@Reference`, and the test kit must bind it as well; no platform precedent exists, so keep such code isolated in one service. Generated table names use the `T_` prefix and columns the `C_` prefix by default (read the exact names from the generated changelog). An enumeration column is an `Integer` that holds the integer value of the enumeration literal, not its name, so compare native SQL against that integer.
 
 ---
 

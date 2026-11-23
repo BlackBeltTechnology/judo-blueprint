@@ -1,0 +1,138 @@
+[
+ {
+  "id": "B33",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B33 | Event bus | The publish/subscribe API and its event key format. | pf02 |"
+ },
+ {
+  "id": "B34",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B34 | Page hooks | `getMask()` page-hook handler and `_mask` syntax, the page data-mask hook (`...RelationViewPageActionsHook`), `queryCustomizer` on pages, and `postGetTemplateAction` / `storeDiff` after a template. | bp04, pf03, pf04 |"
+ },
+ {
+  "id": "B35",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B35 | Hook naming | The `isFieldRequired` handler vs the documented `is<Field>Required`, the range-override hook member name, and the cards-configuration hook return shape and key (one sentence today). | pf01, pf02, bp03 |"
+ },
+ {
+  "id": "B36",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B36 | Generated page files | Contents of `context.tsx` (ViewModel), `customization.ts`, `types.ts`, and `src/config/layout.ts`. | pf03, pf06 |"
+ },
+ {
+  "id": "B37",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B37 | Generator override fragments | Frontend `package.json.dependencies.extra.fragment.hbs` and `application_default_extra.fragment.hbs` (i18n). `build-process.md` lists only pom and Karaf fragments. Also the Handlebars helper `elementHasAnnotation`, the `operation.output.target` context, how a literal `{{\u2026}}` survives rendering, and the `operation-primary-output-handler` / `@redirect` mechanism. | pf03, pf04, pf05, bp15 |"
+ },
+ {
+  "id": "B38",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B38 | Layout replacement | Whether a container layout can be replaced by any route other than a custom implementation element. `data-name` selectors on generated sections. | bp04 |"
+ },
+ {
+  "id": "B39",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B39 | Error codes | `INVALID_CODE`, `IDENTIFIER_ATTRIBUTE_UNIQUENESS_VIOLATION`, `getErrorCodeLiteralByOrdinal`. | pf02 |"
+ },
+ {
+  "id": "B40",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B40 | Aggregation actions | Frontend service-method signatures for add, remove, clear and set, and the range-dialog call. | pf04 |"
+ },
+ {
+  "id": "B41",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B41 | Widgets and rows | Whether the boolean combo can show \"unknown\", hiding a row action per row, a count-only list-call recipe (`__countRecords` / `X-Judo-Count` are named but no recipe exists), the old `/{model}/{actor}` context path, and signed-identifier route parameters. | pf01, pf02, pf06, bp11 |"
+ },
+ {
+  "id": "B42",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B42 | Operation outputs | The output `behaviours` list (REFRESH/UPDATE/DELETE), `OPERATION_OUTPUT_UPDATE` page type, and the order of generated input and output pages. | pm05, pf01 |"
+ },
+ {
+  "id": "B43",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B43 | `confirmationCondition` | It has no ui-authoring-guide section, only a one-line invariant. | pm07 |"
+ },
+ {
+  "id": "B44",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B44 | `useJudoNavigation` | Whether it keeps a breadcrumb or history. | pf01 |"
+ },
+ {
+  "id": "B45",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B45 | `textMask` vs react-imask | No link between the model `textMask` and a custom-element alternative. | bp09 |"
+ },
+ {
+  "id": "B46",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B46 | Responsive per-device page containers | Mobile, tablet and desktop containers and column counts. | pm05 |"
+ },
+ {
+  "id": "B47",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B47 | Anonymous actor frontend | No how-to for an anonymous actor's own app, only `supportGuestAccess` and the guest page. | bp08 |"
+ },
+ {
+  "id": "B48",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/frontend/",
+  "owner": "frontend-a",
+  "first_pass": "Doc-gap topic list only, no concrete fact given; not researched within item budget",
+  "text": "| B48 | Flutter | Asset copy rules in `flutter.yaml`. The Flutter section is thin overall. | pf02, pf06 |"
+ },
+ {
+  "id": "FR-043",
+  "src": "sweep-unverified",
+  "target": "catalog/agent-docs/frontend/error-handling.md",
+  "owner": "frontend-a",
+  "first_pass": "Already hedged in doc; no timeout found; unchanged",
+  "text": "{\"action\": \"unverified\", \"file\": \"catalog/agent-docs/frontend/error-handling.md\", \"heading\": \"Known Issue: Long-Running Operations\", \"note\": \"no request timeout found in generated service templates; only a hedged proxy/gateway note added\"}"
+ }
+]

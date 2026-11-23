@@ -1,6 +1,9 @@
 ---
 title: Local Development
 description: Starting the application locally, hot deployment, Karaf console, logs and local troubleshooting.
+aliases: [run locally, start the app locally, hot deploy, karaf console, local logs, local troubleshooting]
+keywords: [judo.sh, karaf_port, karaf.log, bundle:restart, bundle:update, service:list, mvn install, reckless, hsqldb, judo-karaf.env]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Local Development
@@ -26,35 +29,41 @@ This guide covers local development setup, hot deployment, and development workf
 
 ### Starting Services
 
-**Start all services:**
+#### Start all services
 ```bash
 ./judo.sh start
 ```
 
-**What starts:**
-- PostgreSQL (Docker container, port 5432)
+#### What starts
+- PostgreSQL (Docker container, port 5432) when `dbtype=postgresql`; the generated `judo.properties` sets `dbtype=hsqldb`, which runs the embedded HSQLDB instead
 - Keycloak (Docker container, port 8080)
 - Karaf (standalone, HTTP port **8181** by default; override with `./judo.sh start -o karaf_port=<port>`)
 
-**Access points:**
-- Application: http://localhost:8181/apps/
-- Keycloak Admin: http://localhost:8080 (8080 is the Keycloak port, not the application's)
+`./judo.sh start` needs a running Docker daemon for the PostgreSQL and Keycloak containers (or the Compose stack); run `docker info` first and start Docker if it fails. The command launches Karaf in the background (console output in `application/.karaf/console.out`) and returns before the application is ready, so wait until the application URL answers with HTTP 200 before running tests; connection-refused errors in tests usually mean the stack is not up yet.
+
+**Prerequisites:** generated projects and the workflow plugin build with Java 21 (`java.version` 21), not Java 1.8 or 11. There is no `run-offline-postgresql.sh` script in generated projects; use `./judo.sh start -o dbtype=postgresql` to get a PostgreSQL database.
+
+#### Access points
+- Application: http://localhost:8181/<model>/<Actor>/ (each actor frontend is served under its own context path; `/apps/` only lists the bundles)
+- Keycloak Admin: http://localhost:8080/auth (`judo.sh` starts Keycloak with `--http-relative-path /auth`; with `keycloak_port=<port>` the base URL is `http://localhost:<port>/auth`; 8080 is the Keycloak port, not the application's)
 - Karaf SSH: `ssh -p 8101 karaf@localhost` (password: karaf) - these are Apache Karaf defaults, not set by the project template
 
-**Start options:** `./judo.sh start -o "runtime=karaf|compose,dbtype=hsqldb|postgresql,compose_env=...,karaf_port=...,postgres_port=...,keycloak_port=..."`, `-K` skips Keycloak, `-W` disables bundle watching. See [Build Process](./build-process.md#command-reference). Compose-based runs are described in [Production Deployment](./production.md#shipped-docker-compose-environments).
+**Start options:** `./judo.sh start -o "runtime=karaf|compose,dbtype=hsqldb|postgresql,compose_env=...,karaf_port=...,postgres_port=...,keycloak_port=..."`, `-K` skips Keycloak, `-w` disables bundle watching (`--skip-watch-bundles`). See [Build Process](./build-process.md#command-reference). Compose-based runs are described in [Production Deployment](./production.md#shipped-docker-compose-environments).
+
+**First login:** a fresh local app has no user. Open the Keycloak admin console (`/auth`, realm `<app>`), create a user there, and make sure a matching actor instance exists, or let the backend create it on first login (see [Keycloak JIT User Provisioning](../../best-practices/backend/keycloak-jit-user-provisioning.md)).
 
 **Local email:** run a mail catcher such as Mailpit and point the app at `localhost:1025` (no auth/TLS) in `judo-karaf.env`; see [Application Configuration](./application-config.md#6-email-smtp).
 
 ### Stopping Services
 
-**Stop all services:**
+#### Stop all services
 ```bash
 ./judo.sh stop
 ```
 
 ### Checking Status
 
-**Check service status:**
+#### Check service status
 ```bash
 ./judo.sh status
 ```
@@ -73,13 +82,13 @@ Hot deployment allows you to make changes and see them immediately without resta
 
 ### What Supports Hot Deployment
 
-**Supports hot deployment:**
+#### Supports hot deployment
 - Custom operations (`application/app/`)
 - Interceptors (`application/interceptors/`)
 - Frontend JAR (`application/frontend-react/`)
 - REST endpoints (via bundle update)
 
-**Requires restart:**
+#### Requires restart
 - Model changes (schema evolution)
 - Configuration changes
 - Feature definition changes
@@ -149,14 +158,14 @@ mvn install -pl application/app,application/interceptors
 
 ### Karaf Console
 
-**Connect to Karaf console:**
+#### Connect to Karaf console
 ```bash
 ./application/.karaf/bin/client
 # or
 ssh -p 8101 karaf@localhost
 ```
 
-**Useful commands:**
+#### Useful commands
 ```bash
 # List bundles
 bundle:list | grep <app>
@@ -179,11 +188,11 @@ config:list
 
 ### Logs
 
-**Locations:**
+#### Locations
 - Karaf: `application/.karaf/data/log/karaf.log`
 - Docker: `docker logs <app>-app`
 
-**Tail logs:**
+#### Tail logs
 ```bash
 tail -f application/.karaf/data/log/karaf.log
 
@@ -200,7 +209,7 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 
 ## Local Database Choice and Tests
 
-`./judo.sh start -o dbtype=hsqldb` runs against HSQLDB, the default uses PostgreSQL in Docker. After a rebuild always use `./judo.sh build -i` when tests and the running application disagree (stale `~/.m2` artifacts, see [Build Process](./build-process.md#stale-artifacts-and-multi-module-build-order)). Do not run the long `initdatatests` in the normal cycle.
+`./judo.sh start -o dbtype=hsqldb` runs against HSQLDB, the default from the generated `judo.properties` is `dbtype=hsqldb`; `-o dbtype=postgresql` (or `dbtype=postgresql` in `judo.properties`) runs PostgreSQL in Docker. After a rebuild always use `./judo.sh build -i` when tests and the running application disagree (stale `~/.m2` artifacts, see [Build Process](./build-process.md#stale-artifacts-and-multi-module-build-order)). Do not run the long `initdatatests` in the normal cycle.
 
 ## Troubleshooting
 
@@ -208,41 +217,51 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 
 #### "Port 8181 (or 8080) already in use"
 
-**Solution:**
+##### Solution
 - Check running processes: `lsof -i :8181` (Karaf) or `lsof -i :8080` (Keycloak)
-- Stop the conflicting service or start with another port: `./judo.sh start -o karaf_port=<port>`
+- Stop the conflicting service or start with another port: `./judo.sh start -o karaf_port=<port>` (Karaf, default 8181), `-o keycloak_port=<port>` (Keycloak, default 8080), `-o postgres_port=<port>` (PostgreSQL, default 5432); combine with commas. These options apply to the default `runtime=karaf`, not to the compose environments.
+- The browser login works on another Karaf port because the generated Keycloak clients allow any redirect URI (`*`); web origins depend on the configured CORS allow-origin. Run Playwright against it with `APP_URL=http://localhost:<port>` (the generated config defaults to `http://localhost:8181`).
 
 #### "Database connection failed"
 
-**Solution:**
+##### Solution
 - Check PostgreSQL running: `docker ps | grep postgres`
 - Restart PostgreSQL: `docker restart [container-name]`
 
 #### "Keycloak authentication failed"
 
-**Solution:**
+##### Solution
 - Check Keycloak running: `docker ps | grep keycloak`
 - Verify Keycloak configuration in environment variables
 
 #### "Bundle not starting"
 
-**Solution:**
+##### Solution
 - Check dependencies: `bundle:diag [bundle-id]`
 - View bundle details: `bundle:info [bundle-id]`
 - Check logs: `log:tail`
+
+#### No mails arrive / `ECONNREFUSED` on the SMTP port
+
+##### Solution
+- `./judo.sh start` and the template's compose environments start no SMTP server or mail catcher (`JUDO_PLATFORM_LOG_SMTP_SERVER=true` only enables logging). Run one yourself, for example `docker run -d --name <app>-mail -p 1025:1025 -p 8025:8025 axllent/mailpit`, and point the SMTP variables of [Email (SMTP)](application-config.md) at it. A stopped container is removed by `docker system prune`; recreate it with the same command.
+
+#### `Unable to access jarfile` for `target/judo-cli.jar`
+
+`target/judo-cli.jar` is copied into the root `target/` only by a `generate-root` run (the download execution overwrites it each time); a plain `mvn install` does not produce it. If the jar is missing (after a clean, a prune or a fresh checkout), run `./judo.sh generate-root` to restore it before calling the CLI.
 
 ### Hot Deployment Issues
 
 #### "Changes not applied"
 
-**Solution:**
+##### Solution
 - Verify bundle updated: `bundle:list -t 0`
 - Check JAR timestamp: `ls -l ~/.m2/repository/.../<app>-app/`
 - Force refresh: `bundle:update [bundle-id]`
 
 #### "Service not registered"
 
-**Solution:**
+##### Solution
 - Check bundle status: `bundle:list | grep <app>`
 - Restart bundle: `bundle:restart [bundle-id]`
 - Check for errors: `log:tail`
@@ -276,7 +295,7 @@ The template ships Eclipse m2e launchers in the generated `launcher` folder: `Bu
 **Frontend** (`.env` or export):
 ```bash
 VITE_API_DEFAULT_BASE_URL=http://localhost:8181
-VITE_KEYCLOAK_URL=http://localhost:8080
+VITE_KEYCLOAK_URL=http://localhost:8080/auth
 VITE_KEYCLOAK_REALM=<app>
 ```
 

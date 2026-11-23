@@ -11,7 +11,6 @@ projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/__tests__", "rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/utils"]
 alternatives: []
 related: [shared-service-helper-module, custom-component-directory, structure-generator-ignore-scope]
-fragment: "none: frontend-only"
 first_seen: 2026-11-12
 last_updated: 2026-11-12
 ---

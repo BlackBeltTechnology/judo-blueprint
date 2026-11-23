@@ -17,7 +17,6 @@ Generated UI pages follow from the entities. The transfer object drives the docu
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=document-review-state-machine cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Document {
@@ -64,4 +63,3 @@ classDiagram
   DocumentTransfer ..> Document : maps
   DocumentTransfer ..> DocumentState : currentState
 ```
-<!-- /mermaid:generated -->

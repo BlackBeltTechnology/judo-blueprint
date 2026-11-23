@@ -7,13 +7,17 @@
 | File | Purpose |
 |---|---|
 | `README.md` | Index of the ESM metamodel reference, one page per esm.ecore package. |
+| `accesspoint.agent.md` | Condensed map of `accesspoint.md`: read first, then `kb_get` one section |
 | `accesspoint.md` | Reference of the ESM accesspoint package: actors, claims, principals, accesses and security behaviour rules. |
 | `generator-reserved-names.md` | Member names that collide with generator-emitted methods and how to avoid them. |
 | `namespace.md` | Reference of the ESM namespace package: model, packages and naming. |
 | `operation.md` | Reference of the ESM operation package: operations, parameters, faults, statefulness, behaviours and rules. |
 | `other.md` | Reference of the ESM measure, expression and script packages. |
+| `structure.agent.md` | Condensed map of `structure.md`: read first, then `kb_get` one section |
 | `structure.md` | Reference of the ESM structure package: entity types, transfer objects, members, relations, mappings and behaviour rules. |
 | `type.md` | Reference of the ESM type package: primitive types, enumerations, cardinality and attribute rules. |
+| `ui-behaviour.agent.md` | Condensed map of `ui-behaviour.md`: read first, then `kb_get` one section |
 | `ui-behaviour.md` | Behaviour rules of ESM UI elements: when attributes are enabled, visible or constrained. |
 | `ui-visual-styleguide.md` | Visual style indicators and styling rules for ESM model elements and UI components. |
+| `ui.agent.md` | Condensed map of `ui.md`: read first, then `kb_get` one section |
 | `ui.md` | Reference of the ESM ui package: pages, forms, tables, fields, widgets, actions and their attributes. |

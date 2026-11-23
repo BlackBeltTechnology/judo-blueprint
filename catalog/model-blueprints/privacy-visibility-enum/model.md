@@ -6,7 +6,6 @@ A settings entity (for example `UserPrivacySettings`) carries one attribute per 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=privacy-visibility-enum cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class PrivacyVisibility {
@@ -17,4 +16,3 @@ classDiagram
     PUBLIC_FOR_EVERYONE
   }
 ```
-<!-- /mermaid:generated -->

@@ -1,6 +1,9 @@
 ---
 title: operation Package Reference
 description: Reference of the ESM operation package: operations, parameters, faults, statefulness, behaviours and rules.
+aliases: [operation metamodel, custom operation implementation, stateful operation, operation faults, operation type enum, initializer operation, GET_RANGE template]
+keywords: [Operation, operationType, customImplementation, stateful, faults, OperationType, INITIALIZER, MAPPED, GET_RANGE, GET_TEMPLATE, IllegalStateException]
+tags: [domain:model, layer:model, status:platform]
 ---
 
 # `operation` Package Reference
@@ -110,7 +113,9 @@ The `operationType` attribute is constrained by the owner class type and mapping
 | `INITIALIZER` | ✓ | Factory operations |
 | `MAPPED` | ✗ | No entity to map from |
 
-**Summary Constraints:**
+An unmapped transfer object accepts only `STATIC` operations (EVL `UnmappedTransferObjectTypeHasStaticOperations`). The ESM→PSM transformation creates each as an unbound operation placed in that transfer object's own PSM equivalent (rule `CreateInPlaceUnboundOperation`); a `STATIC` operation on an entity is instead placed in the entity's default transfer object. Any unmapped transfer object can therefore carry static operations, not only a `StaticOperations` container. An actor reaches the operation through a derived access on the actor whose target is a mapped transfer object; the validator reports `Access target have to be mapped` otherwise. The REST route is `POST /api/<app>/<Actor>/<TransferObject>/<operation>` with the input as the JSON body; a business fault returns 422 with the `X-Fault` header.
+
+##### Summary Constraints
 - `operationType = ABSTRACT` → owner is `EntityType` AND `advanced mode = true`
 - `operationType = MAPPED` → owner is `TransferObjectType` AND `mapping` is NOT null
 - `operationType = INSTANCE` → owner is `EntityType` OR (owner is `TransferObjectType` AND `mapping` is NOT null)
@@ -124,9 +129,12 @@ The `INITIALIZER` type is internally stored as a combination of `STATIC` type wi
 | `INITIALIZER` | `operationType = STATIC`, `initializer = true` |
 | Any other type | `initializer = false` |
 
-**On type change:**
+#### On type change
 - When `INITIALIZER` is selected: sets `initializer = true`, stores `operationType = STATIC`
 - When switching from `INITIALIZER` to another type: sets `initializer = false`
+
+#### Creating an initializer with the CLI
+The CLI does not apply the Designer's translation. `create`/`update -s operationType=INITIALIZER` stores the literal `INITIALIZER` with `initializer = false`. On an unmapped transfer object `validate` then fails (`must be static in unmapped transfer object type`, exit 1); on an entity it validates, but the operation is an instance operation, not an initializer, and the generated implementation interface is `accept(<Entity> _this)`. Write the stored form directly: `-s operationType=STATIC -s initializer=true` (check with `update <fqn> --schema`). The generated interface is then `void run()` on an entity and on an unmapped transfer object alike (no input, no output; with an output it is `<Output> get()`).
 
 ### Operation Attribute Rules
 
@@ -156,7 +164,7 @@ The `INITIALIZER` type is internally stored as a combination of `STATIC` type wi
 | `rangeExpression` | `rangeType = DERIVED` | JQL expression for filtering range |
 | `wrapAsOptional` | `input` is NOT null AND `input.target` is NOT mapped | Wrap nulls in Optional |
 
-**Cardinality Mapping:**
+#### Cardinality Mapping
 
 | Display | lower | upper |
 |---------|-------|-------|
@@ -171,6 +179,8 @@ The `INITIALIZER` type is internally stored as a combination of `STATIC` type wi
 | `outputType` | Always | Reference to output TransferObjectType |
 | `cardinality` | `output` is NOT null | `0..1`, `1..1`, or `0..*` |
 
+A `GET_PRINCIPAL` operation's output must have cardinality `0..1` (lower 0, upper 1); the model validation fails otherwise (`GET_PRINCIPAL output cardinality must be 0..1`).
+
 ### Output CRUD Settings
 
 When `output` is NOT null, CRUD permissions can be configured:
@@ -181,6 +191,8 @@ When `output` is NOT null, CRUD permissions can be configured:
 | `deleteable` | External clients can delete instances |
 
 ### Mapped Operation Rules
+
+The `generateOperations` flag has two defaults in the Java rules: `isMappedOperation` treats an absent flag as `false`, while `shouldGenerateOperations` treats it as `true`.
 
 **Visible when:** Owner is `TransferObjectType` AND `operationType = MAPPED`
 

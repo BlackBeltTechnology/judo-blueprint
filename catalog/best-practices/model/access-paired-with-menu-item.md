@@ -11,8 +11,6 @@ projects: [judo-demo-miniworkflow, mlszksz-platform, rackinspect, park-here, res
 evidence: ["judo-demo-miniworkflow:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "rackinspect:model/rackinspect.model", "park-here:unrecorded", "reserveapp:unrecorded", "ams-frontend:unrecorded", "indamedia-adtrack:unrecorded", "compsychletter:unrecorded"]
 alternatives: []
 first_seen: 2026-05-13
-fragment: access-paired-with-menu-item
-diagram: { kinds: [entity, transfer, actor], members: types }
 last_updated: 2026-11-10
 ---
 ## Intent
@@ -21,7 +19,7 @@ An `Access` on an actor defines a data surface (target transfer object, cardinal
 
 ## Practice
 
-Every access meant to be reached from the UI gets its own `MenuItemAccess`, either directly in the actor's `menuItems` or nested in a `MenuItemGroup`. Create the menu item in the same authoring step as the access. An access that is intentionally API-only is the one exception: say so in the model documentation.
+Every access meant to be reached from the UI gets its own `MenuItemAccess`, either directly in the actor's `menuItems` or nested in a `MenuItemGroup`. Create the menu item in the same authoring step as the access. Model tooling may create the `MenuItemAccess` (named `Menu`) together with the access; check for it and do not add a second one ([model development guide](../../agent-docs/model/model-development.md), Part 2). An access that is intentionally API-only is the one exception: say so in the model documentation.
 
 - **Access** carries data semantics only. It has no icon, label or "show in menu" flag.
 - **MenuItemAccess** carries the navigation chrome: `label`, `iconName`, `hidden`, `hiddenBy` and `enabledBy` (a data feature that drives visibility or enabled state) and a reference to one `Access` ([ui package reference](../../agent-docs/model/esm_metamodel/ui.md), *MenuItemAccess*). Hiding an entry is done on the menu item, never on the access, so a hidden entry still needs its `MenuItemAccess`.
@@ -62,7 +60,6 @@ Variants seen:
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=access-paired-with-menu-item cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Report {
@@ -78,4 +75,3 @@ classDiagram
   }
   ReportView ..> Report : maps
 ```
-<!-- /mermaid:generated -->

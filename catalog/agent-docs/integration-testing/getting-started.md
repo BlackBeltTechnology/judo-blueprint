@@ -1,6 +1,9 @@
 ---
 title: Integration Testing - Getting Started Guide
 description: "Target Audience: Beginners, new developers starting with JUDO integration tests"
+aliases: [first integration test, junit setup, run integration tests, transaction handling in tests, test table truncation, beginner integration testing, integration-test pom empty version, i18n-api version missing, integration-test module build fails]
+keywords: [@JudoTest, JudoRuntimeFixture, ReferenceInjector, TransactionHandling, truncateTables, AUTO_ROLLBACK, AUTO_COMMIT, MANUAL, mvn clean test, logback-test.xml, maven-surefire-plugin, i18n-api, integration-test pom]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Integration Testing - Getting Started Guide
 
@@ -96,6 +99,8 @@ This provides:
 </dependency>
 ```
 
+Platform libraries that the app module declares with `provided` scope (for example PDFBox) are not on the integration-test class path, because provided dependencies are not passed on to other modules. A test that uses such a library fails with `NoClassDefFoundError`. Declare the same artifact in the integration-test module with `provided` scope as well. The generated integration-test pom has no dependency fragment, so keep the edit under generator-ignore control (see [generator-ignore config protection](../../best-practices/backend/generator-ignore-config-protection.md)).
+
 ### Testing Dependencies
 
 ```xml
@@ -182,8 +187,12 @@ public class MyFirstIntegrationTest {
 | `modelSource` | `ModelSource` | `AUTO` | `AUTO` (filesystem, then classpath), `FILESYSTEM`, `CLASSPATH` |
 | `modules` | `Class<? extends Module>[]` | `{}` | Extra Guice modules (public no-arg constructor) |
 | `dataSourceMode` | `DataSourceMode` | `BY_METHOD` | `BY_METHOD`, `BY_CLASS`, `SINGLETON` (datasource lifecycle) |
-| `shareInjector` | `boolean` | `false` | Reuse the Guice injector across the methods of a class (with `BY_CLASS`/`SINGLETON`) |
+| `shareInjector` | `boolean` | `false` | Reuse the Guice injector across the methods of a class (with `BY_CLASS`/`SINGLETON`). Derived test artifacts are reused across methods only when this is `true`; the default `false` rebuilds them |
 | `interceptors` | `Class<? extends OperationCallInterceptor>[]` | `{}` | Interceptors registered for the test |
+
+With `dialect` `postgresql`, `container` `none` and `postgresql` start a PostgreSQL container, and `yugabytedb` starts a YugabyteDB container. Any other value creates no container, and datasource setup then fails. With `dialect` `hsqldb` the `container` value is not used.
+
+The yugabytedb container's liveness check is built with the wrong constructor and is effectively empty. Do not rely on the liveness check for yugabytedb tests.
 
 ### Transaction Handling Modes
 
@@ -198,12 +207,12 @@ public class MyTest {
 }
 ```
 
-**Behavior**:
+##### Behavior
 - Transaction starts before test method
 - Transaction rolls back after test method (success or failure)
 - Database remains clean between tests
 
-**Use when**:
+##### Use when
 - You want test isolation
 - You don't need to verify post-commit behavior
 - Most common mode for unit-style integration tests
@@ -217,12 +226,12 @@ public class MyTest {
 }
 ```
 
-**Behavior**:
+##### Behavior
 - Transaction starts before test method
 - Transaction commits after successful test
 - Transaction rolls back only on test failure
 
-**Use when**:
+##### Use when
 - You need to verify data persistence
 - Testing cascading operations
 - Verifying post-commit triggers
@@ -248,11 +257,11 @@ public class MyTest {
 }
 ```
 
-**Behavior**:
+##### Behavior
 - No automatic transaction management
 - You control `beginTransaction()`, `commitTransaction()`, and `rollbackTransaction()` on the `JudoRuntimeFixture`
 
-**Use when**:
+##### Use when
 - Testing complex multi-transaction scenarios
 - Verifying transaction boundary behavior
 - Testing error recovery
@@ -266,11 +275,11 @@ public class MyTest {
 }
 ```
 
-**Behavior**:
+##### Behavior
 - No transactions created by framework
 - Each DAO/service operation may run in its own transaction
 
-**Use when**:
+##### Use when
 - Testing read-only operations
 - Testing transaction-less operations
 - Performance testing without transaction overhead
@@ -294,7 +303,7 @@ public class MyTest {
 
 `AUTO_ROLLBACK` ignores `truncateTables`: the rollback is the cleanup, tables are never truncated. In `MANUAL` mode tables are truncated after the test even if you committed nothing. In `NONE` mode nothing is cleaned.
 
-**When to disable truncation**:
+#### When to disable truncation
 - Tests require expensive setup data
 - Testing data migration scenarios
 - Debugging - want to inspect data after test
@@ -386,7 +395,7 @@ public class UserDaoTest {
 }
 ```
 
-**Key Points**:
+#### Key Points
 - Use `fixture.getInjector().getInstance(DaoClass.class)` to get DAOs
 - Use `EntityForCreate.builder()` to create entities
 - Use `identifier()` to get entity identifiers for queries
@@ -449,7 +458,7 @@ public class CreateComplexEntityTest {
 }
 ```
 
-**Key Points**:
+#### Key Points
 - Use `ReferenceInjector.createAndInject(CustomClass.class, fixture.getInjector())` to instantiate custom operations
 - `ReferenceInjector` (`hu.blackbelt.judo.runtime.core.guice.testkit.util`) injects by **type**: every non-static, non-final field (and every single-argument `set*` method) whose type the Guice injector can provide is filled. It does not read `@Reference` / `@Inject`, because OSGi's `@Reference` has CLASS retention and is invisible to reflection. Use `createAndInject(Class, injector)` to create and wire an instance, `injectReferences(instance, injector)` for an existing one
 - Create all prerequisite entities before calling custom operations
@@ -558,32 +567,46 @@ public class MultiTransactionTest {
 }
 ```
 
-**Key Points**:
+#### Transaction rules
+
+##### Key Points
 - Always wrap operations in `beginTransaction()` / `commitTransaction()` / `rollbackTransaction()` blocks
+- Calling `beginTransaction()` while a transaction is still open throws `IllegalStateException`: 'Previous transaction was not completed'. Commit or roll back the open transaction first.
 - Use try-catch to ensure rollback on exceptions
 - Each transaction boundary is explicit and controlled
 - Useful for testing transaction isolation and consistency
+- `JudoRuntimeFixture.tearDown()` only rolls back a transaction that is still open. It does not close the injector or the datasource, so close the datasource yourself (for example in `@AfterEach`) when a test manages its own datasource.
 
 ---
 
 ## Running Tests
 
+The `application/integration-test` module is not listed in `application/pom.xml`, so `mvn -pl application/integration-test` from the project root fails with `Could not find the selected project in the reactor`. Run Maven from the module directory:
+
+```bash
+cd application/integration-test
+```
+
+### Known Issue: empty `i18n-api` version
+
+The generated `application/integration-test/pom.xml` declares `hu.blackbelt.osgi.i18n:i18n-api` with `<version></version>`. The generator never sets the `osgiI18nApiVersion` template variable, so the value is empty and Maven fails to resolve the dependency. Before running the tests, set the version explicitly to the `i18n-api` version your platform release uses, then run the commands below.
+
 ### Run All Integration Tests
 
 ```bash
-mvn clean test -pl application/integration-test
+mvn clean test
 ```
 
 ### Run Specific Test Class
 
 ```bash
-mvn clean test -pl application/integration-test -Dtest=UserDaoTest
+mvn clean test -Dtest=UserDaoTest
 ```
 
 ### Run Specific Test Method
 
 ```bash
-mvn clean test -pl application/integration-test -Dtest=UserDaoTest#testCreateUser
+mvn clean test -Dtest=UserDaoTest#testCreateUser
 ```
 
 ### Run with Debug Logging
@@ -607,8 +630,12 @@ Edit `src/test/resources/logback-test.xml`:
 Then run:
 
 ```bash
-mvn clean test -pl application/integration-test
+mvn clean test
 ```
+
+### Model Load Errors
+
+With `modelSource` `AUTO`, a model that cannot be loaded from the filesystem or the classpath fails with `Could not load model '<name>'. Filesystem error: ... Classpath error: ...`. Check the model name and that the model artifact is on the test classpath.
 
 ### Skip Tests During Build
 

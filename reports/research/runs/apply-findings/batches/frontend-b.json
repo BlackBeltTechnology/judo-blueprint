@@ -1,0 +1,185 @@
+{
+ "batch": "frontend-b",
+ "files": [
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+  "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+  "catalog/agent-docs/frontend/hooks/README.md",
+  "catalog/agent-docs/frontend/hooks/action-hooks.md",
+  "catalog/agent-docs/frontend/hooks/data-hooks.md",
+  "catalog/agent-docs/frontend/hooks/navigation-and-access.md",
+  "catalog/agent-docs/frontend/hooks/table-hooks.md",
+  "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+  "catalog/agent-docs/frontend/hooks/validation-hooks.md"
+ ],
+ "items": [
+  {
+   "id": "G054",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "text": "#### G054 `c02-18` R1 S09: Builder states the catalog has no hook for a view or field display; ui-hooks.md covers only AppBar, hero, logo, footer and menu. The only route it found is a model-level custom implementation on the f\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/ui-hooks.md`. ui-hooks.md has no field or value hook; advanced-patterns.md line 1519 does describe model-level customImplementation on an element. Add a pointer in ui-hooks.md: for field display use customImplementation on the DataField, with the key/scaffold names and the note that the field must stay in the mask.\n- **Why:** ui-hooks.md scope does not list field or detail display hooks, so a price display on a plain DataField has no documented hook. **Workaround:** Used the model customImplementation flag on the form and view price fields.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L916`, `session:L1206`"
+  },
+  {
+   "id": "G055",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "text": "#### G055 `c05-02` R9 : The documented menu reorder example sorts by item ids such as dashboard, but generated menu ids are long model ids, so the example cannot be used as written.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/ui-hooks.md`. The Reordering Menu Items example (line 340) orders by ids like dashboard and entities; generated menu item ids are long model ids. Change the example to match on a suffix or the real id format.\n- **Why:** The catalog example does not show the real id format of generated menu items. **Workaround:** Sorted the menu by item title (Products, Cart, My orders, My profile, My addresses) in registerShellHooks.ts; test checks the five labels.\n- **Validation:** confirmed; kind catalog-gap; catalog wrong. Evidence: `session:L2698`, `session:L2699`, `session:L2713`, `session:L2714`"
+  },
+  {
+   "id": "G056",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "text": "#### G056 `g-R10-13` R10 F40: The generated header puts AppBar extra components at the top left of the drawer under the logo; no documented slot for the top right, where a language switch is expected.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/ui-hooks.md`. Session L916 shows the AppBarExtraComponents hook doc; ui-hooks.md has no placement statement. Add: extras render in the drawer under the logo (column layout), wrap in a flex Box, and there is no top-right slot.\n- **Why:** ui-hooks.md describes the extra component but not its position. **Workaround:** Left in place.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L916`, `gaps:R10-13`"
+  },
+  {
+   "id": "G057",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "text": "#### G057 `c06-19` R11 F43, F41: Customer view fields that the page must load but not show (effectivePrice, onSale, ratingLabel, image, sale fields) were hidden with customImplementation=true and render-nothing components, because no\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `agent-docs/frontend/hooks/ui-hooks.md`. GAPS R1-2: there is no view-field hook; ui-hooks.md covers AppBar, hero, logo, footer, menu only. Add: for load-but-hide fields, set customImplementation=true on the DataField (not DataColumn, see c07-17) and render nothing.\n- **Why:** ui-hooks.md covers AppBar, hero, logo, footer and menu only; the only mechanism is a model-level custom implementation (already logged as a gap). **Workaround:** Layout-only components render the values in ProductDetailsLayout and CatalogHome.\n- **Validation:** confirmed; kind platform-limit; catalog partly-covered. Evidence: `session:L3566`, `session:L3567`, `session:L3569`, `session:L3570`"
+  },
+  {
+   "id": "G058",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "text": "#### G058 `c07-22` R12 F40: In the drawer, the generated layout stacks the AppBar extra components as a column, so the bell button stretched over the full drawer width and showed as a grey ellipse.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `agent-docs/frontend/hooks/ui-hooks.md`. ui-hooks.md has an AppBarExtras example but no note on layout. Add: in the drawer the extras stack as a column, wrap the content in one flex Box. Low value, evidence only the session.\n- **Why:** Generated layout of AppBar extra components has no documented row layout; the builder fixed it by wrapping them in one Box. **Workaround:** One flex Box wrapper inside AppBarExtras.\n- **Validation:** partly; kind platform-limit; catalog partly-covered. Evidence: `session:L3790`, `session:L3796`"
+  },
+  {
+   "id": "G059",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/ui-hooks.md",
+   "text": "#### G059 `c10-32` R15 : Custom menu groups were first typed 'collapse' and then changed to 'group' after the drawer rendered wrong.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/ui-hooks.md`. Chunk gives no reason; ui-hooks.md should list valid menu item types (group vs collapse) and which suits horizontal vs drawer menus (verify).\n- **Why:** Not stated in the chunk; the group type fits top-level menu groups in the horizontal bar. **Workaround:** sed change of the type to 'group'.\n- **Validation:** unverifiable; kind builder-mistake; catalog partly-covered. Evidence: `session:L5807`, `session:L5808`, `session:L5809`, `session:L5814`"
+  },
+  {
+   "id": "G071",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "#### G071 `c01-18` R0 S04: No model-level way to show a price with two decimals in the generated table. The table shows 89.9 and 129.5.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. formatValue is listed as 'format numeric values' only. GAPS item 32: generated column uses Intl.NumberFormat and ignores attribute scale. Add: scale/fraction digits are not honoured; use a derived string attribute or a custom column. Also a possible platform issue.\n- **Why:** The generated table valueFormatter uses Intl.NumberFormat with defaults. formatValue exists in the model but the table column does not set fraction digits. **Workaround:** Patched the generated table component (see c01-21).\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L390`, `session:L391`, `session:L393`, `session:L398`"
+  },
+  {
+   "id": "G072",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "#### G072 `c01-40` R0 S05: The generated table does not open the view page on a row click in a way the builder could find. The only row-click doc was the e2e test helper, and the embedded table row view button applies to refere\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. Only README.md line 212 mentions 'row click or view button'; no section says how a TransferObjectTable opens its view page (row click default versus a rowOperation). Add that behaviour once, checked against generated code.\n- **Why:** The catalog has no section on how a TransferObjectTable opens its view page (rowOperations versus row click). **Workaround:** Used a DOM eval to click the grid cell, which opened the view page.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L738`, `session:L740`, `session:L759`, `session:L761`"
+  },
+  {
+   "id": "G073",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "#### G073 `c02-31` R2 S11: Titles and menus still show internal names: 'ProductInfo Table', 'ProductInfo View / Edit', and the phone bottom bar shows 'ProductInfo' and 'Other'. Orchestrator requires user-facing labels 'Products\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. Docs say labels are i18n keys, but not that default titles come from the transfer object name (e.g. 'ProductInfo Table'). Add: set label on the table/view/menu item or add i18n keys; relates to c02-35/c03-23.\n- **Why:** Model labels still carry the entity name; the builder had not set labels or i18n for the pages, menu and bottom bar. **Workaround:** Round 3 task: fix labels via model label and/or i18n, as the kb documents.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L1407`, `session:L1410`. Merged: c03-23, g-R3-4, g-R6-7, g-R7-13"
+  },
+  {
+   "id": "G074",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "#### G074 `c04-06` R8 : The numeric price column cannot be shown formatted or sorted another documented way, so the admin table shows 79.9 and the builder only renamed the header to 'Price (EUR)' to fit it.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. DataColumn formatValue is listed (line 38) but not what it does; GAPS R12-3 shows generated numeric columns only get a localized number, no currency. Say formatValue is locale number formatting only; for a currency use a unit in the label or a custom visual element with the shared Price component.\n- **Why:** The DataColumn schema has formatValue and sort settings, but the builder found no documented way to format a numeric column value (R1-1 and R6-4 remain open). **Workaround:** Kept the numeric column with a shorter label and a width; formatting left open.\n- **Validation:** partly; kind catalog-gap; catalog partly-covered. Evidence: `session:L2360`, `session:L2361`, `session:L2397`, `gaps:R8-3`. Merged: c07-15"
+  },
+  {
+   "id": "G075",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "#### G075 `c07-14` R12 F45: The label of a row action must be set on the operation form element (TableOperation::<op>::<op>), not on the TableOperation. Setting label on the TableOperation or on a guessed element name failed wit\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md`. Element naming for row action labels is not shown; label belongs on the operation form element TableOperation::<op>::<op>. Add one example with the CLI update command.\n- **Why:** Element naming and the label location for row actions are not shown in the catalog. **Workaround:** Set label on ...::changePricesTableOperation::changePrices and ...::requestReturnTableOperation::requestReturn.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3955`, `session:L4261`, `session:L4262`, `session:L4266`. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G080",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "text": "#### G080 `c02-48` R5 S10: A custom view layout cannot be made from a placeholder: a ui:Placeholder marked customImplementation generates no scaffold and renders nothing. The builder then removed the price and description field\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md`. widgets.md line 312 only says 'marked for custom implementation'. GAPS R5-2: a Placeholder with customImplementation generates no scaffold and renders nothing; customImplementation on a DataField works. Add that.\n- **Why:** Catalog gives no documented hook for replacing a whole view; the placeholder route does not render, and the field-based data load is not documented. **Workaround:** Kept all three view fields as custom implementations; only the name component renders the full layout, the price and description components render nothing.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L1709`, `session:L1711`, `session:L1715`, `session:L1719`"
+  },
+  {
+   "id": "G081",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "text": "#### G081 `c03-18` R6 F02: Relation widget on the product form rendered as a link button; the builder wanted a dropdown picker for the category and found that a dropdown is a separate widget (isTypeAheadField/autocompleteRows),\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md`. autocompleteRows is documented (line 110, 129) but nothing says a dropdown picker is not a representationComponent value. Add to the to-one relation row of ui-authoring-guide.md: for a picker use button plus autocompleteRows; isTypeAheadField is only for strings.\n- **Why:** The mapping of to-one relation to widget is split across attributes and the catalog pages disagree on which values apply. **Workaround:** Kept the table representation and used the existing relation selector in the form.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L1916`, `session:L1918`, `session:L1921`, `session:L1922`"
+  },
+  {
+   "id": "G082",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "text": "#### G082 `c05-41` R10 F31: The Ordered field on the admin order view showed a date picker icon although it should be read-only; a derived boolean in enabledBy greyed it out but left the picker.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md`. textWidget TEXT is the only read-only switch (string fields only, line 45). Nothing for date, number or enum fields. Add the options: show a derived (non-editable) member instead of the mapped one, or use enabledBy and accept the picker.\n- **Why:** The kb has no read-only switch for a mapped timestamp field; isReadOnly exists only for derived members. **Workaround:** Derived string orderedAtLabel replaces the field on both order views (sorting keeps the real timestamp); test checks a text box with no date group or picker button.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L3009`, `session:L3010`, `session:L3011`, `session:L3012`. Merged: c09-09. add\u2192modify (target file exists; add a section)"
+  },
+  {
+   "id": "G083",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "text": "#### G083 `c10-11` R15 : Setting textWidget=TEXT on read-only string fields removed their labels in the generated order view (values with an icon, no label). The change was reverted to INPUT; the 'read-only shows as text' req\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md`. widgets.md line 45 says TEXT=read-only but not that the label is dropped in the generated view. Add that effect; possible generator bug worth a ticket.\n- **Why:** The kb says TEXT means read-only but says nothing about labels; the generated theme styles read-only inputs but the builder found no documented labelled-text route. **Workaround:** Reverted all 158 fields to INPUT via .scratch/r15-model.py; relied on the generated theme read-only styling.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L5735`, `session:L5937`, `session:L5938`, `session:L5940`"
+  },
+  {
+   "id": "G094",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "text": "#### G094 `c05-50` R10 F36: After Apply coupon or Remove coupon the generated cart page does not give the custom cart summary component new data, so the total stayed stale.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/action-hooks.md`. Custom visual components are not refreshed after operations; window event workaround is the builder pattern. Add the recipe; not enough to call it a bug.\n- **Why:** Post-operation flow does not refresh custom visual components. **Workaround:** Post-operation hooks dispatch a window event; the cart component listens and reloads; cart component also reloads on new signed identifier.\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `session:L3130`, `session:L3193`, `session:L3195`, `session:L3197`"
+  },
+  {
+   "id": "G095",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "text": "#### G095 `g-R10-11` R10 F39: The post-operation hook is registered per page key; the order view exists as three pages (two admin, one shop), so three registrations are needed; without a hook the output dialog shows only a downloa\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/action-hooks.md`. action-hooks.md documents the post<Operation>For<Page>Action naming, which implies per page. Add one line: the same operation shown on N pages needs N hook registrations.\n- **Why:** Hooks are keyed by generated page/operation name. **Workaround:** Registered the hook for each page.\n- **Validation:** partly; kind none; catalog partly-covered. Evidence: `gaps:R10-11`"
+  },
+  {
+   "id": "G096",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "text": "#### G096 `c08-20` R13 F55: After the buyer joins with the key, the My company menu does not appear until the shell starts again.\n\n- [ ] **Issue**  Action: [x] add [ ] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** add-catalog \u2192 `agent-docs/frontend/hooks/action-hooks.md`. Menu is built at shell start; after an operation changes the actor access, reload with window.location.assign. Session only, low evidence.\n- **Why:** Builder comment says menu entries are decided from the principal read at shell start, so a page change does not refresh them. **Workaround:** Post-join hook calls window.location.assign on the start URL to reload the shell.\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `session:L4868`, `session:L4879`, `session:L4889`"
+  },
+  {
+   "id": "G108",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/table-hooks.md",
+   "text": "#### G108 `c01-19` R0 S04: The table column customizer example in table-hooks.md uses a (original) => ... signature and registration that do not match the shipped type, which is () => ColumnCustomizer.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/table-hooks.md`. Example uses (original) => ({...}); shipped type in utilities/table.ts is ColumnCustomizerHook<T> = () => ColumnCustomizer<T>, ColumnCustomizer = (original) => GridColDef. Fix the example. Also GAPS R12-3: generated tables import the key but never consume it (platform bug, see c02-14).\n- **Why:** Docs out of date against utilities/table.ts in the generated app. **Workaround:** Not used. Builder edited generated code instead.\n- **Validation:** confirmed; kind catalog-wrong; catalog wrong. Evidence: `session:L402`, `session:L403`, `session:L414`, `gaps:R0-12`. Merged: c02-14, c02-17"
+  },
+  {
+   "id": "G110",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/hooks/README.md",
+   "text": "#### G110 `c02-49` R5 S10: After the view fields were removed, regeneration dropped the view's .default scaffold, but the builder's copied register file stayed in src/custom. The frontend build then failed (TS2305 missing expor\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/hooks/README.md`. Not covered. Add: a hand-copied scaffold is never removed when its element disappears; delete the copied register file when the model element is removed, or the frontend build fails (TS2305).\n- **Why:** A hand-copied scaffold is not removed by generate; the catalog does not say what happens to a copied scaffold when its element disappears. **Workaround:** Rewrote the register file by hand for the remaining custom elements and rebuilt.\n- **Validation:** confirmed; kind catalog-gap; catalog missing. Evidence: `session:L1711`, `session:L1712`, `session:L1713`, `session:L1714`"
+  },
+  {
+   "id": "G130",
+   "src": "gap-analysis",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md",
+   "text": "#### G130 `c03-66` R7 F09: Admin product view cannot show the stored image: the generated binary field is an upload control that shows the file name, so the image test on the admin view was changed to check the file name.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/frontend/esm-to-ui-mappings/README.md (binary field)`. The generated admin binary field is an upload control showing the file name; this is design behaviour, not a bug. Catalog should say that an image preview needs a custom visual element (see binary-blob-url-hook.md).\n- **Why:** The generated admin binary widget is an upload field; a picture view needs a custom display, which the customer front provides. **Workaround:** Admin test asserts the file name; the customer front shows the image through the generated ImageDisplay path.\n- **Validation:** partly; kind platform-limit; catalog missing. Evidence: `session:L2244`, `session:L2283`, `session:L2285`, `session:L2347`"
+  },
+  {
+   "id": "AU6",
+   "src": "findings-audit",
+   "target": "catalog/agent-docs/frontend/hooks/README.md",
+   "text": "| 6 | `frontend/hooks/README.md:386` | `src/custom/hooks/usePrincipal.tsx` in the recommended custom tree | still wrong (minor) | `judo-ui-react-template@ad0848bc:.../actor/src/auth/principal-context.tsx.hbs:66` | agent-docs-review FE-002 / FR-069 (fixed only in `frontend/README.md`) |"
+  },
+  {
+   "id": "KC10",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "text": "| K77.C3 FALSE: bytes always come from `DownloadServlet` | `frontend/hooks/action-hooks.md` names DownloadServlet; there is no general statement | **No** (not added) |"
+  },
+  {
+   "id": "KC18",
+   "src": "knowledge-check",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/widgets.md",
+   "text": "| R19: small table loads every row, and inline edit only works with `isEager` | `frontend/esm-to-ui-mappings/widgets.md:106` says \"without pagination\"; no fragility caveat | Partly (pre-existing text) |"
+  },
+  {
+   "id": "NG0018",
+   "src": "judo-ng-read:-template-judo-ui-typescript-rest-template",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md",
+   "text": "## [wrong-fact] openspec/specs/query-infrastructure/spec.md:123\n- src: judo-ng-read | status: validated | evidence: template/judo-ui-typescript-rest-template:openspec/specs/query-infrastructure/spec.md:123\n- claim: FilterBy value type for DateType (and TimeType, TimestampType at lines 124-125) is string.\n- fact: filterable.ts.hbs emits value: typescriptType(dataType), which gives Date for DateType, TimeType and TimestampType.\n"
+  },
+  {
+   "id": "NG0054",
+   "src": "judo-ng-read:-template-judo-esm-fullstack-project-template",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/tables-navigation.md",
+   "text": "## [wrong-fact] CONTRIBUTING.md:300\n- src: judo-ng-read | status: validated | evidence: template/judo-esm-fullstack-project-template:CONTRIBUTING.md:300\n- claim: The judo-esm-generator-maven-plugin groupId is hu.blackbelt.judo.generator\n- fact: The plugin groupId is hu.blackbelt.judo.meta (README.md:181 and template test pom)\n"
+  },
+  {
+   "id": "NG0105",
+   "src": "judo-ng-read:-runtime-judo-tatami",
+   "target": "catalog/agent-docs/frontend/hooks/action-hooks.md",
+   "text": "## [wrong-fact] docs/transformation/esm2psm.md:214\n- src: judo-ng-read | status: validated | evidence: runtime/judo-tatami:docs/transformation/esm2psm.md:214\n- claim: ETL files sit directly in src/main/epsilon/transformations/psm/ as namespace.etl, type.etl, data.etl, derived.etl, measure.etl, service.etl,\n- fact: The files live in per-module sub-directories with other names, e.g. modules/type/type.etl, modules/data/entityType.etl, modules/service/tran\n"
+  },
+  {
+   "id": "NG0143",
+   "src": "judo-ng-read:-models-judo-meta-esm",
+   "target": "catalog/agent-docs/frontend/esm-to-ui-mappings/README.md",
+   "text": "## [wrong-fact] model/src/main/epsilon/validations/ui/actionButton.evl\n- src: judo-ng-read | status: validated | evidence: models/judo-meta-esm:model/src/main/epsilon/validations/ui/actionButton.evl\n- claim: disagrees: ui/AGENTS.md:8 says VIRTUAL is required for buttons 'directly on' a TransferObjectView, but the guard (actionButton.evl:9) tests \n"
+  }
+ ]
+}

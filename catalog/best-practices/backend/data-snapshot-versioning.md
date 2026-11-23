@@ -11,7 +11,6 @@ projects: [itracker, indamedia-adtrack, workflow-poc]
 evidence: ["itracker:unrecorded", "indamedia-adtrack:unrecorded", "workflow-poc:unrecorded"]
 alternatives: [product-versioning-container]
 related: [state-lifecycle-operation, builder-pattern-entity-creation, product-versioning-container]
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

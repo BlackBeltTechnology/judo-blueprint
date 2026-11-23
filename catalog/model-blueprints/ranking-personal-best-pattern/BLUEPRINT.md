@@ -10,8 +10,6 @@ status: single-project
 projects: [trivia]
 evidence: ["trivia:unrecorded"]
 alternatives: []
-fragment: ranking-personal-best-pattern
-diagram: { kinds: [entity, enum, transfer], members: types }
 first_seen: 2026-03-05
 last_updated: 2026-11-10
 ---

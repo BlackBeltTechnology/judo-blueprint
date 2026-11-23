@@ -1,6 +1,9 @@
 ---
 title: ESM to UI Mapping: Widget Components
 description: ESM to UI Mapping: Widget Components: ESM to UI model mapping reference for the generated React frontend.
+aliases: [widget attributes, data field widget type, table reference field options, operation form dialog, confirmation dialog settings, action group overflow, stepper wizard, text field widget]
+keywords: [ui:DataField, ui:TabularReferenceField, ui:OperationForm, representationComponent, enumWidget, textWidget, booleanWidget, confirmationType, featuredActions, relationFeature, rowsPerPage, autocompleteRows]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # ESM to UI Mapping: Widget Components
@@ -13,6 +16,10 @@ This document covers widget components that display and edit data within contain
 
 ## Widget Components
 
+### Form Autofocus
+
+In a form container the first input whose attribute is not read-only receives focus after `autoFocusRefDelay` (200 ms). The selection checks only the attribute's read-only flag, not visibility, so a hidden input that comes first can receive focus.
+
 ### DataField (ui:DataField)
 
 **Supertypes:** `Widget` → `Component` → `FormElement` → `VisualElement` → `NamedElement`
@@ -23,7 +30,7 @@ This document covers widget components that display and edit data within contain
 | `ui:DataField` | `label` | Label text | Input label (i18n) |
 | `ui:DataField` | `iconName` | Icon | Input adornment |
 | `ui:DataField` | `col` | Grid column (1-12) | Grid md prop (default: 12) |
-| `ui:DataField` | `row` | Row span | Textarea rows (default: 1) |
+| `ui:DataField` | `row` | Row span | Textarea rows (default: 1). Only `rows` is emitted; `minRows` is not. |
 | `ui:DataField` | `stretch` | Stretch behavior | `NONE`/`HORIZONTAL`/`VERTICAL`/`BOTH` |
 | `ui:DataField` | `fit` | Fit mode | `LOOSE`/`TIGHT` |
 | `ui:DataField` | `dataFeature` (ref) | Bound attribute | Data binding |
@@ -41,17 +48,19 @@ Type-specific attributes:
 
 | Attribute | Applies To | Values | Frontend Effect |
 |-----------|------------|--------|-----------------|
-| `enumWidget` | EnumerationType | `COMBO`/`RADIO`/`TOGGLE_BUTTONBAR` | Enum input type |
-| `textWidget` | StringType | `TEXT`/`INPUT` | `TEXT`=read-only, `INPUT`=editable |
+| `enumWidget` | EnumerationType | `COMBO`/`RADIO`/`TOGGLE_BUTTONBAR` | Enum input type. `COMBO` renders an MUI Autocomplete, not a Select with MenuItem options. |
+| `textWidget` | StringType | `TEXT`/`INPUT` | `TEXT`=read-only, `INPUT`=editable. `TEXT` renders the value as plain text (`ui:Formatted`): no label, no input, no tooltip, optionally an icon. `INPUT` renders a labelled input (`ui:TextInput` or `ui:TextArea`). To keep the label on a read-only value, use `INPUT` on a read-only (derived) member. |
 | `textMultiLine` | StringType | Boolean | Enable textarea |
-| `textMask` | StringType | Pattern string | Input mask (only when `textWidget=INPUT` and `textMultiLine=false`) |
-| `textCountCharacters` | StringType | Boolean | Show character counter |
+| `textMask` | StringType | Pattern string | Input mask (only when `textWidget=INPUT` and `textMultiLine=false`). The generated input does not apply it: only `maxLength` is emitted. |
+| `textCountCharacters` | StringType | Boolean | Show character counter. Rendered only when `countCharacters` is set and the bound attribute has `maxLength`. |
 | `isTypeAheadField` | StringType | Boolean | Autocomplete from previous values |
-| `booleanWidget` | BooleanType | `CHECKBOX`/`COMBO` | Boolean input type |
+| `booleanWidget` | BooleanType | `CHECKBOX`/`COMBO`/`SWITCH` | Boolean input type. ESM models (esm2ui): unset or `CHECKBOX` gives a checkbox, `COMBO` the trinary-logic combo, `SWITCH` a `ui:Switch`. The React template has widget fragments only for checkbox and trinary-logic combo, so do not rely on `SWITCH` (*verify* how it renders). JSL models (jsl2ui): a boolean view field always becomes the trinary-logic combo; the checkbox rule is commented out. |
 | `valueLabelPlacement` | BooleanType | `DEFAULT`/`TOP`/`START`/`BOTTOM`/`END` | Checkbox label placement (only when `booleanWidget=CHECKBOX`) |
 | `formatValue` | NumericType | Boolean | Apply number formatting (default: true) |
 
-**Type-Specific Behaviour (from ui-behaviour.md):**
+##### Widget attributes per data type
+
+###### Type-Specific Behaviour (from ui-behaviour.md)
 
 | Data Type | Available Attributes | Conditional Rules |
 |-----------|---------------------|-------------------|
@@ -62,13 +71,21 @@ Type-specific attributes:
 | `TimestampType` | `minValueBy`, `maxValueBy` | `minValueBy`/`maxValueBy` disabled when in TableOperation |
 | `TimeType` | `minValueBy`, `maxValueBy` | `minValueBy`/`maxValueBy` disabled when in TableOperation |
 | `BooleanType` | `booleanWidget`, `valueLabelPlacement` | `valueLabelPlacement` enabled only when `booleanWidget=CHECKBOX` |
-| `BinaryType` | - | File upload widget |
+| `BinaryType` | - | File upload widget. `maxFileSize` is not enforced client-side, and binary uploads are not base64-encoded in the generated input. |
 | `MeasuredType` | - | Inherits NumericType behavior |
+
+**Read-only fields of other types:** `textWidget=TEXT` is the only switch and applies to string fields. A date, number or enumeration field is rendered read-only when its bound member is read-only (a derived member); `enabledBy` only disables the input, so a date field keeps its picker icon. To show such a value as plain text, bind a derived string member (for example a formatted value) instead of the mapped member.
 
 **Inherited from `Widget`:** `onBlur`, `requiredBy`, `minValueBy`, `maxValueBy`
 **Inherited from `Component`:** `col`, `row`, `stretch`, `fit`, `hiddenBy`, `enabledBy`
 
-**Example:**
+###### Generated input notes
+- Numeric inputs use only the attribute `scale` (as `decimalScale`); `precision` has no effect.
+- No `PasswordInput` element type exists; password fields are not produced by a separate template.
+- Text areas set `rows` only; `minRows` is not emitted.
+- Time inputs always show hours, minutes and seconds; `baseUnit` is not read.
+
+###### Example
 ```xml
 <components xsi:type="ui:DataField"
   xmi:id="_T-UiwLLKEfCE0JrRXgRyVA"
@@ -85,6 +102,11 @@ Type-specific attributes:
   formatValue="true"/>
 ```
 
+- **Boolean combo:** the trinary-logic combo has three entries, `Yes` (true), `No` (false) and `Unknown` (null or undefined). The generated widget therefore shows "unknown" for an empty value.
+- **Hide a row action per row:** set `hiddenBy` on the row button to a boolean attribute of the row's transfer object. The generated table hides the button when `!!row.<attribute>` is true. There is no other per-row hook.
+- **Count only:** a table with `showTotalCount` sends the header `X-Judo-CountRecords: true` on its list call and reads the total from the `X-Judo-Count` response header. A count-only call is a list call with that header and `_mask: '{}'`; read the header from the response, ignore the body.
+- **Route parameters:** a page route is the page name split at `::`, each part capitalized and joined with `/`, plus `/:signedIdentifier` when the page is a view on a relation (or a refreshable output view), unless it opens in a dialog or is a single-access page. The identifier in the URL is the signed identifier (`__signedIdentifier`) of the row.
+
 ### TabularReferenceField (ui:TabularReferenceField)
 
 **Supertypes:** `Tabular` + `ReferenceField` → (`VisualElement`, `Widget` + `PerformableAction`)
@@ -100,7 +122,7 @@ A complex widget for managing relationships (to-one or to-many).
 | `ui:TabularReferenceField` | `relationFeature` (ref) | Bound relation | Data binding to RelationMember |
 | `ui:TabularReferenceField` | `representationComponent` | Display type | `table`/`tag`/`card`/`button` |
 | `ui:TabularReferenceField` | `buttonStyle` | Button style | `text`/`contained`/`outlined` (when `representationComponent=button`) |
-| `ui:TabularReferenceField` | `smallTable` | Compact mode | Dense table without pagination |
+| `ui:TabularReferenceField` | `smallTable` | Compact mode | Dense table without pagination. Carried to the ui model as `isSmallTable`; the React generator does not read it. Pagination depends on the table being eager: a table over an aggregation or composition relation (or inside a Form) is eager (all rows in memory, no paging), any other table is lazy and paged |
 | `ui:TabularReferenceField` | `checkboxSelection` | Selection mode | `AUTO`/`ENABLED`/`DISABLED` |
 | `ui:TabularReferenceField` | `countRows` | Show row count | Display total row count |
 | `ui:TabularReferenceField` | `isInlineEditable` | Inline editing | Enable inline row editing |
@@ -130,12 +152,14 @@ A complex widget for managing relationships (to-one or to-many).
 | `relationKind in (AGGREGATION, COMPOSITION)` | `smallTable` |
 | `representationComponent == 'button'` | `buttonStyle` |
 
+`representationComponent` has no dropdown value (only `table`, `tag`, `card`, `button`). For a to-one relation, the relation selector's autocomplete search is limited by `autocompleteRows`; `isTypeAheadField` applies only to string attributes, not to relations.
+
 **Inherited from `Tabular`:** `columns`, `filters`, `rowOperations`, `tableOperations`, `countRows`, `checkboxSelection`, `isInlineEditable`, `additionalMaskFeatures`
 **Inherited from `ReferenceField`:** `relationFeature`
 **Inherited from `Widget`:** `onBlur`
 **Inherited from `Component`:** `col`, `hiddenBy`, `enabledBy`
 
-**Example:**
+##### Example
 ```xml
 <components xsi:type="ui:TabularReferenceField"
   xmi:id="_UINekLLKEfCE0JrRXgRyVA"
@@ -178,7 +202,7 @@ Widget that triggers an action, bound to a specific operation. Typically renders
 | `ui:OperationForm` | `generateActionsHook` | Enable actions hook | Extension point for custom actions |
 | `ui:OperationForm` | `components` | Form widgets | DataFields, ActionButtons, Groups |
 
-**Confirmation Types:**
+#### Confirmation Types
 
 | Type | Frontend Effect |
 |------|-----------------|
@@ -186,13 +210,13 @@ Widget that triggers an action, bound to a specific operation. Typically renders
 | `CONDITIONAL` | Confirmation dialog shown based on boolean attribute value |
 | `MANDATORY` | Confirmation dialog always shown before execution |
 
-**Nested Form Elements:**
+#### Nested Form Elements
 - `DataField` - Input fields bound to operation parameters
 - `ActionButton` - Submit/Cancel buttons
 - `Group` - Layout container for organizing form fields
 - `TabularReferenceField` - Relation selector within form
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:OperationForm"
   xmi:id="_ABC123"
@@ -221,7 +245,7 @@ Simple unbound text display widget for static text or labels.
 | `ui:TextField` | `col` | Grid column | Layout width |
 | `ui:TextField` | `variant` | Text style | Typography variant |
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:TextField"
   xmi:id="_DEF456"
@@ -242,7 +266,7 @@ Button for standard form actions like Submit or Cancel.
 | `ui:ActionButton` | `iconName` | Icon | Button icon |
 | `ui:ActionButton` | `variant` | Button style | contained/outlined/text |
 
-**Action Types:**
+#### Action Types
 
 | Action | Frontend Effect |
 |--------|-----------------|
@@ -290,7 +314,7 @@ Visual separator element for dividing sections within a container.
 | `ui:Divider` | `col` | Grid column | Layout width |
 | `ui:Divider` | `row` | Row span | Layout height |
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:Divider"
   xmi:id="_DIV123"
@@ -309,9 +333,9 @@ Reserved space for custom implementations or future content.
 | `ui:Placeholder` | `name` | Placeholder name | Component name |
 | `ui:Placeholder` | `col` | Grid column | Layout width |
 | `ui:Placeholder` | `row` | Row span | Layout height |
-| `ui:Placeholder` | `customImplementation` | Custom flag | Marked for custom implementation |
+| `ui:Placeholder` | `customImplementation` | Custom flag | Marked for custom implementation; the generator has no widget for a placeholder, so it renders nothing. To plug in a custom component, set `customImplementation` on a `DataField` instead (see [hooks/ui-hooks.md → Field and View Display](../hooks/ui-hooks.md)) |
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:Placeholder"
   xmi:id="_PH123"
@@ -333,7 +357,7 @@ Standalone icon display widget.
 | `ui:Icon` | `col` | Grid column | Layout width |
 | `ui:Icon` | `row` | Row span | Layout height |
 
-**Example:**
+#### Example
 ```xml
 <components xsi:type="ui:Icon"
   xmi:id="_ICO123"
@@ -357,7 +381,14 @@ Container for grouping related actions/buttons with automatic overflow handling.
 
 **Behaviour:** The first `featuredActions` actions are displayed as standalone buttons. Remaining actions are placed in a popup menu.
 
-**Example:**
+#### FAB button groups
+- A FAB group with one button and `featuredActions=0` renders nothing, because the speed dial needs more than one button.
+- The speed-dial toggle shows the group icon or no icon; it never uses a `SpeedDialIcon` element.
+- `hiddenBy` applies to featured FAB buttons, not to speed-dial items in the same group.
+- Dialog FAB groups render after `DialogContent`, outside the dialog body.
+- A page counts as having a FAB group when any nested `ButtonGroup` is a FAB, even if no top-level group is. Workaround: place FAB groups directly under the page container.
+
+#### Example
 ```xml
 <actionGroup xsi:type="ui:ActionGroup"
   xmi:id="_AG123"

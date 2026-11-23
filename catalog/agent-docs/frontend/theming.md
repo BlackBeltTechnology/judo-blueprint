@@ -1,6 +1,9 @@
 ---
 title: Frontend Theming and Styling
 description: MUI theme palette, component override fragments, sub-themes, fonts, dark mode and responsive styling of the generated React frontend.
+aliases: [change brand colour, app palette colors, MUI theme override, sub theme card colour, dark mode toggle, custom font setup, responsive styling breakpoints, theme fragments]
+keywords: [palette.ts, paletteThemeLight, primaryColor, secondaryColor, ActorType, SubThemeHook, SUB_THEME_HOOK_INTERFACE_KEY, SubThemeWrapper, createTheme, sx, useMediaQuery, .generator-ignore]
+tags: [domain:frontend, layer:frontend, status:platform]
 ---
 
 # Theming and Styling
@@ -11,7 +14,7 @@ The frontend uses Material-UI (MUI) theming system for consistent styling. Theme
 
 JUDO theming is **two-layered**:
 
-1. **Actor palette (model-driven)** — the `ActorType` in the ESM model carries 7 color attributes (`primaryColor`, `secondaryColor`, `backgroundColor`, `paperBackgroundColor`, `textPrimaryColor`, `textSecondaryColor`, `subtitleColor`) plus `applicationLogo`. The generator renders these into `src/theme/palette.ts`. **To change the app-wide brand palette, edit the ActorType in the ESM model — not `palette.ts` directly** (editing `palette.ts` requires a `.generator-ignore` entry and loses cross-actor consistency).
+1. **Actor palette (model-driven)** — the `ActorType` in the ESM model carries 7 color attributes (`primaryColor`, `secondaryColor`, `backgroundColor`, `paperBackgroundColor`, `textPrimaryColor`, `textSecondaryColor`, `subtitleColor`) plus `applicationLogo`. The generator renders these into `src/theme/palette.ts`. The logo is rendered as a plain `<img>` limited by `maxHeight`/`maxWidth` of 100%, so give an SVG logo explicit `width` and `height` attributes. The palette and the default logo are rendered at generation time; the generated frontend has no built-in way to read brand values from runtime data such as a settings row. The logo image, icon and subtitle can be overridden in code with a `CustomLogoPropsHook` service. **To change the app-wide brand palette, edit the ActorType in the ESM model — not `palette.ts` directly** (editing `palette.ts` requires a `.generator-ignore` entry and loses cross-actor consistency).
 2. **Component sub-themes (frontend)** — a `subTheme` name set on a widget in the UI model selects a registered `SubThemeHook` service that returns partial MUI overrides, applied via a nested `ThemeProvider`. Use this for per-card, per-view, per-table color variations.
 
 For the **authoring side** (ESM mutations to set ActorType colors, plan sub-theme keys via consistent Group naming, and enable data-driven `generateVisualPropertiesHook` / `TableRowHighlightingHook`), see the `judo-model-cli` skill's `ui-mutations.md` — specifically the **Visual Language → Theming & colors** section and **Recipes 18 (sub-theme card colors) and 19 (row highlighting)**.
@@ -177,6 +180,8 @@ export const customTheme = createTheme({
 });
 ```
 
+Button `lineHeight` in the generated theme options uses the extra-small scale factor (`scaleXs`) in the `sm-md`, `md-lg`, `lg-xl` and `up-xl` breakpoint branches, so buttons get the wrong line height at larger widths. Workaround: set `button.lineHeight` in a theme override fragment (see [Theme Override Fragments](#theme-override-fragments)).
+
 ### Component Overrides
 
 ```typescript
@@ -236,6 +241,8 @@ export const customTheme = createTheme({
 });
 ```
 
+Known issue: breakpoint keys in a `MuiTab` override must sit inside a slot. The generated Tab fragment (`actor/src/theme/index.ts.mui-tab.fragment.hbs`) puts the `breakpoints.down`, `between` and `up` keys directly under `styleOverrides`, beside `root`. MUI's Tab `overridesResolver` reads only named slots (`root`, `labelIcon`, `iconWrapper` and similar), so these responsive tab overrides are not applied. Workaround: in an `index.ts.mui-tab.fragment.hbs` override, move each breakpoint block inside `root`.
+
 ## Theme Override Fragments
 
 The generated theme (`src/theme/index.tsx`) is assembled from fixed fragments that you can override by creating a same-named file in the application's `actor/src/theme/` override directory (see [Template Override Process](./README.md#template-override-process)):
@@ -281,6 +288,8 @@ const serviceEntityCardSubTheme = (parentTheme: Theme, data?: any) => ({
 ```
 
 The function receives `(parentTheme: Theme, data?: any)` where `data` is the data of the wrapped widget, so styling can depend on values (for example a status colour).
+
+The generated `SubThemeWrapper` builds the service filter `(&(objectClass=SubThemeHook)(name=<name>)` without its closing parenthesis, so a custom sub-theme can fail to resolve. Workaround: register the sub-theme under the exact name and check the lookup in the browser console.
 
 ### Use Cases
 
@@ -562,7 +571,7 @@ sx={{
 
 ### "Theme changes not applying"
 
-**Clear cache and rebuild:**
+#### Clear cache and rebuild
 ```bash
 rm -rf node_modules/.cache
 pnpm run dev
@@ -570,7 +579,7 @@ pnpm run dev
 
 ### "Custom fonts not loading"
 
-**Check font path:**
+#### Check font path
 ```typescript
 // Font file should be in public/fonts/
 src: url('/fonts/CustomFont.woff2')  // Correct

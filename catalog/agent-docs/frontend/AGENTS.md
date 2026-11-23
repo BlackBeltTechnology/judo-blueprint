@@ -6,15 +6,21 @@
 
 | File | Purpose |
 |---|---|
+| `README.agent.md` | Condensed map of `README.md`: read first, then `kb_get` one section |
 | `README.md` | Frontend development guide for JUDO React applications. |
+| `advanced-patterns.agent.md` | Condensed map of `advanced-patterns.md`: read first, then `kb_get` one section |
 | `advanced-patterns.md` | Production patterns for the generated React frontend: error interceptor, cascade loading, post-refresh, inline dialogs, row highlighting, custom implementations and configuration. |
 | `build-and-deployment.md` | Maven build modes, module properties, base href and context path, login metadata, MUI license plan and checksum handling of the generated React frontend. |
+| `development-workflow.agent.md` | Condensed map of `development-workflow.md`: read first, then `kb_get` one section |
 | `development-workflow.md` | Dev server, build, testing and debugging workflow for the generated React frontend, including .default scaffolds and destructive prune warnings. |
 | `error-handling.md` | How the generated React frontend handles 400, 401, 403, 404, 422 and 500 responses, the operation fault dialog and fault translation keys. |
-| `esm-to-ui-mappings/` | ESM to UI Mapping: Overview: ESM to UI model mapping reference for the generated React frontend. (3 files; index in `esm-to-ui-mappings/AGENTS.md`) |
+| `esm-to-ui-mappings/` | ESM to UI Mapping: Overview: ESM to UI model mapping reference for the generated React frontend. (6 files; index in `esm-to-ui-mappings/AGENTS.md`) |
 | `extension-points.md` | Extra routes, guest page, sub-theme hooks, menu actions hook, application switcher, navigation confirmation and table state persistence in the generated React frontend. |
-| `hooks/` | Pandino-based hook system of the generated React frontend: hook categories, .default scaffolds, registration patterns and .generator-ignore guidance. (7 files; index in `hooks/AGENTS.md`) |
+| `hooks/` | Pandino-based hook system of the generated React frontend: hook categories, .default scaffolds, registration patterns and .generator-ignore guidance. (14 files; index in `hooks/AGENTS.md`) |
+| `i18n.agent.md` | Condensed map of `i18n.md`: read first, then `kb_get` one section |
 | `i18n.md` | react-i18next setup, flat translation keys, generated translation files, language switching and custom translation providers. |
+| `model-screen-layout.agent.md` | Condensed map of `model-screen-layout.md`: read first, then `kb_get` one section |
 | `model-screen-layout.md` | Mapping between UI model elements and generated React components, element ids, file paths, access control and ESM to UI traceability. |
+| `theming.agent.md` | Condensed map of `theming.md`: read first, then `kb_get` one section |
 | `theming.md` | MUI theme palette, component override fragments, sub-themes, fonts, dark mode and responsive styling of the generated React frontend. |
 | `ui-model-pitfalls.md` | Model values and workflows that break the frontend generator, renames and retargeting fallout, and the model-driven, UI-first end-to-end test approach. |

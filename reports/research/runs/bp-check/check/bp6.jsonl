@@ -1,0 +1,14 @@
+{"id": "B25@2", "verdict": "ok", "note": "Evidence jcl-operation-scripts.md Immutability bullet matches: input and transient refs immutable, collection change fails (Immutable selector). Link semantics still marked verify."}
+{"id": "B25@1", "verdict": "ok", "note": "Same agent-docs immutability rule; the exact mutable input.users form kept under verify."}
+{"id": "B25@4", "verdict": "ok", "note": "Same as B25@2; single-select BLUEPRINT section reads correctly."}
+{"id": "B25@6", "verdict": "ok", "note": "Same as B25@1 for the single-select backend sketch; still verify."}
+{"id": "B1@5", "verdict": "fixed", "note": "Ledger rule holds (custom ops one transaction, rollback on throw; joined transaction not rolled back). The sentence \"agent-docs do not say\" contradicted custom-operations.md (PostgreSQL aborts the transaction, HSQLDB rolls back one statement). Rewrote the last bullet to the documented rule."}
+{"id": "G101@5", "verdict": "fixed", "note": "Same line and same change as B1@5 (duplicate ledger line); fixed once."}
+{"id": "G070@1", "verdict": "ok", "note": "build-process.md Command Reference: schema-upgrade generates and applies in one step, do not use it when a backfill is needed. Generate-edit-apply separately matches schema-evolution manual scripts."}
+{"id": "B3@2", "verdict": "fixed", "note": "judo-services-job InitScriptExecutor runs initializers on activate with empty TreeMap exchange, so the no-principal rule is right. Runs on every start only in the OSGi runtime; added that qualifier (Spring Boot not verified in agent-docs)."}
+{"id": "R16-C7@1", "verdict": "fixed", "note": "Same line as B3@2; the platform-runs-initializer fact is confirmed by InitScriptExecutor; added OSGi-runtime qualifier."}
+{"id": "B3@1", "verdict": "fixed", "note": "model.md line: the runtime-call fact is OSGi-only (InitScriptExecutor, judo-services-job); added the qualifier."}
+{"id": "R16-C7@2", "verdict": "fixed", "note": "Same line as B3@1; OSGi qualifier added."}
+{"id": "B41@3", "verdict": "ok", "note": "widgets.md Boolean combo: Unknown entry for null/undefined confirmed; check-the-target-version advice kept."}
+{"id": "G106@2", "verdict": "fixed", "note": "Init-data-seeding line restated the every-start fact without the OSGi scope; added OSGi-runtime qualifier."}
+{"id": "G114@1", "verdict": "ok", "note": "generateOptionalTypes default true (sdk maven plugin TransformerWorkflowMojo) and RelationHelper: optional relation returns Optional, required returns plain entity. Matches agent-docs relationship navigation."}

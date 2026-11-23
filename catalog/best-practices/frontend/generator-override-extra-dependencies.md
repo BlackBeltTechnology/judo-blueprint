@@ -11,7 +11,6 @@ projects: [rackinspect, workflow-poc, park-here]
 evidence: ["rackinspect:application/generator-overrides/ui-react/actor/package.json.dependencies.extra.fragment.hbs", "workflow-poc:unrecorded"]
 alternatives: []
 related: [pdf-preview-inline-display, generator-ignore-app-theme]
-fragment: "none: frontend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

@@ -1,6 +1,9 @@
 ---
 title: Runtime Fixture Internals and Test Scoping
 description: "This page explains how the testkit builds the runtime for a test, and how to keep integration tests small and fast."
+aliases: [test runtime internals, guice injector in tests, fixture lifecycle, test caching, shared injector, keep tests fast, datasource per class]
+keywords: [JudoRuntimeFixture, Guice.createInjector, Modules.combine, shareInjector, dataSourceMode, BY_CLASS, SINGLETON, BY_METHOD, JUDO_TEST_DIALECT, JUDO_TEST_CONTAINER]
+tags: [domain:testing, layer:test, status:platform]
 ---
 # Runtime Fixture Internals and Test Scoping
 
@@ -24,7 +27,7 @@ With `@JudoTest` all of this happens in the extension. A custom fixture only nee
 
 ## Fixture Lifecycle per Test
 
-For every test method the extension prepares a fixture, begins a transaction (`AUTO_ROLLBACK` and `AUTO_COMMIT` only), and in the after-each step rolls back (`AUTO_ROLLBACK`), commits and optionally truncates (`AUTO_COMMIT`), or only truncates (`MANUAL`). `tearDown()` always rolls back a transaction that is still open. The `JudoRuntimeFixture` is the only fixture type the test method may declare as a parameter, next to `JudoDatasourceFixture`.
+For every test method the extension prepares a fixture, begins a transaction (`AUTO_ROLLBACK` and `AUTO_COMMIT` only), and in the after-each step rolls back (`AUTO_ROLLBACK`), commits and optionally truncates (`AUTO_COMMIT`), or only truncates (`MANUAL`). `tearDown()` always rolls back a transaction that is still open. The `JudoRuntimeFixture` is the only fixture type the test method may declare as a parameter, next to `JudoDatasourceFixture`. With a method-level `@JudoTest` and `dataSourceMode` `SINGLETON`, the after-each step throws `ClassCastException` because the stored value is not a `CloseableDatasourceFixture`. Use `BY_CLASS` for such tests.
 
 ## Runtime Caching Details
 

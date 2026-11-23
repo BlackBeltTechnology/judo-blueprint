@@ -1,6 +1,9 @@
 ---
 title: Tooling Guide
 description: Diagram generator script for visualising the ESM model.
+aliases: [generate model diagrams, ESM class diagram script, mermaid diagrams from model, plantuml model diagram, diagram generator]
+keywords: [diagram_generator.py, --format, mermaid, PlantUML, representations.aird, generated-diagrams.md, .model]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # Tooling Guide
@@ -21,7 +24,7 @@ This guide provides an overview of the custom tools available in this project fo
 
 The `diagram_generator.py` script can be used to generate visual diagrams of the ESM model, which is useful for documentation and architectural reviews.
 
-**Functionality:**
+#### Functionality
 
 -   **Parses Model Files**: Reads the `.aird` (diagram definitions) and `.model` (ESM structure) files.
 -   **Generates Diagrams**: Creates a Markdown file with class diagrams for each entity diagram found.

@@ -1,0 +1,10 @@
+{"id":"apply-findings::AU8","verdict":"ok","note":"AsmModel.toDictionary() puts name; tracker default source key is name; DataTypeManager uses judo.model.name; sample now uses name=YourApplicationName for AsmModel"}
+{"id":"apply-findings::B15","verdict":"fixed","note":"judo.model.name registration confirmed; removed unsupported 'when the runtime hosts more than one model' condition"}
+{"id":"apply-findings::G030","verdict":"fixed","note":"action.evl: view container == action definition container or its page container; reworded to match; ActionGroup not required"}
+{"id":"apply-findings::G033","verdict":"ok","note":"esmToUi.etl throws 'Missing position parameter(s)'; judo-cli move --index=<0-based> exists"}
+{"id":"bp-check::B30@1","verdict":"ok","note":"DeletePayloadDaoProcessor: back refs are removed unless reverseCascadeDelete; refusal only when lowerBound>0; blueprint says primary link 0..1"}
+{"id":"bp-check::B41@4","verdict":"fixed","note":"ListCall keeps returning rows and adds the record count; 'returns only a count' was wrong. Reworded; per-row hidden in react table ok"}
+{"id":"apply-findings::NG0071","verdict":"ok","note":"Asm2Rdbms defaults T_ C_ FK_ FK_INV_ J_; prefixes concatenated as written; no '-' special case"}
+{"id":"apply-findings::R2849","verdict":"ok","note":"JudoRuntimeFixture.tearDown only rolls back an open transaction; no injector or datasource close"}
+{"id":"bp-check::B15@2","verdict":"ok","note":"DefaultVariableResolverComponent registers with judo.model.name props; osgi template uses the same per-model target pattern (Dispatcher reference, cited as pattern only)"}
+{"id":"apply-findings-webshop::WR16-5","verdict":"fixed","note":"-KA help and start re-extracts karaf-offline confirmed; removed '-M -F' alternative, which contradicts the next paragraph"}

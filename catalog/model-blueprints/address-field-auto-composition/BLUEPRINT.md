@@ -10,7 +10,6 @@ status: single-project
 projects: [rackinspect]
 evidence: ["rackinspect:application/frontend-react/rackinspect__services__generic_user/src/custom/hooks/FormActionsHooks/customServicesPartnerServiceAddressAddressFormActionsHook.tsx"]
 alternatives: [address-entity-with-location]
-fragment: none: frontend-only
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

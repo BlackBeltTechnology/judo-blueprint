@@ -10,8 +10,6 @@ status: established
 projects: [trivia, itracker, mlszksz-platform, viterra_demo, mjsz, park-here, InterfaceRegister, judo-partner]
 evidence: ["trivia:unrecorded", "itracker:unrecorded", "mlszksz-platform:model/MLSZKSZPlatform.model", "viterra_demo:unrecorded", "mjsz:unrecorded", "park-here:unrecorded", "InterfaceRegister:unrecorded", "judo-partner:unrecorded"]
 alternatives: []
-fragment: singleton-entity
-diagram: { kinds: [entity, transfer, actor, operation], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -34,7 +32,7 @@ Model application-wide state or entry points as an entity of which the project o
 
 ### Attribute-less singleton: initializer and application container
 
-- An entity with no attributes or relations (named Application or Initializer) hosts static operations: an initializer that seeds data, registration, bulk actions. Operation type `INITIALIZER` is stored as a static operation with the initializer flag set ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)). Whether and when the platform calls it is not documented there; see [[initializer-operation]] for the seeding practice.
+- An entity with no attributes or relations (named Application or Initializer) hosts static operations: an initializer that seeds data, registration, bulk actions. Operation type `INITIALIZER` is stored as a static operation with the initializer flag set ([operation reference](../../agent-docs/model/esm_metamodel/operation.md)). The platform calls every initializer operation (unbound, no parameters) at each start of the application, after the persistence, scripts, SDK operations and identity-manager services are ready. The startup code calls each one with an empty exchange map and sets no principal. A failing one is logged and the completion marker is not registered, so dependants that wait for it do not start. Guard the body so a later start changes nothing; see [[initializer-operation]] for the seeding practice.
 - If clients should call its operations, expose the entity through the same single-instance Access. Several projects did not expose it at all: it exists only for startup seeding.
 
 ### First-run check
@@ -73,7 +71,6 @@ A Configuration entity has `senderEmail` and `baseUrl`. ConfigurationView maps b
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=singleton-entity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class AppUser {
@@ -95,4 +92,3 @@ classDiagram
   }
   ConfigurationView ..> Configuration : maps
 ```
-<!-- /mermaid:generated -->

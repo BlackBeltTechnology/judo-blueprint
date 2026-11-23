@@ -3,7 +3,7 @@
 ## Blueprints
 
 1. Read `BLUEPRINT.md`: *Intent*, *Constraints*, *Variations*, *When to avoid*. Pick the variation that fits.
-2. Read `model.md`. `## Model shape` lists the elements; the generated Mermaid diagram shows the structure. The diagram is derived from a validated fragment model (`fragments/<id>.model` in the catalog repo), so the shape is known to pass strict validation.
+2. Read `model.md`. `## Model shape` lists the elements; the Mermaid diagram under `## Structure diagram` shows the structure. Build the shape in your own model with the JUDO CLI and run `validate --strict` there.
 3. Rename to your domain. Entry names are neutral examples (`Partner`, `Order`); keep the relation kinds, cardinalities, flags and expressions.
 4. Build it with the JUDO model CLI skill in your project (one writer per model file), then `validate --strict`.
 5. Read `backend.md` and `frontend.md` only for the layers you touch. Code there is **example project code** unless it says *platform*: adapt it, do not copy class names that do not exist in your project.

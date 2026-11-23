@@ -1,6 +1,9 @@
 ---
 title: OSGi Runtime Services
 description: Model bundles, datasource provisioning, model version checks, startup readiness, health checks and Karaf administration.
+aliases: [deploy model as OSGi bundle, karaf startup problems, model version check failed, health check endpoint, keycloak realm sync config, CORS settings per model]
+keywords: [Judo-Models, targetDatasourceModelName, ignoreVersionCheck, JUDO_MODEL_VERSIONS, retryMaxAttempts, pax-jdbc, cors_allowOrigin, realm_loginByEmail, /system/health, JUDO_STARTUP_FEATURE]
+tags: [domain:deployment, layer:infrastructure, status:platform]
 ---
 
 # OSGi Runtime Services and Deployment Behaviour
@@ -16,12 +19,26 @@ The model bundle tracker loads each model from the bundle resources with a stric
 - `model/<name>-esm.model`, `-psm.model`, `-asm.model`, `-measure.model`, `-expression.model`, `-openapi.model`, `-keycloak.model`
 - per dialect: `model/<name>-rdbms_<dialect>.model`, `-asm2rdbms_<dialect>.model` and `-liquibase_<dialect>.changelog.xml`
 
-A `dialects` (comma-separated) configuration decides which dialect resources are loaded. A missing version uses the bundle version, a blank version becomes `1.0.0.<timestamp>_SNAPSHOT`, and `.SNAPSHOT` suffixes get a timestamp substitution.
+A `dialects` (comma-separated) configuration decides which dialect resources are loaded. The default is empty: it yields one blank dialect, so the dialect resources are looked up as `model/<name>-rdbms_.model` (and the matching `asm2rdbms_`/`liquibase_` names), which do not exist, so no dialect-specific model or changelog is loaded. Set `dialects` explicitly (for example `postgresql` or `hsqldb`). A missing version uses the bundle version, a blank version becomes `1.0.0.<timestamp>_SNAPSHOT`, and `.SNAPSHOT` suffixes get a timestamp substitution.
 
+
+### Libraries already in the runtime
+
+The generated `<app>-judo-platform-prototype` Karaf feature already contains Tika (`tika-core`, `tika-parsers` 1.28.5) and PDFBox 2.0.13, and the OSGi e-mail feature brings Handlebars 4.2.0. Reuse them for document or template rendering instead of adding new bundles; add a bundle only for a library that is not listed here. Verify that the e-mail feature is installed in the target runtime before relying on Handlebars.
+
+The generated feature descriptor is `feature.xml` (from `feature.xml.hbs`), not `features.xml`.
+
+### Unit-testing components
+
+Declarative Services components can be unit-tested without a container with `MockOsgi` from `osgi-utils` (`osgi-test`): `MockOsgi.activate`/`deactivate` call the `@Activate`/`@Deactivate` methods (parameters: none, `BundleContext`, `ComponentContext`, `Map`/`Dictionary`) and `MockOsgi.setReferences` injects services into `@Reference` fields or bind methods (Felix SCR and standard OSGi DS annotations).
+
+### JAX-RS Application Address
+
+The JAX-RS address of an application comes from the `applicationPath` entry of `Application.getProperties()`, not from an OSGi service property. If that entry is missing and the application class has no `@ApplicationPath`, the server logs a warning. If one application in a multi-application container fails to start (no classes and no singletons), the remaining applications are not started either; check the Karaf log for the first failure.
 
 ## Target Datasource Model
 
-In a multi-model deployment one model owns the shared datasource and every other model is configured against it. Every per-model activator reads a `targetDatasourceModelName` key; for the model whose name equals that value it suppresses its own per-model components (dialect/mapper/sequence, Keycloak connector and login interceptor, dispatcher configurations, health checks, realm extractor, access manager). The managed datasource carries `dao.datasource.name`, `managed.datasource.name` and `judo.model.name`, and components bind per model through filters like `(dao.datasource.name=<name>)`.
+In a multi-model deployment one model owns the shared datasource and every other model is configured against it. Every per-model activator reads a `targetDatasourceModelName` key; for the model whose name equals that value it suppresses its own per-model components (dialect/mapper/sequence, Keycloak connector and login interceptor, dispatcher configurations, health checks, realm extractor, access manager). The managed datasource carries `dao.datasource.name`, `managed.datasource.name` and `judo.model.name`, and components bind per model through filters like `(dao.datasource.name=<name>)`. The target model also gets no `InitScriptExecutor`, so init scripts do not run for it; put startup seeding on another model in a multi-model deployment.
 
 ## Runtime Model Version Check
 
@@ -92,7 +109,7 @@ The Guice runtime (`JudoKeycloakModuleConfiguration`) defaults `keycloakServerUr
 
 ### Realm and client generation from the model
 
-The ASM-to-Keycloak transformation turns every distinct non-blank `realm` annotation on actor types into a realm (`loginWithEmailAllowed`), and every actor type with a `realm` annotation into a client named after the actor FQN with `.` replaced by `-` (`directAccessGrantsEnabled`, `redirectUris=["*"]`). Adding a `realm` annotation therefore provisions Keycloak without manual client setup.
+The ASM-to-Keycloak transformation turns every distinct `realm` annotation on actor types into a realm (used as written, untrimmed; blank values are not skipped) (`loginWithEmailAllowed`), and every actor type with a `realm` annotation into a client named after the actor FQN with `.` replaced by `-` (`directAccessGrantsEnabled`, `redirectUris=["*"]`). Adding a `realm` annotation therefore provisions Keycloak without manual client setup. Write the realm name without surrounding spaces: the realm keeps the untrimmed value, but client generation trims it before looking the realm up, so a padded name does not match its realm.
 
 ## CORS Filter per Model
 
@@ -104,11 +121,11 @@ A Swagger UI servlet is registered per OpenAPI model at `/api-spec/<model name>`
 
 ## Filestore S3 Backend Details
 
-Besides the environment variables in [Application Configuration](./application-config.md), the S3 component needs `protocol`, `bucketName`, `accessKey` and `secretKey`; `endpoint` defaults to empty (AWS) and `region` to `us-east-1`. The access URL it returns is an internal `<protocol>:<fileId>-<filename>` URL, not a public or signed link, so downloads flow through the Karaf servlet. The S3 backend has no metadata cache: each name, size, type or time lookup is a HEAD request.
+Besides the environment variables in [Application Configuration](./application-config.md), the S3 component needs `protocol`, `bucketName`, `accessKey` and `secretKey`; `endpoint` defaults to empty (AWS) and `region` to `us-east-1`. The access URL it returns is an internal `<protocol>:<fileId>-<filename>` URL, not a public or signed link, so downloads flow through the Karaf servlet. The S3 backend has no metadata cache: each name, size, type or time lookup is a HEAD request. Only HTTP 404 is treated as not found; other error statuses (for example 403 or 500) are returned as file content, so check the HTTP status and file size before trusting a downloaded file. File URLs are resolved by cutting the file id at the first dash, so RDBMS ids that contain dashes (UUIDs) fail when resolved from a URL; pass the file id instead. A URL without a dash fails with an index error, so build file URLs as `<fileId>-<filename>` with a file id that has no dash.
 
 ## Running Liquibase Changelogs from a Bundle
 
-`osgi-liquibase` exposes `LiquibaseExecutor.executeLiquibaseScript(Connection, scriptPathInBundle, Bundle)` and an overload taking a `Map` of changelog parameters. **Known issue:** the default executor rethrows only `LiquibaseException`; any other exception is swallowed, so the caller can see success after a failure. Check the log and the database state.
+`osgi-liquibase` exposes `LiquibaseExecutor.executeLiquibaseScript(Connection, scriptPathInBundle, Bundle)` and an overload taking a `Map` of changelog parameters. **Known issue:** the default executor rethrows only `LiquibaseException`; any other exception is swallowed, so the caller can see success after a failure. Nothing is logged for these, so check the database state. An unreadable changelog entry (a `URISyntaxException` while the bundle URL is converted) is reported as an empty list, so the changelog is silently not applied; check that the model's tables exist after deployment. `StreamResourceAccessor.list()` ignores the requested path and returns every registered stream name, so a directory listing through it is not limited to the folder.
 
 ## Related Documentation
 

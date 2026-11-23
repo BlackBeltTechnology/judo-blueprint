@@ -1,0 +1,154 @@
+[
+ {
+  "id": "G088",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+  "owner": "model-b",
+  "first_pass": "CLI claim auto-creation not confirmed quickly",
+  "text": "#### G088 `c03-49` R7 F14: Creating an actor with a principal auto-creates a Claim per attribute (for example Customer email USERNAME and EMAIL); the builder removed the USERNAME claim so only EMAIL remains.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/esm_metamodel/accesspoint.md`. accesspoint.md describes Claim but not that creating an actor with a principal auto-creates one claim per attribute (EMAIL and USERNAME). Add: keep only the claims the IdP token carries.\n- **Why:** The principal and claim cascade in the CLI creates claims by default; the catalog does not say which claim to keep. **Workaround:** Deleted the USERNAME claim on Customer.\n- **Validation:** confirmed; kind catalog-gap; catalog partly-covered. Evidence: `session:L2104`, `session:L2107`, `session:L2108`"
+ },
+ {
+  "id": "G089",
+  "src": "gap-analysis",
+  "target": "catalog/agent-docs/model/esm_metamodel/accesspoint.md",
+  "owner": "model-b",
+  "first_pass": "CLI route for Claim not confirmed; example marked verify",
+  "text": "#### G089 `c03-43` R7 F13: graphql and CLI queries used Claim name or a claim fqn that does not exist (Customer username USERNAME, Claim name field); the query or update failed.\n\n- [ ] **Issue**  Action: [ ] add [x] modify [ ] one-off [ ] ticket [ ] tool [ ] drop\n- **Proposed:** modify-catalog \u2192 `catalog/agent-docs/model/esm_metamodel/accesspoint.md`. accesspoint.md lists claims and the JQL key being the DataMember name, but not the CLI route to set or query a Claim. Add one CLI example (verify).\n- **Why:** Builder assumed the Claim type has a name field; the schema does not expose it under that name. **Workaround:** Queried Claim fqn only.\n- **Validation:** confirmed; kind builder-mistake; catalog partly-covered. Evidence: `session:L2021`, `session:L2022`, `session:L2105`"
+ },
+ {
+  "id": "B19",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B19 | `self!container(X)` as a derived back-reference relation | `!container(type)` is defined, but its use as a relation getter is shown only in a best practice. | bp14, pm02 |"
+ },
+ {
+  "id": "B20",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B20 | Range expressions on entity relations | Only input-parameter range attributes are documented. A `rangeExpression` needs `rangeType=DERIVED`. It is unknown whether `self` is allowed in a range expression and whether the server enforces a derived range. | pm05, pm06, pm07 |"
+ },
+ {
+  "id": "B21",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B21 | CRUD flags on a whole entity or transfer object | What a false `createable`/`updateable`/`deleteable` on a whole entity does to generated pages and REST endpoints. Only relation-level flags are documented. | bp09, pm03 (also MO-148) |"
+ },
+ {
+  "id": "B22",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B22 | Enum default literal | `Type#VALUE` syntax in `defaultExpression` | pm03 |"
+ },
+ {
+  "id": "B23",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B23 | Fault parameters | A fault parameter must be unmapped. The `Parameter` section does not cover faults. | pm03 |"
+ },
+ {
+  "id": "B24",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B24 | `immutable` | Whether it can be set on entities. It appears only in the signed-identifier section. | pm06 |"
+ },
+ {
+  "id": "B25",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B25 | `mutable` on transient references | What it does to a transient reference read from an operation input. | pm07 |"
+ },
+ {
+  "id": "B26",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B26 | Static operations on an unmapped TO via an actor | Only the `StaticOperations` container TO is described. | bp03 |"
+ },
+ {
+  "id": "B27",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B27 | Group roles | No example of unioning group roles into `effectiveRoles`. | bp14 |"
+ },
+ {
+  "id": "B28",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B28 | Derived attribute in tables | Whether a derived attribute can be sorted or filtered in generated tables. | pm02 |"
+ },
+ {
+  "id": "B29",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B29 | `!sum` on null or empty collections | Result is not stated. | pm05 |"
+ },
+ {
+  "id": "B30",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B30 | Deleting the target of an association | Only composition cascade is documented. What happens to an association (and a \"primary\" reference) when its target is deleted is not. | bp06, pm05 |"
+ },
+ {
+  "id": "B31",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B31 | `type.md` standard limits | The `Text`, `Phone`, `URL` and `Email` limits are not listed. | bp13 |"
+ },
+ {
+  "id": "B32",
+  "src": "passb2-doc-gaps",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Documentation gap (open question); behaviour not confirmed within lookup budget",
+  "text": "| B32 | UI model custom-implementation marker | How the UI model marks an element as a custom implementation. Only the `customImplementation` flag on a Placeholder is mentioned. | bp09 |"
+ },
+ {
+  "id": "KC13",
+  "src": "knowledge-check",
+  "target": "catalog/agent-docs/model/jcl-operation-scripts.md",
+  "owner": "model-b",
+  "first_pass": "Operator note about deprecation; no deprecated tags to add, nothing confirmed",
+  "text": "| R1 / R2: JCL deprecated, Flutter deprecated | JCL is in 22 files and Flutter in 8, with 0 \"deprecated\" tags (`model/jcl-operation-scripts.md`, `deployment/generator-plugins.md`) | **No** |"
+ },
+ {
+  "id": "KC14",
+  "src": "knowledge-check",
+  "target": "catalog/agent-docs/model/",
+  "owner": "model-b",
+  "first_pass": "Operator note; no change to model docs",
+  "text": "| R4: measures not in use | No \"not in use\" note (`model/` has 9 files on measures) | **No** |"
+ },
+ {
+  "id": "NG0063",
+  "src": "judo-ng-read:-runtime-judo-script-codegen",
+  "target": "catalog/agent-docs/model/esm_metamodel/type.md",
+  "owner": "model-b",
+  "first_pass": "Enum ordinal in generated script code not confirmed quickly; no doc claim to correct",
+  "text": "## [wrong-fact] openspec/specs/generator-test/spec.md:113\n- src: judo-ng-read | status: validated | evidence: runtime/judo-script-codegen:openspec/specs/generator-test/spec.md:113\n- claim: Enumeration expressions use the correct enum literal references.\n- fact: Enum literals compile to getEnumOrdinal(...) returning an Integer ordinal, and enumeration variables are Holder<java.lang.Integer>; no enum \n"
+ }
+]

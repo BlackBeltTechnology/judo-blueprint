@@ -1,6 +1,9 @@
 ---
 title: Model to screen layout for E2E
 description: How model elements map to rendered screen components and VisualElementIds.
+aliases: [e2e element ids, playwright selectors for generated pages, testid for form fields, visual element id naming, table row actions in tests, operation buttons in tests, selector for single relation]
+keywords: [VisualElementIds.ts, TransferObjectFormPageContainer, TransferObjectTablePageContainer, TransferObjectViewPageContainer, TabularReferenceFieldRelationDefinedTable, OperationFormVisualElement, OperationFormTableRowCallOperationButton, OperationMenuButton, ActionButtonVisualElement, data-testid, TableHelper, ApiHelper]
+tags: [domain:testing, layer:test, status:platform]
 ---
 
 # Model-to-Screen Layout Mapping
@@ -105,7 +108,7 @@ All element IDs follow this pattern:
 {Actor}/(esm/_{UniqueModelId})/ElementType
 ```
 
-**Components:**
+### Components
 - **Actor**: The actor/role context (e.g., `God`, `Admin`, `User`, `ActorWithRealm`)
 - **UniqueModelId**: A unique EMF/XMI identifier from the model (e.g., `DpoUkM8xEe6U3KSieLrWmg`)
 - **ElementType**: The UI component type
@@ -195,7 +198,7 @@ export const ActorDashboard = {
 
 Used for creating new entities.
 
-**VisualElementIds Structure:**
+#### VisualElementIds Structure
 ```typescript
 export const EntityName_Form = {
   _id: "Actor/(esm/_xxx)/TransferObjectFormPageContainer",
@@ -217,7 +220,7 @@ export const EntityName_Form = {
 };
 ```
 
-**Test Usage:**
+#### Test Usage
 ```typescript
 import { EntityName_Form } from '../helpers/visualElementIds/VisualElementIds';
 
@@ -235,7 +238,7 @@ await page.getByTestId(EntityName_Form.pageActions.create.id).click();
 
 Used for listing entities in a data grid.
 
-**VisualElementIds Structure:**
+#### VisualElementIds Structure
 ```typescript
 export const EntityName_Table = {
   _id: "Actor/(esm/_xxx)/TransferObjectTablePageContainer",
@@ -290,7 +293,7 @@ export const EntityName_Table = {
 
 Used for viewing and editing existing entities.
 
-**VisualElementIds Structure:**
+#### VisualElementIds Structure
 ```typescript
 export const EntityName_View_Edit = {
   _id: "Actor/(esm/_xxx)/TransferObjectViewPageContainer",
@@ -391,6 +394,14 @@ placeholder: {
   label: ""
 }
 ```
+
+### Shape of the Generated Tree
+
+- Flex layout containers are kept as branch nodes in the generated visual element tree; they are not filtered out.
+- A table emits its columns inside a `columns` wrapper (for example `dataTable.columns.nameColumn`); its filters, `toolbarActions` and `rowActions` are wrapped the same way. Where the examples on this page show columns or actions directly under the table, read them with this wrapper.
+- Tab elements are flagged with a boolean `tabElement` (set by `setTabElement(true)`) and a `tab` property; they are not tagged with a `tab` category.
+- The only dialog suffix emitted is `-dialog-title`, on filter leaves. Suffixed ids such as `-action-confirm`, `-action-cancel` or `-dialog-close-wrapper` are not generated as visual element ids.
+- A node with no children is emitted as a leaf that carries only `id` and `label` (binary inputs and filters get their extra keys). A container, table or tab element without children therefore has no `_id`, `_label` or `tab` entries.
 
 ### Tab Bar Component
 
@@ -1326,13 +1337,13 @@ The VisualElementIds export names follow this pattern:
 {FeatureGroup}{TransferObjectName}{TransferObjectName}_{PageType}
 ```
 
-**Examples:**
+### Examples
 - `BinaryTypeTestGalaxyDocumentTransferGalaxyDocumentTransfer_Form`
 - `ReadOnlyTestSpaceShipTransferSpaceShipTransfer_View_Edit`
 - `ViewAstronomerTransferObject_Table`
 - `GodDashboard` (special case for dashboards)
 
-**Page Types:**
+### Page Types
 - `_Form` - Create form page
 - `_Table` - List/table page
 - `_View_Edit` or `_View` - View/edit page

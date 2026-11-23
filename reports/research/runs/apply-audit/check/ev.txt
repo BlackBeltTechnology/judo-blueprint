@@ -1,0 +1,89 @@
+ls: cxf*: No such file or directory
+runtime__judo-sdk-common
+
+    public ExchangeIdDecorator() {
+        super(Phase.RECEIVE);
+    }
+
+    @Override
+    public void handleMessage(final Message message) throws Fault {
+        final String exchangeId = createExchangeId(message);
+        Objects.requireNonNull(exchangeId, "Exchange ID creation failed");
+        MDC.put(MDC_KEY_EXCHANGE_ID, exchangeId);
+    }
+
+    /**
+     * Create ExchangeID that is used by cxf logging feature too (without enabling logging).
+     *
+     * @param message message
+     */
+    public String createExchangeId(final Message message) {
+        final Exchange exchange = message.getExchange();
+        String exchangeId = (String) exchange.get(KEY_EXCHANGE_ID);
+        if (exchangeId == null) {
+            exchangeId = UUID.randomUUID().toString();
+            exchange.put(KEY_EXCHANGE_ID, exchangeId);
+        }
+        return exchangeId;
+    }
+}
+judo-runtime-core-jaxrs-cxf/src/main/resources/claude/plugins/judo-jaxrs-cxf/skills/cxf-integration/SKILL.md:100:        ExchDec->>ExchDec: Set MDC
+judo-runtime-core-jaxrs-cxf/src/main/resources/claude/plugins/judo-jaxrs-cxf/skills/cxf-integration/SKILL.md:143:- Set MDC (Mapped Diagnostic Context) for logging correlation
+judo-runtime-core-jaxrs-cxf/src/main/resources/claude/plugins/judo-jaxrs-cxf/skills/cxf-integration/SKILL.md:149:// MDC key for logging:
+judo-runtime-core-jaxrs-cxf/src/main/resources/claude/plugins/judo-jaxrs-cxf/skills/cxf-integration/SKILL.md:439:Look for the `X-Exchange-Id` header in responses and correlate with logs using `RequestExchangeId` MDC key:
+judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/ExchangeIdDecorator.java:28:import org.slf4j.MDC;
+judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/ExchangeIdDecorator.java:39:    private static final String MDC_KEY_EXCHANGE_ID = "RequestExchangeId";
+judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/ExchangeIdDecorator.java:49:        MDC.put(MDC_KEY_EXCHANGE_ID, exchangeId);
+judo-runtime-core-jaxrs-cxf/src/main/java/hu/blackbelt/judo/runtime/core/jaxrs/cxf/interceptors/AGENTS.md:7:| `ExchangeIdDecorator.java` | CXF `Phase.RECEIVE` interceptor assigning a request exchange id. Exports `KEY_EXCHANGE_ID` (`"exchangeId"`), `handleMessage(Message)`, `createExchangeId(Message)`. `createExchangeId` reuses the id stored on the `Exchange` and mints a `UUID` only when absent; `handleMessage` writes it to MDC key `RequestExchangeId`. |
+---
+        this.identifierSigner = identifierSigner;
+
+        this.accessManager = Objects.requireNonNullElseGet(accessManager, () -> (operation, signedIdentifier, exchange) -> {});
+
+        this.actorResolver = actorResolver;
+        this.transactionManager = transactionManager;
+        this.expressionModel = expressionModel;
+        this.context = context;
+        this.metricsCollector = metricsCollector;
+        this.payloadValidator = payloadValidator;
+        this.exporter = exporter;
+        this.validatorProvider = Objects.requireNonNullElseGet(validatorProvider, () -> new DefaultValidatorProvider(dao, identifierProvider, asmModel, context));
+
+        if (enableValidation != null && !enableValidation) {
+            validatorProvider.getValidators().clear();
+        }
+
+        rangeValidator = validatorProvider.getInstance(RangeValidator.class).orElseGet(DummyValidator::new);
+
+        this.metricsReturned = Objects.requireNonNullElse(metricsReturned, true);
+
+---
+    }
+
+
+
+    public R postCallInterceptors(P inputParameter,
+                                               R returnPayload) throws InterceptorCallBusinessException {
+        R ret = returnPayload;
+        boolean callDecorated = true;
+        for (OperationCallInterceptor interceptor : interceptorProvider.getInterceptorsForOperation(asmModel, operation)) {
+            callDecorated = callDecorated && !interceptor.ignoreDecoratedCall();
+            if (!interceptor.async()) {
+                Object o  = interceptor.postCall(operation, inputParameter, returnPayload);
+                if (o == null || returnType.isAssignableFrom(o.getClass())) {
+                    ret = (R) o;
+                } else {
+                    throw new IllegalArgumentException("The interceptor call return type: " + o.getClass().getName()
+                            + " does not match with expected type: " + returnType.getName());
+                }
+            } else {
+                Object finalInputParameter = inputParameter;
+                CompletableFuture.runAsync(() -> {
+                    interceptor.preCall(operation, finalInputParameter);
+                });
+            }
+        }
+        return ret;
+    }
+
+}

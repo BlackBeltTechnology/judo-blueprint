@@ -10,7 +10,6 @@ status: single-project
 projects: [mlszksz-platform]
 evidence: ["mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/feedComponent/hooks/useInfiniteScroll.ts", "mlszksz-platform:application/frontend-react/mlszkszplatform__services__mlszksz/src/custom/feedComponent/FeedContainer.tsx"]
 alternatives: []
-fragment: "none: frontend-only"
 first_seen: 2026-03-09
 last_updated: 2026-11-10
 ---

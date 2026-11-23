@@ -10,7 +10,6 @@ status: established
 projects: [rackinspect, mlszksz-platform, park-here, indamedia-adtrack]
 evidence: ["rackinspect:application/common/src/main/java/hu/blackbelt/rackinspect/common/utils/services/i18n/RackInspectI18nActivator.java", "mlszksz-platform:application/common/src/main/java/hu/blackbelt/mlszksz/platform/common/services/i18n/MLSZKSZPlatformI18nActivator.java", "park-here:unrecorded", "indamedia-adtrack:unrecorded"]
 alternatives: []
-fragment: "none: backend-only"
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---

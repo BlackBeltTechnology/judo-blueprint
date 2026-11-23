@@ -11,8 +11,6 @@ projects: [alba, skillmatrix-model, viterra_demo, judo-demo-miniworkflow, ams-mo
 evidence: ["alba:unrecorded", "skillmatrix-model:unrecorded", "viterra_demo:unrecorded", "judo-demo-miniworkflow:unrecorded", "ams-model:unrecorded", "workflow-poc:unrecorded", "reserve-app:unrecorded"]
 alternatives: []
 related: [actor-based-transfer-projection, derived-attribute-flattening, unmapped-transfer-dto, transfer-generalization]
-fragment: transfer-object-multiplicity
-diagram: { kinds: [entity, transfer], members: types }
 first_seen: 2026-03-04
 last_updated: 2026-11-10
 ---
@@ -69,7 +67,6 @@ A Product entity has name, price and description. ProductAdmin maps all three an
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=transfer-object-multiplicity cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Product {
@@ -103,4 +100,3 @@ classDiagram
   ProductCard ..> Product : maps
   ProductPicker ..> Product : maps
 ```
-<!-- /mermaid:generated -->

@@ -6,7 +6,7 @@ A builder session (a separate pi session) builds a real JUDO application from an
 
 - An empty app folder (`<APP_DIR>`) with `FUNCTIONS.md`: functions grouped in levels (`S01`… for the base, `F01`… for features), each with a browser-checkable acceptance line, plus a "frontend quality bar" section (human labels, shared components, theme, loading, empty and error states).
 - The app's `.pi/dashboard/knowledge_base.json` has this catalog as its source, so the builder's `kb_search` hits the catalog.
-- Spawn the builder session through the dashboard. Keep its id; prompt it with `dashboard-bus.ts prompt <id> "<text>"`, wait with `dashboard-bus.ts until <id> idle`, stop it with `dashboard-bus.ts abort <id>` (the pi-dashboard skill's scripts).
+- Spawn the builder session through the dashboard. Keep its id; give it the task in `dashboard-bus.ts spawn … --prompt`, and send every later command with `DASHBOARD_BUS=<dashboard-bus.ts> npx tsx .pi/skills/judo-catalog-expand/scripts/session-steer.mts <id> "<text>"` (or `@file`): always steer delivery, never `dashboard-bus.ts prompt` (followUp), wait with `dashboard-bus.ts until <id> idle`, stop it with `dashboard-bus.ts abort <id>` (the pi-dashboard skill's scripts).
 
 ## Standing rules to put in every round prompt
 

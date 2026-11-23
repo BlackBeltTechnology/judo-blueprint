@@ -13,7 +13,6 @@ Generated UI pages follow from the entities: View, Form and Table pages for Orga
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=multi-platform-external-account-cluster cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Account {
@@ -46,4 +45,3 @@ classDiagram
   Organization *-- "*" Account : accounts
   Organization *-- "*" AggregatedActivity : aggregatedActivities
 ```
-<!-- /mermaid:generated -->

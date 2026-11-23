@@ -6,7 +6,6 @@ The content's transfer object `ContentTO` maps to the entity and declares three 
 
 ## Structure diagram
 
-<!-- mermaid:generated fragment=publish-delete-edit-operations cli=1.1.0.20261108_202643_d9769d90_develop -->
 ```mermaid
 classDiagram
   class Content {
@@ -23,4 +22,3 @@ classDiagram
   }
   Content ..> ContentStatus : status
 ```
-<!-- /mermaid:generated -->

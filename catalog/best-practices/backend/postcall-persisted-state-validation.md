@@ -11,7 +11,6 @@ projects: [park-here]
 evidence: ["park-here:application/interceptors/src/main/java/hu/blackbelt/park/here/interceptors/usersettings/UserRefundValidationInterceptor.java"]
 alternatives: []
 related: [interceptor-template-postcall, interceptor-security-filter-validation, interceptor-crud-lifecycle, entity-re-fetch-pattern]
-fragment: "none: backend-only"
 first_seen: 2026-11-10
 last_updated: 2026-11-10
 ---
